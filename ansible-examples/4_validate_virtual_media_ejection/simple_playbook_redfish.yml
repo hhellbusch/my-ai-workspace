@@ -1,0 +1,61 @@
+---
+# Verified approach using community.general.redfish_info
+# This module is well-documented and uses standard Redfish API
+
+- name: Simple virtual media eject with validation using Redfish API
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    idrac_ip: "192.168.1.100"
+    idrac_user: "root"
+    idrac_password: "calvin"
+    
+  tasks:
+    - name: Eject virtual media
+      dellemc.openmanage.idrac_virtual_media:
+        idrac_ip: "{{ idrac_ip }}"
+        idrac_user: "{{ idrac_user }}"
+        idrac_password: "{{ idrac_password }}"
+        validate_certs: false
+        virtual_media:
+          - index: 1
+            state: "absent"
+      register: eject_result
+
+    - name: Check ejection result
+      assert:
+        that:
+          - not eject_result.failed
+        fail_msg: "Ejection failed"
+
+    - name: Wait for operation to complete
+      pause:
+        seconds: 5
+
+    - name: Query virtual media status via Redfish API
+      community.general.redfish_info:
+        baseuri: "{{ idrac_ip }}"
+        username: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+        category: Manager
+        command: GetVirtualMedia
+        validate_certs: false
+      register: redfish_result
+      until: >
+        redfish_result.redfish_facts.virtual_media is defined and
+        redfish_result.redfish_facts.virtual_media.entries | length > 0 and
+        (redfish_result.redfish_facts.virtual_media.entries |
+         selectattr('Id', 'equalto', 'CD') |
+         map(attribute='Inserted') | first | default(true) == false)
+      retries: 5
+      delay: 5
+
+    - name: Display virtual media status
+      debug:
+        var: redfish_result.redfish_facts.virtual_media
+
+    - name: Confirm ejection
+      debug:
+        msg: "Virtual media successfully ejected and validated via Redfish API"
+

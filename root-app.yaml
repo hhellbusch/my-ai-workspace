@@ -1,0 +1,80 @@
+# This is the ROOT ArgoCD Application (App of Apps)
+# This root app always points to 'main' branch
+# It manages all child applications and controls their target revisions via Helm values
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-app
+  namespace: argocd
+  labels:
+    app: root-app
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  
+  source:
+    # Root app always points to main branch
+    repoURL: https://github.com/your-org/your-repo.git
+    targetRevision: main  # ROOT APP ALWAYS POINTS TO MAIN
+    path: charts/argocd-apps
+    
+    # Helm configuration
+    helm:
+      # You can override values here to control child app versions
+      values: |
+        argocd:
+          namespace: argocd
+          project: default
+        
+        source:
+          repoURL: https://github.com/your-org/your-repo.git
+        
+        destination:
+          server: https://kubernetes.default.svc
+        
+        # Control target revisions for each child app from here
+        applications:
+          - name: example-app
+            targetRevision: v1.2.3  # Deploy example-app from tag v1.2.3
+            namespace: example-app
+            path: apps/example-app
+            enabled: true
+            syncPolicy:
+              automated: true
+              prune: true
+              selfHeal: true
+          
+          - name: another-app
+            targetRevision: develop  # Deploy another-app from develop branch
+            namespace: another-app
+            path: apps/another-app
+            enabled: true
+            syncPolicy:
+              automated: true
+              prune: true
+              selfHeal: true
+        
+        infrastructure:
+          - name: monitoring
+            targetRevision: v2.0.0  # Deploy monitoring from tag v2.0.0
+            namespace: monitoring
+            path: infrastructure/monitoring
+            enabled: true
+            syncPolicy:
+              automated: false
+              prune: false
+              selfHeal: false
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+

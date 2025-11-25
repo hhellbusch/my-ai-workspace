@@ -1,0 +1,45 @@
+# Production environment values
+# This file overrides the default values.yaml for production deployments
+
+argocd:
+  namespace: argocd
+  project: production
+
+source:
+  repoURL: https://github.com/your-org/your-repo.git
+
+destination:
+  server: https://kubernetes.default.svc
+
+# Production applications - using stable tagged versions
+applications:
+  - name: example-app
+    targetRevision: v1.2.3  # Stable production version
+    namespace: example-app
+    path: apps/example-app
+    enabled: true
+    syncPolicy:
+      automated: true
+      prune: true
+      selfHeal: true
+
+  - name: another-app
+    targetRevision: v2.1.0  # Stable production version
+    namespace: another-app
+    path: apps/another-app
+    enabled: true
+    syncPolicy:
+      automated: true
+      prune: true
+      selfHeal: true
+
+infrastructure:
+  - name: monitoring
+    targetRevision: v2.0.0  # Stable monitoring stack
+    namespace: monitoring
+    path: infrastructure/monitoring
+    enabled: true
+    syncPolicy:
+      automated: false  # Manual approval for infrastructure changes
+      prune: false
+      selfHeal: false

@@ -1,0 +1,68 @@
+{{- range .Values.applications }}
+{{- if .enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.argocd.namespace }}
+  labels:
+    type: application
+    managed-by: root-app
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ $.Values.argocd.project }}
+  source:
+    repoURL: {{ $.Values.source.repoURL }}
+    # Target revision is controlled by the root app via Helm values
+    targetRevision: {{ .targetRevision }}
+    path: {{ .path }}
+  destination:
+    server: {{ $.Values.destination.server }}
+    namespace: {{ .namespace }}
+  syncPolicy:
+    {{- if .syncPolicy.automated }}
+    automated:
+      prune: {{ .syncPolicy.prune }}
+      selfHeal: {{ .syncPolicy.selfHeal }}
+    {{- end }}
+    syncOptions:
+      - CreateNamespace=true
+{{- end }}
+{{- end }}
+
+{{- range .Values.infrastructure }}
+{{- if .enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: infra-{{ .name }}
+  namespace: {{ $.Values.argocd.namespace }}
+  labels:
+    type: infrastructure
+    managed-by: root-app
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ $.Values.argocd.project }}
+  source:
+    repoURL: {{ $.Values.source.repoURL }}
+    # Target revision is controlled by the root app via Helm values
+    targetRevision: {{ .targetRevision }}
+    path: {{ .path }}
+  destination:
+    server: {{ $.Values.destination.server }}
+    namespace: {{ .namespace }}
+  syncPolicy:
+    {{- if .syncPolicy.automated }}
+    automated:
+      prune: {{ .syncPolicy.prune }}
+      selfHeal: {{ .syncPolicy.selfHeal }}
+    {{- end }}
+    syncOptions:
+      - CreateNamespace=true
+{{- end }}
+{{- end }}
+

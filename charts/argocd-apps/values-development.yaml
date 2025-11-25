@@ -1,0 +1,45 @@
+# Development environment values
+# This file overrides the default values.yaml for development deployments
+
+argocd:
+  namespace: argocd
+  project: development
+
+source:
+  repoURL: https://github.com/your-org/your-repo.git
+
+destination:
+  server: https://kubernetes.default.svc
+
+# Development applications - using latest branches
+applications:
+  - name: example-app
+    targetRevision: develop  # Latest development code
+    namespace: example-app
+    path: apps/example-app
+    enabled: true
+    syncPolicy:
+      automated: true
+      prune: true
+      selfHeal: true
+
+  - name: another-app
+    targetRevision: feature/new-feature  # Testing feature branch
+    namespace: another-app
+    path: apps/another-app
+    enabled: true
+    syncPolicy:
+      automated: true
+      prune: true
+      selfHeal: true
+
+infrastructure:
+  - name: monitoring
+    targetRevision: develop  # Latest monitoring code
+    namespace: monitoring
+    path: infrastructure/monitoring
+    enabled: true
+    syncPolicy:
+      automated: true
+      prune: true
+      selfHeal: true

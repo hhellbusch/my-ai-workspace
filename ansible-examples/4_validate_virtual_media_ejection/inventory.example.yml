@@ -1,0 +1,57 @@
+---
+# Example inventory file for managing multiple iDRAC endpoints
+# Copy this to inventory.yml and customize for your environment
+#
+# Usage:
+#   ansible-playbook playbook.yml -i inventory.yml
+
+all:
+  children:
+    idrac_servers:
+      hosts:
+        idrac-server-01:
+          idrac_ip: 192.168.1.100
+          idrac_user: root
+          idrac_password: calvin
+          media_index: 1
+          
+        idrac-server-02:
+          idrac_ip: 192.168.1.101
+          idrac_user: root
+          idrac_password: calvin
+          media_index: 1
+          
+        idrac-server-03:
+          idrac_ip: 192.168.1.102
+          idrac_user: admin
+          idrac_password: supersecret
+          media_index: 1
+      
+      vars:
+        # Common variables for all iDRAC servers
+        validate_certs: false
+        max_validation_retries: 5
+        validation_delay: 5
+        ansible_connection: local
+        ansible_python_interpreter: /usr/bin/python3
+
+# Alternative: Group by environment
+production_idrac:
+  hosts:
+    prod-idrac-01:
+      idrac_ip: 10.0.1.100
+  vars:
+    idrac_user: root
+    # Use ansible-vault for production passwords!
+    idrac_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          # ... encrypted password here ...
+
+development_idrac:
+  hosts:
+    dev-idrac-01:
+      idrac_ip: 192.168.10.100
+  vars:
+    idrac_user: root
+    idrac_password: dev_password
+

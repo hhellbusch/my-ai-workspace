@@ -1,0 +1,154 @@
+---
+# This playbook demonstrates ejecting virtual media from Dell iDRAC
+# and validating using the DOCUMENTED Redfish API approach
+#
+# This version uses community.general.redfish_info which is properly
+# documented and verified to work with iDRAC 7+
+#
+# Usage:
+#   ansible-playbook playbook_redfish.yml -e "idrac_ip=192.168.1.100" \
+#                                         -e "idrac_user=root" \
+#                                         -e "idrac_password=calvin"
+
+- name: Eject and validate iDRAC virtual media using Redfish API
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    # Override these via command line or inventory
+    idrac_ip: "{{ idrac_ip | default('192.168.1.100') }}"
+    idrac_user: "{{ idrac_user | default('root') }}"
+    idrac_password: "{{ idrac_password | default('calvin') }}"
+    validate_certs: false
+    
+    # Virtual media settings
+    media_device_id: "CD"  # Common IDs: "CD", "RemovableDisk", "Floppy"
+    max_validation_retries: 5
+    validation_delay: 5
+    
+  tasks:
+    - name: Display target iDRAC
+      debug:
+        msg: "Ejecting virtual media from iDRAC: {{ idrac_ip }}"
+
+    # ========================================================================
+    # METHOD 1: Simple ejection with return value check
+    # ========================================================================
+    - name: "METHOD 1: Eject virtual media and check return value"
+      block:
+        - name: Eject virtual media
+          dellemc.openmanage.idrac_virtual_media:
+            idrac_ip: "{{ idrac_ip }}"
+            idrac_user: "{{ idrac_user }}"
+            idrac_password: "{{ idrac_password }}"
+            validate_certs: "{{ validate_certs }}"
+            virtual_media:
+              - index: 1
+                state: "absent"
+          register: eject_result
+
+        - name: Display ejection result
+          debug:
+            var: eject_result
+            verbosity: 1
+
+        - name: Verify ejection command succeeded
+          assert:
+            that:
+              - eject_result.failed == false
+              - eject_result.changed == true or eject_result.msg is search("No changes found")
+            fail_msg: "Virtual media ejection command failed"
+            success_msg: "Virtual media ejection command completed successfully"
+
+      rescue:
+        - name: Handle ejection failure
+          debug:
+            msg: "WARNING: Failed to eject virtual media - {{ ansible_failed_result.msg | default('Unknown error') }}"
+          
+        - name: Continue to validation attempt
+          meta: clear_host_errors
+
+    # ========================================================================
+    # METHOD 2: Query and validate using Redfish API (RECOMMENDED)
+    # ========================================================================
+    - name: "METHOD 2: Validate ejection using Redfish API"
+      block:
+        - name: Wait for iDRAC to process ejection
+          pause:
+            seconds: 3
+            prompt: "Waiting for iDRAC to process ejection request"
+
+        - name: Query virtual media status via Redfish API
+          community.general.redfish_info:
+            baseuri: "{{ idrac_ip }}"
+            username: "{{ idrac_user }}"
+            password: "{{ idrac_password }}"
+            category: Manager
+            command: GetVirtualMedia
+            validate_certs: "{{ validate_certs }}"
+          register: redfish_status
+          until: >
+            redfish_status.redfish_facts.virtual_media is defined and
+            redfish_status.redfish_facts.virtual_media.entries is defined and
+            (redfish_status.redfish_facts.virtual_media.entries | 
+             selectattr('Id', 'equalto', media_device_id) | 
+             map(attribute='Inserted') | first | default(true) == false)
+          retries: "{{ max_validation_retries }}"
+          delay: "{{ validation_delay }}"
+
+        - name: Display virtual media status
+          debug:
+            msg: "Virtual Media Status: {{ redfish_status.redfish_facts.virtual_media }}"
+            verbosity: 1
+
+        - name: Extract target media info
+          set_fact:
+            target_media: "{{ redfish_status.redfish_facts.virtual_media.entries | selectattr('Id', 'equalto', media_device_id) | first }}"
+
+        - name: Display target media details
+          debug:
+            msg:
+              - "Media ID: {{ target_media.Id }}"
+              - "Media Name: {{ target_media.Name | default('Unknown') }}"
+              - "Inserted: {{ target_media.Inserted }}"
+              - "Image: {{ target_media.Image | default('None') }}"
+              - "Media Types: {{ target_media.MediaTypes | default('Unknown') }}"
+
+        - name: Assert media is ejected
+          assert:
+            that:
+              - target_media.Inserted == false
+              - target_media.Image == "" or target_media.Image == null or target_media.Image is not defined
+            fail_msg: |
+              VALIDATION FAILED: Virtual media is still attached!
+              Inserted: {{ target_media.Inserted }}
+              Image: {{ target_media.Image | default('None') }}
+            success_msg: "VALIDATION PASSED: Virtual media successfully ejected and verified via Redfish API"
+
+      rescue:
+        - name: Log validation failure details
+          debug:
+            msg:
+              - "VALIDATION FAILED after {{ max_validation_retries }} retries"
+              - "iDRAC IP: {{ idrac_ip }}"
+              - "Media Device ID: {{ media_device_id }}"
+              - "Last status: {{ redfish_status | default('No status retrieved') }}"
+
+        - name: Fail playbook on validation failure
+          fail:
+            msg: "Virtual media ejection could not be validated via Redfish API"
+
+    # ========================================================================
+    # Final confirmation
+    # ========================================================================
+    - name: Final success message
+      debug:
+        msg:
+          - "=========================================="
+          - "SUCCESS: Virtual media ejection validated"
+          - "=========================================="
+          - "iDRAC: {{ idrac_ip }}"
+          - "Media Device: {{ media_device_id }}"
+          - "Status: Ejected and confirmed via Redfish API"
+          - "=========================================="
+

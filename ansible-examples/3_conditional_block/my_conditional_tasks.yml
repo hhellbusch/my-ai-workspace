@@ -1,0 +1,8 @@
+---
+- name: Task A from included file
+  ansible.builtin.debug:
+    msg: "{{ message_prefix }} Task A from included file executed."
+
+- name: Task B from included file
+  ansible.builtin.debug:
+    msg: "{{ message_prefix }} Task B from included file executed."

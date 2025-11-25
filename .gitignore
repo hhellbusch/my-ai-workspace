@@ -1,0 +1,9 @@
+# Act testing files
+.secrets
+.actrc
+
+# Temporary files
+*.tmp
+*.swp
+*~
+

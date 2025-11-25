@@ -1,0 +1,52 @@
+# Default values for argocd-apps
+# This Helm chart creates child ArgoCD Applications (App of Apps pattern)
+
+# ArgoCD configuration
+argocd:
+  namespace: argocd
+  project: default
+
+# Source repository configuration
+source:
+  repoURL: https://github.com/your-org/your-repo.git  # Update with your repo
+  appsPath: apps              # Base path where application directories are located
+  infrastructurePath: infrastructure  # Base path where infrastructure directories are located
+
+# Destination cluster configuration
+destination:
+  server: https://kubernetes.default.svc
+
+# Applications to deploy
+# Each app can have its own targetRevision controlled by the root app
+applications:
+  - name: example-app
+    targetRevision: v1.2.3  # Can be a tag, branch, or commit SHA
+    namespace: example-app
+    path: apps/example-app
+    enabled: true
+    syncPolicy:
+      automated: true
+      prune: true
+      selfHeal: true
+
+  - name: another-app
+    targetRevision: develop  # This app points to develop branch
+    namespace: another-app
+    path: apps/another-app
+    enabled: true
+    syncPolicy:
+      automated: true
+      prune: true
+      selfHeal: true
+
+# Infrastructure components to deploy
+infrastructure:
+  - name: monitoring
+    targetRevision: v2.0.0  # Infrastructure can have different versions
+    namespace: monitoring
+    path: infrastructure/monitoring
+    enabled: true
+    syncPolicy:
+      automated: false  # Manual sync for infrastructure
+      prune: false
+      selfHeal: false

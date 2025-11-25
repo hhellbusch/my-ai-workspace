@@ -1,0 +1,50 @@
+---
+- name: Reusable error logging pattern demo
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    # ====================================================================
+    # Example 1: Using the pattern with a 'command' task
+    # ====================================================================
+    - name: Attempt to run a command that will fail
+      block:
+        # --- The task to run goes inside the block ---
+        - name: "Run a failing command"
+          ansible.builtin.command: /usr/bin/false # This command always fails
+          register: command_task_result
+
+      rescue:
+        # --- The rescue block catches the failure and logs it ---
+        - name: Log the command failure
+          ansible.builtin.debug:
+            msg: >
+              WARNING: The command task failed but was ignored.
+              Return code: {{ command_task_result.rc | default('N/A') }}
+              Error: {{ command_task_result.stderr | default(command_task_result.msg | default('No error message')) }}
+
+    # ====================================================================
+    # Example 2: Re-using the pattern with a 'package' task
+    # ====================================================================
+    - name: Attempt to install a package that does not exist
+      block:
+        # --- Just drop a different task inside the block ---
+        - name: "Install a non-existent package"
+          ansible.builtin.package:
+            name: "not-a-real-package-name-12345"
+            state: present
+          register: package_task_result
+
+      rescue:
+        # --- The same rescue logic works here ---
+        - name: Log the package failure
+          ansible.builtin.debug:
+            msg: >
+              WARNING: The package task failed but was ignored.
+              Error: {{ package_task_result.msg | default('No error message') }}
+
+    # ====================================================================
+    # The playbook continues execution after the rescue blocks.
+    # ====================================================================
+    - name: This task runs because the previous failures were handled
+      ansible.builtin.debug:
+        msg: "Playbook execution continues successfully."

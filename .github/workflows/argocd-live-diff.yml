@@ -1,0 +1,201 @@
+name: ArgoCD Live Diff (with cluster connection)
+
+# This workflow connects to a live ArgoCD instance to show actual diffs
+# Requires: ARGOCD_SERVER, ARGOCD_AUTH_TOKEN secrets
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+    paths:
+      - 'apps/**'
+      - 'infrastructure/**'
+      - 'charts/**'
+      - 'values*.yaml'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  argocd-live-diff:
+    runs-on: ubuntu-latest
+    name: ArgoCD Live Diff
+
+    # Only run if ArgoCD credentials are configured
+    if: vars.ARGOCD_SERVER != ''
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install ArgoCD CLI
+        run: |
+          curl -sSL -o /usr/local/bin/argocd \
+            https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          chmod +x /usr/local/bin/argocd
+          argocd version --client
+
+      - name: Login to ArgoCD
+        env:
+          ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
+          ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
+        run: |
+          # Login using auth token
+          argocd login $ARGOCD_SERVER \
+            --auth-token $ARGOCD_AUTH_TOKEN \
+            --grpc-web
+
+          echo "✅ Successfully logged into ArgoCD"
+
+      - name: Detect ArgoCD applications
+        id: detect-apps
+        run: |
+          # List all ArgoCD applications
+          APPS=$(argocd app list -o name)
+
+          echo "Available ArgoCD applications:"
+          echo "$APPS"
+
+          # Filter to apps that might be affected by this PR
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+
+          AFFECTED_APPS=""
+          for app in $APPS; do
+            APP_NAME=$(basename $app)
+
+            # Check if this app's path was modified
+            if echo "$CHANGED_FILES" | grep -q "apps/${APP_NAME}/\|infrastructure/${APP_NAME}/"; then
+              AFFECTED_APPS="${AFFECTED_APPS} ${APP_NAME}"
+            fi
+          done
+
+          # If no specific apps detected but charts changed, check all
+          if [ -z "$AFFECTED_APPS" ] && echo "$CHANGED_FILES" | grep -q "charts/"; then
+            AFFECTED_APPS=$(echo "$APPS" | xargs -n1 basename)
+          fi
+
+          echo "apps=${AFFECTED_APPS}" >> $GITHUB_OUTPUT
+          echo "Affected applications: ${AFFECTED_APPS}"
+
+      - name: Generate live diffs
+        id: live-diff
+        env:
+          ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
+          ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
+        run: |
+          mkdir -p /tmp/live-diffs
+
+          DIFF_SUMMARY="## 🔍 ArgoCD Live Diff\n\n"
+          DIFF_SUMMARY="${DIFF_SUMMARY}**Pull Request:** #${{ github.event.pull_request.number }}\n"
+          DIFF_SUMMARY="${DIFF_SUMMARY}**Branch:** \`${{ github.head_ref }}\` → \`${{ github.base_ref }}\`\n\n"
+          DIFF_SUMMARY="${DIFF_SUMMARY}_This shows the diff between live cluster state and what would be deployed_\n\n"
+
+          HAS_CHANGES=false
+
+          for app in ${{ steps.detect-apps.outputs.apps }}; do
+            echo "Getting live diff for application: $app"
+
+            # Temporarily update app to point to PR branch (or use argocd app diff with --revision)
+            CURRENT_REVISION=$(argocd app get $app -o json | jq -r '.spec.source.targetRevision')
+
+            # Get diff using argocd CLI
+            DIFF_OUTPUT=$(argocd app diff $app \
+              --revision ${{ github.event.pull_request.head.sha }} \
+              --local-repo-root . 2>&1 || true)
+
+            if [ -n "$DIFF_OUTPUT" ] && [ "$DIFF_OUTPUT" != "No changes" ]; then
+              HAS_CHANGES=true
+
+              echo "$DIFF_OUTPUT" > /tmp/live-diffs/${app}.diff
+
+              DIFF_SIZE=$(echo "$DIFF_OUTPUT" | wc -l)
+
+              DIFF_SUMMARY="${DIFF_SUMMARY}### Application: **${app}**\n\n"
+              DIFF_SUMMARY="${DIFF_SUMMARY}<details>\n<summary>View live diff (${DIFF_SIZE} lines)</summary>\n\n"
+              DIFF_SUMMARY="${DIFF_SUMMARY}\`\`\`diff\n"
+
+              # Truncate if too large
+              if [ $DIFF_SIZE -gt 300 ]; then
+                echo "$DIFF_OUTPUT" | head -n 300 > /tmp/truncated.txt
+                DIFF_SUMMARY="${DIFF_SUMMARY}$(cat /tmp/truncated.txt)\n"
+                DIFF_SUMMARY="${DIFF_SUMMARY}... (truncated, see artifacts for full diff)\n"
+              else
+                DIFF_SUMMARY="${DIFF_SUMMARY}${DIFF_OUTPUT}\n"
+              fi
+
+              DIFF_SUMMARY="${DIFF_SUMMARY}\`\`\`\n\n</details>\n\n"
+            else
+              DIFF_SUMMARY="${DIFF_SUMMARY}### Application: **${app}**\n\n"
+              DIFF_SUMMARY="${DIFF_SUMMARY}✅ No changes detected\n\n"
+            fi
+          done
+
+          if [ "$HAS_CHANGES" = false ]; then
+            DIFF_SUMMARY="${DIFF_SUMMARY}### ✅ No changes detected\n\n"
+            DIFF_SUMMARY="${DIFF_SUMMARY}This PR will not introduce any changes to the live cluster.\n"
+          fi
+
+          DIFF_SUMMARY="${DIFF_SUMMARY}---\n\n"
+          DIFF_SUMMARY="${DIFF_SUMMARY}_⚠️ This is a preview only. Actual changes may vary based on cluster state._\n"
+
+          echo -e "$DIFF_SUMMARY" > /tmp/live-diff-summary.md
+
+          echo "has_changes=${HAS_CHANGES}" >> $GITHUB_OUTPUT
+
+      - name: Upload live diff artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: argocd-live-diff
+          path: |
+            /tmp/live-diffs/*.diff
+            /tmp/live-diff-summary.md
+          retention-days: 30
+
+      - name: Comment PR with live diff
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const diffSummary = fs.readFileSync('/tmp/live-diff-summary.md', 'utf8');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('🔍 ArgoCD Live Diff')
+            );
+
+            const commentBody = diffSummary + `\n\n🤖 _Automated by ArgoCD Live Diff workflow_`;
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: commentBody
+              });
+            }
+
+      - name: Generate summary
+        run: |
+          echo "## ArgoCD Live Diff Complete ✅" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Applications analyzed: ${{ steps.detect-apps.outputs.apps }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Changes detected: ${{ steps.live-diff.outputs.has_changes }}" >> $GITHUB_STEP_SUMMARY

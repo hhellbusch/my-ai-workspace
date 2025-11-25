@@ -1,0 +1,22 @@
+name: Test OC Installation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-oc-install:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Install OpenShift CLI
+        uses: redhat-actions/oc-installer@v1
+        with:
+          oc_version: 'latest'
+
+      - name: Verify oc is available
+        run: |
+          echo "Verifying oc installation..."
+          which oc
+          oc version --client
+          echo "✅ OpenShift CLI installed successfully!"
+

@@ -1,0 +1,56 @@
+---
+# This file demonstrates retrying a block of tasks when a verification step fails.
+# The pattern uses block/rescue to handle timeouts and retry the entire operation.
+
+- name: Execute tasks with retry on timeout
+  block:
+    # ========================================================================
+    # TASK A: The initial action that runs on every attempt
+    # ========================================================================
+    - name: Task A - The initial action
+      ansible.builtin.debug:
+        msg: "Running Task A - preparing data for verification"
+
+    - name: Task A - Simulate some work
+      ansible.builtin.command: echo "Processing data..."
+      changed_when: false
+
+    # ========================================================================
+    # TASK B: The verification step that may timeout
+    # ========================================================================
+    - name: Task B - Wait for success marker (will timeout on first run)
+      ansible.builtin.wait_for:
+        path: /tmp/success.marker
+        state: present
+        timeout: 3
+      register: verification_task
+
+    - name: Task B - Verification succeeded
+      ansible.builtin.debug:
+        msg: "SUCCESS: Verification completed - marker file was found!"
+
+  rescue:
+    # This rescue block catches the timeout and implements retry logic
+    - name: Handle verification timeout
+      ansible.builtin.debug:
+        msg: "Task B timed out - resource not yet available. Simulating wait for resource..."
+
+    - name: Simulate resource becoming available after delay
+      ansible.builtin.file:
+        path: /tmp/success.marker
+        state: touch
+
+    - name: Wait before retry
+      ansible.builtin.pause:
+        seconds: "{{ retry_delay_seconds }}"
+
+    - name: Retry the verification
+      ansible.builtin.wait_for:
+        path: /tmp/success.marker
+        state: present
+        timeout: 3
+      register: retry_verification
+
+    - name: Retry succeeded
+      ansible.builtin.debug:
+        msg: "SUCCESS: Verification succeeded on retry!"

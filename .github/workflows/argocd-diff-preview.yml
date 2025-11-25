@@ -1,0 +1,237 @@
+name: ArgoCD Diff Preview
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+    paths:
+      - 'apps/**'
+      - 'infrastructure/**'
+      - 'charts/**'
+      - 'values*.yaml'
+      - '.github/workflows/argocd-diff-preview.yml'
+
+permissions:
+  contents: read
+  pull-requests: write  # Needed to post comments
+
+jobs:
+  generate-diff:
+    runs-on: ubuntu-latest
+    name: Generate ArgoCD Diff Preview
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better diff context
+
+      - name: Checkout base branch
+        run: |
+          git fetch origin ${{ github.base_ref }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'v3.13.0'
+
+      - name: Install ArgoCD CLI (optional)
+        run: |
+          curl -sSL -o /usr/local/bin/argocd \
+            https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          chmod +x /usr/local/bin/argocd
+          argocd version --client
+
+      - name: Detect changed environments
+        id: detect-env
+        run: |
+          # Detect which environment values files changed
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          ENVIRONMENTS=""
+          if echo "$CHANGED_FILES" | grep -q "values-development.yaml\|apps/.*\|infrastructure/.*"; then
+            ENVIRONMENTS="${ENVIRONMENTS} development"
+          fi
+          if echo "$CHANGED_FILES" | grep -q "values-staging.yaml\|apps/.*\|infrastructure/.*"; then
+            ENVIRONMENTS="${ENVIRONMENTS} staging"
+          fi
+          if echo "$CHANGED_FILES" | grep -q "values-production.yaml\|apps/.*\|infrastructure/.*"; then
+            ENVIRONMENTS="${ENVIRONMENTS} production"
+          fi
+
+          # If no specific environment file changed but apps/infrastructure changed, check all
+          if [ -z "$ENVIRONMENTS" ] && echo "$CHANGED_FILES" | grep -q "apps/\|infrastructure/\|charts/"; then
+            ENVIRONMENTS="development staging production"
+          fi
+
+          echo "environments=${ENVIRONMENTS}" >> $GITHUB_OUTPUT
+          echo "Environments to check: ${ENVIRONMENTS}"
+
+      - name: Generate manifests for PR branch
+        run: |
+          mkdir -p /tmp/manifests-pr
+
+          for env in ${{ steps.detect-env.outputs.environments }}; do
+            echo "Generating manifests for environment: $env"
+
+            if [ -f "charts/argocd-apps/values-${env}.yaml" ]; then
+              helm template argocd-apps ./charts/argocd-apps \
+                --values ./charts/argocd-apps/values.yaml \
+                --values ./charts/argocd-apps/values-${env}.yaml \
+                --namespace argocd \
+                > /tmp/manifests-pr/${env}.yaml
+
+              echo "Generated /tmp/manifests-pr/${env}.yaml"
+              echo "---"
+            fi
+          done
+
+      - name: Generate manifests for base branch
+        run: |
+          mkdir -p /tmp/manifests-base
+
+          # Checkout base branch temporarily
+          git checkout origin/${{ github.base_ref }}
+
+          for env in ${{ steps.detect-env.outputs.environments }}; do
+            echo "Generating base manifests for environment: $env"
+
+            if [ -f "charts/argocd-apps/values-${env}.yaml" ]; then
+              helm template argocd-apps ./charts/argocd-apps \
+                --values ./charts/argocd-apps/values.yaml \
+                --values ./charts/argocd-apps/values-${env}.yaml \
+                --namespace argocd \
+                > /tmp/manifests-base/${env}.yaml || echo "# No base manifest" > /tmp/manifests-base/${env}.yaml
+
+              echo "Generated /tmp/manifests-base/${env}.yaml"
+              echo "---"
+            fi
+          done
+
+          # Return to PR branch
+          git checkout ${{ github.event.pull_request.head.sha }}
+
+      - name: Generate diff report
+        id: diff-report
+        run: |
+          mkdir -p /tmp/diffs
+
+          DIFF_SUMMARY="## 🔍 ArgoCD Diff Preview\n\n"
+          DIFF_SUMMARY="${DIFF_SUMMARY}**Pull Request:** #${{ github.event.pull_request.number }}\n"
+          DIFF_SUMMARY="${DIFF_SUMMARY}**Branch:** \`${{ github.head_ref }}\` → \`${{ github.base_ref }}\`\n\n"
+
+          HAS_CHANGES=false
+
+          for env in ${{ steps.detect-env.outputs.environments }}; do
+            if [ -f "/tmp/manifests-pr/${env}.yaml" ]; then
+              echo "Generating diff for environment: $env"
+
+              # Generate unified diff
+              diff -u /tmp/manifests-base/${env}.yaml /tmp/manifests-pr/${env}.yaml > /tmp/diffs/${env}.diff || true
+
+              # Check if there are actual changes
+              if [ -s /tmp/diffs/${env}.diff ]; then
+                HAS_CHANGES=true
+                DIFF_SIZE=$(wc -l < /tmp/diffs/${env}.diff)
+
+                DIFF_SUMMARY="${DIFF_SUMMARY}### Environment: **${env}**\n\n"
+                DIFF_SUMMARY="${DIFF_SUMMARY}<details>\n<summary>View diff (${DIFF_SIZE} lines)</summary>\n\n"
+                DIFF_SUMMARY="${DIFF_SUMMARY}\`\`\`diff\n"
+
+                # Truncate diff if too large (GitHub comment limit)
+                if [ $DIFF_SIZE -gt 500 ]; then
+                  head -n 500 /tmp/diffs/${env}.diff >> /tmp/diff-content.txt
+                  DIFF_SUMMARY="${DIFF_SUMMARY}$(cat /tmp/diff-content.txt)\n"
+                  DIFF_SUMMARY="${DIFF_SUMMARY}... (truncated, see artifacts for full diff)\n"
+                  rm /tmp/diff-content.txt
+                else
+                  DIFF_SUMMARY="${DIFF_SUMMARY}$(cat /tmp/diffs/${env}.diff)\n"
+                fi
+
+                DIFF_SUMMARY="${DIFF_SUMMARY}\`\`\`\n\n</details>\n\n"
+              else
+                DIFF_SUMMARY="${DIFF_SUMMARY}### Environment: **${env}**\n\n"
+                DIFF_SUMMARY="${DIFF_SUMMARY}✅ No changes detected\n\n"
+              fi
+            fi
+          done
+
+          if [ "$HAS_CHANGES" = false ]; then
+            DIFF_SUMMARY="${DIFF_SUMMARY}### ✅ No ArgoCD manifest changes detected\n\n"
+            DIFF_SUMMARY="${DIFF_SUMMARY}This PR does not introduce any changes to ArgoCD manifests.\n"
+          fi
+
+          DIFF_SUMMARY="${DIFF_SUMMARY}---\n\n"
+          DIFF_SUMMARY="${DIFF_SUMMARY}_💡 Tip: Download the artifacts below for full manifest files and diffs_\n"
+
+          # Save for PR comment
+          echo -e "$DIFF_SUMMARY" > /tmp/diff-summary.md
+
+          echo "has_changes=${HAS_CHANGES}" >> $GITHUB_OUTPUT
+
+      - name: Upload diff artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: argocd-diff-preview
+          path: |
+            /tmp/manifests-pr/*.yaml
+            /tmp/manifests-base/*.yaml
+            /tmp/diffs/*.diff
+            /tmp/diff-summary.md
+          retention-days: 30
+
+      - name: Comment PR with diff
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const diffSummary = fs.readFileSync('/tmp/diff-summary.md', 'utf8');
+
+            // Find existing bot comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('🔍 ArgoCD Diff Preview')
+            );
+
+            const commentBody = diffSummary + `\n\n🤖 _Automated by ArgoCD Diff Preview workflow_`;
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: commentBody
+              });
+            }
+
+      - name: Generate summary
+        run: |
+          echo "## ArgoCD Diff Preview Generated ✅" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Environments analyzed: ${{ steps.detect-env.outputs.environments }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Changes detected: ${{ steps.diff-report.outputs.has_changes }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📦 Download the artifacts to view:" >> $GITHUB_STEP_SUMMARY
+          echo "- Full PR manifests" >> $GITHUB_STEP_SUMMARY
+          echo "- Base branch manifests" >> $GITHUB_STEP_SUMMARY
+          echo "- Unified diffs" >> $GITHUB_STEP_SUMMARY

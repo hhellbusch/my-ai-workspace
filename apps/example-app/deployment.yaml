@@ -1,0 +1,22 @@
+# Example application manifest
+# This directory will be automatically discovered and added to ArgoCD
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-app
+  template:
+    metadata:
+      labels:
+        app: example-app
+    spec:
+      containers:
+      - name: example-app
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+

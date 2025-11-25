@@ -1,0 +1,133 @@
+name: Test Workflow (Dry Run)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-workflow:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'latest'
+
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          yq --version
+
+      - name: Generate directory lists for Helm values
+        run: |
+          # Reusable function to discover directories and convert to JSON array
+          get_directories_as_json() {
+            local path=$1
+            local label=$2
+
+            # Get list of directories (excluding hidden directories)
+            local dirs=$(find ${path} -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' -exec basename {} \; | sort)
+
+            # Convert to JSON array format
+            local json_array=$(echo "$dirs" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+
+            echo "Discovered ${label} directories: $json_array"
+            echo "$json_array"
+          }
+
+          # Discover applications
+          APP_ARRAY=$(get_directories_as_json "./apps" "application")
+          echo "APP_DIRECTORIES=$APP_ARRAY" >> $GITHUB_ENV
+
+          # Discover infrastructure
+          INFRA_ARRAY=$(get_directories_as_json "./infrastructure" "infrastructure")
+          echo "INFRA_DIRECTORIES=$INFRA_ARRAY" >> $GITHUB_ENV
+
+      - name: Validate hubs.yaml
+        run: |
+          echo "Validating hubs.yaml configuration..."
+          
+          # Check if hubs.yaml exists
+          if [ ! -f hubs.yaml ]; then
+            echo "ERROR: hubs.yaml not found"
+            exit 1
+          fi
+          
+          # Parse and validate cluster configuration
+          CLUSTER_COUNT=$(yq eval '.clusters | length' hubs.yaml)
+          echo "✅ Found $CLUSTER_COUNT clusters in configuration"
+          
+          # Validate each cluster
+          for i in $(seq 0 $(($CLUSTER_COUNT - 1))); do
+            CLUSTER_NAME=$(yq eval ".clusters[$i].name" hubs.yaml)
+            CLUSTER_SERVER=$(yq eval ".clusters[$i].server" hubs.yaml)
+            ARGOCD_NAMESPACE=$(yq eval ".clusters[$i].argocd_namespace" hubs.yaml)
+            TOKEN_SECRET=$(yq eval ".clusters[$i].token_secret" hubs.yaml)
+            
+            echo ""
+            echo "Cluster $((i+1))/$CLUSTER_COUNT:"
+            echo "  Name: $CLUSTER_NAME"
+            echo "  Server: $CLUSTER_SERVER"
+            echo "  ArgoCD Namespace: $ARGOCD_NAMESPACE"
+            echo "  Token Secret: $TOKEN_SECRET"
+            
+            # Validate required fields
+            if [ -z "$CLUSTER_NAME" ] || [ "$CLUSTER_NAME" = "null" ]; then
+              echo "  ❌ ERROR: Missing cluster name"
+              exit 1
+            fi
+            if [ -z "$CLUSTER_SERVER" ] || [ "$CLUSTER_SERVER" = "null" ]; then
+              echo "  ❌ ERROR: Missing server URL"
+              exit 1
+            fi
+            if [ -z "$ARGOCD_NAMESPACE" ] || [ "$ARGOCD_NAMESPACE" = "null" ]; then
+              echo "  ❌ ERROR: Missing argocd_namespace"
+              exit 1
+            fi
+            if [ -z "$TOKEN_SECRET" ] || [ "$TOKEN_SECRET" = "null" ]; then
+              echo "  ❌ ERROR: Missing token_secret"
+              exit 1
+            fi
+            
+            echo "  ✅ Configuration valid"
+          done
+
+      - name: Test Helm template generation
+        run: |
+          echo "Testing Helm template generation..."
+          echo ""
+          echo "Applications: $APP_DIRECTORIES"
+          echo "Infrastructure: $INFRA_DIRECTORIES"
+          echo ""
+          
+          # Generate Helm templates (dry-run)
+          echo "Generating ArgoCD Application manifests..."
+          helm template argocd-apps ./charts/argocd-apps \
+            --namespace argocd \
+            --set-json "applications=$APP_DIRECTORIES" \
+            --set-json "infrastructure=$INFRA_DIRECTORIES" \
+            > /tmp/generated-manifests.yaml
+          
+          echo "✅ Helm template generation successful"
+          echo ""
+          echo "Generated manifests preview:"
+          head -n 50 /tmp/generated-manifests.yaml
+
+      - name: Summary
+        run: |
+          echo ""
+          echo "================================================"
+          echo "✅ Workflow validation completed successfully!"
+          echo "================================================"
+          echo ""
+          echo "Summary:"
+          echo "  - Directory discovery: ✅"
+          echo "  - hubs.yaml validation: ✅"
+          echo "  - Helm template generation: ✅"
+          echo ""
+          echo "Ready to deploy to clusters!"
+

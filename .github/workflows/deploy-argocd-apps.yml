@@ -1,0 +1,127 @@
+name: Deploy ArgoCD Applications
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'charts/argocd-apps/**'  # Helm chart changes
+      - 'apps/**'                # Application changes
+      - 'infrastructure/**'      # Infrastructure changes
+      - 'hubs.yaml'              # Cluster configuration changes
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  deploy-argocd-apps:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install OpenShift CLI
+        uses: redhat-actions/oc-installer@v1
+        with:
+          oc_version: 'latest'
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'latest'
+
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          yq --version
+
+      - name: Generate directory lists for Helm values
+        run: |
+          # Reusable function to discover directories and convert to JSON array
+          get_directories_as_json() {
+            local path=$1
+            local label=$2
+
+            # Get list of directories (excluding hidden directories)
+            local dirs=$(find ${path} -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' -exec basename {} \; | sort)
+
+            # Convert to JSON array format
+            local json_array=$(echo "$dirs" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+
+            echo "Discovered ${label} directories: $json_array"
+            echo "$json_array"
+          }
+
+          # Discover applications
+          APP_ARRAY=$(get_directories_as_json "./apps" "application")
+          echo "APP_DIRECTORIES=$APP_ARRAY" >> $GITHUB_ENV
+
+          # Discover infrastructure
+          INFRA_ARRAY=$(get_directories_as_json "./infrastructure" "infrastructure")
+          echo "INFRA_DIRECTORIES=$INFRA_ARRAY" >> $GITHUB_ENV
+
+      - name: Deploy to all clusters
+        env:
+          # Add all your cluster tokens as secrets here
+          OPENSHIFT_TOKEN_DEV: ${{ secrets.OPENSHIFT_TOKEN_DEV }}
+          OPENSHIFT_TOKEN_STAGING: ${{ secrets.OPENSHIFT_TOKEN_STAGING }}
+          OPENSHIFT_TOKEN_PROD: ${{ secrets.OPENSHIFT_TOKEN_PROD }}
+        run: |
+          # Read the number of clusters from hubs.yaml
+          CLUSTER_COUNT=$(yq eval '.clusters | length' hubs.yaml)
+
+          echo "Found $CLUSTER_COUNT clusters to deploy to"
+
+          # Loop through each cluster
+          for i in $(seq 0 $(($CLUSTER_COUNT - 1))); do
+            # Extract cluster information
+            CLUSTER_NAME=$(yq eval ".clusters[$i].name" hubs.yaml)
+            CLUSTER_SERVER=$(yq eval ".clusters[$i].server" hubs.yaml)
+            ARGOCD_NAMESPACE=$(yq eval ".clusters[$i].argocd_namespace" hubs.yaml)
+            TOKEN_SECRET=$(yq eval ".clusters[$i].token_secret" hubs.yaml)
+
+            echo "================================================"
+            echo "Deploying to cluster: $CLUSTER_NAME"
+            echo "Server: $CLUSTER_SERVER"
+            echo "ArgoCD Namespace: $ARGOCD_NAMESPACE"
+            echo "================================================"
+
+            # Get the token value from the environment variable
+            TOKEN_VALUE=$(eval echo \$${TOKEN_SECRET})
+
+            if [ -z "$TOKEN_VALUE" ]; then
+              echo "ERROR: Token secret $TOKEN_SECRET is not set in GitHub secrets"
+              exit 1
+            fi
+
+            # Authenticate to the cluster
+            echo "Authenticating to $CLUSTER_NAME..."
+            oc login --token="${TOKEN_VALUE}" --server="${CLUSTER_SERVER}" --insecure-skip-tls-verify=true
+
+            # Verify connection
+            echo "Verifying connection..."
+            oc whoami
+            oc cluster-info
+
+            # Template the Helm chart and apply to the cluster
+            echo "Applying ArgoCD applications..."
+            helm template argocd-apps ./charts/argocd-apps \
+              --namespace ${ARGOCD_NAMESPACE} \
+              --set-json "applications=$APP_DIRECTORIES" \
+              --set-json "infrastructure=$INFRA_DIRECTORIES" \
+              | oc apply -f -
+
+            echo "Verifying ArgoCD applications..."
+            oc get applications -n ${ARGOCD_NAMESPACE}
+
+            # Logout from the cluster
+            echo "Logging out from $CLUSTER_NAME..."
+            oc logout || true
+
+            echo "✅ Successfully deployed to $CLUSTER_NAME"
+            echo ""
+          done
+
+          echo "================================================"
+          echo "✅ All clusters deployed successfully!"
+          echo "================================================"

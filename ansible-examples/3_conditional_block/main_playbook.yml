@@ -1,0 +1,19 @@
+---
+- name: Playbook with conditionally included tasks
+  hosts: localhost
+  gather_facts: false
+  vars:
+    run_included_tasks: true
+
+  tasks:
+    - name: Conditionally include a set of tasks (will run)
+      ansible.builtin.include_tasks: my_conditional_tasks.yml
+      when: run_included_tasks # 'when' applies to the include_tasks statement
+      vars:
+        message_prefix: "This task ran because 'run_included_tasks' is true:"
+
+    - name: Conditionally include a set of tasks (will be skipped)
+      ansible.builtin.include_tasks: my_conditional_tasks.yml
+      when: not run_included_tasks # This condition is false
+      vars:
+        message_prefix: "This task will not run:"

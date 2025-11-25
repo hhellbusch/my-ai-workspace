@@ -1,0 +1,127 @@
+---
+# Multi-host version of the virtual media ejection playbook
+# This version can eject and validate media across multiple iDRAC endpoints
+#
+# Usage:
+#   ansible-playbook multi_host_playbook.yml -i inventory.yml
+
+- name: Eject and validate virtual media on multiple iDRAC endpoints
+  hosts: idrac_servers
+  gather_facts: false
+  serial: 5  # Process 5 servers at a time to avoid overwhelming the network
+  
+  vars:
+    validate_certs: false
+    media_index: 1
+    max_validation_retries: 5
+    validation_delay: 5
+    
+  tasks:
+    - name: Display target information
+      debug:
+        msg: "Processing iDRAC: {{ inventory_hostname }} ({{ idrac_ip }})"
+
+    - name: Eject virtual media from iDRAC
+      block:
+        - name: Perform ejection
+          dellemc.openmanage.idrac_virtual_media:
+            idrac_ip: "{{ idrac_ip }}"
+            idrac_user: "{{ idrac_user }}"
+            idrac_password: "{{ idrac_password }}"
+            validate_certs: "{{ validate_certs }}"
+            virtual_media:
+              - index: "{{ media_index }}"
+                state: "absent"
+          register: eject_result
+          delegate_to: localhost
+
+        - name: Wait for operation to complete
+          pause:
+            seconds: 3
+
+        - name: Validate ejection
+          dellemc.openmanage.idrac_system_info:
+            idrac_ip: "{{ idrac_ip }}"
+            idrac_user: "{{ idrac_user }}"
+            idrac_password: "{{ idrac_password }}"
+            validate_certs: "{{ validate_certs }}"
+          register: validation_result
+          until: >
+            validation_result.system_info is defined and
+            validation_result.system_info.VirtualMedia is defined and
+            (validation_result.system_info.VirtualMedia | 
+             selectattr('Index', 'equalto', media_index) | 
+             map(attribute='Inserted') | first | default(true) == false)
+          retries: "{{ max_validation_retries }}"
+          delay: "{{ validation_delay }}"
+          delegate_to: localhost
+
+        - name: Mark as successful
+          set_fact:
+            ejection_status: "SUCCESS"
+
+      rescue:
+        - name: Handle failure for this host
+          set_fact:
+            ejection_status: "FAILED"
+            ejection_error: "{{ ansible_failed_result.msg | default('Unknown error') }}"
+
+        - name: Log failure
+          debug:
+            msg:
+              - "Failed to eject/validate on {{ inventory_hostname }}"
+              - "Error: {{ ejection_error }}"
+
+        - name: Continue with next host (don't fail entire play)
+          meta: clear_host_errors
+
+    - name: Record result
+      set_stats:
+        data:
+          "{{ inventory_hostname }}_ejection_status": "{{ ejection_status }}"
+
+# Summary report after all hosts are processed
+- name: Generate summary report
+  hosts: localhost
+  gather_facts: false
+  
+  tasks:
+    - name: Collect host statuses
+      set_fact:
+        success_hosts: []
+        failed_hosts: []
+        
+    - name: Categorize hosts by status
+      set_fact:
+        success_hosts: "{{ success_hosts + [item] }}"
+      when: hostvars[item].ejection_status is defined and hostvars[item].ejection_status == 'SUCCESS'
+      loop: "{{ groups['idrac_servers'] }}"
+
+    - name: Categorize failed hosts
+      set_fact:
+        failed_hosts: "{{ failed_hosts + [item] }}"
+      when: hostvars[item].ejection_status is defined and hostvars[item].ejection_status == 'FAILED'
+      loop: "{{ groups['idrac_servers'] }}"
+    
+    - name: Display summary
+      debug:
+        msg:
+          - "=========================================="
+          - "Virtual Media Ejection Summary"
+          - "=========================================="
+          - "Total hosts processed: {{ groups['idrac_servers'] | length }}"
+          - "Successful: {{ success_hosts | length }} host(s) - {{ success_hosts | join(', ') if success_hosts | length > 0 else 'None' }}"
+          - "Failed: {{ failed_hosts | length }} host(s) - {{ failed_hosts | join(', ') if failed_hosts | length > 0 else 'None' }}"
+          - "=========================================="
+    
+    - name: Display per-host details
+      vars:
+        processed_hosts: "{{ groups['idrac_servers'] }}"
+      debug:
+        msg:
+          - "Host: {{ item }}"
+          - "  Status: {{ hostvars[item].ejection_status | default('UNKNOWN') }}"
+          - "  Error: {{ hostvars[item].ejection_error | default('N/A') }}"
+      loop: "{{ processed_hosts }}"
+      when: hostvars[item].ejection_status is defined
+

@@ -1,0 +1,21 @@
+---
+- name: Retry a block of tasks on timeout
+  hosts: localhost
+  gather_facts: false
+  vars:
+    max_retries: 3
+    retry_delay_seconds: 2
+
+  tasks:
+    - name: Ensure we start fresh for the demo
+      ansible.builtin.command: "rm -f /tmp/success.marker"
+      changed_when: false
+      ignore_errors: true
+
+    - name: Attempt a multi-step operation with retries on timeout
+      ansible.builtin.include_tasks: tasks_to_run.yml
+      register: operation_result
+
+    - name: Confirm success
+      ansible.builtin.debug:
+        msg: "The operation finally succeeded!"

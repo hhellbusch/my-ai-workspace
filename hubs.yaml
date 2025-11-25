@@ -1,0 +1,29 @@
+# List of OpenShift clusters to deploy ArgoCD applications to
+# 
+# Fields:
+#   name: Friendly name for the cluster (used in logs)
+#   server: OpenShift API server URL (e.g., https://api.cluster.example.com:6443)
+#   argocd_namespace: Namespace where ArgoCD is installed (usually 'argocd')
+#   token_secret: Name of the GitHub secret containing the service account token
+#
+# Important:
+#   - Add corresponding GitHub secrets for each token_secret value
+#   - Update the workflow env section when adding new clusters
+#   - Clusters are deployed sequentially in the order listed
+
+clusters:
+  - name: dev-cluster
+    server: https://api.dev.example.com:6443
+    argocd_namespace: argocd
+    token_secret: OPENSHIFT_TOKEN_DEV
+    
+  - name: staging-cluster
+    server: https://api.staging.example.com:6443
+    argocd_namespace: argocd
+    token_secret: OPENSHIFT_TOKEN_STAGING
+    
+  - name: prod-cluster
+    server: https://api.prod.example.com:6443
+    argocd_namespace: argocd
+    token_secret: OPENSHIFT_TOKEN_PROD
+
