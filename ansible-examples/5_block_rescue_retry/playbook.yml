@@ -1,0 +1,71 @@
+---
+- name: Block/Rescue with Recovery and Retry
+  hosts: localhost
+  gather_facts: false
+  vars:
+    max_attempts: 3
+    current_attempt: 0
+
+  tasks:
+    # ====================================================================
+    # Setup: Create a flaky service scenario for demonstration
+    # ====================================================================
+    - name: Setup demo environment
+      ansible.builtin.shell: |
+        # Create a counter file that makes the task fail twice, then succeed
+        echo "0" > /tmp/flaky_counter
+      changed_when: false
+
+    # ====================================================================
+    # Pattern: Block with rescue that performs recovery, then retries
+    # ====================================================================
+    - name: Attempt flaky operation with recovery
+      block:
+        - name: Try the flaky operation
+          ansible.builtin.include_tasks: flaky_task.yml
+      
+      rescue:
+        - name: Log the failure
+          ansible.builtin.debug:
+            msg: "⚠️  Operation failed on attempt {{ current_attempt + 1 }}/{{ max_attempts }}"
+        
+        - name: Execute recovery steps
+          ansible.builtin.include_tasks: recovery_tasks.yml
+        
+        - name: Increment attempt counter
+          ansible.builtin.set_fact:
+            current_attempt: "{{ current_attempt | int + 1 }}"
+        
+        - name: Check if we should retry
+          ansible.builtin.fail:
+            msg: "Maximum retry attempts ({{ max_attempts }}) reached. Giving up."
+          when: current_attempt | int >= max_attempts
+        
+        - name: Retry the operation after recovery
+          ansible.builtin.include_tasks: playbook.yml
+          vars:
+            # This creates a retry loop by including the main tasks again
+            # In production, you'd extract the block/rescue into a separate file
+            _recursive_call: true
+          when: current_attempt | int < max_attempts
+
+      always:
+        - name: Cleanup (runs whether success or failure)
+          ansible.builtin.debug:
+            msg: "🧹 Cleanup tasks would run here (e.g., unlock resources)"
+
+    # ====================================================================
+    # Success message
+    # ====================================================================
+    - name: Operation completed successfully
+      ansible.builtin.debug:
+        msg: "✅ Flaky operation succeeded after {{ current_attempt | int + 1 }} attempt(s)"
+
+    # ====================================================================
+    # Cleanup demo files
+    # ====================================================================
+    - name: Remove demo files
+      ansible.builtin.file:
+        path: /tmp/flaky_counter
+        state: absent
+

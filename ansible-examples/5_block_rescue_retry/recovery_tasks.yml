@@ -1,0 +1,59 @@
+---
+# ====================================================================
+# Recovery tasks that run when the main operation fails
+# These tasks attempt to fix the underlying issue before retrying
+# ====================================================================
+
+- name: Recovery Step 1 - Clear cache/temp files
+  ansible.builtin.debug:
+    msg: "🔧 Clearing cache and temporary files..."
+
+- name: Simulate cache clearing
+  ansible.builtin.shell: |
+    # In production, this might be:
+    # - rm -rf /var/cache/myapp/*
+    # - redis-cli FLUSHDB
+    # - curl -X POST http://localhost/api/cache/clear
+    echo "Cache cleared"
+  changed_when: false
+
+- name: Recovery Step 2 - Check service status
+  ansible.builtin.debug:
+    msg: "🔍 Checking service health status..."
+
+- name: Simulate service health check
+  ansible.builtin.shell: |
+    # In production, this might be:
+    # - systemctl status myservice
+    # - curl http://localhost:8080/health
+    # - docker ps | grep mycontainer
+    echo "Service status: degraded"
+  register: service_status
+  changed_when: false
+
+- name: Recovery Step 3 - Restart service if needed
+  ansible.builtin.debug:
+    msg: "🔄 Restarting service to recover..."
+
+- name: Simulate service restart
+  ansible.builtin.shell: |
+    # In production, this might be:
+    # - systemctl restart myservice
+    # - docker restart mycontainer
+    # - killall -HUP myprocess
+    echo "Service restarted"
+  changed_when: false
+
+- name: Recovery Step 4 - Wait for service to stabilize
+  ansible.builtin.debug:
+    msg: "⏳ Waiting for service to stabilize..."
+
+- name: Brief delay for service stabilization
+  ansible.builtin.wait_for:
+    timeout: 2
+  delegate_to: localhost
+
+- name: Recovery complete
+  ansible.builtin.debug:
+    msg: "✅ Recovery tasks completed. Ready to retry."
+

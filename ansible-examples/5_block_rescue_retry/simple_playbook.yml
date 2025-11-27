@@ -1,0 +1,88 @@
+---
+- name: Simple Block/Rescue with Recovery Pattern
+  hosts: localhost
+  gather_facts: false
+  vars:
+    max_retries: 3
+    retry_delay: 2
+
+  tasks:
+    # ====================================================================
+    # Setup: Simulate a flaky environment
+    # ====================================================================
+    - name: Setup - Create a service that needs 2 recoveries before it works
+      ansible.builtin.copy:
+        content: "0"
+        dest: /tmp/service_health
+        mode: '0644'
+
+    # ====================================================================
+    # Main Pattern: Block/Rescue with Recovery
+    # ====================================================================
+    - name: Attempt the flaky operation with automatic recovery
+      block:
+        # The main task that might fail
+        - name: Check if service is healthy
+          ansible.builtin.command: cat /tmp/service_health
+          register: health_check
+          changed_when: false
+
+        - name: Call the flaky API/service
+          ansible.builtin.command: /bin/true
+          when: health_check.stdout | int >= 2
+          # Succeeds only after health counter reaches 2
+
+        - name: Fail if service not ready yet
+          ansible.builtin.fail:
+            msg: "Service not healthy yet (health: {{ health_check.stdout }})"
+          when: health_check.stdout | int < 2
+
+      rescue:
+        # Recovery happens here
+        - name: Log the failure details
+          ansible.builtin.debug:
+            msg: |
+              ⚠️  Operation failed. Starting recovery...
+              Health status: {{ health_check.stdout | default('unknown') }}
+
+        - name: Recovery - Restart the service
+          ansible.builtin.debug:
+            msg: "🔧 Restarting service..."
+
+        - name: Recovery - Clear locks/cache
+          ansible.builtin.debug:
+            msg: "🧹 Clearing stale locks and cache..."
+
+        - name: Recovery - Improve service health (simulate)
+          ansible.builtin.shell: |
+            current=$(cat /tmp/service_health)
+            echo $((current + 1)) > /tmp/service_health
+          changed_when: true
+
+        - name: Recovery - Wait for service to stabilize
+          ansible.builtin.pause:
+            seconds: "{{ retry_delay }}"
+            prompt: "Waiting {{ retry_delay }}s for service to stabilize"
+
+        - name: Retry the operation after recovery
+          ansible.builtin.fail:
+            msg: "Retrying operation..."
+          # This causes the block to be retried via the retry mechanism below
+
+      # Using retries at the block level
+      retries: "{{ max_retries }}"
+      delay: "{{ retry_delay }}"
+      # Note: retries on a block requires register and until/changed_when logic
+
+    - name: Success message
+      ansible.builtin.debug:
+        msg: "✅ Operation completed successfully after recovery!"
+
+    # ====================================================================
+    # Cleanup
+    # ====================================================================
+    - name: Cleanup demo files
+      ansible.builtin.file:
+        path: /tmp/service_health
+        state: absent
+

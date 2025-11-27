@@ -1,0 +1,22 @@
+# Act configuration for local GitHub Actions testing
+# Act allows you to run GitHub Actions locally: https://github.com/nektos/act
+#
+# Copy this file to .actrc to use:
+#   cp .actrc.example .actrc
+#
+# Create a .secrets file for sensitive values (already in .gitignore)
+
+# Use secrets file for sensitive environment variables
+--secret-file .secrets
+
+# Use amd64 architecture for compatibility
+--container-architecture linux/amd64
+
+# Use catthehacker's ubuntu image (lightweight and compatible)
+-P ubuntu-latest=catthehacker/ubuntu:act-latest
+
+# Additional useful options (uncomment to use):
+# --verbose                    # Show more detailed output
+# --reuse                      # Reuse containers between runs (faster)
+# --bind                       # Bind mount the workspace
+

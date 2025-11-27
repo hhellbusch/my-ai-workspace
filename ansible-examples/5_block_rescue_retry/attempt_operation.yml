@@ -1,0 +1,66 @@
+---
+# ====================================================================
+# Reusable block/rescue pattern - called multiple times by main playbook
+# This file contains the logic for ONE attempt with recovery
+# The 'attempt_number' variable is provided by the loop in the caller
+# ====================================================================
+
+- name: Perform operation with automatic recovery on failure
+  block:
+    # ==========================================================
+    # MAIN TASK: Replace this with your flaky operation
+    # ==========================================================
+    - name: Show current attempt
+      ansible.builtin.debug:
+        msg: "🔄 Attempt {{ attempt_number }}/{{ max_attempts }}"
+
+    - name: Check service health
+      ansible.builtin.shell: cat /tmp/service_health
+      register: health
+      changed_when: false
+
+    - name: Execute the flaky operation
+      ansible.builtin.shell: |
+        if [ "{{ health.stdout }}" -lt "2" ]; then
+          echo "Service not ready (health: {{ health.stdout }})"
+          exit 1
+        fi
+        echo "Success!"
+      register: result
+      changed_when: true
+
+    - name: Mark operation as successful
+      ansible.builtin.set_fact:
+        operation_succeeded: true
+
+  rescue:
+    # ==========================================================
+    # RECOVERY: Fix the issue before next attempt
+    # ==========================================================
+    - name: Log the failure
+      ansible.builtin.debug:
+        msg: "⚠️  Attempt {{ attempt_number }}/{{ max_attempts }} failed"
+
+    - name: Check if this was the last attempt
+      ansible.builtin.fail:
+        msg: "❌ All {{ max_attempts }} attempts exhausted. Operation failed."
+      when: attempt_number | int >= max_attempts
+
+    - name: Recovery - Clear cache
+      ansible.builtin.debug:
+        msg: "🔧 Clearing cache..."
+
+    - name: Recovery - Restart service
+      ansible.builtin.debug:
+        msg: "🔄 Restarting service..."
+
+    - name: Recovery - Improve health (simulation)
+      ansible.builtin.shell: |
+        current=$(cat /tmp/service_health)
+        echo $((current + 1)) > /tmp/service_health
+      changed_when: true
+
+    - name: Recovery - Wait for stabilization
+      ansible.builtin.pause:
+        seconds: 1
+

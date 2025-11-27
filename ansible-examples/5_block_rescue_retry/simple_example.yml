@@ -1,0 +1,88 @@
+---
+# ====================================================================
+# SIMPLE EXAMPLE: Block/Rescue with Recovery
+# This shows the basic pattern without the retry loop complexity
+# ====================================================================
+- name: Simple Block/Rescue with Recovery Example
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    # ====================================================================
+    # Setup
+    # ====================================================================
+    - name: Setup demo
+      ansible.builtin.copy:
+        content: "ready"
+        dest: /tmp/service_status
+        mode: '0644'
+
+    # ====================================================================
+    # The Basic Pattern:
+    #   block: Try your flaky task
+    #   rescue: Run recovery steps if it fails
+    # ====================================================================
+    - name: Attempt a flaky operation with recovery
+      block:
+        # ===== YOUR FLAKY TASK GOES HERE =====
+        - name: Call a flaky API/service
+          ansible.builtin.shell: |
+            # Simulate checking if service is ready
+            status=$(cat /tmp/service_status)
+            if [ "$status" != "ready" ]; then
+              echo "Service not ready!"
+              exit 1
+            fi
+            echo "API call successful!"
+          register: api_result
+
+        - name: Process the result
+          ansible.builtin.debug:
+            msg: "✅ {{ api_result.stdout }}"
+
+      rescue:
+        # ===== RECOVERY STEPS GO HERE =====
+        - name: Log the error
+          ansible.builtin.debug:
+            msg: "⚠️  Operation failed: {{ api_result.stderr | default('Unknown error') }}"
+
+        - name: Recovery Step 1 - Clear cache
+          ansible.builtin.debug:
+            msg: "🔧 Clearing application cache..."
+          # In real scenario: Clear /var/cache/myapp, redis cache, etc.
+
+        - name: Recovery Step 2 - Restart service
+          ansible.builtin.debug:
+            msg: "🔄 Restarting the service..."
+          # In real scenario: systemctl restart myservice, docker restart, etc.
+
+        - name: Recovery Step 3 - Fix the issue
+          ansible.builtin.copy:
+            content: "ready"
+            dest: /tmp/service_status
+            mode: '0644'
+          # In real scenario: Fix config, update state, etc.
+
+        - name: Recovery Step 4 - Wait for service
+          ansible.builtin.pause:
+            seconds: 2
+          # In real scenario: wait_for port, curl health endpoint, etc.
+
+        # After recovery, you might want to retry (see clean_playbook.yml or best_practice_playbook.yml)
+        # Or just continue and let the playbook proceed
+
+    # ====================================================================
+    # Playbook continues
+    # ====================================================================
+    - name: Continue with next tasks
+      ansible.builtin.debug:
+        msg: "Playbook continues regardless of success or handled failure"
+
+    # ====================================================================
+    # Cleanup
+    # ====================================================================
+    - name: Cleanup
+      ansible.builtin.file:
+        path: /tmp/service_status
+        state: absent
+

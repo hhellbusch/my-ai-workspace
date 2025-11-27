@@ -1,0 +1,36 @@
+# Production Root App
+# This root app always points to main branch but uses production values
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-app-production
+  namespace: argocd
+  labels:
+    app: root-app
+    environment: production
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: production
+  
+  source:
+    repoURL: https://github.com/your-org/your-repo.git
+    targetRevision: main  # ROOT APP ALWAYS POINTS TO MAIN
+    path: argo-examples/charts/argocd-apps
+    
+    helm:
+      valueFiles:
+        - values-production.yaml  # Use production-specific values
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+

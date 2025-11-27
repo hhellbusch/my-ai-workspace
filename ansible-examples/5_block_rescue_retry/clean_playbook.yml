@@ -1,0 +1,46 @@
+---
+- name: Block/Rescue with Recovery - Clean DRY Implementation
+  hosts: localhost
+  gather_facts: false
+  vars:
+    max_attempts: 3
+
+  tasks:
+    # ====================================================================
+    # Setup
+    # ====================================================================
+    - name: Setup - Initialize service health counter
+      ansible.builtin.copy:
+        content: "0"
+        dest: /tmp/service_health
+        mode: '0644'
+
+    - name: Initialize tracking variables
+      ansible.builtin.set_fact:
+        operation_succeeded: false
+
+    # ====================================================================
+    # The Clean Pattern: Single include_tasks, looped with early exit
+    # ====================================================================
+    - name: Attempt operation with recovery (will retry up to {{ max_attempts }} times)
+      ansible.builtin.include_tasks: attempt_operation.yml
+      loop: "{{ range(1, max_attempts + 1) | list }}"
+      loop_control:
+        loop_var: attempt_number
+      when: not operation_succeeded
+      # Loop continues until operation_succeeded becomes true
+      # Each iteration runs the full block/rescue from attempt_operation.yml
+
+    # ====================================================================
+    # Success and cleanup
+    # ====================================================================
+    - name: Operation completed successfully
+      ansible.builtin.debug:
+        msg: "✅ Operation succeeded!"
+      when: operation_succeeded
+
+    - name: Cleanup demo files
+      ansible.builtin.file:
+        path: /tmp/service_health
+        state: absent
+

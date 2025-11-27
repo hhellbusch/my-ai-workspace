@@ -1,0 +1,34 @@
+---
+# ====================================================================
+# This file simulates a flaky task that fails randomly/intermittently
+# In real scenarios, this could be:
+#   - An API call that sometimes times out
+#   - A service that needs to be in a specific state
+#   - A network operation that fails intermittently
+# ====================================================================
+
+- name: Read the failure counter (simulates checking service state)
+  ansible.builtin.command: cat /tmp/flaky_counter
+  register: counter_result
+  changed_when: false
+
+- name: Increment the failure counter
+  ansible.builtin.shell: |
+    count=$(cat /tmp/flaky_counter)
+    echo $((count + 1)) > /tmp/flaky_counter
+  changed_when: false
+
+- name: Display current attempt info
+  ansible.builtin.debug:
+    msg: "Attempting flaky operation (attempt #{{ counter_result.stdout | int + 1 }})"
+
+- name: Execute the flaky operation (fails on first 2 attempts)
+  ansible.builtin.command: /bin/false
+  when: counter_result.stdout | int < 2
+  # This simulates a task that fails the first 2 times, then succeeds
+
+- name: Flaky operation succeeded
+  ansible.builtin.debug:
+    msg: "🎉 Flaky operation completed successfully!"
+  when: counter_result.stdout | int >= 2
+

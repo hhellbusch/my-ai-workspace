@@ -1,0 +1,36 @@
+# Staging Root App
+# This root app always points to main branch but uses staging values
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-app-staging
+  namespace: argocd
+  labels:
+    app: root-app
+    environment: staging
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: staging
+  
+  source:
+    repoURL: https://github.com/your-org/your-repo.git
+    targetRevision: main  # ROOT APP ALWAYS POINTS TO MAIN
+    path: argo-examples/charts/argocd-apps
+    
+    helm:
+      valueFiles:
+        - values-staging.yaml  # Use staging-specific values
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
