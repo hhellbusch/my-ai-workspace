@@ -47,8 +47,8 @@ This document summarizes the integration setup performed for the TÂCHES meta-de
 
 ### Registry Files
 
-#### `skills/REGISTRY.md`
-- **Location:** `~/gemini-workspace/skills/REGISTRY.md`
+#### `.cursor/skills/REGISTRY.md`
+- **Location:** `~/gemini-workspace/.cursor/skills/REGISTRY.md`
 - **Purpose:** Complete index of all available skills
 - **Contents:**
   - 9 skills documented with full details:
@@ -66,8 +66,8 @@ This document summarizes the integration setup performed for the TÂCHES meta-de
   - Quality assurance guidelines
   - Contributing guidelines
 
-#### `.cursor/commands/README.md`
-- **Location:** `~/gemini-workspace/.cursor/commands/README.md`
+#### `.cursor/.cursor/commands/README.md`
+- **Location:** `~/gemini-workspace/.cursor/.cursor/commands/README.md`
 - **Purpose:** Complete commands reference
 - **Contents:**
   - 27 commands documented with examples:
@@ -87,8 +87,8 @@ This document summarizes the integration setup performed for the TÂCHES meta-de
   - Security best practices
   - Usage patterns
 
-#### `.cursor/agents/REGISTRY.md`
-- **Location:** `~/gemini-workspace/.cursor/agents/REGISTRY.md`
+#### `.cursor/.cursor/agents/REGISTRY.md`
+- **Location:** `~/gemini-workspace/.cursor/.cursor/agents/REGISTRY.md`
 - **Purpose:** Complete agents index
 - **Contents:**
   - 3 specialized agents documented:
@@ -137,7 +137,7 @@ This document summarizes the integration setup performed for the TÂCHES meta-de
 
 - **1 Configuration file** (.cursorrules) - 228 lines
 - **3 Guide documents** (INTEGRATION.md, QUICKSTART.md, META-SYSTEM-SETUP.md) - ~1,700 lines total
-- **3 Registry files** (skills/REGISTRY.md, .cursor/commands/README.md, .cursor/agents/REGISTRY.md) - ~1,500 lines total
+- **3 Registry files** (.cursor/skills/REGISTRY.md, .cursor/.cursor/commands/README.md, .cursor/.cursor/agents/REGISTRY.md) - ~1,500 lines total
 - **1 Updated file** (README.md) - Enhanced with meta-system information
 
 **Total documentation: ~3,400 lines** of comprehensive integration documentation
@@ -158,7 +158,7 @@ To verify the integration is working:
 
 3. **Reference a skill:**
    ```
-   @skills/create-agent-skills/SKILL.md
+   @.cursor/skills/create-agent-skills/SKILL.md
    ```
 
 4. **Read the quick start:**
@@ -211,9 +211,9 @@ The original repository includes:
    ```
 
 3. **Explore the registries:**
-   - `@skills/REGISTRY.md`
-   - `@.cursor/commands/README.md`
-   - `@.cursor/agents/REGISTRY.md`
+   - `@.cursor/skills/REGISTRY.md`
+   - `@.cursor/.cursor/commands/README.md`
+   - `@.cursor/.cursor/agents/REGISTRY.md`
 
 4. **Read the full integration guide:**
    ```

@@ -10,7 +10,7 @@ The system should be active in Cursor. Look for these indicators:
 
 - `.cursorrules` file exists in workspace root
 - Slash commands autocomplete when you type `/create-` or `/audit-`
-- Skills are accessible via `@skills/` references
+- Skills are accessible via `@.cursor/skills/` references
 
 ### 2. Test Basic Commands
 
@@ -47,7 +47,7 @@ Try these simple commands to verify everything works:
 
 3. **Audit the created skill:**
    ```bash
-   /audit-skill skills/check-docker-running/SKILL.md
+   /audit-skill .cursor/skills/check-docker-running/SKILL.md
    ```
 
 4. **Review findings:**
@@ -59,7 +59,7 @@ Try these simple commands to verify everything works:
 
 6. **Re-audit to verify:**
    ```bash
-   /audit-skill skills/check-docker-running/SKILL.md
+   /audit-skill .cursor/skills/check-docker-running/SKILL.md
    ```
 
 **Expected outcome:** A working skill with no critical audit findings.
@@ -273,7 +273,7 @@ Skill(ansible-best-practices) Review ansible-examples/9_global_defaults_across_r
 /create-agent-skill OpenShift networking troubleshooting workflow
 
 # Audit it
-/audit-skill skills/ocp-networking-troubleshooting/SKILL.md
+/audit-skill .cursor/skills/ocp-networking-troubleshooting/SKILL.md
 ```
 
 ## Common Patterns
@@ -285,12 +285,12 @@ Skill(ansible-best-practices) Review ansible-examples/9_global_defaults_across_r
 /create-agent-skill [description]
 
 # Audit it
-/audit-skill skills/my-skill/SKILL.md
+/audit-skill .cursor/skills/my-skill/SKILL.md
 
 # Fix issues based on audit
 
 # Re-audit
-/audit-skill skills/my-skill/SKILL.md
+/audit-skill .cursor/skills/my-skill/SKILL.md
 ```
 
 ### Pattern 2: Plan-Execute-Document
@@ -354,7 +354,7 @@ Skills load content progressively. Let the router guide you:
 Catch issues early:
 ```bash
 # After creating anything
-/audit-skill skills/my-skill/SKILL.md
+/audit-skill .cursor/skills/my-skill/SKILL.md
 /audit-slash-command .cursor/commands/my-command.md
 /audit-subagent .cursor/agents/my-agent.md
 ```
@@ -405,9 +405,9 @@ Skill(debug-like-expert)
 **Issue:** Skill references don't work
 
 **Solutions:**
-1. Verify path: `@skills/skill-name/SKILL.md`
+1. Verify path: `@.cursor/skills/skill-name/SKILL.md`
 2. Check SKILL.md exists and has valid YAML
-3. Audit the skill: `/audit-skill skills/skill-name/SKILL.md`
+3. Audit the skill: `/audit-skill .cursor/skills/skill-name/SKILL.md`
 
 ### Context Window Issues
 
@@ -426,8 +426,8 @@ Skill(debug-like-expert)
 **Solutions:**
 1. Ask Claude to show examples for specific findings
 2. Reference best practices:
-   - `@skills/create-agent-skills/references/core-principles.md`
-   - `@skills/create-slash-.cursor/commands/references/patterns.md`
+   - `@.cursor/skills/create-agent-skills/references/core-principles.md`
+   - `@.cursor/skills/create-slash-.cursor/commands/references/patterns.md`
 3. Use `/heal-skill` to auto-fix common issues
 
 ## Next Steps
@@ -435,17 +435,17 @@ Skill(debug-like-expert)
 Now that you're familiar with the basics:
 
 1. **Explore the registries:**
-   - [skills/REGISTRY.md](skills/REGISTRY.md) - All available skills
-   - [.cursor/commands/README.md](.cursor/commands/README.md) - All available commands
-   - [.cursor/agents/REGISTRY.md](.cursor/agents/REGISTRY.md) - All available agents
+   - [.cursor/skills/REGISTRY.md](.cursor/skills/REGISTRY.md) - All available skills
+   - [.cursor/.cursor/commands/README.md](.cursor/.cursor/commands/README.md) - All available commands
+   - [.cursor/.cursor/agents/REGISTRY.md](.cursor/.cursor/agents/REGISTRY.md) - All available agents
 
 2. **Read the full integration guide:**
    - [INTEGRATION.md](INTEGRATION.md) - Comprehensive documentation
 
 3. **Review best practices:**
-   - `@skills/create-agent-skills/references/core-principles.md`
-   - `@skills/create-agent-skills/references/use-xml-tags.md`
-   - `@skills/create-slash-.cursor/commands/references/patterns.md`
+   - `@.cursor/skills/create-agent-skills/references/core-principles.md`
+   - `@.cursor/skills/create-agent-skills/references/use-xml-tags.md`
+   - `@.cursor/skills/create-slash-.cursor/commands/references/patterns.md`
 
 4. **Build your first skill:**
    - Start with something simple from your domain
