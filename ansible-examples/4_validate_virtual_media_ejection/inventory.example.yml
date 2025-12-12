@@ -1,3 +1,15 @@
+# ⚠️  EXAMPLE FILE - DO NOT USE THESE CREDENTIALS IN PRODUCTION
+#
+# This is a template file with example credentials for demonstration purposes.
+# 
+# To use:
+# 1. Copy this file: cp inventory.example.yml inventory.yml
+# 2. Update inventory.yml with YOUR actual credentials
+# 3. Ensure inventory.yml is in .gitignore (it should be by default)
+#
+# The credentials in this file (calvin, password, changeme, etc.) are
+# well-known defaults or obvious placeholders. Never use them in production.
+#
 ---
 # Example inventory file for managing multiple iDRAC endpoints
 # Copy this to inventory.yml and customize for your environment

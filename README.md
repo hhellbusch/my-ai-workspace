@@ -2,6 +2,33 @@
 
 This repository contains practical, runnable examples for various DevOps tools and patterns, enhanced with an integrated meta-development system powered by [TÂCHES Claude Code Resources](https://github.com/glittercowboy/taches-cc-resources).
 
+## 📖 For Users of This Repository
+
+**Welcome!** This repository contains production-ready examples and troubleshooting guides for:
+
+- **Ansible Automation** - 9 complete examples covering retry patterns, error handling, BMC operations, parallel execution, and more
+- **OpenShift/Kubernetes** - 7 detailed troubleshooting guides for bare-metal clusters, CSR management, networking issues, and cluster recovery
+- **ArgoCD/GitOps** - Application deployment patterns, multi-cluster configurations, and app-of-apps patterns
+- **CoreOS/Ignition** - System configuration examples including virtual media ejection and automated setup
+
+**Important Notes:**
+
+- ✅ **All credentials are examples** - Passwords like "calvin", "password", "changeme" are placeholders for demonstration
+- ✅ **All IP addresses are examples** - Uses RFC1918 private ranges (192.168.x.x, 10.x.x.x, 172.16.x.x)
+- ✅ **All hostnames are generic** - master-0, server1, bastion.example.com, etc.
+- 📝 **Adapt to your environment** - Copy `.example.yml` files, update with your credentials, never commit real secrets
+
+**Getting Started:**
+
+1. **Clone the repository**: `git clone <repo-url>`
+2. **Explore examples**: Browse `ansible-examples/`, `ocp-troubleshooting/`, etc.
+3. **Copy and customize**: Use `.example.yml` templates, update for your infrastructure
+4. **Keep secrets safe**: Real inventory files and credentials should be in `.gitignore`
+
+**Meta-Development System:**
+
+This repository also includes a sophisticated AI-assisted development system (Skills, Commands, Agents). See the Meta-Development System section below for details. This is optional - the core examples work independently.
+
 ## 🧠 Meta-Development System
 
 This workspace includes a sophisticated meta-development system with **Skills**, **Commands**, and **Agents** that provide AI-assisted development capabilities:

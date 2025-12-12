@@ -7,3 +7,55 @@
 *.swp
 *~
 
+
+# ===== Credential Protection =====
+# Prevent accidental commits of real credentials
+
+# Real inventory files (use .example.yml for templates)
+inventory.yml
+**/inventory.yml
+!**/inventory.example.yml
+!**/inventory.*.example.yml
+
+# Ansible vault files
+**/*.vault.yml
+!**/*.vault.example.yml
+vault-password.txt
+**/vault-password.txt
+
+# Environment files
+.env
+.env.local
+**/.env
+**/.env.local
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Personal notes
+PERSONAL-NOTES.md
+TODO-PRIVATE.md
+
+# ===== Development Artifacts =====
+# Temporary files from development
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+venv/
+env/
+
+# Node
+node_modules/
+.npm/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
