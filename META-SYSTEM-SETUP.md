@@ -25,7 +25,7 @@ This document summarizes the integration setup performed for the TÂCHES meta-de
 - **Contents:**
   - System overview with architecture diagrams
   - Quick start examples
-  - Detailed architecture of skills/commands/agents
+  - Detailed architecture of skills/.cursor/commands/agents
   - Usage patterns (6 different patterns)
   - Creating new components (step-by-step)
   - Best practices for each component type
@@ -66,8 +66,8 @@ This document summarizes the integration setup performed for the TÂCHES meta-de
   - Quality assurance guidelines
   - Contributing guidelines
 
-#### `commands/README.md`
-- **Location:** `~/gemini-workspace/commands/README.md`
+#### `.cursor/commands/README.md`
+- **Location:** `~/gemini-workspace/.cursor/commands/README.md`
 - **Purpose:** Complete commands reference
 - **Contents:**
   - 27 commands documented with examples:
@@ -87,8 +87,8 @@ This document summarizes the integration setup performed for the TÂCHES meta-de
   - Security best practices
   - Usage patterns
 
-#### `agents/REGISTRY.md`
-- **Location:** `~/gemini-workspace/agents/REGISTRY.md`
+#### `.cursor/agents/REGISTRY.md`
+- **Location:** `~/gemini-workspace/.cursor/agents/REGISTRY.md`
 - **Purpose:** Complete agents index
 - **Contents:**
   - 3 specialized agents documented:
@@ -108,7 +108,7 @@ This document summarizes the integration setup performed for the TÂCHES meta-de
 - **Location:** `~/gemini-workspace/README.md`
 - **Changes:**
   - Added meta-development system overview at top
-  - Updated directory structure to include skills/commands/agents
+  - Updated directory structure to include skills/.cursor/commands/agents
   - Added quick start commands section
   - Added documentation links section
   - Added attribution to TÂCHES project
@@ -137,7 +137,7 @@ This document summarizes the integration setup performed for the TÂCHES meta-de
 
 - **1 Configuration file** (.cursorrules) - 228 lines
 - **3 Guide documents** (INTEGRATION.md, QUICKSTART.md, META-SYSTEM-SETUP.md) - ~1,700 lines total
-- **3 Registry files** (skills/REGISTRY.md, commands/README.md, agents/REGISTRY.md) - ~1,500 lines total
+- **3 Registry files** (skills/REGISTRY.md, .cursor/commands/README.md, .cursor/agents/REGISTRY.md) - ~1,500 lines total
 - **1 Updated file** (README.md) - Enhanced with meta-system information
 
 **Total documentation: ~3,400 lines** of comprehensive integration documentation
@@ -212,8 +212,8 @@ The original repository includes:
 
 3. **Explore the registries:**
    - `@skills/REGISTRY.md`
-   - `@commands/README.md`
-   - `@agents/REGISTRY.md`
+   - `@.cursor/commands/README.md`
+   - `@.cursor/agents/REGISTRY.md`
 
 4. **Read the full integration guide:**
    ```

@@ -152,7 +152,7 @@ Try these simple commands to verify everything works:
 
 3. **Audit the command:**
    ```bash
-   /audit-slash-command commands/run-tests-coverage.md
+   /audit-slash-command .cursor/commands/run-tests-coverage.md
    ```
 
 4. **Test the command:**
@@ -355,8 +355,8 @@ Catch issues early:
 ```bash
 # After creating anything
 /audit-skill skills/my-skill/SKILL.md
-/audit-slash-command commands/my-command.md
-/audit-subagent agents/my-agent.md
+/audit-slash-command .cursor/commands/my-command.md
+/audit-subagent .cursor/agents/my-agent.md
 ```
 
 ### 4. Test with Real Usage
@@ -398,7 +398,7 @@ Skill(debug-like-expert)
 1. Verify `.cursorrules` exists in workspace root
 2. Restart Cursor
 3. Check command file syntax (YAML frontmatter)
-4. Audit the command: `/audit-slash-command commands/my-command.md`
+4. Audit the command: `/audit-slash-command .cursor/commands/my-command.md`
 
 ### Skills Not Loading
 
@@ -427,7 +427,7 @@ Skill(debug-like-expert)
 1. Ask Claude to show examples for specific findings
 2. Reference best practices:
    - `@skills/create-agent-skills/references/core-principles.md`
-   - `@skills/create-slash-commands/references/patterns.md`
+   - `@skills/create-slash-.cursor/commands/references/patterns.md`
 3. Use `/heal-skill` to auto-fix common issues
 
 ## Next Steps
@@ -436,8 +436,8 @@ Now that you're familiar with the basics:
 
 1. **Explore the registries:**
    - [skills/REGISTRY.md](skills/REGISTRY.md) - All available skills
-   - [commands/README.md](commands/README.md) - All available commands
-   - [agents/REGISTRY.md](agents/REGISTRY.md) - All available agents
+   - [.cursor/commands/README.md](.cursor/commands/README.md) - All available commands
+   - [.cursor/agents/REGISTRY.md](.cursor/agents/REGISTRY.md) - All available agents
 
 2. **Read the full integration guide:**
    - [INTEGRATION.md](INTEGRATION.md) - Comprehensive documentation
@@ -445,7 +445,7 @@ Now that you're familiar with the basics:
 3. **Review best practices:**
    - `@skills/create-agent-skills/references/core-principles.md`
    - `@skills/create-agent-skills/references/use-xml-tags.md`
-   - `@skills/create-slash-commands/references/patterns.md`
+   - `@skills/create-slash-.cursor/commands/references/patterns.md`
 
 4. **Build your first skill:**
    - Start with something simple from your domain

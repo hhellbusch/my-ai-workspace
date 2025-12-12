@@ -55,9 +55,9 @@ This workspace includes a sophisticated meta-development system with **Skills**,
 **Documentation:**
 - [QUICKSTART.md](QUICKSTART.md) - **Start here!** Quick start with examples
 - [INTEGRATION.md](INTEGRATION.md) - Complete integration and usage guide
-- [skills/REGISTRY.md](skills/REGISTRY.md) - Available skills index
-- [commands/README.md](commands/README.md) - Available commands reference
-- [agents/REGISTRY.md](agents/REGISTRY.md) - Available agents reference
+- [.cursor/skills/REGISTRY.md](.cursor/skills/REGISTRY.md) - Available skills index
+- [.cursor/commands/README.md](.cursor/commands/README.md) - Available commands reference
+- [.cursor/agents/REGISTRY.md](.cursor/agents/REGISTRY.md) - Available agents reference
 - [.cursorrules](.cursorrules) - System configuration
 
 **Attribution:** The meta-development system is adapted from [TÂCHES CC Resources](https://github.com/glittercowboy/taches-cc-resources) by [@glittercowboy](https://github.com/glittercowboy). See original repository for updates and community resources.
@@ -66,20 +66,20 @@ This workspace includes a sophisticated meta-development system with **Skills**,
 
 ```
 gemini-workspace/
-├── skills/              # Meta-development skills (7 total)
-├── commands/            # Slash commands (27 total)
-├── agents/              # Specialized subagents (3 total)
+├── .cursor/
+│   ├── skills/          # Meta-development skills (7 total)
+│   ├── commands/        # Slash commands (27 total)
+│   └── agents/          # Specialized subagents (3 total)
 ├── ansible-examples/    # Ansible playbooks and patterns
 ├── argo-examples/       # ArgoCD configurations and workflows
 ├── coreos-examples/     # CoreOS/Ignition configurations and patterns
 ├── ocp-troubleshooting/ # OpenShift troubleshooting guides
-└── notes/              # Miscellaneous notes organized by topic
-    └── gaming/         # Gaming-related notes
+└── notes/               # Miscellaneous notes organized by topic
 ```
 
 ## 🧠 Meta-Development System
 
-Located in `skills/`, `commands/`, and `agents/`. An integrated system for AI-assisted development.
+Located in `.cursor/skills/`, `.cursor/commands/`, and `.cursor/agents/`. An integrated system for AI-assisted development.
 
 **Key Features:**
 - **Planning & Execution** - Create hierarchical project plans and execute them with `/create-plan` and `/run-plan`
@@ -94,7 +94,7 @@ Located in `skills/`, `commands/`, and `agents/`. An integrated system for AI-as
 /create-agent-skill Create a skill for Docker container management
 
 # Audit an existing skill
-/audit-skill skills/manage-docker/SKILL.md
+/audit-skill .cursor/skills/manage-docker/SKILL.md
 
 # Plan a new feature
 /create-plan Build authentication system with JWT tokens

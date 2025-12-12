@@ -28,7 +28,7 @@ Skills are modular capabilities that provide domain expertise on demand. They us
 When you need to use a skill, reference it with the `Skill()` function or by mentioning it:
 ```
 Skill(create-agent-skills) - invoke the skill directly
-@skills/create-agent-skills/SKILL.md - reference the skill file
+@.cursor/skills/create-agent-skills/SKILL.md - reference the skill file
 ```
 
 **Skill Structure:**
@@ -241,7 +241,7 @@ Target: <30% context overhead, reserving 70%+ for actual work.
 
 - `/debug` - Expert debugging guidance
 - `/whats-next` - Create handoff for continuation
-- `@skills/create-agent-skills/SKILL.md` - For skill creation questions
-- `@skills/debug-like-expert/SKILL.md` - For investigation techniques
+- `@.cursor/skills/create-agent-skills/SKILL.md` - For skill creation questions
+- `@.cursor/skills/debug-like-expert/SKILL.md` - For investigation techniques
 
 

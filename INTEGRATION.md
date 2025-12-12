@@ -120,8 +120,8 @@ skills/
 │       ├── simple-skill.md
 │       └── router-skill.md
 ├── create-plans/             # Planning expertise
-├── create-slash-commands/    # Command creation
-├── create-subagents/         # Agent creation
+├── create-slash-.cursor/commands/    # Command creation
+├── create-sub.cursor/agents/         # Agent creation
 └── expertise/                # Domain-specific skills
     ├── iphone-apps/
     └── macos-apps/
@@ -130,7 +130,7 @@ skills/
 ### Commands Directory Structure
 
 ```
-commands/
+.cursor/commands/
 ├── create-agent-skill.md     # Invokes Skill(create-agent-skills)
 ├── audit-skill.md            # Invokes Agent(skill-auditor)
 ├── run-plan.md               # Executes PLAN.md files
@@ -142,7 +142,7 @@ commands/
 ### Agents Directory Structure
 
 ```
-agents/
+.cursor/agents/
 ├── skill-auditor.md          # Audits SKILL.md files
 ├── slash-command-auditor.md  # Audits command files
 └── subagent-auditor.md       # Audits agent files
@@ -177,7 +177,7 @@ When you want a quick, focused action:
 ```
 User: /create-agent-skill Manage K8s deployments
 
-Claude: [Reads commands/create-agent-skill.md]
+Claude: [Reads .cursor/commands/create-agent-skill.md]
         [Invokes Skill(create-agent-skills) with arguments]
         [Executes workflow automatically]
 ```
@@ -189,7 +189,7 @@ When you need comprehensive evaluation:
 ```
 User: /audit-skill skills/manage-k8s/SKILL.md
 
-Claude: [Reads commands/audit-skill.md]
+Claude: [Reads .cursor/commands/audit-skill.md]
         [Spawns skill-auditor agent]
         [Agent reads best practices]
         [Agent evaluates skill]
@@ -258,7 +258,7 @@ description: What it does and when to use it (third person)
 
 **Option 2: Manual creation**
 
-1. Create file: `commands/my-command.md`
+1. Create file: `.cursor/commands/my-command.md`
 2. Add YAML frontmatter and prompt:
 
 ```yaml
@@ -273,7 +273,7 @@ Execute the following task with $ARGUMENTS:
 [Clear, direct instructions]
 ```
 
-3. Audit with: `/audit-slash-command commands/my-command.md`
+3. Audit with: `/audit-slash-command .cursor/commands/my-command.md`
 
 ### Creating a New Agent
 
@@ -285,7 +285,7 @@ Execute the following task with $ARGUMENTS:
 
 **Option 2: Manual creation**
 
-1. Create file: `agents/my-agent.md`
+1. Create file: `.cursor/agents/my-agent.md`
 2. Add YAML frontmatter and structure:
 
 ```yaml
@@ -320,7 +320,7 @@ Task is complete when:
 </success_criteria>
 ```
 
-3. Audit with: `/audit-subagent agents/my-agent.md`
+3. Audit with: `/audit-subagent .cursor/agents/my-agent.md`
 
 ## Best Practices
 
@@ -408,12 +408,12 @@ Task is complete when:
    ls skills/skill-name/SKILL.md
    
    # Check if agent exists
-   ls agents/agent-name.md
+   ls .cursor/agents/agent-name.md
    ```
 
 3. Audit the command:
    ```bash
-   /audit-slash-command commands/my-command.md
+   /audit-slash-command .cursor/commands/my-command.md
    ```
 
 ### Skill Not Loading References
@@ -553,7 +553,7 @@ Use multiple agents for quality assurance:
 ```bash
 # Audit all components of a new feature
 /audit-skill skills/new-feature/SKILL.md
-/audit-slash-command commands/new-feature.md
+/audit-slash-command .cursor/commands/new-feature.md
 # Fix issues
 /audit-skill skills/new-feature/SKILL.md  # Verify fixes
 ```
@@ -568,9 +568,9 @@ When adding new components:
 2. Audit before committing
 3. Test with real usage
 4. Update registries:
-   - `skills/REGISTRY.md`
-   - `commands/README.md`
-   - `agents/REGISTRY.md`
+   - `.cursor/skills/REGISTRY.md`
+   - `.cursor/commands/README.md`
+   - `.cursor/.cursor/agents/REGISTRY.md`
 
 ### Quality Standards
 
@@ -583,7 +583,7 @@ All components must:
 
 ### Documentation
 
-When creating new skills/commands/agents:
+When creating new skills/.cursor/commands/agents:
 - Add entry to appropriate registry
 - Update `.cursorrules` if adding new patterns
 - Add examples to this guide if introducing new usage patterns
@@ -595,23 +595,23 @@ When creating new skills/commands/agents:
 
 - `.cursorrules` - System configuration and integration
 - `INTEGRATION.md` - This guide
-- `skills/REGISTRY.md` - Complete skill index
-- `commands/README.md` - Command reference
-- `agents/REGISTRY.md` - Agent capabilities
+- `.cursor/skills/REGISTRY.md` - Complete skill index
+- `.cursor/commands/README.md` - Command reference
+- `.cursor/.cursor/agents/REGISTRY.md` - Agent capabilities
 
 ### Best Practice References
 
 - `skills/create-agent-skills/references/core-principles.md`
 - `skills/create-agent-skills/references/skill-structure.md`
-- `skills/create-slash-commands/references/patterns.md`
-- `skills/create-subagents/references/subagents.md`
+- `skills/create-slash-.cursor/commands/references/patterns.md`
+- `skills/create-sub.cursor/agents/references/subagents.md`
 
 ### Example Components
 
-- **Simple skill:** `skills/create-slash-commands/SKILL.md`
+- **Simple skill:** `skills/create-slash-.cursor/commands/SKILL.md`
 - **Router skill:** `skills/create-agent-skills/SKILL.md`
-- **Command:** `commands/audit-skill.md`
-- **Agent:** `agents/skill-auditor.md`
+- **Command:** `.cursor/commands/audit-skill.md`
+- **Agent:** `.cursor/agents/skill-auditor.md`
 
 ## Support
 
