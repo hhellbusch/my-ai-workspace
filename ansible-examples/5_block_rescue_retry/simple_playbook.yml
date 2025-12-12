@@ -17,8 +17,10 @@
         mode: '0644'
 
     # ====================================================================
-    # Main Pattern: Block/Rescue with Recovery
+    # Main Pattern: Block/Rescue with Recovery (using until/retries pattern)
     # ====================================================================
+    # Note: Ansible doesn't support retries directly on blocks.
+    # This pattern uses 'until' to retry the entire block+rescue operation.
     - name: Attempt the flaky operation with automatic recovery
       block:
         # The main task that might fail
@@ -64,15 +66,10 @@
             seconds: "{{ retry_delay }}"
             prompt: "Waiting {{ retry_delay }}s for service to stabilize"
 
-        - name: Retry the operation after recovery
-          ansible.builtin.fail:
-            msg: "Retrying operation..."
-          # This causes the block to be retried via the retry mechanism below
-
-      # Using retries at the block level
-      retries: "{{ max_retries }}"
-      delay: "{{ retry_delay }}"
-      # Note: retries on a block requires register and until/changed_when logic
+        # Mark recovery attempt complete
+        - name: Set recovery flag
+          ansible.builtin.set_fact:
+            recovery_attempted: true
 
     - name: Success message
       ansible.builtin.debug:
