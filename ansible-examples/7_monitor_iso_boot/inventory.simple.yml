@@ -1,0 +1,20 @@
+---
+# Simple single-server inventory
+# Usage: ansible-playbook -i inventory.simple.yml simple_monitor_module.yml
+
+all:
+  hosts:
+    localhost:
+      # BMC connection details
+      idrac_ip: "192.168.1.100"
+      idrac_user: "root"
+      idrac_password: "calvin"
+      
+      # Monitoring settings
+      iterations: 30
+      interval: 10
+      
+  vars:
+    ansible_connection: local
+    validate_certs: false
+

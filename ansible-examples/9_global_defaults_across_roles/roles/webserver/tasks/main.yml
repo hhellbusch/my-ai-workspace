@@ -1,0 +1,61 @@
+---
+# Webserver role - uses global defaults and can define its own
+- name: Show inherited global variables
+  debug:
+    msg: |
+      Webserver configuration:
+      - App name: {{ app_name }}
+      - Version: {{ app_version }}
+      - Environment: {{ environment }}
+      - Install dir: {{ base_install_dir }}/webserver
+      - Port: {{ webserver_port }}
+      - SSL: {{ enable_ssl }}
+      - Domain: {{ app_domain }}
+
+- name: Create webserver directory
+  file:
+    path: "{{ base_install_dir }}/webserver"
+    state: directory
+    mode: '0755'
+
+- name: Deploy webserver configuration
+  template:
+    src: webserver.conf.j2
+    dest: "{{ config_dir }}/webserver.conf"
+    mode: '0644'
+  notify: restart webserver
+
+- name: Install webserver packages
+  package:
+    name: "{{ webserver_packages }}"
+    state: present
+
+- name: Configure webserver logging
+  lineinfile:
+    path: "{{ config_dir }}/webserver.conf"
+    line: "LogLevel {{ log_level }}"
+    create: yes
+
+- name: Set resource limits
+  debug:
+    msg: "Webserver memory limit: {{ memory_limit }}, max connections: {{ max_connections }}"
+
+- name: Configure SSL if enabled
+  block:
+    - name: Copy SSL certificate
+      copy:
+        src: "{{ ssl_cert_path }}"
+        dest: "{{ config_dir }}/ssl.crt"
+        mode: '0644'
+      
+    - name: Copy SSL key
+      copy:
+        src: "{{ ssl_key_path }}"
+        dest: "{{ config_dir }}/ssl.key"
+        mode: '0600'
+  when: enable_ssl | bool
+
+- name: Display admin contact
+  debug:
+    msg: "Webserver admin contact: {{ admin_email }}"
+

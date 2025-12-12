@@ -1,0 +1,62 @@
+---
+# Database role - inherits global defaults
+- name: Show inherited global variables
+  debug:
+    msg: |
+      Database configuration:
+      - App name: {{ app_name }}
+      - Version: {{ app_version }}
+      - Environment: {{ environment }}
+      - Data dir: {{ base_install_dir }}/database
+      - Port: {{ db_port }}
+      - Backups: {{ enable_backups }}
+
+- name: Create database directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ base_install_dir }}/database"
+    - "{{ base_install_dir }}/database/data"
+    - "{{ log_dir }}/database"
+
+- name: Deploy database configuration
+  template:
+    src: database.conf.j2
+    dest: "{{ config_dir }}/database.conf"
+    mode: '0644'
+
+- name: Configure database logging
+  debug:
+    msg: "Database log level: {{ log_level }}, retention: {{ log_retention_days }} days"
+
+- name: Set database resource limits
+  debug:
+    msg: "Database memory: {{ memory_limit }}, connections: {{ max_connections }}"
+
+- name: Setup database backups
+  block:
+    - name: Create backup directory
+      file:
+        path: "{{ backup_location }}/database"
+        state: directory
+        mode: '0700'
+    
+    - name: Configure backup schedule
+      debug:
+        msg: "Backups enabled: retention {{ backup_retention_days }} days"
+  when: enable_backups | bool
+
+- name: Configure high availability
+  debug:
+    msg: |
+      HA Configuration:
+      - Enabled: {{ ha_enabled | default(false) }}
+      - Replicas: {{ replica_count | default(1) }}
+  when: ha_enabled | default(false) | bool
+
+- name: Display admin contact
+  debug:
+    msg: "Database admin: {{ admin_user }}, contact: {{ admin_email }}"
+

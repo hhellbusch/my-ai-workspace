@@ -1,0 +1,21 @@
+---
+# Development-specific variables
+# Loaded when environment=development
+
+max_connections: 10
+memory_limit: "256M"
+debug_mode: true
+log_level: "debug"
+
+# Development network settings
+app_domain: "dev.example.com"
+enable_ssl: false
+
+# Development resource settings
+cpu_limit: "0.5"
+disk_quota: "10G"
+
+# Development doesn't need HA
+ha_enabled: false
+replica_count: 1
+

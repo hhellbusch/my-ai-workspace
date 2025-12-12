@@ -1,0 +1,65 @@
+---
+# Monitoring role - uses global variables to monitor other services
+- name: Show inherited global variables
+  debug:
+    msg: |
+      Monitoring configuration:
+      - App name: {{ app_name }}
+      - Environment: {{ environment }}
+      - Monitoring dir: {{ base_install_dir }}/monitoring
+      - Alert email: {{ alert_email }}
+      - Send alerts: {{ send_alerts }}
+
+- name: Create monitoring directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ base_install_dir }}/monitoring"
+    - "{{ config_dir }}/monitoring"
+    - "{{ log_dir }}/monitoring"
+
+- name: Deploy monitoring configuration
+  template:
+    src: monitoring.conf.j2
+    dest: "{{ config_dir }}/monitoring/monitoring.conf"
+    mode: '0644'
+
+- name: Configure monitoring targets
+  debug:
+    msg: |
+      Monitoring targets based on global config:
+      - Webserver: {{ app_domain }}:{{ webserver_port | default(80) }}
+      - Database: localhost:{{ db_port | default(5432) }}
+
+- name: Setup alerting
+  block:
+    - name: Configure alert destinations
+      debug:
+        msg: "Alerts will be sent to {{ alert_email }}"
+    
+    - name: Set alert thresholds
+      debug:
+        msg: |
+          Alert thresholds:
+          - Memory: {{ memory_limit }}
+          - Connections: {{ max_connections }}
+  when: send_alerts | bool
+
+- name: Configure log monitoring
+  debug:
+    msg: |
+      Log monitoring:
+      - Level: {{ log_level }}
+      - Location: {{ log_dir }}
+
+- name: Install monitoring packages
+  package:
+    name: "{{ monitoring_packages }}"
+    state: present
+
+- name: Display monitoring admin
+  debug:
+    msg: "Monitoring managed by {{ admin_user }} ({{ admin_email }})"
+

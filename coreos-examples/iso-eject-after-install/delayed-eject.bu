@@ -1,0 +1,109 @@
+variant: fcos
+version: 1.4.0
+storage:
+  files:
+    - path: /usr/local/bin/eject-with-delay.sh
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          set -e
+          
+          # Configurable delay (in seconds)
+          DELAY=${EJECT_DELAY:-60}
+          STAMP_FILE="/var/lib/install-media-ejected"
+          
+          echo "Installation media ejection scheduled in ${DELAY} seconds..."
+          echo "This allows time to verify successful installation."
+          echo "To cancel, run: touch ${STAMP_FILE}"
+          
+          # Wait for configured delay
+          sleep "$DELAY"
+          
+          # Check if cancellation stamp was created during delay
+          if [ -f "$STAMP_FILE" ]; then
+            echo "Ejection cancelled by user (stamp file exists)"
+            exit 0
+          fi
+          
+          # Verify system seems healthy before ejecting
+          echo "Performing system health checks..."
+          
+          # Check if systemd reached target
+          if ! systemctl is-system-running --quiet; then
+            system_state=$(systemctl is-system-running || true)
+            echo "System state: $system_state"
+            
+            if [ "$system_state" != "running" ] && [ "$system_state" != "degraded" ]; then
+              echo "WARNING: System not in expected state, delaying eject by 30s"
+              sleep 30
+            fi
+          fi
+          
+          # Check if any failed services that might indicate problems
+          failed_count=$(systemctl list-units --failed --no-legend | wc -l)
+          if [ "$failed_count" -gt 5 ]; then
+            echo "WARNING: Multiple failed services detected ($failed_count)"
+            echo "Delaying eject by 30s for investigation"
+            sleep 30
+          fi
+          
+          # Attempt eject
+          echo "Proceeding with media ejection..."
+          
+          if [ -b /dev/sr0 ]; then
+            # Unmount if mounted
+            if mount | grep -q '/dev/sr0'; then
+              echo "Unmounting /dev/sr0..."
+              umount /dev/sr0 || true
+            fi
+            
+            # Eject
+            if eject /dev/sr0; then
+              echo "Successfully ejected installation media"
+              touch "$STAMP_FILE"
+              exit 0
+            else
+              echo "Eject failed, trying force eject..."
+              if eject -f /dev/sr0; then
+                echo "Force eject successful"
+                touch "$STAMP_FILE"
+                exit 0
+              fi
+            fi
+          fi
+          
+          echo "ERROR: Failed to eject media"
+          touch "$STAMP_FILE"
+          exit 1
+    
+    - path: /etc/systemd/system/eject-install-media-delayed.service.d/override.conf
+      mode: 0644
+      contents:
+        inline: |
+          # Override configuration
+          # Adjust the delay by setting EJECT_DELAY environment variable
+          [Service]
+          Environment="EJECT_DELAY=60"
+
+systemd:
+  units:
+    - name: eject-install-media-delayed.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Delayed installation media ejection with verification
+        After=multi-user.target
+        ConditionPathExists=!/var/lib/install-media-ejected
+        
+        [Service]
+        Type=oneshot
+        Environment="EJECT_DELAY=60"
+        ExecStart=/usr/local/bin/eject-with-delay.sh
+        RemainAfterExit=yes
+        StandardOutput=journal+console
+        StandardError=journal+console
+        
+        [Install]
+        WantedBy=multi-user.target
+

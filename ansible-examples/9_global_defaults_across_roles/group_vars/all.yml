@@ -1,0 +1,25 @@
+---
+# METHOD 3: group_vars/all.yml
+# Variables here apply to ALL hosts in the inventory
+# These have higher precedence than role defaults but lower than playbook vars
+
+# Company-wide defaults
+company_name: "Example Corp"
+company_domain: "example.com"
+timezone: "UTC"
+
+# Standard paths for all deployments
+standard_bin_dir: "/usr/local/bin"
+standard_lib_dir: "/usr/local/lib"
+standard_tmp_dir: "/tmp"
+
+# Security defaults
+security_updates_enabled: true
+firewall_enabled: true
+selinux_mode: "enforcing"
+
+# Compliance settings
+audit_logging: true
+encryption_at_rest: true
+password_policy_enforced: true
+

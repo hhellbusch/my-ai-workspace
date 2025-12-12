@@ -1,0 +1,149 @@
+variant: fcos
+version: 1.4.0
+
+# Complete CoreOS configuration example with auto-eject
+# This shows how to combine the eject functionality with typical Ignition settings
+
+passwd:
+  users:
+    - name: core
+      # Replace with your SSH public key
+      ssh_authorized_keys:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC... your-key-here
+      groups:
+        - wheel
+        - docker
+
+storage:
+  files:
+    # Set hostname
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: coreos-server-01
+    
+    # Custom message of the day
+    - path: /etc/motd
+      mode: 0644
+      contents:
+        inline: |
+          ================================================
+          Welcome to CoreOS Server
+          This system was auto-provisioned via Ignition
+          Installation media was automatically ejected
+          ================================================
+    
+    # Eject script
+    - path: /usr/local/bin/eject-install-media.sh
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          # Auto-eject installation media
+          STAMP_FILE="/var/lib/install-media-ejected"
+          
+          if [ -f "$STAMP_FILE" ]; then
+            echo "Already ejected"
+            exit 0
+          fi
+          
+          # Wait for system to stabilize
+          sleep 30
+          
+          # Eject
+          if [ -b /dev/sr0 ]; then
+            umount /dev/sr0 2>/dev/null || true
+            if eject /dev/sr0; then
+              echo "Ejected successfully"
+              touch "$STAMP_FILE"
+              exit 0
+            fi
+          fi
+          
+          echo "Eject failed or no media found"
+          touch "$STAMP_FILE"
+          exit 1
+    
+    # Optional: Configuration for services
+    - path: /etc/sysconfig/docker-registry
+      mode: 0644
+      contents:
+        inline: |
+          # Docker registry configuration
+          REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry
+
+systemd:
+  units:
+    # Auto-eject installation media
+    - name: eject-install-media.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Eject installation media after first boot
+        After=multi-user.target
+        ConditionPathExists=!/var/lib/install-media-ejected
+        
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/local/bin/eject-install-media.sh
+        RemainAfterExit=yes
+        StandardOutput=journal+console
+        
+        [Install]
+        WantedBy=multi-user.target
+    
+    # Example: Custom service that runs after eject
+    - name: post-install-tasks.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Post-installation tasks
+        After=eject-install-media.service
+        
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/echo "Installation complete, system ready"
+        ExecStart=/usr/bin/systemctl status eject-install-media.service
+        RemainAfterExit=yes
+        
+        [Install]
+        WantedBy=multi-user.target
+    
+    # Optional: Enable and configure Docker
+    - name: docker.service
+      enabled: true
+    
+    # Optional: Enable automatic updates
+    - name: zincati.service
+      enabled: true
+
+# Optional: Network configuration
+# Uncomment and modify for static IP
+# networkd:
+#   units:
+#     - name: 00-static-eth0.network
+#       contents: |
+#         [Match]
+#         Name=eth0
+#         
+#         [Network]
+#         Address=192.168.1.100/24
+#         Gateway=192.168.1.1
+#         DNS=8.8.8.8
+#         DNS=8.8.4.4
+
+# Optional: Disk configuration
+# Uncomment to add additional filesystem
+# storage:
+#   disks:
+#     - device: /dev/sdb
+#       wipe_table: true
+#       partitions:
+#         - label: data
+#           number: 1
+#   filesystems:
+#     - path: /var/lib/data
+#       device: /dev/disk/by-partlabel/data
+#       format: xfs
+#       wipe_filesystem: true
+

@@ -1,0 +1,64 @@
+---
+# Advanced monitoring using community.general.redfish_info module
+# Monitors both system status and virtual media
+#
+# Usage:
+#   ansible-playbook monitor_with_module.yml \
+#     -e "idrac_ip=192.168.1.100" \
+#     -e "idrac_user=root" \
+#     -e "idrac_password=calvin"
+
+- name: Monitor System and Virtual Media Status
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    idrac_ip: "{{ idrac_ip | default('192.168.1.100') }}"
+    idrac_user: "{{ idrac_user | default('root') }}"
+    idrac_password: "{{ idrac_password | default('calvin') }}"
+    max_iterations: "{{ max_iterations | default(120) }}"
+    poll_interval: "{{ poll_interval | default(15) }}"
+    media_device_id: "{{ media_device_id | default('CD') }}"
+    
+  tasks:
+    - name: Display monitoring start
+      ansible.builtin.debug:
+        msg:
+          - "========================================================"
+          - "Starting ISO Boot Monitoring"
+          - "========================================================"
+          - "Target: {{ idrac_ip }}"
+          - "Max iterations: {{ max_iterations }}"
+          - "Poll interval: {{ poll_interval }}s"
+          - "Max duration: {{ max_iterations | int * poll_interval | int }}s ({{ (max_iterations | int * poll_interval | int / 60) | round(1) }}m)"
+          - "========================================================"
+    
+    # Set monitoring start time
+    - name: Record monitoring start time
+      ansible.builtin.set_fact:
+        monitoring_start: "{{ lookup('pipe', 'date +%s') }}"
+    
+    # Main monitoring loop
+    - name: Monitor boot process
+      include_tasks: monitor_iteration_module.yml
+      loop: "{{ range(0, max_iterations | int) | list }}"
+      loop_control:
+        loop_var: iteration_num
+        label: "Iteration {{ iteration_num + 1 }}/{{ max_iterations }}"
+    
+    # Calculate final statistics
+    - name: Calculate monitoring duration
+      ansible.builtin.set_fact:
+        monitoring_end: "{{ lookup('pipe', 'date +%s') }}"
+        elapsed_seconds: "{{ lookup('pipe', 'date +%s') | int - monitoring_start | int }}"
+    
+    - name: Display monitoring summary
+      ansible.builtin.debug:
+        msg:
+          - "========================================================"
+          - "MONITORING COMPLETE"
+          - "========================================================"
+          - "Total duration: {{ elapsed_seconds }}s ({{ (elapsed_seconds | int / 60) | round(1) }}m)"
+          - "Polls completed: {{ iteration_num | default(0) | int + 1 }}"
+          - "========================================================"
+

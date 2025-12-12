@@ -1,0 +1,96 @@
+---
+# REAL-WORLD EXAMPLE: Parallel system updates via bastion
+#
+# This example shows a practical use case: updating multiple systems in parallel
+# Tasks that would normally take hours can complete in minutes
+
+- name: Parallel system maintenance via bastion
+  hosts: target_nodes
+  gather_facts: true
+  
+  vars:
+    max_task_runtime: 3600  # 1 hour max per task
+    
+  tasks:
+    - name: Pre-flight checks (run serially for validation)
+      block:
+        - name: Check connectivity
+          ping:
+          
+        - name: Verify sufficient disk space
+          shell: df -h / | awk 'NR==2 {print $5}' | sed 's/%//'
+          register: disk_usage
+          failed_when: disk_usage.stdout | int > 90
+          changed_when: false
+    
+    # Now launch all long-running tasks in parallel
+    - name: Start system package update
+      yum:
+        name: '*'
+        state: latest
+      async: "{{ max_task_runtime }}"
+      poll: 0
+      register: update_job
+      when: ansible_os_family == "RedHat"
+      
+    - name: Start log rotation
+      command: logrotate -f /etc/logrotate.conf
+      async: "{{ max_task_runtime }}"
+      poll: 0
+      register: logrotate_job
+      
+    - name: Start clearing old kernels
+      shell: package-cleanup -y --oldkernels --count=2
+      async: "{{ max_task_runtime }}"
+      poll: 0
+      register: kernel_cleanup_job
+      when: ansible_os_family == "RedHat"
+    
+    # Wait for all parallel tasks to complete
+    - name: Wait for package updates to complete
+      async_status:
+        jid: "{{ update_job.ansible_job_id }}"
+      register: update_result
+      until: update_result.finished
+      retries: 360
+      delay: 10
+      when: update_job.ansible_job_id is defined
+      
+    - name: Wait for log rotation to complete
+      async_status:
+        jid: "{{ logrotate_job.ansible_job_id }}"
+      register: logrotate_result
+      until: logrotate_result.finished
+      retries: 360
+      delay: 10
+      when: logrotate_job.ansible_job_id is defined
+      
+    - name: Wait for kernel cleanup to complete
+      async_status:
+        jid: "{{ kernel_cleanup_job.ansible_job_id }}"
+      register: kernel_result
+      until: kernel_result.finished
+      retries: 360
+      delay: 10
+      when: kernel_cleanup_job.ansible_job_id is defined
+    
+    # Post-maintenance tasks
+    - name: Check if reboot is required
+      stat:
+        path: /var/run/reboot-required
+      register: reboot_required
+      
+    - name: Report completion status
+      debug:
+        msg: |
+          Maintenance completed on {{ inventory_hostname }}
+          Updates: {{ 'Applied' if update_result.changed | default(false) else 'No changes' }}
+          Reboot needed: {{ 'Yes' if reboot_required.stat.exists else 'No' }}
+          
+    # Optional: Stagger reboots if needed
+    - name: Reboot nodes (one at a time)
+      reboot:
+        reboot_timeout: 600
+      when: reboot_required.stat.exists
+      throttle: 1  # Only reboot one host at a time
+

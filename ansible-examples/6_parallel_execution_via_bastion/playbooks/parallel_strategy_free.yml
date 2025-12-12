@@ -1,0 +1,45 @@
+---
+# PARALLEL EXECUTION USING 'FREE' STRATEGY
+#
+# With strategy: free, each host runs through tasks independently.
+# Fast hosts don't wait for slow hosts to finish each task.
+#
+# Timeline:
+# - Each host runs Task 1, then immediately Task 2, then Task 3
+# - Hosts don't synchronize between tasks
+# - Fast hosts finish all tasks while slow hosts may still be on Task 1
+#
+# Best for: When you don't care about synchronization between hosts
+# Caution: Can make debugging difficult, output will be interleaved
+
+- name: Parallel execution with free strategy
+  hosts: target_nodes
+  gather_facts: false
+  strategy: free      # Each host proceeds independently
+  
+  tasks:
+    - name: Task 1 - Health check
+      command: systemctl is-system-running
+      register: health_check
+      changed_when: false
+      
+    - name: Task 2 - Collect system info
+      command: uname -a
+      register: system_info
+      changed_when: false
+      
+    - name: Task 3 - Check disk space
+      command: df -h
+      register: disk_space
+      changed_when: false
+      
+    - name: Display results for this host
+      debug:
+        msg: "Completed all tasks on {{ inventory_hostname }}"
+
+# Total time: max(all tasks on slowest host)
+# Each host runs as fast as it can without waiting for others
+#
+# Note: Output will be chaotic - hosts finish at different times
+# Consider using callback plugins for better output formatting
+

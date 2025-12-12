@@ -1,0 +1,19 @@
+---
+# Default variables for webserver role
+# These have LOWEST precedence and will be overridden by:
+# - playbook vars
+# - vars_files
+# - role vars
+# - extra-vars
+
+webserver_port: 80
+webserver_packages:
+  - nginx
+  - nginx-module-ssl
+
+# Role-specific defaults that can use global vars
+webserver_config_file: "{{ config_dir | default('/etc/nginx') }}/webserver.conf"
+webserver_log_file: "{{ log_dir | default('/var/log') }}/webserver.log"
+webserver_user: "www-data"
+webserver_worker_processes: "auto"
+

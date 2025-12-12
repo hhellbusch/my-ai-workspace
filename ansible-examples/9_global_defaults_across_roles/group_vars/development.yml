@@ -1,0 +1,12 @@
+---
+# Variables specific to development group
+
+environment: "development"
+enable_monitoring: false
+enable_backups: false
+debug_mode: true
+
+# Relaxed security for dev
+selinux_mode: "permissive"
+firewall_enabled: false
+

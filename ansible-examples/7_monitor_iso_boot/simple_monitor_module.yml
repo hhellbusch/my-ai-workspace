@@ -1,0 +1,111 @@
+---
+# Simple monitoring using community.general.redfish_info module
+# This version uses the Ansible module instead of direct URI calls
+#
+# Usage:
+#   ansible-playbook simple_monitor_module.yml \
+#     -e "idrac_ip=192.168.1.100" \
+#     -e "idrac_user=root" \
+#     -e "idrac_password=calvin" \
+#     -e "iterations=60"
+
+- name: Simple System Status Monitor (Using Redfish Module)
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    idrac_ip: "{{ idrac_ip | default('192.168.1.100') }}"
+    idrac_user: "{{ idrac_user | default('root') }}"
+    idrac_password: "{{ idrac_password | default('calvin') }}"
+    iterations: "{{ iterations | default(60) }}"  # How many times to poll
+    interval: "{{ interval | default(10) }}"      # Seconds between polls
+    
+  tasks:
+    - name: Display monitoring info
+      ansible.builtin.debug:
+        msg:
+          - "Starting system monitoring"
+          - "Target: {{ idrac_ip }}"
+          - "Iterations: {{ iterations }}"
+          - "Interval: {{ interval }} seconds"
+          - "Total duration: {{ iterations | int * interval | int }} seconds"
+          - ""
+    
+    # Get initial system info to display hardware details
+    - name: Get initial system information
+      community.general.redfish_info:
+        baseuri: "{{ idrac_ip }}"
+        username: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+        validate_certs: false
+        category: Systems
+        command: GetSystemInfo
+      register: initial_info
+      failed_when: false
+    
+    - name: Display system information
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "SYSTEM INFORMATION"
+          - "================================================"
+          - "Manufacturer: {{ initial_info.redfish_facts.system.entries[0].Manufacturer | default('Unknown') }}"
+          - "Model: {{ initial_info.redfish_facts.system.entries[0].Model | default('Unknown') }}"
+          - "Serial Number: {{ initial_info.redfish_facts.system.entries[0].SerialNumber | default('Unknown') }}"
+          - "BIOS Version: {{ initial_info.redfish_facts.system.entries[0].BiosVersion | default('Unknown') }}"
+          - "================================================"
+      when: 
+        - initial_info.redfish_facts is defined
+        - initial_info.redfish_facts.system is defined
+    
+    # Monitor system status with immediate display
+    - name: Poll and display system status (iteration {{ item }}/{{ iterations }})
+      block:
+        - name: Get system status
+          community.general.redfish_info:
+            baseuri: "{{ idrac_ip }}"
+            username: "{{ idrac_user }}"
+            password: "{{ idrac_password }}"
+            validate_certs: false
+            category: Systems
+            command: GetSystemInfo
+          register: poll_result
+          failed_when: false
+          changed_when: false
+        
+        - name: Display poll result immediately
+          ansible.builtin.debug:
+            msg:
+              - "================================================"
+              - "Poll {{ item }}/{{ iterations }} - {{ lookup('pipe', 'date \"+%H:%M:%S\"') }}"
+              - "================================================"
+              - "Power State:  {{ poll_result.redfish_facts.system.entries[0].PowerState | default('Unknown') }}"
+              - "Health:       {{ poll_result.redfish_facts.system.entries[0].Status.Health | default('Unknown') }}"
+              - "State:        {{ poll_result.redfish_facts.system.entries[0].Status.State | default('Unknown') }}"
+              - "Boot Source:  {{ poll_result.redfish_facts.system.entries[0].Boot.BootSourceOverrideTarget | default('None') }}"
+              - "Boot Enabled: {{ poll_result.redfish_facts.system.entries[0].Boot.BootSourceOverrideEnabled | default('Unknown') }}"
+              - "================================================"
+          when: 
+            - poll_result.redfish_facts is defined
+            - poll_result.redfish_facts.system is defined
+        
+        - name: Display error if poll failed
+          ansible.builtin.debug:
+            msg:
+              - "================================================"
+              - "Poll {{ item }}/{{ iterations }} - ERROR"
+              - "================================================"
+              - "❌ Failed to retrieve system information"
+              - "Error: {{ poll_result.msg | default('Unknown error') }}"
+              - "================================================"
+          when: poll_result.failed | default(false)
+        
+        - name: Wait before next poll
+          ansible.builtin.pause:
+            seconds: "{{ interval }}"
+          when: item | int < iterations | int
+      
+      loop: "{{ range(1, iterations | int + 1) | list }}"
+      loop_control:
+        label: "Poll {{ item }}/{{ iterations }}"
+

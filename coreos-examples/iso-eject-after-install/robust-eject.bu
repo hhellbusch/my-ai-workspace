@@ -1,0 +1,120 @@
+variant: fcos
+version: 1.4.0
+storage:
+  files:
+    - path: /usr/local/bin/eject-install-media-robust.sh
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          set -e
+          
+          STAMP_FILE="/var/lib/install-media-ejected"
+          LOG_FILE="/var/log/install-media-eject.log"
+          
+          log() {
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
+          }
+          
+          # Check if already ejected
+          if [ -f "$STAMP_FILE" ]; then
+            log "Media already ejected (stamp file exists), exiting"
+            exit 0
+          fi
+          
+          log "Starting installation media ejection process"
+          
+          # Wait for system to stabilize
+          log "Waiting 30 seconds for system to stabilize..."
+          sleep 30
+          
+          # Method 1: Try standard eject on /dev/sr0
+          if [ -b /dev/sr0 ]; then
+            log "Found /dev/sr0, attempting eject..."
+            
+            # Check if mounted and unmount
+            if mount | grep -q '/dev/sr0'; then
+              log "/dev/sr0 is mounted, unmounting..."
+              umount /dev/sr0 || log "Warning: Could not unmount /dev/sr0"
+            fi
+            
+            # Try eject
+            if eject /dev/sr0 2>&1 | tee -a "$LOG_FILE"; then
+              log "Successfully ejected /dev/sr0"
+              touch "$STAMP_FILE"
+              exit 0
+            else
+              log "Standard eject failed, trying force eject..."
+              if eject -f /dev/sr0 2>&1 | tee -a "$LOG_FILE"; then
+                log "Force eject succeeded"
+                touch "$STAMP_FILE"
+                exit 0
+              fi
+            fi
+          fi
+          
+          # Method 2: Try other CD-ROM device names
+          for device in /dev/cdrom /dev/dvd /dev/sr1 /dev/sr2; do
+            if [ -b "$device" ]; then
+              log "Trying to eject $device..."
+              if eject "$device" 2>&1 | tee -a "$LOG_FILE"; then
+                log "Successfully ejected $device"
+                touch "$STAMP_FILE"
+                exit 0
+              fi
+            fi
+          done
+          
+          # Method 3: Try VMware tools if available
+          if command -v vmware-toolbox-cmd &> /dev/null; then
+            log "VMware tools detected, attempting vmware-toolbox-cmd..."
+            if vmware-toolbox-cmd device eject cdrom 2>&1 | tee -a "$LOG_FILE"; then
+              log "Successfully ejected via VMware tools"
+              touch "$STAMP_FILE"
+              exit 0
+            fi
+          fi
+          
+          # Method 4: Try direct SCSI eject
+          if [ -b /dev/sr0 ]; then
+            log "Attempting direct SCSI eject command..."
+            if sg_start --eject /dev/sr0 2>&1 | tee -a "$LOG_FILE"; then
+              log "Successfully ejected via SCSI command"
+              touch "$STAMP_FILE"
+              exit 0
+            fi
+          fi
+          
+          # If we got here, all methods failed
+          log "ERROR: All eject methods failed"
+          log "Please manually eject the installation media"
+          
+          # Create stamp file anyway to prevent repeated attempts
+          touch "$STAMP_FILE"
+          exit 1
+
+systemd:
+  units:
+    - name: eject-install-media-robust.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Robust installation media ejection with multiple fallbacks
+        After=multi-user.target
+        ConditionPathExists=!/var/lib/install-media-ejected
+        
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/local/bin/eject-install-media-robust.sh
+        RemainAfterExit=yes
+        StandardOutput=journal+console
+        StandardError=journal+console
+        
+        # Retry on failure
+        Restart=on-failure
+        RestartSec=60
+        StartLimitBurst=3
+        
+        [Install]
+        WantedBy=multi-user.target
+

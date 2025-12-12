@@ -1,0 +1,86 @@
+variant: fcos
+version: 1.4.0
+storage:
+  files:
+    - path: /usr/local/bin/eject-via-redfish.sh
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          set -e
+          
+          # Configuration - Update these values for your environment
+          BMC_IP="${BMC_IP:-192.168.1.100}"
+          BMC_USERNAME="${BMC_USERNAME:-admin}"
+          BMC_PASSWORD="${BMC_PASSWORD:-password}"
+          
+          # Alternatively, read from a secure location
+          # source /etc/bmc-credentials.conf
+          
+          # Redfish API endpoints (adjust for your BMC)
+          # Common patterns:
+          # - HPE iLO: /redfish/v1/Managers/1/VirtualMedia/2/Actions/VirtualMedia.EjectMedia
+          # - Dell iDRAC: /redfish/v1/Managers/iDRAC.Embedded.1/VirtualMedia/CD/Actions/VirtualMedia.EjectMedia
+          # - Lenovo XCC: /redfish/v1/Managers/1/VirtualMedia/CD1/Actions/VirtualMedia.EjectMedia
+          
+          EJECT_ENDPOINT="https://${BMC_IP}/redfish/v1/Managers/1/VirtualMedia/CD/Actions/VirtualMedia.EjectMedia"
+          
+          echo "Attempting to eject virtual media via Redfish API..."
+          
+          # Eject virtual media
+          response=$(curl -k -s -w "\n%{http_code}" \
+            -u "${BMC_USERNAME}:${BMC_PASSWORD}" \
+            -H "Content-Type: application/json" \
+            -X POST \
+            "${EJECT_ENDPOINT}" \
+            -d '{}')
+          
+          http_code=$(echo "$response" | tail -n1)
+          
+          if [ "$http_code" -eq 200 ] || [ "$http_code" -eq 204 ]; then
+            echo "Successfully ejected virtual media (HTTP $http_code)"
+            exit 0
+          else
+            echo "Failed to eject virtual media (HTTP $http_code)"
+            echo "$response"
+            exit 1
+          fi
+    
+    - path: /etc/bmc-credentials.conf
+      mode: 0600
+      contents:
+        inline: |
+          # BMC Credentials Configuration
+          # Update these values for your environment
+          BMC_IP=192.168.1.100
+          BMC_USERNAME=admin
+          BMC_PASSWORD=changeme
+
+systemd:
+  units:
+    - name: eject-virtual-media-redfish.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Eject virtual media via Redfish API
+        After=network-online.target multi-user.target
+        Wants=network-online.target
+        ConditionPathExists=!/var/lib/virtual-media-ejected.stamp
+        
+        [Service]
+        Type=oneshot
+        # Wait for network to be fully available
+        ExecStartPre=/bin/sleep 15
+        # Source credentials and eject
+        EnvironmentFile=/etc/bmc-credentials.conf
+        ExecStart=/usr/local/bin/eject-via-redfish.sh
+        ExecStartPost=/usr/bin/touch /var/lib/virtual-media-ejected.stamp
+        RemainAfterExit=yes
+        # Retry on failure
+        Restart=on-failure
+        RestartSec=30
+        StartLimitBurst=3
+        
+        [Install]
+        WantedBy=multi-user.target
+

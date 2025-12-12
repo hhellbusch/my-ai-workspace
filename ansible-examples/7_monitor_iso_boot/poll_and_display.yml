@@ -1,0 +1,51 @@
+---
+# Single poll iteration with immediate display
+# This file is included by simple_monitor_live.yml
+
+- name: Get current system status
+  community.general.redfish_info:
+    baseuri: "{{ idrac_ip }}"
+    username: "{{ idrac_user }}"
+    password: "{{ idrac_password }}"
+    validate_certs: false
+    category: Systems
+    command: GetSystemInfo
+  register: system_status
+  failed_when: false
+  changed_when: false
+
+- name: Display status immediately
+  ansible.builtin.debug:
+    msg:
+      - "========================================================"
+      - "Poll {{ iteration_number }}/{{ iterations }} - {{ lookup('pipe', 'date \"+%Y-%m-%d %H:%M:%S\"') }}"
+      - "========================================================"
+      - "Power State:  {{ system_status.redfish_facts.system.entries[0].PowerState | default('Unknown') }}"
+      - "Health:       {{ system_status.redfish_facts.system.entries[0].Status.Health | default('Unknown') }}"
+      - "State:        {{ system_status.redfish_facts.system.entries[0].Status.State | default('Unknown') }}"
+      - "Boot Source:  {{ system_status.redfish_facts.system.entries[0].Boot.BootSourceOverrideTarget | default('None') }}"
+      - "Boot Enabled: {{ system_status.redfish_facts.system.entries[0].Boot.BootSourceOverrideEnabled | default('Unknown') }}"
+      - "========================================================"
+      - ""
+  when: 
+    - system_status.redfish_facts is defined
+    - system_status.redfish_facts.system is defined
+    - not system_status.failed | default(false)
+
+- name: Display error status
+  ansible.builtin.debug:
+    msg:
+      - "========================================================"
+      - "Poll {{ iteration_number }}/{{ iterations }} - ERROR"
+      - "========================================================"
+      - "❌ Failed to retrieve system information"
+      - "Error: {{ system_status.msg | default('Unknown error') }}"
+      - "========================================================"
+      - ""
+  when: system_status.failed | default(false)
+
+- name: Wait before next poll
+  ansible.builtin.pause:
+    seconds: "{{ interval }}"
+  when: iteration_number | int < iterations | int
+

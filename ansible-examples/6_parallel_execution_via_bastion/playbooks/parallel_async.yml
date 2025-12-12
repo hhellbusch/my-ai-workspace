@@ -1,0 +1,75 @@
+---
+# PARALLEL EXECUTION USING ASYNC
+#
+# This provides TRUE parallelism for independent, long-running tasks.
+# All tasks start on all nodes simultaneously, then we wait for completion.
+#
+# Timeline:
+# - Task 1, Task 2, and Task 3 ALL start on ALL nodes at the same time
+# - Then we wait for all to complete
+#
+# Best for: Long-running tasks (backups, updates, data transfers, etc.)
+
+- name: Parallel async task execution via bastion
+  hosts: target_nodes
+  gather_facts: false
+  
+  tasks:
+    # Fire off all tasks asynchronously (don't wait)
+    - name: Task 1 - Start health check
+      command: systemctl is-system-running
+      async: 300          # Maximum time to allow (5 minutes)
+      poll: 0             # Don't wait, fire and forget
+      register: task1_job
+      changed_when: false
+      
+    - name: Task 2 - Start system info collection
+      command: uname -a
+      async: 300
+      poll: 0
+      register: task2_job
+      changed_when: false
+      
+    - name: Task 3 - Start disk space check
+      command: df -h
+      async: 300
+      poll: 0
+      register: task3_job
+      changed_when: false
+    
+    # Now wait for all tasks to complete
+    - name: Wait for Task 1 to complete
+      async_status:
+        jid: "{{ task1_job.ansible_job_id }}"
+      register: task1_result
+      until: task1_result.finished
+      retries: 30
+      delay: 10
+      
+    - name: Wait for Task 2 to complete
+      async_status:
+        jid: "{{ task2_job.ansible_job_id }}"
+      register: task2_result
+      until: task2_result.finished
+      retries: 30
+      delay: 10
+      
+    - name: Wait for Task 3 to complete
+      async_status:
+        jid: "{{ task3_job.ansible_job_id }}"
+      register: task3_result
+      until: task3_result.finished
+      retries: 30
+      delay: 10
+    
+    - name: Display results
+      debug:
+        msg: |
+          All tasks completed on {{ inventory_hostname }}
+          Task 1: {{ task1_result.stdout }}
+          Task 2: {{ task2_result.stdout }}
+          Task 3: {{ task3_result.stdout_lines[0] }}
+
+# Total time: max(Task1, Task2, Task3) 
+# This is the fastest approach for independent long-running tasks!
+

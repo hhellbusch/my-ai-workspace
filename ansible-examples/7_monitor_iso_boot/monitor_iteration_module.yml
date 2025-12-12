@@ -1,0 +1,117 @@
+---
+# Single monitoring iteration using redfish_info module
+# This is included by monitor_with_module.yml
+
+- name: Get system status
+  community.general.redfish_info:
+    baseuri: "{{ idrac_ip }}"
+    username: "{{ idrac_user }}"
+    password: "{{ idrac_password }}"
+    validate_certs: false
+    category: Systems
+    command: GetSystemInfo
+  register: system_info
+  failed_when: false
+
+- name: Get virtual media status
+  community.general.redfish_info:
+    baseuri: "{{ idrac_ip }}"
+    username: "{{ idrac_user }}"
+    password: "{{ idrac_password }}"
+    validate_certs: false
+    category: Manager
+    command: GetVirtualMedia
+  register: media_info
+  failed_when: false
+
+# Extract specific system data for cleaner access
+- name: Extract system facts
+  ansible.builtin.set_fact:
+    current_system: "{{ system_info.redfish_facts.system.entries[0] | default({}) }}"
+  when: 
+    - system_info.redfish_facts is defined
+    - system_info.redfish_facts.system is defined
+    - system_info.redfish_facts.system.entries | length > 0
+
+# Extract virtual media for the specific device
+- name: Extract virtual media facts
+  ansible.builtin.set_fact:
+    current_media: "{{ media_info.redfish_facts.virtual_media.entries | selectattr('Id', 'equalto', media_device_id) | first | default({}) }}"
+  when:
+    - media_info.redfish_facts is defined
+    - media_info.redfish_facts.virtual_media is defined
+    - media_info.redfish_facts.virtual_media.entries | length > 0
+
+# Display current status
+- name: Display iteration status
+  ansible.builtin.debug:
+    msg:
+      - "========================================================"
+      - "Poll #{{ iteration_num + 1 }} - {{ lookup('pipe', 'date \"+%Y-%m-%d %H:%M:%S\"') }}"
+      - "========================================================"
+      - "SYSTEM:"
+      - "  Power State:       {{ current_system.PowerState | default('Unknown') }}"
+      - "  System Health:     {{ current_system.Status.Health | default('Unknown') }}"
+      - "  System State:      {{ current_system.Status.State | default('Unknown') }}"
+      - "  Boot Source:       {{ current_system.Boot.BootSourceOverrideTarget | default('None') }}"
+      - "  Boot Enabled:      {{ current_system.Boot.BootSourceOverrideEnabled | default('Unknown') }}"
+      - ""
+      - "VIRTUAL MEDIA ({{ media_device_id }}):"
+      - "  Inserted:          {{ current_media.Inserted | default('Unknown') }}"
+      - "  Image:             {{ current_media.Image | default('None') }}"
+      - "  Connected Via:     {{ current_media.ConnectedVia | default('Unknown') }}"
+      - ""
+      - "INDICATORS:"
+      - "  {% if current_system.PowerState | default('') == 'On' %}✅{% else %}⏳{% endif %} System powered {{ current_system.PowerState | default('unknown') | lower }}"
+      - "  {% if current_media.Inserted | default(false) %}📀{% else %}⏏️{% endif %} ISO {{ 'mounted' if current_media.Inserted | default(false) else 'ejected' }}"
+      - "  {% if current_system.Boot.BootSourceOverrideTarget | default('') == 'Cd' %}💿{% else %}💾{% endif %} Boot from {{ current_system.Boot.BootSourceOverrideTarget | default('disk') }}"
+      - "========================================================"
+  when: current_system is defined
+
+# Display error if we couldn't get info
+- name: Display error status
+  ansible.builtin.debug:
+    msg:
+      - "========================================================"
+      - "Poll #{{ iteration_num + 1 }} - ERROR"
+      - "========================================================"
+      - "❌ Failed to retrieve system information"
+      - "System info failed: {{ system_info.failed | default(false) }}"
+      - "Media info failed: {{ media_info.failed | default(false) }}"
+      - "========================================================"
+  when: current_system is not defined
+
+# Check if installation is complete
+- name: Check for installation completion
+  ansible.builtin.set_fact:
+    installation_complete: true
+  when:
+    - current_system is defined
+    - current_system.PowerState | default('') == "On"
+    - current_media is defined
+    - current_media.Inserted | default(true) == false
+    - current_system.Boot.BootSourceOverrideTarget | default('Cd') != 'Cd'
+
+# If installation complete, display success and end
+- name: Display completion message
+  ansible.builtin.debug:
+    msg:
+      - "========================================================"
+      - "✅ INSTALLATION APPEARS COMPLETE"
+      - "========================================================"
+      - "System is powered on and booted from disk"
+      - "ISO has been ejected"
+      - "========================================================"
+  when: installation_complete | default(false)
+
+# End loop if complete
+- name: End monitoring if complete
+  ansible.builtin.meta: end_play
+  when: installation_complete | default(false)
+
+# Wait before next poll (unless this is the last iteration)
+- name: Wait before next poll
+  ansible.builtin.pause:
+    seconds: "{{ poll_interval }}"
+  when: iteration_num | int < (max_iterations | int - 1)
+

@@ -1,0 +1,17 @@
+---
+# Variables specific to production group
+# Override group_vars/all.yml for production hosts
+
+environment: "production"
+enable_monitoring: true
+enable_backups: true
+debug_mode: false
+
+# Production-specific security
+security_scan_enabled: true
+intrusion_detection_enabled: true
+
+# Compliance for production
+compliance_reporting: true
+audit_retention_days: 90
+

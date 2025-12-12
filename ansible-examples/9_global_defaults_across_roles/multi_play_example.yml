@@ -1,0 +1,206 @@
+---
+# Example: Multiple plays in one playbook with global defaults
+# Each "play" is a section starting with "- name:" at the root level
+
+# ============================================================================
+# PLAY 1: Setup infrastructure
+# ============================================================================
+- name: Setup infrastructure layer
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  # Variables defined here are ONLY available in this play
+  vars:
+    # Global application settings (we want these in ALL plays)
+    app_name: "myapp"
+    app_version: "1.0.0"
+    environment: "production"
+    
+    # Infrastructure-specific variables
+    infra_layer: "foundation"
+    create_networks: true
+    create_storage: true
+    
+    # Derived paths
+    base_install_dir: "/opt/{{ app_name }}"
+    log_dir: "/var/log/{{ app_name }}"
+  
+  tasks:
+    - name: Display infrastructure setup
+      debug:
+        msg: |
+          === PLAY 1: Infrastructure Setup ===
+          App: {{ app_name }} v{{ app_version }}
+          Environment: {{ environment }}
+          Layer: {{ infra_layer }}
+          Install dir: {{ base_install_dir }}
+    
+    - name: Simulate network setup
+      debug:
+        msg: "Creating networks for {{ app_name }}"
+      when: create_networks | bool
+    
+    # IMPORTANT: Use set_fact with cacheable to share variables with next play
+    - name: Set facts for use in later plays
+      set_fact:
+        shared_app_name: "{{ app_name }}"
+        shared_app_version: "{{ app_version }}"
+        shared_environment: "{{ environment }}"
+        shared_base_install_dir: "{{ base_install_dir }}"
+        shared_log_dir: "{{ log_dir }}"
+        cacheable: yes  # Makes these available in subsequent plays
+
+# ============================================================================
+# PLAY 2: Deploy application services
+# ============================================================================
+- name: Deploy application services
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  # Variables here are ONLY for this play
+  # To use vars from Play 1, we need to:
+  # 1. Re-define them (DRY violation - not ideal)
+  # 2. Use set_fact from previous play (better)
+  # 3. Use vars_files loaded in both plays (best for shared config)
+  
+  vars:
+    # Play 2 specific variables
+    service_layer: "application"
+    deploy_webserver: true
+    deploy_database: true
+    
+    # Option 1: Re-define shared variables (NOT RECOMMENDED - duplicate code)
+    # app_name: "myapp"  # DON'T DO THIS - leads to inconsistencies
+    
+    # Option 2: Use the cached facts from Play 1 (BETTER)
+    # These are available because we used set_fact with cacheable: yes
+    app_name: "{{ shared_app_name }}"
+    app_version: "{{ shared_app_version }}"
+    environment: "{{ shared_environment }}"
+    base_install_dir: "{{ shared_base_install_dir }}"
+    
+    # Service-specific settings
+    service_port: 8080
+    service_replicas: 3
+  
+  roles:
+    - role: webserver
+      when: deploy_webserver | bool
+      vars:
+        webserver_port: "{{ service_port }}"
+    
+    - role: database
+      when: deploy_database | bool
+  
+  post_tasks:
+    - name: Display application deployment
+      debug:
+        msg: |
+          === PLAY 2: Application Deployment ===
+          App: {{ app_name }} v{{ app_version }}
+          Environment: {{ environment }}
+          Layer: {{ service_layer }}
+          Port: {{ service_port }}
+          Replicas: {{ service_replicas }}
+
+# ============================================================================
+# PLAY 3: Configure monitoring and observability
+# ============================================================================
+- name: Configure monitoring
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  vars:
+    # Play 3 specific variables
+    monitoring_layer: "observability"
+    enable_metrics: true
+    enable_logging: true
+    enable_tracing: false
+    
+    # Reuse shared variables from Play 1
+    app_name: "{{ shared_app_name }}"
+    app_version: "{{ shared_app_version }}"
+    environment: "{{ shared_environment }}"
+    
+    # Monitoring-specific settings
+    metrics_port: 9090
+    log_retention_days: 30
+  
+  tasks:
+    - name: Display monitoring setup
+      debug:
+        msg: |
+          === PLAY 3: Monitoring Setup ===
+          App: {{ app_name }} v{{ app_version }}
+          Environment: {{ environment }}
+          Layer: {{ monitoring_layer }}
+          Metrics: {{ enable_metrics }}
+          Logging: {{ enable_logging }}
+          Retention: {{ log_retention_days }} days
+    
+    - name: Configure metrics collection
+      debug:
+        msg: "Setting up metrics on port {{ metrics_port }} for {{ app_name }}"
+      when: enable_metrics | bool
+
+# ============================================================================
+# PLAY 4: Verification and health checks
+# ============================================================================
+- name: Verify deployment
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  vars:
+    verification_layer: "validation"
+    
+    # Reuse shared variables
+    app_name: "{{ shared_app_name }}"
+    app_version: "{{ shared_app_version }}"
+    environment: "{{ shared_environment }}"
+    
+    # Verification settings
+    run_smoke_tests: true
+    run_integration_tests: false
+    health_check_retries: 5
+  
+  tasks:
+    - name: Display verification plan
+      debug:
+        msg: |
+          === PLAY 4: Verification ===
+          App: {{ app_name }} v{{ app_version }}
+          Environment: {{ environment }}
+          Smoke tests: {{ run_smoke_tests }}
+          Integration tests: {{ run_integration_tests }}
+    
+    - name: Run smoke tests
+      debug:
+        msg: "Running smoke tests for {{ app_name }}"
+      when: run_smoke_tests | bool
+    
+    - name: Final deployment summary
+      debug:
+        msg: |
+          ╔════════════════════════════════════════╗
+          ║   DEPLOYMENT COMPLETE                  ║
+          ╠════════════════════════════════════════╣
+          ║ Application: {{ app_name }}            
+          ║ Version: {{ app_version }}             
+          ║ Environment: {{ environment }}         
+          ╚════════════════════════════════════════╝
+
+# TO RUN:
+# ansible-playbook multi_play_example.yml
+
+# NOTES:
+# - Each play is isolated and has its own variable scope
+# - Variables from Play 1 don't automatically flow to Play 2
+# - Use set_fact with cacheable: yes to share variables between plays
+# - Or use vars_files loaded in all plays (see next example)
+
+
+

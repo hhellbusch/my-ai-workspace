@@ -1,0 +1,168 @@
+---
+# Advanced live monitoring with both system and virtual media
+# Displays results immediately after each poll
+#
+# Usage:
+#   ansible-playbook monitor_live_advanced.yml \
+#     -e "idrac_ip=192.168.1.100" \
+#     -e "idrac_user=root" \
+#     -e "idrac_password=calvin"
+
+- name: Advanced Live System Monitoring
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    idrac_ip: "{{ idrac_ip | default('192.168.1.100') }}"
+    idrac_user: "{{ idrac_user | default('root') }}"
+    idrac_password: "{{ idrac_password | default('calvin') }}"
+    max_iterations: "{{ max_iterations | default(120) }}"
+    poll_interval: "{{ poll_interval | default(15) }}"
+    media_device_id: "{{ media_device_id | default('CD') }}"
+    
+  tasks:
+    - name: Display monitoring start
+      ansible.builtin.debug:
+        msg:
+          - "========================================================"
+          - "Starting Advanced Live Monitoring"
+          - "========================================================"
+          - "Target: {{ idrac_ip }}"
+          - "Max iterations: {{ max_iterations }}"
+          - "Poll interval: {{ poll_interval }}s"
+          - "Max duration: {{ max_iterations | int * poll_interval | int }}s ({{ (max_iterations | int * poll_interval | int / 60) | round(1) }}m)"
+          - "========================================================"
+          - ""
+    
+    # Set monitoring start time
+    - name: Record monitoring start time
+      ansible.builtin.set_fact:
+        monitoring_start: "{{ lookup('pipe', 'date +%s') }}"
+        monitoring_start_display: "{{ lookup('pipe', 'date \"+%Y-%m-%d %H:%M:%S\"') }}"
+    
+    # Main monitoring loop with immediate display
+    - name: Poll system and virtual media (iteration {{ item }})
+      block:
+        - name: Get system status
+          community.general.redfish_info:
+            baseuri: "{{ idrac_ip }}"
+            username: "{{ idrac_user }}"
+            password: "{{ idrac_password }}"
+            validate_certs: false
+            category: Systems
+            command: GetSystemInfo
+          register: system_info
+          failed_when: false
+        
+        - name: Get virtual media status
+          community.general.redfish_info:
+            baseuri: "{{ idrac_ip }}"
+            username: "{{ idrac_user }}"
+            password: "{{ idrac_password }}"
+            validate_certs: false
+            category: Manager
+            command: GetVirtualMedia
+          register: media_info
+          failed_when: false
+        
+        - name: Extract system and media facts
+          ansible.builtin.set_fact:
+            current_system: "{{ system_info.redfish_facts.system.entries[0] | default({}) }}"
+            current_media: "{{ media_info.redfish_facts.virtual_media.entries | selectattr('Id', 'equalto', media_device_id) | first | default({}) }}"
+          when:
+            - system_info.redfish_facts is defined
+            - media_info.redfish_facts is defined
+        
+        - name: Display live status
+          ansible.builtin.debug:
+            msg:
+              - "========================================================"
+              - "Poll #{{ item }}/{{ max_iterations }} - {{ lookup('pipe', 'date \"+%Y-%m-%d %H:%M:%S\"') }}"
+              - "========================================================"
+              - "SYSTEM:"
+              - "  Power State:       {{ current_system.PowerState | default('Unknown') }}"
+              - "  System Health:     {{ current_system.Status.Health | default('Unknown') }}"
+              - "  System State:      {{ current_system.Status.State | default('Unknown') }}"
+              - "  Boot Source:       {{ current_system.Boot.BootSourceOverrideTarget | default('None') }}"
+              - "  Boot Enabled:      {{ current_system.Boot.BootSourceOverrideEnabled | default('Unknown') }}"
+              - ""
+              - "VIRTUAL MEDIA ({{ media_device_id }}):"
+              - "  Inserted:          {{ current_media.Inserted | default('Unknown') }}"
+              - "  Image:             {{ current_media.Image | default('None') }}"
+              - "  Connected Via:     {{ current_media.ConnectedVia | default('Unknown') }}"
+              - ""
+              - "INDICATORS:"
+              - "  {% if current_system.PowerState | default('') == 'On' %}✅{% else %}⏳{% endif %} System {{ 'powered on' if current_system.PowerState | default('') == 'On' else 'powered ' + current_system.PowerState | default('unknown') | lower }}"
+              - "  {% if current_media.Inserted | default(false) %}📀{% else %}⏏️{% endif %} ISO {{ 'mounted' if current_media.Inserted | default(false) else 'ejected' }}"
+              - "  {% if current_system.Boot.BootSourceOverrideTarget | default('') == 'Cd' %}💿{% else %}💾{% endif %} Boot from {{ current_system.Boot.BootSourceOverrideTarget | default('disk') }}"
+              - "========================================================"
+              - ""
+          when: current_system is defined and current_media is defined
+        
+        - name: Display error if polling failed
+          ansible.builtin.debug:
+            msg:
+              - "========================================================"
+              - "Poll #{{ item }}/{{ max_iterations }} - ERROR"
+              - "========================================================"
+              - "❌ Failed to retrieve information"
+              - "System query: {{ 'Failed' if system_info.failed | default(false) else 'OK' }}"
+              - "Media query: {{ 'Failed' if media_info.failed | default(false) else 'OK' }}"
+              - "========================================================"
+              - ""
+          when: system_info.failed | default(false) or media_info.failed | default(false)
+        
+        - name: Check for installation completion
+          ansible.builtin.set_fact:
+            installation_complete: true
+          when:
+            - current_system is defined
+            - current_media is defined
+            - current_system.PowerState | default('') == "On"
+            - current_media.Inserted | default(true) == false
+            - current_system.Boot.BootSourceOverrideTarget | default('Cd') != 'Cd'
+        
+        - name: Display completion message
+          ansible.builtin.debug:
+            msg:
+              - "========================================================"
+              - "✅ INSTALLATION APPEARS COMPLETE!"
+              - "========================================================"
+              - "System is powered on and booted from disk"
+              - "ISO has been ejected"
+              - "Stopping monitoring..."
+              - "========================================================"
+              - ""
+          when: installation_complete | default(false)
+        
+        - name: End monitoring if complete
+          ansible.builtin.meta: end_play
+          when: installation_complete | default(false)
+        
+        - name: Wait before next poll
+          ansible.builtin.pause:
+            seconds: "{{ poll_interval }}"
+          when: item | int < max_iterations | int
+      
+      loop: "{{ range(1, max_iterations | int + 1) | list }}"
+      loop_control:
+        label: "Poll {{ item }}/{{ max_iterations }}"
+    
+    # Calculate final statistics
+    - name: Calculate monitoring duration
+      ansible.builtin.set_fact:
+        monitoring_end: "{{ lookup('pipe', 'date +%s') }}"
+        elapsed_seconds: "{{ lookup('pipe', 'date +%s') | int - monitoring_start | int }}"
+    
+    - name: Display monitoring summary
+      ansible.builtin.debug:
+        msg:
+          - "========================================================"
+          - "MONITORING COMPLETE"
+          - "========================================================"
+          - "Started: {{ monitoring_start_display }}"
+          - "Ended: {{ lookup('pipe', 'date \"+%Y-%m-%d %H:%M:%S\"') }}"
+          - "Total duration: {{ elapsed_seconds }}s ({{ (elapsed_seconds | int / 60) | round(1) }}m)"
+          - "Polls completed: {{ max_iterations }}"
+          - "========================================================"
+

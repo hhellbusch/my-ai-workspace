@@ -1,0 +1,92 @@
+---
+# Example: Setting Global Defaults for Playbook and All Roles
+# This playbook demonstrates multiple ways to set default values that
+# are available to all tasks and roles throughout the playbook execution
+
+- name: Deploy application stack with global defaults
+  hosts: all
+  become: true
+  
+  # METHOD 1: vars - Highest precedence for playbook-level variables
+  # These override role defaults but can be overridden by extra-vars
+  vars:
+    # Global application settings
+    app_name: "myapp"
+    app_version: "1.0.0"
+    environment: "production"
+    
+    # Common paths used by all roles
+    base_install_dir: "/opt/{{ app_name }}"
+    log_dir: "/var/log/{{ app_name }}"
+    config_dir: "/etc/{{ app_name }}"
+    
+    # Network settings shared across roles
+    app_domain: "example.com"
+    enable_ssl: true
+    ssl_cert_path: "/etc/ssl/certs/{{ app_name }}.crt"
+    ssl_key_path: "/etc/ssl/private/{{ app_name }}.key"
+    
+    # Resource limits for all services
+    max_connections: 100
+    memory_limit: "512M"
+    
+    # Feature flags
+    enable_monitoring: true
+    enable_backups: true
+    debug_mode: false
+    
+  # METHOD 2: vars_files - Load variables from external files
+  # Good for environment-specific configs
+  vars_files:
+    - "vars/common.yml"
+    - "vars/{{ environment }}.yml"
+  
+  # Pre-tasks run before roles, useful for setup
+  pre_tasks:
+    - name: Display global configuration
+      debug:
+        msg: |
+          Deploying {{ app_name }} v{{ app_version }}
+          Environment: {{ environment }}
+          Base directory: {{ base_install_dir }}
+          SSL enabled: {{ enable_ssl }}
+    
+    - name: Create common directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ base_install_dir }}"
+        - "{{ log_dir }}"
+        - "{{ config_dir }}"
+  
+  # Roles - each inherits the global variables
+  roles:
+    - role: webserver
+      # You can override specific variables for individual roles
+      vars:
+        webserver_port: 8080
+        
+    - role: database
+      vars:
+        db_port: 5432
+        
+    - role: monitoring
+      # Conditionally include role based on global variable
+      when: enable_monitoring | bool
+  
+  # Post-tasks run after all roles complete
+  post_tasks:
+    - name: Verify deployment
+      debug:
+        msg: "Successfully deployed {{ app_name }} with all roles"
+    
+    - name: Display all services
+      debug:
+        msg: |
+          Services deployed:
+          - Webserver on port {{ webserver_port | default('80') }}
+          - Database on port {{ db_port | default('5432') }}
+          - Monitoring: {{ 'enabled' if enable_monitoring else 'disabled' }}
+

@@ -1,0 +1,70 @@
+---
+# Simple example: Global defaults across multiple roles
+# This is the most basic pattern - perfect for getting started
+
+- name: Simple global defaults example
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  # STEP 1: Define global variables here
+  # All roles and tasks can access these variables
+  vars:
+    # Application settings
+    app_name: "my_application"
+    app_version: "1.0.0"
+    
+    # Common paths (derived from app_name)
+    install_directory: "/opt/{{ app_name }}"
+    log_directory: "/var/log/{{ app_name }}"
+    
+    # Feature flags
+    enable_monitoring: true
+    enable_ssl: false
+    
+  # STEP 2: Tasks that use global variables
+  tasks:
+    - name: Show global variables work in tasks
+      debug:
+        msg: |
+          Application: {{ app_name }}
+          Version: {{ app_version }}
+          Install Dir: {{ install_directory }}
+          Monitoring: {{ 'enabled' if enable_monitoring else 'disabled' }}
+    
+    - name: Simulate creating directories from global vars
+      debug:
+        msg: "Would create directory: {{ install_directory }}"
+    
+    - name: Show conditional execution based on global flag
+      debug:
+        msg: "Monitoring is enabled!"
+      when: enable_monitoring | bool
+    
+    - name: Show SSL status
+      debug:
+        msg: "SSL is {{ 'enabled' if enable_ssl else 'disabled' }}"
+
+# DEMONSTRATION: How roles inherit these variables
+# Uncomment below to see roles using the same global vars
+
+# roles:
+#   - role: webserver
+#     # webserver role can use: app_name, app_version, install_directory, etc.
+#   
+#   - role: database
+#     # database role can ALSO use: app_name, app_version, install_directory, etc.
+#     # You can override specific vars for individual roles:
+#     vars:
+#       db_port: 5432
+#   
+#   - role: monitoring
+#     # Conditional role execution based on global flag
+#     when: enable_monitoring | bool
+
+# TO RUN:
+# ansible-playbook simple_example.yml
+
+# TO OVERRIDE VARIABLES:
+# ansible-playbook simple_example.yml -e "app_name=custom_app" -e "enable_ssl=true"
+

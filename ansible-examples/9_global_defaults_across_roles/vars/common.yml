@@ -1,0 +1,30 @@
+---
+# Common variables loaded via vars_files
+# These are available to all roles and tasks
+
+# Admin contact information
+admin_email: "admin@example.com"
+admin_user: "sysadmin"
+
+# Backup settings
+backup_enabled: true
+backup_retention_days: 30
+backup_location: "/backup/{{ app_name }}"
+
+# Logging configuration
+log_level: "info"
+log_rotation: "daily"
+log_retention_days: 7
+
+# Notification settings
+send_alerts: true
+alert_email: "alerts@example.com"
+
+# Common packages needed by all roles
+common_packages:
+  - curl
+  - wget
+  - vim
+  - net-tools
+  - htop
+

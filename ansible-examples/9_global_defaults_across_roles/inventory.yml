@@ -1,0 +1,28 @@
+---
+# Inventory file demonstrating group_vars usage
+# This is METHOD 3 for setting defaults
+
+all:
+  children:
+    production:
+      hosts:
+        prod-server1:
+          ansible_host: 192.168.1.10
+        prod-server2:
+          ansible_host: 192.168.1.11
+    
+    development:
+      hosts:
+        dev-server1:
+          ansible_host: 192.168.2.10
+    
+    staging:
+      hosts:
+        staging-server1:
+          ansible_host: 192.168.3.10
+
+  # Group-level variables for ALL hosts
+  vars:
+    ansible_user: ansible
+    ansible_python_interpreter: /usr/bin/python3
+

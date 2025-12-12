@@ -1,0 +1,66 @@
+---
+# Single monitoring iteration - included by main playbook
+# This allows for clean, reusable polling logic
+
+- name: Get system status
+  ansible.builtin.uri:
+    url: "https://{{ idrac_ip }}/redfish/v1/Systems/System.Embedded.1"
+    user: "{{ idrac_user }}"
+    password: "{{ idrac_password }}"
+    method: GET
+    validate_certs: "{{ validate_certs }}"
+    force_basic_auth: true
+    return_content: true
+  register: system_info
+  failed_when: false
+
+- name: Get virtual media status
+  ansible.builtin.uri:
+    url: "https://{{ idrac_ip }}/redfish/v1/Managers/iDRAC.Embedded.1/VirtualMedia/CD"
+    user: "{{ idrac_user }}"
+    password: "{{ idrac_password }}"
+    method: GET
+    validate_certs: "{{ validate_certs }}"
+    force_basic_auth: true
+    return_content: true
+  register: media_info
+  failed_when: false
+
+- name: Display iteration status
+  ansible.builtin.debug:
+    msg:
+      - "========================================================"
+      - "Poll #{{ iteration_num + 1 }} - {{ lookup('pipe', 'date \"+%Y-%m-%d %H:%M:%S\"') }}"
+      - "========================================================"
+      - "SYSTEM:"
+      - "  Power State:       {{ system_info.json.PowerState | default('Unknown') }}"
+      - "  System Health:     {{ system_info.json.Status.Health | default('Unknown') }}"
+      - "  System State:      {{ system_info.json.Status.State | default('Unknown') }}"
+      - "  Boot Source:       {{ system_info.json.Boot.BootSourceOverrideTarget | default('None') }}"
+      - "  Boot Enabled:      {{ system_info.json.Boot.BootSourceOverrideEnabled | default('Unknown') }}"
+      - ""
+      - "VIRTUAL MEDIA (ISO):"
+      - "  Inserted:          {{ media_info.json.Inserted | default('Unknown') }}"
+      - "  Image:             {{ media_info.json.Image | default('None') }}"
+      - "  Connected Via:     {{ media_info.json.ConnectedVia | default('Unknown') }}"
+      - ""
+      - "INDICATORS:"
+      - "  {% if system_info.json.PowerState | default('') == 'On' %}✅{% else %}⏳{% endif %} System powered on"
+      - "  {% if media_info.json.Inserted | default(false) %}📀{% else %}⏏️{% endif %} ISO {{ 'mounted' if media_info.json.Inserted | default(false) else 'ejected' }}"
+      - "  {% if system_info.json.Boot.BootSourceOverrideTarget | default('') == 'Cd' %}💿{% else %}💾{% endif %} Booting from {{ system_info.json.Boot.BootSourceOverrideTarget | default('disk') }}"
+      - "========================================================"
+
+- name: Wait before next poll
+  ansible.builtin.pause:
+    seconds: "{{ poll_interval }}"
+  when: iteration_num | int < (max_iterations | int - 1)
+
+# Check if we should stop monitoring (optional condition)
+- name: Check if installation appears complete
+  ansible.builtin.set_fact:
+    installation_complete: true
+  when:
+    - system_info.json.PowerState | default('') == "On"
+    - media_info.json.Inserted | default(true) == false
+    - system_info.json.Boot.BootSourceOverrideTarget | default('Cd') != 'Cd'
+

@@ -1,0 +1,38 @@
+---
+# SERIAL EXECUTION (Current Approach - Baseline)
+# 
+# This is likely what you're currently doing.
+# Tasks run one at a time across all hosts.
+#
+# Timeline:
+# - Task 1 runs on node1, node2, node3, node4, node5 (one after another)
+# - Then Task 2 runs on node1, node2, node3, node4, node5 (one after another)
+# - Then Task 3 runs on node1, node2, node3, node4, node5 (one after another)
+
+- name: Serial task execution via bastion
+  hosts: target_nodes
+  gather_facts: false
+  serial: 1  # Process one host at a time (this is the serial behavior)
+  
+  tasks:
+    - name: Task 1 - Health check
+      command: systemctl is-system-running
+      register: health_check
+      changed_when: false
+      
+    - name: Task 2 - Collect system info
+      command: uname -a
+      register: system_info
+      changed_when: false
+      
+    - name: Task 3 - Check disk space
+      command: df -h
+      register: disk_space
+      changed_when: false
+      
+    - name: Display results for this host
+      debug:
+        msg: "Completed all tasks on {{ inventory_hostname }}"
+
+# Total time: (Task1 + Task2 + Task3) * 5 hosts
+

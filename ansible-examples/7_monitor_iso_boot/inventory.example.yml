@@ -1,0 +1,66 @@
+---
+# Example inventory for monitoring ISO boot via Redfish API
+#
+# Usage:
+#   1. Copy this file: cp inventory.example.yml inventory.yml
+#   2. Edit inventory.yml with your actual BMC IPs and credentials
+#   3. Run: ansible-playbook -i inventory.yml simple_monitor_module.yml
+#
+# Note: Add inventory.yml to .gitignore to avoid committing credentials
+
+all:
+  children:
+    # Group for BMC monitoring
+    bmc_targets:
+      hosts:
+        # Single server example
+        server1:
+          idrac_ip: "192.168.1.100"
+          idrac_user: "root"
+          idrac_password: "calvin"
+          
+        # Another server with different credentials
+        server2:
+          idrac_ip: "192.168.1.101"
+          idrac_user: "admin"
+          idrac_password: "P@ssw0rd"
+      
+      vars:
+        # These playbooks run on localhost and connect to BMC
+        ansible_connection: local
+        
+        # Default monitoring settings (can be overridden per host)
+        iterations: 60
+        interval: 10
+        validate_certs: false
+
+    # Group for servers being installed
+    installing_servers:
+      hosts:
+        master-0:
+          idrac_ip: "192.168.100.10"
+          idrac_user: "root"
+          idrac_password: "SecurePass123"
+          expected_server_ip: "192.168.1.50"
+          iso_url: "http://mirror.example.com/rhcos-4.14.0-x86_64-live.x86_64.iso"
+          
+        master-1:
+          idrac_ip: "192.168.100.11"
+          idrac_user: "root"
+          idrac_password: "SecurePass123"
+          expected_server_ip: "192.168.1.51"
+          iso_url: "http://mirror.example.com/rhcos-4.14.0-x86_64-live.x86_64.iso"
+          
+        master-2:
+          idrac_ip: "192.168.100.12"
+          idrac_user: "root"
+          idrac_password: "SecurePass123"
+          expected_server_ip: "192.168.1.52"
+          iso_url: "http://mirror.example.com/rhcos-4.14.0-x86_64-live.x86_64.iso"
+      
+      vars:
+        ansible_connection: local
+        max_iterations: 120
+        poll_interval: 15
+        media_device_id: "CD"
+

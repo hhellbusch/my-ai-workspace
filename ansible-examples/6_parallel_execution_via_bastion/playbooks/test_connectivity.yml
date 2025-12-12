@@ -1,0 +1,108 @@
+---
+# Test Connectivity through Bastion from AAP
+#
+# Use this playbook to verify your bastion configuration works
+# before attempting parallel execution at scale.
+#
+# AAP Job Template Settings:
+#   - Forks: 1 (test one at a time first)
+#   - Limit: node1 (or your first test node)
+#   - Verbosity: 2 (to see SSH details)
+
+- name: Test bastion connectivity from AAP execution environment
+  hosts: target_nodes
+  gather_facts: false
+  serial: 1  # Test one node at a time to see issues clearly
+  
+  tasks:
+    - name: Test 1 - Basic ping
+      ping:
+      register: ping_result
+      
+    - name: Show ping result
+      debug:
+        msg: "✓ Ping successful to {{ inventory_hostname }}"
+        
+    - name: Test 2 - Check SSH connection details
+      command: echo "Connection established"
+      register: echo_result
+      changed_when: false
+      
+    - name: Show connection details
+      debug:
+        msg: |
+          ✓ SSH connection successful
+          Host: {{ inventory_hostname }}
+          User: {{ ansible_user }}
+          
+    - name: Test 3 - Verify become/sudo works
+      command: whoami
+      become: true
+      register: whoami_result
+      changed_when: false
+      when: ansible_become is defined and ansible_become
+      
+    - name: Show become result
+      debug:
+        msg: "✓ Privilege escalation successful - Running as: {{ whoami_result.stdout }}"
+      when: whoami_result is defined and whoami_result.stdout is defined
+      
+    - name: Test 4 - Gather system info
+      setup:
+        gather_subset:
+          - "!all"
+          - "!any"
+          - "min"
+      register: facts_result
+      
+    - name: Show system info
+      debug:
+        msg: |
+          ✓ System facts gathered successfully
+          OS: {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}
+          Hostname: {{ ansible_facts.hostname }}
+          
+    - name: Test 5 - Write test file
+      copy:
+        content: "Test from AAP via bastion at {{ ansible_date_time.iso8601 }}"
+        dest: /tmp/aap-bastion-test.txt
+      become: true
+      
+    - name: Test 6 - Read test file
+      command: cat /tmp/aap-bastion-test.txt
+      register: file_content
+      changed_when: false
+      become: true
+      
+    - name: Show file content
+      debug:
+        msg: "✓ File operations successful: {{ file_content.stdout }}"
+        
+    - name: Test 7 - Clean up test file
+      file:
+        path: /tmp/aap-bastion-test.txt
+        state: absent
+      become: true
+      
+    - name: Final summary
+      debug:
+        msg: |
+          ════════════════════════════════════════
+          ✓ ALL TESTS PASSED for {{ inventory_hostname }}
+          ════════════════════════════════════════
+          
+          ✓ Ping successful
+          ✓ SSH connection working
+          ✓ Privilege escalation working  
+          ✓ Facts gathering working
+          ✓ File operations working
+          
+          Your bastion configuration is correct!
+          You can now proceed with parallel execution.
+          
+          Next steps:
+          1. Remove serial: 1 from your playbooks
+          2. Increase Forks in Job Template (20+)
+          3. Run your actual workload
+          ════════════════════════════════════════
+

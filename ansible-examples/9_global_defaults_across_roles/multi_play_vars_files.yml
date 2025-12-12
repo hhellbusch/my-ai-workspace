@@ -1,0 +1,158 @@
+---
+# BETTER APPROACH: Using vars_files for true global defaults across plays
+# This is the recommended pattern when you have multiple plays
+
+# ============================================================================
+# PLAY 1: Infrastructure setup
+# ============================================================================
+- name: Setup infrastructure
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  # Load shared variables from external files
+  # These same files can be loaded in ALL plays for consistency
+  vars_files:
+    - vars/common.yml           # Common settings for all plays
+    - "vars/{{ environment | default('production') }}.yml"  # Environment-specific
+  
+  # Play-specific variables
+  vars:
+    play_name: "infrastructure"
+    infra_tasks:
+      - "Create networks"
+      - "Provision storage"
+      - "Setup load balancers"
+  
+  tasks:
+    - name: Display infrastructure setup
+      debug:
+        msg: |
+          === PLAY 1: {{ play_name | upper }} ===
+          App: {{ app_name }}
+          Version: {{ app_version }}
+          Environment: {{ environment }}
+          Admin: {{ admin_email }}
+          
+          Tasks:
+          {% for task in infra_tasks %}
+          - {{ task }}
+          {% endfor %}
+
+# ============================================================================
+# PLAY 2: Application deployment
+# ============================================================================
+- name: Deploy application
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  # Load the SAME vars_files - ensures consistency across plays
+  vars_files:
+    - vars/common.yml
+    - "vars/{{ environment | default('production') }}.yml"
+  
+  # Play-specific variables
+  vars:
+    play_name: "application"
+    deployment_strategy: "rolling"
+    replicas: 3
+  
+  roles:
+    - webserver
+    - database
+  
+  tasks:
+    - name: Display application deployment
+      debug:
+        msg: |
+          === PLAY 2: {{ play_name | upper }} ===
+          App: {{ app_name }}
+          Version: {{ app_version }}
+          Environment: {{ environment }}
+          Strategy: {{ deployment_strategy }}
+          Replicas: {{ replicas }}
+          Log level: {{ log_level }}
+
+# ============================================================================
+# PLAY 3: Configure monitoring
+# ============================================================================
+- name: Configure monitoring
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  # Same vars_files again - all plays have access to same globals
+  vars_files:
+    - vars/common.yml
+    - "vars/{{ environment | default('production') }}.yml"
+  
+  vars:
+    play_name: "monitoring"
+    monitoring_targets:
+      - "{{ app_name }}-webserver"
+      - "{{ app_name }}-database"
+  
+  tasks:
+    - name: Display monitoring setup
+      debug:
+        msg: |
+          === PLAY 3: {{ play_name | upper }} ===
+          App: {{ app_name }}
+          Environment: {{ environment }}
+          Alert email: {{ alert_email }}
+          Monitoring: {{ monitoring_targets | join(', ') }}
+          
+    - name: Show all common packages that will be installed
+      debug:
+        msg: "Common packages: {{ common_packages | join(', ') }}"
+
+# ============================================================================
+# PLAY 4: Run on different host group
+# ============================================================================
+- name: Configure database servers
+  hosts: localhost  # In real scenario, this might be 'database_servers'
+  connection: local
+  gather_facts: false
+  
+  # Same vars_files - consistency everywhere
+  vars_files:
+    - vars/common.yml
+    - "vars/{{ environment | default('production') }}.yml"
+  
+  vars:
+    play_name: "database_config"
+    db_specific_setting: "optimized"
+  
+  tasks:
+    - name: Display database configuration
+      debug:
+        msg: |
+          === PLAY 4: {{ play_name | upper }} ===
+          App: {{ app_name }}
+          Max connections: {{ max_connections }}
+          Memory limit: {{ memory_limit }}
+          Backup enabled: {{ backup_enabled }}
+          Backup location: {{ backup_location }}
+
+# ============================================================================
+# SUMMARY
+# ============================================================================
+# ADVANTAGES of using vars_files:
+# 1. ✅ DRY - Define variables once in vars/common.yml
+# 2. ✅ Consistency - All plays use same values
+# 3. ✅ Easy to maintain - Update in one place
+# 4. ✅ Environment switching - Just change environment variable
+# 5. ✅ No need for set_fact hacks to share between plays
+
+# TO RUN:
+# ansible-playbook multi_play_vars_files.yml
+
+# TO RUN WITH DIFFERENT ENVIRONMENT:
+# ansible-playbook multi_play_vars_files.yml -e "environment=development"
+
+# TO OVERRIDE ANY VARIABLE:
+# ansible-playbook multi_play_vars_files.yml -e "app_name=custom" -e "max_connections=500"
+
+
+

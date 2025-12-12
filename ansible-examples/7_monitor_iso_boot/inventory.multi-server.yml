@@ -1,0 +1,96 @@
+---
+# Multi-server inventory for monitoring multiple BMCs
+# Useful for monitoring cluster installations in parallel
+#
+# Usage: ansible-playbook -i inventory.multi-server.yml monitor_with_module.yml
+
+all:
+  children:
+    # Dell iDRAC servers
+    dell_servers:
+      hosts:
+        dell-server-01:
+          idrac_ip: "10.0.1.100"
+          expected_server_ip: "10.0.2.100"
+          
+        dell-server-02:
+          idrac_ip: "10.0.1.101"
+          expected_server_ip: "10.0.2.101"
+          
+        dell-server-03:
+          idrac_ip: "10.0.1.102"
+          expected_server_ip: "10.0.2.102"
+      
+      vars:
+        # Shared credentials for Dell servers
+        idrac_user: "root"
+        idrac_password: "DellPassword123"
+        media_device_id: "CD"
+    
+    # HPE iLO servers
+    hpe_servers:
+      hosts:
+        hpe-server-01:
+          idrac_ip: "10.0.1.200"  # Using same var name for consistency
+          expected_server_ip: "10.0.2.200"
+          
+        hpe-server-02:
+          idrac_ip: "10.0.1.201"
+          expected_server_ip: "10.0.2.201"
+      
+      vars:
+        # Shared credentials for HPE servers
+        idrac_user: "Administrator"
+        idrac_password: "HPEPassword123"
+        media_device_id: "CD"
+    
+    # OpenShift cluster nodes
+    ocp_masters:
+      hosts:
+        master-0:
+          idrac_ip: "192.168.100.10"
+          expected_server_ip: "192.168.1.10"
+          
+        master-1:
+          idrac_ip: "192.168.100.11"
+          expected_server_ip: "192.168.1.11"
+          
+        master-2:
+          idrac_ip: "192.168.100.12"
+          expected_server_ip: "192.168.1.12"
+      
+      vars:
+        idrac_user: "root"
+        idrac_password: "OcpBmcPass"
+        iso_url: "http://mirror.local/rhcos-4.14.0-x86_64-live.x86_64.iso"
+        max_iterations: 120
+        poll_interval: 15
+    
+    ocp_workers:
+      hosts:
+        worker-0:
+          idrac_ip: "192.168.100.20"
+          expected_server_ip: "192.168.1.20"
+          
+        worker-1:
+          idrac_ip: "192.168.100.21"
+          expected_server_ip: "192.168.1.21"
+          
+        worker-2:
+          idrac_ip: "192.168.100.22"
+          expected_server_ip: "192.168.1.22"
+      
+      vars:
+        idrac_user: "root"
+        idrac_password: "OcpBmcPass"
+        iso_url: "http://mirror.local/rhcos-4.14.0-x86_64-live.x86_64.iso"
+        max_iterations: 120
+        poll_interval: 15
+
+  vars:
+    # Global defaults
+    ansible_connection: local
+    validate_certs: false
+    iterations: 60
+    interval: 10
+

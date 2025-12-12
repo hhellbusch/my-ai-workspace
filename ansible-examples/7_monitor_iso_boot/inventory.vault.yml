@@ -1,0 +1,43 @@
+---
+# Inventory using Ansible Vault for credentials
+# 
+# Setup:
+#   1. Create vault file with credentials:
+#      ansible-vault create group_vars/all/vault.yml
+#   
+#   2. Add encrypted variables:
+#      vault_idrac_user: root
+#      vault_idrac_password: YourSecurePassword
+#   
+#   3. Run with vault password:
+#      ansible-playbook -i inventory.vault.yml simple_monitor_module.yml --ask-vault-pass
+
+all:
+  children:
+    production_servers:
+      hosts:
+        prod-server-01:
+          idrac_ip: "10.1.1.100"
+          expected_server_ip: "10.1.2.100"
+          
+        prod-server-02:
+          idrac_ip: "10.1.1.101"
+          expected_server_ip: "10.1.2.101"
+          
+        prod-server-03:
+          idrac_ip: "10.1.1.102"
+          expected_server_ip: "10.1.2.102"
+      
+      vars:
+        # Reference vault variables
+        idrac_user: "{{ vault_idrac_user }}"
+        idrac_password: "{{ vault_idrac_password }}"
+        
+        # Non-sensitive settings
+        iterations: 120
+        interval: 15
+        validate_certs: false
+        
+  vars:
+    ansible_connection: local
+

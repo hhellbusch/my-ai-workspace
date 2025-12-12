@@ -1,0 +1,17 @@
+# Ignore generated Ignition JSON files
+*.ign
+
+# Ignore custom ISOs
+*.iso
+
+# Ignore test credentials
+*credentials*.conf
+*secret*
+
+# Ignore logs
+*.log
+
+# Ignore backup files
+*.bak
+*~
+

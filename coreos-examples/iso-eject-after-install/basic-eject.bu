@@ -1,0 +1,21 @@
+variant: fcos
+version: 1.4.0
+systemd:
+  units:
+    - name: eject-install-media.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Eject installation media after first boot
+        After=multi-user.target
+        ConditionPathExists=!/var/lib/install-media-ejected
+        
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/eject /dev/sr0
+        ExecStartPost=/usr/bin/touch /var/lib/install-media-ejected
+        RemainAfterExit=yes
+        
+        [Install]
+        WantedBy=multi-user.target
+

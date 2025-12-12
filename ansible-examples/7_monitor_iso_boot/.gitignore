@@ -1,0 +1,12 @@
+# Ignore actual inventory files with credentials
+inventory.yml
+inventory.ini
+
+# Ignore vault password files
+.vault_pass
+vault_pass.txt
+
+# Ignore any local override files
+inventory.local.yml
+vars.local.yml
+

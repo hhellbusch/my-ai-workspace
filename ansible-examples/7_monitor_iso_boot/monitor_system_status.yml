@@ -1,0 +1,173 @@
+---
+# Monitor system inventory status during ISO boot/installation
+# This playbook polls Redfish API and displays status updates in real-time
+#
+# Usage:
+#   ansible-playbook monitor_system_status.yml \
+#     -e "idrac_ip=192.168.1.100" \
+#     -e "idrac_user=root" \
+#     -e "idrac_password=calvin"
+
+- name: Monitor System Status During Boot
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    idrac_ip: "{{ idrac_ip | default('192.168.1.100') }}"
+    idrac_user: "{{ idrac_user | default('root') }}"
+    idrac_password: "{{ idrac_password | default('calvin') }}"
+    validate_certs: false
+    
+    # Monitoring settings
+    max_iterations: 120      # Maximum number of polling attempts
+    poll_interval: 10        # Seconds between polls
+    wait_for_power_on: true  # Set to false to monitor regardless of power state
+    
+  tasks:
+    # ========================================================================
+    # Option 1: Simple monitoring loop with manual display
+    # ========================================================================
+    - name: Monitor system status in a loop
+      block:
+        - name: Poll system status
+          ansible.builtin.uri:
+            url: "https://{{ idrac_ip }}/redfish/v1/Systems/System.Embedded.1"
+            user: "{{ idrac_user }}"
+            password: "{{ idrac_password }}"
+            method: GET
+            validate_certs: "{{ validate_certs }}"
+            force_basic_auth: true
+            return_content: true
+          register: system_status
+          until: system_status.json.PowerState == "On"
+          retries: "{{ max_iterations }}"
+          delay: "{{ poll_interval }}"
+          failed_when: false  # Don't fail, just keep monitoring
+        
+        - name: Display current system status
+          ansible.builtin.debug:
+            msg:
+              - "==============================================="
+              - "System Status at {{ lookup('pipe', 'date +%H:%M:%S') }}"
+              - "==============================================="
+              - "Power State: {{ system_status.json.PowerState }}"
+              - "Health: {{ system_status.json.Status.Health | default('Unknown') }}"
+              - "State: {{ system_status.json.Status.State | default('Unknown') }}"
+              - "Model: {{ system_status.json.Model | default('Unknown') }}"
+              - "BIOS Version: {{ system_status.json.BiosVersion | default('Unknown') }}"
+              - "Serial: {{ system_status.json.SerialNumber | default('Unknown') }}"
+              - "Boot Source: {{ system_status.json.Boot.BootSourceOverrideTarget | default('None') }}"
+              - "==============================================="
+      
+      when: wait_for_power_on | bool
+
+    # ========================================================================
+    # Option 2: Continuous monitoring with custom loop
+    # This version shows status changes over time
+    # ========================================================================
+    - name: Continuous monitoring with detailed output
+      block:
+        - name: Initialize monitoring
+          ansible.builtin.debug:
+            msg:
+              - "Starting system monitoring..."
+              - "Target: {{ idrac_ip }}"
+              - "Poll interval: {{ poll_interval }} seconds"
+              - "Max duration: {{ max_iterations * poll_interval }} seconds"
+        
+        - name: Poll and display system status (loop)
+          ansible.builtin.uri:
+            url: "https://{{ idrac_ip }}/redfish/v1/Systems/System.Embedded.1"
+            user: "{{ idrac_user }}"
+            password: "{{ idrac_password }}"
+            method: GET
+            validate_certs: "{{ validate_certs }}"
+            force_basic_auth: true
+            return_content: true
+          register: poll_result
+          loop: "{{ range(0, max_iterations) | list }}"
+          loop_control:
+            pause: "{{ poll_interval }}"
+            label: "Poll iteration {{ item + 1 }}/{{ max_iterations }}"
+          until: false  # Never stop based on condition, loop through all iterations
+          retries: 1
+          failed_when: false
+        
+        - name: Display all polling results
+          ansible.builtin.debug:
+            msg:
+              - "Poll #{{ item.0 + 1 }} - {{ lookup('pipe', 'date +%H:%M:%S') }}"
+              - "  Power: {{ item.1.json.PowerState | default('Unknown') }}"
+              - "  Health: {{ item.1.json.Status.Health | default('Unknown') }}"
+              - "  State: {{ item.1.json.Status.State | default('Unknown') }}"
+              - "  Boot Source: {{ item.1.json.Boot.BootSourceOverrideTarget | default('None') }}"
+          loop: "{{ poll_result.results | enumerate }}"
+          loop_control:
+            label: "Poll {{ item.0 + 1 }}"
+          when: item.1.json is defined
+
+    # ========================================================================
+    # Option 3: Monitor specific conditions with status display
+    # Most practical for ISO boot monitoring
+    # ========================================================================
+    - name: Monitor boot process with condition checks
+      block:
+        - name: Set monitoring start time
+          ansible.builtin.set_fact:
+            monitoring_start: "{{ lookup('pipe', 'date +%s') }}"
+        
+        - name: Monitor until system boots from ISO
+          ansible.builtin.uri:
+            url: "https://{{ idrac_ip }}/redfish/v1/Systems/System.Embedded.1"
+            user: "{{ idrac_user }}"
+            password: "{{ idrac_password }}"
+            method: GET
+            validate_certs: "{{ validate_certs }}"
+            force_basic_auth: true
+            return_content: true
+          register: system_status
+          until: >
+            system_status.json.PowerState == "On" and
+            system_status.json.Status.State == "Enabled"
+          retries: "{{ max_iterations }}"
+          delay: "{{ poll_interval }}"
+          failed_when: false
+        
+        - name: Calculate elapsed time
+          ansible.builtin.set_fact:
+            monitoring_end: "{{ lookup('pipe', 'date +%s') }}"
+            elapsed_seconds: "{{ lookup('pipe', 'date +%s') | int - monitoring_start | int }}"
+        
+        - name: Display final status
+          ansible.builtin.debug:
+            msg:
+              - "================================================"
+              - "MONITORING COMPLETE"
+              - "================================================"
+              - "Duration: {{ elapsed_seconds }} seconds ({{ (elapsed_seconds | int / 60) | round(1) }} minutes)"
+              - "Power State: {{ system_status.json.PowerState }}"
+              - "System Health: {{ system_status.json.Status.Health | default('Unknown') }}"
+              - "System State: {{ system_status.json.Status.State | default('Unknown') }}"
+              - "Boot Source Override: {{ system_status.json.Boot.BootSourceOverrideTarget | default('None') }}"
+              - "Boot Source Enabled: {{ system_status.json.Boot.BootSourceOverrideEnabled | default('Unknown') }}"
+              - "BIOS Version: {{ system_status.json.BiosVersion | default('Unknown') }}"
+              - "================================================"
+
+    # ========================================================================
+    # Option 4: Monitor virtual media status alongside system status
+    # Complete view of ISO boot process
+    # ========================================================================
+    - name: Monitor system and virtual media together
+      block:
+        - name: Initialize iteration counter
+          ansible.builtin.set_fact:
+            iteration: 0
+        
+        - name: Monitor loop - system and virtual media
+          include_tasks: monitor_iteration.yml
+          loop: "{{ range(0, max_iterations) | list }}"
+          loop_control:
+            loop_var: iteration_num
+          when: iteration | int < max_iterations | int
+
+

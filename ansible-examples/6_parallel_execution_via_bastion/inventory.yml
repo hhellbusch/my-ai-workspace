@@ -1,0 +1,81 @@
+---
+# Example inventory for AAP with bastion/jump host configuration
+#
+# Execution flow: AAP Execution Environment → Bastion → Target Nodes
+
+all:
+  children:
+    target_nodes:
+      hosts:
+        node1:
+          ansible_host: 192.168.1.101
+        node2:
+          ansible_host: 192.168.1.102
+        node3:
+          ansible_host: 192.168.1.103
+        node4:
+          ansible_host: 192.168.1.104
+        node5:
+          ansible_host: 192.168.1.105
+      
+      vars:
+        # Method 1: Using ProxyJump (recommended for OpenSSH 7.3+)
+        # This works when the AAP Machine Credential can authenticate to both bastion and targets
+        ansible_ssh_common_args: '-o ProxyJump=bastion-user@bastion.example.com -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+        
+        # Method 2: Explicit bastion host and port
+        # ansible_ssh_common_args: '-o ProxyJump=bastion-user@bastion.example.com:22'
+        
+        # Method 3: Using ProxyCommand (for older SSH versions or complex setups)
+        # ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q bastion-user@bastion.example.com"'
+        
+        # Method 4: When bastion uses different credentials
+        # Store bastion key separately in AAP, reference in ProxyJump
+        # ansible_ssh_common_args: '-o ProxyJump=bastion-user@bastion.example.com -o StrictHostKeyChecking=no'
+        
+        # Common connection settings for target nodes
+        ansible_user: admin
+        # Note: In AAP, don't specify ansible_ssh_private_key_file here
+        # Instead, use Machine Credentials in AAP that include the key
+        ansible_become: true
+        ansible_become_method: sudo
+        
+        # Connection tuning for bastion proxy
+        ansible_ssh_pipelining: true
+        ansible_ssh_transfer_method: smart
+
+    # Optional: Define bastion host separately if you need to manage it
+    bastion:
+      hosts:
+        bastion.example.com:
+          ansible_host: bastion.example.com
+          ansible_user: bastion-user
+          # This group would use different credentials in AAP
+
+# AAP Usage Notes:
+# 
+# 1. In AAP Web UI → Credentials → Create Machine Credential:
+#    - Username: The user for target nodes (and bastion if same)
+#    - SSH Private Key: Key that works for bastion → targets
+#    - Privilege Escalation Method: sudo (if using ansible_become)
+#
+# 2. In AAP Web UI → Inventories → Your Inventory:
+#    - Add this inventory (can paste YAML or sync from SCM)
+#
+# 3. In AAP Web UI → Job Templates → Your Job Template:
+#    - Inventory: Select your inventory
+#    - Credentials: Select your Machine Credential
+#    - Forks: Set to desired parallelism (e.g., 20)
+#
+# 4. Testing connectivity:
+#    Create a simple test playbook:
+#    ---
+#    - hosts: target_nodes
+#      tasks:
+#        - ping:
+#
+# 5. If using different keys for bastion vs targets:
+#    - Create two Machine Credentials in AAP
+#    - Use ansible_ssh_common_args with explicit key paths
+#    - OR set up SSH agent forwarding (more complex in EE)
+

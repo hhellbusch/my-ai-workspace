@@ -1,0 +1,76 @@
+---
+- name: Practical IP Validation - Load from Variables
+  hosts: localhost
+  gather_facts: false
+  
+  # In real scenarios, these would come from:
+  # - inventory variables
+  # - external files (vars_files)
+  # - dynamic inventory
+  # - API calls
+  
+  vars:
+    # Allowed subnets - could come from network team
+    corporate_subnets:
+      - "10.1.0.0/16"      # Data Center 1
+      - "10.2.0.0/16"      # Data Center 2
+      - "10.10.0.0/16"     # Cloud Network
+      - "172.20.0.0/16"    # DMZ Network
+    
+    # IPs to validate - could come from CMDB or dynamic discovery
+    server_ips:
+      - "10.1.50.10"
+      - "10.2.100.20"
+      - "10.10.5.50"
+      - "172.20.30.40"
+      - "192.168.1.100"    # Invalid - outside corporate networks
+
+  tasks:
+    - name: Check each IP against all subnets
+      ansible.builtin.set_fact:
+        ip_subnet_matches: "{{ ip_subnet_matches | default({}) | combine({item.0: (ip_subnet_matches | default({}))[item.0] | default([]) + [item.0 | ansible.utils.ipaddr(item.1)]}) }}"
+      loop: "{{ server_ips | product(corporate_subnets) | list }}"
+      loop_control:
+        label: "{{ item.0 }}"
+
+    - name: Determine which IPs are valid
+      ansible.builtin.set_fact:
+        validation_report: >-
+          {{
+            validation_report | default([]) + [{
+              'ip': item,
+              'allowed': ip_subnet_matches[item] | select() | list | length > 0
+            }]
+          }}
+      loop: "{{ server_ips }}"
+
+    - name: Display validation status
+      ansible.builtin.debug:
+        msg: "IP {{ item.ip }} is {{ 'ALLOWED' if item.allowed else 'NOT ALLOWED' }}"
+      loop: "{{ validation_report }}"
+      loop_control:
+        label: "{{ item.ip }}"
+
+    - name: Filter valid IPs only
+      ansible.builtin.set_fact:
+        approved_ips: "{{ validation_report | selectattr('allowed', 'equalto', true) | map(attribute='ip') | list }}"
+        rejected_ips: "{{ validation_report | selectattr('allowed', 'equalto', false) | map(attribute='ip') | list }}"
+
+    - name: Display approved IPs
+      ansible.builtin.debug:
+        msg: "Approved IPs for deployment: {{ approved_ips }}"
+
+    - name: Display rejected IPs
+      ansible.builtin.debug:
+        msg: "Rejected IPs (contact network team): {{ rejected_ips }}"
+      when: rejected_ips | length > 0
+
+    - name: Assert all IPs are valid (uncomment to enforce)
+      ansible.builtin.assert:
+        that:
+          - rejected_ips | length == 0
+        fail_msg: "Some IPs are not in approved subnets: {{ rejected_ips }}"
+        success_msg: "All IPs are within approved corporate subnets"
+      # Uncomment the line below to enforce validation
+      # when: true
+      when: false

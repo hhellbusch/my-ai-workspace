@@ -1,0 +1,21 @@
+---
+# Production-specific variables
+# Loaded when environment=production
+
+max_connections: 200
+memory_limit: "1024M"
+debug_mode: false
+log_level: "warning"
+
+# Production network settings
+app_domain: "prod.example.com"
+enable_ssl: true
+
+# Production resource settings
+cpu_limit: "2"
+disk_quota: "50G"
+
+# High availability settings
+ha_enabled: true
+replica_count: 3
+

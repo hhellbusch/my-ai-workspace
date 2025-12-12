@@ -1,0 +1,18 @@
+---
+# Ansible Galaxy requirements for ISO boot monitoring playbooks
+#
+# Install with:
+#   ansible-galaxy collection install -r requirements.yml
+#
+# Update with:
+#   ansible-galaxy collection install -r requirements.yml --upgrade --force
+
+collections:
+  # Required: Provides redfish_info module for Redfish API monitoring
+  - name: community.general
+    version: ">=8.0.0"
+  
+  # Optional: Dell-specific features (idrac_virtual_media, etc.)
+  - name: dellemc.openmanage
+    version: ">=8.0.0"
+

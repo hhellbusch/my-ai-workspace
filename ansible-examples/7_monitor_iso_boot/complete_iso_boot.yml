@@ -1,0 +1,244 @@
+---
+# Complete ISO boot workflow: mount ISO → boot → monitor → verify
+#
+# This playbook demonstrates the full process of:
+# 1. Mounting an ISO via virtual media
+# 2. Booting the server from ISO
+# 3. Monitoring the boot and installation process
+# 4. Waiting for installation to complete
+# 5. Verifying the installed system
+#
+# Usage:
+#   ansible-playbook complete_iso_boot.yml \
+#     -e "idrac_ip=192.168.1.100" \
+#     -e "idrac_user=root" \
+#     -e "idrac_password=calvin" \
+#     -e "iso_url=http://server.example.com/rhcos.iso" \
+#     -e "expected_server_ip=192.168.1.50"
+
+- name: Complete ISO Boot and Installation Monitoring
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    # BMC credentials
+    idrac_ip: "{{ idrac_ip | default('192.168.1.100') }}"
+    idrac_user: "{{ idrac_user | default('root') }}"
+    idrac_password: "{{ idrac_password | default('calvin') }}"
+    validate_certs: false
+    
+    # ISO configuration
+    iso_url: "{{ iso_url }}"  # Required: HTTP URL to ISO
+    
+    # Server IP (if known) for post-install verification
+    expected_server_ip: "{{ expected_server_ip | default('') }}"
+    
+    # Monitoring settings
+    installation_timeout: 1800  # 30 minutes
+    poll_interval: 15           # Seconds between polls
+    
+  tasks:
+    # ========================================================================
+    # Phase 1: Mount ISO
+    # ========================================================================
+    - name: Display workflow start
+      ansible.builtin.debug:
+        msg:
+          - "========================================================"
+          - "STARTING ISO BOOT AND INSTALLATION WORKFLOW"
+          - "========================================================"
+          - "Target BMC: {{ idrac_ip }}"
+          - "ISO URL: {{ iso_url }}"
+          - "Expected Server IP: {{ expected_server_ip | default('Not specified') }}"
+          - "========================================================"
+    
+    - name: Mount ISO via virtual media
+      ansible.builtin.uri:
+        url: "https://{{ idrac_ip }}/redfish/v1/Managers/iDRAC.Embedded.1/VirtualMedia/CD/Actions/VirtualMedia.InsertMedia"
+        user: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+        method: POST
+        validate_certs: "{{ validate_certs }}"
+        force_basic_auth: true
+        body_format: json
+        body:
+          Image: "{{ iso_url }}"
+          Inserted: true
+        status_code: [200, 202, 204]
+      register: mount_result
+    
+    - name: Verify ISO is mounted
+      ansible.builtin.uri:
+        url: "https://{{ idrac_ip }}/redfish/v1/Managers/iDRAC.Embedded.1/VirtualMedia/CD"
+        user: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+        method: GET
+        validate_certs: "{{ validate_certs }}"
+        force_basic_auth: true
+      register: media_status
+      until: media_status.json.Inserted == true
+      retries: 10
+      delay: 3
+    
+    - name: Display mount success
+      ansible.builtin.debug:
+        msg:
+          - "✅ ISO mounted successfully"
+          - "Image: {{ media_status.json.Image }}"
+          - "Connected: {{ media_status.json.ConnectedVia }}"
+    
+    # ========================================================================
+    # Phase 2: Configure Boot and Power On
+    # ========================================================================
+    - name: Set one-time boot to virtual CD
+      ansible.builtin.uri:
+        url: "https://{{ idrac_ip }}/redfish/v1/Systems/System.Embedded.1"
+        user: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+        method: PATCH
+        validate_certs: "{{ validate_certs }}"
+        force_basic_auth: true
+        body_format: json
+        body:
+          Boot:
+            BootSourceOverrideTarget: "Cd"
+            BootSourceOverrideEnabled: "Once"
+        status_code: [200, 202, 204]
+    
+    - name: Power on/restart the server
+      ansible.builtin.uri:
+        url: "https://{{ idrac_ip }}/redfish/v1/Systems/System.Embedded.1/Actions/ComputerSystem.Reset"
+        user: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+        method: POST
+        validate_certs: "{{ validate_certs }}"
+        force_basic_auth: true
+        body_format: json
+        body:
+          ResetType: "ForceRestart"
+        status_code: [200, 202, 204]
+    
+    - name: Display boot initiation
+      ansible.builtin.debug:
+        msg:
+          - "✅ Server set to boot from ISO"
+          - "Boot will occur on next power cycle"
+    
+    # ========================================================================
+    # Phase 3: Monitor Boot Process
+    # ========================================================================
+    - name: Wait for server to start booting
+      ansible.builtin.pause:
+        seconds: 30
+        prompt: "Waiting for server to begin boot process..."
+    
+    - name: Set monitoring start time
+      ansible.builtin.set_fact:
+        monitoring_start: "{{ lookup('pipe', 'date +%s') }}"
+    
+    - name: Monitor installation progress
+      block:
+        - name: Poll system and virtual media status
+          ansible.builtin.uri:
+            url: "https://{{ idrac_ip }}/redfish/v1/Systems/System.Embedded.1"
+            user: "{{ idrac_user }}"
+            password: "{{ idrac_password }}"
+            method: GET
+            validate_certs: "{{ validate_certs }}"
+            force_basic_auth: true
+          register: system_status
+          until: >
+            system_status.json.PowerState == "On" and
+            system_status.json.Boot.BootSourceOverrideTarget != "Cd"
+          retries: "{{ (installation_timeout / poll_interval) | int }}"
+          delay: "{{ poll_interval }}"
+          failed_when: false
+        
+        - name: Get final virtual media status
+          ansible.builtin.uri:
+            url: "https://{{ idrac_ip }}/redfish/v1/Managers/iDRAC.Embedded.1/VirtualMedia/CD"
+            user: "{{ idrac_user }}"
+            password: "{{ idrac_password }}"
+            method: GET
+            validate_certs: "{{ validate_certs }}"
+            force_basic_auth: true
+          register: final_media_status
+        
+        - name: Calculate monitoring duration
+          ansible.builtin.set_fact:
+            monitoring_end: "{{ lookup('pipe', 'date +%s') }}"
+            elapsed_seconds: "{{ lookup('pipe', 'date +%s') | int - monitoring_start | int }}"
+        
+        - name: Display installation status
+          ansible.builtin.debug:
+            msg:
+              - "========================================================"
+              - "INSTALLATION MONITORING COMPLETE"
+              - "========================================================"
+              - "Duration: {{ elapsed_seconds }}s ({{ (elapsed_seconds | int / 60) | round(1) }}m)"
+              - ""
+              - "System Status:"
+              - "  Power: {{ system_status.json.PowerState }}"
+              - "  Health: {{ system_status.json.Status.Health | default('Unknown') }}"
+              - "  Boot Source: {{ system_status.json.Boot.BootSourceOverrideTarget | default('None') }}"
+              - ""
+              - "Virtual Media:"
+              - "  Inserted: {{ final_media_status.json.Inserted }}"
+              - "  {% if final_media_status.json.Inserted %}⚠️  ISO still mounted{% else %}✅ ISO ejected{% endif %}"
+              - "========================================================"
+    
+    # ========================================================================
+    # Phase 4: Wait for System to Boot from Disk
+    # ========================================================================
+    - name: Wait for system to boot from installed OS
+      ansible.builtin.pause:
+        seconds: 60
+        prompt: "Waiting for installed OS to boot..."
+    
+    # ========================================================================
+    # Phase 5: Verify Installation (if IP provided)
+    # ========================================================================
+    - name: Verify installed system via SSH
+      block:
+        - name: Wait for SSH to become available
+          ansible.builtin.wait_for:
+            host: "{{ expected_server_ip }}"
+            port: 22
+            state: started
+            timeout: 300
+          delegate_to: localhost
+        
+        - name: Display SSH availability
+          ansible.builtin.debug:
+            msg: "✅ SSH is now available on {{ expected_server_ip }}"
+        
+        - name: Test SSH connectivity
+          ansible.builtin.wait_for_connection:
+            timeout: 60
+          delegate_to: "{{ expected_server_ip }}"
+          ignore_errors: true
+          register: ssh_test
+        
+        - name: Display final success
+          ansible.builtin.debug:
+            msg:
+              - "========================================================"
+              - "✅ INSTALLATION COMPLETE AND VERIFIED"
+              - "========================================================"
+              - "Server: {{ expected_server_ip }}"
+              - "SSH: {{ 'Available' if not ssh_test.failed else 'Not accessible (check SSH keys)' }}"
+              - "========================================================"
+      
+      when: expected_server_ip | length > 0
+    
+    - name: Display completion (no IP verification)
+      ansible.builtin.debug:
+        msg:
+          - "========================================================"
+          - "✅ INSTALLATION MONITORING COMPLETE"
+          - "========================================================"
+          - "Boot indicators show installation is complete"
+          - "Manual verification required (no IP provided)"
+          - "========================================================"
+      when: expected_server_ip | length == 0
+

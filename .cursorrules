@@ -1,0 +1,247 @@
+# Meta-Development System Configuration
+
+This workspace contains a sophisticated meta-development system with three interconnected components:
+- **Skills** (domain expertise modules)
+- **Commands** (user-facing slash commands)
+- **Agents** (specialized evaluation subagents)
+
+## System Architecture
+
+### Skills (`.cursor/skills/` and `skills/`)
+
+Skills are modular capabilities that provide domain expertise on demand. They use a router pattern with workflows, references, and templates.
+
+**Note:** Skills are located in `.cursor/skills/` for Cursor's native palette integration. The `skills/` directory is kept for reference and documentation.
+
+**Available Skills:**
+- `create-agent-skills` - Expert guidance for creating, writing, building, and refining Claude Code Skills
+- `create-plans` - Create hierarchical project plans (briefs, roadmaps, phase plans)
+- `create-meta-prompts` - Create meta-prompts for complex reasoning tasks
+- `create-slash-commands` - Create slash commands following best practices
+- `create-subagents` - Create specialized Claude Code subagents
+- `create-hooks` - Create Claude Code hooks with input/output schemas
+- `debug-like-expert` - Expert-level debugging methodology and investigation
+- `expertise/iphone-apps` - iOS/iPhone app development with SwiftUI
+- `expertise/macos-apps` - macOS app development with AppKit/SwiftUI
+
+**Invoking Skills:**
+When you need to use a skill, reference it with the `Skill()` function or by mentioning it:
+```
+Skill(create-agent-skills) - invoke the skill directly
+@skills/create-agent-skills/SKILL.md - reference the skill file
+```
+
+**Skill Structure:**
+```
+skill-name/
+├── SKILL.md              # Router + essential principles
+├── workflows/            # Step-by-step procedures (FOLLOW)
+├── references/           # Domain knowledge (READ)
+├── templates/            # Output structures (COPY + FILL)
+└── scripts/              # Reusable code (EXECUTE)
+```
+
+### Commands (`.cursor/commands/` and `commands/`)
+
+Slash commands are user-facing entry points that invoke skills or agents. They use YAML frontmatter with description, allowed-tools, and argument-hint fields.
+
+**Note:** Commands are located in `.cursor/commands/` for Cursor's native command palette. The `commands/` directory is kept for reference and documentation.
+
+**Available Commands:**
+- `/create-agent-skill` - Create or edit Claude Code skills
+- `/create-plan` - Create hierarchical project plans
+- `/create-meta-prompt` - Create meta-prompts
+- `/create-slash-command` - Create new slash commands
+- `/create-subagent` - Create specialized subagents
+- `/create-hook` - Create Claude Code hooks
+- `/audit-skill` - Audit skill for best practices compliance
+- `/audit-slash-command` - Audit slash command for best practices
+- `/audit-subagent` - Audit subagent for best practices
+- `/run-plan` - Execute a PLAN.md file
+- `/run-prompt` - Execute a prompt file
+- `/whats-next` - Create handoff document for fresh context
+- `/check-todos` - Review and manage TODO items
+- `/add-to-todos` - Add items to TODO list
+- `/heal-skill` - Fix and improve problematic skills
+- `/debug` - Expert debugging guidance
+
+**Command Format:**
+```yaml
+---
+description: What the command does (clear, specific)
+argument-hint: [expected arguments format]
+allowed-tools: Skill(skill-name) or Task or specific tools
+---
+
+Prompt body with $ARGUMENTS placeholders
+```
+
+### Agents (`.cursor/agents/` and `agents/`)
+
+Specialized subagents for complex evaluation and auditing tasks. They have specific roles, constraints, and workflows.
+
+**Note:** Agents are located in `.cursor/agents/` for Cursor integration. The `agents/` directory is kept for reference and documentation.
+
+**Available Agents:**
+- `skill-auditor` - Expert skill auditor for SKILL.md files
+- `slash-command-auditor` - Expert slash command auditor
+- `subagent-auditor` - Expert subagent auditor
+
+**Agent Invocation:**
+Agents are typically invoked via commands (e.g., `/audit-skill` invokes `skill-auditor`)
+
+**Agent Structure:**
+```yaml
+---
+name: agent-name
+description: What the agent does and when to use it
+tools: Read, Grep, Glob
+model: sonnet
+---
+
+<role>Agent's role and expertise</role>
+<constraints>Hard constraints</constraints>
+<critical_workflow>Mandatory workflow steps</critical_workflow>
+<success_criteria>When task is complete</success_criteria>
+```
+
+## Integration Flow Examples
+
+### Creating a New Skill
+```
+User: /create-agent-skill [skill description]
+  ↓
+commands/create-agent-skill.md invoked
+  ↓
+Skill(create-agent-skills) activated
+  ↓
+skills/create-agent-skills/SKILL.md loaded
+  ↓
+User selects option (e.g., "1. Create new skill")
+  ↓
+workflows/create-new-skill.md executed
+  ↓
+references/ loaded as needed
+  ↓
+New skill created
+```
+
+### Auditing a Skill
+```
+User: /audit-skill path/to/SKILL.md
+  ↓
+commands/audit-skill.md invoked
+  ↓
+Agent(skill-auditor) spawned
+  ↓
+agents/skill-auditor.md loaded
+  ↓
+Reads best practices from skills/create-agent-skills/references/
+  ↓
+Evaluates skill against standards
+  ↓
+Returns detailed audit report
+```
+
+### Planning and Execution
+```
+User: /create-plan [what to plan]
+  ↓
+commands/create-plan.md invoked
+  ↓
+Skill(create-plans) activated
+  ↓
+Creates BRIEF.md, ROADMAP.md, phase plans
+  ↓
+User: /run-plan path/to/PLAN.md
+  ↓
+commands/run-plan.md invoked
+  ↓
+Executes plan with intelligent segmentation
+  ↓
+Creates SUMMARY.md and commits changes
+```
+
+## Best Practices
+
+### When Working with Skills
+1. **Read SKILL.md first** - It contains routing logic and essential principles
+2. **Follow workflows exactly** - They specify which references to load
+3. **Use progressive disclosure** - Don't load all references at once
+4. **Validate output** - Check success_criteria sections
+
+### When Creating Commands
+1. **Clear descriptions** - Describe what it does, not just "helps with"
+2. **Appropriate tool restrictions** - Security-sensitive operations need `allowed-tools`
+3. **Proper argument handling** - Use `$ARGUMENTS` or positional `$1, $2, $3`
+4. **Dynamic context when needed** - Use `!`command`` for state-dependent operations
+
+### When Building Agents
+1. **Specific role definition** - Clear expertise area
+2. **Strong constraints** - Use MUST/NEVER/ALWAYS
+3. **Mandatory workflows** - Critical steps that can't be skipped
+4. **Validation before output** - Verify completeness and accuracy
+
+## Development Workflow
+
+### Adding a New Skill
+```bash
+# Option 1: Use the meta-system
+Use: /create-agent-skill [description]
+
+# Option 2: Manual creation
+mkdir skills/new-skill-name
+# Follow structure in skills/create-agent-skills/templates/
+```
+
+### Adding a New Command
+```bash
+# Option 1: Use the meta-system
+Use: /create-slash-command [description]
+
+# Option 2: Manual creation
+# Create commands/new-command.md with proper YAML frontmatter
+```
+
+### Adding a New Agent
+```bash
+# Option 1: Use the meta-system
+Use: /create-subagent [description]
+
+# Option 2: Manual creation
+# Create agents/agent-name.md with role, constraints, workflow
+```
+
+## Reference Files
+
+- See `INTEGRATION.md` for comprehensive integration guide
+- See `skills/REGISTRY.md` for complete skill index
+- See `commands/README.md` for command reference
+- See `agents/REGISTRY.md` for agent capabilities
+
+## Quality Assurance
+
+Use auditing commands to ensure quality:
+```bash
+/audit-skill skills/my-skill/SKILL.md
+/audit-slash-command commands/my-command.md
+/audit-subagent agents/my-agent.md
+```
+
+## Context Efficiency
+
+The system is designed for optimal context usage:
+- **Skills**: Load only SKILL.md initially, then specific workflows/references
+- **Commands**: Minimal YAML + focused prompts
+- **Agents**: Self-contained with validation checks
+
+Target: <30% context overhead, reserving 70%+ for actual work.
+
+## Getting Help
+
+- `/debug` - Expert debugging guidance
+- `/whats-next` - Create handoff for continuation
+- `@skills/create-agent-skills/SKILL.md` - For skill creation questions
+- `@skills/debug-like-expert/SKILL.md` - For investigation techniques
+
+

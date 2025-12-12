@@ -1,0 +1,94 @@
+---
+# Simple monitoring playbook - just poll and display system status
+# This is the most straightforward approach for watching boot progress
+#
+# Usage:
+#   ansible-playbook simple_monitor.yml \
+#     -e "idrac_ip=192.168.1.100" \
+#     -e "idrac_user=root" \
+#     -e "idrac_password=calvin" \
+#     -e "iterations=60"
+
+- name: Simple System Status Monitor
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    idrac_ip: "{{ idrac_ip | default('192.168.1.100') }}"
+    idrac_user: "{{ idrac_user | default('root') }}"
+    idrac_password: "{{ idrac_password | default('calvin') }}"
+    iterations: "{{ iterations | default(60) }}"  # How many times to poll
+    interval: "{{ interval | default(10) }}"      # Seconds between polls
+    
+  tasks:
+    - name: Display monitoring info
+      ansible.builtin.debug:
+        msg:
+          - "Starting system monitoring"
+          - "Target: {{ idrac_ip }}"
+          - "Iterations: {{ iterations }}"
+          - "Interval: {{ interval }} seconds"
+          - "Total duration: {{ iterations | int * interval | int }} seconds"
+          - ""
+    
+    - name: Poll system status
+      ansible.builtin.uri:
+        url: "https://{{ idrac_ip }}/redfish/v1/Systems/System.Embedded.1"
+        user: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+        method: GET
+        validate_certs: false
+        force_basic_auth: true
+        return_content: true
+      register: system_status
+      failed_when: false
+      changed_when: false
+    
+    - name: Display system information
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "SYSTEM INFORMATION"
+          - "================================================"
+          - "Manufacturer: {{ system_status.json.Manufacturer | default('Unknown') }}"
+          - "Model: {{ system_status.json.Model | default('Unknown') }}"
+          - "Serial Number: {{ system_status.json.SerialNumber | default('Unknown') }}"
+          - "BIOS Version: {{ system_status.json.BiosVersion | default('Unknown') }}"
+          - "================================================"
+    
+    - name: Monitor system status in loop
+      ansible.builtin.uri:
+        url: "https://{{ idrac_ip }}/redfish/v1/Systems/System.Embedded.1"
+        user: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+        method: GET
+        validate_certs: false
+        force_basic_auth: true
+        return_content: true
+      register: poll_result
+      loop: "{{ range(1, iterations | int + 1) | list }}"
+      loop_control:
+        pause: "{{ interval }}"
+        label: "Poll {{ item }}/{{ iterations }}"
+      failed_when: false
+      changed_when: false
+    
+    - name: Display each poll result
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "Poll {{ item.0 + 1 }}/{{ iterations }} - {{ lookup('pipe', 'date \"+%H:%M:%S\"') }}"
+          - "================================================"
+          - "Power State:  {{ item.1.json.PowerState | default('Unknown') }}"
+          - "Health:       {{ item.1.json.Status.Health | default('Unknown') }}"
+          - "State:        {{ item.1.json.Status.State | default('Unknown') }}"
+          - "Boot Source:  {{ item.1.json.Boot.BootSourceOverrideTarget | default('None') }}"
+          - "Boot Enabled: {{ item.1.json.Boot.BootSourceOverrideEnabled | default('Unknown') }}"
+          - "================================================"
+      loop: "{{ poll_result.results | enumerate }}"
+      loop_control:
+        label: "Display poll {{ item.0 + 1 }}"
+      when: 
+        - item.1.json is defined
+        - not item.1.failed | default(false)
+

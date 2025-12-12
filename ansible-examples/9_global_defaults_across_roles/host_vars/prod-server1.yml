@@ -1,0 +1,11 @@
+---
+# METHOD 4: host_vars for specific host overrides
+# These have very high precedence
+
+# Host-specific overrides
+memory_limit: "2048M"
+max_connections: 500
+
+# This host runs database with more replicas
+replica_count: 5
+

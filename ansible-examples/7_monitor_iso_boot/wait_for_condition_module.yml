@@ -1,0 +1,201 @@
+---
+# Wait for specific conditions using redfish_info module
+# This uses the until/retries pattern with the module
+#
+# Usage:
+#   ansible-playbook wait_for_condition_module.yml \
+#     -e "idrac_ip=192.168.1.100" \
+#     -e "idrac_user=root" \
+#     -e "idrac_password=calvin" \
+#     -e "wait_condition=power_on"
+
+- name: Wait for Specific Condition Using Redfish Module
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    idrac_ip: "{{ idrac_ip | default('192.168.1.100') }}"
+    idrac_user: "{{ idrac_user | default('root') }}"
+    idrac_password: "{{ idrac_password | default('calvin') }}"
+    
+    # What to wait for: power_on, iso_ejected, boot_from_disk, installation_complete
+    wait_condition: "{{ wait_condition | default('power_on') }}"
+    
+    max_wait_time: "{{ max_wait_time | default(1800) }}"  # 30 minutes
+    poll_interval: "{{ poll_interval | default(15) }}"
+    
+  tasks:
+    - name: Display wait configuration
+      ansible.builtin.debug:
+        msg:
+          - "Waiting for condition: {{ wait_condition }}"
+          - "Max wait time: {{ max_wait_time }}s ({{ (max_wait_time | int / 60) | round(1) }}m)"
+          - "Poll interval: {{ poll_interval }}s"
+    
+    # ========================================================================
+    # Condition 1: Wait for power on
+    # ========================================================================
+    - name: Wait for system to power on
+      block:
+        - name: Poll until system is powered on
+          community.general.redfish_info:
+            baseuri: "{{ idrac_ip }}"
+            username: "{{ idrac_user }}"
+            password: "{{ idrac_password }}"
+            validate_certs: false
+            category: Systems
+            command: GetSystemInfo
+          register: system_status
+          until: >
+            system_status.redfish_facts.system.entries[0].PowerState == "On"
+          retries: "{{ (max_wait_time | int / poll_interval | int) | int }}"
+          delay: "{{ poll_interval }}"
+        
+        - name: Display power on success
+          ansible.builtin.debug:
+            msg:
+              - "✅ System powered on"
+              - "Power State: {{ system_status.redfish_facts.system.entries[0].PowerState }}"
+              - "System State: {{ system_status.redfish_facts.system.entries[0].Status.State }}"
+      
+      when: wait_condition == "power_on"
+    
+    # ========================================================================
+    # Condition 2: Wait for ISO to be ejected
+    # ========================================================================
+    - name: Wait for ISO ejection
+      block:
+        - name: Poll until ISO is ejected
+          community.general.redfish_info:
+            baseuri: "{{ idrac_ip }}"
+            username: "{{ idrac_user }}"
+            password: "{{ idrac_password }}"
+            validate_certs: false
+            category: Manager
+            command: GetVirtualMedia
+          register: media_status
+          until: >
+            media_status.redfish_facts.virtual_media.entries |
+            selectattr('Id', 'equalto', 'CD') |
+            map(attribute='Inserted') | first | default(true) == false
+          retries: "{{ (max_wait_time | int / poll_interval | int) | int }}"
+          delay: "{{ poll_interval }}"
+        
+        - name: Display ejection success
+          ansible.builtin.debug:
+            msg:
+              - "✅ ISO ejected"
+              - "Virtual Media Status:"
+          vars:
+            cd_media: "{{ media_status.redfish_facts.virtual_media.entries | selectattr('Id', 'equalto', 'CD') | first }}"
+        
+        - name: Show CD media details
+          ansible.builtin.debug:
+            var: cd_media
+          vars:
+            cd_media: "{{ media_status.redfish_facts.virtual_media.entries | selectattr('Id', 'equalto', 'CD') | first }}"
+      
+      when: wait_condition == "iso_ejected"
+    
+    # ========================================================================
+    # Condition 3: Wait for boot from disk (not CD)
+    # ========================================================================
+    - name: Wait for boot from disk
+      block:
+        - name: Poll until booting from disk
+          community.general.redfish_info:
+            baseuri: "{{ idrac_ip }}"
+            username: "{{ idrac_user }}"
+            password: "{{ idrac_password }}"
+            validate_certs: false
+            category: Systems
+            command: GetSystemInfo
+          register: system_status
+          until: >
+            system_status.redfish_facts.system.entries[0].Boot.BootSourceOverrideTarget != "Cd" or
+            system_status.redfish_facts.system.entries[0].Boot.BootSourceOverrideTarget == "None"
+          retries: "{{ (max_wait_time | int / poll_interval | int) | int }}"
+          delay: "{{ poll_interval }}"
+        
+        - name: Display boot source change
+          ansible.builtin.debug:
+            msg:
+              - "✅ Boot source changed from CD"
+              - "Current boot source: {{ system_status.redfish_facts.system.entries[0].Boot.BootSourceOverrideTarget }}"
+              - "Boot enabled: {{ system_status.redfish_facts.system.entries[0].Boot.BootSourceOverrideEnabled }}"
+      
+      when: wait_condition == "boot_from_disk"
+    
+    # ========================================================================
+    # Condition 4: Wait for complete installation (multiple conditions)
+    # ========================================================================
+    - name: Wait for installation completion
+      block:
+        - name: Poll until installation is complete
+          block:
+            - name: Get system status
+              community.general.redfish_info:
+                baseuri: "{{ idrac_ip }}"
+                username: "{{ idrac_user }}"
+                password: "{{ idrac_password }}"
+                validate_certs: false
+                category: Systems
+                command: GetSystemInfo
+              register: system_status
+            
+            - name: Get virtual media status
+              community.general.redfish_info:
+                baseuri: "{{ idrac_ip }}"
+                username: "{{ idrac_user }}"
+                password: "{{ idrac_password }}"
+                validate_certs: false
+                category: Manager
+                command: GetVirtualMedia
+              register: media_status
+            
+            - name: Check all completion criteria
+              ansible.builtin.set_fact:
+                is_complete: >-
+                  {{
+                    (system_status.redfish_facts.system.entries[0].PowerState == "On") and
+                    (system_status.redfish_facts.system.entries[0].Boot.BootSourceOverrideTarget != "Cd") and
+                    (media_status.redfish_facts.virtual_media.entries | selectattr('Id', 'equalto', 'CD') | map(attribute='Inserted') | first | default(true) == false)
+                  }}
+            
+            - name: Display current status
+              ansible.builtin.debug:
+                msg:
+                  - "Checking installation status..."
+                  - "Power: {{ system_status.redfish_facts.system.entries[0].PowerState }}"
+                  - "Boot source: {{ system_status.redfish_facts.system.entries[0].Boot.BootSourceOverrideTarget }}"
+                  - "ISO inserted: {{ media_status.redfish_facts.virtual_media.entries | selectattr('Id', 'equalto', 'CD') | map(attribute='Inserted') | first }}"
+                  - "Complete: {{ is_complete }}"
+              when: not is_complete | bool
+            
+            - name: Fail if not complete (to trigger retry)
+              ansible.builtin.fail:
+                msg: "Installation not complete yet"
+              when: not is_complete | bool
+          
+          retries: "{{ (max_wait_time | int / poll_interval | int) | int }}"
+          delay: "{{ poll_interval }}"
+          rescue:
+            - name: Check if we should retry
+              ansible.builtin.fail:
+                msg: "Installation monitoring timed out"
+              when: ansible_failed_result.attempts >= ((max_wait_time | int / poll_interval | int) | int)
+        
+        - name: Display installation complete
+          ansible.builtin.debug:
+            msg:
+              - "========================================================"
+              - "✅ INSTALLATION COMPLETE"
+              - "========================================================"
+              - "All criteria met:"
+              - "  ✅ System powered on"
+              - "  ✅ ISO ejected"
+              - "  ✅ Booting from disk"
+              - "========================================================"
+      
+      when: wait_condition == "installation_complete"
+

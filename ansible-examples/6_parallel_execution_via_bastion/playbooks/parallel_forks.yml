@@ -1,0 +1,47 @@
+---
+# PARALLEL EXECUTION USING FORKS
+#
+# This is the simplest improvement. Remove 'serial: 1' and increase forks.
+# By default, Ansible uses 5 forks, so it will process 5 hosts in parallel.
+#
+# Timeline:
+# - Task 1 runs on all nodes simultaneously (up to fork limit)
+# - After all complete, Task 2 runs on all nodes simultaneously
+# - After all complete, Task 3 runs on all nodes simultaneously
+#
+# Run with: ansible-playbook -i inventory.yml parallel_forks.yml --forks 10
+
+- name: Parallel task execution with forks
+  hosts: target_nodes
+  gather_facts: false
+  # No 'serial' parameter means all hosts in parallel (up to forks limit)
+  
+  tasks:
+    - name: Task 1 - Health check
+      command: systemctl is-system-running
+      register: health_check
+      changed_when: false
+      
+    - name: Task 2 - Collect system info
+      command: uname -a
+      register: system_info
+      changed_when: false
+      
+    - name: Task 3 - Check disk space
+      command: df -h
+      register: disk_space
+      changed_when: false
+      
+    - name: Display results for this host
+      debug:
+        msg: "Completed all tasks on {{ inventory_hostname }}"
+
+# Total time: Task1 + Task2 + Task3 (all hosts in parallel)
+# Much faster if you have more than 5 nodes and increase forks!
+#
+# To increase forks:
+# Option 1: Command line: --forks 20
+# Option 2: In ansible.cfg:
+#   [defaults]
+#   forks = 20
+

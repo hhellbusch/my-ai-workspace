@@ -1,0 +1,80 @@
+---
+# Simple live monitoring with immediate display after each poll
+# This version shows results in real-time as they're collected
+#
+# Usage:
+#   ansible-playbook simple_monitor_live.yml \
+#     -e "idrac_ip=192.168.1.100" \
+#     -e "idrac_user=root" \
+#     -e "idrac_password=calvin" \
+#     -e "iterations=60"
+
+- name: Simple System Status Monitor (Live Display)
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    idrac_ip: "{{ idrac_ip | default('192.168.1.100') }}"
+    idrac_user: "{{ idrac_user | default('root') }}"
+    idrac_password: "{{ idrac_password | default('calvin') }}"
+    iterations: "{{ iterations | default(60) }}"  # How many times to poll
+    interval: "{{ interval | default(10) }}"      # Seconds between polls
+    
+  tasks:
+    - name: Display monitoring info
+      ansible.builtin.debug:
+        msg:
+          - "========================================================"
+          - "Starting Live System Monitoring"
+          - "========================================================"
+          - "Target: {{ idrac_ip }}"
+          - "Iterations: {{ iterations }}"
+          - "Interval: {{ interval }} seconds"
+          - "Total duration: {{ iterations | int * interval | int }} seconds"
+          - "========================================================"
+          - ""
+    
+    # Get initial system info to display hardware details
+    - name: Get initial system information
+      community.general.redfish_info:
+        baseuri: "{{ idrac_ip }}"
+        username: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+        validate_certs: false
+        category: Systems
+        command: GetSystemInfo
+      register: initial_info
+      failed_when: false
+    
+    - name: Display system information
+      ansible.builtin.debug:
+        msg:
+          - "SYSTEM INFORMATION"
+          - "Manufacturer: {{ initial_info.redfish_facts.system.entries[0].Manufacturer | default('Unknown') }}"
+          - "Model: {{ initial_info.redfish_facts.system.entries[0].Model | default('Unknown') }}"
+          - "Serial Number: {{ initial_info.redfish_facts.system.entries[0].SerialNumber | default('Unknown') }}"
+          - "BIOS Version: {{ initial_info.redfish_facts.system.entries[0].BiosVersion | default('Unknown') }}"
+          - ""
+      when: 
+        - initial_info.redfish_facts is defined
+        - initial_info.redfish_facts.system is defined
+    
+    # Main monitoring loop with immediate display
+    - name: Include polling iteration
+      ansible.builtin.include_tasks: poll_and_display.yml
+      loop: "{{ range(1, iterations | int + 1) | list }}"
+      loop_control:
+        loop_var: iteration_number
+        label: "Iteration {{ iteration_number }}/{{ iterations }}"
+    
+    - name: Display monitoring complete
+      ansible.builtin.debug:
+        msg:
+          - ""
+          - "========================================================"
+          - "✅ Monitoring Complete"
+          - "========================================================"
+          - "Total polls: {{ iterations }}"
+          - "Duration: ~{{ iterations | int * interval | int }} seconds"
+          - "========================================================"
+

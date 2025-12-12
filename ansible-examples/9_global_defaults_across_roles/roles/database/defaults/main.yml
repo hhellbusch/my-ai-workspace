@@ -1,0 +1,18 @@
+---
+# Default variables for database role
+# These have lowest precedence
+
+db_port: 5432
+db_engine: "postgresql"
+db_version: "14"
+
+# Role-specific defaults using global vars
+db_data_dir: "{{ base_install_dir | default('/var/lib') }}/database/data"
+db_log_file: "{{ log_dir | default('/var/log') }}/database.log"
+db_config_file: "{{ config_dir | default('/etc') }}/database.conf"
+
+# Database-specific settings
+db_max_wal_size: "1GB"
+db_shared_buffers: "{{ memory_limit | default('256M') }}"
+db_work_mem: "4MB"
+

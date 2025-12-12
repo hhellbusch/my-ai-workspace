@@ -1,0 +1,44 @@
+variant: fcos
+version: 1.4.0
+systemd:
+  units:
+    - name: eject-cdrom-vmware.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Eject CD-ROM via VMware tools
+        After=vmtoolsd.service multi-user.target
+        ConditionPathExists=!/var/lib/cdrom-ejected.stamp
+        ConditionPathExists=/usr/bin/vmware-toolbox-cmd
+        
+        [Service]
+        Type=oneshot
+        # Wait for VMware tools to be fully ready
+        ExecStartPre=/bin/sleep 10
+        # Eject using VMware tools
+        ExecStart=/usr/bin/vmware-toolbox-cmd device eject cdrom
+        # Create stamp file to prevent re-execution
+        ExecStartPost=/usr/bin/touch /var/lib/cdrom-ejected.stamp
+        RemainAfterExit=yes
+        
+        [Install]
+        WantedBy=multi-user.target
+    
+    # Fallback: If VMware tools fail, try standard eject
+    - name: eject-cdrom-fallback.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Fallback: Eject CD-ROM using standard eject command
+        After=eject-cdrom-vmware.service
+        ConditionPathExists=!/var/lib/cdrom-ejected.stamp
+        
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/eject /dev/sr0
+        ExecStartPost=/usr/bin/touch /var/lib/cdrom-ejected.stamp
+        RemainAfterExit=yes
+        
+        [Install]
+        WantedBy=multi-user.target
+

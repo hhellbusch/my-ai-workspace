@@ -1,0 +1,6 @@
+---
+# Ansible Galaxy requirements for IP validation
+collections:
+  - name: ansible.utils
+    version: ">=2.5.0"
+

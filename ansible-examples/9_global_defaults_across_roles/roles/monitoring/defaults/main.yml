@@ -1,0 +1,18 @@
+---
+# Default variables for monitoring role
+
+monitoring_port: 9090
+monitoring_packages:
+  - prometheus
+  - grafana
+
+# Role-specific defaults using global vars
+monitoring_config_dir: "{{ config_dir | default('/etc') }}/monitoring"
+monitoring_log_file: "{{ log_dir | default('/var/log') }}/monitoring.log"
+monitoring_data_dir: "{{ base_install_dir | default('/opt') }}/monitoring/data"
+
+# Monitoring-specific settings
+scrape_interval: "15s"
+evaluation_interval: "15s"
+retention_time: "15d"
+

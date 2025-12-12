@@ -1,0 +1,50 @@
+---
+- name: Simple IP Subnet Validation
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    # Define your subnets
+    allowed_subnets:
+      - "10.0.0.0/8"
+      - "172.16.0.0/12"
+      - "192.168.1.0/24"
+    
+    # Define IP addresses to validate
+    ip_addresses:
+      - "10.50.100.25"
+      - "172.16.5.10"
+      - "192.168.1.50"
+      - "8.8.8.8"           # This should fail - not in any subnet
+      - "192.168.2.100"     # This should fail - not in 192.168.1.0/24
+
+  tasks:
+    - name: Check each IP against all subnets
+      ansible.builtin.set_fact:
+        ip_subnet_checks: "{{ ip_subnet_checks | default({}) | combine({current_check.ip: (ip_subnet_checks | default({}))[current_check.ip] | default([]) + [current_check.result]}) }}"
+      vars:
+        current_check:
+          ip: "{{ item.0 }}"
+          subnet: "{{ item.1 }}"
+          result: "{{ item.0 | ansible.utils.ipaddr(item.1) }}"
+      loop: "{{ ip_addresses | product(allowed_subnets) | list }}"
+      loop_control:
+        label: "{{ item.0 }} vs {{ item.1 }}"
+
+    - name: Determine validity for each IP
+      ansible.builtin.set_fact:
+        ip_validation_results: >-
+          {{
+            ip_validation_results | default({}) | combine({
+              item: ip_subnet_checks[item] | select() | list | length > 0
+            })
+          }}
+      loop: "{{ ip_addresses }}"
+
+    - name: Display validation results
+      ansible.builtin.debug:
+        msg: |
+          IP Address Validation Results:
+          {% for ip, is_valid in ip_validation_results.items() %}
+          {{ ip }}: {{ 'VALID ✓' if is_valid else 'INVALID ✗' }}
+          {% endfor %}
