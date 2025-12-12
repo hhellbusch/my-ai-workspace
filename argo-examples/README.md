@@ -20,6 +20,18 @@ argo-examples/
 │   ├── workflows/                   # CI/CD and deployment workflows
 │   └── deployment/                  # Deployment strategies
 │
+├── github-workflows/                # 🔄 Example GitHub Actions workflows
+│   ├── README.md                    # Workflow documentation
+│   ├── SETUP.md                     # Setup instructions
+│   ├── WORKFLOW-DIAGRAM.md          # Visual workflow diagrams
+│   ├── argocd-diff-preview.yml      # PR diff preview (no cluster access)
+│   ├── argocd-live-diff.yml         # Live cluster diff (requires access)
+│   ├── deploy-argocd-apps.yml       # Deployment workflow
+│   ├── test-workflow.yml            # Test workflow example
+│   ├── test-oc-install.yml          # OpenShift CLI test
+│   ├── test-diff-locally.sh         # Local testing script
+│   └── .yamllint                    # YAML linting configuration
+│
 ├── scripts/                         # 🔧 Test and utility scripts
 │   ├── test.sh                      # Quick app discovery test
 │   └── test-app-of-apps.sh         # Comprehensive Helm chart test
@@ -80,6 +92,18 @@ All documentation is organized in the [`docs/`](docs/) directory:
 - **[Deployment](docs/deployment/)** - Deployment strategies and examples
 
 See [docs/README.md](docs/README.md) for a complete documentation guide.
+
+## 🔄 GitHub Workflows
+
+The [`github-workflows/`](github-workflows/) directory contains example GitHub Actions workflows for ArgoCD automation:
+
+- **[argocd-diff-preview.yml](github-workflows/argocd-diff-preview.yml)** - Generate Helm template diffs on PRs (no cluster access needed)
+- **[argocd-live-diff.yml](github-workflows/argocd-live-diff.yml)** - Show diffs against live cluster (requires ArgoCD access)
+- **[deploy-argocd-apps.yml](github-workflows/deploy-argocd-apps.yml)** - Automated deployment workflow
+
+**Note:** These are **example workflows** to copy into your own repositories. They are not active in this repository.
+
+See [github-workflows/README.md](github-workflows/README.md) for setup instructions and [github-workflows/SETUP.md](github-workflows/SETUP.md) for detailed configuration.
 
 ## 🎯 Key Concepts
 
