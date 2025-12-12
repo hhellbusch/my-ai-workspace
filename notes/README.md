@@ -9,6 +9,9 @@ Notes are organized into subdirectories by topic or category:
 ### Gaming
 - **[sc2-music.md](gaming/sc2-music.md)** - StarCraft II music recommendations
 
+### OpenShift/Kubernetes
+- **[openshift-useful-commands.md](openshift-useful-commands.md)** - Useful OpenShift and kubectl commands for pod management, troubleshooting, and cluster operations
+
 ## Adding New Notes
 
 When adding new notes:

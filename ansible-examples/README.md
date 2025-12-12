@@ -65,3 +65,451 @@ ansible-playbook simple_example.yml
 # Then see the production-ready clean version
 ansible-playbook clean_playbook.yml
 ```
+
+### 6. Parallel Execution via Bastion (AAP/Execution Environment) ⭐
+
+Transform serial Ansible playbooks into parallel powerhouses when running from **Ansible Automation Platform (AAP)** through a bastion host.
+
+**The Problem:** Tasks execute one node at a time (slow!)  
+**The Solution:** Execute tasks across all nodes simultaneously (5-100x faster!)
+
+**Architecture:**
+```
+AAP Execution Environment → Bastion (SSH Proxy) → Target Nodes (parallel)
+```
+
+**Key concepts:**
+- AAP-specific configuration (Job Templates, Credentials, Forks)
+- Bastion/jump host with ProxyJump
+- Simple parallelism with forks (5-20x faster)
+- Maximum parallelism with async (10-100x faster)
+- Execution Environment considerations
+- Real-world production examples
+
+```bash
+cd 6_parallel_execution_via_bastion
+```
+
+**📚 Documentation Structure:**
+```
+6_parallel_execution_via_bastion/
+├── README.md (overview)
+├── INDEX.md (complete navigation)
+├── inventory.yml (example config)
+├── ansible.cfg (settings)
+├── docs/ (detailed guides)
+│   ├── AAP-README.md ⭐ START HERE
+│   ├── AAP-SETUP-GUIDE.md
+│   ├── EXECUTION-ENVIRONMENT.md
+│   ├── QUICK-START.md
+│   └── COMPARISON.md
+└── playbooks/ (examples)
+    ├── test_connectivity.yml ⭐ TEST FIRST
+    ├── parallel_forks.yml (5-20x faster)
+    ├── parallel_async.yml (10-100x faster)
+    └── parallel_async_real_world.yml
+```
+
+**Quick Start for AAP:**
+1. Read `docs/AAP-README.md`
+2. Import `playbooks/test_connectivity.yml` to test bastion config
+3. Remove `serial: 1` from your playbook
+4. Set **Forks: 20** in AAP Job Template
+5. Measure the speedup!
+
+**For command-line testing:**
+```bash
+# Test connectivity
+ansible-playbook -i inventory.yml playbooks/test_connectivity.yml
+
+# Compare serial vs parallel
+ansible-playbook -i inventory.yml playbooks/serial_execution.yml
+ansible-playbook -i inventory.yml playbooks/parallel_forks.yml --forks 20
+
+# Maximum speed with async
+ansible-playbook -i inventory.yml playbooks/parallel_async.yml
+```
+
+### 7. Monitor ISO Boot and Installation via Redfish ⭐
+
+This example demonstrates how to monitor server boot and installation from ISO via Redfish API (iDRAC, iLO, etc.) without relying on `sleep` or fixed timeouts.
+
+**The Problem:** Using `sleep` wastes time and doesn't detect failures  
+**The Solution:** Poll Redfish API for real-time system status and boot progress
+
+**What it monitors:**
+- System power state (On/Off/PoweringOn)
+- Boot source (CD/ISO vs Hard Disk)
+- Virtual media status (ISO mounted/ejected)
+- System health and state
+- Installation completion indicators
+
+**Key concepts:**
+- Intelligent polling instead of fixed delays
+- Multi-indicator monitoring (power + media + boot source)
+- Using both `community.general.redfish_info` module and direct API calls
+- Wait for specific conditions with timeout
+- Real-time status display during boot
+
+```bash
+cd 7_monitor_iso_boot
+```
+
+**📚 Two Approaches:**
+
+**1. Using Redfish Module (Recommended):**
+```bash
+# Simple monitoring
+ansible-playbook simple_monitor_module.yml \
+  -e "idrac_ip=192.168.1.100" \
+  -e "idrac_user=root" \
+  -e "idrac_password=calvin" \
+  -e "iterations=60" \
+  -e "interval=10"
+
+# Wait for specific condition
+ansible-playbook wait_for_condition_module.yml \
+  -e "idrac_ip=192.168.1.100" \
+  -e "idrac_user=root" \
+  -e "idrac_password=calvin" \
+  -e "wait_condition=installation_complete"
+
+# Advanced monitoring (system + virtual media)
+ansible-playbook monitor_with_module.yml \
+  -e "idrac_ip=192.168.1.100" \
+  -e "idrac_user=root" \
+  -e "idrac_password=calvin"
+```
+
+**2. Using Direct Redfish API:**
+```bash
+# Simple monitoring with URI module
+ansible-playbook simple_monitor.yml \
+  -e "idrac_ip=192.168.1.100" \
+  -e "idrac_user=root" \
+  -e "idrac_password=calvin"
+
+# Complete workflow: mount ISO → boot → monitor → verify
+ansible-playbook complete_iso_boot.yml \
+  -e "idrac_ip=192.168.1.100" \
+  -e "idrac_user=root" \
+  -e "idrac_password=calvin" \
+  -e "iso_url=http://server.example.com/rhcos.iso" \
+  -e "expected_server_ip=192.168.1.50"
+```
+
+**Example Output:**
+```
+========================================================
+Poll #12 - 2025-12-04 14:25:30
+========================================================
+SYSTEM:
+  Power State:       On
+  System Health:     OK
+  System State:      Enabled
+  Boot Source:       Cd
+  Boot Enabled:      Once
+
+VIRTUAL MEDIA (CD):
+  Inserted:          true
+  Image:             http://server.example.com/rhcos.iso
+  Connected Via:     URI
+
+INDICATORS:
+  ✅ System powered on
+  📀 ISO mounted
+  💿 Booting from Cd
+========================================================
+```
+
+**Prerequisites:**
+```bash
+# Required for module-based playbooks
+ansible-galaxy collection install community.general
+```
+
+**See the [README.md](7_monitor_iso_boot/README.md) for:**
+- Complete documentation
+- Troubleshooting guide
+- Redfish API reference
+- Module vs Direct API comparison
+```
+
+### 8. Validate IP Addresses Against Subnets ⭐
+
+This example demonstrates how to validate that IP addresses belong to specific subnets using Ansible. Perfect for network compliance, security audits, and pre-deployment validation.
+
+**The Problem:** Need to ensure servers/services are only deployed on approved network segments  
+**The Solution:** Validate IPs against a list of allowed subnets using `ansible.utils.ipaddr` filter
+
+**Use Cases:**
+- Pre-deployment validation (ensure IPs are in approved networks)
+- Security audits (find IPs outside corporate ranges)
+- Network compliance checks
+- CMDB validation
+
+**Key concepts:**
+- Using `ansible.utils.ipaddr` filter for subnet matching
+- Iterating over IP lists with validation
+- Creating detailed validation reports
+- Filtering valid vs invalid IPs for further processing
+- Optional enforcement with assertions
+
+```bash
+cd 8_validate_ip_in_subnets
+```
+
+**Prerequisites:**
+```bash
+# Install the ansible.utils collection (required)
+ansible-galaxy collection install ansible.utils
+
+# Or use the requirements file
+ansible-galaxy collection install -r requirements.yml
+
+# Python netaddr library is also required
+pip install netaddr
+```
+
+**Three Examples:**
+
+**1. Simple Validation:**
+```bash
+ansible-playbook simple_playbook.yml
+```
+Basic IP validation against a list of subnets with pass/fail results.
+
+**2. Complete Validation with Detailed Reporting:**
+```bash
+# Show detailed report
+ansible-playbook complete_validation.yml
+
+# Enable strict mode (fail on invalid IPs)
+ansible-playbook complete_validation.yml -e "fail_on_invalid=true"
+```
+Comprehensive validation with:
+- Which subnet(s) each IP matches
+- Summary statistics (valid/invalid counts)
+- Descriptive labels for IPs and subnets
+- Optional enforcement
+
+**3. Practical Example:**
+```bash
+ansible-playbook practical_example.yml
+```
+Real-world pattern showing:
+- Loading data from variables/inventory
+- Filtering IPs for deployment
+- Creating approved/rejected lists
+- Optional assertion for CI/CD pipelines
+
+**Example Output:**
+```
+====================================
+IP SUBNET VALIDATION SUMMARY
+====================================
+Total IPs checked: 6
+Valid IPs: 4
+Invalid IPs: 2
+
+IP: 10.50.100.25
+Description: App Server 1
+Status: VALID ✓
+Matching Subnets: Private Network Class A
+---
+
+IP: 8.8.8.8
+Description: External DNS
+Status: INVALID ✗
+Matching Subnets: None
+---
+```
+
+**Quick Filter Reference:**
+```yaml
+# Check if IP is in subnet
+{{ '10.1.50.10' | ansible.utils.ipaddr('10.1.0.0/16') }}
+
+# Check if IP matches any subnet in list
+{{ subnets | map('ansible.utils.ipaddr', my_ip) | select() | list | length > 0 }}
+
+# Filter list to only valid IPs
+{{ all_ips | select('ansible.utils.ipaddr', my_subnet) | list }}
+```
+
+**Run All Tests:**
+```bash
+./test_examples.sh
+```
+
+**See the [README.md](8_validate_ip_in_subnets/README.md) for:**
+- Detailed filter usage examples
+- Loading data from inventory/API/files
+- Security audit patterns
+- Troubleshooting guide
+- Best practices
+
+### 9. Global Defaults Across Playbooks and Roles ⭐
+
+This example demonstrates how to set default values globally for an Ansible playbook and make them available to all subsequent tasks and roles. Essential for maintaining consistency across multi-role deployments.
+
+**The Problem:** Different roles need to share common configuration (app name, paths, feature flags, etc.)  
+**The Solution:** Set variables at the playbook level that all roles inherit
+
+**Four Methods for Setting Global Defaults:**
+1. **Playbook vars** - Core application settings (high precedence)
+2. **vars_files** - Environment-specific configurations (loaded dynamically)
+3. **group_vars** - Infrastructure patterns and inventory-based defaults
+4. **host_vars** - Per-host customization and overrides
+
+**Key concepts:**
+- Variable precedence and inheritance
+- Derived variables (paths based on app name)
+- Feature flags for conditional execution
+- Environment-specific configuration loading
+- Best practices for role defaults vs playbook vars
+
+```bash
+cd 9_global_defaults_across_roles
+```
+
+**Quick Start:**
+
+**1. Simplest Pattern (5 seconds to understand):**
+```bash
+ansible-playbook simple_example.yml
+```
+Shows the basic pattern - any variable in playbook `vars:` is available to all roles.
+
+**2. Complete Example (full pattern):**
+```bash
+# Run with default settings (production)
+ansible-playbook -i inventory.yml main_playbook.yml --check
+
+# Run with development settings
+ansible-playbook -i inventory.yml main_playbook.yml -e "environment=development" --check
+
+# Override any variable
+ansible-playbook -i inventory.yml main_playbook.yml \
+  -e "app_name=custom" \
+  -e "memory_limit=4096M" \
+  --check
+```
+
+**Example Pattern:**
+```yaml
+---
+- name: Deploy application
+  hosts: all
+  vars:
+    # Global defaults - available to ALL roles
+    app_name: "myapp"
+    app_version: "1.0.0"
+    environment: "production"
+    
+    # Derived paths
+    base_install_dir: "/opt/{{ app_name }}"
+    log_dir: "/var/log/{{ app_name }}"
+    config_dir: "/etc/{{ app_name }}"
+    
+    # Feature flags
+    enable_monitoring: true
+    enable_ssl: true
+    
+  vars_files:
+    - "vars/{{ environment }}.yml"  # Load environment-specific
+  
+  roles:
+    - webserver     # Uses all global vars
+    - database      # Uses all global vars
+    - monitoring    # Uses all global vars
+```
+
+**Real-World Benefits:**
+- DRY (Don't Repeat Yourself) - define once, use everywhere
+- Consistent paths and naming across all roles
+- Easy environment switching (dev/staging/prod)
+- Feature toggles for optional components
+- Simplified testing with variable overrides
+
+**What's Included:**
+- 3 sample roles (webserver, database, monitoring) that use global vars
+- Environment-specific configs (production.yml, development.yml)
+- group_vars and host_vars examples
+- Complete templates showing variable usage
+- Extensive documentation
+
+**Documentation Structure:**
+```
+9_global_defaults_across_roles/
+├── README.md ⭐ Complete guide
+├── QUICK-START.md ⭐ 5-minute tutorial
+├── PRECEDENCE-GUIDE.md ⭐ Variable precedence explained
+├── simple_example.yml ⭐ Start here
+├── main_playbook.yml (full example)
+├── inventory.yml
+├── vars/ (environment configs)
+│   ├── common.yml
+│   ├── production.yml
+│   └── development.yml
+├── group_vars/ (infrastructure defaults)
+│   ├── all.yml
+│   ├── production.yml
+│   └── development.yml
+├── host_vars/ (per-host overrides)
+└── roles/ (3 example roles)
+    ├── webserver/
+    ├── database/
+    └── monitoring/
+```
+
+**Variable Precedence (lowest to highest):**
+1. Role defaults (`roles/*/defaults/main.yml`) - Lowest
+2. group_vars/all.yml
+3. group_vars/group_name.yml
+4. Playbook vars_files
+5. Playbook vars
+6. host_vars
+7. Extra vars (`-e`) - Highest (always wins)
+
+**Quick Reference:**
+```yaml
+# Set global defaults (pick one or combine):
+
+# Method 1: In playbook
+vars:
+  my_var: "value"
+
+# Method 2: In external file
+vars_files:
+  - "vars/{{ environment }}.yml"
+
+# Method 3: In inventory
+# group_vars/all.yml
+my_var: "value"
+
+# Method 4: Override from CLI
+ansible-playbook playbook.yml -e "my_var=override"
+```
+
+**Common Use Cases:**
+- Multi-role deployments with shared configuration
+- Environment-specific deployments (dev/staging/prod)
+- Feature flag management
+- Path standardization across roles
+- Compliance and security settings
+
+**Best Practices Demonstrated:**
+- ✅ Use `roles/*/defaults/main.yml` for role defaults (easily overridden)
+- ✅ Use playbook `vars:` for core application settings
+- ✅ Use `vars_files:` for environment-specific configs
+- ✅ Provide fallbacks with `{{ var | default('fallback') }}`
+- ✅ Document which variables are required vs optional
+- ❌ Don't use `roles/*/vars/main.yml` for defaults (too high precedence)
+
+**See the documentation for:**
+- Complete variable precedence explanation
+- Advanced patterns (computed vars, conditionals)
+- Troubleshooting guide
+- Multiple real-world examples
+```
