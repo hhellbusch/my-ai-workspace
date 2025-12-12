@@ -157,7 +157,7 @@ When you want to use a skill directly without a command wrapper:
 ```
 User: I need to create a new skill for managing Kubernetes deployments
 
-Claude: [Reads @skills/create-agent-skills/SKILL.md]
+Claude: [Reads @.cursor/skills/create-agent-skills/SKILL.md]
         What would you like to do?
         1. Create new skill
         2. Audit/modify existing skill
@@ -466,16 +466,16 @@ Task is complete when:
 
 ```
 # Direct reference
-@skills/create-agent-skills/SKILL.md
+@.cursor/skills/create-agent-skills/SKILL.md
 
 # Invoke skill
 Skill(create-agent-skills) [arguments]
 
 # Reference specific workflow
-@skills/create-agent-skills/workflows/create-new-skill.md
+@.cursor/skills/create-agent-skills/workflows/create-new-skill.md
 
 # Reference specific reference
-@skills/create-agent-skills/references/core-principles.md
+@.cursor/skills/create-agent-skills/references/core-principles.md
 ```
 
 ### Using Commands
