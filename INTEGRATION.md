@@ -105,7 +105,7 @@ Start using the system immediately with these commands:
 ### Skills Directory Structure
 
 ```
-skills/
+.cursor/skills/
 ├── create-agent-skills/       # Skill creation expertise
 │   ├── SKILL.md              # Router + essential principles
 │   ├── workflows/            # Step-by-step procedures
