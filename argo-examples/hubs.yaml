@@ -12,6 +12,7 @@
 #   - Update the workflow env section when adding new clusters
 #   - Clusters are deployed sequentially in the order listed
 #   - dry_run can be set per-cluster or overridden via workflow_dispatch input
+#   - Pull requests automatically run in dry-run mode (preview only)
 
 clusters:
   - name: dev-cluster

@@ -9,6 +9,14 @@ on:
       - 'apps/**'                # Application changes
       - 'infrastructure/**'      # Infrastructure changes
       - 'hubs.yaml'              # Cluster configuration changes
+  pull_request:  # Automatic dry-run on PRs
+    branches:
+      - main
+    paths:
+      - 'charts/argocd-apps/**'  # Helm chart changes
+      - 'apps/**'                # Application changes
+      - 'infrastructure/**'      # Infrastructure changes
+      - 'hubs.yaml'              # Cluster configuration changes
   workflow_dispatch:  # Allow manual trigger
     inputs:
       dry_run:
@@ -19,7 +27,7 @@ on:
 
 # Prevent concurrent deployments to avoid conflicts
 concurrency:
-  group: deploy-argocd-apps
+  group: deploy-argocd-apps-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: false  # Queue new runs instead of canceling
 
 jobs:
@@ -29,10 +37,26 @@ jobs:
     
     # Explicit permissions (principle of least privilege)
     permissions:
-      contents: read      # Read repository contents
-      actions: read       # Read workflow artifacts
+      contents: read         # Read repository contents
+      actions: read          # Read workflow artifacts
+      pull-requests: write   # Post comments on pull requests
 
     steps:
+      - name: Pull Request Notification
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "================================================"
+          echo "🔍 PULL REQUEST MODE"
+          echo "================================================"
+          echo "This is a pull request - running in DRY-RUN mode"
+          echo "No changes will be applied to any cluster"
+          echo "Preview artifacts will be available after completion"
+          echo ""
+          echo "PR: #${{ github.event.pull_request.number }}"
+          echo "Branch: ${{ github.head_ref }} → ${{ github.base_ref }}"
+          echo "================================================"
+          echo ""
+      
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -100,12 +124,14 @@ jobs:
             # Determine dry-run mode (hybrid approach)
             CLUSTER_DRY_RUN=$(yq eval ".clusters[$i].dry_run // false" hubs.yaml)
             WORKFLOW_DRY_RUN="${{ inputs.dry_run || 'false' }}"
+            IS_PULL_REQUEST="${{ github.event_name == 'pull_request' }}"
             
-            # Either workflow input OR cluster config triggers dry-run
-            if [ "$WORKFLOW_DRY_RUN" = "true" ] || [ "$CLUSTER_DRY_RUN" = "true" ]; then
+            # Automatic dry-run: pull request OR workflow input OR cluster config
+            if [ "$IS_PULL_REQUEST" = "true" ] || [ "$WORKFLOW_DRY_RUN" = "true" ] || [ "$CLUSTER_DRY_RUN" = "true" ]; then
               DRY_RUN=true
               DRY_RUN_REASON=""
-              [ "$WORKFLOW_DRY_RUN" = "true" ] && DRY_RUN_REASON="workflow input"
+              [ "$IS_PULL_REQUEST" = "true" ] && DRY_RUN_REASON="pull request"
+              [ "$WORKFLOW_DRY_RUN" = "true" ] && [ -n "$DRY_RUN_REASON" ] && DRY_RUN_REASON="$DRY_RUN_REASON + workflow input" || [ "$WORKFLOW_DRY_RUN" = "true" ] && DRY_RUN_REASON="workflow input"
               [ "$CLUSTER_DRY_RUN" = "true" ] && [ -n "$DRY_RUN_REASON" ] && DRY_RUN_REASON="$DRY_RUN_REASON + cluster config" || [ "$CLUSTER_DRY_RUN" = "true" ] && DRY_RUN_REASON="cluster config"
             else
               DRY_RUN=false
