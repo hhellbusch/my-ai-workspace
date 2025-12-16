@@ -97,6 +97,24 @@ jobs:
             echo "ArgoCD Namespace: $ARGOCD_NAMESPACE"
             echo "================================================"
 
+            # Enable error tracking for this cluster
+            set -e
+            set -o pipefail
+            
+            # Function to handle errors
+            handle_error() {
+              local exit_code=$?
+              echo "================================================"
+              echo "❌ ERROR: Deployment to $CLUSTER_NAME failed with exit code $exit_code"
+              echo "Last command: $BASH_COMMAND"
+              echo "================================================"
+              echo "Cleaning up..."
+              oc logout 2>/dev/null || true
+              exit $exit_code
+            }
+            
+            trap handle_error ERR
+
             # Get the token value from the environment variable
             TOKEN_VALUE=$(eval echo \$${TOKEN_SECRET})
 
@@ -105,14 +123,12 @@ jobs:
               exit 1
             fi
 
-            # Authenticate to the cluster
+            # Authenticate to the cluster (with timeout)
             echo "Authenticating to $CLUSTER_NAME..."
-            oc login --token="${TOKEN_VALUE}" --server="${CLUSTER_SERVER}" --insecure-skip-tls-verify=true
-
-            # Verify connection
-            echo "Verifying connection..."
-            oc whoami
-            oc cluster-info
+            timeout 60 oc login --token="${TOKEN_VALUE}" --server="${CLUSTER_SERVER}" --insecure-skip-tls-verify=true || {
+              echo "ERROR: Login to $CLUSTER_NAME timed out after 60 seconds"
+              exit 1
+            }
 
             # Template the Helm chart and apply to the cluster
             echo "Applying ArgoCD applications..."
@@ -120,14 +136,64 @@ jobs:
               --namespace ${ARGOCD_NAMESPACE} \
               --set-json "applications=$APP_DIRECTORIES" \
               --set-json "infrastructure=$INFRA_DIRECTORIES" \
-              | oc apply -f -
+              | timeout 120 oc apply -f -
 
-            echo "Verifying ArgoCD applications..."
-            oc get applications -n ${ARGOCD_NAMESPACE}
+            echo "Verifying ArgoCD applications created..."
+            oc get applications -n ${ARGOCD_NAMESPACE} -l managed-by=root-app
+
+            # Health check: Wait for applications to sync (warning only)
+            echo "Checking application health status..."
+            HEALTH_TIMEOUT=300  # 5 minutes
+            HEALTH_ELAPSED=0
+            ALL_HEALTHY=false
+
+            while [ $HEALTH_ELAPSED -lt $HEALTH_TIMEOUT ]; do
+              # Check only applications managed by root-app (created by this deployment)
+              if command -v jq &> /dev/null; then
+                UNHEALTHY_COUNT=$(oc get applications -n ${ARGOCD_NAMESPACE} -l managed-by=root-app -o json 2>/dev/null | \
+                  jq '[.items[] | select(.status.sync.status != "Synced" or .status.health.status != "Healthy")] | length' || echo "0")
+                
+                if [ "$UNHEALTHY_COUNT" -eq 0 ]; then
+                  echo "✅ All deployed applications are synced and healthy"
+                  ALL_HEALTHY=true
+                  break
+                fi
+                
+                echo "⏳ Waiting for $UNHEALTHY_COUNT applications to become healthy... (${HEALTH_ELAPSED}s/${HEALTH_TIMEOUT}s)"
+              else
+                echo "⚠️  jq not available, skipping detailed health check"
+                break
+              fi
+              
+              sleep 15
+              HEALTH_ELAPSED=$((HEALTH_ELAPSED + 15))
+            done
+
+            if [ "$ALL_HEALTHY" = false ]; then
+              echo "⚠️  Warning: Some applications are not healthy after ${HEALTH_TIMEOUT}s"
+              echo "This is not a failure - ArgoCD may still be syncing applications."
+              echo ""
+              echo "Application statuses:"
+              if command -v jq &> /dev/null; then
+                oc get applications -n ${ARGOCD_NAMESPACE} -l managed-by=root-app -o json 2>/dev/null | \
+                  jq -r '.items[] | "  \(.metadata.name): Sync=\(.status.sync.status // "Unknown") Health=\(.status.health.status // "Unknown")"' || \
+                  oc get applications -n ${ARGOCD_NAMESPACE} -l managed-by=root-app
+              else
+                oc get applications -n ${ARGOCD_NAMESPACE} -l managed-by=root-app
+              fi
+              echo ""
+              # Uncomment the line below to make health check failures halt the deployment:
+              # exit 1
+            fi
 
             # Logout from the cluster
             echo "Logging out from $CLUSTER_NAME..."
-            oc logout || true
+            oc logout 2>/dev/null || true
+            
+            # Clear error trap for next iteration
+            trap - ERR
+            set +e
+            set +o pipefail
 
             echo "✅ Successfully deployed to $CLUSTER_NAME"
             echo ""
