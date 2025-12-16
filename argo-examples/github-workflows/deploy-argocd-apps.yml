@@ -11,9 +11,20 @@ on:
       - 'hubs.yaml'              # Cluster configuration changes
   workflow_dispatch:  # Allow manual trigger
 
+# Prevent concurrent deployments to avoid conflicts
+concurrency:
+  group: deploy-argocd-apps
+  cancel-in-progress: false  # Queue new runs instead of canceling
+
 jobs:
   deploy-argocd-apps:
     runs-on: ubuntu-latest
+    timeout-minutes: 30  # Fail if deployment takes longer than 30 minutes
+    
+    # Explicit permissions (principle of least privilege)
+    permissions:
+      contents: read      # Read repository contents
+      actions: read       # Read workflow artifacts
 
     steps:
       - name: Checkout repository
