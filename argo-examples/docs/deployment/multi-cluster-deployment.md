@@ -16,23 +16,37 @@ clusters:
     server: https://api.dev.example.com:6443
     argocd_namespace: argocd
     token_secret: OPENSHIFT_TOKEN_DEV
+    dry_run: false  # Optional: set to true for preview-only mode
+    argocd_server: argocd.dev.example.com  # Optional: for ArgoCD CLI diffs
+    argocd_token_secret: ARGOCD_TOKEN_DEV  # Optional: ArgoCD auth token
     
   - name: staging-cluster
     server: https://api.staging.example.com:6443
     argocd_namespace: argocd
     token_secret: OPENSHIFT_TOKEN_STAGING
+    dry_run: false
+    argocd_server: argocd.staging.example.com
+    argocd_token_secret: ARGOCD_TOKEN_STAGING
     
   - name: prod-cluster
     server: https://api.prod.example.com:6443
     argocd_namespace: argocd
     token_secret: OPENSHIFT_TOKEN_PROD
+    dry_run: false  # Set to true to make prod preview-only
+    argocd_server: argocd.prod.example.com
+    argocd_token_secret: ARGOCD_TOKEN_PROD
 ```
 
-**Fields:**
+**Required Fields:**
 - `name`: Friendly name for the cluster (used in logs)
 - `server`: OpenShift API server URL
 - `argocd_namespace`: Namespace where ArgoCD is installed
 - `token_secret`: Name of the GitHub secret containing the service account token
+
+**Optional Fields:**
+- `dry_run`: If `true`, only preview changes without applying (default: `false`)
+- `argocd_server`: ArgoCD server URL for CLI diff analysis (e.g., `argocd.example.com`)
+- `argocd_token_secret`: GitHub secret name containing ArgoCD auth token
 
 ### 2. Set Up GitHub Secrets
 
@@ -57,23 +71,117 @@ If you add a new cluster, update the workflow file to include the new token secr
     OPENSHIFT_TOKEN_NEW_CLUSTER: ${{ secrets.OPENSHIFT_TOKEN_NEW_CLUSTER }}  # Add new token
 ```
 
+### 4. (Optional) Configure ArgoCD CLI Diff
+
+For enhanced diff analysis during pull requests, optionally configure ArgoCD CLI access:
+
+1. Generate an ArgoCD auth token:
+```bash
+# Option 1: Generate token for existing account
+argocd account generate-token --account github-actions
+
+# Option 2: Create read-only service account (recommended)
+argocd proj role create default github-diff --description "Read-only for GitHub diffs"
+argocd proj role add-policy default github-diff --action get --permission allow --object '*/Application/*'
+argocd account generate-token --account proj:default:github-diff
+```
+
+2. Add ArgoCD tokens to GitHub Secrets:
+   - `ARGOCD_TOKEN_DEV`
+   - `ARGOCD_TOKEN_STAGING`
+   - `ARGOCD_TOKEN_PROD`
+
+3. Update the workflow to include ArgoCD tokens:
+```yaml
+env:
+  # OpenShift tokens
+  OPENSHIFT_TOKEN_DEV: ${{ secrets.OPENSHIFT_TOKEN_DEV }}
+  # ArgoCD tokens (optional)
+  ARGOCD_TOKEN_DEV: ${{ secrets.ARGOCD_TOKEN_DEV }}
+```
+
+## Dry-Run and Pull Request Features
+
+### Automatic Dry-Run on Pull Requests
+
+The workflow automatically runs in **dry-run mode** for all pull requests to the main branch:
+
+- **No changes applied** - Only validation and preview
+- **Server-side validation** - Tests against actual clusters
+- **ArgoCD diff analysis** - Shows ArgoCD's perspective (if configured)
+- **Preview artifacts** - Download generated manifests for review
+
+**Example workflow:**
+```
+1. Developer creates PR with changes to apps/
+2. Workflow automatically triggers in dry-run mode
+3. Validates against all clusters (dev, staging, prod)
+4. Shows diffs and preview manifests
+5. Team reviews changes before merging
+6. After merge, actual deployment runs
+```
+
+### Manual Dry-Run Mode
+
+Trigger dry-run manually via GitHub Actions:
+
+1. Go to Actions → Deploy ArgoCD Applications
+2. Click "Run workflow"
+3. Check "Run in dry-run mode" option
+4. Click "Run workflow"
+
+### Per-Cluster Dry-Run
+
+Make specific clusters always run in preview mode:
+
+```yaml
+- name: prod-cluster
+  dry_run: true  # Always preview, never auto-apply
+```
+
+Useful for:
+- Production environments requiring manual approval
+- Compliance requirements
+- Extra safety for critical clusters
+
+### Hybrid Mode
+
+Dry-run is triggered by ANY of:
+1. Pull request event (automatic)
+2. Workflow dispatch input (manual)
+3. Cluster configuration (permanent)
+
+The reason for dry-run is clearly shown in workflow logs.
+
 ## How It Works
 
 ### Workflow Process
 
 ```
 1. Checkout code
-2. Install tools (oc, helm, yq)
+2. Install tools (oc, helm, argocd CLI, yq)
 3. Discover directories in apps/ and infrastructure/
-4. Read hubs.yaml to get cluster list
-5. For each cluster:
+4. Determine mode (dry-run or apply based on PR/workflow input/cluster config)
+5. Read hubs.yaml to get cluster list
+6. For each cluster:
    ├── Parse cluster configuration
-   ├── Authenticate with service account token
-   ├── Verify connection
-   ├── Apply ArgoCD applications via Helm template
-   ├── Verify deployment
-   └── Logout
-6. Report success
+   ├── Enable error tracking and cleanup handlers
+   ├── Authenticate with service account token (60s timeout)
+   ├── If DRY-RUN mode:
+   │   ├── Generate Helm templates
+   │   ├── Run server-side validation (oc apply --dry-run=server)
+   │   ├── (Optional) Authenticate to ArgoCD
+   │   ├── (Optional) Run argocd app diff for each application
+   │   ├── Save preview artifacts
+   │   └── Skip to next cluster
+   ├── If APPLY mode:
+   │   ├── Apply ArgoCD applications via Helm template (120s timeout)
+   │   ├── Verify applications created
+   │   ├── Health check: Wait for applications to sync (5 min max, warning only)
+   │   └── Report success
+   └── Clear error handlers
+7. Upload artifacts (dry-run previews, if any)
+8. Report overall success
 ```
 
 ### Deployment Order

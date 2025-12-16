@@ -95,15 +95,25 @@ See [docs/README.md](docs/README.md) for a complete documentation guide.
 
 ## 🔄 GitHub Workflows
 
-The [`github-workflows/`](github-workflows/) directory contains example GitHub Actions workflows for ArgoCD automation:
+The [`github-workflows/`](github-workflows/) directory contains production-ready GitHub Actions workflows for ArgoCD automation:
 
+### Primary Workflow
+- **[deploy-argocd-apps.yml](github-workflows/deploy-argocd-apps.yml)** - **Multi-cluster deployment with advanced features**
+  - ✅ Automatic dry-run validation on pull requests
+  - ✅ Server-side validation against live clusters
+  - ✅ Optional ArgoCD CLI diff analysis
+  - ✅ Health check monitoring
+  - ✅ Operation timeouts and error handling
+  - ✅ Hybrid dry-run mode (PR/manual/per-cluster)
+  - ✅ Preview artifact generation
+
+### Additional Example Workflows
 - **[argocd-diff-preview.yml](github-workflows/argocd-diff-preview.yml)** - Generate Helm template diffs on PRs (no cluster access needed)
 - **[argocd-live-diff.yml](github-workflows/argocd-live-diff.yml)** - Show diffs against live cluster (requires ArgoCD access)
-- **[deploy-argocd-apps.yml](github-workflows/deploy-argocd-apps.yml)** - Automated deployment workflow
 
-**Note:** These are **example workflows** to copy into your own repositories. They are not active in this repository.
+**Note:** These are **production-ready examples** to copy into your own repositories. They are not active in this repository.
 
-See [github-workflows/README.md](github-workflows/README.md) for setup instructions and [github-workflows/SETUP.md](github-workflows/SETUP.md) for detailed configuration.
+See [github-workflows/README.md](github-workflows/README.md) for workflow documentation and [docs/deployment/multi-cluster-deployment.md](docs/deployment/multi-cluster-deployment.md) for complete setup guide.
 
 ## 🎯 Key Concepts
 
@@ -120,6 +130,29 @@ Different environments use different Helm value files:
 - **Production** → Stable tags (`v1.2.3`)
 - **Staging** → Release candidates (`v1.3.0-rc1`)
 - **Development** → Latest branches (`develop`, `feature/xyz`)
+
+## ✨ Advanced Features
+
+### Dry-Run and Validation
+- **Automatic PR validation** - Every pull request runs in dry-run mode
+- **Manual dry-run** - Trigger via workflow_dispatch for testing
+- **Per-cluster dry-run** - Configure production for preview-only
+- **Server-side validation** - Test against actual cluster constraints
+- **ArgoCD diff analysis** - See changes from ArgoCD's perspective
+- **Preview artifacts** - Download generated manifests for review
+
+### Safety and Reliability
+- **Operation timeouts** - Prevents hung operations (60s login, 120s apply)
+- **Health checks** - Monitors application sync status (warning mode)
+- **Error handling** - Automatic cleanup on failure
+- **Concurrency control** - Prevents conflicting deployments
+- **Job timeout** - 30-minute maximum runtime
+
+### Monitoring and Observability
+- **Clear logging** - Shows deployment progress and status
+- **Artifact upload** - Saves previews for 30 days
+- **Health status** - Tracks application sync and health
+- **Diff analysis** - Multiple perspectives (Helm, Kubernetes, ArgoCD)
 
 ## 🔧 Available Scripts
 

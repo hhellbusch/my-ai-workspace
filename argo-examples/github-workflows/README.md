@@ -1,8 +1,39 @@
-# ArgoCD Diff Preview Workflows
+# ArgoCD GitHub Actions Workflows
 
-This directory contains GitHub Actions workflows that provide diff previews for ArgoCD changes on pull requests.
+This directory contains GitHub Actions workflows for ArgoCD multi-cluster deployments and diff previews.
 
 ## Available Workflows
+
+### `deploy-argocd-apps.yml` (Primary Deployment Workflow)
+
+**What it does:**
+- Deploys ArgoCD applications to multiple OpenShift clusters
+- Automatically runs in dry-run mode for pull requests
+- Provides comprehensive validation and diff analysis
+- Supports manual dry-run mode via workflow_dispatch
+- Includes health checks and error handling
+
+**Features:**
+- ✅ Multi-cluster deployment from single workflow
+- ✅ Automatic PR validation (dry-run only)
+- ✅ Server-side validation (`oc apply --dry-run=server`)
+- ✅ Optional ArgoCD CLI diff analysis
+- ✅ Helm template generation and validation
+- ✅ Health check monitoring (warning mode)
+- ✅ Operation timeouts (60s login, 120s apply)
+- ✅ Automatic error cleanup
+- ✅ Artifact upload (preview manifests)
+
+**Triggers:**
+- **Push to main** - Actual deployment
+- **Pull request to main** - Automatic dry-run validation
+- **Workflow dispatch** - Manual trigger with optional dry-run
+
+**Setup:** See [multi-cluster-deployment.md](../docs/deployment/multi-cluster-deployment.md) for complete setup guide.
+
+---
+
+## Additional Example Workflows
 
 ### 1. `argocd-diff-preview.yml` (Recommended - No cluster access needed)
 
