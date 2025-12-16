@@ -1,6 +1,14 @@
 #!/bin/bash
 
- # Reusable function to discover directories and convert to JSON array
+# Check for required dependencies
+for cmd in find jq; do
+  if ! command -v $cmd &> /dev/null; then
+    echo "ERROR: Required command '$cmd' not found. Please install it first."
+    exit 1
+  fi
+done
+
+# Reusable function to discover directories and convert to JSON array
 get_directories_as_json() {
   local path=$1
   local label=$2

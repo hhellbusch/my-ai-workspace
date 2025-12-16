@@ -4,3 +4,11 @@ description: ArgoCD App of Apps Helm Chart
 type: application
 version: 1.0.0
 appVersion: "1.0"
+icon: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
+sources:
+  - https://github.com/your-org/your-repo
+keywords:
+  - argocd
+  - app-of-apps
+  - gitops
+  - multi-cluster

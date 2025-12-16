@@ -32,11 +32,23 @@ error() {
     echo -e "${RED}ERROR: $1${NC}"
 }
 
-# Check if helm is installed
-if ! command -v helm &> /dev/null; then
-    error "Helm is not installed. Please install Helm first."
+# Check for required dependencies
+echo "Checking dependencies..."
+MISSING_DEPS=()
+for cmd in helm grep sed; do
+    if ! command -v $cmd &> /dev/null; then
+        MISSING_DEPS+=($cmd)
+    fi
+done
+
+if [ ${#MISSING_DEPS[@]} -ne 0 ]; then
+    error "Missing required commands: ${MISSING_DEPS[*]}"
+    echo "Please install the missing dependencies and try again."
     exit 1
 fi
+
+echo "✓ All dependencies found"
+echo ""
 
 # Navigate to argo-examples directory (parent of scripts/)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -94,16 +106,16 @@ section "6. Comparing Environments"
 echo "Summary of target revisions per environment:"
 echo ""
 echo "=== PRODUCTION ==="
-grep -A 1 "name: example-app" /tmp/app-of-apps-production.yaml | grep targetRevision || echo "  example-app: Not found"
-grep -A 1 "name: another-app" /tmp/app-of-apps-production.yaml | grep targetRevision || echo "  another-app: Not found"
+echo -n "  example-app: " && grep "name: example-app" -A 15 /tmp/app-of-apps-production.yaml | grep targetRevision | head -1 || echo "Not found"
+echo -n "  another-app: " && grep "name: another-app" -A 15 /tmp/app-of-apps-production.yaml | grep targetRevision | head -1 || echo "Not found"
 echo ""
 echo "=== STAGING ==="
-grep -A 1 "name: example-app" /tmp/app-of-apps-staging.yaml | grep targetRevision || echo "  example-app: Not found"
-grep -A 1 "name: another-app" /tmp/app-of-apps-staging.yaml | grep targetRevision || echo "  another-app: Not found"
+echo -n "  example-app: " && grep "name: example-app" -A 15 /tmp/app-of-apps-staging.yaml | grep targetRevision | head -1 || echo "Not found"
+echo -n "  another-app: " && grep "name: another-app" -A 15 /tmp/app-of-apps-staging.yaml | grep targetRevision | head -1 || echo "Not found"
 echo ""
 echo "=== DEVELOPMENT ==="
-grep -A 1 "name: example-app" /tmp/app-of-apps-development.yaml | grep targetRevision || echo "  example-app: Not found"
-grep -A 1 "name: another-app" /tmp/app-of-apps-development.yaml | grep targetRevision || echo "  another-app: Not found"
+echo -n "  example-app: " && grep "name: example-app" -A 15 /tmp/app-of-apps-development.yaml | grep targetRevision | head -1 || echo "Not found"
+echo -n "  another-app: " && grep "name: another-app" -A 15 /tmp/app-of-apps-development.yaml | grep targetRevision | head -1 || echo "Not found"
 
 section "7. Testing Root App Manifests"
 echo "Validating root app manifests..."
