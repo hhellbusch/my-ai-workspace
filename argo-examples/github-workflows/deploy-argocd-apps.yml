@@ -10,6 +10,12 @@ on:
       - 'infrastructure/**'      # Infrastructure changes
       - 'hubs.yaml'              # Cluster configuration changes
   workflow_dispatch:  # Allow manual trigger
+    inputs:
+      dry_run:
+        description: 'Run in dry-run mode (preview changes without applying)'
+        required: false
+        type: boolean
+        default: false
 
 # Prevent concurrent deployments to avoid conflicts
 concurrency:
@@ -90,11 +96,30 @@ jobs:
             CLUSTER_SERVER=$(yq eval ".clusters[$i].server" hubs.yaml)
             ARGOCD_NAMESPACE=$(yq eval ".clusters[$i].argocd_namespace" hubs.yaml)
             TOKEN_SECRET=$(yq eval ".clusters[$i].token_secret" hubs.yaml)
+            
+            # Determine dry-run mode (hybrid approach)
+            CLUSTER_DRY_RUN=$(yq eval ".clusters[$i].dry_run // false" hubs.yaml)
+            WORKFLOW_DRY_RUN="${{ inputs.dry_run || 'false' }}"
+            
+            # Either workflow input OR cluster config triggers dry-run
+            if [ "$WORKFLOW_DRY_RUN" = "true" ] || [ "$CLUSTER_DRY_RUN" = "true" ]; then
+              DRY_RUN=true
+              DRY_RUN_REASON=""
+              [ "$WORKFLOW_DRY_RUN" = "true" ] && DRY_RUN_REASON="workflow input"
+              [ "$CLUSTER_DRY_RUN" = "true" ] && [ -n "$DRY_RUN_REASON" ] && DRY_RUN_REASON="$DRY_RUN_REASON + cluster config" || [ "$CLUSTER_DRY_RUN" = "true" ] && DRY_RUN_REASON="cluster config"
+            else
+              DRY_RUN=false
+            fi
 
             echo "================================================"
             echo "Deploying to cluster: $CLUSTER_NAME"
             echo "Server: $CLUSTER_SERVER"
             echo "ArgoCD Namespace: $ARGOCD_NAMESPACE"
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "Mode: 🔍 DRY-RUN (reason: $DRY_RUN_REASON)"
+            else
+              echo "Mode: ✅ APPLY"
+            fi
             echo "================================================"
 
             # Enable error tracking for this cluster
@@ -108,8 +133,6 @@ jobs:
               echo "❌ ERROR: Deployment to $CLUSTER_NAME failed with exit code $exit_code"
               echo "Last command: $BASH_COMMAND"
               echo "================================================"
-              echo "Cleaning up..."
-              oc logout 2>/dev/null || true
               exit $exit_code
             }
             
@@ -130,19 +153,54 @@ jobs:
               exit 1
             }
 
-            # Template the Helm chart and apply to the cluster
-            echo "Applying ArgoCD applications..."
-            helm template argocd-apps ./charts/argocd-apps \
-              --namespace ${ARGOCD_NAMESPACE} \
-              --set-json "applications=$APP_DIRECTORIES" \
-              --set-json "infrastructure=$INFRA_DIRECTORIES" \
-              | timeout 120 oc apply -f -
+            # Template the Helm chart and apply/preview based on mode
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "🔍 DRY-RUN MODE: Running server-side validation..."
+              echo ""
+              
+              # Generate manifests
+              MANIFESTS=$(helm template argocd-apps ./charts/argocd-apps \
+                --namespace ${ARGOCD_NAMESPACE} \
+                --set-json "applications=$APP_DIRECTORIES" \
+                --set-json "infrastructure=$INFRA_DIRECTORIES")
+              
+              # Save preview for artifacts
+              echo "$MANIFESTS" > /tmp/preview-${CLUSTER_NAME}.yaml
+              
+              # Run server-side dry-run for validation
+              echo "Running server-side validation against cluster..."
+              if echo "$MANIFESTS" | timeout 120 oc apply --dry-run=server -f - 2>&1 | tee /tmp/dryrun-${CLUSTER_NAME}.log; then
+                echo ""
+                echo "✅ Server-side validation PASSED for $CLUSTER_NAME"
+                echo ""
+                echo "Preview of changes (first 50 lines):"
+                echo "================================================"
+                head -50 /tmp/preview-${CLUSTER_NAME}.yaml
+                echo "================================================"
+                echo ""
+                echo "💾 Full preview saved to workflow artifacts as 'preview-${CLUSTER_NAME}.yaml'"
+                echo "⚠️  DRY-RUN: No changes were applied to $CLUSTER_NAME"
+              else
+                echo ""
+                echo "❌ Server-side validation FAILED for $CLUSTER_NAME"
+                echo "Check the logs above for details"
+                exit 1
+              fi
+            else
+              echo "Applying ArgoCD applications..."
+              helm template argocd-apps ./charts/argocd-apps \
+                --namespace ${ARGOCD_NAMESPACE} \
+                --set-json "applications=$APP_DIRECTORIES" \
+                --set-json "infrastructure=$INFRA_DIRECTORIES" \
+                | timeout 120 oc apply -f -
+              
+              echo "Verifying ArgoCD applications created..."
+              oc get applications -n ${ARGOCD_NAMESPACE} -l managed-by=root-app
+            fi
 
-            echo "Verifying ArgoCD applications created..."
-            oc get applications -n ${ARGOCD_NAMESPACE} -l managed-by=root-app
-
-            # Health check: Wait for applications to sync (warning only)
-            echo "Checking application health status..."
+            # Health check: Wait for applications to sync (warning only, skip in dry-run)
+            if [ "$DRY_RUN" = "false" ]; then
+              echo "Checking application health status..."
             HEALTH_TIMEOUT=300  # 5 minutes
             HEALTH_ELAPSED=0
             ALL_HEALTHY=false
@@ -185,11 +243,8 @@ jobs:
               # Uncomment the line below to make health check failures halt the deployment:
               # exit 1
             fi
+            fi  # End of dry-run check
 
-            # Logout from the cluster
-            echo "Logging out from $CLUSTER_NAME..."
-            oc logout 2>/dev/null || true
-            
             # Clear error trap for next iteration
             trap - ERR
             set +e
@@ -202,3 +257,12 @@ jobs:
           echo "================================================"
           echo "✅ All clusters deployed successfully!"
           echo "================================================"
+      
+      - name: Upload dry-run previews
+        if: always()  # Upload even if deployment failed
+        uses: actions/upload-artifact@v4
+        with:
+          name: dry-run-previews
+          path: /tmp/preview-*.yaml
+          retention-days: 30
+          if-no-files-found: ignore
