@@ -6,6 +6,8 @@
 #   argocd_namespace: Namespace where ArgoCD is installed (usually 'argocd')
 #   token_secret: Name of the GitHub secret containing the service account token
 #   dry_run: (optional) If true, only preview changes without applying (default: false)
+#   argocd_server: (optional) ArgoCD server URL for CLI diff (e.g., argocd.example.com)
+#   argocd_token_secret: (optional) GitHub secret name for ArgoCD auth token
 #
 # Important:
 #   - Add corresponding GitHub secrets for each token_secret value
@@ -20,16 +22,22 @@ clusters:
     argocd_namespace: argocd
     token_secret: OPENSHIFT_TOKEN_DEV
     dry_run: false  # Apply changes to dev
+    argocd_server: argocd.dev.example.com  # Optional: for ArgoCD CLI diffs
+    argocd_token_secret: ARGOCD_TOKEN_DEV  # Optional: ArgoCD auth token
     
   - name: staging-cluster
     server: https://api.staging.example.com:6443
     argocd_namespace: argocd
     token_secret: OPENSHIFT_TOKEN_STAGING
     dry_run: false  # Apply changes to staging
+    argocd_server: argocd.staging.example.com
+    argocd_token_secret: ARGOCD_TOKEN_STAGING
     
   - name: prod-cluster
     server: https://api.prod.example.com:6443
     argocd_namespace: argocd
     token_secret: OPENSHIFT_TOKEN_PROD
     dry_run: false  # Set to true to make prod preview-only
+    argocd_server: argocd.prod.example.com
+    argocd_token_secret: ARGOCD_TOKEN_PROD
 

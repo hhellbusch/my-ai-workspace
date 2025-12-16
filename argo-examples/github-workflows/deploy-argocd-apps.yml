@@ -70,6 +70,12 @@ jobs:
         with:
           version: 'latest'
 
+      - name: Install ArgoCD CLI
+        run: |
+          curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          sudo chmod +x /usr/local/bin/argocd
+          argocd version --client
+
       - name: Install yq
         run: |
           sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
@@ -103,10 +109,14 @@ jobs:
 
       - name: Deploy to all clusters
         env:
-          # Add all your cluster tokens as secrets here
+          # OpenShift cluster tokens
           OPENSHIFT_TOKEN_DEV: ${{ secrets.OPENSHIFT_TOKEN_DEV }}
           OPENSHIFT_TOKEN_STAGING: ${{ secrets.OPENSHIFT_TOKEN_STAGING }}
           OPENSHIFT_TOKEN_PROD: ${{ secrets.OPENSHIFT_TOKEN_PROD }}
+          # ArgoCD tokens (optional, for CLI diffs)
+          ARGOCD_TOKEN_DEV: ${{ secrets.ARGOCD_TOKEN_DEV }}
+          ARGOCD_TOKEN_STAGING: ${{ secrets.ARGOCD_TOKEN_STAGING }}
+          ARGOCD_TOKEN_PROD: ${{ secrets.ARGOCD_TOKEN_PROD }}
         run: |
           # Read the number of clusters from hubs.yaml
           CLUSTER_COUNT=$(yq eval '.clusters | length' hubs.yaml)
@@ -120,6 +130,10 @@ jobs:
             CLUSTER_SERVER=$(yq eval ".clusters[$i].server" hubs.yaml)
             ARGOCD_NAMESPACE=$(yq eval ".clusters[$i].argocd_namespace" hubs.yaml)
             TOKEN_SECRET=$(yq eval ".clusters[$i].token_secret" hubs.yaml)
+            
+            # Extract ArgoCD CLI info (optional)
+            ARGOCD_SERVER=$(yq eval ".clusters[$i].argocd_server // \"\"" hubs.yaml)
+            ARGOCD_TOKEN_SECRET=$(yq eval ".clusters[$i].argocd_token_secret // \"\"" hubs.yaml)
             
             # Determine dry-run mode (hybrid approach)
             CLUSTER_DRY_RUN=$(yq eval ".clusters[$i].dry_run // false" hubs.yaml)
@@ -199,6 +213,76 @@ jobs:
                 echo ""
                 echo "✅ Server-side validation PASSED for $CLUSTER_NAME"
                 echo ""
+                
+                # ArgoCD CLI diff (optional, if configured)
+                if [ -n "$ARGOCD_SERVER" ] && [ -n "$ARGOCD_TOKEN_SECRET" ]; then
+                  echo "================================================"
+                  echo "🔍 ArgoCD Diff Analysis"
+                  echo "================================================"
+                  
+                  # Get ArgoCD token
+                  ARGOCD_TOKEN=$(eval echo \$${ARGOCD_TOKEN_SECRET})
+                  
+                  if [ -n "$ARGOCD_TOKEN" ]; then
+                    echo "Authenticating to ArgoCD at $ARGOCD_SERVER..."
+                    
+                    # Login to ArgoCD (using --grpc-web for better compatibility)
+                    if argocd login "$ARGOCD_SERVER" \
+                      --auth-token="$ARGOCD_TOKEN" \
+                      --grpc-web \
+                      --insecure 2>/dev/null; then
+                      
+                      echo "✅ ArgoCD authentication successful"
+                      echo ""
+                      
+                      # Get list of applications managed by root-app
+                      echo "Fetching ArgoCD applications with label: managed-by=root-app..."
+                      ARGOCD_APPS=$(oc get applications -n ${ARGOCD_NAMESPACE} -l managed-by=root-app -o jsonpath='{.items[*].metadata.name}' 2>/dev/null || echo "")
+                      
+                      if [ -n "$ARGOCD_APPS" ]; then
+                        echo "Found applications: $ARGOCD_APPS"
+                        echo ""
+                        
+                        # Run diff for each application
+                        for app in $ARGOCD_APPS; do
+                          echo "──────────────────────────────────────────────"
+                          echo "📋 Diff for application: $app"
+                          echo "──────────────────────────────────────────────"
+                          
+                          # Run argocd app diff
+                          if argocd app diff "$app" --grpc-web 2>&1 | tee /tmp/argocd-diff-${app}.log; then
+                            DIFF_EXIT_CODE=${PIPESTATUS[0]}
+                            
+                            if [ $DIFF_EXIT_CODE -eq 0 ]; then
+                              echo "✅ No changes detected by ArgoCD for $app"
+                            else
+                              echo "📝 Changes detected by ArgoCD for $app"
+                            fi
+                          else
+                            echo "⚠️  Could not get diff for $app (app may not exist yet)"
+                          fi
+                          echo ""
+                        done
+                      else
+                        echo "ℹ️  No applications found with label managed-by=root-app"
+                        echo "   This may be expected if applications haven't been created yet"
+                        echo ""
+                      fi
+                      
+                      echo "================================================"
+                      echo ""
+                    else
+                      echo "⚠️  Could not authenticate to ArgoCD at $ARGOCD_SERVER"
+                      echo "   Skipping ArgoCD diff analysis"
+                      echo ""
+                    fi
+                  else
+                    echo "⚠️  ArgoCD token secret $ARGOCD_TOKEN_SECRET not set"
+                    echo "   Skipping ArgoCD diff analysis"
+                    echo ""
+                  fi
+                fi
+                
                 echo "Preview of changes (first 50 lines):"
                 echo "================================================"
                 head -50 /tmp/preview-${CLUSTER_NAME}.yaml
