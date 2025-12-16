@@ -118,25 +118,26 @@ jobs:
           ARGOCD_TOKEN_STAGING: ${{ secrets.ARGOCD_TOKEN_STAGING }}
           ARGOCD_TOKEN_PROD: ${{ secrets.ARGOCD_TOKEN_PROD }}
         run: |
-          # Read the number of clusters from hubs.yaml
-          CLUSTER_COUNT=$(yq eval '.clusters | length' hubs.yaml)
+          # Read hub names from hubs.yaml (dictionary keys)
+          HUB_NAMES=$(yq eval '.hubs | keys | .[]' hubs.yaml)
+          CLUSTER_COUNT=$(echo "$HUB_NAMES" | wc -l)
 
           echo "Found $CLUSTER_COUNT clusters to deploy to"
 
-          # Loop through each cluster
-          for i in $(seq 0 $(($CLUSTER_COUNT - 1))); do
+          # Loop through each hub
+          for HUB_KEY in $HUB_NAMES; do
             # Extract cluster information
-            CLUSTER_NAME=$(yq eval ".clusters[$i].name" hubs.yaml)
-            CLUSTER_SERVER=$(yq eval ".clusters[$i].server" hubs.yaml)
-            ARGOCD_NAMESPACE=$(yq eval ".clusters[$i].argocd_namespace" hubs.yaml)
-            TOKEN_SECRET=$(yq eval ".clusters[$i].token_secret" hubs.yaml)
+            CLUSTER_NAME=$(yq eval ".hubs[\"$HUB_KEY\"].name" hubs.yaml)
+            CLUSTER_SERVER=$(yq eval ".hubs[\"$HUB_KEY\"].server" hubs.yaml)
+            ARGOCD_NAMESPACE=$(yq eval ".hubs[\"$HUB_KEY\"].argocd_namespace" hubs.yaml)
+            TOKEN_SECRET=$(yq eval ".hubs[\"$HUB_KEY\"].token_secret" hubs.yaml)
             
             # Extract ArgoCD CLI info (optional)
-            ARGOCD_SERVER=$(yq eval ".clusters[$i].argocd_server // \"\"" hubs.yaml)
-            ARGOCD_TOKEN_SECRET=$(yq eval ".clusters[$i].argocd_token_secret // \"\"" hubs.yaml)
+            ARGOCD_SERVER=$(yq eval ".hubs[\"$HUB_KEY\"].argocd_server // \"\"" hubs.yaml)
+            ARGOCD_TOKEN_SECRET=$(yq eval ".hubs[\"$HUB_KEY\"].argocd_token_secret // \"\"" hubs.yaml)
             
             # Determine dry-run mode (hybrid approach)
-            CLUSTER_DRY_RUN=$(yq eval ".clusters[$i].dry_run // false" hubs.yaml)
+            CLUSTER_DRY_RUN=$(yq eval ".hubs[\"$HUB_KEY\"].dry_run // false" hubs.yaml)
             WORKFLOW_DRY_RUN="${{ inputs.dry_run || 'false' }}"
             IS_PULL_REQUEST="${{ github.event_name == 'pull_request' }}"
             

@@ -13,8 +13,9 @@
 Edit `hubs.yaml` with your cluster information:
 
 ```yaml
-clusters:
-  - name: dev-cluster
+hubs:
+  dev-cluster:
+    name: dev-cluster
     server: https://api.dev.example.com:6443      # ← Your cluster URL
     argocd_namespace: argocd
     token_secret: OPENSHIFT_TOKEN_DEV
@@ -99,10 +100,12 @@ For each cluster, the workflow will:
 
 1. Add to `hubs.yaml`:
 ```yaml
-- name: test-cluster
-  server: https://api.test.example.com:6443
-  argocd_namespace: argocd
-  token_secret: OPENSHIFT_TOKEN_TEST
+hubs:
+  test-cluster:
+    name: test-cluster
+    server: https://api.test.example.com:6443
+    argocd_namespace: argocd
+    token_secret: OPENSHIFT_TOKEN_TEST
 ```
 
 2. Add GitHub secret: `OPENSHIFT_TOKEN_TEST`

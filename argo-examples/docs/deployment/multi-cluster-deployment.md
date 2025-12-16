@@ -11,8 +11,9 @@ The workflow reads cluster configurations from `hubs.yaml` and deploys the same 
 ### 1. Define Clusters in `hubs.yaml`
 
 ```yaml
-clusters:
-  - name: dev-cluster
+hubs:
+  dev-cluster:
+    name: dev-cluster
     server: https://api.dev.example.com:6443
     argocd_namespace: argocd
     token_secret: OPENSHIFT_TOKEN_DEV
@@ -20,7 +21,8 @@ clusters:
     argocd_server: argocd.dev.example.com  # Optional: for ArgoCD CLI diffs
     argocd_token_secret: ARGOCD_TOKEN_DEV  # Optional: ArgoCD auth token
     
-  - name: staging-cluster
+  staging-cluster:
+    name: staging-cluster
     server: https://api.staging.example.com:6443
     argocd_namespace: argocd
     token_secret: OPENSHIFT_TOKEN_STAGING
@@ -28,7 +30,8 @@ clusters:
     argocd_server: argocd.staging.example.com
     argocd_token_secret: ARGOCD_TOKEN_STAGING
     
-  - name: prod-cluster
+  prod-cluster:
+    name: prod-cluster
     server: https://api.prod.example.com:6443
     argocd_namespace: argocd
     token_secret: OPENSHIFT_TOKEN_PROD
@@ -37,8 +40,11 @@ clusters:
     argocd_token_secret: ARGOCD_TOKEN_PROD
 ```
 
+**Structure:**
+The `hubs.yaml` uses a dictionary/map structure where each key is a unique hub identifier. The `name` field within each hub should match the key for consistency.
+
 **Required Fields:**
-- `name`: Friendly name for the cluster (used in logs)
+- `name`: Friendly name for the cluster (used in logs) - should match the hub key
 - `server`: OpenShift API server URL
 - `argocd_namespace`: Namespace where ArgoCD is installed
 - `token_secret`: Name of the GitHub secret containing the service account token
@@ -135,8 +141,13 @@ Trigger dry-run manually via GitHub Actions:
 Make specific clusters always run in preview mode:
 
 ```yaml
-- name: prod-cluster
-  dry_run: true  # Always preview, never auto-apply
+hubs:
+  prod-cluster:
+    name: prod-cluster
+    server: https://api.prod.example.com:6443
+    argocd_namespace: argocd
+    token_secret: OPENSHIFT_TOKEN_PROD
+    dry_run: true  # Always preview, never auto-apply
 ```
 
 Useful for:
