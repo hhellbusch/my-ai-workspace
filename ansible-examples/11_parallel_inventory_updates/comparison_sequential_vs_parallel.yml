@@ -1,0 +1,117 @@
+---
+# SEQUENTIAL VS PARALLEL COMPARISON
+#
+# This playbook demonstrates the performance difference between
+# sequential (slow) and parallel (fast) inventory updates.
+#
+# Run this to see the timing difference yourself!
+
+- name: PART 1 - Sequential inventory updates (SLOW)
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    inventory_sources:
+      - { inventory: "Production", source: "aws_inventory" }
+      - { inventory: "Production", source: "azure_inventory" }
+      - { inventory: "Staging", source: "gcp_inventory" }
+    controller_organization: "Default"
+    
+  tasks:
+    - name: Start timer for sequential approach
+      set_fact:
+        sequential_start: "{{ ansible_date_time.epoch }}"
+    
+    - name: "Sequential: Update inventory sources one at a time"
+      ansible.controller.inventory_source_update:
+        inventory: "{{ item.inventory }}"
+        name: "{{ item.source }}"
+        organization: "{{ controller_organization }}"
+        # Using default behavior - waits for each to complete before starting next
+      loop: "{{ inventory_sources }}"
+      
+    - name: Calculate sequential time
+      set_fact:
+        sequential_duration: "{{ (ansible_date_time.epoch | int) - (sequential_start | int) }}"
+    
+    - name: Report sequential timing
+      debug:
+        msg: |
+          ========================================
+          SEQUENTIAL APPROACH COMPLETED
+          Time: {{ sequential_duration }} seconds ({{ (sequential_duration | int / 60) | round(1) }} minutes)
+          ========================================
+
+# ============================================================================
+
+- name: PART 2 - Parallel inventory updates (FAST)
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    inventory_sources:
+      - { inventory: "Production", source: "aws_inventory" }
+      - { inventory: "Production", source: "azure_inventory" }
+      - { inventory: "Staging", source: "gcp_inventory" }
+    controller_organization: "Default"
+    
+  tasks:
+    - name: Start timer for parallel approach
+      set_fact:
+        parallel_start: "{{ ansible_date_time.epoch }}"
+    
+    - name: "Parallel: Start all inventory updates at once"
+      ansible.controller.inventory_source_update:
+        inventory: "{{ item.inventory }}"
+        name: "{{ item.source }}"
+        organization: "{{ controller_organization }}"
+      loop: "{{ inventory_sources }}"
+      async: 600
+      poll: 0
+      register: parallel_jobs
+      
+    - name: "Parallel: Wait for all updates to complete"
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
+      loop: "{{ parallel_jobs.results }}"
+      register: async_results
+      until: async_results.finished
+      retries: 60
+      delay: 10
+      
+    - name: Calculate parallel time
+      set_fact:
+        parallel_duration: "{{ (ansible_date_time.epoch | int) - (parallel_start | int) }}"
+    
+    - name: Report parallel timing
+      debug:
+        msg: |
+          ========================================
+          PARALLEL APPROACH COMPLETED
+          Time: {{ parallel_duration }} seconds ({{ (parallel_duration | int / 60) | round(1) }} minutes)
+          ========================================
+
+# ============================================================================
+
+- name: PART 3 - Performance comparison
+  hosts: localhost
+  gather_facts: false
+  
+  tasks:
+    - name: Final comparison report
+      debug:
+        msg: |
+          
+          ╔════════════════════════════════════════════════════════════╗
+          ║              PERFORMANCE COMPARISON RESULTS                ║
+          ╠════════════════════════════════════════════════════════════╣
+          ║ Sequential (old way):  {{ hostvars.localhost.sequential_duration | default('N/A') }} seconds = {{ (hostvars.localhost.sequential_duration | default(0) | int / 60) | round(1) }} minutes       ║
+          ║ Parallel (new way):    {{ hostvars.localhost.parallel_duration | default('N/A') }} seconds = {{ (hostvars.localhost.parallel_duration | default(0) | int / 60) | round(1) }} minutes       ║
+          ║                                                            ║
+          ║ Time saved: {{ (hostvars.localhost.sequential_duration | default(0) | int) - (hostvars.localhost.parallel_duration | default(0) | int) }} seconds ({{ ((((hostvars.localhost.sequential_duration | default(0) | int) - (hostvars.localhost.parallel_duration | default(0) | int)) / hostvars.localhost.sequential_duration | default(1) | int) * 100) | round(0) }}% faster!)        ║
+          ║                                                            ║
+          ║ Number of inventories: {{ inventory_sources | length }}                                ║
+          ╚════════════════════════════════════════════════════════════╝
+          
+          Recommendation: Use the PARALLEL approach for {{ inventory_sources | length }}+ inventories!
+

@@ -1,0 +1,42 @@
+---
+# TEST ANSIBLE CONTROLLER CONNECTION
+#
+# Run this first to verify your Controller credentials and connectivity
+# before attempting inventory updates.
+
+- name: Test Ansible Controller/Tower connection
+  hosts: localhost
+  gather_facts: false
+  
+  tasks:
+    - name: Ping Controller API
+      ansible.controller.ping:
+      register: ping_result
+      
+    - name: Show connection status
+      debug:
+        msg: |
+          ✓ Successfully connected to Ansible Controller!
+          Version: {{ ping_result.version | default('Unknown') }}
+          
+    - name: List available inventories
+      ansible.controller.inventory:
+        organization: "Default"
+      register: inventories
+      
+    - name: Display inventories
+      debug:
+        msg: "Available inventories: {{ inventories.inventory.name | default('Unable to retrieve') }}"
+      when: inventories is defined
+      
+    - name: Success message
+      debug:
+        msg: |
+          ========================================
+          CONNECTION TEST SUCCESSFUL
+          ========================================
+          You can now run the parallel inventory update playbooks.
+          
+          Try:
+            ansible-playbook parallel_inventory_update_simple.yml
+

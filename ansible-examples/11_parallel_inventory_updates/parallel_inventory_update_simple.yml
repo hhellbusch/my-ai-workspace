@@ -1,0 +1,46 @@
+---
+# SIMPLIFIED PARALLEL INVENTORY UPDATES
+#
+# Simpler approach using just async/await pattern
+# This is cleaner and easier to understand
+
+- name: Update inventory sources in parallel (simple version)
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    # Simple list of inventory sources
+    inventory_sources:
+      - { inventory: "Production", source: "aws_inventory" }
+      - { inventory: "Production", source: "azure_inventory" }
+      - { inventory: "Staging", source: "gcp_inventory" }
+    
+    controller_organization: "Default"
+    
+  tasks:
+    # Trigger all updates at once (no waiting)
+    - name: Start all inventory updates
+      ansible.controller.inventory_source_update:
+        inventory: "{{ item.inventory }}"
+        name: "{{ item.source }}"
+        organization: "{{ controller_organization }}"
+      loop: "{{ inventory_sources }}"
+      async: 600  # 10 minute timeout per update
+      poll: 0     # Don't wait - start all immediately
+      register: async_results
+      
+    # Wait for all to complete
+    - name: Wait for all updates to complete
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
+      loop: "{{ async_results.results }}"
+      register: async_poll_results
+      until: async_poll_results.finished
+      retries: 60  # 60 retries * 10 seconds = 10 minutes max
+      delay: 10    # Check every 10 seconds
+      
+    # Summary
+    - name: Show completion summary
+      debug:
+        msg: "All {{ inventory_sources | length }} inventory sources updated successfully in parallel!"
+

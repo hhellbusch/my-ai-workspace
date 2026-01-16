@@ -1,0 +1,67 @@
+---
+# PARALLEL INVENTORY SOURCE UPDATES
+#
+# This playbook triggers multiple inventory source updates simultaneously
+# instead of waiting for each one to complete sequentially.
+#
+# Performance improvement: If you have 5 inventories that each take 2 minutes,
+# - Sequential (slow): 10 minutes total
+# - Async (fast): ~2 minutes total (the time of the longest update)
+
+- name: Update multiple inventory sources in parallel
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    # List of inventory sources to update
+    inventory_sources:
+      - name: "AWS Dynamic Inventory"
+        inventory: "Production"
+        source: "aws_inventory_source"
+      - name: "Azure Dynamic Inventory"
+        inventory: "Production"
+        source: "azure_inventory_source"
+      - name: "GCP Dynamic Inventory"
+        inventory: "Production"
+        source: "gcp_inventory_source"
+      # Add more inventory sources as needed
+    
+    # Maximum time to wait for each inventory update (in seconds)
+    update_timeout: 600  # 10 minutes
+    
+  tasks:
+    # STEP 1: Trigger all inventory updates simultaneously (don't wait)
+    - name: Trigger inventory source updates asynchronously
+      ansible.controller.inventory_source_update:
+        inventory: "{{ item.inventory }}"
+        name: "{{ item.source }}"
+        organization: "Default"  # Adjust as needed
+        wait: false  # CRITICAL: Don't wait for completion
+      loop: "{{ inventory_sources }}"
+      async: "{{ update_timeout }}"  # Maximum time allowed
+      poll: 0  # Fire and forget - start immediately, don't wait
+      register: inventory_jobs
+      
+    # STEP 2: Wait for all updates to complete
+    - name: Wait for all inventory updates to finish
+      ansible.controller.inventory_source_update:
+        inventory: "{{ item.item.inventory }}"
+        name: "{{ item.item.source }}"
+        organization: "Default"
+        wait: true  # Now we wait
+      loop: "{{ inventory_jobs.results }}"
+      when: item.ansible_job_id is defined  # Only check jobs that started
+      register: update_results
+      async: "{{ update_timeout }}"
+      poll: 10  # Check every 10 seconds
+      
+    # STEP 3: Report results
+    - name: Display update results
+      debug:
+        msg: |
+          Inventory: {{ item.item.item.inventory }}
+          Source: {{ item.item.item.source }}
+          Status: {{ 'Success' if item.failed is not defined or not item.failed else 'Failed' }}
+      loop: "{{ update_results.results }}"
+      when: update_results.results is defined
+

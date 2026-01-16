@@ -1,0 +1,104 @@
+---
+# PARALLEL INVENTORY UPDATES WITH ERROR HANDLING
+#
+# Production-ready version with comprehensive error handling,
+# logging, and retry logic
+
+- name: Update inventory sources in parallel with error handling
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    inventory_sources:
+      - { inventory: "Production", source: "aws_inventory" }
+      - { inventory: "Production", source: "azure_inventory" }
+      - { inventory: "Staging", source: "gcp_inventory" }
+    
+    controller_organization: "Default"
+    update_timeout: 600
+    check_interval: 15
+    max_retries: 40  # 40 * 15 seconds = 10 minutes
+    
+  tasks:
+    - name: Start timestamp
+      set_fact:
+        start_time: "{{ ansible_date_time.epoch }}"
+    
+    # PHASE 1: Launch all updates
+    - name: Trigger all inventory source updates
+      ansible.controller.inventory_source_update:
+        inventory: "{{ item.inventory }}"
+        name: "{{ item.source }}"
+        organization: "{{ controller_organization }}"
+      loop: "{{ inventory_sources }}"
+      async: "{{ update_timeout }}"
+      poll: 0
+      register: update_jobs
+      ignore_errors: true  # Don't fail the playbook if one source fails to start
+      
+    - name: Log initiated updates
+      debug:
+        msg: "Started update for {{ item.item.inventory }}/{{ item.item.source }}"
+      loop: "{{ update_jobs.results }}"
+      when: item.ansible_job_id is defined
+      
+    - name: Check for updates that failed to start
+      debug:
+        msg: "WARNING: Failed to start {{ item.item.inventory }}/{{ item.item.source }}: {{ item.msg | default('Unknown error') }}"
+      loop: "{{ update_jobs.results }}"
+      when: item.failed | default(false)
+      
+    # PHASE 2: Wait for completion
+    - name: Wait for all updates to complete
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
+      loop: "{{ update_jobs.results }}"
+      when: item.ansible_job_id is defined
+      register: job_results
+      until: job_results.finished
+      retries: "{{ max_retries }}"
+      delay: "{{ check_interval }}"
+      ignore_errors: true  # Collect all results even if some fail
+      
+    # PHASE 3: Results analysis
+    - name: Calculate completion time
+      set_fact:
+        end_time: "{{ ansible_date_time.epoch }}"
+        duration: "{{ (ansible_date_time.epoch | int) - (start_time | int) }}"
+    
+    - name: Identify successful updates
+      set_fact:
+        successful_updates: "{{ job_results.results | selectattr('failed', 'undefined') | list }}"
+        failed_updates: "{{ job_results.results | selectattr('failed', 'defined') | selectattr('failed', 'equalto', true) | list }}"
+      
+    # PHASE 4: Detailed reporting
+    - name: Report successful updates
+      debug:
+        msg: "✓ SUCCESS: {{ item.item.item.inventory }}/{{ item.item.item.source }}"
+      loop: "{{ successful_updates }}"
+      when: successful_updates | length > 0
+      
+    - name: Report failed updates
+      debug:
+        msg: "✗ FAILED: {{ item.item.item.inventory }}/{{ item.item.item.source }} - {{ item.msg | default('Timeout or unknown error') }}"
+      loop: "{{ failed_updates }}"
+      when: failed_updates | length > 0
+      
+    - name: Final summary
+      debug:
+        msg: |
+          ========================================
+          INVENTORY UPDATE SUMMARY
+          ========================================
+          Total sources: {{ inventory_sources | length }}
+          Successful: {{ successful_updates | length }}
+          Failed: {{ failed_updates | length }}
+          Duration: {{ duration }} seconds ({{ (duration | int / 60) | round(1) }} minutes)
+          ========================================
+          
+    # PHASE 5: Fail if any updates failed (optional)
+    - name: Fail playbook if any updates failed
+      fail:
+        msg: "{{ failed_updates | length }} inventory update(s) failed. See logs above for details."
+      when: failed_updates | length > 0
+
