@@ -2,6 +2,37 @@
 
 This repository contains practical, runnable examples for various DevOps tools and patterns, enhanced with an integrated meta-development system powered by [TÂCHES Claude Code Resources](https://github.com/glittercowboy/taches-cc-resources).
 
+## ⚠️ AI-Generated Content Notice
+
+**The majority of content in this workspace was created with AI assistance (Claude Code).**
+
+This disclosure is provided in the interest of transparency and to help you make informed decisions about using this content:
+
+**What this means:**
+- Most documentation, code examples, playbooks, and troubleshooting guides were generated or substantially modified with AI assistance
+- Content represents AI-generated solutions based on prompts and requirements, not solely human expertise
+- Examples may contain patterns or approaches that require validation for your specific use case
+
+**Why additional scrutiny matters:**
+- **Test before production**: All examples should be thoroughly tested in non-production environments
+- **Verify accuracy**: Cross-reference configurations with official documentation for your tool versions
+- **Validate logic**: Review conditional logic, error handling, and edge cases for your specific scenarios
+- **Check currency**: AI training data has cutoff dates; verify that approaches align with current best practices
+
+**How to use this content effectively:**
+- Treat examples as **starting points and learning resources**, not authoritative references
+- **Understand before copying**: Read through code to ensure you understand what it does
+- **Adapt to your environment**: Customize configurations for your infrastructure and requirements
+- **Verify credentials and endpoints**: Never use example credentials or IP addresses in production
+
+**What makes this content valuable:**
+- Demonstrates common patterns and solutions in a runnable format
+- Provides well-structured examples following documented best practices
+- Includes extensive documentation and explanations
+- Offers a foundation for adaptation to specific needs
+
+**Bottom line:** This workspace provides useful reference implementations and learning resources, but should be treated as AI-assisted documentation requiring human review and validation rather than production-ready code.
+
 ## 📖 For Users of This Repository
 
 **Welcome!** This repository contains production-ready examples and troubleshooting guides for:
