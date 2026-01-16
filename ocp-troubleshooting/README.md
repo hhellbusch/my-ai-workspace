@@ -19,6 +19,7 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
 ### Bare Metal Provisioning Issues
 
 - **[Bare Metal Node Inspection Timeout](bare-metal-node-inspection-timeout/README.md)** - Complete guide for nodes stuck in inspecting state
+  - **[Force Re-Inspection](bare-metal-node-inspection-timeout/FORCE-REINSPECTION.md)** - Quick commands to force a stuck node to re-inspect ⚡
   - [Quick Reference](bare-metal-node-inspection-timeout/QUICK-REFERENCE.md) - Fast BMC troubleshooting commands
 
 - **[Worker Node TLS Certificate Failure](worker-node-tls-cert-failure/README.md)** - Troubleshoot TLS certificate verification failures when adding workers
@@ -40,6 +41,17 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
   - [Examples](coreos-networking-issues/EXAMPLES.md) - Real-world output from common network failure scenarios
   - [Index](coreos-networking-issues/INDEX.md) - Guide navigation and workflow
   - Script: `diagnose-network.sh` - Automated network diagnostic tool
+
+### Virtualization Issues (KubeVirt)
+
+- **[KubeVirt VM Stuck in Provisioning](kubevirt-vm-stuck-provisioning/README.md)** - Fix VMs blocked by missing OADP/Velero webhook service
+  - **[Quick Start](kubevirt-vm-stuck-provisioning/QUICKSTART.md)** - 1-minute fix for VM provisioning issues ⚡
+  - [Remove Webhook](kubevirt-vm-stuck-provisioning/REMOVE-WEBHOOK.md) - Quick fix that disables OADP for VMs
+  - [Repair Velero Plugin](kubevirt-vm-stuck-provisioning/REPAIR-VELERO-PLUGIN.md) - Proper fix maintaining OADP functionality
+  - [Investigation Workflow](kubevirt-vm-stuck-provisioning/INVESTIGATION-WORKFLOW.md) - Systematic troubleshooting for any VM provisioning issue
+  - [Verification](kubevirt-vm-stuck-provisioning/VERIFICATION.md) - Post-fix validation steps
+  - [Prevention](kubevirt-vm-stuck-provisioning/PREVENTION.md) - Monitoring and best practices to avoid future issues
+  - Scripts: `diagnostic-commands.sh`, `fix-velero-webhook.sh` - Automated diagnostic and fix tools
 
 ## Using These Guides
 
@@ -153,4 +165,5 @@ Planned troubleshooting guides:
 - [ ] Bare metal provisioning failures (post-inspection)
 - [ ] Certificate rotation issues
 - [ ] Router/Ingress problems
+- [x] KubeVirt VM provisioning issues - See [KubeVirt VM Stuck in Provisioning](kubevirt-vm-stuck-provisioning/README.md)
 
