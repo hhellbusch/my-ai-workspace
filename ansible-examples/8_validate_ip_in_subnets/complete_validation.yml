@@ -4,58 +4,47 @@
   gather_facts: false
   
   vars:
-    # Define your subnets with descriptions
+    # Define your allowed subnets as a flat list
     allowed_subnets:
-      - subnet: "10.0.0.0/8"
-        name: "Private Network Class A"
-      - subnet: "172.16.0.0/12"
-        name: "Private Network Class B"
-      - subnet: "192.168.1.0/24"
-        name: "Local Network"
-      - subnet: "203.0.113.0/24"
-        name: "Documentation Network"
+      - "10.0.0.0/8"
+      - "172.16.0.0/12"
+      - "192.168.1.0/24"
+      - "203.0.113.0/24"
     
-    # Define IP addresses to validate
+    # Define IP addresses to validate as a flat list
     ip_addresses_to_check:
-      - ip: "10.50.100.25"
-        description: "App Server 1"
-      - ip: "172.16.5.10"
-        description: "Database Server"
-      - ip: "192.168.1.50"
-        description: "Web Server"
-      - ip: "203.0.113.15"
-        description: "Test Server"
-      - ip: "8.8.8.8"
-        description: "External DNS"
-      - ip: "192.168.2.100"
-        description: "Unknown Server"
+      - "10.50.100.25"
+      - "172.16.5.10"
+      - "192.168.1.50"
+      - "203.0.113.15"
+      - "8.8.8.8"
+      - "192.168.2.100"
 
   tasks:
     - name: Validate IP addresses against subnets
       block:
         - name: Check each IP against all subnets
           ansible.builtin.set_fact:
-            ip_subnet_matches: "{{ ip_subnet_matches | default({}) | combine({item.0.ip: (ip_subnet_matches | default({}))[item.0.ip] | default({}) | combine({item.1.name: item.0.ip | ansible.utils.ipaddr(item.1.subnet)})}) }}"
+            ip_subnet_matches: "{{ ip_subnet_matches | default({}) | combine({item.0: (ip_subnet_matches | default({}))[item.0] | default({}) | combine({item.1: item.0 | ansible.utils.ipaddr(item.1)})}) }}"
           loop: "{{ ip_addresses_to_check | product(allowed_subnets) | list }}"
           loop_control:
-            label: "{{ item.0.ip }} vs {{ item.1.name }}"
+            label: "{{ item.0 }} vs {{ item.1 }}"
 
         - name: Build detailed validation results
           ansible.builtin.set_fact:
             validation_details: >-
               {{
                 validation_details | default([]) + [{
-                  'ip': item.ip,
-                  'description': item.description,
-                  'is_valid': ip_subnet_matches[item.ip].values() | select() | list | length > 0,
-                  'matching_subnets': ip_subnet_matches[item.ip].keys() | select('in', valid_subnet_names) | list
+                  'ip': item,
+                  'is_valid': ip_subnet_matches[item].values() | select() | list | length > 0,
+                  'matching_subnets': valid_subnet_list
                 }]
               }}
           vars:
-            valid_subnet_names: "{{ ip_subnet_matches[item.ip] | dict2items | selectattr('value', 'ne', '') | selectattr('value') | map(attribute='key') | list }}"
+            valid_subnet_list: "{{ ip_subnet_matches[item] | dict2items | selectattr('value', 'ne', '') | selectattr('value') | map(attribute='key') | list }}"
           loop: "{{ ip_addresses_to_check }}"
           loop_control:
-            label: "{{ item.ip }}"
+            label: "{{ item }}"
 
         - name: Separate valid and invalid IPs
           ansible.builtin.set_fact:
@@ -77,7 +66,6 @@
           ansible.builtin.debug:
             msg:
               - "IP: {{ item.ip }}"
-              - "Description: {{ item.description }}"
               - "Status: {{ 'VALID ✓' if item.is_valid else 'INVALID ✗' }}"
               - "Matching Subnets: {{ item.matching_subnets | join(', ') if item.matching_subnets else 'None' }}"
               - "---"
@@ -85,16 +73,14 @@
           loop_control:
             label: "{{ item.ip }}"
 
-        - name: Fail if any invalid IPs found (optional)
+        - name: Fail if any invalid IPs found
           ansible.builtin.fail:
             msg: |
               Validation failed! The following IPs are not covered by allowed subnets:
               {% for ip in invalid_ips %}
               - {{ ip }}
               {% endfor %}
-          when:
-            - invalid_ips | length > 0
-            - fail_on_invalid | default(false) | bool
+          when: invalid_ips | length > 0
 
       rescue:
         - name: Handle validation failure

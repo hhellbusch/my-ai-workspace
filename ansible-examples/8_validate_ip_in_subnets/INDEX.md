@@ -75,13 +75,13 @@ graph TD
 
 #### Run Compliance Audits
 → Use `complete_validation.yml`
-- Detailed reports with subnet names
-- Shows which subnet each IP matches
-- Can fail on invalid IPs
+- Detailed reports with matching subnets
+- Shows which subnet(s) each IP matches
+- Automatically fails on invalid IPs
 - [Example Output](EXAMPLES.md#example-3-complete-validation-with-detailed-reporting)
 
 #### Integrate into CI/CD
-→ Use `complete_validation.yml -e "fail_on_invalid=true"`
+→ Use `complete_validation.yml`
 - Fails pipeline if invalid IPs found
 - [Integration Example](EXAMPLES.md#cicd-pipeline)
 

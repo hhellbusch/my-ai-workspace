@@ -45,15 +45,12 @@ ansible-playbook complete_validation.yml
 ```
 
 **Features:**
-- Descriptive labels for subnets and IPs
+- Simple flat lists for subnets and IPs
 - Detailed validation report showing which subnet(s) each IP matches
 - Summary statistics
-- Optional failure on invalid IPs
+- **Automatically fails if any invalid IPs are found**
 
-**Enable strict validation:**
-```bash
-ansible-playbook complete_validation.yml -e "fail_on_invalid=true"
-```
+**Note:** The playbook will display all validation results before failing, so you can see both valid and invalid IPs in the output.
 
 ### 3. Practical Example (`practical_example.yml`)
 

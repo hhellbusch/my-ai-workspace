@@ -110,43 +110,38 @@ TASK [Display detailed results] ************************************************
 ok: [localhost] => (item=10.50.100.25) => {
     "msg": [
         "IP: 10.50.100.25",
-        "Description: App Server 1",
         "Status: VALID ✓",
-        "Matching Subnets: Private Network Class A",
+        "Matching Subnets: 10.0.0.0/8",
         "---"
     ]
 }
 ok: [localhost] => (item=172.16.5.10) => {
     "msg": [
         "IP: 172.16.5.10",
-        "Description: Database Server",
         "Status: VALID ✓",
-        "Matching Subnets: Private Network Class B",
+        "Matching Subnets: 172.16.0.0/12",
         "---"
     ]
 }
 ok: [localhost] => (item=192.168.1.50) => {
     "msg": [
         "IP: 192.168.1.50",
-        "Description: Web Server",
         "Status: VALID ✓",
-        "Matching Subnets: Local Network",
+        "Matching Subnets: 192.168.1.0/24",
         "---"
     ]
 }
 ok: [localhost] => (item=203.0.113.15) => {
     "msg": [
         "IP: 203.0.113.15",
-        "Description: Test Server",
         "Status: VALID ✓",
-        "Matching Subnets: Documentation Network",
+        "Matching Subnets: 203.0.113.0/24",
         "---"
     ]
 }
 ok: [localhost] => (item=8.8.8.8) => {
     "msg": [
         "IP: 8.8.8.8",
-        "Description: External DNS",
         "Status: INVALID ✗",
         "Matching Subnets: None",
         "---"
@@ -155,18 +150,16 @@ ok: [localhost] => (item=8.8.8.8) => {
 ok: [localhost] => (item=192.168.2.100) => {
     "msg": [
         "IP: 192.168.2.100",
-        "Description: Unknown Server",
-        "STATUS: INVALID ✗",
+        "Status: INVALID ✗",
         "Matching Subnets: None",
         "---"
     ]
 }
 ```
 
-### With Strict Mode (fail on invalid)
-```bash
-ansible-playbook complete_validation.yml -e "fail_on_invalid=true"
-```
+### Behavior When Invalid IPs Are Found
+
+The playbook automatically fails when invalid IPs are detected:
 
 ### Output (with failure)
 ```
@@ -240,7 +233,7 @@ ansible-playbook simple_playbook.yml -e @network_config.yml
 validate-network:
   stage: validate
   script:
-    - ansible-playbook complete_validation.yml -e "fail_on_invalid=true"
+    - ansible-playbook complete_validation.yml
   only:
     - merge_requests
 ```
@@ -252,17 +245,16 @@ validate-network:
   tasks:
     - name: Run IP validation
       ansible.builtin.include_tasks: check_ips.yml
-      vars:
-        fail_on_invalid: true
+      # Validation will automatically fail if invalid IPs are found
 ```
 
 ### Scheduled Audit
 ```bash
 #!/bin/bash
-# Run daily audit
+# Run daily audit - continue even if validation fails
 ansible-playbook complete_validation.yml \
-  -e "fail_on_invalid=false" \
-  > /var/log/ip_audit_$(date +%Y%m%d).log
+  > /var/log/ip_audit_$(date +%Y%m%d).log 2>&1 || \
+  echo "Validation failed - check log file"
 ```
 
 ---
@@ -360,7 +352,7 @@ ansible localhost -m debug -a "msg={{ '10.1.1.1' | ansible.utils.ipaddr('10.1.0.
 1. **Start with `simple_playbook.yml`** to understand the basics
 2. **Try `practical_example.yml`** with your own IP lists
 3. **Use `complete_validation.yml`** for production audits
-4. **Integrate into CI/CD** with `fail_on_invalid=true`
+4. **Integrate into CI/CD** - validation will fail pipelines automatically
 5. **Customize** for your specific network topology
 
 For more details, see [README.md](README.md) and [QUICK-REFERENCE.md](QUICK-REFERENCE.md).

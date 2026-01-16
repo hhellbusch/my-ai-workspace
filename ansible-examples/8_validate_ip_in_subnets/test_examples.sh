@@ -28,14 +28,15 @@ echo ""
 echo "----------------------------------------"
 echo "Test 2: Complete Validation"
 echo "----------------------------------------"
-ansible-playbook complete_validation.yml
+echo "Note: This will fail because some default IPs are invalid (expected behavior):"
+ansible-playbook complete_validation.yml || echo "✓ Validation correctly caught invalid IPs"
 
 echo ""
 echo "----------------------------------------"
-echo "Test 3: Complete Validation (Strict Mode)"
+echo "Test 3: Complete Validation (All Valid IPs)"
 echo "----------------------------------------"
-echo "This should fail because some IPs are invalid:"
-ansible-playbook complete_validation.yml -e "fail_on_invalid=true" || echo "Expected failure - validation caught invalid IPs"
+echo "Testing with only valid IPs - should succeed:"
+ansible-playbook complete_validation.yml -e '{"ip_addresses_to_check": ["10.50.100.25", "172.16.5.10", "192.168.1.50", "203.0.113.15"]}'
 
 echo ""
 echo "----------------------------------------"
