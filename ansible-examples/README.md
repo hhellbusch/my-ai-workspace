@@ -512,4 +512,257 @@ ansible-playbook playbook.yml -e "my_var=override"
 - Advanced patterns (computed vars, conditionals)
 - Troubleshooting guide
 - Multiple real-world examples
+
+### 10. Dell Memory Validation (Memtest with iDRAC)
+
+This example demonstrates automated memory testing on Dell servers using iDRAC. See the [README](10_dell_memory_validation/README.md) for details.
+
+### 11. Parallel Inventory Source Updates (Controller/Tower/AWX) ⭐
+
+This example demonstrates how to dramatically speed up Ansible Controller/Tower inventory source updates by running them in parallel instead of sequentially.
+
+**The Problem:** Looping over `ansible.controller.inventory_source_update` is **slow** - each update waits for the previous one to complete  
+**The Solution:** Use `async` with `poll: 0` to trigger all updates simultaneously
+
+**Performance Gain:**
+- **5 inventories @ 2 minutes each:**
+  - Sequential: 10 minutes
+  - Parallel: ~2 minutes (**5x faster!**)
+
+**Key concepts:**
+- Async execution with `async` and `poll: 0`
+- Fire-and-forget pattern (start all, then wait)
+- Using `async_status` to monitor completion
+- Error handling for failed updates
+- Production-ready patterns with logging and reporting
+
+```bash
+cd 11_parallel_inventory_updates
+```
+
+**Quick Start:**
+
+**1. Test your Controller connection first:**
+```bash
+# Set credentials
+export CONTROLLER_HOST=https://controller.example.com
+export CONTROLLER_USERNAME=admin
+export CONTROLLER_PASSWORD=secret
+
+# Test connection
+ansible-playbook test_controller_connection.yml
+```
+
+**2. Run the simple parallel update:**
+```bash
+# Edit the inventory_sources list in the playbook first
+ansible-playbook parallel_inventory_update_simple.yml
+```
+
+**3. Compare sequential vs parallel (optional):**
+```bash
+# This will run both methods and show timing comparison
+ansible-playbook comparison_sequential_vs_parallel.yml
+```
+
+**Three Playbook Options:**
+
+**1. Simple Version (`parallel_inventory_update_simple.yml`)** ⭐ Start here
+- Clean, minimal code
+- Easy to understand
+- Perfect for most use cases
+
+```yaml
+# Fire all updates at once
+- name: Start all inventory updates
+  ansible.controller.inventory_source_update:
+    inventory: "{{ item.inventory }}"
+    name: "{{ item.source }}"
+  loop: "{{ inventory_sources }}"
+  async: 600
+  poll: 0
+  register: jobs
+
+# Wait for all to complete
+- name: Wait for completion
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
+  loop: "{{ jobs.results }}"
+  until: finished
+  retries: 60
+  delay: 10
+```
+
+**2. Production Version (`parallel_with_error_handling.yml`)** ⭐ For production
+- Comprehensive error handling
+- Detailed logging and reporting
+- Success/failure tracking
+- Performance metrics
+- Continues even if some updates fail
+
+**3. Comparison Version (`comparison_sequential_vs_parallel.yml`)**
+- Runs both sequential and parallel methods
+- Shows timing comparison
+- Calculates speed improvement
+- Great for demonstrating the benefits
+
+**Example Output:**
+```
+╔════════════════════════════════════════════════════════════╗
+║              PERFORMANCE COMPARISON RESULTS                ║
+╠════════════════════════════════════════════════════════════╣
+║ Sequential (old way):  600 seconds = 10.0 minutes         ║
+║ Parallel (new way):    120 seconds = 2.0 minutes          ║
+║                                                            ║
+║ Time saved: 480 seconds (80% faster!)                     ║
+║                                                            ║
+║ Number of inventories: 5                                  ║
+╚════════════════════════════════════════════════════════════╝
+```
+
+**How It Works:**
+
+**Traditional (Slow) Approach:**
+```yaml
+- name: Update inventories sequentially
+  ansible.controller.inventory_source_update:
+    inventory: "{{ item.inventory }}"
+    name: "{{ item.source }}"
+  loop: "{{ inventory_sources }}"
+  # Each update waits for previous to complete ❌
+```
+
+**Parallel (Fast) Approach:**
+```yaml
+# Step 1: Start all updates (don't wait)
+- name: Trigger updates
+  ansible.controller.inventory_source_update:
+    inventory: "{{ item.inventory }}"
+    name: "{{ item.source }}"
+  loop: "{{ inventory_sources }}"
+  async: 600  # Max time allowed
+  poll: 0     # Don't wait ✅
+  register: jobs
+
+# Step 2: Wait for all to finish
+- name: Wait for all
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
+  loop: "{{ jobs.results }}"
+  until: finished
+  retries: 60
+  delay: 10
+```
+
+**Configuration:**
+
+Edit the `inventory_sources` list in any playbook:
+```yaml
+vars:
+  inventory_sources:
+    - { inventory: "Production", source: "aws_inventory" }
+    - { inventory: "Production", source: "azure_inventory" }
+    - { inventory: "Staging", source: "gcp_inventory" }
+  
+  controller_organization: "Default"
+  update_timeout: 600  # 10 minutes max per update
+```
+
+**Prerequisites:**
+```bash
+# Install the ansible.controller collection
+ansible-galaxy collection install ansible.controller
+
+# Or for older systems
+ansible-galaxy collection install awx.awx
+```
+
+**Authentication Methods:**
+
+**Option 1: Environment variables (recommended)**
+```bash
+export CONTROLLER_HOST=https://controller.example.com
+export CONTROLLER_USERNAME=admin
+export CONTROLLER_PASSWORD=secret
+export CONTROLLER_VERIFY_SSL=false
+```
+
+**Option 2: ansible.cfg**
+```ini
+[controller]
+host = https://controller.example.com
+username = admin
+password = secret
+verify_ssl = False
+```
+
+**Option 3: Ansible Vault**
+```yaml
+vars:
+  controller_password: "{{ vault_controller_password }}"
+```
+
+**When to Use:**
+
+**Use parallel updates when:**
+- ✅ Updating 3+ inventory sources
+- ✅ Each update takes > 30 seconds
+- ✅ Updates are independent
+- ✅ You want faster CI/CD pipelines
+- ✅ Running scheduled inventory refreshes
+
+**Use sequential when:**
+- ❌ Only 1-2 quick updates
+- ❌ Updates depend on each other
+- ❌ Need strict ordering
+
+**What's Included:**
+- `parallel_inventory_update_simple.yml` - Minimal, clean implementation
+- `parallel_inventory_update.yml` - More detailed with structure
+- `parallel_with_error_handling.yml` - Production-ready with error handling
+- `comparison_sequential_vs_parallel.yml` - Side-by-side timing comparison
+- `test_controller_connection.yml` - Verify credentials and connectivity
+- `README.md` - Comprehensive documentation with troubleshooting
+
+**Documentation Structure:**
+```
+11_parallel_inventory_updates/
+├── README.md ⭐ Complete guide
+├── parallel_inventory_update_simple.yml ⭐ Start here
+├── parallel_inventory_update.yml (structured version)
+├── parallel_with_error_handling.yml (production-ready)
+├── comparison_sequential_vs_parallel.yml (benchmark tool)
+└── test_controller_connection.yml (connectivity test)
+```
+
+**Troubleshooting:**
+
+**Authentication errors:**
+```bash
+# Test connection first
+ansible-playbook test_controller_connection.yml
+
+# Or manually
+curl -k -u admin:password https://controller.example.com/api/v2/ping/
+```
+
+**Timeout issues:**
+```yaml
+# Increase timeout in playbook
+vars:
+  update_timeout: 1200  # 20 minutes instead of 10
+  max_retries: 80       # More retry attempts
+```
+
+**See the [README.md](11_parallel_inventory_updates/README.md) for:**
+- Complete async patterns explained
+- Real-world performance metrics
+- Advanced error handling techniques
+- Integration with CI/CD pipelines
+- Tower/AWX workflow job templates
+- Detailed troubleshooting guide
+
+**Related Examples:**
+- See `6_parallel_execution_via_bastion/` for general async patterns
+- Both examples demonstrate the power of async execution in Ansible
 ```
