@@ -1,0 +1,315 @@
+name: Deploy Only Changed Apps (Optimized)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# Prevent concurrent deployments
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # Step 1: Detect what changed
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      # Apps that changed
+      changed-apps: ${{ steps.detect.outputs.changed-apps }}
+      has-app-changes: ${{ steps.detect.outputs.has-app-changes }}
+      
+      # Infrastructure that changed
+      core-changed: ${{ steps.detect.outputs.core-changed }}
+      
+      # Deployment strategy
+      deploy-all: ${{ steps.strategy.outputs.deploy-all }}
+      deploy-list: ${{ steps.strategy.outputs.deploy-list }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need history for git diff
+      
+      - name: Detect changes
+        id: detect
+        run: |
+          # Determine comparison range
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+            HEAD="${{ github.event.pull_request.head.sha }}"
+            echo "📋 Pull Request Mode"
+            echo "Comparing: $BASE..$HEAD"
+          else
+            # Handle first push to branch
+            if [ "${{ github.event.before }}" == "0000000000000000000000000000000000000000" ]; then
+              BASE="origin/main"
+              echo "🆕 First push to branch"
+            else
+              BASE="${{ github.event.before }}"
+              echo "📤 Push Mode"
+            fi
+            HEAD="${{ github.sha }}"
+            echo "Comparing: $BASE..$HEAD"
+          fi
+          echo ""
+          
+          # Get all changed files
+          echo "Changed files:"
+          git diff --name-only "$BASE" "$HEAD" || {
+            echo "Error: Could not get diff"
+            exit 1
+          }
+          echo ""
+          
+          # Detect changed apps
+          CHANGED_APPS=$(git diff --name-only "$BASE" "$HEAD" | \
+            grep '^apps/' | \
+            cut -d'/' -f2 | \
+            sort -u | \
+            jq -R -s -c 'split("\n") | map(select(length > 0))')
+          
+          echo "Changed apps: $CHANGED_APPS"
+          echo "changed-apps=$CHANGED_APPS" >> $GITHUB_OUTPUT
+          
+          # Check if any apps changed
+          HAS_APP_CHANGES=$(echo "$CHANGED_APPS" | jq 'length > 0')
+          echo "has-app-changes=$HAS_APP_CHANGES" >> $GITHUB_OUTPUT
+          
+          # Detect core infrastructure changes
+          CORE_FILES=$(git diff --name-only "$BASE" "$HEAD" | \
+            grep -E '^(charts/|infrastructure/|hubs\.yaml|\.github/workflows/)' || true)
+          
+          if [ -n "$CORE_FILES" ]; then
+            echo "🔄 Core infrastructure changed:"
+            echo "$CORE_FILES"
+            echo "core-changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ No core infrastructure changes"
+            echo "core-changed=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Determine deployment strategy
+        id: strategy
+        run: |
+          CORE_CHANGED="${{ steps.detect.outputs.core-changed }}"
+          CHANGED_APPS='${{ steps.detect.outputs.changed-apps }}'
+          HAS_APP_CHANGES="${{ steps.detect.outputs.has-app-changes }}"
+          
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Deployment Strategy Decision"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          
+          if [ "$CORE_CHANGED" == "true" ]; then
+            echo "Strategy: 🔄 DEPLOY ALL APPS"
+            echo "Reason: Core infrastructure changed"
+            echo ""
+            
+            # Get all apps
+            ALL_APPS=$(find ./apps -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | \
+              jq -R -s -c 'split("\n") | map(select(length > 0))')
+            
+            echo "deploy-all=true" >> $GITHUB_OUTPUT
+            echo "deploy-list=$ALL_APPS" >> $GITHUB_OUTPUT
+            
+            echo "Apps to deploy:"
+            echo "$ALL_APPS" | jq -r '.[]' | sed 's/^/  - /'
+            
+          elif [ "$HAS_APP_CHANGES" == "true" ]; then
+            echo "Strategy: 📝 DEPLOY CHANGED APPS ONLY"
+            echo "Reason: Only app-specific changes detected"
+            echo ""
+            
+            echo "deploy-all=false" >> $GITHUB_OUTPUT
+            echo "deploy-list=$CHANGED_APPS" >> $GITHUB_OUTPUT
+            
+            echo "Apps to deploy:"
+            echo "$CHANGED_APPS" | jq -r '.[]' | sed 's/^/  - /'
+            
+          else
+            echo "Strategy: ⏭️  SKIP DEPLOYMENT"
+            echo "Reason: No app or infrastructure changes"
+            echo ""
+            
+            echo "deploy-all=false" >> $GITHUB_OUTPUT
+            echo "deploy-list=[]" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      
+      - name: Summary
+        run: |
+          echo "# Change Detection Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Changed Apps | $(echo '${{ steps.detect.outputs.changed-apps }}' | jq 'length') |" >> $GITHUB_STEP_SUMMARY
+          echo "| Core Changed | ${{ steps.detect.outputs.core-changed }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Deploy All | ${{ steps.strategy.outputs.deploy-all }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Apps to Deploy" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.strategy.outputs.deploy-list }}' | jq . >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+  # Step 2: Validate changes (dry-run on PRs)
+  validate-apps:
+    needs: detect-changes
+    if: |
+      needs.detect-changes.outputs.deploy-list != '[]' &&
+      github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        app: ${{ fromJSON(needs.detect-changes.outputs.deploy-list) }}
+      fail-fast: false
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Validate app
+        run: |
+          echo "🔍 Validating: ${{ matrix.app }}"
+          
+          # Check if app directory exists
+          if [ ! -d "apps/${{ matrix.app }}" ]; then
+            echo "❌ Error: App directory not found"
+            exit 1
+          fi
+          
+          # Validate manifests (example)
+          if [ -f "apps/${{ matrix.app }}/values.yaml" ]; then
+            echo "✅ Found values.yaml"
+          fi
+          
+          echo "✅ Validation passed for ${{ matrix.app }}"
+
+  # Step 3: Deploy apps (only on push to main)
+  deploy-apps:
+    needs: detect-changes
+    if: |
+      needs.detect-changes.outputs.deploy-list != '[]' &&
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        app: ${{ fromJSON(needs.detect-changes.outputs.deploy-list) }}
+      fail-fast: false  # Continue deploying other apps if one fails
+      max-parallel: 3   # Limit concurrent deployments
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup deployment tools
+        run: |
+          # Install necessary tools (example)
+          echo "Installing deployment tools..."
+          # kubectl, helm, oc, etc.
+      
+      - name: Deploy app
+        env:
+          DEPLOY_ALL: ${{ needs.detect-changes.outputs.deploy-all }}
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Deploying: ${{ matrix.app }}"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          
+          if [ "$DEPLOY_ALL" == "true" ]; then
+            echo "🔄 Full deployment (core infrastructure changed)"
+          else
+            echo "📝 Incremental deployment (app-specific change)"
+          fi
+          
+          echo ""
+          echo "App: ${{ matrix.app }}"
+          echo "Environment: production"
+          echo ""
+          
+          # Your actual deployment logic here
+          # Examples:
+          # - helm upgrade --install ${{ matrix.app }} ./charts/${{ matrix.app }}
+          # - kubectl apply -f apps/${{ matrix.app }}/manifests/
+          # - argocd app sync ${{ matrix.app }}
+          
+          echo "✅ Successfully deployed ${{ matrix.app }}"
+      
+      - name: Verify deployment
+        run: |
+          echo "Verifying deployment for ${{ matrix.app }}..."
+          # Add health checks here
+          # Examples:
+          # - kubectl rollout status deployment/${{ matrix.app }}
+          # - curl health check endpoints
+          echo "✅ Deployment verified"
+
+  # Step 4: Deployment summary
+  deployment-summary:
+    needs: [detect-changes, deploy-apps]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Generate summary
+        run: |
+          echo "# Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "## Configuration" >> $GITHUB_STEP_SUMMARY
+          echo "- **Event:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Deploy Strategy:** $([ "${{ needs.detect-changes.outputs.deploy-all }}" == "true" ] && echo "All Apps" || echo "Changed Apps Only")" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "## Results" >> $GITHUB_STEP_SUMMARY
+          echo "- **Detection:** ${{ needs.detect-changes.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Deployment:** ${{ needs.deploy-apps.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "## Apps Processed" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          echo '${{ needs.detect-changes.outputs.deploy-list }}' | jq . >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+      
+      - name: Post to PR (if applicable)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const deployList = JSON.parse('${{ needs.detect-changes.outputs.deploy-list }}');
+            const deployAll = '${{ needs.detect-changes.outputs.deploy-all }}' === 'true';
+            
+            let body = '## 🚀 Deployment Preview\n\n';
+            
+            if (deployList.length === 0) {
+              body += '⏭️ No deployments will be triggered.\n';
+            } else if (deployAll) {
+              body += '🔄 **All apps** will be deployed (core infrastructure changed):\n\n';
+              deployList.forEach(app => {
+                body += `- ${app}\n`;
+              });
+            } else {
+              body += '📝 **Changed apps only** will be deployed:\n\n';
+              deployList.forEach(app => {
+                body += `- ${app}\n`;
+              });
+            }
+            
+            body += '\n---\n';
+            body += '*This is a dry-run preview. No changes will be applied until merged.*';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+

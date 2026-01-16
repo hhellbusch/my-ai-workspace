@@ -1,0 +1,152 @@
+name: Dynamic Matrix Example
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  # Job 1: Generate the list/matrix
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      # Define outputs that will be available to dependent jobs
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      environments: ${{ steps.set-matrix.outputs.environments }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Generate matrix data
+        id: set-matrix
+        run: |
+          # Example 1: Generate a simple array from directory discovery
+          # This finds all directories in apps/ and creates a JSON array
+          APPS=$(find ./apps -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' -exec basename {} \; | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          
+          # Example 2: Create a more complex matrix with multiple dimensions
+          # This creates an array of objects with app name and environment
+          MATRIX=$(cat <<EOF | jq -c .
+          {
+            "include": [
+              {"app": "example-app", "environment": "dev", "cluster": "dev-cluster"},
+              {"app": "example-app", "environment": "staging", "cluster": "staging-cluster"},
+              {"app": "another-app", "environment": "dev", "cluster": "dev-cluster"},
+              {"app": "another-app", "environment": "prod", "cluster": "prod-cluster"}
+            ]
+          }
+          EOF
+          )
+          
+          # Example 3: Simple string array (environments)
+          ENVIRONMENTS='["dev", "staging", "prod"]'
+          
+          # Example 4: Dynamic generation based on file content
+          # Read from a YAML file and convert to JSON array
+          if command -v yq &> /dev/null && [ -f ./hubs.yaml ]; then
+            CLUSTERS=$(yq eval '.hubs | keys | @json' hubs.yaml)
+            echo "Discovered clusters: $CLUSTERS"
+          fi
+          
+          # Set outputs using the GitHub Actions format
+          # IMPORTANT: Use EOF delimiters for multiline JSON to avoid parsing issues
+          echo "matrix<<EOF" >> $GITHUB_OUTPUT
+          echo "$MATRIX" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          echo "environments<<EOF" >> $GITHUB_OUTPUT
+          echo "$ENVIRONMENTS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          # For debugging: show what was generated
+          echo "Generated matrix:"
+          echo "$MATRIX" | jq .
+          
+          echo "Generated environments:"
+          echo "$ENVIRONMENTS" | jq .
+      
+      - name: Validate matrix output
+        run: |
+          echo "Matrix output validation:"
+          echo "${{ steps.set-matrix.outputs.matrix }}" | jq .
+          echo ""
+          echo "Environments output validation:"
+          echo "${{ steps.set-matrix.outputs.environments }}" | jq .
+
+  # Job 2: Use the matrix from Job 1
+  process-matrix:
+    needs: generate-matrix  # Wait for generate-matrix job to complete
+    runs-on: ubuntu-latest
+    
+    # Use the matrix output from the previous job
+    strategy:
+      matrix: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
+      fail-fast: false  # Continue other matrix jobs even if one fails
+      max-parallel: 3   # Optional: limit concurrent jobs
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Process matrix item
+        run: |
+          echo "================================================"
+          echo "Processing matrix combination:"
+          echo "  App: ${{ matrix.app }}"
+          echo "  Environment: ${{ matrix.environment }}"
+          echo "  Cluster: ${{ matrix.cluster }}"
+          echo "================================================"
+          
+          # Your actual deployment/processing logic here
+          # For example:
+          # - Deploy the app to the cluster
+          # - Run tests
+          # - Build artifacts
+          # - etc.
+      
+      - name: Simulate deployment
+        run: |
+          echo "Deploying ${{ matrix.app }} to ${{ matrix.environment }} on ${{ matrix.cluster }}..."
+          sleep 2
+          echo "✅ Deployment complete!"
+
+  # Job 3: Alternative - Simple array matrix
+  process-simple-array:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        # Use a simple array from the previous job
+        environment: ${{ fromJSON(needs.generate-matrix.outputs.environments) }}
+    
+    steps:
+      - name: Process environment
+        run: |
+          echo "Processing environment: ${{ matrix.environment }}"
+          # Your logic here
+
+  # Job 4: Summary job that runs after all matrix jobs complete
+  deployment-summary:
+    needs: [generate-matrix, process-matrix, process-simple-array]
+    runs-on: ubuntu-latest
+    if: always()  # Run even if some matrix jobs failed
+    
+    steps:
+      - name: Generate summary
+        run: |
+          echo "================================================"
+          echo "Deployment Summary"
+          echo "================================================"
+          echo "Matrix used: ${{ needs.generate-matrix.outputs.matrix }}"
+          echo ""
+          echo "Job statuses:"
+          echo "  Generate Matrix: ${{ needs.generate-matrix.result }}"
+          echo "  Process Matrix: ${{ needs.process-matrix.result }}"
+          echo "  Process Simple Array: ${{ needs.process-simple-array.result }}"
+          echo "================================================"
+          
+          # You could also post results to a PR, Slack, etc.
+

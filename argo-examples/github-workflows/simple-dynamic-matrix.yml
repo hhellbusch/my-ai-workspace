@@ -1,0 +1,45 @@
+name: Simple Dynamic Matrix Pattern
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # Step 1: Generate the list
+  generate-list:
+    runs-on: ubuntu-latest
+    outputs:
+      # This output will be used by the next job
+      apps: ${{ steps.discover.outputs.apps }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Discover apps
+        id: discover
+        run: |
+          # Generate a JSON array of app names
+          APPS=$(find ./apps -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          
+          # Save to output
+          echo "apps=$APPS" >> $GITHUB_OUTPUT
+          
+          # Show what was found
+          echo "Discovered apps: $APPS"
+
+  # Step 2: Use the list in a matrix
+  deploy-apps:
+    needs: generate-list
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        # Use fromJSON() to convert the string output to a JSON array
+        app: ${{ fromJSON(needs.generate-list.outputs.apps) }}
+    
+    steps:
+      - name: Deploy app
+        run: |
+          echo "Deploying: ${{ matrix.app }}"
+          # Your deployment logic here
+

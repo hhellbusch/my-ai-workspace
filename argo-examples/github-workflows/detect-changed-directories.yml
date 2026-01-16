@@ -1,0 +1,265 @@
+name: Detect Changed Directories
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Method 1: Using git diff (native approach)
+  detect-with-git:
+    runs-on: ubuntu-latest
+    outputs:
+      changed-apps: ${{ steps.detect.outputs.changed-apps }}
+      changed-dirs: ${{ steps.detect.outputs.changed-dirs }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Fetch enough history to compare
+          fetch-depth: 0
+      
+      - name: Detect changed directories
+        id: detect
+        run: |
+          # Determine the base commit to compare against
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            # For PRs, compare against the base branch
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+            echo "Comparing PR: $BASE_SHA..$HEAD_SHA"
+          else
+            # For pushes, compare against previous commit
+            if [ "${{ github.event.before }}" == "0000000000000000000000000000000000000000" ]; then
+              # First push to branch - compare against main
+              BASE_SHA="origin/main"
+            else
+              BASE_SHA="${{ github.event.before }}"
+            fi
+            HEAD_SHA="${{ github.sha }}"
+            echo "Comparing push: $BASE_SHA..$HEAD_SHA"
+          fi
+          
+          # Get all changed files
+          echo "Changed files:"
+          git diff --name-only "$BASE_SHA" "$HEAD_SHA"
+          echo ""
+          
+          # Extract unique directories from apps/ that have changes
+          CHANGED_APPS=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | \
+            grep '^apps/' | \
+            cut -d'/' -f1-2 | \
+            sort -u | \
+            cut -d'/' -f2 | \
+            jq -R -s -c 'split("\n") | map(select(length > 0))')
+          
+          echo "Changed apps: $CHANGED_APPS"
+          echo "changed-apps=$CHANGED_APPS" >> $GITHUB_OUTPUT
+          
+          # Get all changed directories (first level)
+          CHANGED_DIRS=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | \
+            cut -d'/' -f1 | \
+            sort -u | \
+            jq -R -s -c 'split("\n") | map(select(length > 0))')
+          
+          echo "Changed top-level directories: $CHANGED_DIRS"
+          echo "changed-dirs=$CHANGED_DIRS" >> $GITHUB_OUTPUT
+      
+      - name: Show detection results
+        run: |
+          echo "Detection Results:"
+          echo "=================="
+          echo "Changed apps:"
+          echo '${{ steps.detect.outputs.changed-apps }}' | jq -r '.[]'
+          echo ""
+          echo "Changed directories:"
+          echo '${{ steps.detect.outputs.changed-dirs }}' | jq -r '.[]'
+
+  # Method 2: Using tj-actions/changed-files action (recommended)
+  detect-with-action:
+    runs-on: ubuntu-latest
+    outputs:
+      changed-apps: ${{ steps.changed-files.outputs.all_changed_files }}
+      app-matrix: ${{ steps.build-matrix.outputs.matrix }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          # Get all changed files
+          files: |
+            apps/**
+          # Output format
+          json: true
+          dir_names: true
+          dir_names_max_depth: 2
+      
+      - name: List changed directories
+        run: |
+          echo "Changed files (JSON):"
+          echo '${{ steps.changed-files.outputs.all_changed_files }}'
+      
+      - name: Build app matrix
+        id: build-matrix
+        run: |
+          # Extract unique app directories from changed files
+          CHANGED_FILES='${{ steps.changed-files.outputs.all_changed_files }}'
+          
+          if [ "$CHANGED_FILES" == "[]" ] || [ -z "$CHANGED_FILES" ]; then
+            echo "No files changed in apps/"
+            echo "matrix=[]" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # Extract app names (directory after apps/)
+          APP_MATRIX=$(echo "$CHANGED_FILES" | jq -c '[.[] | 
+            select(startswith("apps/")) | 
+            split("/")[1]] | 
+            unique')
+          
+          echo "App matrix: $APP_MATRIX"
+          echo "matrix=$APP_MATRIX" >> $GITHUB_OUTPUT
+
+  # Method 3: Using dorny/paths-filter (path-based filtering)
+  detect-with-filter:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.filter.outputs.changes }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Check changed paths
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          # Return list of changed filters as JSON
+          list-files: json
+          filters: |
+            example-app:
+              - 'apps/example-app/**'
+            another-app:
+              - 'apps/another-app/**'
+            infrastructure:
+              - 'infrastructure/**'
+            charts:
+              - 'charts/**'
+      
+      - name: Show filtered results
+        run: |
+          echo "Changed filters: ${{ steps.filter.outputs.changes }}"
+          echo "Example app changed: ${{ steps.filter.outputs.example-app }}"
+          echo "Another app changed: ${{ steps.filter.outputs.another-app }}"
+
+  # Method 4: Dynamic path detection with dorny/paths-filter
+  detect-dynamic:
+    runs-on: ubuntu-latest
+    outputs:
+      changed-apps: ${{ steps.build-filters.outputs.apps }}
+      any-changes: ${{ steps.filter.outputs.changes != '[]' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Build dynamic filters
+        id: build-filters
+        run: |
+          # Discover all app directories
+          APP_DIRS=$(find ./apps -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+          
+          # Build filters YAML dynamically
+          cat > /tmp/filters.yml << 'EOF'
+          EOF
+          
+          for app in $APP_DIRS; do
+            echo "$app:" >> /tmp/filters.yml
+            echo "  - 'apps/$app/**'" >> /tmp/filters.yml
+          done
+          
+          echo "Generated filters:"
+          cat /tmp/filters.yml
+          
+          # Save app list for later
+          APP_LIST=$(echo "$APP_DIRS" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "apps=$APP_LIST" >> $GITHUB_OUTPUT
+      
+      - name: Check changed paths with dynamic filters
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          list-files: json
+          filters: /tmp/filters.yml
+      
+      - name: Show dynamic results
+        run: |
+          echo "Apps with changes: ${{ steps.filter.outputs.changes }}"
+
+  # Use the detected changes in a matrix
+  deploy-changed-apps:
+    needs: detect-with-git
+    # Only run if there are changes
+    if: needs.detect-with-git.outputs.changed-apps != '[]'
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        app: ${{ fromJSON(needs.detect-with-git.outputs.changed-apps) }}
+      fail-fast: false
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Deploy changed app
+        run: |
+          echo "Deploying changed app: ${{ matrix.app }}"
+          # Your deployment logic here
+
+  # Alternative: Deploy all if certain directories changed
+  deploy-all-if-core-changed:
+    needs: detect-with-git
+    runs-on: ubuntu-latest
+    # Run if charts/ or infrastructure/ changed
+    if: contains(fromJSON(needs.detect-with-git.outputs.changed-dirs), 'charts') || contains(fromJSON(needs.detect-with-git.outputs.changed-dirs), 'infrastructure')
+    
+    steps:
+      - name: Deploy all apps
+        run: |
+          echo "Core infrastructure changed - deploying all apps"
+          # Your logic to deploy everything
+
+  # Summary of what changed
+  summary:
+    needs: [detect-with-git, detect-with-action]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Summary
+        run: |
+          echo "# Change Detection Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Method 1: Git Diff" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          echo '${{ needs.detect-with-git.outputs.changed-apps }}' | jq . >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Method 2: Changed Files Action" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          echo '${{ needs.detect-with-action.outputs.app-matrix }}' | jq . >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
