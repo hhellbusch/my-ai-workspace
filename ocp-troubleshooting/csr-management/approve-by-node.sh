@@ -121,3 +121,6 @@ oc get csr | grep "$NODE_NAME" | head -10
 
 
 
+
+
+
