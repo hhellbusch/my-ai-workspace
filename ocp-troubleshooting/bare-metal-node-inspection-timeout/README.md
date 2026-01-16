@@ -1,24 +1,50 @@
-# Troubleshooting: Bare Metal Node Stuck in Inspection
+# Troubleshooting: Bare Metal Node Issues During Deployment
 
 ## Overview
 
-When installing OpenShift using the Bare Metal Operator (BMO), nodes must go through an inspection phase where Ironic discovers hardware details. A node "stuck in inspecting" and timing out indicates issues with the inspection process, typically related to BMC connectivity, network configuration, or hardware compatibility.
+When installing OpenShift using the Bare Metal Operator (BMO), nodes go through several phases: **inspection** → **provisioning** → **provisioned**. This guide covers issues in both phases.
+
+## Scope
+
+This guide covers:
+- **Inspection Phase**: Node stuck in `inspecting` state (hardware discovery)
+- **Provisioning Phase**: Node stuck in `provisioning` state (OS installation and service startup)
+
+**Note:** Each cluster's issues are unique. Don't assume problems from one cluster apply to another.
 
 ## Active Sessions
 
 For ongoing troubleshooting sessions with detailed notes, see [active-sessions/](active-sessions/) directory.
 
+**Important:** Active sessions are cluster-specific and may not apply to your situation.
+
 ## Severity
 
 **HIGH** - Prevents cluster from reaching quorum or full capacity. A 3-node control plane requires all 3 masters for production use.
 
-## Symptoms
+## Symptoms by Phase
 
+### Inspection Phase
 - Node stuck in `inspecting` state
 - Inspection times out after 15-30 minutes
 - Two masters provisioned successfully, third fails
 - BareMetalHost shows `State: inspecting` indefinitely
 - Events show inspection timeout errors
+
+### Provisioning Phase
+- Node stuck in `provisioning` state for extended period (>30 min)
+- OS appears to boot but services don't start
+- Can SSH to node but crio/kubelet not running
+- Node never joins the cluster
+- BareMetalHost shows `State: provisioning` indefinitely
+
+## 🚀 Quick Links
+
+- **[FORCE-REINSPECTION.md](FORCE-REINSPECTION.md)** - Force a stuck node to re-inspect (most common need)
+- **[QUICK-REFERENCE.md](QUICK-REFERENCE.md)** - One-line diagnostics and quick fixes
+- **[diagnose-bmh.sh](diagnose-bmh.sh)** - Automated diagnostic script
+
+---
 
 ## 🚨 Emergency Quick Checks - Run This First
 
@@ -847,13 +873,175 @@ watch oc get baremetalhost -n openshift-machine-api
 # (requires monitoring stack)
 ```
 
+## Provisioning Phase Failures (Node Booted but Services Not Running)
+
+### Symptoms
+- Can SSH to the node
+- Node appears booted with CoreOS
+- `crio` service not running
+- `kubelet` service not running
+- Node never appears in `oc get nodes`
+
+### Quick Diagnosis (from the node)
+
+```bash
+# SSH into the stuck node
+ssh core@<node-ip>
+
+# 1. Check service status
+systemctl status crio
+systemctl status kubelet
+
+# 2. Check service logs
+journalctl -u crio -n 100 --no-pager
+journalctl -u kubelet -n 100 --no-pager
+
+# 3. Check Ignition (initial configuration)
+journalctl -u ignition-firstboot -n 100 --no-pager
+ls -la /etc/kubernetes/
+ls -la /var/lib/kubelet/
+
+# 4. Check disk space and mounts
+df -h
+mount | grep -E "sysroot|ostree"
+
+# 5. Check network
+ip addr show
+ip route show
+ping -c 2 8.8.8.8
+```
+
+### Common Provisioning Phase Issues
+
+#### Issue 1: Ignition Configuration Failed
+**Symptoms:** Missing files in `/etc/kubernetes/` or `/var/lib/kubelet/`
+
+**Check:**
+```bash
+# Check if kubelet config exists
+ls -la /var/lib/kubelet/kubeconfig
+ls -la /etc/kubernetes/kubelet.conf
+
+# Check Ignition logs
+journalctl -u ignition-fetch.service -u ignition-files.service
+```
+
+**Fix:** Usually requires reprovisioning the node
+
+#### Issue 2: Disk Space Exhausted
+**Symptoms:** Services fail to start, disk full errors in logs
+
+**Check:**
+```bash
+df -h
+journalctl | grep -i "no space"
+```
+
+**Fix:**
+```bash
+# Clean up space if possible
+journalctl --vacuum-size=100M
+podman system prune -a -f
+```
+
+#### Issue 3: Network Configuration Missing
+**Symptoms:** No IP address, can't reach API server, DNS not working
+
+**Check:**
+```bash
+nmcli connection show
+nmcli device status
+cat /etc/resolv.conf
+```
+
+**Fix:** See [coreos-networking-issues](../coreos-networking-issues/) guide
+
+#### Issue 4: Container Runtime Failure
+**Symptoms:** `crio` won't start, storage issues
+
+**Check:**
+```bash
+systemctl status crio
+crictl info
+journalctl -u crio | grep -i error
+```
+
+**Fix:**
+```bash
+# Try starting manually
+systemctl start crio
+
+# Check storage configuration
+ls -la /var/lib/containers/
+```
+
+### From Healthy Control Plane: Check Provisioning Status
+
+```bash
+# Set kubeconfig on healthy master
+export KUBECONFIG=/etc/kubernetes/static-pod-resources/kube-apiserver-certs/secrets/node-kubeconfigs/localhost.kubeconfig
+
+# Check BareMetalHost status
+oc get baremetalhost -n openshift-machine-api
+
+# Check detailed status
+oc describe baremetalhost <node-name> -n openshift-machine-api
+
+# Check if node appeared (might be NotReady)
+oc get nodes
+
+# Check for pending CSRs
+oc get csr | grep Pending
+
+# Check Metal3/Ironic logs
+METAL3_POD=$(oc get pods -n openshift-machine-api -l baremetal.openshift.io/cluster-baremetal-operator=metal3-state -o name | head -1)
+oc logs -n openshift-machine-api $METAL3_POD -c ironic-conductor --tail=100
+```
+
+### When Services Won't Start: Decision Tree
+
+**1. Try starting services manually:**
+```bash
+systemctl start crio
+systemctl start kubelet
+```
+
+- ✅ Both start → Check logs for why they weren't starting automatically
+- ❌ crio fails → Check storage, configuration, and logs
+- ❌ kubelet fails → Check if kubeconfig exists, network connectivity
+
+**2. Check if this is a cluster-wide issue:**
+
+From healthy master:
+```bash
+oc get co  # Check cluster operators
+oc get co network  # Especially network operator
+```
+
+- If network operator is degraded → May need cluster-level fix
+- If all operators healthy → Node-specific issue
+
+**3. Try reprovisioning the node:**
+
+From healthy master:
+```bash
+# Remove the BareMetalHost
+oc delete baremetalhost <node-name> -n openshift-machine-api
+
+# Recreate it (after fixing any identified issues)
+oc create -f <node-bmh-definition.yaml>
+```
+
 ## Related Documentation
 
 - [OpenShift Bare Metal IPI Documentation](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal_ipi/ipi-install-overview.html)
 - [Metal3.io Documentation](https://metal3.io/)
 - [Redfish API Specification](https://www.dmtf.org/standards/redfish)
+- [CoreOS Networking Issues](../coreos-networking-issues/) - For provisioning phase network problems
 
 ## Summary
+
+### Inspection Phase Issues
 
 **Most Common Causes (in order of frequency):**
 1. **BMC connectivity issues** (wrong IP, credentials, certificate)
@@ -869,8 +1057,26 @@ watch oc get baremetalhost -n openshift-machine-api
 4. Increase inspection timeout
 5. Manual power cycle
 
+### Provisioning Phase Issues
+
+**Most Common Causes:**
+1. **Ignition configuration failure** (files not written)
+2. **Disk space exhausted** (can't start services)
+3. **Network configuration missing** (can't reach API server)
+4. **Container runtime issues** (crio won't start)
+5. **Cluster-level problems** (network operator degraded)
+
+**Quick Fixes to Try First:**
+1. Check service status: `systemctl status crio kubelet`
+2. Check disk space: `df -h`
+3. Check Ignition logs: `journalctl -u ignition-firstboot`
+4. Try starting services manually
+5. Check cluster operators from healthy master
+
 **When to Escalate:**
 - BMC is not accessible at all (hardware/network issue)
 - Consistent kernel panics during inspection (hardware incompatibility)
+- Services consistently fail across multiple nodes (cluster-level issue)
+- Disk/storage corruption on the node
 - All troubleshooting steps exhausted (may need manual provisioning)
 

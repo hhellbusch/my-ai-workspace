@@ -1,7 +1,10 @@
 # Active Session: master-2 Inspection / Control Plane Recovery
 
+**⚠️ CLUSTER-SPECIFIC SESSION:** This troubleshooting session is for ONE specific cluster with a VIP misconfiguration from installation. Do NOT assume these issues apply to other clusters.
+
 **Date:** December 3, 2025  
 **Duration:** ~4 hours  
+**Cluster:** Specific cluster with installation VIP error (NOT a general pattern)  
 **Status:** 🔴 Cluster determined not recoverable - requires reinstallation  
 **Issues:** master-2 inspection + etcd/kubelet authentication + VIP misconfiguration
 
@@ -31,7 +34,7 @@
 
 ## 🎯 **Session Summary**
 
-### What Happened
+### What Happened (Cluster-Specific)
 
 1. **Initial Issue (18:00):** master-2 stuck in inspection state
    - NVIDIA ConnectX NIC hardware issue (`mlx5_query_module_id:315` repeating)
@@ -150,7 +153,9 @@ etcdctl --cacert=/etc/kubernetes/static-pod-certs/configmaps/etcd-serving-ca/ca-
 2. Deep dive: **ETCD-RECOVERY-SUCCESS.md** (successful recovery technique)
 3. Examples: **../../../csr-management/REAL-WORLD-EXAMPLES.md**
 
-### If You Have Similar Issues
+### If You Have Similar Issues (But Different Cluster)
+
+**⚠️ Remember: This session is cluster-specific. Use as reference only.**
 
 | Issue | Document |
 |-------|----------|

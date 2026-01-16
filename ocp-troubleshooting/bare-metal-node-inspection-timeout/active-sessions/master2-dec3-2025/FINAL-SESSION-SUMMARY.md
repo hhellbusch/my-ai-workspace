@@ -1,5 +1,7 @@
 # Final Session Summary - December 3, 2025
 
+**⚠️ CLUSTER-SPECIFIC SESSION:** This troubleshooting session is for ONE specific cluster with a VIP misconfiguration from installation. Do NOT assume these issues apply to other clusters.
+
 **Status:** 🔴 CLUSTER NOT RECOVERABLE - Requires Reinstallation  
 **Duration:** ~4 hours of intensive troubleshooting  
 **Outcome:** Identified fundamental installation issues preventing recovery
@@ -7,6 +9,8 @@
 ---
 
 ## 📋 **Executive Summary**
+
+**Important:** This was a cluster-specific issue caused by VIP misconfiguration during installation. Other clusters with similar symptoms (stuck in provisioning, services not starting) may have completely different root causes.
 
 Started with what appeared to be a simple bare metal node inspection timeout (master-2), but uncovered cascading failures revealing the cluster was fundamentally misconfigured during initial installation.
 
@@ -686,6 +690,7 @@ For quick reference tomorrow, see:
 - `TOMORROW-QUICKSTART.md` - Action items
 - `ETCD-RECOVERY-SUCCESS.md` - What we successfully fixed
 - `README.md` (parent directory) - General troubleshooting guide
+
 
 
 
