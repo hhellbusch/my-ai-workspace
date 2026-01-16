@@ -22,6 +22,8 @@ CI/CD and deployment workflows:
 Deployment strategies and configurations:
 - **[argocd-github-action-README.md](deployment/argocd-github-action-README.md)** - GitHub Actions integration
 - **[multi-cluster-deployment.md](deployment/multi-cluster-deployment.md)** - Multi-cluster deployment strategies
+- **[acm-rename-local-cluster.md](deployment/acm-rename-local-cluster.md)** - Renaming local-cluster in OpenShift ACM (full guide)
+- **[acm-rename-quick-ref.md](deployment/acm-rename-quick-ref.md)** - ACM rename quick reference card
 - **[two-folder-example.md](deployment/two-folder-example.md)** - Managing apps and infrastructure separately
 
 ## 📖 Recommended Reading Order

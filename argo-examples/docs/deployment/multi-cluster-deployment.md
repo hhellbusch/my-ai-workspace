@@ -6,6 +6,22 @@ This setup allows you to deploy ArgoCD applications to multiple OpenShift cluste
 
 The workflow reads cluster configurations from `hubs.yaml` and deploys the same set of ArgoCD applications to each cluster sequentially.
 
+### OpenShift ACM Integration
+
+If you're using **OpenShift Advanced Cluster Management (ACM)** with GitOps, the hub cluster is automatically registered as `local-cluster`. For better cluster identification, you can rename it to use the actual cluster name.
+
+**See:** [Renaming local-cluster in OpenShift ACM](acm-rename-local-cluster.md) for the complete guide and script.
+
+Quick example after renaming:
+```yaml
+hubs:
+  production-hub:  # Actual cluster name instead of local-cluster
+    name: production-hub
+    server: https://kubernetes.default.svc
+    argocd_namespace: openshift-gitops
+    token_secret: OPENSHIFT_TOKEN_HUB
+```
+
 ## Configuration
 
 ### 1. Define Clusters in `hubs.yaml`

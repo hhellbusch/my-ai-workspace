@@ -164,6 +164,11 @@ bash scripts/test.sh
 
 # Comprehensive Helm chart testing (all environments)
 bash scripts/test-app-of-apps.sh
+
+# Rename ACM local-cluster to actual cluster name (requires OpenShift ACM)
+bash scripts/rename-local-cluster.sh
+# OR with custom name:
+bash scripts/rename-local-cluster.sh my-custom-cluster-name
 ```
 
 ## 📖 Common Tasks
@@ -225,7 +230,8 @@ helm template argocd-apps charts/argocd-apps/ -f charts/argocd-apps/values.yaml 
 2. Understand the [App-of-Apps Pattern](docs/patterns/APP-OF-APPS-PATTERN.md)
 3. Review the [Quick Reference](docs/getting-started/QUICK-REFERENCE.md)
 4. Explore [Deployment Strategies](docs/deployment/)
-5. Set up your own applications following the examples
+5. **(OpenShift ACM Users)** [Rename local-cluster](docs/deployment/acm-rename-local-cluster.md)
+6. Set up your own applications following the examples
 
 ## 💡 Tips
 

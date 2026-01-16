@@ -33,6 +33,41 @@ This directory contains GitHub Actions workflows for ArgoCD multi-cluster deploy
 
 ---
 
+## Dynamic Matrix and Change Detection Workflows
+
+### 📚 Complete Documentation
+
+**[→ START HERE: Dynamic Matrix Index](./DYNAMIC-MATRIX-INDEX.md)** - Complete guide to all resources
+
+### `deploy-changed-apps-matrix.yml` (Optimized Deployment)
+
+**What it does:**
+- Detects which apps have changed using git diff
+- Deploys only changed apps (optimized)
+- Falls back to deploying all apps if core infrastructure changed
+- Dry-run validation on PRs, actual deployment on push to main
+
+**Key Features:**
+- ✅ Detects changed directories automatically
+- ✅ Dynamic matrix generation based on changes
+- ✅ Smart deployment strategy (changed vs all)
+- ✅ PR preview comments
+- ✅ Validation before deployment
+- ✅ Deployment summary with job status
+
+**Documentation:**
+- 📘 [`DYNAMIC-MATRIX-GUIDE.md`](./DYNAMIC-MATRIX-GUIDE.md) - Complete guide to dynamic matrices
+- 📘 [`CHANGED-DIRECTORIES-GUIDE.md`](./CHANGED-DIRECTORIES-GUIDE.md) - Methods for detecting changed directories
+- 📗 [`QUICK-REFERENCE.md`](./QUICK-REFERENCE.md) - Syntax cheat sheet
+- 📙 [`METHOD-COMPARISON.md`](./METHOD-COMPARISON.md) - Choose the right approach
+
+**Examples:**
+- `simple-dynamic-matrix.yml` - ⭐ Minimal dynamic matrix example
+- `dynamic-matrix-example.yml` - ⭐⭐⭐ Comprehensive patterns
+- `detect-changed-directories.yml` - ⭐⭐⭐ All detection methods
+
+---
+
 ## Additional Example Workflows
 
 ### 1. `argocd-diff-preview.yml` (Recommended - No cluster access needed)
