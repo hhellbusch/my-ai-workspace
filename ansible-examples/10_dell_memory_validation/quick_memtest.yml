@@ -1,0 +1,270 @@
+---
+# Quick memory testing playbook for Red Hat CoreOS
+# Multiple approaches depending on your needs
+
+- name: Quick Memory Testing on CoreOS Nodes
+  hosts: test_nodes
+  gather_facts: yes
+  become: yes
+  vars:
+    # Test duration in seconds
+    memtest_duration: 300  # 5 minutes per test
+    # Memory to test (MB) - leave some for OS
+    memory_to_test_mb: "{{ ((ansible_memtotal_mb * 0.8) | int) }}"
+    # Number of iterations
+    memtest_iterations: 1
+  
+  tasks:
+    # ============================================================
+    # OPTION 1: memtester via toolbox (RECOMMENDED FOR QUICK TEST)
+    # ============================================================
+    - name: Install memtester in toolbox container
+      shell: |
+        toolbox run sh -c "command -v memtester || dnf install -y memtester"
+      register: toolbox_memtest_install
+      changed_when: "'Installing' in toolbox_memtest_install.stdout"
+      tags: [memtester, setup]
+    
+    - name: Run memtester (userspace memory test)
+      shell: |
+        # Test 1GB chunks, run for specified iterations
+        toolbox run memtester 1024M {{ memtest_iterations }}
+      register: memtester_result
+      async: "{{ memtest_duration }}"
+      poll: 10
+      tags: [memtester, test]
+    
+    - name: Display memtester results
+      debug:
+        msg: |
+          Memtester Results:
+          {{ memtester_result.stdout }}
+          
+          {% if 'FAILURE' in memtester_result.stdout %}
+          ⚠️ MEMORY ERRORS DETECTED!
+          {% else %}
+          ✓ No errors found
+          {% endif %}
+      tags: [memtester, results]
+    
+    # ============================================================
+    # OPTION 2: stress-ng memory stress test
+    # ============================================================
+    - name: Install stress-ng in toolbox
+      shell: |
+        toolbox run sh -c "command -v stress-ng || dnf install -y stress-ng"
+      register: toolbox_stress_install
+      changed_when: "'Installing' in toolbox_stress_install.stdout"
+      tags: [stress-ng, setup]
+    
+    - name: Run stress-ng memory test
+      shell: |
+        # Run memory stressor with verification
+        toolbox run stress-ng --vm 4 --vm-bytes 1G --vm-method all --verify --timeout {{ memtest_duration }}s --metrics-brief
+      register: stress_ng_result
+      tags: [stress-ng, test]
+    
+    - name: Display stress-ng results
+      debug:
+        msg: |
+          Stress-ng Results:
+          {{ stress_ng_result.stdout }}
+          
+          {% if stress_ng_result.rc != 0 %}
+          ⚠️ STRESS TEST FAILED - Possible memory issues
+          {% else %}
+          ✓ Stress test passed
+          {% endif %}
+      tags: [stress-ng, results]
+    
+    # ============================================================
+    # OPTION 3: Simple memory allocation test (no extra tools)
+    # ============================================================
+    - name: Run simple memory allocation test (Python)
+      shell: |
+        python3 << 'PYTEST'
+        import sys
+        import time
+        
+        def simple_memtest(size_mb=1024, iterations=3):
+            """Simple memory allocation and pattern test"""
+            print(f"Testing {size_mb}MB of memory, {iterations} iterations")
+            
+            errors = 0
+            for i in range(iterations):
+                print(f"\nIteration {i+1}/{iterations}")
+                try:
+                    # Allocate memory
+                    size = size_mb * 1024 * 1024
+                    print(f"  Allocating {size_mb}MB...")
+                    
+                    # Write pattern
+                    data = bytearray(size)
+                    pattern = 0xAA
+                    for j in range(0, len(data), 4096):
+                        data[j] = pattern
+                    
+                    print(f"  Wrote pattern 0x{pattern:02X}")
+                    
+                    # Verify pattern
+                    print("  Verifying...")
+                    for j in range(0, len(data), 4096):
+                        if data[j] != pattern:
+                            print(f"  ✗ ERROR at offset {j}: expected 0x{pattern:02X}, got 0x{data[j]:02X}")
+                            errors += 1
+                    
+                    if errors == 0:
+                        print("  ✓ Pattern verified")
+                    
+                    # Alternate pattern
+                    pattern = 0x55
+                    for j in range(0, len(data), 4096):
+                        data[j] = pattern
+                    
+                    # Verify again
+                    for j in range(0, len(data), 4096):
+                        if data[j] != pattern:
+                            print(f"  ✗ ERROR at offset {j}: expected 0x{pattern:02X}, got 0x{data[j]:02X}")
+                            errors += 1
+                    
+                    if errors == 0:
+                        print("  ✓ Alternate pattern verified")
+                    
+                    del data
+                    
+                except MemoryError:
+                    print("  ✗ MemoryError - cannot allocate")
+                    errors += 1
+                except Exception as e:
+                    print(f"  ✗ Error: {e}")
+                    errors += 1
+                
+                time.sleep(1)
+            
+            return errors
+        
+        errors = simple_memtest(size_mb=1024, iterations={{ memtest_iterations }})
+        if errors > 0:
+            print(f"\n⚠️ FAILED: {errors} errors detected")
+            sys.exit(1)
+        else:
+            print("\n✓ PASSED: No errors detected")
+            sys.exit(0)
+        PYTEST
+      register: python_memtest_result
+      ignore_errors: yes
+      tags: [python, test]
+    
+    - name: Display Python memory test results
+      debug:
+        msg: |
+          Python Memory Test:
+          {{ python_memtest_result.stdout }}
+          
+          {% if python_memtest_result.rc != 0 %}
+          ⚠️ Memory test found errors!
+          {% else %}
+          ✓ Memory test passed
+          {% endif %}
+      tags: [python, results]
+    
+    # ============================================================
+    # OPTION 4: Read /proc/meminfo for capacity verification
+    # ============================================================
+    - name: Verify memory capacity
+      shell: |
+        echo "Memory Information:"
+        echo "=================="
+        grep -E "MemTotal|MemFree|MemAvailable" /proc/meminfo
+        echo ""
+        echo "Expected: ~{{ ansible_memtotal_mb }} MB"
+        echo "Actual:   $(grep MemTotal /proc/meminfo | awk '{print $2/1024}') MB"
+      register: meminfo_check
+      tags: [verify, capacity]
+    
+    - name: Display memory capacity
+      debug:
+        msg: "{{ meminfo_check.stdout }}"
+      tags: [verify, results]
+    
+    # ============================================================
+    # OPTION 5: Check for ECC errors
+    # ============================================================
+    - name: Check EDAC for memory errors
+      shell: |
+        if [ -d /sys/devices/system/edac/mc ]; then
+          echo "EDAC Memory Controllers:"
+          for mc in /sys/devices/system/edac/mc/mc*; do
+            if [ -d "$mc" ]; then
+              mc_name=$(basename $mc)
+              ce_count=$(cat $mc/ce_count 2>/dev/null || echo "N/A")
+              ue_count=$(cat $mc/ue_count 2>/dev/null || echo "N/A")
+              echo "  $mc_name: CE=$ce_count, UE=$ue_count"
+            fi
+          done
+        else
+          echo "EDAC not available or not loaded"
+        fi
+      register: edac_check
+      ignore_errors: yes
+      tags: [edac, verify]
+    
+    - name: Display EDAC results
+      debug:
+        msg: "{{ edac_check.stdout }}"
+      tags: [edac, results]
+    
+    # ============================================================
+    # Generate test report
+    # ============================================================
+    - name: Generate memory test report
+      copy:
+        content: |
+          Memory Test Report
+          ==================
+          Hostname: {{ inventory_hostname }}
+          Date: {{ ansible_date_time.iso8601 }}
+          Total Memory: {{ ansible_memtotal_mb }} MB
+          
+          Test Results:
+          -------------
+          {% if memtester_result is defined %}
+          Memtester: {{ 'PASS' if 'FAILURE' not in memtester_result.stdout else 'FAIL' }}
+          {% endif %}
+          {% if stress_ng_result is defined %}
+          Stress-ng: {{ 'PASS' if stress_ng_result.rc == 0 else 'FAIL' }}
+          {% endif %}
+          {% if python_memtest_result is defined %}
+          Python Test: {{ 'PASS' if python_memtest_result.rc == 0 else 'FAIL' }}
+          {% endif %}
+          
+          EDAC Status:
+          {{ edac_check.stdout }}
+          
+          Memory Info:
+          {{ meminfo_check.stdout }}
+        dest: "/tmp/memtest_report_{{ inventory_hostname }}.txt"
+      tags: [report]
+    
+    - name: Fetch report to local machine
+      fetch:
+        src: "/tmp/memtest_report_{{ inventory_hostname }}.txt"
+        dest: "./memtest_reports/"
+        flat: yes
+      tags: [report]
+
+# ============================================================
+# Summary report generation
+# ============================================================
+- name: Generate fleet memory test summary
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Display summary
+      debug:
+        msg: |
+          Memory testing complete for {{ groups['test_nodes'] | length }} nodes
+          
+          Reports saved to: ./memtest_reports/
+      tags: [summary]
+

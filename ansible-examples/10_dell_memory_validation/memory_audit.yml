@@ -1,0 +1,291 @@
+---
+- name: Audit Dell PowerEdge servers for memory validation failures
+  hosts: dell_servers
+  gather_facts: no
+  vars:
+    idrac_user: "{{ vault_idrac_user | default('root') }}"
+    idrac_password: "{{ vault_idrac_password }}"
+    report_dir: "./reports"
+    # Threshold for determining status (in GB)
+    warning_threshold: 5    # < 5GB discrepancy = OK
+    critical_threshold: 35  # >= 35GB = CRITICAL
+  
+  tasks:
+    - name: Create reports directory
+      file:
+        path: "{{ report_dir }}"
+        state: directory
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Get memory inventory from iDRAC via Redfish
+      community.general.redfish_info:
+        category: Systems
+        command: GetMemoryInventory
+        baseuri: "{{ idrac_ip }}"
+        username: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+      register: idrac_memory
+      delegate_to: localhost
+      ignore_errors: yes
+    
+    - name: Get System Event Log entries from iDRAC
+      community.general.redfish_info:
+        category: Manager
+        command: GetLogs
+        baseuri: "{{ idrac_ip }}"
+        username: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+      register: idrac_logs
+      delegate_to: localhost
+      ignore_errors: yes
+    
+    - name: Get OS detected memory from node
+      shell: grep MemTotal /proc/meminfo | awk '{print $2}'
+      register: os_memory_kb
+      ignore_errors: yes
+    
+    - name: Check if iDRAC query succeeded
+      set_fact:
+        idrac_accessible: "{{ idrac_memory is succeeded }}"
+    
+    - name: Check if node is accessible
+      set_fact:
+        node_accessible: "{{ os_memory_kb is succeeded }}"
+    
+    # Process results only if both sources are available
+    - block:
+        - name: Calculate installed memory capacity from iDRAC
+          set_fact:
+            installed_gb: "{{ (idrac_memory.redfish_facts.memory.entries | 
+                               map(attribute='CapacityMiB') | 
+                               map('default', 0) | 
+                               sum | int / 1024) | round(1) }}"
+            module_count: "{{ idrac_memory.redfish_facts.memory.entries | length }}"
+        
+        - name: Calculate OS detected memory
+          set_fact:
+            os_memory_gb: "{{ (os_memory_kb.stdout | int / 1024 / 1024) | round(1) }}"
+        
+        - name: Calculate memory discrepancy
+          set_fact:
+            memory_discrepancy_gb: "{{ (installed_gb | float - os_memory_gb | float) | round(1) }}"
+        
+        - name: Determine status based on discrepancy
+          set_fact:
+            memory_status: >-
+              {% if memory_discrepancy_gb | float < warning_threshold %}
+              OK
+              {% elif memory_discrepancy_gb | float < critical_threshold %}
+              WARNING
+              {% else %}
+              CRITICAL
+              {% endif %}
+        
+        - name: Extract memory-related SEL entries
+          set_fact:
+            memory_sel_entries: "{{ idrac_logs.redfish_facts.entries | 
+                                    selectattr('Message', 'defined') |
+                                    selectattr('Message', 'search', '(?i)memory|dimm') |
+                                    list }}"
+          when: idrac_logs is succeeded
+        
+        - name: Report findings to console
+          debug:
+            msg: |
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+              Server: {{ inventory_hostname }}
+              iDRAC: {{ idrac_ip }}
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+              Memory Modules: {{ module_count }}
+              Installed (iDRAC): {{ installed_gb }} GB
+              OS Detected:       {{ os_memory_gb }} GB
+              Discrepancy:       {{ memory_discrepancy_gb }} GB
+              Status:            {{ memory_status }}
+              {% if memory_sel_entries is defined and memory_sel_entries | length > 0 %}
+              
+              Recent Memory SEL Entries: {{ memory_sel_entries | length }}
+              {% for entry in memory_sel_entries[:5] %}
+              - [{{ entry.Severity | default('Unknown') }}] {{ entry.Created | default('No timestamp') }}: {{ entry.Message }}
+              {% endfor %}
+              {% endif %}
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        
+        - name: Add to summary statistics
+          set_fact:
+            audit_summary:
+              hostname: "{{ inventory_hostname }}"
+              idrac_ip: "{{ idrac_ip }}"
+              status: "{{ memory_status }}"
+              installed_gb: "{{ installed_gb }}"
+              os_detected_gb: "{{ os_memory_gb }}"
+              discrepancy_gb: "{{ memory_discrepancy_gb }}"
+              module_count: "{{ module_count }}"
+              sel_memory_entries: "{{ memory_sel_entries | default([]) | length }}"
+          delegate_to: localhost
+          delegate_facts: yes
+        
+        - name: Generate detailed report for WARNING/CRITICAL servers
+          copy:
+            content: |
+              ═══════════════════════════════════════════════════════════════
+              MEMORY VALIDATION FAILURE REPORT
+              ═══════════════════════════════════════════════════════════════
+              
+              Generated: {{ ansible_date_time.iso8601 }}
+              Status: {{ memory_status }}
+              
+              SERVER INFORMATION
+              ───────────────────────────────────────────────────────────────
+              Hostname:     {{ inventory_hostname }}
+              iDRAC IP:     {{ idrac_ip }}
+              
+              MEMORY ANALYSIS
+              ───────────────────────────────────────────────────────────────
+              Memory Modules:        {{ module_count }}
+              Installed (iDRAC):     {{ installed_gb }} GB
+              OS Detected:           {{ os_memory_gb }} GB
+              Discrepancy:           {{ memory_discrepancy_gb }} GB
+              
+              {% if memory_discrepancy_gb | float >= warning_threshold %}
+              ⚠ ANALYSIS:
+              The discrepancy of {{ memory_discrepancy_gb }} GB exceeds the expected
+              system reserved memory (~2-4GB), indicating likely POST validation
+              failure of one or more memory modules.
+              
+              Estimated failed modules: ~{{ (memory_discrepancy_gb | float / 32) | round(0, 'ceil') | int }} (assuming 32GB DIMMs)
+              {% endif %}
+              
+              {% if memory_sel_entries is defined and memory_sel_entries | length > 0 %}
+              SYSTEM EVENT LOG - MEMORY ENTRIES
+              ───────────────────────────────────────────────────────────────
+              Found {{ memory_sel_entries | length }} memory-related SEL entries:
+              
+              {% for entry in memory_sel_entries %}
+              [{{ loop.index }}] {{ entry.Created | default('No timestamp') }}
+                  Severity: {{ entry.Severity | default('Unknown') }}
+                  Message:  {{ entry.Message }}
+              {% if entry.MessageId is defined %}
+                  Message ID: {{ entry.MessageId }}
+              {% endif %}
+              
+              {% endfor %}
+              {% else %}
+              SYSTEM EVENT LOG - MEMORY ENTRIES
+              ───────────────────────────────────────────────────────────────
+              No memory-related SEL entries found (or SEL query failed).
+              {% endif %}
+              
+              DETAILED MEMORY INVENTORY
+              ───────────────────────────────────────────────────────────────
+              {% for module in idrac_memory.redfish_facts.memory.entries %}
+              Module: {{ module.Name | default(module.Id) }}
+                Location:     {{ module.DeviceLocator | default(module.SocketLocator | default('Unknown')) }}
+                Capacity:     {{ (module.CapacityMiB | default(0) / 1024) | round(0) }} GB
+                Status:       {{ module.Status.Health | default('Unknown') }} / {{ module.Status.State | default('Unknown') }}
+                Manufacturer: {{ module.Manufacturer | default('N/A') }}
+                Part Number:  {{ module.PartNumber | default('N/A') }}
+              
+              {% endfor %}
+              
+              RECOMMENDATIONS
+              ───────────────────────────────────────────────────────────────
+              {% if memory_status == 'CRITICAL' %}
+              1. Schedule immediate maintenance to investigate failed DIMMs
+              2. Check SEL entries above for specific failed slots
+              3. Replace failed memory modules
+              4. Verify BIOS Memory Testing is enabled
+              5. Re-audit after remediation
+              {% elif memory_status == 'WARNING' %}
+              1. Investigate potential single DIMM failure
+              2. Review SEL for memory errors
+              3. Schedule maintenance window for memory replacement
+              4. Monitor for additional failures
+              {% else %}
+              1. Discrepancy is within normal system reserved range
+              2. Continue regular monitoring
+              {% endif %}
+              
+              ═══════════════════════════════════════════════════════════════
+            dest: "{{ report_dir }}/{{ memory_status }}_{{ inventory_hostname }}_{{ ansible_date_time.date }}.txt"
+          delegate_to: localhost
+          when: memory_status in ['WARNING', 'CRITICAL']
+      
+      when: idrac_accessible and node_accessible
+    
+    # Handle cases where data sources aren't available
+    - name: Report iDRAC access failure
+      debug:
+        msg: "ERROR: Unable to access iDRAC at {{ idrac_ip }} for {{ inventory_hostname }}"
+      when: not idrac_accessible
+    
+    - name: Report node access failure
+      debug:
+        msg: "ERROR: Unable to access node {{ inventory_hostname }} via SSH"
+      when: not node_accessible
+
+# Generate fleet-wide summary report
+- name: Generate fleet summary report
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Collect all audit summaries
+      set_fact:
+        all_summaries: "{{ groups['dell_servers'] | 
+                          map('extract', hostvars, 'audit_summary') | 
+                          select('defined') | 
+                          list }}"
+    
+    - name: Calculate fleet statistics
+      set_fact:
+        total_servers: "{{ all_summaries | length }}"
+        ok_count: "{{ all_summaries | selectattr('status', 'equalto', 'OK') | list | length }}"
+        warning_count: "{{ all_summaries | selectattr('status', 'equalto', 'WARNING') | list | length }}"
+        critical_count: "{{ all_summaries | selectattr('status', 'equalto', 'CRITICAL') | list | length }}"
+    
+    - name: Display fleet summary
+      debug:
+        msg: |
+          
+          ╔═══════════════════════════════════════════════════════════════╗
+          ║           FLEET-WIDE MEMORY AUDIT SUMMARY                     ║
+          ╚═══════════════════════════════════════════════════════════════╝
+          
+          Total Servers Audited: {{ total_servers }}
+          
+          STATUS BREAKDOWN:
+            ✓ OK:       {{ ok_count }} servers
+            ⚠ WARNING:  {{ warning_count }} servers  
+            ✗ CRITICAL: {{ critical_count }} servers
+          
+          {% if critical_count | int > 0 %}
+          CRITICAL SERVERS (require immediate attention):
+          {% for summary in all_summaries | selectattr('status', 'equalto', 'CRITICAL') %}
+            • {{ summary.hostname }} ({{ summary.idrac_ip }})
+              Discrepancy: {{ summary.discrepancy_gb }} GB
+              SEL Entries: {{ summary.sel_memory_entries }}
+          {% endfor %}
+          {% endif %}
+          
+          {% if warning_count | int > 0 %}
+          WARNING SERVERS (possible issues):
+          {% for summary in all_summaries | selectattr('status', 'equalto', 'WARNING') %}
+            • {{ summary.hostname }} ({{ summary.idrac_ip }})
+              Discrepancy: {{ summary.discrepancy_gb }} GB
+          {% endfor %}
+          {% endif %}
+          
+          Detailed reports generated in: ./reports/
+          
+          ╚═══════════════════════════════════════════════════════════════╝
+    
+    - name: Generate CSV summary report
+      copy:
+        content: |
+          Hostname,iDRAC IP,Status,Installed GB,OS Detected GB,Discrepancy GB,Module Count,SEL Entries
+          {% for summary in all_summaries %}
+          {{ summary.hostname }},{{ summary.idrac_ip }},{{ summary.status }},{{ summary.installed_gb }},{{ summary.os_detected_gb }},{{ summary.discrepancy_gb }},{{ summary.module_count }},{{ summary.sel_memory_entries }}
+          {% endfor %}
+        dest: "./reports/memory_audit_summary_{{ ansible_date_time.date }}.csv"
+      when: all_summaries | length > 0
+

@@ -1,0 +1,8 @@
+---
+# Example vault file for storing iDRAC credentials
+# Create actual vault with: ansible-vault create group_vars/all/vault.yml
+
+vault_idrac_user: root
+vault_idrac_password: your-idrac-password-here
+
+

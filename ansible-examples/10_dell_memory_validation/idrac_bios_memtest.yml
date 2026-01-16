@@ -1,0 +1,148 @@
+---
+# Trigger Dell BIOS Memory Test via iDRAC
+# This is the most thorough option but requires reboot
+
+- name: Schedule BIOS Memory Test via iDRAC
+  hosts: dell_servers
+  gather_facts: no
+  vars:
+    idrac_user: "{{ vault_idrac_user }}"
+    idrac_password: "{{ vault_idrac_password }}"
+  
+  tasks:
+    - name: Check current BIOS MemTest setting
+      community.general.redfish_info:
+        category: Systems
+        command: GetBiosAttributes
+        baseuri: "{{ idrac_ip }}"
+        username: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+      register: bios_attrs
+      delegate_to: localhost
+    
+    - name: Display current MemTest setting
+      debug:
+        msg: |
+          Current BIOS Memory Test: {{ bios_attrs.redfish_facts.bios_attribute.entries.0[1].MemTest | default('Unknown') }}
+          
+          Options:
+          - Enabled: Full memory test during POST (thorough, slow)
+          - Disabled: Quick memory init only (fast, less thorough)
+      when: bios_attrs.redfish_facts.bios_attribute.entries[0][1].MemTest is defined
+    
+    - name: Enable BIOS Memory Testing
+      community.general.redfish_config:
+        category: Systems
+        command: SetBiosAttributes
+        bios_attributes:
+          MemTest: "Enabled"
+        baseuri: "{{ idrac_ip }}"
+        username: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+      register: memtest_enable
+      delegate_to: localhost
+      when: bios_attrs.redfish_facts.bios_attribute.entries[0][1].MemTest == "Disabled"
+    
+    - name: Create BIOS configuration job
+      community.general.redfish_command:
+        category: Systems
+        command: CreateBiosConfigJob
+        baseuri: "{{ idrac_ip }}"
+        username: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+      register: bios_job
+      delegate_to: localhost
+      when: memtest_enable is changed
+    
+    - name: Schedule graceful server reboot
+      community.general.redfish_command:
+        category: Systems
+        command: GracefulRestart
+        baseuri: "{{ idrac_ip }}"
+        username: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+      delegate_to: localhost
+      when: 
+        - memtest_enable is changed
+        - bios_job is succeeded
+    
+    - name: Wait for server to start POST
+      pause:
+        seconds: 60
+      when: memtest_enable is changed
+    
+    - name: Monitor POST progress
+      shell: |
+        curl -k -u "{{ idrac_user }}:{{ idrac_password }}" \
+          "https://{{ idrac_ip }}/redfish/v1/Systems/System.Embedded.1" | \
+          jq -r '.PowerState, .Status.Health'
+      register: post_status
+      until: post_status.stdout_lines[0] == "On"
+      retries: 60
+      delay: 30
+      delegate_to: localhost
+      when: memtest_enable is changed
+    
+    - name: Check SEL for memory test results
+      community.general.redfish_info:
+        category: Manager
+        command: GetLogs
+        baseuri: "{{ idrac_ip }}"
+        username: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+      register: sel_after_test
+      delegate_to: localhost
+    
+    - name: Display memory-related SEL entries
+      debug:
+        msg: "{{ sel_after_test.redfish_facts.entries | 
+               selectattr('Message', 'defined') |
+               selectattr('Message', 'search', '(?i)memory|dimm') |
+               list }}"
+
+# Alternative: One-time memory test without permanently enabling
+- name: Run One-Time BIOS Memory Test
+  hosts: dell_servers
+  gather_facts: no
+  vars:
+    idrac_user: "{{ vault_idrac_user }}"
+    idrac_password: "{{ vault_idrac_password }}"
+  
+  tasks:
+    - name: Trigger one-time boot to diagnostics
+      uri:
+        url: "https://{{ idrac_ip }}/redfish/v1/Systems/System.Embedded.1"
+        method: PATCH
+        user: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+        body_format: json
+        body:
+          Boot:
+            BootSourceOverrideEnabled: "Once"
+            BootSourceOverrideTarget: "Diags"
+        validate_certs: no
+        status_code: [200, 202, 204]
+      delegate_to: localhost
+      register: boot_to_diags
+    
+    - name: Reboot to diagnostics
+      community.general.redfish_command:
+        category: Systems
+        command: GracefulRestart
+        baseuri: "{{ idrac_ip }}"
+        username: "{{ idrac_user }}"
+        password: "{{ idrac_password }}"
+      delegate_to: localhost
+      when: boot_to_diags is succeeded
+    
+    - name: Wait for diagnostics to complete (this may take a while)
+      debug:
+        msg: |
+          Server is now running Dell diagnostics including memory test.
+          This can take 30-60 minutes depending on memory size.
+          
+          Monitor via iDRAC console:
+            https://{{ idrac_ip }}
+          
+          Results will be logged to SEL.
+

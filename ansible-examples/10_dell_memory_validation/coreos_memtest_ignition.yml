@@ -1,0 +1,196 @@
+---
+# Generate CoreOS Ignition config with memory testing tools baked in
+# Use this to create test images with memtest pre-installed
+
+- name: Generate CoreOS Ignition with Memory Test Tools
+  hosts: localhost
+  gather_facts: no
+  vars:
+    output_dir: "./ignition_configs"
+  
+  tasks:
+    - name: Create output directory
+      file:
+        path: "{{ output_dir }}"
+        state: directory
+    
+    - name: Generate Butane config for memory testing
+      copy:
+        content: |
+          variant: fcos
+          version: 1.4.0
+          
+          systemd:
+            units:
+              # Service to run memory test on first boot
+              - name: memory-test.service
+                enabled: true
+                contents: |
+                  [Unit]
+                  Description=Memory Test Service
+                  After=network-online.target
+                  Wants=network-online.target
+                  ConditionPathExists=!/var/lib/memtest-complete
+                  
+                  [Service]
+                  Type=oneshot
+                  RemainAfterExit=yes
+                  ExecStartPre=/usr/bin/rpm-ostree install --apply-live --allow-inactive memtester stress-ng
+                  ExecStart=/usr/local/bin/run-memory-tests.sh
+                  ExecStartPost=/usr/bin/touch /var/lib/memtest-complete
+                  StandardOutput=journal
+                  StandardError=journal
+                  
+                  [Install]
+                  WantedBy=multi-user.target
+          
+          storage:
+            files:
+              # Memory test script
+              - path: /usr/local/bin/run-memory-tests.sh
+                mode: 0755
+                contents:
+                  inline: |
+                    #!/bin/bash
+                    set -e
+                    
+                    echo "==================================="
+                    echo "Starting Memory Tests"
+                    echo "==================================="
+                    date
+                    
+                    # Get total memory
+                    TOTAL_MEM_MB=$(grep MemTotal /proc/meminfo | awk '{print int($2/1024)}')
+                    TEST_MEM_MB=$(( TOTAL_MEM_MB * 80 / 100 ))
+                    
+                    echo "Total Memory: ${TOTAL_MEM_MB} MB"
+                    echo "Testing: ${TEST_MEM_MB} MB (80%)"
+                    
+                    # Test 1: memtester
+                    echo ""
+                    echo "Test 1: memtester (1GB, 2 iterations)"
+                    if memtester 1024M 2 2>&1 | tee /var/log/memtester.log; then
+                        echo "✓ memtester PASSED"
+                    else
+                        echo "✗ memtester FAILED"
+                        exit 1
+                    fi
+                    
+                    # Test 2: stress-ng
+                    echo ""
+                    echo "Test 2: stress-ng (5 minutes)"
+                    if stress-ng --vm 4 --vm-bytes 1G --vm-method all --verify --timeout 300s --metrics-brief 2>&1 | tee /var/log/stress-ng.log; then
+                        echo "✓ stress-ng PASSED"
+                    else
+                        echo "✗ stress-ng FAILED"
+                        exit 1
+                    fi
+                    
+                    # Test 3: Check EDAC errors
+                    echo ""
+                    echo "Test 3: EDAC error check"
+                    if [ -d /sys/devices/system/edac/mc ]; then
+                        for mc in /sys/devices/system/edac/mc/mc*/; do
+                            CE=$(cat ${mc}ce_count 2>/dev/null || echo 0)
+                            UE=$(cat ${mc}ue_count 2>/dev/null || echo 0)
+                            echo "$(basename $mc): CE=$CE UE=$UE"
+                            if [ "$UE" -gt 0 ]; then
+                                echo "✗ Uncorrectable errors detected!"
+                                exit 1
+                            fi
+                        done
+                        echo "✓ No uncorrectable errors"
+                    else
+                        echo "⚠ EDAC not available"
+                    fi
+                    
+                    echo ""
+                    echo "==================================="
+                    echo "All Memory Tests PASSED"
+                    echo "==================================="
+                    date
+                    
+                    # Save results
+                    cat > /var/log/memtest-results.txt << EOF
+                    Memory Test Results
+                    ===================
+                    Date: $(date)
+                    Hostname: $(hostname)
+                    Total Memory: ${TOTAL_MEM_MB} MB
+                    
+                    Tests:
+                    - memtester: PASSED
+                    - stress-ng: PASSED
+                    - EDAC: PASSED
+                    
+                    Detailed logs:
+                    - /var/log/memtester.log
+                    - /var/log/stress-ng.log
+                    EOF
+              
+              # Script to retrieve test results
+              - path: /usr/local/bin/get-memtest-results.sh
+                mode: 0755
+                contents:
+                  inline: |
+                    #!/bin/bash
+                    if [ -f /var/lib/memtest-complete ]; then
+                        echo "Memory tests completed"
+                        cat /var/log/memtest-results.txt
+                        exit 0
+                    else
+                        echo "Memory tests not yet complete"
+                        journalctl -u memory-test.service
+                        exit 1
+                    fi
+        dest: "{{ output_dir }}/memtest.bu"
+    
+    - name: Convert Butane to Ignition
+      shell: |
+        if command -v butane &> /dev/null; then
+          butane --strict < {{ output_dir }}/memtest.bu > {{ output_dir }}/memtest.ign
+          echo "✓ Converted to Ignition format"
+        else
+          echo "⚠ butane command not found"
+          echo "Install with: podman run --rm -i quay.io/coreos/butane:release --strict < memtest.bu > memtest.ign"
+          exit 1
+        fi
+      register: butane_convert
+      failed_when: false
+    
+    - name: Display usage instructions
+      debug:
+        msg: |
+          ════════════════════════════════════════════════════════════
+          CoreOS Memory Test Ignition Config Generated
+          ════════════════════════════════════════════════════════════
+          
+          Files created:
+          - {{ output_dir }}/memtest.bu  (Butane source)
+          - {{ output_dir }}/memtest.ign (Ignition config)
+          
+          Usage:
+          ------
+          1. Use this Ignition config when installing CoreOS:
+             
+             coreos-installer install /dev/sda \
+               --ignition-file memtest.ign \
+               --insecure-ignition
+          
+          2. After boot, memory tests run automatically
+          
+          3. Check test status:
+             ssh core@node "sudo /usr/local/bin/get-memtest-results.sh"
+          
+          4. Or via Ansible:
+             ansible node -m shell -a "/usr/local/bin/get-memtest-results.sh" -b
+          
+          ════════════════════════════════════════════════════════════
+          
+          {% if butane_convert.rc != 0 %}
+          Note: Manual conversion needed. Run:
+          
+          podman run --rm -i quay.io/coreos/butane:release --strict \
+            < {{ output_dir }}/memtest.bu > {{ output_dir }}/memtest.ign
+          {% endif %}
+

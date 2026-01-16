@@ -1,0 +1,45 @@
+---
+# Example inventory for Dell PowerEdge memory audit
+# Copy this to inventory.yml and customize for your environment
+
+all:
+  vars:
+    # Common variables for all servers
+    ansible_user: core  # For Red Hat CoreOS
+    ansible_become: yes
+    ansible_python_interpreter: /usr/bin/python3
+    
+    # Default expected memory (can override per host)
+    expected_memory_gb: 512  # Adjust based on your server configuration
+
+dell_servers:
+  hosts:
+    ocp-worker-01:
+      ansible_host: 192.168.1.101
+      idrac_ip: 192.168.10.101
+      expected_memory_gb: 512
+    
+    ocp-worker-02:
+      ansible_host: 192.168.1.102
+      idrac_ip: 192.168.10.102
+      expected_memory_gb: 512
+    
+    ocp-worker-03:
+      ansible_host: 192.168.1.103
+      idrac_ip: 192.168.10.103
+      expected_memory_gb: 512
+    
+    # Add more servers as needed
+    # ocp-worker-04:
+    #   ansible_host: 192.168.1.104
+    #   idrac_ip: 192.168.10.104
+    #   expected_memory_gb: 512
+
+# Alternative: Use dynamic patterns if your naming is consistent
+# dell_servers:
+#   hosts:
+#     ocp-worker-[01:20]:
+#       ansible_host: 192.168.1.{{ 100 + (inventory_hostname.split('-')[-1] | int) }}
+#       idrac_ip: 192.168.10.{{ 100 + (inventory_hostname.split('-')[-1] | int) }}
+
+
