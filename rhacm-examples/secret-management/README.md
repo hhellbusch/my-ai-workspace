@@ -283,6 +283,12 @@ oc --context=<managed-cluster> create job test-secret \
 - [External Secrets Operator](https://external-secrets.io/)
 - [Kubernetes Secrets Management Guide](https://kubernetes.io/docs/concepts/configuration/secret/)
 
+## Detailed Guides
+
+- **[NAMESPACE-SELECTOR-GUIDE.md](./NAMESPACE-SELECTOR-GUIDE.md)** - Complete guide to namespaceSelector usage
+- **[MIGRATION-FROM-PLACEMENTRULE.md](./MIGRATION-FROM-PLACEMENTRULE.md)** - Migrate from PlacementRule to Placement
+- **[../RHACM-2.15-BEST-PRACTICES.md](../RHACM-2.15-BEST-PRACTICES.md)** - RHACM 2.15+ best practices
+
 ## Related Examples
 
 - [Ansible Examples](../../ansible-examples/) - Automate RHACM policy creation
