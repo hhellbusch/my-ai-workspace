@@ -6,6 +6,11 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
 
 ### Control Plane Issues
 
+- **[API Slowness and Web Console Performance](api-slowness-web-console/README.md)** - Comprehensive guide for API slowness and web console performance issues
+  - **[Quick Reference](api-slowness-web-console/QUICK-REFERENCE.md)** - Fast diagnostic commands and decision tree for rapid response ⚡
+  - [Index](api-slowness-web-console/INDEX.md) - Guide navigation and symptom-based workflows
+  - Script: `diagnostic-script.sh` - Automated performance diagnostic tool
+
 - **[Control Plane Kubeconfigs](control-plane-kubeconfigs/README.md)** - Complete guide to kubeconfigs on CoreOS control plane nodes
   - [Quick Reference](control-plane-kubeconfigs/QUICK-REFERENCE.md) - Copy-paste commands for monitoring cluster operators
   - [Installation Monitoring](control-plane-kubeconfigs/INSTALL-MONITORING.md) - Monitor installation progress from control plane nodes
@@ -153,7 +158,7 @@ When adding new troubleshooting guides:
 Planned troubleshooting guides:
 
 - [ ] etcd cluster issues
-- [ ] API server problems
+- [x] API slowness and web console performance - See [API Slowness and Web Console Performance](api-slowness-web-console/README.md)
 - [ ] Node NotReady states
 - [ ] Networking issues (SDN/OVN) - OpenShift networking layer
 - [x] CoreOS base system networking - See [CoreOS Networking Issues](coreos-networking-issues/README.md)
