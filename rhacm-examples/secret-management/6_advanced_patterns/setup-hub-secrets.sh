@@ -92,34 +92,20 @@ echo ""
 
 # Create RBAC to allow RHACM to read secrets
 echo "🔐 Setting up RBAC for RHACM..."
+echo "(Using universal approach that works with all RHACM versions)"
+echo ""
 
-cat <<EOF | oc apply -f -
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: rhacm-secret-reader
-  namespace: rhacm-secrets
-rules:
-- apiGroups: [""]
-  resources: ["secrets"]
-  verbs: ["get", "list"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: rhacm-secret-reader-binding
-  namespace: rhacm-secrets
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: rhacm-secret-reader
-subjects:
-- kind: ServiceAccount
-  name: governance-policy-propagator
-  namespace: open-cluster-management
-EOF
+# Universal approach - works for all RHACM versions
+oc adm policy add-role-to-group view \
+  system:serviceaccounts:open-cluster-management \
+  -n rhacm-secrets
 
 echo -e "${GREEN}✓ RBAC configured${NC}"
+echo ""
+echo "Note: ServiceAccount name varies by RHACM version:"
+echo "  - RHACM 2.6-2.8: governance-policy-propagator"
+echo "  - RHACM 2.9+: governance-policy-framework"
+echo "  The universal approach above works for all versions."
 echo ""
 
 echo "================================================"

@@ -287,6 +287,8 @@ oc --context=<managed-cluster> create job test-secret \
 
 - **[NAMESPACE-SELECTOR-GUIDE.md](./NAMESPACE-SELECTOR-GUIDE.md)** - Complete guide to namespaceSelector usage
 - **[MIGRATION-FROM-PLACEMENTRULE.md](./MIGRATION-FROM-PLACEMENTRULE.md)** - Migrate from PlacementRule to Placement
+- **[6_advanced_patterns/SERVICEACCOUNT-REFERENCE.md](./6_advanced_patterns/SERVICEACCOUNT-REFERENCE.md)** - ServiceAccount name by RHACM version
+- **[6_advanced_patterns/COPYSECRETDATA-VS-FROMSECRET.md](./6_advanced_patterns/COPYSECRETDATA-VS-FROMSECRET.md)** - Compare secret reference methods
 - **[../RHACM-2.15-BEST-PRACTICES.md](../RHACM-2.15-BEST-PRACTICES.md)** - RHACM 2.15+ best practices
 
 ## Related Examples

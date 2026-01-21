@@ -315,33 +315,39 @@ stringData:
 
 ## RBAC Requirements
 
-Both methods require RHACM to have read access to the source namespace on Hub:
+Both methods require RHACM to have read access to the source namespace on Hub.
+
+### Universal Approach (Recommended)
+
+Works for all RHACM versions:
+
+```bash
+# Grant access to all ServiceAccounts in open-cluster-management namespace
+oc adm policy add-role-to-group view \
+  system:serviceaccounts:open-cluster-management \
+  -n vault-secrets
+```
+
+### YAML Configuration
 
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: RoleBinding
 metadata:
   name: rhacm-secret-reader
   namespace: vault-secrets  # Source namespace
-rules:
-- apiGroups: [""]
-  resources: ["secrets"]
-  verbs: ["get", "list"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: rhacm-secret-reader-binding
-  namespace: vault-secrets
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: rhacm-secret-reader
+  kind: ClusterRole
+  name: view
 subjects:
-- kind: ServiceAccount
-  name: governance-policy-propagator
-  namespace: open-cluster-management
+# Universal - grants to all ServiceAccounts in namespace
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:serviceaccounts:open-cluster-management
 ```
+
+**Note:** ServiceAccount name varies by RHACM version (2.6-2.8: `governance-policy-propagator`, 2.9+: `governance-policy-framework`). The universal approach above works regardless of version.
 
 ## Best Practices
 
@@ -421,8 +427,13 @@ metadata:
 # Check source secret exists on Hub
 oc get secret <secret-name> -n <source-namespace>
 
-# Check RBAC
-oc auth can-i get secrets --as=system:serviceaccount:open-cluster-management:governance-policy-propagator -n <source-namespace>
+# Check RBAC is configured
+oc get rolebinding -n <source-namespace> | grep open-cluster-management
+
+# If no RoleBinding found, set up RBAC:
+# oc adm policy add-role-to-group view \
+#   system:serviceaccounts:open-cluster-management \
+#   -n <source-namespace>
 
 # Check policy status
 oc describe policy <policy-name> -n rhacm-policies

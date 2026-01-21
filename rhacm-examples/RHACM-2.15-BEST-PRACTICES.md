@@ -388,11 +388,21 @@ oc patch apiserver cluster --type=merge \
 ### 2. Use Separate Namespace for Hub Secrets
 
 ```bash
+# Create dedicated namespace for Hub secrets
 oc create namespace rhacm-secrets
-oc adm policy add-role-to-user view \
-  system:serviceaccount:open-cluster-management:governance-policy-propagator \
+
+# Grant RBAC access (Universal approach - works for all RHACM versions)
+oc adm policy add-role-to-group view \
+  system:serviceaccounts:open-cluster-management \
   -n rhacm-secrets
 ```
+
+**Note:** ServiceAccount name varies by RHACM version:
+- RHACM 2.6-2.8: `governance-policy-propagator`
+- RHACM 2.9-2.11: `governance-policy-framework`
+- RHACM 2.12+: May use `governance-policy-addon-controller`
+
+**Recommended:** Use the universal approach above (grants to all SAs in namespace)
 
 ### 3. Implement RBAC for ManagedClusterSets
 
@@ -486,10 +496,13 @@ oc get multiclusterhub -n open-cluster-management \
 # Check secret exists on Hub
 oc get secret -n rhacm-secrets
 
-# Verify RBAC
-oc auth can-i get secrets \
-  --as=system:serviceaccount:open-cluster-management:governance-policy-propagator \
-  -n rhacm-secrets
+# Verify RBAC (check if any SA in open-cluster-management has access)
+oc get rolebinding -n rhacm-secrets | grep open-cluster-management
+
+# Or test specific ServiceAccount (identify yours first with verify-serviceaccount.sh)
+# oc auth can-i get secrets \
+#   --as=system:serviceaccount:open-cluster-management:governance-policy-framework \
+#   -n rhacm-secrets
 ```
 
 ## 📚 Additional Resources

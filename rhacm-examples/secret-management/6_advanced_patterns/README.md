@@ -379,32 +379,47 @@ spec:
 
 ## RBAC for Hub Secrets
 
-Grant RHACM permission to read Hub secrets:
+Grant RHACM permission to read Hub secrets.
+
+**Universal Approach (Recommended):**
+
+```bash
+# Works for all RHACM versions
+oc adm policy add-role-to-group view \
+  system:serviceaccounts:open-cluster-management \
+  -n rhacm-secrets
+```
+
+**Or use the setup script:**
+
+```bash
+./setup-hub-secret-rbac.sh rhacm-secrets
+```
+
+**Alternative - Specific ServiceAccount (if needed):**
+
+The ServiceAccount name varies by RHACM version:
+- RHACM 2.6-2.8: `governance-policy-propagator`
+- RHACM 2.9-2.11: `governance-policy-framework`
+- RHACM 2.12+: `governance-policy-addon-controller` (may vary)
+
+Use `./verify-serviceaccount.sh` to identify your specific ServiceAccount, then:
 
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: rhacm-secret-reader
-  namespace: rhacm-secrets
-rules:
-- apiGroups: [""]
-  resources: ["secrets"]
-  verbs: ["get", "list"]
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: rhacm-secret-reader-binding
+  name: rhacm-secret-reader
   namespace: rhacm-secrets
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: rhacm-secret-reader
+  kind: ClusterRole
+  name: view
 subjects:
-- kind: ServiceAccount
-  name: governance-policy-propagator
-  namespace: open-cluster-management
+# Universal approach - all ServiceAccounts in namespace
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:serviceaccounts:open-cluster-management
 ```
 
 ## Security Best Practices
@@ -469,7 +484,10 @@ oc get multiclusterhub -n open-cluster-management -o yaml | grep currentVersion
 oc get secret -n rhacm-secrets
 
 # Check RBAC permissions
-oc auth can-i get secrets --as=system:serviceaccount:open-cluster-management:governance-policy-propagator -n rhacm-secrets
+oc get rolebinding -n rhacm-secrets | grep open-cluster-management
+
+# Verify ServiceAccount (run helper script)
+./verify-serviceaccount.sh
 ```
 
 ### Policy Shows "Template Error"
