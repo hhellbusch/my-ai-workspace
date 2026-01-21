@@ -1,0 +1,110 @@
+---
+# Policy to grant deployment permissions to CI/CD ServiceAccount
+# Creates custom ClusterRole with deployment management capabilities
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: msa-cicd-deployer-rbac
+  namespace: rhacm-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST-CSF
+    policy.open-cluster-management.io/categories: PR.AC Identity Management Authentication and Access Control
+    policy.open-cluster-management.io/controls: PR.AC-4 Access Control
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+  # First, create a custom ClusterRole
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: create-cicd-clusterrole
+      spec:
+        remediationAction: enforce
+        severity: high
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: ClusterRole
+            metadata:
+              name: cicd-deployer
+              labels:
+                managed-by: rhacm
+            rules:
+            # Manage Deployments, StatefulSets, DaemonSets
+            - apiGroups: ["apps"]
+              resources:
+              - deployments
+              - statefulsets
+              - daemonsets
+              - replicasets
+              verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+            
+            # Manage Services, ConfigMaps, Secrets
+            - apiGroups: [""]
+              resources:
+              - services
+              - configmaps
+              - secrets
+              verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+            
+            # Read-only access to Pods and logs
+            - apiGroups: [""]
+              resources:
+              - pods
+              - pods/log
+              verbs: ["get", "list", "watch"]
+            
+            # Manage Ingress
+            - apiGroups: ["networking.k8s.io"]
+              resources:
+              - ingresses
+              verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+            
+            # OpenShift Routes (if using OpenShift)
+            - apiGroups: ["route.openshift.io"]
+              resources:
+              - routes
+              verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+            
+            # Service Accounts (read only)
+            - apiGroups: [""]
+              resources:
+              - serviceaccounts
+              verbs: ["get", "list", "watch"]
+            
+            # Role Bindings in app namespaces (limited)
+            - apiGroups: ["rbac.authorization.k8s.io"]
+              resources:
+              - rolebindings
+              verbs: ["get", "list", "watch", "create", "update", "patch"]
+  
+  # Then, bind it to the CI/CD ServiceAccount
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: bind-cicd-clusterrole
+      spec:
+        remediationAction: enforce
+        severity: high
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: ClusterRoleBinding
+            metadata:
+              name: cicd-pipeline-deployer
+              labels:
+                managed-by: rhacm
+            roleRef:
+              apiGroup: rbac.authorization.k8s.io
+              kind: ClusterRole
+              name: cicd-deployer
+            subjects:
+            - kind: ServiceAccount
+              name: cicd-pipeline
+              namespace: open-cluster-management-managed-serviceaccount
+

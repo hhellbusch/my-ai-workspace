@@ -1,0 +1,101 @@
+---
+# RHACM 2.15+ Best Practice: Use Placement API with ManagedClusterSet
+
+# ManagedClusterSet for production clusters
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: production
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchLabels:
+        environment: production
+---
+# Bind ManagedClusterSet to namespace
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: production
+  namespace: rhacm-policies
+spec:
+  clusterSet: production
+---
+# Placement for production clusters
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: production-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - production
+  
+  # Additional filtering (optional)
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchLabels:
+          environment: production
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+---
+# ManagedClusterSet for development clusters
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: development
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchLabels:
+        environment: development
+---
+# Bind development ManagedClusterSet to namespace
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: development
+  namespace: rhacm-policies
+spec:
+  clusterSet: development
+---
+# Placement for development clusters
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: development-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - development
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+---
+# Placement for specific clusters by name
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: specific-clusters
+  namespace: rhacm-policies
+spec:
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchExpressions:
+        - key: name
+          operator: In
+          values:
+          - prod-cluster-1
+          - prod-cluster-2
+          - prod-cluster-3
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists

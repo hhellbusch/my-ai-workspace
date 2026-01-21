@@ -1,0 +1,152 @@
+---
+# Example application deployment using database credentials
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  namespace: production-apps
+  labels:
+    app: my-application
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-application
+  template:
+    metadata:
+      labels:
+        app: my-application
+    spec:
+      # Use ServiceAccount if needed
+      serviceAccountName: app-deployer
+      
+      # Init container to wait for database
+      initContainers:
+      - name: wait-for-database
+        image: postgres:15-alpine
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for database to be ready..."
+          until pg_isready -h $DB_HOST -U $DB_USERNAME; do
+            echo "Database not ready yet, waiting..."
+            sleep 2
+          done
+          echo "Database is ready!"
+        env:
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: DB_HOST
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: DB_USERNAME
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: DB_PASSWORD
+      
+      containers:
+      - name: app
+        image: my-app:latest
+        ports:
+        - containerPort: 8080
+          name: http
+        
+        # Method 1: Load all secret keys as environment variables
+        envFrom:
+        - secretRef:
+            name: database-credentials
+        
+        # Method 2: Load specific keys
+        env:
+        - name: APP_ENV
+          value: "production"
+        - name: DATABASE_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: DATABASE_URL
+        
+        # Health checks
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        
+        # Resource limits
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        
+        # Security context
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+---
+# Alternative: Mount secrets as files
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-with-volume
+  namespace: production-apps
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app-volume
+  template:
+    metadata:
+      labels:
+        app: my-app-volume
+    spec:
+      containers:
+      - name: app
+        image: my-app:latest
+        # Mount database credentials as files
+        volumeMounts:
+        - name: db-credentials
+          mountPath: /etc/secrets/database
+          readOnly: true
+        
+        # Application reads from mounted files
+        env:
+        - name: DB_CREDENTIALS_PATH
+          value: "/etc/secrets/database"
+      
+      volumes:
+      - name: db-credentials
+        secret:
+          secretName: database-credentials
+          items:
+          - key: DATABASE_URL
+            path: connection-string
+          - key: DB_USERNAME
+            path: username
+          - key: DB_PASSWORD
+            path: password
+          - key: DB_HOST
+            path: host
+

@@ -1,0 +1,144 @@
+---
+# Policy to sync MySQL credentials for multiple environments
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: mysql-database-secrets
+  namespace: rhacm-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST-CSF
+    policy.open-cluster-management.io/categories: PR.DS Data Security
+    policy.open-cluster-management.io/controls: PR.DS-1 Data Protection
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+  # Production environment
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: mysql-production-secret
+      spec:
+        remediationAction: enforce
+        severity: high
+        namespaceSelector:
+          include:
+          - production-apps
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: external-secrets.io/v1beta1
+            kind: ExternalSecret
+            metadata:
+              name: mysql-credentials
+              namespace: production-apps
+              labels:
+                managed-by: rhacm
+                database-type: mysql
+                environment: production
+            spec:
+              refreshInterval: 30m
+              secretStoreRef:
+                name: vault-backend
+                kind: SecretStore
+              target:
+                name: mysql-credentials
+                creationPolicy: Owner
+                template:
+                  type: Opaque
+                  data:
+                    MYSQL_USER: "{{ .username }}"
+                    MYSQL_PASSWORD: "{{ .password }}"
+                    MYSQL_HOST: "{{ .host }}"
+                    MYSQL_PORT: "{{ .port | default \"3306\" }}"
+                    MYSQL_DATABASE: "{{ .database }}"
+                    # MySQL connection string
+                    MYSQL_URL: "mysql://{{ .username }}:{{ .password }}@{{ .host }}:{{ .port | default \"3306\" }}/{{ .database }}"
+                    # JDBC format
+                    JDBC_URL: "jdbc:mysql://{{ .host }}:{{ .port | default \"3306\" }}/{{ .database }}"
+              dataFrom:
+              - extract:
+                  key: mysql/production
+  
+  # Staging environment
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: mysql-staging-secret
+      spec:
+        remediationAction: enforce
+        severity: medium
+        namespaceSelector:
+          include:
+          - staging-apps
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: external-secrets.io/v1beta1
+            kind: ExternalSecret
+            metadata:
+              name: mysql-credentials
+              namespace: staging-apps
+              labels:
+                managed-by: rhacm
+                database-type: mysql
+                environment: staging
+            spec:
+              refreshInterval: 30m
+              secretStoreRef:
+                name: vault-backend
+                kind: SecretStore
+              target:
+                name: mysql-credentials
+                creationPolicy: Owner
+                template:
+                  type: Opaque
+                  data:
+                    MYSQL_USER: "{{ .username }}"
+                    MYSQL_PASSWORD: "{{ .password }}"
+                    MYSQL_HOST: "{{ .host }}"
+                    MYSQL_PORT: "{{ .port | default \"3306\" }}"
+                    MYSQL_DATABASE: "{{ .database }}"
+                    MYSQL_URL: "mysql://{{ .username }}:{{ .password }}@{{ .host }}:{{ .port | default \"3306\" }}/{{ .database }}"
+              dataFrom:
+              - extract:
+                  key: mysql/staging
+  
+  # Development environment
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: mysql-development-secret
+      spec:
+        remediationAction: enforce
+        severity: low
+        namespaceSelector:
+          include:
+          - dev-apps
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: external-secrets.io/v1beta1
+            kind: ExternalSecret
+            metadata:
+              name: mysql-credentials
+              namespace: dev-apps
+              labels:
+                managed-by: rhacm
+                database-type: mysql
+                environment: development
+            spec:
+              refreshInterval: 1h
+              secretStoreRef:
+                name: vault-backend
+                kind: SecretStore
+              target:
+                name: mysql-credentials
+                creationPolicy: Owner
+              dataFrom:
+              - extract:
+                  key: mysql/development
+

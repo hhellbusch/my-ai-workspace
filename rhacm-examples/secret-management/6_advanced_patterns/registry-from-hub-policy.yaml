@@ -1,0 +1,84 @@
+---
+# Example: Distribute container registry credentials from Hub
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: registry-credentials-from-hub
+  namespace: rhacm-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST-CSF
+    policy.open-cluster-management.io/categories: PR.AC Access Control
+    policy.open-cluster-management.io/controls: PR.AC-1 Identity Management
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: distribute-registry-secret-from-hub
+      spec:
+        remediationAction: enforce
+        severity: high
+        namespaceSelector:
+          include:
+          - production-apps
+          - staging-apps
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              name: quay-registry-credentials
+              namespace: "{{ (lookup \"v1\" \"Namespace\" \"\" \"\").metadata.name }}"
+              labels:
+                managed-by: rhacm
+            type: kubernetes.io/dockerconfigjson
+            data:
+              # Load the entire dockerconfigjson from Hub
+              .dockerconfigjson: '{{hub fromSecret "rhacm-secrets" "quay-pull-secret" ".dockerconfigjson" hub}}'
+---
+# Alternative: Construct dockerconfigjson from individual Hub secret keys
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: registry-credentials-composed-from-hub
+  namespace: rhacm-policies
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: compose-registry-secret
+      spec:
+        remediationAction: enforce
+        severity: high
+        namespaceSelector:
+          include:
+          - production-apps
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              name: composed-registry-credentials
+              namespace: production-apps
+            type: kubernetes.io/dockerconfigjson
+            stringData:
+              .dockerconfigjson: |
+                {
+                  "auths": {
+                    "quay.io": {
+                      "username": "{{hub fromSecret "rhacm-secrets" "registry-creds" "username" hub}}",
+                      "password": "{{hub fromSecret "rhacm-secrets" "registry-creds" "password" hub}}",
+                      "auth": "{{hub fromSecret "rhacm-secrets" "registry-creds" "auth" hub}}"
+                    }
+                  }
+                }
+

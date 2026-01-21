@@ -1,0 +1,165 @@
+---
+# RHACM 2.15+ Best Practice: Use Placement API with ManagedClusterSet
+
+# ManagedClusterSet for production clusters
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: production
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchLabels:
+        environment: production
+---
+# Bind production ManagedClusterSet to namespace
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: production
+  namespace: rhacm-policies
+spec:
+  clusterSet: production
+---
+# ManagedClusterSet for staging clusters
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: staging
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchLabels:
+        environment: staging
+---
+# Bind staging ManagedClusterSet to namespace
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: staging
+  namespace: rhacm-policies
+spec:
+  clusterSet: staging
+---
+# ManagedClusterSet for development clusters
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: development
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchLabels:
+        environment: development
+---
+# Bind development ManagedClusterSet to namespace
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: development
+  namespace: rhacm-policies
+spec:
+  clusterSet: development
+---
+# Placement for production clusters
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: production-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - production
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+---
+# Placement for staging clusters
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: staging-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - staging
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+---
+# Placement for development clusters
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: development-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - development
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+---
+# Bind PostgreSQL secrets to production clusters
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-postgresql-prod
+  namespace: rhacm-policies
+placementRef:
+  name: production-clusters
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+- name: postgresql-database-secret
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io
+---
+# Bind MySQL secrets to appropriate environments
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-mysql-prod
+  namespace: rhacm-policies
+placementRef:
+  name: production-clusters
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+- name: mysql-database-secrets
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-mysql-staging
+  namespace: rhacm-policies
+placementRef:
+  name: staging-clusters
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+- name: mysql-database-secrets
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-mysql-dev
+  namespace: rhacm-policies
+placementRef:
+  name: development-clusters
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+- name: mysql-database-secrets
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io

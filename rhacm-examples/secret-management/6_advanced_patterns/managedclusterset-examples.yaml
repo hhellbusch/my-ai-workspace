@@ -1,0 +1,296 @@
+---
+# Advanced ManagedClusterSet and Placement Examples
+
+# Example 1: Global ManagedClusterSet (all clusters)
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: global
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchExpressions:
+      - key: vendor
+        operator: Exists  # Any cluster with vendor label
+---
+# Example 2: Environment-based ManagedClusterSets
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: production
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchLabels:
+        environment: production
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: non-production
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchExpressions:
+      - key: environment
+        operator: NotIn
+        values:
+        - production
+---
+# Example 3: Region-based ManagedClusterSet
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: us-east
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchLabels:
+        region: us-east-1
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: eu-central
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchLabels:
+        region: eu-central-1
+---
+# Bind ManagedClusterSets to policy namespace
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: global
+  namespace: rhacm-policies
+spec:
+  clusterSet: global
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: production
+  namespace: rhacm-policies
+spec:
+  clusterSet: production
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: non-production
+  namespace: rhacm-policies
+spec:
+  clusterSet: non-production
+---
+# Placement Examples
+
+# Placement 1: All production clusters
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: all-production-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - production
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+---
+# Placement 2: Production clusters in specific region
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: production-us-east
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - production
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchLabels:
+          region: us-east-1
+---
+# Placement 3: Multiple ManagedClusterSets
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: all-us-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - production
+  - non-production
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchExpressions:
+        - key: region
+          operator: In
+          values:
+          - us-east-1
+          - us-west-2
+---
+# Placement 4: With priority and spread
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: production-with-priority
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - production
+  
+  # Limit to top 3 clusters
+  numberOfClusters: 3
+  
+  # Prioritize clusters
+  prioritizerPolicy:
+    mode: Exact
+    configurations:
+    - scoreCoordinate:
+        builtIn: Steady  # Prefer stable clusters
+      weight: 3
+    - scoreCoordinate:
+        builtIn: ResourceAllocatableCPU  # Prefer clusters with more CPU
+      weight: 2
+  
+  # Spread across regions
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchLabels:
+          environment: production
+      claimSelector:
+        matchExpressions:
+        - key: region.open-cluster-management.io
+          operator: In
+          values:
+          - us-east-1
+          - us-west-2
+          - eu-central-1
+  
+  spreadPolicy:
+    spreadConstraints:
+    - maxSkew: 1
+      topologyKey: region
+      whenUnsatisfiable: DoNotSchedule
+---
+# Placement 5: Canary deployment (1 cluster first)
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: canary-cluster
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - production
+  
+  # Select only 1 cluster
+  numberOfClusters: 1
+  
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchLabels:
+          canary: "true"
+---
+# Placement 6: Advanced cluster claims
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: openshift-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - global
+  
+  predicates:
+  - requiredClusterSelector:
+      claimSelector:
+        matchExpressions:
+        # Select clusters with OpenShift version 4.14+
+        - key: platform.open-cluster-management.io
+          operator: In
+          values:
+          - OpenShift
+        - key: version.openshift.io
+          operator: In
+          values:
+          - "4.14"
+          - "4.15"
+          - "4.16"
+---
+# PlacementBindings
+
+# Bind hub secret policy to production clusters
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-hub-secrets-production
+  namespace: rhacm-policies
+placementRef:
+  name: all-production-clusters
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+- name: secrets-from-hub
+  apiGroup: policy.open-cluster-management.io
+  kind: Policy
+---
+# Bind multiple policies to same placement
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-security-policies
+  namespace: rhacm-policies
+placementRef:
+  name: all-production-clusters
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+- name: secrets-from-hub
+  apiGroup: policy.open-cluster-management.io
+  kind: Policy
+- name: registry-credentials-from-hub
+  apiGroup: policy.open-cluster-management.io
+  kind: Policy
+- name: tls-certificates-from-hub
+  apiGroup: policy.open-cluster-management.io
+  kind: Policy
+---
+# Canary deployment pattern
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-canary-rollout
+  namespace: rhacm-policies
+placementRef:
+  name: canary-cluster
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+- name: secrets-from-hub
+  apiGroup: policy.open-cluster-management.io
+  kind: Policy
+

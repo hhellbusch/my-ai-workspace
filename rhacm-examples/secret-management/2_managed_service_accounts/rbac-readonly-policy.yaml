@@ -1,0 +1,42 @@
+---
+# Policy to grant read-only (view) access to ManagedServiceAccount
+# Applies ClusterRoleBinding for cluster-wide read access
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: msa-readonly-rbac
+  namespace: rhacm-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST-CSF
+    policy.open-cluster-management.io/categories: PR.AC Identity Management Authentication and Access Control
+    policy.open-cluster-management.io/controls: PR.AC-4 Access Control
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: grant-readonly-clusterrole
+      spec:
+        remediationAction: enforce
+        severity: medium
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: ClusterRoleBinding
+            metadata:
+              name: readonly-automation-view
+              labels:
+                managed-by: rhacm
+            roleRef:
+              apiGroup: rbac.authorization.k8s.io
+              kind: ClusterRole
+              name: view  # Built-in read-only ClusterRole
+            subjects:
+            - kind: ServiceAccount
+              name: readonly-automation
+              namespace: open-cluster-management-managed-serviceaccount
+

@@ -1,0 +1,132 @@
+---
+# Example: Using ManagedClusterSet and Placement API
+# This is the recommended approach in RHACM 2.6+
+
+# Step 1: Create ManagedClusterSets (usually done by cluster admin)
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: production
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchLabels:
+        environment: production
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: staging
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchLabels:
+        environment: staging
+---
+# Step 2: Bind ManagedClusterSet to namespace
+# This allows Placement objects in this namespace to use the ManagedClusterSet
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: production
+  namespace: rhacm-policies
+spec:
+  clusterSet: production
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: staging
+  namespace: rhacm-policies
+spec:
+  clusterSet: staging
+---
+# Step 3: Create Placement (replaces PlacementRule)
+# Select clusters from the production ManagedClusterSet
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: production-placement
+  namespace: rhacm-policies
+spec:
+  # Predict how many clusters will match
+  numberOfClusters: 5
+  
+  # Select from specific ManagedClusterSet
+  clusterSets:
+  - production
+  
+  # Additional predicates (optional filters)
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchExpressions:
+        - key: vendor
+          operator: In
+          values:
+          - OpenShift
+  
+  # Tolerate specific taints
+  tolerations:
+  - key: node.kubernetes.io/unreachable
+    operator: Exists
+---
+# Alternative: Select from ManagedClusterSet with additional filters
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: production-us-east-placement
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - production
+  
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchLabels:
+          region: us-east-1
+      claimSelector:
+        matchExpressions:
+        - key: platform.open-cluster-management.io
+          operator: In
+          values:
+          - AWS
+          - GCP
+---
+# Step 4: Bind Policy to Placement
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-secrets-to-production
+  namespace: rhacm-policies
+placementRef:
+  name: production-placement
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement  # Note: Placement, not PlacementRule
+subjects:
+- name: secrets-from-hub
+  apiGroup: policy.open-cluster-management.io
+  kind: Policy
+---
+# Multiple policies can share the same Placement
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-registry-to-production
+  namespace: rhacm-policies
+placementRef:
+  name: production-placement
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+- name: registry-credentials-from-hub
+  apiGroup: policy.open-cluster-management.io
+  kind: Policy
+- name: tls-certificates-from-hub
+  apiGroup: policy.open-cluster-management.io
+  kind: Policy
+

@@ -1,0 +1,34 @@
+---
+# RHACM 2.15+ Best Practice: PlacementBinding with Placement API
+# Note: kind is "Placement" not "PlacementRule"
+# apiGroup is "cluster.open-cluster-management.io" not "apps.open-cluster-management.io"
+
+# Bind simple-secret-policy to all-managed-clusters
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-simple-secret-all-clusters
+  namespace: rhacm-policies
+placementRef:
+  name: all-managed-clusters
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+- name: simple-secret-distribution
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io
+---
+# Bind namespace-and-secret to production clusters only
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-namespace-secret-production
+  namespace: rhacm-policies
+placementRef:
+  name: production-clusters
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+- name: namespace-and-secret
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io

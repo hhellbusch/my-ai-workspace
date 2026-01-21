@@ -1,0 +1,72 @@
+---
+# Policy to configure Vault SecretStore using Kubernetes authentication
+# More secure than token authentication - uses ServiceAccount tokens
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: vault-k8s-auth-config
+  namespace: rhacm-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST-CSF
+    policy.open-cluster-management.io/categories: PR.AC Identity Management Authentication
+    policy.open-cluster-management.io/controls: PR.AC-1 Access Control
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+  # Create ServiceAccount for ESO
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: eso-serviceaccount
+      spec:
+        remediationAction: enforce
+        severity: medium
+        namespaceSelector:
+          include:
+          - my-app
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            kind: ServiceAccount
+            metadata:
+              name: external-secrets-sa
+              namespace: my-app
+              labels:
+                managed-by: rhacm
+  
+  # Configure Vault SecretStore with Kubernetes auth
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: vault-k8s-auth-secretstore
+      spec:
+        remediationAction: enforce
+        severity: high
+        namespaceSelector:
+          include:
+          - my-app
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: external-secrets.io/v1beta1
+            kind: SecretStore
+            metadata:
+              name: vault-k8s-backend
+              namespace: my-app
+            spec:
+              provider:
+                vault:
+                  server: "https://vault.example.com:8200"
+                  path: "secret"
+                  version: "v2"
+                  auth:
+                    kubernetes:
+                      mountPath: "kubernetes"  # Vault Kubernetes auth mount path
+                      role: "my-app-role"      # Vault role to use
+                      serviceAccountRef:
+                        name: external-secrets-sa
+

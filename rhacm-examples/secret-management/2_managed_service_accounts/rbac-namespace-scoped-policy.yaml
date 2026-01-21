@@ -1,0 +1,111 @@
+---
+# Policy to grant namespace-scoped permissions
+# Creates Role and RoleBinding for specific namespace access
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: msa-namespace-deployer-rbac
+  namespace: rhacm-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST-CSF
+    policy.open-cluster-management.io/categories: PR.AC Identity Management Authentication and Access Control
+    policy.open-cluster-management.io/controls: PR.AC-4 Access Control
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+  # Ensure the target namespace exists
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: ensure-production-namespace
+      spec:
+        remediationAction: enforce
+        severity: low
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: production-apps
+              labels:
+                managed-by: rhacm
+  
+  # Create a Role with deployment permissions
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: create-deployment-role
+      spec:
+        remediationAction: enforce
+        severity: medium
+        namespaceSelector:
+          include:
+          - production-apps
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: Role
+            metadata:
+              name: app-deployer
+              namespace: production-apps
+              labels:
+                managed-by: rhacm
+            rules:
+            # Full control over Deployments
+            - apiGroups: ["apps"]
+              resources:
+              - deployments
+              - replicasets
+              verbs: ["*"]
+            
+            # Manage Services and ConfigMaps
+            - apiGroups: [""]
+              resources:
+              - services
+              - configmaps
+              - secrets
+              verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+            
+            # Read-only for Pods
+            - apiGroups: [""]
+              resources:
+              - pods
+              - pods/log
+              verbs: ["get", "list", "watch"]
+  
+  # Bind the Role to the ServiceAccount
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: bind-deployment-role
+      spec:
+        remediationAction: enforce
+        severity: medium
+        namespaceSelector:
+          include:
+          - production-apps
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: RoleBinding
+            metadata:
+              name: app-deployer-binding
+              namespace: production-apps
+              labels:
+                managed-by: rhacm
+            roleRef:
+              apiGroup: rbac.authorization.k8s.io
+              kind: Role
+              name: app-deployer
+            subjects:
+            - kind: ServiceAccount
+              name: cicd-pipeline
+              namespace: open-cluster-management-managed-serviceaccount
+

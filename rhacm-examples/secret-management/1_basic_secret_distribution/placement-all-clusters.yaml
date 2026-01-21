@@ -1,0 +1,35 @@
+---
+# RHACM 2.15+ Best Practice: Use Placement API with ManagedClusterSet
+# This replaces the deprecated PlacementRule API
+
+# Placement to select all managed clusters (excluding Hub)
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: all-managed-clusters
+  namespace: rhacm-policies
+spec:
+  # Use predicates instead of clusterSelector for modern API
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchExpressions:
+        # Exclude the Hub cluster (local-cluster)
+        - key: name
+          operator: NotIn
+          values:
+          - local-cluster
+      claimSelector:
+        matchExpressions:
+        # Only select available clusters
+        - key: status
+          operator: In
+          values:
+          - "True"
+  
+  # Tolerate temporary unavailability
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+  - key: cluster.open-cluster-management.io/unavailable
+    operator: Exists

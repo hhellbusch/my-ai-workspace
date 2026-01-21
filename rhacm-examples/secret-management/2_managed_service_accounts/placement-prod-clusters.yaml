@@ -1,0 +1,82 @@
+---
+# RHACM 2.15+ Best Practice: Use Placement API with ManagedClusterSet
+
+# ManagedClusterSet for production clusters
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: production
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchLabels:
+        environment: production
+---
+# Bind ManagedClusterSet to namespace
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: production
+  namespace: rhacm-policies
+spec:
+  clusterSet: production
+---
+# Placement for production clusters
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: production-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - production
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+---
+# Bind readonly RBAC policy to production clusters
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-readonly-rbac-prod
+  namespace: rhacm-policies
+placementRef:
+  name: production-clusters
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+- name: msa-readonly-rbac
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io
+---
+# Bind deployer RBAC policy to production clusters
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-deployer-rbac-prod
+  namespace: rhacm-policies
+placementRef:
+  name: production-clusters
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+- name: msa-cicd-deployer-rbac
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io
+---
+# Bind namespace-scoped RBAC policy to production clusters
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-namespace-rbac-prod
+  namespace: rhacm-policies
+placementRef:
+  name: production-clusters
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+- name: msa-namespace-deployer-rbac
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io

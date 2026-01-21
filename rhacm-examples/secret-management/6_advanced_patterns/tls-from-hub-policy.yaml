@@ -1,0 +1,79 @@
+---
+# Example: Distribute TLS certificates from Hub to managed clusters
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: tls-certificates-from-hub
+  namespace: rhacm-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST-CSF
+    policy.open-cluster-management.io/categories: PR.DS Data Security
+    policy.open-cluster-management.io/controls: PR.DS-2 Data in Transit
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: distribute-tls-cert
+      spec:
+        remediationAction: enforce
+        severity: high
+        namespaceSelector:
+          include:
+          - production-apps
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              name: app-tls-certificate
+              namespace: production-apps
+              labels:
+                managed-by: rhacm
+            type: kubernetes.io/tls
+            data:
+              # Load TLS certificate and key from Hub
+              tls.crt: '{{hub fromSecret "rhacm-secrets" "wildcard-example-com-cert" "tls.crt" hub}}'
+              tls.key: '{{hub fromSecret "rhacm-secrets" "wildcard-example-com-cert" "tls.key" hub}}'
+---
+# Example: Distribute CA certificate bundle
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: ca-bundle-from-hub
+  namespace: rhacm-policies
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: distribute-ca-bundle
+      spec:
+        remediationAction: enforce
+        severity: medium
+        namespaceSelector:
+          include:
+          - production-apps
+          - staging-apps
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            kind: ConfigMap
+            metadata:
+              name: corporate-ca-bundle
+              namespace: "{{ (lookup \"v1\" \"Namespace\" \"\" \"\").metadata.name }}"
+              labels:
+                managed-by: rhacm
+            data:
+              # CA bundle as string data
+              ca-bundle.crt: |
+                {{hub fromSecret "rhacm-secrets" "corporate-ca-certificates" "ca-bundle.crt" hub}}
+

@@ -1,0 +1,114 @@
+---
+# Policy to install External Secrets Operator on managed clusters
+# This installs the ESO operator from OperatorHub
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: install-external-secrets-operator
+  namespace: rhacm-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST-CSF
+    policy.open-cluster-management.io/categories: PR.DS Data Security
+    policy.open-cluster-management.io/controls: PR.DS-1 Data Protection
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+  # Create namespace for operator (if using specific namespace)
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: eso-operator-namespace
+      spec:
+        remediationAction: enforce
+        severity: low
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: openshift-operators
+              labels:
+                name: openshift-operators
+  
+  # Create OperatorGroup (required for OLM)
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: eso-operator-group
+      spec:
+        remediationAction: enforce
+        severity: low
+        namespaceSelector:
+          include:
+          - openshift-operators
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: operators.coreos.com/v1
+            kind: OperatorGroup
+            metadata:
+              name: openshift-operators
+              namespace: openshift-operators
+            spec:
+              targetNamespaces: []
+  
+  # Subscribe to External Secrets Operator
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: eso-subscription
+      spec:
+        remediationAction: enforce
+        severity: high
+        namespaceSelector:
+          include:
+          - openshift-operators
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: operators.coreos.com/v1alpha1
+            kind: Subscription
+            metadata:
+              name: external-secrets-operator
+              namespace: openshift-operators
+            spec:
+              channel: stable
+              installPlanApproval: Automatic
+              name: external-secrets-operator
+              source: community-operators
+              sourceNamespace: openshift-marketplace
+  
+  # Verify CRDs are created
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: eso-crds-validation
+      spec:
+        remediationAction: inform  # Just check, don't enforce
+        severity: high
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: apiextensions.k8s.io/v1
+            kind: CustomResourceDefinition
+            metadata:
+              name: externalsecrets.external-secrets.io
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: apiextensions.k8s.io/v1
+            kind: CustomResourceDefinition
+            metadata:
+              name: secretstores.external-secrets.io
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: apiextensions.k8s.io/v1
+            kind: CustomResourceDefinition
+            metadata:
+              name: clustersecretstores.external-secrets.io
+

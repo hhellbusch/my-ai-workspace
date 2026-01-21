@@ -1,0 +1,66 @@
+---
+# Policy to distribute credentials for multiple registries
+# Supports Docker Hub, Quay.io, Red Hat Registry, and private registries
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: multi-registry-credentials
+  namespace: rhacm-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST-CSF
+    policy.open-cluster-management.io/categories: PR.AC Identity Management Authentication
+    policy.open-cluster-management.io/controls: PR.AC-7 Network Access Control
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: multi-registry-pull-secret
+      spec:
+        remediationAction: enforce
+        severity: high
+        namespaceSelector:
+          include:
+          - production-apps
+          - staging-apps
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              name: all-registry-credentials
+              namespace: "{{ (lookup "v1" "Namespace" "" "").metadata.name }}"
+              labels:
+                managed-by: rhacm
+            type: kubernetes.io/dockerconfigjson
+            stringData:
+              .dockerconfigjson: |
+                {
+                  "auths": {
+                    "docker.io": {
+                      "username": "docker-user",
+                      "password": "docker-access-token",
+                      "auth": "ZG9ja2VyLXVzZXI6ZG9ja2VyLWFjY2Vzcy10b2tlbg=="
+                    },
+                    "quay.io": {
+                      "username": "quay-robot-account",
+                      "password": "quay-robot-token",
+                      "auth": "cXVheS1yb2JvdC1hY2NvdW50OnF1YXktcm9ib3QtdG9rZW4="
+                    },
+                    "registry.redhat.io": {
+                      "username": "12345678|my-service-account",
+                      "password": "redhat-registry-token",
+                      "auth": "MTIzNDU2Nzh8bXktc2VydmljZS1hY2NvdW50OnJlZGhhdC1yZWdpc3RyeS10b2tlbg=="
+                    },
+                    "registry.example.com": {
+                      "username": "private-reg-user",
+                      "password": "private-reg-pass",
+                      "auth": "cHJpdmF0ZS1yZWctdXNlcjpwcml2YXRlLXJlZy1wYXNz"
+                    }
+                  }
+                }
+

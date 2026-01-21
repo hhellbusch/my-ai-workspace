@@ -1,0 +1,120 @@
+---
+# RHACM 2.15+ Best Practice: Use Placement API with ManagedClusterSet
+
+# ManagedClusterSet for production clusters
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: production
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchLabels:
+        environment: production
+---
+# Bind production ManagedClusterSet to namespace
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: production
+  namespace: rhacm-policies
+spec:
+  clusterSet: production
+---
+# ManagedClusterSet for all managed clusters
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: global
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchExpressions:
+      - key: name
+        operator: NotIn
+        values:
+        - local-cluster
+---
+# Bind global ManagedClusterSet to namespace
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: global
+  namespace: rhacm-policies
+spec:
+  clusterSet: global
+---
+# Placement for production clusters
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: production-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - production
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+---
+# Placement for all managed clusters
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: all-managed-clusters
+  namespace: rhacm-policies
+spec:
+  clusterSets:
+  - global
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+---
+# Bind Docker Hub credentials to all clusters
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-docker-hub-all
+  namespace: rhacm-policies
+placementRef:
+  name: all-managed-clusters
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+- name: docker-hub-credentials
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io
+---
+# Bind multi-registry credentials to production clusters
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-multi-registry-prod
+  namespace: rhacm-policies
+placementRef:
+  name: production-clusters
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+- name: multi-registry-credentials
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io
+---
+# Bind ServiceAccount with pull secret to production clusters
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-sa-pullsecret-prod
+  namespace: rhacm-policies
+placementRef:
+  name: production-clusters
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+- name: serviceaccount-with-registry-access
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io
