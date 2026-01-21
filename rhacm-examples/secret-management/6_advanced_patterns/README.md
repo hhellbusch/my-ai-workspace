@@ -590,6 +590,12 @@ subjects:
 EOF
 ```
 
+## Additional Examples
+
+- **[copysecretdata-examples.yaml](./copysecretdata-examples.yaml)** - 10 examples using copySecretData
+- **[placement-by-labels.yaml](./placement-by-labels.yaml)** - 10 examples filtering clusters by labels
+- **[COPYSECRETDATA-VS-FROMSECRET.md](./COPYSECRETDATA-VS-FROMSECRET.md)** - Complete comparison guide
+
 ## References
 
 - [RHACM Policy Templates](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.11/html/governance/governance#template-functions)
