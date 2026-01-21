@@ -40,3 +40,4 @@
           Try:
             ansible-playbook parallel_inventory_update_simple.yml
 
+

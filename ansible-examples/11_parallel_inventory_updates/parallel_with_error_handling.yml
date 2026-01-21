@@ -102,3 +102,4 @@
         msg: "{{ failed_updates | length }} inventory update(s) failed. See logs above for details."
       when: failed_updates | length > 0
 
+
