@@ -1,0 +1,318 @@
+---
+# Complete example: Filter managed clusters by labels using Placement API
+# RHACM 2.15+ Best Practice
+
+# Prerequisites: Label your managed clusters
+# oc label managedcluster cluster1 environment=production region=us-east-1
+# oc label managedcluster cluster2 environment=production region=us-west-2
+# oc label managedcluster cluster3 environment=staging region=us-east-1
+
+# Example 1: Filter by Single Label
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: production-clusters
+  namespace: rhacm-policies
+spec:
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchLabels:
+          environment: production
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+
+---
+# Example 2: Filter by Multiple Labels (AND logic)
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: production-us-east
+  namespace: rhacm-policies
+spec:
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchLabels:
+          environment: production
+          region: us-east-1
+          cloud: aws
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+
+---
+# Example 3: Filter by Label with Multiple Values (OR logic using In operator)
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: production-or-staging
+  namespace: rhacm-policies
+spec:
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchExpressions:
+        - key: environment
+          operator: In
+          values:
+          - production
+          - staging
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+
+---
+# Example 4: Complex Label Selection with Multiple Conditions
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: aws-production-multi-region
+  namespace: rhacm-policies
+spec:
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchLabels:
+          environment: production
+          cloud: aws
+        matchExpressions:
+        # Select US regions only
+        - key: region
+          operator: In
+          values:
+          - us-east-1
+          - us-west-2
+        # Must have compliance label
+        - key: compliance
+          operator: Exists
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+
+---
+# Example 5: Exclude Clusters by Label
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: non-development-clusters
+  namespace: rhacm-policies
+spec:
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchExpressions:
+        # Exclude development environment
+        - key: environment
+          operator: NotIn
+          values:
+          - development
+          - dev
+          - test
+        # Exclude local cluster
+        - key: name
+          operator: NotIn
+          values:
+          - local-cluster
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+
+---
+# Example 6: Label Exists/DoesNotExist
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: clusters-with-gpu
+  namespace: rhacm-policies
+spec:
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchExpressions:
+        # Must have GPU label (any value)
+        - key: gpu-enabled
+          operator: Exists
+        # Must NOT have maintenance label
+        - key: maintenance-mode
+          operator: DoesNotExist
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+
+---
+# Example 7: Combine ManagedClusterSet with Label Filters
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: production
+spec:
+  clusterSelector:
+    selectorType: LabelSelector
+    labelSelector:
+      matchLabels:
+        environment: production
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: production
+  namespace: rhacm-policies
+spec:
+  clusterSet: production
+---
+# Placement that further filters the ManagedClusterSet
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: production-critical-only
+  namespace: rhacm-policies
+spec:
+  # Start with production ManagedClusterSet
+  clusterSets:
+  - production
+  
+  # Further filter by additional labels
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchLabels:
+          criticality: high
+        matchExpressions:
+        - key: region
+          operator: In
+          values:
+          - us-east-1
+          - eu-central-1
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+
+---
+# Example 8: Bind Policy to Label-Filtered Placement
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: production-secrets
+  namespace: rhacm-policies
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: distribute-secrets
+      spec:
+        remediationAction: enforce
+        severity: high
+        namespaceSelector:
+          include:
+          - production-apps
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              name: app-secrets
+              namespace: production-apps
+            type: Opaque
+            stringData:
+              password: '{{hub fromSecret "rhacm-secrets" "prod-creds" "password" hub}}'
+---
+# PlacementBinding connecting Policy to label-filtered Placement
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-production-secrets
+  namespace: rhacm-policies
+placementRef:
+  name: production-clusters  # References the label-filtered Placement
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+- name: production-secrets
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io
+
+---
+# Example 9: Priority-Based Selection with Labels
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: best-production-clusters
+  namespace: rhacm-policies
+spec:
+  # Select from production clusters
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchLabels:
+          environment: production
+  
+  # Select top 3 clusters
+  numberOfClusters: 3
+  
+  # Prioritize by resource availability and stability
+  prioritizerPolicy:
+    mode: Exact
+    configurations:
+    - scoreCoordinate:
+        builtIn: Steady
+      weight: 3
+    - scoreCoordinate:
+        builtIn: ResourceAllocatableCPU
+      weight: 2
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+
+---
+# Example 10: Spread Across Regions with Label Selection
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: production-multi-region-spread
+  namespace: rhacm-policies
+spec:
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchLabels:
+          environment: production
+  
+  # Select 6 clusters
+  numberOfClusters: 6
+  
+  # Spread evenly across regions
+  spreadPolicy:
+    spreadConstraints:
+    - maxSkew: 1
+      topologyKey: region
+      whenUnsatisfiable: DoNotSchedule
+  
+  tolerations:
+  - key: cluster.open-cluster-management.io/unreachable
+    operator: Exists
+
