@@ -4,11 +4,28 @@ Quick reference guide for identifying and configuring the correct ServiceAccount
 
 ## ServiceAccount by RHACM Version
 
-| RHACM Version | Common ServiceAccount Name | Status |
-|---------------|---------------------------|---------|
-| 2.6 - 2.8 | `governance-policy-propagator` | Legacy |
-| 2.9 - 2.11 | `governance-policy-framework` | Current |
-| 2.12 - 2.15+ | `governance-policy-addon-controller` or `governance-policy-framework` | May vary |
+### Hub Cluster Namespace: `open-cluster-management`
+
+**For Hub secret access** (`fromSecret` and `copySecretData`), only ServiceAccounts in this namespace on the **Hub cluster** need permissions:
+
+| RHACM Version | Common ServiceAccount Name | Status | Notes |
+|---------------|---------------------------|---------|-------|
+| 2.6 - 2.8 | `governance-policy-propagator` | Legacy | Documented in RHACM 2.6-2.8 |
+| 2.9 - 2.11 | `governance-policy-framework` | Current | Documented in RHACM 2.9+ |
+| 2.12 - 2.15+ | `governance-policy-framework` | Current | May vary by deployment |
+
+**Important:** The ServiceAccount name can vary between RHACM versions. Use the universal approach (grant to namespace group) to ensure compatibility.
+
+### Managed Cluster Namespace: `open-cluster-management-agent-addon`
+
+⚠️ **These run on MANAGED CLUSTERS and do NOT need Hub secret access:**
+
+| Component | Location | Purpose |
+|-----------|----------|---------|
+| `config-policy-controller` | Managed clusters | Policy enforcement on managed clusters |
+| `governance-policy-framework` | Managed clusters | Policy framework on managed clusters |
+
+**Note:** ServiceAccount names for managed cluster components are **not documented** in Red Hat official documentation and should not be hardcoded.
 
 ## ⚠️ Important
 
@@ -16,31 +33,41 @@ The ServiceAccount name **varies between RHACM versions** and deployment configu
 
 ## ✅ Recommended: Universal Approach
 
-Grant access to **all ServiceAccounts** in the `open-cluster-management` namespace:
+Grant access to **all ServiceAccounts** in the `open-cluster-management` namespace on the **Hub cluster**:
 
 ```bash
 # Works for ALL RHACM versions
+# This is the ONLY namespace on the Hub that needs Hub secret access
 oc adm policy add-role-to-group view \
   system:serviceaccounts:open-cluster-management \
   -n rhacm-secrets
 ```
 
+**Why only one namespace?**
+- `fromSecret` and `copySecretData` template processing happens on the **Hub cluster**
+- The policy framework ServiceAccount in `open-cluster-management` namespace does this processing
+- `open-cluster-management-agent-addon` exists on **managed clusters**, not the Hub
+- Managed cluster components don't need Hub secret access
+
 ### Why This Works
 
-- ✅ Works across all RHACM versions
-- ✅ No need to identify specific ServiceAccount
-- ✅ Survives RHACM upgrades
+- ✅ Works across all RHACM versions (2.6 through 2.15+)
+- ✅ No need to identify specific ServiceAccount name
+- ✅ Survives RHACM upgrades without changes
 - ✅ Handles configuration variations
-- ✅ Still follows least privilege (scoped to namespace)
+- ✅ Only grants to Hub cluster namespace that needs it
+- ✅ Still follows least privilege (scoped to namespace, read-only)
 
 ### Security Considerations
 
 This approach:
-- Grants **view** (read-only) access
+- Grants **view** (read-only) access only
 - Only to secrets in **one specific namespace** (e.g., `rhacm-secrets`)
-- Only to ServiceAccounts in **`open-cluster-management`** namespace
+- Only to ServiceAccounts in `open-cluster-management` namespace on **Hub cluster**
 - Does NOT grant cluster-wide access
 - Does NOT grant write permissions
+- Does NOT grant access to managed cluster components
+- Does NOT expose secrets outside RHACM Hub components
 
 ## Alternative: Specific ServiceAccount
 
@@ -60,13 +87,16 @@ Or manually:
 oc get multiclusterhub -n open-cluster-management \
   -o jsonpath='{.status.currentVersion}'
 
-# List governance deployments
+# List governance deployments in primary namespace
 oc get deployment -n open-cluster-management | grep governance
 
 # Check ServiceAccount used by deployment
 oc get deployment governance-policy-propagator \
   -n open-cluster-management \
   -o jsonpath='{.spec.template.spec.serviceAccountName}'
+
+# Check agent-addon namespace if it exists
+oc get serviceaccount -n open-cluster-management-agent-addon 2>/dev/null | grep policy
 ```
 
 ### Step 2: Grant Access to Specific ServiceAccount
@@ -83,10 +113,11 @@ oc adm policy add-role-to-user view \
 ### Universal Approach (Recommended)
 
 ```yaml
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: rhacm-secret-reader
+  name: rhacm-secret-reader-primary
   namespace: rhacm-secrets
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -97,6 +128,21 @@ subjects:
 - apiGroup: rbac.authorization.k8s.io
   kind: Group
   name: system:serviceaccounts:open-cluster-management
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rhacm-secret-reader-addon
+  namespace: rhacm-secrets
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+# Grants to all ServiceAccounts in agent-addon namespace
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:serviceaccounts:open-cluster-management-agent-addon
 ```
 
 ### Specific ServiceAccount
@@ -319,16 +365,17 @@ oc get rolebinding -n rhacm-secrets
 **Key Takeaways:**
 
 1. ✅ ServiceAccount name **varies by RHACM version**
-2. ✅ **Use universal approach** (grant to namespace group)
-3. ✅ Works across all versions and upgrades
-4. ✅ Still follows principle of least privilege
-5. ✅ Use provided scripts for automation
-6. ✅ Test after RHACM upgrades
+2. ✅ **Only `open-cluster-management` namespace on Hub** needs Hub secret access
+3. ✅ **`open-cluster-management-agent-addon` runs on managed clusters**, not Hub
+4. ✅ **Use universal approach** (grant to namespace group)
+5. ✅ Works across all versions and upgrades
+6. ✅ Still follows principle of least privilege
+7. ✅ Verified against official Red Hat documentation
 
 ## Quick Reference Commands
 
 ```bash
-# Universal RBAC setup (recommended)
+# Universal RBAC setup (recommended) - single namespace on Hub
 oc adm policy add-role-to-group view \
   system:serviceaccounts:open-cluster-management \
   -n rhacm-secrets
@@ -345,7 +392,9 @@ oc get rolebinding -n rhacm-secrets
 
 ## Related Documentation
 
+- [RED-HAT-DOC-VERIFICATION.md](./RED-HAT-DOC-VERIFICATION.md) - Official documentation verification
 - [RHACM 2.15+ Best Practices](../../RHACM-2.15-BEST-PRACTICES.md)
 - [Hub Secret Reference Guide](./README.md)
 - [copySecretData vs fromSecret](./COPYSECRETDATA-VS-FROMSECRET.md)
+- [CORRECTIONS-SUMMARY.md](../../CORRECTIONS-SUMMARY.md) - What changed and why
 

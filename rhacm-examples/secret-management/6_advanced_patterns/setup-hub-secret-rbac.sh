@@ -49,16 +49,23 @@ echo ""
 # Grant access - Universal approach
 echo "🔐 Granting RBAC access..."
 echo ""
-echo "Method: Grant view to all ServiceAccounts in open-cluster-management"
+echo "Method: Grant view to all ServiceAccounts in open-cluster-management namespace"
 echo "(This works regardless of RHACM version)"
 echo ""
 
+echo "Granting access to open-cluster-management namespace on Hub cluster..."
 oc adm policy add-role-to-group view \
   system:serviceaccounts:open-cluster-management \
   -n $TARGET_NAMESPACE
 
 echo ""
 echo -e "${GREEN}✓ RBAC configured${NC}"
+echo ""
+echo "Note: ServiceAccount names vary by RHACM version:"
+echo "  Namespace: open-cluster-management (Hub cluster)"
+echo "    - RHACM 2.6-2.8: governance-policy-propagator"
+echo "    - RHACM 2.9+: governance-policy-framework"
+echo "  This configuration works for all versions"
 echo ""
 
 # Verify the RoleBinding was created

@@ -385,6 +385,7 @@ Grant RHACM permission to read Hub secrets.
 
 ```bash
 # Works for all RHACM versions
+# Only open-cluster-management namespace on Hub needs access
 oc adm policy add-role-to-group view \
   system:serviceaccounts:open-cluster-management \
   -n rhacm-secrets
@@ -398,10 +399,12 @@ oc adm policy add-role-to-group view \
 
 **Alternative - Specific ServiceAccount (if needed):**
 
-The ServiceAccount name varies by RHACM version:
+ServiceAccount names vary by RHACM version:
+
+**Namespace: `open-cluster-management` (Hub cluster)**
 - RHACM 2.6-2.8: `governance-policy-propagator`
 - RHACM 2.9-2.11: `governance-policy-framework`
-- RHACM 2.12+: `governance-policy-addon-controller` (may vary)
+- RHACM 2.12-2.15+: `governance-policy-framework` (may vary)
 
 Use `./verify-serviceaccount.sh` to identify your specific ServiceAccount, then:
 

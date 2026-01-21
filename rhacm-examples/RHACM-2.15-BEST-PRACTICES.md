@@ -392,17 +392,22 @@ oc patch apiserver cluster --type=merge \
 oc create namespace rhacm-secrets
 
 # Grant RBAC access (Universal approach - works for all RHACM versions)
+# Only open-cluster-management namespace on Hub needs access
 oc adm policy add-role-to-group view \
   system:serviceaccounts:open-cluster-management \
   -n rhacm-secrets
 ```
 
 **Note:** ServiceAccount name varies by RHACM version:
+
+**Namespace: `open-cluster-management` (Hub cluster only)**
 - RHACM 2.6-2.8: `governance-policy-propagator`
 - RHACM 2.9-2.11: `governance-policy-framework`
-- RHACM 2.12+: May use `governance-policy-addon-controller`
+- RHACM 2.12-2.15+: `governance-policy-framework` (may vary)
 
 **Recommended:** Use the universal approach above (grants to all SAs in namespace)
+
+**Important:** The `open-cluster-management-agent-addon` namespace exists on **managed clusters**, not the Hub, and does not need Hub secret access.
 
 ### 3. Implement RBAC for ManagedClusterSets
 

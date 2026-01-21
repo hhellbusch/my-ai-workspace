@@ -56,17 +56,21 @@ else
 fi
 
 # Show all ServiceAccounts in open-cluster-management
-echo "📝 All ServiceAccounts in open-cluster-management:"
+echo "📝 All ServiceAccounts in open-cluster-management (Hub cluster):"
 echo "================================================"
 oc get serviceaccount -n open-cluster-management | grep -E "NAME|governance|policy|propagator|framework" || echo "No relevant ServiceAccounts found"
+echo ""
+echo "Note: open-cluster-management-agent-addon namespace exists on MANAGED CLUSTERS,"
+echo "      not on the Hub, and does not need Hub secret access."
 echo ""
 
 # Identify the most likely ServiceAccount for Hub secrets
 echo "🎯 Likely ServiceAccount for Hub Secret Access:"
 echo "================================================"
 
-# Check for common names
+# Check for common names in open-cluster-management
 LIKELY_SA=""
+LIKELY_NAMESPACE="open-cluster-management"
 for sa_name in "governance-policy-framework" "governance-policy-propagator" "policy-propagator" "governance-policy-addon-controller"; do
     if oc get serviceaccount $sa_name -n open-cluster-management &>/dev/null; then
         echo -e "${GREEN}✓ Found: $sa_name${NC}"
@@ -89,7 +93,7 @@ else
     cat <<EOF
 # Grant access to specific ServiceAccount
 oc adm policy add-role-to-user view \\
-  system:serviceaccount:open-cluster-management:${LIKELY_SA} \\
+  system:serviceaccount:${LIKELY_NAMESPACE}:${LIKELY_SA} \\
   -n rhacm-secrets
 EOF
     echo ""
@@ -98,28 +102,18 @@ EOF
     cat <<EOF
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: rhacm-secret-reader
-  namespace: rhacm-secrets
-rules:
-- apiGroups: [""]
-  resources: ["secrets"]
-  verbs: ["get", "list", "watch"]
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: rhacm-secret-reader-binding
   namespace: rhacm-secrets
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: rhacm-secret-reader
+  kind: ClusterRole
+  name: view
 subjects:
 - kind: ServiceAccount
   name: ${LIKELY_SA}
-  namespace: open-cluster-management
+  namespace: ${LIKELY_NAMESPACE}
 EOF
 fi
 
@@ -128,10 +122,11 @@ echo "================================================"
 echo "Universal Approach (Recommended)"
 echo "================================================"
 echo ""
-echo "Grant access to all ServiceAccounts in open-cluster-management:"
+echo "Grant access to all ServiceAccounts in open-cluster-management namespace:"
 echo ""
 cat <<'EOF'
-# This works regardless of specific ServiceAccount names
+# This works regardless of specific ServiceAccount names or RHACM version
+# Only the Hub cluster's open-cluster-management namespace needs access
 oc adm policy add-role-to-group view \
   system:serviceaccounts:open-cluster-management \
   -n rhacm-secrets

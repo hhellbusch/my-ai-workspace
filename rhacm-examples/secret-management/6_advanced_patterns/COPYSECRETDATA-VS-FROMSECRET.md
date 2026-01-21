@@ -322,7 +322,7 @@ Both methods require RHACM to have read access to the source namespace on Hub.
 Works for all RHACM versions:
 
 ```bash
-# Grant access to all ServiceAccounts in open-cluster-management namespace
+# Grant access to all ServiceAccounts in open-cluster-management namespace (Hub only)
 oc adm policy add-role-to-group view \
   system:serviceaccounts:open-cluster-management \
   -n vault-secrets
@@ -335,19 +335,22 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: rhacm-secret-reader
-  namespace: vault-secrets  # Source namespace
+  namespace: vault-secrets  # Source namespace on Hub cluster
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: view
 subjects:
-# Universal - grants to all ServiceAccounts in namespace
+# Universal - grants to all ServiceAccounts in open-cluster-management namespace
 - apiGroup: rbac.authorization.k8s.io
   kind: Group
   name: system:serviceaccounts:open-cluster-management
 ```
 
-**Note:** ServiceAccount name varies by RHACM version (2.6-2.8: `governance-policy-propagator`, 2.9+: `governance-policy-framework`). The universal approach above works regardless of version.
+**Note:** 
+- ServiceAccount name varies by RHACM version (2.6-2.8: `governance-policy-propagator`, 2.9+: `governance-policy-framework`)
+- The universal approach above works regardless of version
+- Only the `open-cluster-management` namespace on the **Hub cluster** processes templates
 
 ## Best Practices
 
