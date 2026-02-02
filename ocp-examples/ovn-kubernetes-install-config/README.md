@@ -72,22 +72,22 @@ networking:
 
 | Parameter | Type | Default | Description | Can Change Post-Install? |
 |-----------|------|---------|-------------|--------------------------|
-| `mtu` | integer | 1400 | Maximum Transmission Unit for overlay network | ❌ No |
-| `genevePort` | integer | 6081 | UDP port for Geneve encapsulation | ❌ No |
+| `mtu` | integer | 1400 | Maximum Transmission Unit for overlay network | ⚠️ Yes (requires node reboot) |
+| `genevePort` | integer | 6081 | UDP port for Geneve encapsulation | ⚠️ Yes (requires node reboot) |
 
 ### IPv4 Parameters
 
 | Parameter | Type | Default | Description | Can Change Post-Install? |
 |-----------|------|---------|-------------|--------------------------|
-| `ipv4.internalJoinSubnet` | CIDR | 100.64.0.0/16 | Subnet for node-to-overlay routing (ovn-k8s-mp0 interface) | ❌ No |
+| `ipv4.internalJoinSubnet` | CIDR | 100.64.0.0/16 | Subnet for node-to-overlay routing (ovn-k8s-mp0 interface) | ⚠️ Yes (via network.operator.openshift.io) |
 
 ### Gateway Config Parameters
 
 | Parameter | Type | Default | Description | Can Change Post-Install? |
 |-----------|------|---------|-------------|--------------------------|
-| `gatewayConfig.routingViaHost` | boolean | false | Route egress traffic via host network stack | ⚠️ Complex |
-| `gatewayConfig.ipv4.internalMasqueradeSubnet` | CIDR | 169.254.169.0/29 | Subnet for masquerading pod-to-external traffic | ❌ No |
-| `gatewayConfig.ipv4.internalTransitSwitchSubnet` | CIDR | 100.88.0.0/16 | Transit network between node and OVN gateway | ❌ No |
+| `gatewayConfig.routingViaHost` | boolean | false | Route egress traffic via host network stack | ⚠️ Yes (requires careful planning) |
+| `gatewayConfig.ipv4.internalMasqueradeSubnet` | CIDR | 169.254.169.0/29 | Subnet for masquerading pod-to-external traffic | ⚠️ Yes (via network.operator.openshift.io) |
+| `gatewayConfig.ipv4.internalTransitSwitchSubnet` | CIDR | 100.88.0.0/16 | Transit network between node and OVN gateway | ⚠️ Yes (via network.operator.openshift.io) |
 
 ### IPsec Config Parameters
 
@@ -221,6 +221,30 @@ networking:
 - Avoids conflicts with 100.64.0.0/10 (RFC 6598 Carrier-Grade NAT)
 - Provides larger masquerade subnet for scaling
 - Uses dedicated internal addressing space
+
+**Post-Install Changes:**
+These settings can be modified after installation using:
+```bash
+oc patch networks.operator.openshift.io cluster --type=merge -p '
+{
+  "spec": {
+    "defaultNetwork": {
+      "ovnKubernetesConfig": {
+        "ipv4": {
+          "internalJoinSubnet": "10.245.0.0/16"
+        },
+        "gatewayConfig": {
+          "ipv4": {
+            "internalMasqueradeSubnet": "169.254.0.0/17",
+            "internalTransitSwitchSubnet": "10.246.0.0/16"
+          }
+        }
+      }
+    }
+  }
+}'
+```
+**Note:** Changes require OVN pods to restart and may cause brief network disruption.
 
 ### Scenario 2: IPsec Encryption
 
@@ -448,28 +472,89 @@ chroot /host
 ovn-nbctl show GR_<node-name>
 ```
 
-### Cannot Change OVN Settings Post-Install
+### Changing OVN Settings Post-Install
 
-**Symptom:**
-- Need to change internal subnets after installation
-- Configuration seems locked
+**How to Change:**
+OVN settings can be changed by patching the `network.operator.openshift.io` resource:
 
-**Reality:**
-- Most `ovnKubernetesConfig` settings **cannot** be changed post-install
-- These settings are baked into the overlay network during bootstrap
+```bash
+# View current configuration
+oc get network.operator.openshift.io cluster -o yaml
 
-**Options:**
-1. **If recently installed:** Destroy and reinstall cluster with correct settings
-2. **If production cluster:** Contact Red Hat Support for migration options
-3. **Settings that CAN change:** IPsec mode, policy audit config
+# Change internal subnets
+oc patch networks.operator.openshift.io cluster --type=merge -p '
+{
+  "spec": {
+    "defaultNetwork": {
+      "ovnKubernetesConfig": {
+        "ipv4": {
+          "internalJoinSubnet": "10.245.0.0/16"
+        },
+        "gatewayConfig": {
+          "ipv4": {
+            "internalMasqueradeSubnet": "169.254.0.0/17",
+            "internalTransitSwitchSubnet": "10.246.0.0/16"
+          }
+        }
+      }
+    }
+  }
+}'
+
+# Change MTU (requires node reboot)
+oc patch networks.operator.openshift.io cluster --type=merge -p '
+{
+  "spec": {
+    "defaultNetwork": {
+      "ovnKubernetesConfig": {
+        "mtu": 9000
+      }
+    }
+  }
+}'
+```
+
+**Prerequisites:**
+- Requires `cluster-admin` privileges
+- OpenShift CLI (`oc`) must be installed and configured
+- Plan maintenance window (allow 30-60 minutes)
+- Document current configuration for rollback
+
+**Impact:**
+- ⏱️ **Changes can take up to 30 minutes to propagate**
+- ⚠️ OVN pods will restart (brief network disruption)
+- ⚠️ MTU and Geneve port changes require node reboot
+- ⚠️ Plan changes during maintenance window
+- ⚠️ Test in non-production first
+
+**Settings that change easily:**
+- IPsec mode (no disruption)
+- Policy audit config (no disruption)
+
+**Settings that require pod restart:**
+- Internal subnets (brief disruption)
+- Gateway config (brief disruption)
+
+**Settings that require node reboot:**
+- MTU (full node reboot required)
+- Geneve port (full node reboot required)
 
 ---
 
 ## Additional Resources
 
+### Official Red Hat Documentation
+- [OVN-Kubernetes Network Plugin - OpenShift 4.18](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/ovn-kubernetes_network_plugin/configure-ovn-kubernetes-subnets)
+- [Configuring OVN-Kubernetes Subnets - OpenShift 4.17](https://docs.redhat.com/en/documentation/openshift_container_platform/4.17/html/ovn-kubernetes_network_plugin/configure-ovn-kubernetes-subnets)
+- [Cluster Network Operator - OpenShift 4.15](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/networking/cluster-network-operator)
 - [Red Hat OpenShift Networking Documentation](https://docs.openshift.com/container-platform/latest/networking/ovn_kubernetes_network_provider/about-ovn-kubernetes.html)
+
+### Community Resources
 - [OVN-Kubernetes GitHub](https://github.com/ovn-org/ovn-kubernetes)
 - [OpenShift Install Configuration Reference](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal/installing-bare-metal.html#installation-bare-metal-config-yaml_installing-bare-metal)
+
+### Verification
+This documentation has been cross-referenced against official Red Hat OpenShift documentation. See [CROSS-REFERENCE-VERIFICATION.md](./CROSS-REFERENCE-VERIFICATION.md) for detailed verification results.
 
 ---
 

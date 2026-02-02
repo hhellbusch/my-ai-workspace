@@ -384,7 +384,16 @@ openshift-install create cluster --dir=. --log-level=info
 
 ## Post-Installation: What Can Be Changed?
 
-### ✅ Can Change After Install
+All OVN-Kubernetes settings can be changed by patching `network.operator.openshift.io cluster`.
+
+**Prerequisites:**
+- `cluster-admin` privileges
+- OpenShift CLI (`oc`) installed
+- Maintenance window (allow 30-60 minutes)
+
+⏱️ **Timing:** Changes can take **up to 30 minutes** to propagate across the cluster.
+
+### ✅ Can Change Easily (No Disruption)
 
 **IPsec Mode:**
 ```bash
@@ -400,13 +409,51 @@ oc patch networks.operator.openshift.io cluster --type=merge \
   -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"policyAuditConfig":{"destination":"libc","rateLimit":50}}}}}'
 ```
 
+### ⚠️ Can Change with Pod Restart (Brief Disruption)
+
+**Internal Subnets:**
+```bash
+# Change OVN internal subnets
+oc patch networks.operator.openshift.io cluster --type=merge -p '
+{
+  "spec": {
+    "defaultNetwork": {
+      "ovnKubernetesConfig": {
+        "ipv4": {
+          "internalJoinSubnet": "10.245.0.0/16"
+        },
+        "gatewayConfig": {
+          "ipv4": {
+            "internalMasqueradeSubnet": "169.254.0.0/17",
+            "internalTransitSwitchSubnet": "10.246.0.0/16"
+          }
+        }
+      }
+    }
+  }
+}'
+```
+**Impact:** OVN pods restart, brief network disruption during maintenance window.
+
+### ⚠️ Can Change with Node Reboot (Full Disruption)
+
+**MTU:**
+```bash
+# Change MTU (requires node reboot)
+oc patch networks.operator.openshift.io cluster --type=merge \
+  -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"mtu":9000}}}}'
+```
+
+**Geneve Port:**
+```bash
+# Change Geneve port (requires node reboot)
+oc patch networks.operator.openshift.io cluster --type=merge \
+  -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"genevePort":6082}}}}'
+```
+**Impact:** Nodes must be rebooted for changes to take effect. Plan for maintenance window.
+
 ### ❌ Cannot Change After Install
 
-- `mtu`
-- `genevePort`
-- `ipv4.internalJoinSubnet`
-- `gatewayConfig.ipv4.internalMasqueradeSubnet`
-- `gatewayConfig.ipv4.internalTransitSwitchSubnet`
 - `networkType` (cannot switch from OVNKubernetes to another CNI)
 - Dual stack configuration (cannot add/remove IPv6 after install)
 
@@ -440,6 +487,105 @@ oc exec test-pod -- nslookup kubernetes.default.svc.cluster.local
 
 # 6. Cleanup
 oc delete pod test-pod test-pod-2
+```
+
+---
+
+## Changing Configuration Post-Install
+
+### View Current Configuration
+
+```bash
+# View complete network operator configuration
+oc get network.operator.openshift.io cluster -o yaml
+
+# View just OVN configuration
+oc get network.operator.openshift.io cluster -o jsonpath='{.spec.defaultNetwork.ovnKubernetesConfig}' | jq
+```
+
+### Patch Configuration
+
+**General Pattern:**
+```bash
+oc patch networks.operator.openshift.io cluster --type=merge -p '
+{
+  "spec": {
+    "defaultNetwork": {
+      "ovnKubernetesConfig": {
+        "parameter": "value"
+      }
+    }
+  }
+}'
+```
+
+**Example - Change All Internal Subnets:**
+```bash
+oc patch networks.operator.openshift.io cluster --type=merge -p '
+{
+  "spec": {
+    "defaultNetwork": {
+      "ovnKubernetesConfig": {
+        "ipv4": {
+          "internalJoinSubnet": "10.245.0.0/16"
+        },
+        "gatewayConfig": {
+          "ipv4": {
+            "internalMasqueradeSubnet": "169.254.0.0/17",
+            "internalTransitSwitchSubnet": "10.246.0.0/16"
+          }
+        }
+      }
+    }
+  }
+}'
+
+# Monitor rollout
+oc get pods -n openshift-ovn-kubernetes -w
+
+# ⏱️ Note: Changes can take up to 30 minutes to fully propagate
+```
+
+**Example - Change MTU (Requires Node Reboot):**
+```bash
+# Change MTU
+oc patch networks.operator.openshift.io cluster --type=merge -p '
+{
+  "spec": {
+    "defaultNetwork": {
+      "ovnKubernetesConfig": {
+        "mtu": 9000
+      }
+    }
+  }
+}'
+
+# Nodes must be rebooted for MTU change to take effect
+# Drain and reboot nodes one at a time
+oc adm drain <node-name> --ignore-daemonsets --delete-emptydir-data
+ssh <node> "sudo systemctl reboot"
+# Wait for node to come back
+oc adm uncordon <node-name>
+```
+
+### Verify Changes
+
+```bash
+# Check operator status after change
+oc get co network
+
+# Verify new configuration applied
+oc get network.operator.openshift.io cluster -o jsonpath='{.spec.defaultNetwork.ovnKubernetesConfig}' | jq
+
+# Check OVN pods restarted successfully
+oc get pods -n openshift-ovn-kubernetes
+
+# Verify on nodes (for internal subnet changes)
+oc debug node/<node-name>
+chroot /host
+ip addr show ovn-k8s-mp0  # Should show new internalJoinSubnet IP
+exit
+exit
 ```
 
 ---

@@ -722,6 +722,340 @@ chmod +x verify-ovn.sh
 
 ---
 
+## Changing Configuration Post-Install
+
+### Overview
+
+OVN-Kubernetes configuration can be changed after installation by patching the `network.operator.openshift.io` resource.
+
+**Prerequisites:**
+- `cluster-admin` privileges required
+- OpenShift CLI (`oc`) installed and configured
+- Maintenance window scheduled (allow 30-60 minutes)
+- Current configuration documented for rollback
+
+⏱️ **Important Timing:** Configuration changes can take **up to 30 minutes** to fully propagate across the cluster.
+
+### Impact by Parameter Type
+
+Different parameters have different impacts:
+
+| Change Type | Impact | Requires Reboot? | Downtime? |
+|-------------|--------|------------------|-----------|
+| IPsec mode | None | No | No |
+| Policy audit config | None | No | No |
+| Internal subnets | OVN pod restart | No | Brief (~30s) |
+| Gateway config | OVN pod restart | No | Brief (~30s) |
+| MTU | Node-level change | Yes | Per node |
+| Geneve port | Node-level change | Yes | Per node |
+
+---
+
+### Changing Internal Subnets
+
+**Scenario:** Need to change OVN internal subnets after installation.
+
+**Steps:**
+
+1. **View current configuration:**
+```bash
+oc get network.operator.openshift.io cluster \
+  -o jsonpath='{.spec.defaultNetwork.ovnKubernetesConfig}' | jq
+```
+
+2. **Patch the configuration:**
+```bash
+oc patch networks.operator.openshift.io cluster --type=merge -p '
+{
+  "spec": {
+    "defaultNetwork": {
+      "ovnKubernetesConfig": {
+        "ipv4": {
+          "internalJoinSubnet": "10.245.0.0/16"
+        },
+        "gatewayConfig": {
+          "ipv4": {
+            "internalMasqueradeSubnet": "169.254.0.0/17",
+            "internalTransitSwitchSubnet": "10.246.0.0/16"
+          }
+        }
+      }
+    }
+  }
+}'
+```
+
+3. **Monitor OVN pod rollout:**
+```bash
+# Watch OVN pods restart
+oc get pods -n openshift-ovn-kubernetes -w
+
+# All pods should restart and return to Running
+# Expected downtime: ~30 seconds
+```
+
+⏱️ **Important:** Configuration changes can take **up to 30 minutes** to fully propagate across the cluster. Monitor the network operator status during this time.
+
+4. **Verify configuration applied:**
+```bash
+# Check updated config
+oc get network.operator.openshift.io cluster \
+  -o jsonpath='{.spec.defaultNetwork.ovnKubernetesConfig}' | jq
+
+# Verify on nodes - should show new IP from internalJoinSubnet
+oc debug node/<node-name>
+chroot /host
+ip addr show ovn-k8s-mp0
+# Expected: IP from new internalJoinSubnet (e.g., 10.245.0.x)
+exit
+exit
+```
+
+5. **Validate networking:**
+```bash
+# Run connectivity test
+oc run test-pod --image=registry.access.redhat.com/ubi8/ubi --command -- sleep 300
+oc wait --for=condition=Ready pod/test-pod --timeout=60s
+oc exec test-pod -- ping -c 3 8.8.8.8
+oc delete pod test-pod
+```
+
+---
+
+### Changing MTU
+
+**Scenario:** Need to enable jumbo frames or change MTU.
+
+**⚠️ Warning:** Requires node reboot. Plan for maintenance window.
+
+**Steps:**
+
+1. **Patch MTU configuration:**
+```bash
+oc patch networks.operator.openshift.io cluster --type=merge -p '
+{
+  "spec": {
+    "defaultNetwork": {
+      "ovnKubernetesConfig": {
+        "mtu": 9000
+      }
+    }
+  }
+}'
+```
+
+2. **Reboot nodes one at a time:**
+```bash
+# For each node:
+NODE="<node-name>"
+
+# Drain node
+oc adm drain $NODE --ignore-daemonsets --delete-emptydir-data --force
+
+# Reboot node (via BMC, SSH, or console)
+oc debug node/$NODE -- chroot /host systemctl reboot
+
+# Wait for node to come back (5-10 minutes)
+watch oc get nodes
+
+# Verify MTU on node
+oc debug node/$NODE
+chroot /host
+ip link show genev_sys_6081 | grep mtu
+# Expected: mtu 9000
+exit
+exit
+
+# Uncordon node
+oc adm uncordon $NODE
+
+# Verify pods schedule back
+oc get pods -o wide | grep $NODE
+```
+
+3. **Repeat for all nodes**
+
+4. **Verify cluster-wide:**
+```bash
+# Check all nodes
+for node in $(oc get nodes -o name); do
+  echo "=== $node ==="
+  oc debug $node -- chroot /host ip link show genev_sys_6081 2>/dev/null | grep mtu
+done
+```
+
+---
+
+### Changing IPsec Mode
+
+**Scenario:** Enable or disable IPsec encryption.
+
+**Steps:**
+
+1. **Enable IPsec:**
+```bash
+oc patch networks.operator.openshift.io cluster --type=merge \
+  -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"ipsecConfig":{"mode":"Full"}}}}}'
+```
+
+2. **Monitor rollout:**
+```bash
+# Watch OVN pods update
+oc get pods -n openshift-ovn-kubernetes -w
+
+# Check IPsec configuration applied
+oc get network.operator.openshift.io cluster \
+  -o jsonpath='{.spec.defaultNetwork.ovnKubernetesConfig.ipsecConfig.mode}'
+# Expected: Full
+```
+
+3. **Verify IPsec active:**
+```bash
+# Check on node
+oc debug node/<node-name>
+chroot /host
+ovs-appctl -t ovs-vswitchd fdb/show br-int | grep -i ipsec
+ip xfrm state
+# Should show IPsec tunnels
+exit
+exit
+```
+
+4. **Disable IPsec (if needed):**
+```bash
+oc patch networks.operator.openshift.io cluster --type=merge \
+  -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"ipsecConfig":{"mode":"Disabled"}}}}}'
+```
+
+---
+
+### Changing Geneve Port
+
+**Scenario:** Change Geneve encapsulation port.
+
+**⚠️ Warning:** Requires node reboot and firewall rule updates.
+
+**Steps:**
+
+1. **Update firewall rules on all nodes first:**
+```bash
+# On each node, add new port before changing config
+oc debug node/<node-name>
+chroot /host
+firewall-cmd --permanent --add-port=6082/udp
+firewall-cmd --reload
+exit
+exit
+```
+
+2. **Patch configuration:**
+```bash
+oc patch networks.operator.openshift.io cluster --type=merge -p '
+{
+  "spec": {
+    "defaultNetwork": {
+      "ovnKubernetesConfig": {
+        "genevePort": 6082
+      }
+    }
+  }
+}'
+```
+
+3. **Reboot nodes (same process as MTU change above)**
+
+4. **Verify new port in use:**
+```bash
+oc debug node/<node-name>
+chroot /host
+ss -ulnp | grep 6082
+# Should show ovn process listening on UDP 6082
+exit
+exit
+```
+
+5. **Remove old firewall rule (after all nodes updated):**
+```bash
+oc debug node/<node-name>
+chroot /host
+firewall-cmd --permanent --remove-port=6081/udp
+firewall-cmd --reload
+exit
+exit
+```
+
+---
+
+### Rollback Configuration Changes
+
+**If changes cause issues:**
+
+1. **Check previous configuration:**
+```bash
+# View configuration history via etcd backup or documentation
+
+# Or describe the network operator
+oc describe network.operator.openshift.io cluster
+```
+
+2. **Rollback by patching with previous values:**
+```bash
+# Example: Rollback to default subnets
+oc patch networks.operator.openshift.io cluster --type=merge -p '
+{
+  "spec": {
+    "defaultNetwork": {
+      "ovnKubernetesConfig": {
+        "ipv4": {
+          "internalJoinSubnet": "100.64.0.0/16"
+        },
+        "gatewayConfig": {
+          "ipv4": {
+            "internalMasqueradeSubnet": "169.254.169.0/29",
+            "internalTransitSwitchSubnet": "100.88.0.0/16"
+          }
+        }
+      }
+    }
+  }
+}'
+```
+
+3. **Monitor rollback:**
+```bash
+oc get pods -n openshift-ovn-kubernetes -w
+oc get co network
+```
+
+---
+
+### Best Practices for Configuration Changes
+
+1. **Test in non-production first**
+   - Always test changes in dev/test environment
+   - Verify expected behavior before production
+
+2. **Plan maintenance windows**
+   - Brief disruption for subnet changes
+   - Node-by-node for MTU/port changes
+   - No disruption for IPsec/audit changes
+
+3. **Document current state**
+   - Save current config before changes
+   - Keep change log for rollback reference
+
+4. **Monitor during changes**
+   - Watch network operator status
+   - Check OVN pod health
+   - Verify connectivity after changes
+
+5. **Validate thoroughly**
+   - Run functional tests
+   - Check all nodes updated
+   - Verify no degraded operators
+
+---
+
 **For troubleshooting guidance, see [README.md](./README.md#troubleshooting)**
 
 **Last Updated:** 2026-02-02

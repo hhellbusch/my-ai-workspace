@@ -65,7 +65,7 @@ networking:
     # Default: 1400
     # Must be <= physical network MTU - 100 bytes
     # For jumbo frames: 9000 (requires physical network support)
-    # CANNOT BE CHANGED AFTER INSTALLATION
+    # CAN BE CHANGED via network.operator.openshift.io (requires node reboot)
     mtu: 1400
     
     # ===================================================================
@@ -75,7 +75,7 @@ networking:
     # Default: 6081
     # Change if port conflicts with existing services
     # Firewall must allow this port between all nodes
-    # CANNOT BE CHANGED AFTER INSTALLATION
+    # CAN BE CHANGED via network.operator.openshift.io (requires node reboot)
     genevePort: 6081
     
     # ===================================================================
@@ -86,7 +86,7 @@ networking:
       # Default: 100.64.0.0/16
       # Used for routing between node and OVN overlay
       # Must not overlap with any other network
-      # CANNOT BE CHANGED AFTER INSTALLATION
+      # CAN BE CHANGED via network.operator.openshift.io (requires OVN pod restart)
       internalJoinSubnet: 10.245.0.0/16
     
     # ===================================================================
@@ -103,14 +103,14 @@ networking:
         # Default: 169.254.169.0/29 (8 addresses)
         # Larger subnet provides more masquerade addresses
         # Link-local address space (169.254.0.0/16)
-        # CANNOT BE CHANGED AFTER INSTALLATION
+        # CAN BE CHANGED via network.operator.openshift.io (requires OVN pod restart)
         internalMasqueradeSubnet: 169.254.0.0/17
         
         # Internal transit network between node and OVN gateway
         # Default: 100.88.0.0/16
         # Pure OVN internal routing fabric
         # Must not overlap with any other network
-        # CANNOT BE CHANGED AFTER INSTALLATION
+        # CAN BE CHANGED via network.operator.openshift.io (requires OVN pod restart)
         internalTransitSwitchSubnet: 10.246.0.0/16
     
     # ===================================================================
