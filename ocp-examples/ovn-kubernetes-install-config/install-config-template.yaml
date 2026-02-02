@@ -1,0 +1,359 @@
+# OpenShift Install Config Template with OVN-Kubernetes Configuration
+# Copy this file and customize for your environment
+# 
+# IMPORTANT: The installer consumes this file during installation.
+# Always keep a backup: cp install-config.yaml install-config.yaml.backup
+
+apiVersion: v1
+
+# Base domain for the cluster (e.g., example.com)
+# Cluster FQDN will be: <metadata.name>.<baseDomain>
+baseDomain: example.com
+
+metadata:
+  # Cluster name - must be DNS-compatible
+  name: ocp-cluster
+
+# Compute node configuration (workers)
+compute:
+- name: worker
+  # Number of worker nodes
+  replicas: 3
+  # Optional: Platform-specific settings
+  # platform:
+  #   baremetal: {}
+
+# Control plane node configuration (masters)
+controlPlane:
+  name: master
+  # Number of control plane nodes (must be odd: 3, 5, 7)
+  replicas: 3
+  # Optional: Platform-specific settings
+  # platform:
+  #   baremetal: {}
+
+# Networking configuration
+networking:
+  # REQUIRED: Must be OVNKubernetes for OVN-Kubernetes networking
+  networkType: OVNKubernetes
+  
+  # Pod network (cluster network)
+  # Default: 10.128.0.0/14
+  clusterNetwork:
+  - cidr: 10.128.0.0/14
+    # Host prefix (pod subnet per node)
+    # Default: 23 (512 IPs per node)
+    hostPrefix: 23
+  
+  # Service network (ClusterIP services)
+  # Default: 172.30.0.0/16
+  # Must not overlap with pod or machine networks
+  serviceNetwork:
+  - 172.30.0.0/16
+  
+  # Physical network (node network)
+  # Must match your actual network infrastructure
+  machineNetwork:
+  - cidr: 10.0.0.0/16
+  
+  # OVN-Kubernetes specific configuration
+  ovnKubernetesConfig:
+    # ===================================================================
+    # MTU Configuration
+    # ===================================================================
+    # Maximum Transmission Unit for overlay network
+    # Default: 1400
+    # Must be <= physical network MTU - 100 bytes
+    # For jumbo frames: 9000 (requires physical network support)
+    # CANNOT BE CHANGED AFTER INSTALLATION
+    mtu: 1400
+    
+    # ===================================================================
+    # Geneve Port Configuration
+    # ===================================================================
+    # UDP port for Geneve encapsulation
+    # Default: 6081
+    # Change if port conflicts with existing services
+    # Firewall must allow this port between all nodes
+    # CANNOT BE CHANGED AFTER INSTALLATION
+    genevePort: 6081
+    
+    # ===================================================================
+    # IPv4 Internal Networks
+    # ===================================================================
+    ipv4:
+      # Internal join subnet (ovn-k8s-mp0 interface on nodes)
+      # Default: 100.64.0.0/16
+      # Used for routing between node and OVN overlay
+      # Must not overlap with any other network
+      # CANNOT BE CHANGED AFTER INSTALLATION
+      internalJoinSubnet: 10.245.0.0/16
+    
+    # ===================================================================
+    # Gateway Configuration
+    # ===================================================================
+    gatewayConfig:
+      # Route egress traffic via host network stack
+      # Default: false
+      # Advanced setting - usually leave at false
+      routingViaHost: false
+      
+      ipv4:
+        # Masquerade subnet for pod-to-external NAT
+        # Default: 169.254.169.0/29 (8 addresses)
+        # Larger subnet provides more masquerade addresses
+        # Link-local address space (169.254.0.0/16)
+        # CANNOT BE CHANGED AFTER INSTALLATION
+        internalMasqueradeSubnet: 169.254.0.0/17
+        
+        # Internal transit network between node and OVN gateway
+        # Default: 100.88.0.0/16
+        # Pure OVN internal routing fabric
+        # Must not overlap with any other network
+        # CANNOT BE CHANGED AFTER INSTALLATION
+        internalTransitSwitchSubnet: 10.246.0.0/16
+    
+    # ===================================================================
+    # IPsec Encryption Configuration
+    # ===================================================================
+    ipsecConfig:
+      # IPsec encryption mode
+      # Options: Disabled, Full, External
+      # - Disabled: No encryption (default)
+      # - Full: Encrypt all pod-to-pod traffic
+      # - External: Encrypt only traffic leaving the node
+      # CAN BE CHANGED AFTER INSTALLATION
+      mode: Disabled
+      # Note: Enabling IPsec adds CPU overhead (5-15%) and may reduce
+      # network throughput (5-10%). Suitable for compliance requirements.
+    
+    # ===================================================================
+    # Network Policy Audit Logging
+    # ===================================================================
+    policyAuditConfig:
+      # Audit log destination
+      # Options: "null", "libc", "udp:<host>:<port>"
+      # - "null": No logging (default)
+      # - "libc": Log to syslog
+      # - "udp:<host>:<port>": Send to remote syslog server
+      # CAN BE CHANGED AFTER INSTALLATION
+      destination: "null"
+      
+      # Maximum log file size in MB
+      # Default: 50
+      # CAN BE CHANGED AFTER INSTALLATION
+      maxFileSize: 50
+      
+      # Log messages per second (rate limiting)
+      # Default: 20
+      # CAN BE CHANGED AFTER INSTALLATION
+      rateLimit: 20
+      
+      # Syslog facility
+      # Options: local0-local7, kern, user, mail, daemon, auth, syslog, etc.
+      # Default: local0
+      # CAN BE CHANGED AFTER INSTALLATION
+      syslogFacility: local0
+    
+    # ===================================================================
+    # IPv6 Configuration (Optional - for Dual Stack)
+    # ===================================================================
+    # Uncomment and configure if using dual stack (IPv4 + IPv6)
+    # ipv6:
+    #   # Internal join subnet for IPv6
+    #   # Default: fd98::/64
+    #   internalJoinSubnet: fd98::/64
+    # 
+    # gatewayConfig:
+    #   ipv6:
+    #     # Internal transit network for IPv6
+    #     # Default: fd97::/64
+    #     internalTransitSwitchSubnet: fd97::/64
+
+# Platform-specific configuration
+# Uncomment and configure the appropriate platform section
+platform:
+  # ===================================================================
+  # Bare Metal Platform Configuration
+  # ===================================================================
+  baremetal:
+    # API VIP - Virtual IP for API server
+    # Must be within machineNetwork CIDR
+    # Must not be used by DHCP or any other host
+    apiVIP: 10.0.0.10
+    
+    # Ingress VIP - Virtual IP for ingress controller
+    # Must be within machineNetwork CIDR
+    # Must not be used by DHCP or any other host
+    ingressVIP: 10.0.0.11
+    
+    # Provisioning network
+    # Options: Managed, Unmanaged, Disabled
+    # - Managed: Installer manages provisioning network
+    # - Unmanaged: Provisioning network exists but not managed
+    # - Disabled: No provisioning network (recommended for modern installs)
+    provisioningNetwork: Disabled
+    
+    # Host definitions
+    hosts:
+    - name: master-0
+      role: master
+      # BMC (Baseboard Management Controller) configuration
+      bmc:
+        # BMC address - use redfish-virtualmedia for modern systems
+        # Format: redfish-virtualmedia://<ip>/redfish/v1/Systems/<id>
+        address: redfish-virtualmedia://10.0.0.20/redfish/v1/Systems/1
+        username: admin
+        password: changeme
+        # Disable certificate verification if using self-signed certs
+        disableCertificateVerification: true
+      # MAC address used for PXE boot
+      bootMACAddress: 52:54:00:00:00:01
+      # Root device hints - where to install RHCOS
+      rootDeviceHints:
+        deviceName: /dev/sda
+        # Alternative hints:
+        # minSizeGigabytes: 500
+        # model: "Samsung SSD"
+        # vendor: "Samsung"
+        # serialNumber: "S123456789"
+    
+    # Add more hosts as needed (master-1, master-2, worker-0, etc.)
+    # - name: master-1
+    #   role: master
+    #   bmc:
+    #     address: redfish-virtualmedia://10.0.0.21/redfish/v1/Systems/1
+    #     username: admin
+    #     password: changeme
+    #     disableCertificateVerification: true
+    #   bootMACAddress: 52:54:00:00:00:02
+    #   rootDeviceHints:
+    #     deviceName: /dev/sda
+
+  # ===================================================================
+  # VMware vSphere Platform Configuration
+  # ===================================================================
+  # vsphere:
+  #   vcenter: vcenter.example.com
+  #   username: administrator@vsphere.local
+  #   password: changeme
+  #   datacenter: DC1
+  #   defaultDatastore: datastore1
+  #   cluster: Cluster1
+  #   network: VM Network
+  #   apiVIP: 10.0.0.10
+  #   ingressVIP: 10.0.0.11
+  #   folder: /DC1/vm/OpenShift
+
+  # ===================================================================
+  # AWS Platform Configuration
+  # ===================================================================
+  # aws:
+  #   region: us-east-1
+  #   # Subnets (optional - installer creates if not specified)
+  #   # Must provide 3 public and 3 private subnets in different AZs
+  #   subnets:
+  #   - subnet-public-az1
+  #   - subnet-public-az2
+  #   - subnet-public-az3
+  #   - subnet-private-az1
+  #   - subnet-private-az2
+  #   - subnet-private-az3
+
+  # ===================================================================
+  # Azure Platform Configuration
+  # ===================================================================
+  # azure:
+  #   region: eastus
+  #   baseDomainResourceGroupName: dns-rg
+  #   # Optional: Use existing VNet
+  #   # virtualNetwork: existing-vnet
+  #   # computeSubnet: compute-subnet
+  #   # controlPlaneSubnet: control-plane-subnet
+
+# Pull secret from Red Hat
+# Get from: https://console.redhat.com/openshift/install/pull-secret
+pullSecret: '{"auths":{"cloud.openshift.com":{"auth":"...","email":"user@example.com"},"quay.io":{"auth":"...","email":"user@example.com"},"registry.connect.redhat.com":{"auth":"...","email":"user@example.com"},"registry.redhat.io":{"auth":"...","email":"user@example.com"}}}'
+
+# SSH public key for access to nodes
+# Generate with: ssh-keygen -t rsa -b 4096 -N '' -f ~/.ssh/id_rsa_ocp
+sshKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC... user@example.com'
+
+# ===================================================================
+# Optional: Additional Configuration
+# ===================================================================
+
+# Additional trust bundle for corporate CA certificates
+# additionalTrustBundle: |
+#   -----BEGIN CERTIFICATE-----
+#   MIIDXTCCAkWgAwIBAgIJAKl...
+#   -----END CERTIFICATE-----
+
+# HTTP/HTTPS proxy configuration
+# proxy:
+#   httpProxy: http://proxy.example.com:8080
+#   httpsProxy: https://proxy.example.com:8080
+#   noProxy: .cluster.local,.svc,10.0.0.0/8,127.0.0.1,172.30.0.0/16,localhost
+
+# Image content sources (for disconnected/air-gapped installs)
+# imageContentSources:
+# - mirrors:
+#   - registry.example.com:5000/ocp4/openshift4
+#   source: quay.io/openshift-release-dev/ocp-release
+# - mirrors:
+#   - registry.example.com:5000/ocp4/openshift4
+#   source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+
+# FIPS mode (Federal Information Processing Standard)
+# fips: false
+
+# Publish strategy
+# Options: External (default), Internal
+# - External: Cluster accessible from outside
+# - Internal: Cluster only accessible internally
+# publish: External
+
+# ===================================================================
+# Pre-Installation Checklist
+# ===================================================================
+# Before running openshift-install create cluster:
+#
+# Network Planning:
+# [ ] All subnets planned and do not overlap
+# [ ] API VIP and Ingress VIP are within machineNetwork
+# [ ] VIPs are not in DHCP range
+# [ ] internalJoinSubnet doesn't conflict
+# [ ] internalTransitSwitchSubnet doesn't conflict
+# [ ] MTU set correctly (must be <= physical MTU - 100)
+#
+# Bare Metal Specific:
+# [ ] BMC connectivity tested to all hosts
+# [ ] Boot MAC addresses verified
+# [ ] Root device hints correct
+# [ ] PXE boot tested (if using)
+#
+# File Management:
+# [ ] install-config.yaml backed up
+# [ ] Pull secret obtained and valid
+# [ ] SSH key generated and added
+#
+# Commands:
+# Backup: cp install-config.yaml install-config.yaml.backup
+# Install: openshift-install create cluster --dir=. --log-level=info
+#
+# ===================================================================
+# Post-Installation
+# ===================================================================
+# After installation completes:
+# 
+# Verify installation:
+# oc get co                           # All operators Available
+# oc get nodes                        # All nodes Ready
+# oc get pods -A                      # All pods Running
+# 
+# Verify OVN configuration:
+# oc get network.config.openshift.io cluster -o yaml
+# oc get network.operator.openshift.io cluster -o jsonpath='{.spec.defaultNetwork.ovnKubernetesConfig}' | jq
+# 
+# For complete verification, see VERIFICATION.md
+

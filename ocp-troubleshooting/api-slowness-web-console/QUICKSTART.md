@@ -172,6 +172,60 @@ oc get events -A --sort-by='.lastTimestamp' | tail -50
 ./diagnostic-script.sh after-change-$(date +%Y%m%d).txt
 ```
 
+### Scenario 5: "Service account token has expired" errors
+
+```bash
+# Step 1: Run specific diagnostic
+./diagnose-token-expiry.sh
+
+# Step 2: Quick check - count errors
+oc logs -n openshift-kube-apiserver -l app=openshift-kube-apiserver --tail=1000 | \
+  grep -c "service account token has expired"
+
+# Step 3: Identify affected service accounts
+oc logs -n openshift-kube-apiserver -l app=openshift-kube-apiserver --tail=2000 | \
+  grep "service account token has expired" | \
+  grep -oP 'system:serviceaccount:\K[^"]+' | sort | uniq -c | sort -rn | head -5
+
+# Step 4: Quick fix - restart affected pods
+oc delete pod -n <namespace> <pod-name>
+
+# See detailed guide:
+cat SERVICE-ACCOUNT-TOKEN-EXPIRY.md
+```
+
+### Scenario 6: "Client-side throttling" delays
+
+```bash
+# Step 1: Run diagnostic
+./diagnose-client-throttling.sh
+
+# Step 2: Count throttling events
+oc logs -n openshift-kube-apiserver -l app=openshift-kube-apiserver --tail=5000 | \
+  grep -c "client-side throttling"
+
+# Step 3: Find which clients are throttled
+oc logs -n openshift-kube-apiserver -l app=openshift-kube-apiserver --tail=5000 | \
+  grep "client-side throttling" | \
+  grep -oP 'user="[^"]+' | sed 's/user="//' | \
+  sort | uniq -c | sort -rn | head -5
+
+# Step 4: Check for contributing factors
+# - High tokenreview volume?
+oc logs -n openshift-kube-apiserver -l app=openshift-kube-apiserver --tail=5000 | \
+  grep -c "tokenreviews"
+
+# - Crashlooping pods?
+oc get pods -A | grep -c CrashLoopBackOff
+
+# - Too many webhooks?
+echo "Validating: $(oc get validatingwebhookconfigurations --no-headers | wc -l)"
+echo "Mutating: $(oc get mutatingwebhookconfigurations --no-headers | wc -l)"
+
+# See detailed guide:
+cat CLIENT-SIDE-THROTTLING.md
+```
+
 ---
 
 ## 📈 Success Criteria
@@ -238,6 +292,7 @@ api-slowness-web-console/
 
 ## 🔗 Related Guides
 
+- [Service Account Token Expiry](SERVICE-ACCOUNT-TOKEN-EXPIRY.md) - "token has expired" errors
 - [Control Plane Kubeconfigs](../control-plane-kubeconfigs/README.md) - When API is completely down
 - [kube-controller-manager Issues](../kube-controller-manager-crashloop/README.md) - Controller problems
 - [CSR Management](../csr-management/README.md) - Certificate approval

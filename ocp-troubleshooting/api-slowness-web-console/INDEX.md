@@ -84,6 +84,32 @@ chmod +x diagnostic-script.sh
 
 ---
 
+### 🔑 [SERVICE-ACCOUNT-TOKEN-EXPIRY.md](SERVICE-ACCOUNT-TOKEN-EXPIRY.md)
+**Specialized guide for token expiry errors** - "service account token has expired"
+
+**Contents:**
+- 6 common root causes for token expiry
+- Specific diagnostic commands
+- Time synchronization checks
+- Service CA troubleshooting
+- Token controller issues
+- Automated diagnostic script
+
+**Use when:**
+- Seeing "token has expired" in API logs
+- Authentication failures
+- Many 401 errors
+- Pods unable to reach API
+
+**Companion script:**
+```bash
+./diagnose-token-expiry.sh
+```
+
+**Estimated time:** 15-30 minutes
+
+---
+
 ## Quick Navigation by Symptom
 
 ### 🐌 Web Console Loading Slowly

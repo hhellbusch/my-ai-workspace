@@ -348,8 +348,90 @@ oc adm inspect namespace/openshift-kube-apiserver
 oc adm inspect namespace/openshift-etcd
 ```
 
+## Specific Error: "Service Account Token Has Expired"
+
+If seeing many of these errors in API server logs:
+
+```bash
+# Quick diagnostic
+./diagnose-token-expiry.sh
+
+# Count errors
+oc logs -n openshift-kube-apiserver -l app=openshift-kube-apiserver --tail=1000 | \
+  grep -c "service account token has expired"
+
+# Identify affected pods
+oc logs -n openshift-kube-apiserver -l app=openshift-kube-apiserver --tail=2000 | \
+  grep "service account token has expired" | \
+  grep -oP 'system:serviceaccount:\K[^"]+' | sort | uniq -c | sort -rn | head -5
+
+# Quick fixes
+# 1. Check time sync
+for node in $(oc get nodes -o name); do
+  echo "${node#node/}: $(oc debug $node -- chroot /host date 2>/dev/null | tail -1)"
+done
+
+# 2. Restart affected pods
+oc delete pod -n <namespace> <pod-name>
+
+# 3. If widespread, regenerate service CA
+oc delete secret -n openshift-service-ca signing-key
+```
+
+**See detailed guide:** [SERVICE-ACCOUNT-TOKEN-EXPIRY.md](SERVICE-ACCOUNT-TOKEN-EXPIRY.md)
+
+---
+
+## Specific Error: "Client-Side Throttling"
+
+If seeing throttling delays like "5.25s due to client-side throttling":
+
+```bash
+# Quick diagnostic
+./diagnose-client-throttling.sh
+
+# Count throttling events
+oc logs -n openshift-kube-apiserver -l app=openshift-kube-apiserver --tail=5000 | \
+  grep -c "client-side throttling"
+
+# Find throttled clients
+oc logs -n openshift-kube-apiserver -l app=openshift-kube-apiserver --tail=5000 | \
+  grep "client-side throttling" | \
+  grep -oP 'user="[^"]+' | sed 's/user="//' | \
+  sort | uniq -c | sort -rn | head -5
+
+# Quick checks for common causes
+# 1. High tokenreview volume?
+oc logs -n openshift-kube-apiserver -l app=openshift-kube-apiserver --tail=5000 | \
+  grep -c "tokenreviews"
+
+# 2. Too many webhooks?
+echo "Webhooks: $(( $(oc get validatingwebhookconfigurations --no-headers | wc -l) + $(oc get mutatingwebhookconfigurations --no-headers | wc -l) ))"
+
+# 3. Crashlooping pods amplifying issue?
+oc get pods -A | grep -c CrashLoopBackOff
+
+# Quick fixes
+# 1. Fix crashloops (reduces churn)
+./scale-down-crashloops.sh
+
+# 2. Restart problematic operator/controller
+# (Use service account from throttled clients list)
+oc get pods -A --field-selector spec.serviceAccountName=<sa-name>
+oc delete pod -n <namespace> <pod-name>
+
+# 3. Check and optimize webhook timeouts
+oc get validatingwebhookconfigurations -o json | \
+  jq -r '.items[] | .webhooks[] | "\(.name) timeout: \(.timeoutSeconds)s"'
+```
+
+**See detailed guide:** [CLIENT-SIDE-THROTTLING.md](CLIENT-SIDE-THROTTLING.md)
+
+---
+
 ## Related Guides
 
+- [Service Account Token Expiry](SERVICE-ACCOUNT-TOKEN-EXPIRY.md) - Detailed token expiry troubleshooting
 - [Main Guide](README.md) - Complete troubleshooting procedures
 - [Index](INDEX.md) - Guide navigation
 - [Control Plane Kubeconfigs](../control-plane-kubeconfigs/README.md)

@@ -58,6 +58,16 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
   - [Prevention](kubevirt-vm-stuck-provisioning/PREVENTION.md) - Monitoring and best practices to avoid future issues
   - Scripts: `diagnostic-commands.sh`, `fix-velero-webhook.sh` - Automated diagnostic and fix tools
 
+### Storage Issues
+
+- **[Portworx CSI Pod CrashLoopBackOff](portworx-csi-crashloop/README.md)** - Complete guide for troubleshooting px-csi-ext pod crashes
+  - **[Quick Start](portworx-csi-crashloop/QUICKSTART.md)** - Fast fixes for common CSI issues ⚡
+  - [Quick Reference](portworx-csi-crashloop/QUICK-REFERENCE.md) - Essential command reference and decision tree
+  - [Common Errors](portworx-csi-crashloop/COMMON-ERRORS.md) - Error message lookup table with solutions
+  - [Investigation Workflow](portworx-csi-crashloop/INVESTIGATION-WORKFLOW.md) - Systematic troubleshooting process
+  - [Index](portworx-csi-crashloop/INDEX.md) - Guide navigation by symptom, role, and time available
+  - Script: `diagnostic-script.sh` - Automated diagnostic data collection
+
 ## Using These Guides
 
 Each guide follows this structure:
@@ -162,7 +172,8 @@ Planned troubleshooting guides:
 - [ ] Node NotReady states
 - [ ] Networking issues (SDN/OVN) - OpenShift networking layer
 - [x] CoreOS base system networking - See [CoreOS Networking Issues](coreos-networking-issues/README.md)
-- [ ] Storage/PVC problems
+- [x] Storage/PVC problems (Portworx) - See [Portworx CSI Pod CrashLoopBackOff](portworx-csi-crashloop/README.md)
+- [ ] Storage/PVC problems (OCS/ODF)
 - [ ] Image registry issues
 - [ ] Authentication failures
 - [ ] Operator degradation patterns
