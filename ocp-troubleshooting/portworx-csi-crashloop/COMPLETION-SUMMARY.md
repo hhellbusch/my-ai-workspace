@@ -5,7 +5,7 @@
 A comprehensive troubleshooting guide has been created for diagnosing and resolving `px-csi-ext` pod CrashLoopBackOff issues in OpenShift clusters using Portworx storage.
 
 **Created**: January 27, 2026  
-**Location**: `/home/hhellbusch/gemini-workspace/ocp-troubleshooting/portworx-csi-crashloop/`
+**Location**: `ocp-troubleshooting/portworx-csi-crashloop/`
 
 ---
 
@@ -125,7 +125,7 @@ Structured for different time constraints:
 ### For Immediate Issues
 
 ```bash
-cd /home/hhellbusch/gemini-workspace/ocp-troubleshooting/portworx-csi-crashloop/
+cd ocp-troubleshooting/portworx-csi-crashloop/
 
 # Read fast fixes
 less QUICKSTART.md
@@ -165,7 +165,7 @@ less COMMON-ERRORS.md
 
 The new guide has been integrated into the main OpenShift troubleshooting guide structure:
 
-**Updated file**: `/home/hhellbusch/gemini-workspace/ocp-troubleshooting/README.md`
+**Updated file**: `ocp-troubleshooting/README.md`
 
 Changes:
 - Added new "Storage Issues" section
@@ -316,7 +316,7 @@ oc get pod -n kube-system $PX_CSI_POD
 
 ```bash
 # Run full diagnostics
-cd /home/hhellbusch/gemini-workspace/ocp-troubleshooting/portworx-csi-crashloop/
+cd ocp-troubleshooting/portworx-csi-crashloop/
 ./diagnostic-script.sh customer-diagnostics-$(date +%Y%m%d-%H%M%S).txt
 
 # Follow INVESTIGATION-WORKFLOW.md for systematic troubleshooting
@@ -384,7 +384,7 @@ The guide is considered successful when:
 ## Contact
 
 For questions about this guide or to report issues:
-- Documentation location: `/home/hhellbusch/gemini-workspace/ocp-troubleshooting/portworx-csi-crashloop/`
+- Documentation location: `ocp-troubleshooting/portworx-csi-crashloop/`
 - Guide index: [INDEX.md](./INDEX.md)
 - Main README: [README.md](./README.md)
 

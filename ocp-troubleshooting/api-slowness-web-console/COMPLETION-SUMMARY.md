@@ -414,7 +414,7 @@ The guide is designed to be:
 - **Maintainable**: Clear structure for updates
 - **Scalable**: Works for small to large clusters
 
-**Location**: `/home/hhellbusch/gemini-workspace/ocp-troubleshooting/api-slowness-web-console/`
+**Location**: `ocp-troubleshooting/api-slowness-web-console/`
 
 **Status**: ✅ Complete and ready for use
 
