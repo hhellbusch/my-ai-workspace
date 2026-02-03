@@ -58,6 +58,13 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
   - [Prevention](kubevirt-vm-stuck-provisioning/PREVENTION.md) - Monitoring and best practices to avoid future issues
   - Scripts: `diagnostic-commands.sh`, `fix-velero-webhook.sh` - Automated diagnostic and fix tools
 
+### Namespace Management
+
+- **[Namespace Stuck in Terminating State](namespace-stuck-terminating/README.md)** - Complete guide for fixing namespaces stuck in Terminating state
+  - **[Quick Reference](namespace-stuck-terminating/QUICK-REFERENCE.md)** - Fast commands for common finalizer scenarios ⚡
+  - [Examples](namespace-stuck-terminating/EXAMPLES.md) - Real-world scenarios including OpenTelemetry, RHACM, and more
+  - Scripts: `cleanup-namespace-finalizers.sh`, `investigate-namespace.sh` - Automated investigation and cleanup tools
+
 ### Storage Issues
 
 - **[Portworx CSI Pod CrashLoopBackOff](portworx-csi-crashloop/README.md)** - Complete guide for troubleshooting px-csi-ext pod crashes
@@ -182,4 +189,5 @@ Planned troubleshooting guides:
 - [ ] Certificate rotation issues
 - [ ] Router/Ingress problems
 - [x] KubeVirt VM provisioning issues - See [KubeVirt VM Stuck in Provisioning](kubevirt-vm-stuck-provisioning/README.md)
+- [x] Namespace stuck in Terminating state - See [Namespace Stuck in Terminating State](namespace-stuck-terminating/README.md)
 
