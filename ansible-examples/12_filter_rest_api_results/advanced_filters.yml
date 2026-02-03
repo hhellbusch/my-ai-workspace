@@ -1,0 +1,478 @@
+---
+- name: Advanced S3 Credential Filtering Patterns
+  hosts: localhost
+  gather_facts: no
+  vars:
+    # Complex nested API response structure
+    complex_api_response:
+      metadata:
+        api_version: "v2"
+        total_count: 10
+        page: 1
+      data:
+        credentials:
+          - bucket_name: "prod-app1-data"
+            access_key: "AKIA_PROD_APP1_DATA"
+            secret_key: "secret1"
+            region: "us-east-1"
+            enabled: true
+            metadata:
+              owner: "team-alpha"
+              cost_center: "engineering"
+              tags:
+                environment: "production"
+                application: "app1"
+                tier: "critical"
+              compliance:
+                encrypted: true
+                backup_enabled: true
+                retention_days: 90
+          - bucket_name: "prod-app1-logs"
+            access_key: "AKIA_PROD_APP1_LOGS"
+            secret_key: "secret2"
+            region: "us-east-1"
+            enabled: true
+            metadata:
+              owner: "team-alpha"
+              cost_center: "engineering"
+              tags:
+                environment: "production"
+                application: "app1"
+                tier: "standard"
+              compliance:
+                encrypted: true
+                backup_enabled: false
+                retention_days: 30
+          - bucket_name: "prod-app2-data"
+            access_key: "AKIA_PROD_APP2_DATA"
+            secret_key: "secret3"
+            region: "us-west-2"
+            enabled: true
+            metadata:
+              owner: "team-beta"
+              cost_center: "product"
+              tags:
+                environment: "production"
+                application: "app2"
+                tier: "critical"
+              compliance:
+                encrypted: true
+                backup_enabled: true
+                retention_days: 180
+          - bucket_name: "staging-app1-data"
+            access_key: "AKIA_STAGING_APP1"
+            secret_key: "secret4"
+            region: "us-west-2"
+            enabled: true
+            metadata:
+              owner: "team-alpha"
+              cost_center: "engineering"
+              tags:
+                environment: "staging"
+                application: "app1"
+                tier: "standard"
+              compliance:
+                encrypted: false
+                backup_enabled: false
+                retention_days: 7
+          - bucket_name: "dev-app1-data"
+            access_key: "AKIA_DEV_APP1"
+            secret_key: "secret5"
+            region: "us-east-1"
+            enabled: false
+            metadata:
+              owner: "team-alpha"
+              cost_center: "engineering"
+              tags:
+                environment: "development"
+                application: "app1"
+                tier: "standard"
+              compliance:
+                encrypted: false
+                backup_enabled: false
+                retention_days: 1
+
+  tasks:
+    # =========================================================================
+    # ADVANCED PATTERN 1: Filter Nested Data Structures
+    # =========================================================================
+    
+    - name: "Filter by nested field - Get critical tier buckets"
+      ansible.builtin.set_fact:
+        critical_buckets: >-
+          {{
+            complex_api_response.data.credentials |
+            selectattr('metadata.tags.tier', 'equalto', 'critical') |
+            list
+          }}
+
+    - name: Display critical buckets
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 1: Filter by Nested Fields"
+          - "================================================"
+          - "Filter: metadata.tags.tier == 'critical'"
+          - "Critical buckets: {{ critical_buckets | map(attribute='bucket_name') | list }}"
+
+    # =========================================================================
+    # ADVANCED PATTERN 2: Multiple Nested Conditions
+    # =========================================================================
+    
+    - name: "Filter by multiple nested conditions"
+      ansible.builtin.set_fact:
+        production_critical_encrypted: >-
+          {{
+            complex_api_response.data.credentials |
+            selectattr('metadata.tags.environment', 'equalto', 'production') |
+            selectattr('metadata.tags.tier', 'equalto', 'critical') |
+            selectattr('metadata.compliance.encrypted', 'equalto', true) |
+            selectattr('metadata.compliance.backup_enabled', 'equalto', true) |
+            list
+          }}
+
+    - name: Display multi-condition results
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 2: Multiple Nested Conditions"
+          - "================================================"
+          - "Filters:"
+          - "  - environment == 'production'"
+          - "  - tier == 'critical'"
+          - "  - encrypted == true"
+          - "  - backup_enabled == true"
+          - "Results: {{ production_critical_encrypted | map(attribute='bucket_name') | list }}"
+
+    # =========================================================================
+    # ADVANCED PATTERN 3: Filter by Team/Owner
+    # =========================================================================
+    
+    - name: "Filter by owner/team"
+      ansible.builtin.set_fact:
+        team_alpha_buckets: >-
+          {{
+            complex_api_response.data.credentials |
+            selectattr('metadata.owner', 'equalto', 'team-alpha') |
+            selectattr('enabled', 'equalto', true) |
+            list
+          }}
+
+    - name: Display team buckets
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 3: Filter by Team/Owner"
+          - "================================================"
+          - "Team: team-alpha (enabled only)"
+          - "Buckets: {{ team_alpha_buckets | map(attribute='bucket_name') | list }}"
+          - "Count: {{ team_alpha_buckets | length }}"
+
+    # =========================================================================
+    # ADVANCED PATTERN 4: Group by Region
+    # =========================================================================
+    
+    - name: Get unique regions
+      ansible.builtin.set_fact:
+        regions: >-
+          {{
+            complex_api_response.data.credentials |
+            map(attribute='region') |
+            unique |
+            list
+          }}
+
+    - name: Group buckets by region
+      ansible.builtin.set_fact:
+        buckets_by_region: >-
+          {{
+            buckets_by_region | default({}) |
+            combine({
+              item: complex_api_response.data.credentials |
+                    selectattr('region', 'equalto', item) |
+                    map(attribute='bucket_name') |
+                    list
+            })
+          }}
+      loop: "{{ regions }}"
+
+    - name: Display grouped results
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 4: Group by Field"
+          - "================================================"
+          - "Buckets grouped by region:"
+          - "{{ buckets_by_region | to_nice_yaml }}"
+
+    # =========================================================================
+    # ADVANCED PATTERN 5: JSON Query (JMESPath) - Complex Filtering
+    # =========================================================================
+    # Note: Requires jmespath Python library and community.general collection
+    # Install: pip install jmespath && ansible-galaxy collection install community.general
+    
+    - name: "Check if json_query is available"
+      ansible.builtin.set_fact:
+        json_query_available: "{{ lookup('pipe', 'python3 -c \"import jmespath; print(True)\" 2>/dev/null || echo False') }}"
+      ignore_errors: yes
+
+    - name: "Use json_query for complex filtering (if available)"
+      ansible.builtin.set_fact:
+        prod_encrypted_90days: >-
+          {{
+            complex_api_response.data.credentials |
+            json_query('[?metadata.tags.environment==`production` && metadata.compliance.retention_days>=`90`]')
+          }}
+      when: json_query_available | bool
+      ignore_errors: yes
+
+    - name: "Alternative: Use selectattr for same filtering (no json_query needed)"
+      ansible.builtin.set_fact:
+        prod_encrypted_90days_alt: >-
+          {{
+            complex_api_response.data.credentials |
+            selectattr('metadata.tags.environment', 'equalto', 'production') |
+            selectattr('metadata.compliance.retention_days', '>=', 90) |
+            list
+          }}
+      when: not (json_query_available | default(false) | bool)
+
+    - name: Display JSON query results
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 5: JSON Query (JMESPath) or Alternative"
+          - "================================================"
+          - "Query: production AND retention >= 90 days"
+          - "Results: {{ (prod_encrypted_90days | default(prod_encrypted_90days_alt | default([]))) | map(attribute='bucket_name') | list }}"
+          - "{% if not (json_query_available | default(false) | bool) %}Note: json_query not available, using selectattr alternative{% endif %}"
+
+    # =========================================================================
+    # ADVANCED PATTERN 6: Custom Filter Function (Compliance Check)
+    # =========================================================================
+    
+    - name: "Identify non-compliant buckets"
+      ansible.builtin.set_fact:
+        non_compliant_buckets: >-
+          {{
+            complex_api_response.data.credentials |
+            selectattr('metadata.tags.environment', 'equalto', 'production') |
+            rejectattr('metadata.compliance.encrypted', 'equalto', true) |
+            list +
+            complex_api_response.data.credentials |
+            selectattr('metadata.tags.environment', 'equalto', 'production') |
+            selectattr('metadata.tags.tier', 'equalto', 'critical') |
+            rejectattr('metadata.compliance.backup_enabled', 'equalto', true) |
+            list
+          }}
+
+    - name: Display compliance check results
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 6: Compliance Filtering"
+          - "================================================"
+          - "Non-compliant production buckets:"
+          - "{{ non_compliant_buckets | map(attribute='bucket_name') | unique | list }}"
+          - ""
+          - "Issues found: {{ non_compliant_buckets | unique | length }}"
+
+    # =========================================================================
+    # ADVANCED PATTERN 7: Filter and Transform
+    # =========================================================================
+    
+    - name: "Filter and create summary report"
+      ansible.builtin.set_fact:
+        bucket_summary: >-
+          {{
+            complex_api_response.data.credentials |
+            selectattr('enabled', 'equalto', true) |
+            map('dict2items') |
+            map('selectattr', 'key', 'in', ['bucket_name', 'region', 'enabled']) |
+            map('items2dict') |
+            list
+          }}
+
+    - name: Display transformed results
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 7: Filter and Transform"
+          - "================================================"
+          - "Enabled buckets (simplified view):"
+          - "{{ bucket_summary | to_nice_yaml }}"
+
+    # =========================================================================
+    # ADVANCED PATTERN 8: Conditional Filtering Based on Retention Policy
+    # =========================================================================
+    
+    - name: "Filter by retention policy tiers"
+      ansible.builtin.set_fact:
+        short_retention: >-
+          {{
+            complex_api_response.data.credentials |
+            selectattr('metadata.compliance.retention_days', '<', 30) |
+            map(attribute='bucket_name') |
+            list
+          }}
+        medium_retention: >-
+          {{
+            complex_api_response.data.credentials |
+            selectattr('metadata.compliance.retention_days', '>=', 30) |
+            selectattr('metadata.compliance.retention_days', '<', 90) |
+            map(attribute='bucket_name') |
+            list
+          }}
+        long_retention: >-
+          {{
+            complex_api_response.data.credentials |
+            selectattr('metadata.compliance.retention_days', '>=', 90) |
+            map(attribute='bucket_name') |
+            list
+          }}
+
+    - name: Display retention tiers
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 8: Tiered Filtering"
+          - "================================================"
+          - "Short retention (<30 days): {{ short_retention }}"
+          - "Medium retention (30-89 days): {{ medium_retention }}"
+          - "Long retention (90+ days): {{ long_retention }}"
+
+    # =========================================================================
+    # ADVANCED PATTERN 9: Filter by Application and Environment
+    # =========================================================================
+    
+    - name: "Create application-environment matrix"
+      ansible.builtin.set_fact:
+        app1_prod: >-
+          {{
+            complex_api_response.data.credentials |
+            selectattr('metadata.tags.application', 'equalto', 'app1') |
+            selectattr('metadata.tags.environment', 'equalto', 'production') |
+            list
+          }}
+        app1_nonprod: >-
+          {{
+            complex_api_response.data.credentials |
+            selectattr('metadata.tags.application', 'equalto', 'app1') |
+            rejectattr('metadata.tags.environment', 'equalto', 'production') |
+            list
+          }}
+
+    - name: Display application matrix
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 9: Application-Environment Matrix"
+          - "================================================"
+          - "App1 Production:"
+          - "  {{ app1_prod | map(attribute='bucket_name') | list }}"
+          - "App1 Non-Production:"
+          - "  {{ app1_nonprod | map(attribute='bucket_name') | list }}"
+
+    # =========================================================================
+    # ADVANCED PATTERN 10: Dynamic Filtering Based on Variables
+    # =========================================================================
+    
+    - name: "Dynamic filter based on criteria"
+      vars:
+        filter_criteria:
+          environment: "production"
+          tier: "critical"
+          min_retention_days: 90
+      ansible.builtin.set_fact:
+        dynamically_filtered: >-
+          {{
+            complex_api_response.data.credentials |
+            selectattr('metadata.tags.environment', 'equalto', filter_criteria.environment) |
+            selectattr('metadata.tags.tier', 'equalto', filter_criteria.tier) |
+            selectattr('metadata.compliance.retention_days', '>=', filter_criteria.min_retention_days) |
+            list
+          }}
+
+    - name: Display dynamic filter results
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 10: Dynamic Filtering"
+          - "================================================"
+          - "Criteria:"
+          - "  environment: production"
+          - "  tier: critical"
+          - "  min_retention_days: 90"
+          - "Results: {{ dynamically_filtered | map(attribute='bucket_name') | list }}"
+
+    # =========================================================================
+    # SUMMARY REPORT
+    # =========================================================================
+    
+    - name: Generate comprehensive summary
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "COMPREHENSIVE SUMMARY"
+          - "================================================"
+          - "Total buckets: {{ complex_api_response.data.credentials | length }}"
+          - "Critical tier: {{ critical_buckets | length }}"
+          - "Team Alpha: {{ team_alpha_buckets | length }}"
+          - "Production (critical, encrypted, backed up): {{ production_critical_encrypted | length }}"
+          - "Non-compliant: {{ non_compliant_buckets | unique | length }}"
+          - ""
+          - "By Region:"
+          - "{{ buckets_by_region | to_nice_yaml }}"
+          - ""
+          - "Retention Tiers:"
+          - "  Short (<30d): {{ short_retention | length }}"
+          - "  Medium (30-89d): {{ medium_retention | length }}"
+          - "  Long (90+d): {{ long_retention | length }}"
+          - "================================================"
+
+# ==============================================================================
+# HOW TO RUN:
+# ==============================================================================
+#
+# Run all advanced examples:
+#   ansible-playbook advanced_filters.yml
+#
+# With verbose output to see filter processing:
+#   ansible-playbook advanced_filters.yml -v
+#
+# ==============================================================================
+# KEY TECHNIQUES DEMONSTRATED:
+# ==============================================================================
+#
+# 1. Nested field filtering (metadata.tags.tier)
+# 2. Multiple condition chaining
+# 3. Grouping results by field values
+# 4. JMESPath queries for complex conditions
+# 5. Compliance and security filtering
+# 6. Data transformation and simplification
+# 7. Tiered/bucketed filtering
+# 8. Application-environment matrices
+# 9. Dynamic filtering with variable criteria
+# 10. Comprehensive reporting
+#
+# ==============================================================================
+# WHEN TO USE WHICH TECHNIQUE:
+# ==============================================================================
+#
+# Use selectattr/rejectattr when:
+#   - Simple field comparisons
+#   - Chaining multiple conditions
+#   - Nested field access (dot notation)
+#
+# Use json_query when:
+#   - Complex boolean logic (AND/OR/NOT combinations)
+#   - Numeric comparisons (>=, <=, etc.)
+#   - Array operations
+#   - Deep nesting with multiple conditions
+#
+# Use loop + when:
+#   - Need to perform actions per item
+#   - Complex per-item processing
+#   - Building dynamic structures
+#
+

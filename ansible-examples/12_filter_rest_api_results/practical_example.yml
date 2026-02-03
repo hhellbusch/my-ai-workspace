@@ -1,0 +1,347 @@
+---
+- name: Practical S3 Credential Management Example
+  hosts: localhost
+  gather_facts: yes
+  vars:
+    # API Configuration
+    s3_api_endpoint: "https://api.example.com/v1/s3/credentials"
+    api_token: "{{ lookup('env', 'API_TOKEN') | default('demo_token', true) }}"
+    
+    # Application Configuration
+    application_name: "myapp"
+    app_environment: "production"
+    app_bucket_name: "{{ app_environment }}-{{ application_name }}-data"
+    
+    # Output Configuration
+    output_dir: "/tmp/s3_credentials"
+    create_env_files: true
+    
+    # Mock API Response (for demo - replace with real API call)
+    use_mock_data: true
+    mock_s3_data:
+      credentials:
+        - bucket_name: "production-myapp-data"
+          access_key: "AKIAIOSFODNN7EXAMPLE"
+          secret_key: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+          region: "us-east-1"
+          created_date: "2024-01-15"
+          last_rotated: "2024-12-01"
+          enabled: true
+        - bucket_name: "production-myapp-logs"
+          access_key: "AKIAI44QH8DHBEXAMPLE"
+          secret_key: "je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY"
+          region: "us-east-1"
+          created_date: "2024-01-15"
+          last_rotated: "2024-12-01"
+          enabled: true
+        - bucket_name: "staging-myapp-data"
+          access_key: "AKIAIOSFODNN7EXAMPLE2"
+          secret_key: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY2"
+          region: "us-west-2"
+          created_date: "2024-02-10"
+          last_rotated: "2024-11-20"
+          enabled: true
+        - bucket_name: "production-otherapp-data"
+          access_key: "AKIAI44QH8DHBEXAMPLE2"
+          secret_key: "je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY2"
+          region: "eu-west-1"
+          created_date: "2024-03-01"
+          last_rotated: "2024-12-05"
+          enabled: true
+
+  tasks:
+    # =========================================================================
+    # STEP 1: Fetch S3 Credentials from API
+    # =========================================================================
+    
+    - name: Fetch S3 credentials from REST API
+      block:
+        - name: Call S3 credentials API
+          ansible.builtin.uri:
+            url: "{{ s3_api_endpoint }}"
+            method: GET
+            headers:
+              Authorization: "Bearer {{ api_token }}"
+              Content-Type: "application/json"
+            return_content: yes
+            status_code: [200]
+            timeout: 30
+          register: api_response
+          when: not use_mock_data
+        
+        - name: Use mock data for demo
+          ansible.builtin.set_fact:
+            api_response:
+              json: "{{ mock_s3_data }}"
+          when: use_mock_data
+      
+      rescue:
+        - name: Handle API failure
+          ansible.builtin.fail:
+            msg: |
+              Failed to fetch S3 credentials from API
+              URL: {{ s3_api_endpoint }}
+              Error: {{ api_response.msg | default('Connection failed') }}
+              
+              To use mock data for testing, run with:
+                ansible-playbook practical_example.yml -e "use_mock_data=true"
+
+    - name: Display API response summary
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "S3 CREDENTIALS API RESPONSE"
+          - "================================================"
+          - "Total credentials fetched: {{ api_response.json.credentials | length }}"
+          - "Buckets available:"
+          - "{{ api_response.json.credentials | map(attribute='bucket_name') | list | to_nice_yaml }}"
+
+    # =========================================================================
+    # STEP 2: Filter Credentials by Application Bucket
+    # =========================================================================
+    
+    - name: Filter credentials for application bucket
+      ansible.builtin.set_fact:
+        app_credentials: >-
+          {{
+            api_response.json.credentials |
+            selectattr('bucket_name', 'equalto', app_bucket_name) |
+            list
+          }}
+
+    - name: Verify application credentials found
+      ansible.builtin.assert:
+        that:
+          - app_credentials | length > 0
+        fail_msg: |
+          ERROR: No credentials found for bucket '{{ app_bucket_name }}'
+          
+          Available buckets:
+          {{ api_response.json.credentials | map(attribute='bucket_name') | list | to_nice_yaml }}
+          
+          Check your configuration:
+            - application_name: {{ application_name }}
+            - app_environment: {{ app_environment }}
+            - Expected bucket: {{ app_bucket_name }}
+        success_msg: "✓ Found credentials for {{ app_bucket_name }}"
+
+    - name: Extract single credential object
+      ansible.builtin.set_fact:
+        app_s3_cred: "{{ app_credentials | first }}"
+
+    - name: Display filtered credentials
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "FILTERED CREDENTIALS"
+          - "================================================"
+          - "Bucket Name: {{ app_s3_cred.bucket_name }}"
+          - "Access Key:  {{ app_s3_cred.access_key }}"
+          - "Region:      {{ app_s3_cred.region }}"
+          - "Enabled:     {{ app_s3_cred.enabled }}"
+          - "Created:     {{ app_s3_cred.created_date | default('N/A') }}"
+          - "Last Rotated: {{ app_s3_cred.last_rotated | default('N/A') }}"
+
+    # =========================================================================
+    # STEP 3: Filter All Production Credentials (for audit/reporting)
+    # =========================================================================
+    
+    - name: Get all production credentials
+      ansible.builtin.set_fact:
+        production_credentials: >-
+          {{
+            api_response.json.credentials |
+            selectattr('bucket_name', 'search', '^production-') |
+            selectattr('enabled', 'equalto', true) |
+            list
+          }}
+
+    - name: Display production credentials summary
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PRODUCTION CREDENTIALS SUMMARY"
+          - "================================================"
+          - "Total production buckets (enabled): {{ production_credentials | length }}"
+          - "Buckets: {{ production_credentials | map(attribute='bucket_name') | list }}"
+
+    # =========================================================================
+    # STEP 4: Create Configuration Files
+    # =========================================================================
+    
+    - name: Create output directory
+      ansible.builtin.file:
+        path: "{{ output_dir }}"
+        state: directory
+        mode: '0700'
+
+    - name: Write application S3 configuration file
+      ansible.builtin.copy:
+        content: |
+          # S3 Configuration for {{ application_name }} ({{ app_environment }})
+          # Generated: {{ ansible_date_time.iso8601 }}
+          
+          [s3]
+          bucket_name = {{ app_s3_cred.bucket_name }}
+          access_key = {{ app_s3_cred.access_key }}
+          secret_key = {{ app_s3_cred.secret_key }}
+          region = {{ app_s3_cred.region }}
+          
+          [metadata]
+          created_date = {{ app_s3_cred.created_date | default('unknown') }}
+          last_rotated = {{ app_s3_cred.last_rotated | default('unknown') }}
+        dest: "{{ output_dir }}/{{ application_name }}_s3_config.ini"
+        mode: '0600'
+
+    - name: Write environment file (for Docker/containers)
+      ansible.builtin.copy:
+        content: |
+          # Environment variables for {{ application_name }}
+          # Generated: {{ ansible_date_time.iso8601 }}
+          AWS_ACCESS_KEY_ID={{ app_s3_cred.access_key }}
+          AWS_SECRET_ACCESS_KEY={{ app_s3_cred.secret_key }}
+          AWS_DEFAULT_REGION={{ app_s3_cred.region }}
+          S3_BUCKET_NAME={{ app_s3_cred.bucket_name }}
+        dest: "{{ output_dir }}/{{ application_name }}.env"
+        mode: '0600'
+      when: create_env_files
+
+    - name: Write JSON configuration file
+      ansible.builtin.copy:
+        content: "{{ app_s3_cred | to_nice_json }}"
+        dest: "{{ output_dir }}/{{ application_name }}_s3_config.json"
+        mode: '0600'
+
+    # =========================================================================
+    # STEP 5: Create Audit Report for All Production Buckets
+    # =========================================================================
+    
+    - name: Generate production credentials audit report
+      ansible.builtin.copy:
+        content: |
+          # S3 Credentials Audit Report - Production Environment
+          
+          **Generated:** {{ ansible_date_time.iso8601 }}  
+          **Total Production Buckets:** {{ production_credentials | length }}
+          
+          ---
+          
+          {% for cred in production_credentials %}
+          ## {{ cred.bucket_name }}
+          
+          - **Access Key:** `{{ cred.access_key }}`
+          - **Region:** {{ cred.region }}
+          - **Status:** {{ 'Enabled' if cred.enabled else 'Disabled' }}
+          - **Created:** {{ cred.created_date | default('N/A') }}
+          - **Last Rotated:** {{ cred.last_rotated | default('N/A') }}
+          
+          {% endfor %}
+          
+          ---
+          
+          ## Summary by Region
+          
+          {% for region in production_credentials | map(attribute='region') | unique | sort %}
+          - **{{ region }}:** {{ production_credentials | selectattr('region', 'equalto', region) | list | length }} bucket(s)
+          {% endfor %}
+          
+        dest: "{{ output_dir }}/production_s3_audit_{{ ansible_date_time.date }}.md"
+        mode: '0644'
+
+    # =========================================================================
+    # STEP 6: Display Summary and Next Steps
+    # =========================================================================
+    
+    - name: Display completion summary
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "OPERATION COMPLETE"
+          - "================================================"
+          - ""
+          - "✓ Fetched {{ api_response.json.credentials | length }} credentials from API"
+          - "✓ Filtered credentials for {{ app_bucket_name }}"
+          - "✓ Generated configuration files"
+          - ""
+          - "Output Files:"
+          - "  - {{ output_dir }}/{{ application_name }}_s3_config.ini"
+          - "  - {{ output_dir }}/{{ application_name }}.env"
+          - "  - {{ output_dir }}/{{ application_name }}_s3_config.json"
+          - "  - {{ output_dir }}/production_s3_audit_{{ ansible_date_time.date }}.md"
+          - ""
+          - "Application Configuration:"
+          - "  - Bucket: {{ app_s3_cred.bucket_name }}"
+          - "  - Region: {{ app_s3_cred.region }}"
+          - "  - Access Key: {{ app_s3_cred.access_key }}"
+          - ""
+          - "Next Steps:"
+          - "  1. Review configuration files in {{ output_dir }}"
+          - "  2. Deploy credentials to application servers"
+          - "  3. Test S3 connectivity"
+          - "  4. Securely delete temporary files when done"
+          - "================================================"
+
+    - name: Show file contents example
+      ansible.builtin.debug:
+        msg:
+          - ""
+          - "To view the generated files:"
+          - "  cat {{ output_dir }}/{{ application_name }}.env"
+          - "  cat {{ output_dir }}/{{ application_name }}_s3_config.ini"
+          - ""
+          - "To use in Docker:"
+          - "  docker run --env-file {{ output_dir }}/{{ application_name }}.env myapp:latest"
+          - ""
+          - "To clean up:"
+          - "  rm -rf {{ output_dir }}"
+
+# ==============================================================================
+# HOW TO RUN:
+# ==============================================================================
+#
+# With mock data (demo/testing):
+#   ansible-playbook practical_example.yml
+#
+# With different application:
+#   ansible-playbook practical_example.yml \
+#     -e "application_name=webapp" \
+#     -e "app_environment=staging"
+#
+# With real API (requires API_TOKEN environment variable):
+#   export API_TOKEN="your-token-here"
+#   ansible-playbook practical_example.yml \
+#     -e "use_mock_data=false" \
+#     -e "s3_api_endpoint=https://your-api.example.com/s3/credentials"
+#
+# Custom output directory:
+#   ansible-playbook practical_example.yml \
+#     -e "output_dir=/secure/path/s3_creds"
+#
+# ==============================================================================
+# REAL-WORLD INTEGRATION:
+# ==============================================================================
+#
+# 1. Deploy credentials to application servers:
+#
+#   - name: Deploy S3 credentials
+#     hosts: app_servers
+#     tasks:
+#       - name: Copy credentials
+#         ansible.builtin.copy:
+#           src: "{{ output_dir }}/{{ application_name }}_s3_config.ini"
+#           dest: /etc/myapp/s3_config.ini
+#           mode: '0600'
+#           owner: myapp
+#           group: myapp
+#
+# 2. Use with AWX/Tower:
+#    - Store API_TOKEN in AWX credential
+#    - Run as Job Template
+#    - Use artifacts to pass credentials to next job
+#
+# 3. CI/CD Pipeline:
+#    - Fetch credentials in pipeline
+#    - Deploy to Kubernetes as Secret
+#    - Reference in deployment manifests
+#
+

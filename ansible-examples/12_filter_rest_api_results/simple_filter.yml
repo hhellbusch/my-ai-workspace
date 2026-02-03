@@ -1,0 +1,106 @@
+---
+- name: Simple S3 Credential Filtering Example
+  hosts: localhost
+  gather_facts: no
+  vars:
+    # Target bucket to filter for
+    target_bucket_name: "prod-data"
+    
+    # Mock API response (in real scenario, this comes from uri module)
+    mock_api_response:
+      - bucket_name: "prod-data"
+        access_key: "AKIAIOSFODNN7EXAMPLE"
+        secret_key: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+        region: "us-east-1"
+      - bucket_name: "dev-data"
+        access_key: "AKIAI44QH8DHBEXAMPLE"
+        secret_key: "je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY"
+        region: "us-west-2"
+      - bucket_name: "prod-logs"
+        access_key: "AKIAIOSFODNN7EXAMPLE2"
+        secret_key: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY2"
+        region: "us-east-1"
+      - bucket_name: "staging-data"
+        access_key: "AKIAI44QH8DHBEXAMPLE2"
+        secret_key: "je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY2"
+        region: "eu-west-1"
+
+  tasks:
+    - name: Display all available credentials
+      ansible.builtin.debug:
+        msg: "Available buckets: {{ mock_api_response | map(attribute='bucket_name') | list }}"
+
+    - name: Filter credentials by exact bucket name
+      ansible.builtin.set_fact:
+        filtered_credentials: >-
+          {{
+            mock_api_response |
+            selectattr('bucket_name', 'equalto', target_bucket_name) |
+            list
+          }}
+
+    - name: Display filtered results
+      ansible.builtin.debug:
+        msg: |
+          ================================================
+          FILTERED S3 CREDENTIALS
+          ================================================
+          Target Bucket: {{ target_bucket_name }}
+          Found: {{ filtered_credentials | length }} credential(s)
+          
+          {% if filtered_credentials | length > 0 %}
+          Bucket Name: {{ filtered_credentials[0].bucket_name }}
+          Access Key:  {{ filtered_credentials[0].access_key }}
+          Secret Key:  {{ filtered_credentials[0].secret_key[:20] }}...
+          Region:      {{ filtered_credentials[0].region }}
+          {% else %}
+          No credentials found for bucket '{{ target_bucket_name }}'
+          {% endif %}
+          ================================================
+
+    - name: Verify we got results
+      ansible.builtin.assert:
+        that:
+          - filtered_credentials | length > 0
+        success_msg: "✓ Successfully found credentials for {{ target_bucket_name }}"
+        fail_msg: "✗ No credentials found for bucket {{ target_bucket_name }}"
+
+    - name: Example - Use filtered credentials
+      ansible.builtin.debug:
+        msg: "You can now use {{ filtered_credentials[0].access_key }} for bucket {{ filtered_credentials[0].bucket_name }}"
+
+# ==============================================================================
+# HOW TO RUN:
+# ==============================================================================
+#
+# Basic run:
+#   ansible-playbook simple_filter.yml
+#
+# With different target bucket:
+#   ansible-playbook simple_filter.yml -e "target_bucket_name=dev-data"
+#
+# ==============================================================================
+# REAL-WORLD USAGE:
+# ==============================================================================
+#
+# Replace mock_api_response with actual API call:
+#
+#   - name: Fetch S3 credentials from REST API
+#     ansible.builtin.uri:
+#       url: "https://api.example.com/s3-credentials"
+#       method: GET
+#       headers:
+#         Authorization: "Bearer {{ api_token }}"
+#       return_content: yes
+#     register: api_call
+#
+#   - name: Filter credentials
+#     ansible.builtin.set_fact:
+#       filtered_credentials: >-
+#         {{
+#           api_call.json |
+#           selectattr('bucket_name', 'equalto', target_bucket_name) |
+#           list
+#         }}
+#
+

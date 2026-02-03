@@ -1,0 +1,289 @@
+---
+- name: S3 Credential Filtering - All Pattern Examples
+  hosts: localhost
+  gather_facts: no
+  vars:
+    # Mock S3 credentials (simulating API response)
+    s3_credentials:
+      - bucket_name: "prod-data"
+        access_key: "AKIA_PROD_DATA"
+        secret_key: "secret_prod_data"
+        region: "us-east-1"
+        enabled: true
+      - bucket_name: "prod-logs"
+        access_key: "AKIA_PROD_LOGS"
+        secret_key: "secret_prod_logs"
+        region: "us-east-1"
+        enabled: true
+      - bucket_name: "prod-backups"
+        access_key: "AKIA_PROD_BACKUPS"
+        secret_key: "secret_prod_backups"
+        region: "us-west-2"
+        enabled: true
+      - bucket_name: "dev-data"
+        access_key: "AKIA_DEV_DATA"
+        secret_key: "secret_dev_data"
+        region: "us-west-2"
+        enabled: true
+      - bucket_name: "staging-data"
+        access_key: "AKIA_STAGING_DATA"
+        secret_key: "secret_staging_data"
+        region: "eu-west-1"
+        enabled: true
+      - bucket_name: "test-data"
+        access_key: "AKIA_TEST_DATA"
+        secret_key: "secret_test_data"
+        region: "us-east-1"
+        enabled: false
+      - bucket_name: "legacy-archive"
+        access_key: "AKIA_LEGACY"
+        secret_key: "secret_legacy"
+        region: "us-east-1"
+        enabled: false
+
+  tasks:
+    - name: "Pattern 1: Exact Match - Get specific bucket"
+      ansible.builtin.set_fact:
+        exact_match: >-
+          {{
+            s3_credentials |
+            selectattr('bucket_name', 'equalto', 'prod-data') |
+            list
+          }}
+
+    - name: Display exact match results
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 1: Exact Match (equalto)"
+          - "================================================"
+          - "Filter: bucket_name == 'prod-data'"
+          - "Results: {{ exact_match | length }} found"
+          - "Buckets: {{ exact_match | map(attribute='bucket_name') | list }}"
+
+    - name: "Pattern 2: Partial Match (Contains) - Get all production buckets"
+      ansible.builtin.set_fact:
+        contains_prod: >-
+          {{
+            s3_credentials |
+            selectattr('bucket_name', 'search', 'prod') |
+            list
+          }}
+
+    - name: Display partial match results
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 2: Partial Match (search/contains)"
+          - "================================================"
+          - "Filter: bucket_name contains 'prod'"
+          - "Results: {{ contains_prod | length }} found"
+          - "Buckets: {{ contains_prod | map(attribute='bucket_name') | list }}"
+
+    - name: "Pattern 3: Starts With (Regex) - Get buckets with prefix"
+      ansible.builtin.set_fact:
+        starts_with_prod: >-
+          {{
+            s3_credentials |
+            selectattr('bucket_name', 'match', '^prod-') |
+            list
+          }}
+
+    - name: Display starts with results
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 3: Starts With (match/regex)"
+          - "================================================"
+          - "Filter: bucket_name starts with 'prod-'"
+          - "Results: {{ starts_with_prod | length }} found"
+          - "Buckets: {{ starts_with_prod | map(attribute='bucket_name') | list }}"
+
+    - name: "Pattern 4: Multiple Values (In List) - Get specific buckets"
+      ansible.builtin.set_fact:
+        multiple_buckets: >-
+          {{
+            s3_credentials |
+            selectattr('bucket_name', 'in', ['prod-data', 'staging-data', 'dev-data']) |
+            list
+          }}
+
+    - name: Display multiple values results
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 4: Multiple Values (in)"
+          - "================================================"
+          - "Filter: bucket_name in ['prod-data', 'staging-data', 'dev-data']"
+          - "Results: {{ multiple_buckets | length }} found"
+          - "Buckets: {{ multiple_buckets | map(attribute='bucket_name') | list }}"
+
+    - name: "Pattern 5: Exclude (Reject) - Get all non-dev buckets"
+      ansible.builtin.set_fact:
+        non_dev_buckets: >-
+          {{
+            s3_credentials |
+            rejectattr('bucket_name', 'search', 'dev') |
+            list
+          }}
+
+    - name: Display reject results
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 5: Exclude/Reject (rejectattr)"
+          - "================================================"
+          - "Filter: bucket_name does NOT contain 'dev'"
+          - "Results: {{ non_dev_buckets | length }} found"
+          - "Buckets: {{ non_dev_buckets | map(attribute='bucket_name') | list }}"
+
+    - name: "Pattern 6: Multiple Conditions - Production AND us-east-1 AND enabled"
+      ansible.builtin.set_fact:
+        multi_condition: >-
+          {{
+            s3_credentials |
+            selectattr('bucket_name', 'search', 'prod') |
+            selectattr('region', 'equalto', 'us-east-1') |
+            selectattr('enabled', 'equalto', true) |
+            list
+          }}
+
+    - name: Display multiple conditions results
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 6: Multiple Conditions (chained)"
+          - "================================================"
+          - "Filter: contains 'prod' AND region='us-east-1' AND enabled=true"
+          - "Results: {{ multi_condition | length }} found"
+          - "Buckets: {{ multi_condition | map(attribute='bucket_name') | list }}"
+
+    - name: "Pattern 7: Filter by Boolean - Get only enabled buckets"
+      ansible.builtin.set_fact:
+        enabled_only: >-
+          {{
+            s3_credentials |
+            selectattr('enabled', 'equalto', true) |
+            list
+          }}
+
+    - name: Display boolean filter results
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 7: Boolean Filter"
+          - "================================================"
+          - "Filter: enabled == true"
+          - "Results: {{ enabled_only | length }} found"
+          - "Buckets: {{ enabled_only | map(attribute='bucket_name') | list }}"
+
+    - name: "Pattern 8: Filter by Region - Get us-east-1 buckets"
+      ansible.builtin.set_fact:
+        us_east_buckets: >-
+          {{
+            s3_credentials |
+            selectattr('region', 'equalto', 'us-east-1') |
+            list
+          }}
+
+    - name: Display region filter results
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 8: Filter by Field"
+          - "================================================"
+          - "Filter: region == 'us-east-1'"
+          - "Results: {{ us_east_buckets | length }} found"
+          - "Buckets: {{ us_east_buckets | map(attribute='bucket_name') | list }}"
+
+    - name: "Pattern 9: Get First Match - Single result"
+      ansible.builtin.set_fact:
+        first_prod: >-
+          {{
+            s3_credentials |
+            selectattr('bucket_name', 'search', 'prod') |
+            first
+          }}
+
+    - name: Display first match result
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 9: First Match (first)"
+          - "================================================"
+          - "Filter: first bucket containing 'prod'"
+          - "Result: {{ first_prod.bucket_name }}"
+          - "Access Key: {{ first_prod.access_key }}"
+
+    - name: "Pattern 10: Filter and Extract Field Values"
+      ansible.builtin.set_fact:
+        prod_bucket_names: >-
+          {{
+            s3_credentials |
+            selectattr('bucket_name', 'search', 'prod') |
+            map(attribute='bucket_name') |
+            list
+          }}
+        prod_access_keys: >-
+          {{
+            s3_credentials |
+            selectattr('bucket_name', 'search', 'prod') |
+            map(attribute='access_key') |
+            list
+          }}
+
+    - name: Display extracted values
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "PATTERN 10: Extract Field Values (map)"
+          - "================================================"
+          - "Production bucket names: {{ prod_bucket_names }}"
+          - "Production access keys: {{ prod_access_keys }}"
+
+    - name: "Pattern 11: Filter in Loop (when condition)"
+      ansible.builtin.debug:
+        msg: "Processing {{ item.bucket_name }}: {{ item.access_key }}"
+      loop: "{{ s3_credentials }}"
+      when: item.bucket_name is search('prod')
+      loop_control:
+        label: "{{ item.bucket_name }}"
+
+    - name: Display summary
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "SUMMARY"
+          - "================================================"
+          - "Total credentials: {{ s3_credentials | length }}"
+          - "Production: {{ contains_prod | length }}"
+          - "Enabled: {{ enabled_only | length }}"
+          - "US-East-1: {{ us_east_buckets | length }}"
+          - "================================================"
+
+# ==============================================================================
+# HOW TO RUN:
+# ==============================================================================
+#
+# Run all pattern examples:
+#   ansible-playbook filter_patterns.yml
+#
+# With verbose output:
+#   ansible-playbook filter_patterns.yml -v
+#
+# ==============================================================================
+# PATTERN QUICK REFERENCE:
+# ==============================================================================
+#
+# Exact match:         selectattr('field', 'equalto', 'value')
+# Contains:            selectattr('field', 'search', 'pattern')
+# Starts with:         selectattr('field', 'match', '^prefix')
+# Multiple values:     selectattr('field', 'in', ['a', 'b'])
+# Exclude:             rejectattr('field', 'equalto', 'value')
+# Multiple conditions: selectattr('f1', ...) | selectattr('f2', ...)
+# Boolean:             selectattr('field', 'equalto', true)
+# First match:         selectattr(...) | first
+# Extract fields:      selectattr(...) | map(attribute='field') | list
+# Loop filter:         when: item.field is search('pattern')
+#
+

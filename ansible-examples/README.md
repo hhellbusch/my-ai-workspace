@@ -765,4 +765,182 @@ vars:
 **Related Examples:**
 - See `6_parallel_execution_via_bastion/` for general async patterns
 - Both examples demonstrate the power of async execution in Ansible
+
+### 12. Filter REST API Results (S3 Credentials) ⭐
+
+This example demonstrates how to filter data returned from REST APIs using Ansible's powerful Jinja2 filters. While focused on S3 credentials, these patterns apply to any REST API response.
+
+**The Problem:** APIs return large datasets, but you only need specific items  
+**The Solution:** Use Ansible filters (`selectattr`, `rejectattr`, `json_query`) to extract exactly what you need
+
+**Use Cases:**
+- Filter S3/cloud credentials by bucket/resource name
+- Extract specific resources from cloud provider APIs
+- Pre-process API responses before further operations
+- Security audits and compliance checks
+- Multi-environment credential management
+
+**Key concepts:**
+- Using `selectattr` for exact and partial matches
+- Chaining multiple filter conditions
+- Filtering nested JSON structures
+- Extracting field values with `map`
+- Using `json_query` (JMESPath) for complex queries
+- Error handling for empty results
+
+```bash
+cd 12_filter_rest_api_results
+```
+
+**Quick Start:**
+
+**1. Simple Example (5 seconds to understand):**
+```bash
+ansible-playbook simple_filter.yml
+
+# With different bucket
+ansible-playbook simple_filter.yml -e "target_bucket_name=dev-data"
+```
+
+**2. See All Filter Patterns:**
+```bash
+ansible-playbook filter_patterns.yml
+```
+
+**3. Real-World Example:**
+```bash
+# With mock data (demo)
+ansible-playbook practical_example.yml
+
+# With different app/env
+ansible-playbook practical_example.yml -e "application_name=webapp" -e "app_environment=staging"
+```
+
+**4. Advanced Patterns:**
+```bash
+ansible-playbook advanced_filters.yml
+```
+
+**Common Filtering Patterns:**
+
+```yaml
+# Exact match - specific bucket
+{{ credentials | selectattr('bucket_name', 'equalto', 'my-bucket') | list }}
+
+# Partial match - all production buckets
+{{ credentials | selectattr('bucket_name', 'search', 'prod') | list }}
+
+# Starts with - bucket name prefix
+{{ credentials | selectattr('bucket_name', 'match', '^prod-') | list }}
+
+# Multiple values - specific list
+{{ credentials | selectattr('bucket_name', 'in', ['bucket1', 'bucket2']) | list }}
+
+# Exclude - NOT dev buckets
+{{ credentials | rejectattr('bucket_name', 'search', 'dev') | list }}
+
+# Multiple conditions - production AND enabled
+{{ credentials | selectattr('env', 'equalto', 'prod') | selectattr('enabled', 'equalto', true) | list }}
+
+# First match only - single result
+{{ credentials | selectattr('bucket_name', 'equalto', 'my-bucket') | first }}
+
+# Extract field values - get bucket names
+{{ credentials | map(attribute='bucket_name') | list }}
+```
+
+**Real-World Workflow:**
+
+```yaml
+# 1. Fetch from API
+- name: Get S3 credentials
+  ansible.builtin.uri:
+    url: "https://api.example.com/s3-credentials"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ api_token }}"
+    return_content: yes
+  register: api_response
+
+# 2. Filter by bucket name
+- name: Filter for production app bucket
+  ansible.builtin.set_fact:
+    app_credentials: >-
+      {{
+        api_response.json.credentials |
+        selectattr('bucket_name', 'equalto', 'prod-myapp-data') |
+        first
+      }}
+
+# 3. Use credentials
+- name: Deploy configuration
+  ansible.builtin.template:
+    src: s3_config.j2
+    dest: /etc/myapp/s3_config.ini
+  vars:
+    access_key: "{{ app_credentials.access_key }}"
+    secret_key: "{{ app_credentials.secret_key }}"
+```
+
+**What's Included:**
+- `simple_filter.yml` ⭐ Basic filtering example
+- `filter_patterns.yml` - All filter types demonstrated
+- `practical_example.yml` - Complete real-world workflow
+- `advanced_filters.yml` - Complex nested filtering
+- Comprehensive documentation with examples
+
+**Documentation Structure:**
+```
+12_filter_rest_api_results/
+├── README.md ⭐ Complete guide
+├── QUICK-REFERENCE.md ⭐ Filter syntax cheat sheet
+├── EXAMPLES.md ⭐ Additional use cases
+├── simple_filter.yml ⭐ Start here
+├── filter_patterns.yml (all patterns)
+├── practical_example.yml (real workflow)
+├── advanced_filters.yml (complex scenarios)
+└── test_examples.sh (run all examples)
+```
+
+**Filter Quick Reference:**
+
+| Filter | Use Case | Syntax |
+|--------|----------|--------|
+| `selectattr('f', 'equalto', 'v')` | Exact match | `'prod'` matches "prod" only |
+| `selectattr('f', 'search', 'v')` | Contains | `'prod'` matches "prod", "production" |
+| `selectattr('f', 'match', '^v')` | Starts with | `'^prod'` matches "prod*" |
+| `selectattr('f', 'in', list)` | Multiple | `['a','b']` matches "a" OR "b" |
+| `rejectattr('f', 'equalto', 'v')` | Exclude | NOT matching value |
+| `json_query('[?f==\`v\`]')` | Complex | JMESPath queries |
+
+**Run All Tests:**
+```bash
+./test_examples.sh
+
+# Or specific examples
+./test_examples.sh simple patterns
+```
+
+**Prerequisites:**
+None! All filters are built into Ansible. Optional:
+```bash
+# For json_query examples
+pip install jmespath
+```
+
+**See the [README.md](12_filter_rest_api_results/README.md) for:**
+- Complete filter reference
+- API response structure handling
+- Error handling patterns
+- Performance optimization tips
+- Multiple real-world use cases
+- Debugging techniques
+
+**Common Use Cases:**
+- CI/CD pipeline credential injection
+- Multi-environment deployments
+- Credential rotation workflows
+- Security auditing
+- Cost management reporting
+- Disaster recovery verification
 ```
