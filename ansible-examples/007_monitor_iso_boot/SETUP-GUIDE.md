@@ -438,7 +438,7 @@ ansible-galaxy collection list community.general
 ansible-doc community.general.redfish_info | head -20
 
 # 6. Navigate to examples
-cd ~/gemini-workspace/ansible-examples/7_monitor_iso_boot
+cd ~/gemini-workspace/ansible-examples/007_monitor_iso_boot
 
 # 7. Create inventory
 cp inventory.simple.yml inventory.yml

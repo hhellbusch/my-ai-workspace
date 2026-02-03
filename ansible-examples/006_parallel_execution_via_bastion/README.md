@@ -54,7 +54,7 @@ Remove `serial: 1`, set **Forks: 20** in Job Template → Done!
 ## What's Included
 
 ```
-📁 6_parallel_execution_via_bastion/
+📁 006_parallel_execution_via_bastion/
 │
 ├── 📄 README.md (you are here)
 ├── 📄 INDEX.md (complete file navigation)

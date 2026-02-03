@@ -37,7 +37,7 @@ This disclosure is provided in the interest of transparency and to help you make
 
 **Welcome!** This repository contains production-ready examples and troubleshooting guides for:
 
-- **Ansible Automation** - 9 complete examples covering retry patterns, error handling, BMC operations, parallel execution, and more
+- **Ansible Automation** - 12 complete examples covering retry patterns, error handling, BMC operations, parallel execution, and more
 - **OpenShift/Kubernetes** - 7 detailed troubleshooting guides for bare-metal clusters, CSR management, networking issues, and cluster recovery
 - **ArgoCD/GitOps** - Application deployment patterns, multi-cluster configurations, and app-of-apps patterns
 - **CoreOS/Ignition** - System configuration examples including virtual media ejection and automated setup
@@ -241,7 +241,7 @@ Located in `ocp-troubleshooting/`. Comprehensive troubleshooting guides for comm
 
 **Ansible:**
 ```bash
-cd ansible-examples/1_retry_on_timeout
+cd ansible-examples/001_retry_on_timeout
 ansible-playbook playbook.yml
 ```
 

@@ -123,11 +123,11 @@ gemini-workspace/
 │
 ├── ansible-examples/                # ✅ Unchanged (already well-organized)
 │   ├── README.md
-│   ├── 1_retry_on_timeout/
-│   ├── 2_log_ignored_errors/
-│   ├── 3_conditional_block/
-│   ├── 4_validate_virtual_media_ejection/
-│   └── 5_block_rescue_retry/
+│   ├── 001_retry_on_timeout/
+│   ├── 002_log_ignored_errors/
+│   ├── 003_conditional_block/
+│   ├── 004_validate_virtual_media_ejection/
+│   └── 005_block_rescue_retry/
 │
 ├── argo-examples/                   # ✨ Reorganized
 │   ├── README.md                    # 🆕 Complete overview

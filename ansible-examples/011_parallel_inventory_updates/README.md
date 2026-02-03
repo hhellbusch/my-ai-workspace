@@ -288,7 +288,7 @@ ansible-galaxy collection install ansible.controller
 
 - [Ansible Async Documentation](https://docs.ansible.com/ansible/latest/user_guide/playbooks_async.html)
 - [ansible.controller.inventory_source_update module](https://docs.ansible.com/ansible/latest/collections/ansible/controller/inventory_source_update_module.html)
-- Related example: `../6_parallel_execution_via_bastion/` - General async patterns
+- Related example: `../006_parallel_execution_via_bastion/` - General async patterns
 
 ## Quick Start
 

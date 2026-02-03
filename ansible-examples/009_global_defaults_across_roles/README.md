@@ -66,7 +66,7 @@ memory_limit: "2048M"
 ## Project Structure
 
 ```
-9_global_defaults_across_roles/
+009_global_defaults_across_roles/
 ├── README.md                      # This file - complete guide
 ├── QUICK-START.md                 # 5-minute tutorial
 ├── PRECEDENCE-GUIDE.md            # Variable precedence explained

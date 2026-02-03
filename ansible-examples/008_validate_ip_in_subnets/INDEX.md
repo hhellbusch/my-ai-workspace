@@ -123,7 +123,7 @@ graph TD
 ## File Reference
 
 ```
-8_validate_ip_in_subnets/
+008_validate_ip_in_subnets/
 ├── INDEX.md (this file)                    # Navigation and quick start
 ├── README.md                               # Complete documentation
 ├── QUICK-REFERENCE.md                      # Code snippets and one-liners  
@@ -170,10 +170,10 @@ ansible localhost -m debug -a "msg={{ '10.1.1.1' | ansible.utils.ipaddr('10.0.0.
 This example is part of a larger collection:
 
 - **Example 1-3**: Basic Ansible patterns
-- **Example 4**: [Validate Virtual Media Ejection](../4_validate_virtual_media_ejection/) - Server hardware validation
-- **Example 5**: [Block/Rescue/Retry](../5_block_rescue_retry/) - Error handling patterns
-- **Example 6**: [Parallel Execution via Bastion](../6_parallel_execution_via_bastion/) - Scaling validation
-- **Example 7**: [Monitor ISO Boot](../7_monitor_iso_boot/) - Server monitoring
+- **Example 4**: [Validate Virtual Media Ejection](../004_validate_virtual_media_ejection/) - Server hardware validation
+- **Example 5**: [Block/Rescue/Retry](../005_block_rescue_retry/) - Error handling patterns
+- **Example 6**: [Parallel Execution via Bastion](../006_parallel_execution_via_bastion/) - Scaling validation
+- **Example 7**: [Monitor ISO Boot](../007_monitor_iso_boot/) - Server monitoring
 - **Example 8**: **This example** - Network validation
 
 ## Getting Help

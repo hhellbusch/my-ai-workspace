@@ -3,7 +3,7 @@
 Complete organizational overview of the parallel execution example.
 
 ```
-6_parallel_execution_via_bastion/
+006_parallel_execution_via_bastion/
 │
 ├── 📄 README.md
 │   └── Main overview, quick start, performance examples
@@ -165,7 +165,7 @@ Complete organizational overview of the parallel execution example.
 ### From Root → Specific Content
 
 ```
-6_parallel_execution_via_bastion/
+006_parallel_execution_via_bastion/
 │
 ├─ Need AAP setup guide? → docs/AAP-README.md
 ├─ Need to test? → playbooks/test_connectivity.yml  

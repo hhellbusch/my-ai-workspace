@@ -13,7 +13,7 @@ All playbooks are designed to run against `localhost` and require no external in
 This example demonstrates how to retry a block of tasks if a subsequent task times out.
 
 ```bash
-cd 1_retry_on_timeout
+cd 001_retry_on_timeout
 ansible-playbook playbook.yml
 ```
 
@@ -22,7 +22,7 @@ ansible-playbook playbook.yml
 This example shows the modern `block/rescue` pattern for ignoring a task failure while logging the error details for debugging.
 
 ```bash
-cd 2_log_ignored_errors
+cd 002_log_ignored_errors
 ansible-playbook playbook.yml
 ```
 
@@ -31,7 +31,7 @@ ansible-playbook playbook.yml
 This example shows how to conditionally execute a block of tasks by using `when` on an `include_tasks` statement.
 
 ```bash
-cd 3_conditional_block
+cd 003_conditional_block
 ansible-playbook main_playbook.yml
 ```
 
@@ -40,7 +40,7 @@ ansible-playbook main_playbook.yml
 This example demonstrates how to eject virtual media from Dell iDRAC and validate that the ejection was successful. It shows multiple validation methods including return value checking, status querying with retries, and reusable validation tasks.
 
 ```bash
-cd 4_validate_virtual_media_ejection
+cd 004_validate_virtual_media_ejection
 # See the README.md in that directory for detailed usage
 ansible-playbook playbook.yml -e "idrac_ip=192.168.1.100" -e "idrac_user=root" -e "idrac_password=calvin"
 ```
@@ -57,7 +57,7 @@ This example shows how to handle flaky tasks that sometimes fail, with automatic
 - DRY (Don't Repeat Yourself) with `include_tasks`
 
 ```bash
-cd 5_block_rescue_retry
+cd 005_block_rescue_retry
 
 # Start with the simple example
 ansible-playbook simple_example.yml
@@ -87,12 +87,12 @@ AAP Execution Environment → Bastion (SSH Proxy) → Target Nodes (parallel)
 - Real-world production examples
 
 ```bash
-cd 6_parallel_execution_via_bastion
+cd 006_parallel_execution_via_bastion
 ```
 
 **📚 Documentation Structure:**
 ```
-6_parallel_execution_via_bastion/
+006_parallel_execution_via_bastion/
 ├── README.md (overview)
 ├── INDEX.md (complete navigation)
 ├── inventory.yml (example config)
@@ -152,7 +152,7 @@ This example demonstrates how to monitor server boot and installation from ISO v
 - Real-time status display during boot
 
 ```bash
-cd 7_monitor_iso_boot
+cd 007_monitor_iso_boot
 ```
 
 **📚 Two Approaches:**
@@ -228,7 +228,7 @@ INDICATORS:
 ansible-galaxy collection install community.general
 ```
 
-**See the [README.md](7_monitor_iso_boot/README.md) for:**
+**See the [README.md](007_monitor_iso_boot/README.md) for:**
 - Complete documentation
 - Troubleshooting guide
 - Redfish API reference
@@ -256,7 +256,7 @@ This example demonstrates how to validate that IP addresses belong to specific s
 - Optional enforcement with assertions
 
 ```bash
-cd 8_validate_ip_in_subnets
+cd 008_validate_ip_in_subnets
 ```
 
 **Prerequisites:**
@@ -342,7 +342,7 @@ Matching Subnets: None
 ./test_examples.sh
 ```
 
-**See the [README.md](8_validate_ip_in_subnets/README.md) for:**
+**See the [README.md](008_validate_ip_in_subnets/README.md) for:**
 - Detailed filter usage examples
 - Loading data from inventory/API/files
 - Security audit patterns
@@ -370,7 +370,7 @@ This example demonstrates how to set default values globally for an Ansible play
 - Best practices for role defaults vs playbook vars
 
 ```bash
-cd 9_global_defaults_across_roles
+cd 009_global_defaults_across_roles
 ```
 
 **Quick Start:**
@@ -441,7 +441,7 @@ ansible-playbook -i inventory.yml main_playbook.yml \
 
 **Documentation Structure:**
 ```
-9_global_defaults_across_roles/
+009_global_defaults_across_roles/
 ├── README.md ⭐ Complete guide
 ├── QUICK-START.md ⭐ 5-minute tutorial
 ├── PRECEDENCE-GUIDE.md ⭐ Variable precedence explained
@@ -515,7 +515,7 @@ ansible-playbook playbook.yml -e "my_var=override"
 
 ### 10. Dell Memory Validation (Memtest with iDRAC)
 
-This example demonstrates automated memory testing on Dell servers using iDRAC. See the [README](10_dell_memory_validation/README.md) for details.
+This example demonstrates automated memory testing on Dell servers using iDRAC. See the [README](010_dell_memory_validation/README.md) for details.
 
 ### 11. Parallel Inventory Source Updates (Controller/Tower/AWX) ⭐
 
@@ -537,7 +537,7 @@ This example demonstrates how to dramatically speed up Ansible Controller/Tower 
 - Production-ready patterns with logging and reporting
 
 ```bash
-cd 11_parallel_inventory_updates
+cd 011_parallel_inventory_updates
 ```
 
 **Quick Start:**
@@ -726,7 +726,7 @@ vars:
 
 **Documentation Structure:**
 ```
-11_parallel_inventory_updates/
+011_parallel_inventory_updates/
 ├── README.md ⭐ Complete guide
 ├── parallel_inventory_update_simple.yml ⭐ Start here
 ├── parallel_inventory_update.yml (structured version)
@@ -754,7 +754,7 @@ vars:
   max_retries: 80       # More retry attempts
 ```
 
-**See the [README.md](11_parallel_inventory_updates/README.md) for:**
+**See the [README.md](011_parallel_inventory_updates/README.md) for:**
 - Complete async patterns explained
 - Real-world performance metrics
 - Advanced error handling techniques
@@ -763,7 +763,7 @@ vars:
 - Detailed troubleshooting guide
 
 **Related Examples:**
-- See `6_parallel_execution_via_bastion/` for general async patterns
+- See `006_parallel_execution_via_bastion/` for general async patterns
 - Both examples demonstrate the power of async execution in Ansible
 
 ### 12. Filter REST API Results (S3 Credentials) ⭐
@@ -789,7 +789,7 @@ This example demonstrates how to filter data returned from REST APIs using Ansib
 - Error handling for empty results
 
 ```bash
-cd 12_filter_rest_api_results
+cd 012_filter_rest_api_results
 ```
 
 **Quick Start:**
@@ -891,7 +891,7 @@ ansible-playbook advanced_filters.yml
 
 **Documentation Structure:**
 ```
-12_filter_rest_api_results/
+012_filter_rest_api_results/
 ├── README.md ⭐ Complete guide
 ├── QUICK-REFERENCE.md ⭐ Filter syntax cheat sheet
 ├── EXAMPLES.md ⭐ Additional use cases
@@ -928,7 +928,7 @@ None! All filters are built into Ansible. Optional:
 pip install jmespath
 ```
 
-**See the [README.md](12_filter_rest_api_results/README.md) for:**
+**See the [README.md](012_filter_rest_api_results/README.md) for:**
 - Complete filter reference
 - API response structure handling
 - Error handling patterns

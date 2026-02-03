@@ -243,7 +243,7 @@ The meta-development system enhances your DevOps work:
 /create-agent-skill Expert guidance for Ansible playbook development
 
 # Use it to review a playbook
-Skill(ansible-best-practices) Review ansible-examples/9_global_defaults_across_roles/main_playbook.yml
+Skill(ansible-best-practices) Review ansible-examples/009_global_defaults_across_roles/main_playbook.yml
 ```
 
 ### Plan ArgoCD Improvements
