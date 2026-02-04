@@ -47,6 +47,14 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
   - [Index](coreos-networking-issues/INDEX.md) - Guide navigation and workflow
   - Script: `diagnose-network.sh` - Automated network diagnostic tool
 
+### Automation Platform Issues
+
+- **[AAP SSH Connection MTU Issues](aap-ssh-mtu-issues/README.md)** - Complete guide for SSH connection failures from Ansible Automation Platform due to MTU mismatches
+  - **[Quick Reference](aap-ssh-mtu-issues/QUICK-REFERENCE.md)** - Fast MTU diagnostics and SSH fixes ⚡
+  - [Examples](aap-ssh-mtu-issues/EXAMPLES.md) - 6 detailed real-world scenarios with resolutions
+  - [Index](aap-ssh-mtu-issues/INDEX.md) - Guide navigation by symptom and task
+  - Script: `diagnose-mtu.sh` - Automated MTU and path discovery diagnostic tool
+
 ### Virtualization Issues (KubeVirt)
 
 - **[KubeVirt VM Stuck in Provisioning](kubevirt-vm-stuck-provisioning/README.md)** - Fix VMs blocked by missing OADP/Velero webhook service
