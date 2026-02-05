@@ -1,0 +1,525 @@
+# ArgoCD Multiple Sources Pattern
+
+ArgoCD v2.6+ supports applications with multiple sources, enabling separation of Helm charts and values across different repositories.
+
+## Overview
+
+The multiple sources feature allows you to:
+- Store Helm charts in one repository
+- Store values files in another repository (or different path)
+- Combine Kustomize bases with overlays from different sources
+- Reference shared configuration across multiple applications
+
+## Single Source vs Multiple Sources
+
+### Traditional Single Source
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+  namespace: argocd
+spec:
+  project: default
+  source:                           # Singular
+    repoURL: https://github.com/org/repo
+    targetRevision: main
+    path: apps/my-app
+    helm:
+      values: |
+        replicas: 3
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: my-app
+```
+
+### Multiple Sources
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+  namespace: argocd
+spec:
+  project: default
+  sources:                          # Plural
+    - repoURL: https://github.com/charts/repo
+      targetRevision: main
+      path: charts/my-app
+      helm:
+        valueFiles:
+          - $values/production/my-app/values.yaml
+          - $values/production/my-app/secrets.yaml
+    - repoURL: https://github.com/values/repo
+      targetRevision: main
+      ref: values                   # Named reference
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: my-app
+```
+
+## Common Patterns
+
+### Pattern 1: Separate Chart and Values Repos
+
+**Use case:** Chart maintained by platform team, values by app teams
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: webapp
+spec:
+  sources:
+    # Source 0: Helm chart from platform repo
+    - repoURL: https://github.com/platform/charts
+      targetRevision: v2.1.0
+      path: charts/webapp
+      helm:
+        valueFiles:
+          - $values/values.yaml
+          - $values/values-production.yaml
+    
+    # Source 1: Values from app team repo
+    - repoURL: https://github.com/team-a/app-configs
+      targetRevision: main
+      ref: values
+      path: webapp/values/
+```
+
+### Pattern 2: Base Chart + Environment Overrides
+
+**Use case:** Common chart with environment-specific values
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: api-production
+spec:
+  sources:
+    # Source 0: Base Helm chart
+    - repoURL: https://github.com/org/charts
+      targetRevision: main
+      path: charts/api
+      helm:
+        valueFiles:
+          - values.yaml                    # Base values in chart
+          - $prod-values/production.yaml   # Production overrides
+    
+    # Source 1: Production-specific values
+    - repoURL: https://github.com/org/environments
+      targetRevision: main
+      ref: prod-values
+      path: production/api/
+```
+
+### Pattern 3: Shared Configuration
+
+**Use case:** Common values shared across multiple apps
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: frontend
+spec:
+  sources:
+    # Source 0: Application chart
+    - repoURL: https://github.com/org/apps
+      targetRevision: main
+      path: frontend/chart
+      helm:
+        valueFiles:
+          - values.yaml
+          - $common/common-values.yaml     # Shared config
+          - $common/monitoring-config.yaml # Shared monitoring
+    
+    # Source 1: Shared configuration repo
+    - repoURL: https://github.com/org/shared-config
+      targetRevision: v1.0.0
+      ref: common
+```
+
+### Pattern 4: Kustomize with Multiple Bases
+
+**Use case:** Combining Kustomize bases from different repos
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-services
+spec:
+  sources:
+    # Source 0: Main kustomization
+    - repoURL: https://github.com/org/platform
+      targetRevision: main
+      path: kustomize/overlays/production
+    
+    # Source 1: Base resources
+    - repoURL: https://github.com/org/base-resources
+      targetRevision: v2.0.0
+      path: bases/
+```
+
+## App of Apps with Multiple Sources
+
+### Parent Application
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    # Helm chart defining child applications
+    - repoURL: https://github.com/org/argocd
+      targetRevision: main
+      path: charts/argocd-apps
+      helm:
+        valueFiles:
+          - values.yaml
+          - $env-values/production.yaml
+    
+    # Environment-specific values
+    - repoURL: https://github.com/org/config
+      targetRevision: main
+      ref: env-values
+      path: environments/
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+```
+
+### Child Application Example
+
+The parent can generate child apps that also use multiple sources:
+
+```yaml
+# Generated by parent app
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-stack
+  namespace: argocd
+spec:
+  sources:
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      targetRevision: 45.0.0
+      helm:
+        valueFiles:
+          - $values/monitoring/prometheus-values.yaml
+    
+    - repoURL: https://github.com/org/config
+      targetRevision: main
+      ref: values
+      path: monitoring/
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+```
+
+## Value File References
+
+### Syntax
+
+```yaml
+helm:
+  valueFiles:
+    - $refName/path/to/values.yaml
+```
+
+- `$refName`: Matches the `ref` field from another source
+- Path is relative to that source's `path`
+
+### Example
+
+```yaml
+sources:
+  - repoURL: https://github.com/org/charts
+    path: my-chart
+    helm:
+      valueFiles:
+        - values.yaml                      # From same source
+        - $external/production.yaml        # From ref "external"
+        - $external/secrets/db.yaml        # Nested path
+  
+  - repoURL: https://github.com/org/values
+    ref: external                          # Name for reference
+    path: production/                      # Base path
+```
+
+## CLI Usage with Multiple Sources
+
+### Diff with Multiple Sources
+
+```bash
+# Specify revision for each source (ArgoCD v2.10+)
+argocd app diff my-app \
+  --revisions main \
+  --revisions v1.2.0
+
+# First --revisions applies to first source, second to second source, etc.
+```
+
+### Manifests with Multiple Sources
+
+```bash
+# Render manifests with specific revisions
+argocd app manifests my-app \
+  --revisions main \
+  --revisions v1.2.0
+```
+
+### Setting Source Revisions
+
+```bash
+# Update specific source
+argocd app set my-app \
+  --source-index 0 \
+  --revision v2.0.0
+
+argocd app set my-app \
+  --source-index 1 \
+  --revision main
+```
+
+## Limitations and Considerations
+
+### Complexity
+
+Multiple sources add complexity:
+- More repositories to manage
+- More moving parts in sync process
+- Harder to troubleshoot rendering issues
+
+**Recommendation:** Only use when necessary (e.g., true separation of concerns).
+
+### Rendering Order
+
+Sources are processed in order:
+1. Source 0 is the "main" source
+2. Additional sources provide supplements (values, overlays)
+3. Order matters for value precedence
+
+### External Repositories
+
+When using multiple sources with external repos:
+- Both repos must be accessible
+- Credentials may be needed for private repos
+- Network issues affect rendering
+
+### Offline Diff Generation
+
+The `diff-app-of-apps.sh` script supports multiple sources but only for local repos:
+- Can handle chart + values in same repo
+- Cannot fetch from external repos offline
+- Combines sources automatically when rendering
+
+## Best Practices
+
+### 1. Use Explicit Versions
+
+```yaml
+# Good - pinned versions
+sources:
+  - repoURL: https://github.com/org/charts
+    targetRevision: v2.1.0  # Tag
+  
+  - repoURL: https://github.com/org/values
+    targetRevision: abc123  # Commit SHA
+
+# Avoid - moving targets
+sources:
+  - targetRevision: main    # Changes constantly
+  - targetRevision: latest  # Ambiguous
+```
+
+### 2. Minimize Source Count
+
+```yaml
+# Good - 2 sources, clear separation
+sources:
+  - repoURL: https://github.com/charts/repo
+    path: my-chart
+  - repoURL: https://github.com/values/repo
+    ref: values
+
+# Over-complicated - 5 sources
+sources:
+  - # chart
+  - # base values
+  - # environment values
+  - # secrets
+  - # overrides
+```
+
+Keep it simple - prefer fewer sources.
+
+### 3. Clear Naming Conventions
+
+```yaml
+# Good - descriptive refs
+sources:
+  - ref: prod-values
+  - ref: shared-secrets
+  - ref: common-config
+
+# Bad - unclear refs
+sources:
+  - ref: source1
+  - ref: vals
+  - ref: x
+```
+
+### 4. Document Source Purpose
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+  annotations:
+    # Document what each source provides
+    source.0: "Main Helm chart from platform team"
+    source.1: "Application-specific values from app team"
+    source.2: "Shared secrets from security team"
+```
+
+### 5. Test Rendering Locally
+
+```bash
+# Test that sources combine correctly
+helm template my-app /path/to/chart \
+  -f /path/to/chart/values.yaml \
+  -f /path/to/values-repo/production.yaml \
+  -f /path/to/values-repo/secrets.yaml
+```
+
+## Migration from Single to Multiple Sources
+
+### Step 1: Identify Separation Points
+
+```yaml
+# Before - single source with inline values
+source:
+  repoURL: https://github.com/org/repo
+  path: apps/my-app
+  helm:
+    values: |
+      replicas: 3
+      image:
+        tag: v1.2.3
+```
+
+### Step 2: Extract Values to Separate Location
+
+```bash
+# Create values file
+mkdir -p values/my-app
+cat > values/my-app/production.yaml <<EOF
+replicas: 3
+image:
+  tag: v1.2.3
+EOF
+```
+
+### Step 3: Update Application to Use Multiple Sources
+
+```yaml
+# After - multiple sources
+sources:
+  - repoURL: https://github.com/org/repo
+    path: apps/my-app
+    helm:
+      valueFiles:
+        - $values/my-app/production.yaml
+  
+  - repoURL: https://github.com/org/repo
+    ref: values
+    path: values/
+```
+
+### Step 4: Verify and Sync
+
+```bash
+# Check diff before applying
+argocd app diff my-app
+
+# Apply if looks good
+argocd app sync my-app
+```
+
+## Troubleshooting
+
+### Error: "valueFiles reference not found"
+
+**Cause:** The `$ref` doesn't match any source's `ref` field.
+
+**Solution:**
+```yaml
+sources:
+  - helm:
+      valueFiles:
+        - $myref/values.yaml  # Must match a ref below
+  
+  - ref: myref                # This ref must exist
+```
+
+### Error: "failed to get source"
+
+**Cause:** Cannot access one of the source repositories.
+
+**Solutions:**
+- Check repository URL
+- Verify credentials
+- Check network connectivity
+- Ensure branch/tag exists
+
+### Empty Diff with Changes
+
+**Cause:** Using `--revision` flag only affects first source.
+
+**Solution:**
+```bash
+# Instead of this (only changes source 0)
+argocd app diff my-app --revision v1.2.0
+
+# Use this (changes both sources)
+argocd app diff my-app \
+  --revisions v1.2.0 \
+  --revisions main
+```
+
+### Values Not Applied
+
+**Cause:** Value file path incorrect or precedence issue.
+
+**Debug:**
+```bash
+# Render and check what values are actually used
+argocd app manifests my-app | less
+
+# Check the Application spec
+argocd app get my-app -o yaml | yq .spec.sources
+```
+
+## Related Documentation
+
+- [ArgoCD Multiple Sources Docs](https://argo-cd.readthedocs.io/en/stable/user-guide/multiple_sources/)
+- [App of Apps Pattern](./APP-OF-APPS-PATTERN.md)
+- [Diff Script README](../../scripts/README-diff-app-of-apps.md)
+
+## Examples in This Repository
+
+See `charts/argocd-apps/` for examples of:
+- Single source applications
+- Multiple source applications
+- App of Apps with multiple sources

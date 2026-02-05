@@ -1,0 +1,46 @@
+---
+# Example: Traditional single source Application
+# This is the classic ArgoCD Application format
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-single-source
+  namespace: argocd
+  annotations:
+    description: "Example using single source (traditional format)"
+spec:
+  project: default
+  
+  # Single source (note: singular)
+  source:
+    repoURL: https://github.com/org/apps
+    targetRevision: main
+    path: apps/nginx
+    
+    # Helm configuration
+    helm:
+      # Inline values
+      values: |
+        replicaCount: 2
+        image:
+          repository: nginx
+          tag: "1.21.0"
+        service:
+          type: ClusterIP
+          port: 80
+      
+      # Or reference values files in the same path
+      valueFiles:
+        - values.yaml
+        - values-production.yaml
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nginx
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,130 @@
+---
+# Example: Multiple sources Application (ArgoCD v2.6+)
+# Separates chart and values into different sources
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-multiple-sources
+  namespace: argocd
+  annotations:
+    description: "Example using multiple sources for chart/values separation"
+    source.0: "Helm chart from charts directory"
+    source.1: "Production values from environments directory"
+spec:
+  project: default
+  
+  # Multiple sources (note: plural)
+  sources:
+    # Source 0: Helm chart
+    - repoURL: https://github.com/org/apps
+      targetRevision: main
+      path: charts/nginx
+      helm:
+        # Reference values from other source using $ref syntax
+        valueFiles:
+          - values.yaml                           # From this source
+          - $prod-values/nginx/values.yaml        # From source 1 (ref: prod-values)
+          - $prod-values/nginx/secrets.yaml       # From source 1
+    
+    # Source 1: Environment-specific values
+    - repoURL: https://github.com/org/apps
+      targetRevision: main
+      path: environments/production/
+      ref: prod-values  # Named reference for $prod-values
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nginx
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
+---
+# Example: Multiple sources with different repositories
+# Chart maintained separately from values
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: webapp-multi-repo
+  namespace: argocd
+  annotations:
+    description: "Example with chart and values in separate repositories"
+    source.0: "Platform team maintains the chart"
+    source.1: "App team maintains the values"
+spec:
+  project: default
+  
+  sources:
+    # Source 0: Chart from platform team's repo
+    - repoURL: https://github.com/platform/helm-charts
+      targetRevision: v2.1.0  # Pinned to specific version
+      path: charts/webapp
+      helm:
+        valueFiles:
+          - values.yaml                    # Default values in chart
+          - $app-values/production.yaml    # Overrides from app team
+    
+    # Source 1: Values from application team's repo
+    - repoURL: https://github.com/team-a/app-configs
+      targetRevision: main
+      path: webapp/
+      ref: app-values
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: webapp
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
+---
+# Example: Multiple sources with shared configuration
+# Common values shared across multiple applications
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: api-with-shared-config
+  namespace: argocd
+  annotations:
+    description: "Example using shared configuration across apps"
+    source.0: "Application-specific chart"
+    source.1: "Shared platform configuration"
+spec:
+  project: default
+  
+  sources:
+    # Source 0: Application chart
+    - repoURL: https://github.com/org/apps
+      targetRevision: main
+      path: apps/api/chart
+      helm:
+        valueFiles:
+          - values.yaml                           # App-specific values
+          - $shared/common-values.yaml            # Shared across all apps
+          - $shared/monitoring-config.yaml        # Shared monitoring setup
+          - $shared/security-policy.yaml          # Shared security policy
+    
+    # Source 1: Shared configuration repository
+    - repoURL: https://github.com/org/platform-config
+      targetRevision: v1.0.0  # Versioned shared config
+      path: shared/
+      ref: shared
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: api
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

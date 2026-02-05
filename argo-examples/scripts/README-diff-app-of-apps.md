@@ -16,8 +16,9 @@ Perfect for release preparation, PR reviews, and change validation.
 - `helm` (v3+)
 - `git`
 
-**Optional (recommended):**
-- `yq` - For better YAML parsing ([install guide](https://github.com/mikefarah/yq))
+**Highly Recommended:**
+- `yq` (v4+) - **Required for multiple sources support** ([install guide](https://github.com/mikefarah/yq))
+  - Without `yq`, the script falls back to basic parsing that only supports single source applications
 
 ## Usage
 
@@ -56,16 +57,27 @@ Renders the parent Helm chart to generate Application CRD manifests for both rev
 ### Step 3: Extract Child Apps
 Parses the Application CRDs to identify all child applications and their configurations.
 
+**Supports both:**
+- Single source (`spec.source`) - Traditional format
+- Multiple sources (`spec.sources`) - ArgoCD v2.6+
+
 ### Step 4: Render Children
 For each child app:
-- Detects if it's a Helm chart or plain YAML
-- Extracts from the appropriate git revision
-- Renders manifests for comparison
+- Detects single vs multiple sources
+- For single source apps:
+  - Detects if it's a Helm chart or plain YAML
+  - Extracts from the appropriate git revision
+  - Renders manifests
+- For multiple source apps:
+  - Extracts all sources from git
+  - Identifies chart source and values sources
+  - Combines sources and renders with all values files
 
 ### Step 5: Generate Diffs
 Creates unified diffs showing:
 - Changes to Application CRD definitions (parent)
 - Changes to Kubernetes resources (children)
+- Notes which apps use multiple sources
 
 ## Output
 
@@ -96,19 +108,121 @@ The script generates organized artifacts in `/tmp/argocd-app-of-apps-diff-{PID}/
     └── ...
 ```
 
+## Multiple Sources Support
+
+The script **fully supports** ArgoCD's multiple sources feature (v2.6+).
+
+### How Multiple Sources Work
+
+Applications can have multiple sources for:
+- **Chart in one repo, values in another**
+- **Shared configuration across apps**
+- **Environment-specific overrides from separate repo**
+
+Example:
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+spec:
+  sources:
+    # Source 0: Helm chart
+    - repoURL: https://github.com/charts/repo
+      path: my-chart
+      helm:
+        valueFiles:
+          - $values/production.yaml
+    # Source 1: Values
+    - repoURL: https://github.com/values/repo
+      ref: values
+      path: environments/prod/
+```
+
+### Script Behavior
+
+When the script encounters multiple sources:
+
+1. ✅ **Detects all sources** - Parses both `source:` and `sources:` formats
+2. ✅ **Extracts each source** - Pulls chart and values from different paths
+3. ✅ **Combines sources** - Renders chart with all value files
+4. ✅ **Shows in output** - Marks multi-source apps as `(multi-source)`
+
+Example output:
+```
+Child apps:
+  - monitoring
+  - webapp (multi-source)
+  - api (multi-source)
+```
+
+### Requirements
+
+**`yq` is REQUIRED for multiple sources support.**
+
+Without `yq`:
+- Falls back to basic parsing
+- Only supports single source apps
+- Multi-source apps may be skipped or incorrectly parsed
+
+Install yq:
+```bash
+# Linux
+wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+chmod +x /usr/local/bin/yq
+
+# macOS
+brew install yq
+```
+
+### Limitations
+
+**Same Repository Only**
+
+Currently supports multiple sources **only if all sources are in the same repository**:
+
+✅ **Supported:**
+```yaml
+sources:
+  - repoURL: https://github.com/org/repo
+    path: charts/my-app
+  - repoURL: https://github.com/org/repo  # Same repo
+    path: values/prod/
+    ref: values
+```
+
+❌ **Not Supported (Offline):**
+```yaml
+sources:
+  - repoURL: https://github.com/org/charts-repo
+    path: my-app
+  - repoURL: https://github.com/org/values-repo  # Different repo
+    path: production/
+    ref: values
+```
+
+For external repos, the script notes them but cannot render offline.
+
 ## Limitations
 
 ### External Repositories
-Child apps that reference external git repositories cannot be rendered offline. The script will note these and skip them:
+
+Child apps that reference external git repositories cannot be rendered offline:
 
 ```yaml
 # External repository: https://github.com/other-org/repo
 # Cannot render external repos in offline mode
 ```
 
-**Workaround:** Clone external repos and run the script against them separately.
+This includes:
+- Apps with sources from different repos
+- Multi-source apps where sources are in different repos
+- Apps referencing Helm charts from Helm repositories
+
+**Workaround:** Clone external repos and adjust the script to use local paths.
 
 ### Helm Value Overrides
+
 If child apps use:
 - Helm parameters from the Application spec
 - Additional values files not in the repository
@@ -117,6 +231,7 @@ If child apps use:
 The rendered manifests may not match live deployments exactly.
 
 ### Complex Helm Dependencies
+
 Child charts with external dependencies defined in `Chart.yaml` may fail to render without `helm dependency update`.
 
 ## Troubleshooting
@@ -151,6 +266,11 @@ cat /tmp/argocd-app-of-apps-diff-*/new/children/my-app.yaml
 
 The script works without `yq` but uses basic parsing that may miss complex YAML structures.
 
+**Without yq:**
+- ❌ Multiple sources not supported
+- ❌ Complex Application specs may fail
+- ⚠️ Falls back to simple grep/awk parsing
+
 **Install yq:**
 ```bash
 # Linux
@@ -159,7 +279,41 @@ chmod +x /usr/local/bin/yq
 
 # macOS
 brew install yq
+
+# Verify
+yq --version  # Should show v4.x or higher
 ```
+
+### Multi-source app showing "Could not render"
+
+**Cause:** Sources are in different repositories (external).
+
+**Debug:**
+```bash
+# Check the app definition
+cat /tmp/argocd-app-of-apps-diff-*/new/parent/applications.yaml | \
+  yq 'select(.metadata.name == "my-app") | .spec.sources'
+
+# Look for different repoURL values
+```
+
+**Solution:** Clone the external repo locally and modify paths, or use online `argocd app diff`.
+
+### Multi-source app values not applied
+
+**Cause:** Values reference `$ref` not found or path incorrect.
+
+**Debug:**
+```bash
+# Check extracted sources
+ls -la /tmp/argocd-app-of-apps-diff-*/new/children/temp-my-app/
+
+# Check helm flags used
+cat /tmp/argocd-app-of-apps-diff-*/new/children/my-app.yaml
+# Look for comment showing helm flags
+```
+
+**Solution:** Verify value file paths exist in the repository at the specified revision.
 
 ### Helm rendering fails for child app
 
@@ -320,6 +474,7 @@ git push origin main v1.2.4
 ## Related Documentation
 
 - [App of Apps Pattern](../docs/patterns/APP-OF-APPS-PATTERN.md)
+- [Multiple Sources Pattern](../docs/patterns/MULTIPLE-SOURCES-PATTERN.md) - Using multiple sources in ArgoCD
 - [GitHub Diff Workflow](../github-workflows/README.md)
 - [Test Diff Locally](./test-diff-locally.sh) - Single app comparison
 
