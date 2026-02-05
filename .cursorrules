@@ -1,247 +1,210 @@
-# Meta-Development System Configuration
+# Gemini Workspace - DevOps Examples and Troubleshooting
 
-This workspace contains a sophisticated meta-development system with three interconnected components:
-- **Skills** (domain expertise modules)
-- **Commands** (user-facing slash commands)
-- **Agents** (specialized evaluation subagents)
+This workspace contains practical DevOps examples, configurations, and troubleshooting guides for enterprise Kubernetes and OpenShift environments.
 
-## System Architecture
+## Project Contents
 
-### Skills (`.cursor/skills/` and `skills/`)
+### Ansible Examples (`ansible-examples/`)
+Ansible playbooks demonstrating specific patterns and use cases:
+- Retry and error handling patterns
+- Conditional execution and blocks
+- Parallel execution via bastion hosts
+- ISO boot monitoring and validation
+- IP subnet validation
+- Global defaults and role inheritance
+- Dell hardware memory validation
+- REST API result filtering
 
-Skills are modular capabilities that provide domain expertise on demand. They use a router pattern with workflows, references, and templates.
+### ArgoCD Examples (`argo-examples/`)
+ArgoCD and GitOps configurations:
+- Multi-hub GitOps pipelines
+- Application and chart configurations
+- Infrastructure as Code patterns
+- GitHub workflow integrations
 
-**Note:** Skills are located in `.cursor/skills/` for Cursor's native palette integration. The `skills/` directory is kept for reference and documentation.
+### OpenShift Examples (`ocp-examples/`)
+OpenShift cluster configurations:
+- OVN-Kubernetes networking configurations
+- Install config templates and examples
 
-**Available Skills:**
-- `create-agent-skills` - Expert guidance for creating, writing, building, and refining Claude Code Skills
-- `create-plans` - Create hierarchical project plans (briefs, roadmaps, phase plans)
-- `create-meta-prompts` - Create meta-prompts for complex reasoning tasks
-- `create-slash-commands` - Create slash commands following best practices
-- `create-subagents` - Create specialized Claude Code subagents
-- `create-hooks` - Create Claude Code hooks with input/output schemas
-- `debug-like-expert` - Expert-level debugging methodology and investigation
-- `expertise/iphone-apps` - iOS/iPhone app development with SwiftUI
-- `expertise/macos-apps` - macOS app development with AppKit/SwiftUI
+### OpenShift Troubleshooting (`ocp-troubleshooting/`)
+Systematic troubleshooting guides with investigation workflows:
+- API slowness and web console issues
+- Bare metal node inspection timeouts
+- Control plane kubeconfig recovery
+- CoreOS networking issues
+- CSR management
+- Cluster destruction without metadata
+- Kube-controller-manager crashloops
+- KubeVirt VM provisioning issues
+- Namespace termination issues
+- Portworx CSI troubleshooting
+- Worker node TLS certificate failures
 
-**Invoking Skills:**
-When you need to use a skill, reference it with the `Skill()` function or by mentioning it:
+### RHACM Examples (`rhacm-examples/`)
+Red Hat Advanced Cluster Management configurations:
+- Secret management patterns
+- Multi-cluster management
+- Policy and governance examples
+
+### CoreOS Examples (`coreos-examples/`)
+CoreOS Butane configurations:
+- ISO ejection after installation
+- First-boot automation
+
+## Development Guidelines
+
+### Documentation Standards
+- Each example should have a clear README with:
+  - Purpose and use case
+  - Prerequisites and requirements
+  - Step-by-step instructions
+  - Expected outcomes
+  - Troubleshooting section
+- Include inline comments in configuration files
+- Provide both simple and advanced examples where appropriate
+
+### Configuration Files
+- Use descriptive variable names
+- Include example inventories/configurations
+- Document all required variables
+- Provide safe defaults where possible
+- Include validation steps
+
+### Troubleshooting Guides
+- Start with symptom identification
+- Provide investigation workflow
+- Include diagnostic commands
+- Explain root cause analysis
+- Document resolution steps
+- Add verification procedures
+- Include prevention recommendations
+
+### Testing
+- Test all playbooks and configurations before committing
+- Validate YAML syntax
+- Check for hardcoded values that should be variables
+- Verify idempotency where applicable
+
+### Security
+- Never commit secrets or credentials
+- Use Ansible Vault for sensitive data
+- Document secret management approach
+- Follow principle of least privilege
+- Include RBAC configurations where needed
+
+### Git Workflow
+- Use clear, descriptive commit messages
+- Reference related issues or tickets
+- Keep commits focused on single changes
+- Update documentation with code changes
+
+## AI Disclosure
+Per project standards, all AI-assisted work includes disclosure notices in relevant files.
+
+## Quick Reference
+
+### Common Patterns
+- Ansible retry patterns: See `ansible-examples/001_retry_on_timeout/`
+- Error handling: See `ansible-examples/002_log_ignored_errors/`
+- Parallel execution: See `ansible-examples/006_parallel_execution_via_bastion/`
+- ArgoCD apps: See `argo-examples/apps/` and `argo-examples/charts/`
+- OCP troubleshooting: See individual guides in `ocp-troubleshooting/`
+
+### Useful Commands
+- Ansible syntax check: `ansible-playbook --syntax-check playbook.yml`
+- Ansible dry run: `ansible-playbook --check playbook.yml`
+- ArgoCD sync: `argocd app sync <app-name>`
+- OpenShift logs: `oc logs <pod> -n <namespace>`
+- Check cluster operators: `oc get clusteroperators`
+
+## TÂCHES Resources Integration
+
+This workspace has TÂCHES resources fully integrated with native Cursor features.
+
+**Source:** [TÂCHES Claude Code Resources](https://github.com/glittercowboy/taches-cc-resources)
+
+### Slash Commands (Native Support!)
+
+Cursor auto-discovers commands in `.cursor/commands/`. Use them like built-in commands:
+
 ```
-Skill(create-agent-skills) - invoke the skill directly
-@.cursor/.cursor/skills/create-agent-skills/SKILL.md - reference the skill file
-```
-
-**Skill Structure:**
-```
-skill-name/
-├── SKILL.md              # Router + essential principles
-├── workflows/            # Step-by-step procedures (FOLLOW)
-├── references/           # Domain knowledge (READ)
-├── templates/            # Output structures (COPY + FILL)
-└── scripts/              # Reusable code (EXECUTE)
-```
-
-### Commands (`.cursor/commands/` and `commands/`)
-
-Slash commands are user-facing entry points that invoke skills or agents. They use YAML frontmatter with description, allowed-tools, and argument-hint fields.
-
-**Note:** Commands are located in `.cursor/commands/` for Cursor's native command palette. The `commands/` directory is kept for reference and documentation.
-
-**Available Commands:**
-- `/create-agent-skill` - Create or edit Claude Code skills
-- `/create-plan` - Create hierarchical project plans
-- `/create-meta-prompt` - Create meta-prompts
-- `/create-slash-command` - Create new slash commands
-- `/create-subagent` - Create specialized subagents
-- `/create-hook` - Create Claude Code hooks
-- `/audit-skill` - Audit skill for best practices compliance
-- `/audit-slash-command` - Audit slash command for best practices
-- `/audit-subagent` - Audit subagent for best practices
-- `/run-plan` - Execute a PLAN.md file
-- `/run-prompt` - Execute a prompt file
-- `/whats-next` - Create handoff document for fresh context
-- `/check-todos` - Review and manage TODO items
-- `/add-to-todos` - Add items to TODO list
-- `/heal-skill` - Fix and improve problematic skills
-- `/debug` - Expert debugging guidance
-
-**Command Format:**
-```yaml
----
-description: What the command does (clear, specific)
-argument-hint: [expected arguments format]
-allowed-tools: Skill(skill-name) or Task or specific tools
----
-
-Prompt body with $ARGUMENTS placeholders
-```
-
-### Agents (`.cursor/agents/` and `agents/`)
-
-Specialized subagents for complex evaluation and auditing tasks. They have specific roles, constraints, and workflows.
-
-**Note:** Agents are located in `.cursor/agents/` for Cursor integration. The `agents/` directory is kept for reference and documentation.
-
-**Available Agents:**
-- `skill-auditor` - Expert skill auditor for SKILL.md files
-- `slash-command-auditor` - Expert slash command auditor
-- `subagent-auditor` - Expert subagent auditor
-
-**Agent Invocation:**
-Agents are typically invoked via commands (e.g., `/audit-skill` invokes `skill-auditor`)
-
-**Agent Structure:**
-```yaml
----
-name: agent-name
-description: What the agent does and when to use it
-tools: Read, Grep, Glob
-model: sonnet
----
-
-<role>Agent's role and expertise</role>
-<constraints>Hard constraints</constraints>
-<critical_workflow>Mandatory workflow steps</critical_workflow>
-<success_criteria>When task is complete</success_criteria>
-```
-
-## Integration Flow Examples
-
-### Creating a New Skill
-```
-User: /create-agent-skill [skill description]
-  ↓
-.cursor/commands/create-agent-skill.md invoked
-  ↓
-Skill(create-agent-skills) activated
-  ↓
-.cursor/skills/create-agent-skills/SKILL.md loaded
-  ↓
-User selects option (e.g., "1. Create new skill")
-  ↓
-workflows/create-new-skill.md executed
-  ↓
-references/ loaded as needed
-  ↓
-New skill created
-```
-
-### Auditing a Skill
-```
-User: /audit-skill path/to/SKILL.md
-  ↓
-.cursor/commands/audit-skill.md invoked
-  ↓
-Agent(skill-auditor) spawned
-  ↓
-.cursor/agents/skill-auditor.md loaded
-  ↓
-Reads best practices from .cursor/skills/create-agent-skills/references/
-  ↓
-Evaluates skill against standards
-  ↓
-Returns detailed audit report
+/create-plan Build a REST API with authentication
+/debug
+/whats-next
+/create-agent-skill Document our deployment process
 ```
 
-### Planning and Execution
+**Thinking Frameworks:**
 ```
-User: /create-plan [what to plan]
-  ↓
-.cursor/commands/create-plan.md invoked
-  ↓
-Skill(create-plans) activated
-  ↓
-Creates BRIEF.md, ROADMAP.md, phase plans
-  ↓
-User: /run-plan path/to/PLAN.md
-  ↓
-.cursor/commands/run-plan.md invoked
-  ↓
-Executes plan with intelligent segmentation
-  ↓
-Creates SUMMARY.md and commits changes
+/consider:first-principles
+/consider:5-whys
+/consider:pareto
 ```
 
-## Best Practices
-
-### When Working with Skills
-1. **Read SKILL.md first** - It contains routing logic and essential principles
-2. **Follow workflows exactly** - They specify which references to load
-3. **Use progressive disclosure** - Don't load all references at once
-4. **Validate output** - Check success_criteria sections
-
-### When Creating Commands
-1. **Clear descriptions** - Describe what it does, not just "helps with"
-2. **Appropriate tool restrictions** - Security-sensitive operations need `allowed-tools`
-3. **Proper argument handling** - Use `$ARGUMENTS` or positional `$1, $2, $3`
-4. **Dynamic context when needed** - Use `!`command`` for state-dependent operations
-
-### When Building Agents
-1. **Specific role definition** - Clear expertise area
-2. **Strong constraints** - Use MUST/NEVER/ALWAYS
-3. **Mandatory workflows** - Critical steps that can't be skipped
-4. **Validation before output** - Verify completeness and accuracy
-
-## Development Workflow
-
-### Adding a New Skill
-```bash
-# Option 1: Use the meta-system
-Use: /create-agent-skill [description]
-
-# Option 2: Manual creation
-mkdir .cursor/skills/new-skill-name
-# Follow structure in skills/create-agent-skills/templates/
+**Context Management:**
+```
+/whats-next - Create handoff document
+/add-to-todos - Capture ideas
+/check-todos - Review tasks
 ```
 
-### Adding a New Command
-```bash
-# Option 1: Use the meta-system
-Use: /create-slash-command [description]
+### Skills (Reference with @)
 
-# Option 2: Manual creation
-# Create commands/new-command.md with proper YAML frontmatter
+Load skills for deep methodologies:
+
+```
+@.cursor/skills/debug-like-expert/SKILL.md
+@.cursor/skills/create-plans/SKILL.md
+@.cursor/skills/create-agent-skills/SKILL.md
 ```
 
-### Adding a New Agent
-```bash
-# Option 1: Use the meta-system
-Use: /create-subagent [description]
+### Available Resources
 
-# Option 2: Manual creation
-# Create agents/agent-name.md with role, constraints, workflow
-```
+**Slash Commands (19 commands):**
+- Project: `/create-plan`, `/create-prompt`, `/run-prompt`
+- Meta: `/create-agent-skill`, `/create-slash-command`, `/create-subagent`
+- Debug: `/debug`
+- Context: `/whats-next`, `/add-to-todos`, `/check-todos`
+- Audit: `/audit-skill`, `/audit-slash-command`, `/audit-subagent`
+- Frameworks: `/consider:first-principles`, `/consider:5-whys`, etc. (12 total)
 
-## Reference Files
+**Skills (10 total):**
+- `create-plans/` - Project planning
+- `debug-like-expert/` - Systematic debugging
+- `create-agent-skills/` - Documentation creation
+- `create-meta-prompts/` - Workflow design
+- `create-slash-commands/` - Command patterns
+- `create-subagents/` - Agent design
+- `create-hooks/` - Event automation
+- `create-mcp-servers/` - MCP development
+- `setup-ralph/` - Ralph autonomous loop
+- `expertise/` - Domain knowledge (iOS, macOS, n8n)
 
-- See `INTEGRATION.md` for comprehensive integration guide
-- See `.cursor/skills/REGISTRY.md` for complete skill index
-- See `.cursor/commands/README.md` for command reference
-- See `.cursor/agents/REGISTRY.md` for agent capabilities
+**Agents (3 total):**
+- `skill-auditor.md` - Evaluate procedures
+- `slash-command-auditor.md` - Review commands
+- `subagent-auditor.md` - Assess agents
 
-## Quality Assurance
+### Quick Reference
 
-Use auditing commands to ensure quality:
-```bash
-/audit-skill skills/my-skill/SKILL.md
-/audit-slash-command commands/my-command.md
-/audit-subagent agents/my-agent.md
-```
+**Planning:** `/create-plan [description]`  
+**Debugging:** `/debug` then describe issue  
+**Handoff:** `/whats-next`  
+**Thinking:** `/consider:first-principles`
 
-## Context Efficiency
+**Full docs:** `@.cursor/README.md`
 
-The system is designed for optimal context usage:
-- **Skills**: Load only SKILL.md initially, then specific workflows/references
-- **Commands**: Minimal YAML + focused prompts
-- **Agents**: Self-contained with validation checks
+### For Claude Code Users
 
-Target: <30% context overhead, reserving 70%+ for actual work.
+TÂCHES is also installed in `~/.claude/` for Claude Code with identical slash command support.
 
-## Getting Help
+### Platform Comparison
 
-- `/debug` - Expert debugging guidance
-- `/whats-next` - Create handoff for continuation
-- `@.cursor/.cursor/skills/create-agent-skills/SKILL.md` - For skill creation questions
-- `@.cursor/skills/debug-like-expert/SKILL.md` - For investigation techniques
-
+| Feature | Claude Code | Cursor |
+|---------|-------------|--------|
+| Commands | ✅ Auto-registered | ✅ Auto-registered |
+| Slash Syntax | ✅ `/command` | ✅ `/command` |
+| Skills | ✅ `Skill()` invocation | ⚠️ `@.cursor/skills/` |
+| Agents | ✅ Spawn subagents | ⚠️ `@.cursor/agents/` |
 

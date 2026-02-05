@@ -1,0 +1,301 @@
+# Skill Spec: n8n Automations with Claude
+# Single source of truth for all subagents
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# METADATA
+# ═══════════════════════════════════════════════════════════════════════════════
+
+domain: "n8n workflow automation with Claude assistance"
+skill_name: "n8n-automations"
+location: "skills/expertise/n8n-automations/"
+description: "Build n8n automation workflows with Claude's assistance - from simple integrations to complex AI-powered automations. Full lifecycle: design, build, debug, test, optimize, deploy."
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ESSENTIAL PRINCIPLES
+# These go directly in SKILL.md - they ALWAYS apply regardless of workflow
+# ═══════════════════════════════════════════════════════════════════════════════
+
+principles:
+  - name: "Design Before Building"
+    content: "Sketch the workflow flow (triggers → actions → outputs) before touching the n8n canvas. Claude validates logic before you wire nodes."
+
+  - name: "Use Native Nodes First"
+    content: "n8n has 400+ integrations. Search for existing nodes before using HTTP Request or Code nodes. Less custom code = more maintainable."
+
+  - name: "Test With Sample Data"
+    content: "Always pin sample data at trigger nodes during development. Never test with live/production data or credentials."
+
+  - name: "Atomic Workflows"
+    content: "Each workflow should do one thing well. Chain workflows via triggers rather than building monolithic automations."
+
+  - name: "Expression Safety"
+    content: "Use n8n expression syntax ({{ }}) correctly. Claude validates expressions before execution."
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CANONICAL TERMINOLOGY
+# Ensures consistency across all files written by different subagents
+# ═══════════════════════════════════════════════════════════════════════════════
+
+terminology:
+  - preferred: "workflow"
+    avoid: ["automation", "flow", "pipeline"]
+
+  - preferred: "node"
+    avoid: ["block", "step", "action"]
+
+  - preferred: "trigger"
+    avoid: ["starter", "initiator"]
+
+  - preferred: "execution"
+    avoid: ["run", "instance"]
+
+  - preferred: "expression"
+    avoid: ["formula", "template"]
+
+  - preferred: "credentials"
+    avoid: ["secrets", "keys", "auth tokens"]
+
+  - preferred: "pin data"
+    avoid: ["mock data", "test data", "sample data"]
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# REFERENCE FILES
+# Each becomes a subagent task. Order matters for batching.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+references:
+  # ─── Batch 1: Core Architecture ───────────────────────────────────────────
+  - file: "architecture.md"
+    batch: 1
+    purpose: "Workflow structure patterns, node organization, naming conventions, canvas layout"
+    topics:
+      - "Workflow anatomy: triggers, processing, outputs"
+      - "Node organization and grouping strategies"
+      - "Naming conventions for nodes and workflows"
+      - "Error handling patterns (Error Trigger, try/catch)"
+      - "Sub-workflow patterns and when to split"
+    research_queries:
+      - "n8n workflow architecture patterns 2024 2025"
+      - "n8n best practices workflow organization"
+      - "n8n error handling patterns"
+    cross_refs: ["nodes-catalog.md"]
+
+  - file: "nodes-catalog.md"
+    batch: 1
+    purpose: "Core nodes, trigger types, action nodes, when-to-use decision guidance"
+    topics:
+      - "Trigger nodes: Webhook, Schedule, App triggers"
+      - "Core action nodes: Set, IF, Switch, Merge, Split"
+      - "Data transformation: Item Lists, Compare Datasets"
+      - "Flow control: Wait, Loop, Stop and Error"
+      - "When to use which node type"
+    research_queries:
+      - "n8n core nodes reference 2024"
+      - "n8n trigger types comparison"
+      - "n8n data transformation nodes"
+    cross_refs: ["architecture.md", "expressions.md"]
+
+  - file: "expressions.md"
+    batch: 1
+    purpose: "n8n expression syntax, $json, $node references, JMESPath, transformation patterns"
+    topics:
+      - "Expression syntax basics: {{ $json.field }}"
+      - "$json, $node, $input, $items references"
+      - "JMESPath queries for complex data"
+      - "Date/time manipulation in expressions"
+      - "Common expression patterns and gotchas"
+    research_queries:
+      - "n8n expression syntax guide 2024"
+      - "n8n $json $node variables"
+      - "n8n JMESPath examples"
+    cross_refs: ["nodes-catalog.md", "code-nodes.md"]
+
+  # ─── Batch 2: Domain-Specific ─────────────────────────────────────────────
+  - file: "ai-nodes.md"
+    batch: 2
+    purpose: "Claude integration, LangChain nodes, AI agents, memory, vector stores"
+    topics:
+      - "Claude node configuration and usage"
+      - "AI Agent node with tools and memory"
+      - "LangChain integration nodes"
+      - "Vector store nodes (Pinecone, Qdrant, etc.)"
+      - "Building AI-powered workflows"
+    research_queries:
+      - "n8n Claude AI integration 2024 2025"
+      - "n8n AI agent node LangChain"
+      - "n8n vector database nodes"
+    cross_refs: ["http-api.md", "code-nodes.md"]
+
+  - file: "http-api.md"
+    batch: 2
+    purpose: "HTTP Request node, authentication methods, API pagination, webhooks"
+    topics:
+      - "HTTP Request node configuration"
+      - "Authentication types: API Key, OAuth2, Bearer"
+      - "Pagination handling strategies"
+      - "Webhook node setup and security"
+      - "Rate limiting and retry logic"
+    research_queries:
+      - "n8n HTTP Request node authentication"
+      - "n8n webhook setup security"
+      - "n8n API pagination handling"
+    cross_refs: ["ai-nodes.md", "architecture.md"]
+
+  - file: "code-nodes.md"
+    batch: 2
+    purpose: "Function/Code node patterns, JavaScript in workflows, when to use code vs nodes"
+    topics:
+      - "Code node basics: JavaScript execution"
+      - "Accessing workflow data in code"
+      - "Common code patterns: transformation, validation"
+      - "When to use Code vs native nodes"
+      - "External npm packages in code nodes"
+    research_queries:
+      - "n8n code node JavaScript examples 2024"
+      - "n8n function node patterns"
+      - "n8n code node npm packages"
+    cross_refs: ["expressions.md", "ai-nodes.md"]
+
+  # ─── Batch 3: Supporting ──────────────────────────────────────────────────
+  - file: "testing-debugging.md"
+    batch: 3
+    purpose: "Debug helper, execution history, error handling, pinned data testing"
+    topics:
+      - "Debug Helper node usage"
+      - "Execution history and replay"
+      - "Pinning data for testing"
+      - "Error workflow patterns"
+      - "Console logging and inspection"
+    research_queries:
+      - "n8n debugging workflows 2024"
+      - "n8n execution history debug"
+      - "n8n error handling best practices"
+    cross_refs: ["architecture.md"]
+
+  - file: "performance.md"
+    batch: 3
+    purpose: "Batch processing, memory management, execution optimization, scaling"
+    topics:
+      - "Batch processing with Split In Batches"
+      - "Memory optimization for large datasets"
+      - "Execution timeout handling"
+      - "Parallel vs sequential execution"
+      - "Queue mode for high-volume workflows"
+    research_queries:
+      - "n8n performance optimization 2024"
+      - "n8n batch processing large data"
+      - "n8n scaling workflows"
+    cross_refs: ["architecture.md", "code-nodes.md"]
+
+  - file: "deployment.md"
+    batch: 3
+    purpose: "Self-host vs cloud, credentials management, version control, production setup"
+    topics:
+      - "n8n Cloud vs self-hosted comparison"
+      - "Docker deployment setup"
+      - "Credentials storage and security"
+      - "Git integration for version control"
+      - "Production environment configuration"
+    research_queries:
+      - "n8n deployment docker 2024"
+      - "n8n credentials security"
+      - "n8n git version control workflows"
+    cross_refs: ["testing-debugging.md"]
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# WORKFLOW FILES
+# Each becomes a subagent task. Run AFTER references complete.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+workflows:
+  # ─── Batch 4: Core Workflows ──────────────────────────────────────────────
+  - file: "build-workflow.md"
+    batch: 4
+    purpose: "Create new workflow from scratch with Claude assistance"
+    required_refs:
+      - "architecture.md"
+      - "nodes-catalog.md"
+      - "expressions.md"
+    verification: "Workflow executes successfully with pinned test data"
+
+  - file: "debug-workflow.md"
+    batch: 4
+    purpose: "Diagnose and fix broken workflows"
+    required_refs:
+      - "testing-debugging.md"
+      - "expressions.md"
+    verification: "Error resolved and workflow executes successfully"
+
+  - file: "add-node.md"
+    batch: 4
+    purpose: "Add functionality to existing workflow"
+    required_refs:
+      - "nodes-catalog.md"
+      - "architecture.md"
+    verification: "New node integrated and workflow executes successfully"
+
+  # ─── Batch 5: Supporting Workflows ────────────────────────────────────────
+  - file: "write-tests.md"
+    batch: 5
+    purpose: "Test workflows with pinned data and assertions"
+    required_refs:
+      - "testing-debugging.md"
+    verification: "All test cases pass with expected outputs"
+
+  - file: "optimize-workflow.md"
+    batch: 5
+    purpose: "Profile and improve workflow performance"
+    required_refs:
+      - "performance.md"
+    verification: "Execution time or memory usage improved measurably"
+
+  - file: "deploy-workflow.md"
+    batch: 5
+    purpose: "Move workflow to production environment"
+    required_refs:
+      - "deployment.md"
+    verification: "Workflow active in production and triggered successfully"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# VERIFICATION COMMANDS
+# Used in SKILL.md verification_loop section
+# ═══════════════════════════════════════════════════════════════════════════════
+
+verification:
+  test_workflow: "Execute workflow with pinned data in n8n editor"
+  check_execution: "Review execution history for errors"
+  validate_output: "Compare output against expected results"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# BATCH SUMMARY
+# Quick reference for Phase 2 execution
+# ═══════════════════════════════════════════════════════════════════════════════
+
+batch_summary:
+  batch_1:
+    type: "references"
+    files: ["architecture.md", "nodes-catalog.md", "expressions.md"]
+    count: 3
+
+  batch_2:
+    type: "references"
+    files: ["ai-nodes.md", "http-api.md", "code-nodes.md"]
+    count: 3
+
+  batch_3:
+    type: "references"
+    files: ["testing-debugging.md", "performance.md", "deployment.md"]
+    count: 3
+
+  batch_4:
+    type: "workflows"
+    files: ["build-workflow.md", "debug-workflow.md", "add-node.md"]
+    count: 3
+
+  batch_5:
+    type: "workflows"
+    files: ["write-tests.md", "optimize-workflow.md", "deploy-workflow.md"]
+    count: 3
+
+  total_batches: 5
+  total_files: 15

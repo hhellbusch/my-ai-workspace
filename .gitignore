@@ -64,3 +64,14 @@ node_modules/
 # Internal process files, not for sharing
 
 .planning/
+
+# ===== Meta-System Artifacts =====
+# Backup and temporary import directories
+
+.meta-system-backup/
+.taches-import/
+.cursor-skills/
+
+# macOS files
+.DS_Store
+**/.DS_Store
