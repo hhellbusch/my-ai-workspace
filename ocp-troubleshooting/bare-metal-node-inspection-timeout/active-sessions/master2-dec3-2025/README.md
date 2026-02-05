@@ -178,9 +178,7 @@ etcdctl --cacert=/etc/kubernetes/static-pod-certs/configmaps/etcd-serving-ca/ca-
 - **Commands run:** 100+
 - **Learning value:** Very High ✅
 
----
-
-**Session Start:** December 3, 2025 ~18:00  
+---**Session Start:** December 3, 2025 ~18:00  
 **Session End:** December 3, 2025 ~22:30  
 **Final Verdict:** Cluster requires reinstallation  
 **Knowledge Gained:** Extensive and well-documented ✅

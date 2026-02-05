@@ -1,0 +1,172 @@
+# Example MultiClusterObservability with all required name fields
+# This example shows the correct structure to avoid webhook rejections
+
+apiVersion: observability.open-cluster-management.io/v1beta2
+kind: MultiClusterObservability
+metadata:
+  name: observability  # ← REQUIRED: Top-level resource name
+spec:
+  observabilityAddonSpec: {}
+  
+  # Storage configuration with proper naming
+  storageConfig:
+    metricObjectStorage:
+      name: thanos-object-storage  # ← REQUIRED: Secret name for object storage
+      key: thanos.yaml             # Key within the secret
+    
+    # If using write storage (optional)
+    writeStorage:
+      - name: thanos-write         # ← Name for write storage config
+        key: write-storage.yaml
+    
+    # Storage size for components
+    storageClass: gp2-csi
+    alertmanagerStorageSize: 1Gi
+    compactStorageSize: 100Gi
+    ruleStorageSize: 1Gi
+    receiveStorageSize: 100Gi
+    storeStorageSize: 10Gi
+  
+  # Advanced configuration
+  advanced:
+    # Retention settings
+    retentionConfig:
+      blockDuration: 2h
+      deleteDelay: 48h
+      retentionInLocal: 24h
+      retentionResolutionRaw: 30d
+      retentionResolution5m: 180d
+      retentionResolution1h: 0d
+    
+    # Receive configuration
+    receive:
+      replicas: 3
+      resources:
+        limits:
+          cpu: 500m
+          memory: 2Gi
+    
+    # Store gateway configuration  
+    store:
+      replicas: 3
+      resources:
+        limits:
+          cpu: 500m
+          memory: 2Gi
+    
+    # Query configuration
+    query:
+      replicas: 2
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+    
+    # Compact configuration
+    compact:
+      replicas: 1
+      resources:
+        limits:
+          cpu: 500m
+          memory: 2Gi
+    
+    # Rule configuration
+    rule:
+      replicas: 2
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+  
+  # Node selector (optional)
+  nodeSelector:
+    node-role.kubernetes.io/infra: ""
+  
+  # Tolerations (optional)
+  tolerations:
+    - key: node-role.kubernetes.io/infra
+      effect: NoSchedule
+      operator: Exists
+
+---
+# Required: Secret with object storage configuration
+apiVersion: v1
+kind: Secret
+metadata:
+  name: thanos-object-storage  # ← Must match storageConfig.metricObjectStorage.name
+  namespace: open-cluster-management-observability
+type: Opaque
+stringData:
+  thanos.yaml: |
+    type: s3
+    config:
+      bucket: observability-bucket
+      endpoint: s3.amazonaws.com
+      access_key: YOUR_ACCESS_KEY
+      secret_key: YOUR_SECRET_KEY
+      # For internal S3-compatible storage:
+      # insecure: true
+      # http_config:
+      #   insecure_skip_verify: true
+
+---
+# Minimal valid configuration (simplest form that will pass webhook validation)
+apiVersion: observability.open-cluster-management.io/v1beta2
+kind: MultiClusterObservability
+metadata:
+  name: observability           # ← REQUIRED
+spec:
+  observabilityAddonSpec: {}
+  storageConfig:
+    metricObjectStorage:
+      name: thanos-object-storage  # ← REQUIRED
+      key: thanos.yaml
+
+---
+# Configuration with AlertManager integration
+apiVersion: observability.open-cluster-management.io/v1beta2
+kind: MultiClusterObservability
+metadata:
+  name: observability
+spec:
+  observabilityAddonSpec: {}
+  storageConfig:
+    metricObjectStorage:
+      name: thanos-object-storage
+      key: thanos.yaml
+    alertmanagerStorageSize: 1Gi
+  
+  # AlertManager configuration
+  advanced:
+    alertmanager:
+      replicas: 3
+      resources:
+        limits:
+          cpu: 200m
+          memory: 512Mi
+  
+  # Reference to AlertManager config (optional)
+  alertmanagerConfig:
+    name: alertmanager-config     # ← Name of ConfigMap with AlertManager config
+    namespace: open-cluster-management-observability
+
+---
+# AlertManager ConfigMap (if using custom alerting rules)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: open-cluster-management-observability
+data:
+  alertmanager.yaml: |
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: ['alertname', 'cluster', 'service']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 12h
+      receiver: 'default'
+    receivers:
+      - name: 'default'
+        # Add your receivers here (email, slack, pagerduty, etc.)
