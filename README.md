@@ -194,6 +194,23 @@ Located in `coreos-examples/`. Contains Ignition configurations and patterns for
 **Featured example:**
 - [ISO Auto-Eject](coreos-examples/iso-eject-after-install/) - Automatically eject installation media after CoreOS completes installation
 
+## 📁 OpenShift Examples
+
+Located in `ocp-examples/`. Configuration examples and templates for OpenShift clusters.
+
+**What's included:**
+- NetworkAttachmentDefinition (NAD) configuration for VLANs and additional networks
+- OVN-Kubernetes networking configuration
+- Real-world examples with complete configurations
+- Quick reference guides for fast lookups
+- Troubleshooting guides for common issues
+
+[View OpenShift Configuration Examples →](ocp-examples/README.md)
+
+**Available examples:**
+- [NetworkAttachmentDefinition (NAD)](ocp-examples/network-attachment-definitions/README.md) - Complete guide for configuring additional networks, VLANs, and multi-network pods
+- [OVN-Kubernetes Install Config](ocp-examples/ovn-kubernetes-install-config/README.md) - Install-config.yaml examples for OVN-Kubernetes networking with MTU configuration
+
 ## 📁 OpenShift Troubleshooting
 
 Located in `ocp-troubleshooting/`. Comprehensive troubleshooting guides for common OpenShift cluster issues.
@@ -209,6 +226,7 @@ Located in `ocp-troubleshooting/`. Comprehensive troubleshooting guides for comm
 [View OpenShift Troubleshooting Guides →](ocp-troubleshooting/README.md)
 
 **Available guides:**
+- [Debug Toolbox Container](ocp-troubleshooting/debug-toolbox-container/README.md) - Use ephemeral debug containers for network troubleshooting with MTU testing, packet captures, and VLAN diagnostics
 - [kube-controller-manager Crash Loop](ocp-troubleshooting/kube-controller-manager-crashloop/README.md) - Complete guide for diagnosing and fixing controller manager issues
 - [Bare Metal Node Inspection Timeout](ocp-troubleshooting/bare-metal-node-inspection-timeout/README.md) - Troubleshooting nodes stuck in inspecting state during bare metal installation
 - [CSR Management](ocp-troubleshooting/csr-management/README.md) - Certificate Signing Request approval and troubleshooting with real-world examples

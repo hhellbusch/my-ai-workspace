@@ -83,6 +83,22 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
   - [Index](portworx-csi-crashloop/INDEX.md) - Guide navigation by symptom, role, and time available
   - Script: `diagnostic-script.sh` - Automated diagnostic data collection
 
+### Multi-Cluster Management (RHACM)
+
+- **[MultiClusterObservability Webhook Rejection](multiclusterobservability-webhook-rejection/README.md)** - Fix admission webhook rejections when editing/deleting MCO resources
+  - **[Quick Fix](multiclusterobservability-webhook-rejection/QUICK-FIX.md)** - Immediate solutions for webhook blocking operations ⚡
+  - [Index](multiclusterobservability-webhook-rejection/INDEX.md) - Guide navigation and common scenarios
+  - [Example YAML](multiclusterobservability-webhook-rejection/example-mco.yaml) - Properly formatted MCO configurations
+  - Script: `diagnose-webhook-issue.sh` - Automated webhook diagnostic tool
+
+## General Troubleshooting Tools
+
+- **[Debug Toolbox Container](debug-toolbox-container/README.md)** - Use ephemeral debug containers with Red Hat UBI for network troubleshooting
+  - **[Quick Reference](debug-toolbox-container/QUICK-REFERENCE.md)** - Fast commands for creating toolbox containers and installing diagnostic tools ⚡
+  - Privileged mode for MTU testing, packet captures, and advanced diagnostics
+  - Install tools on-demand: `mtr`, `tcpdump`, `traceroute`, `nmap`, `bind-utils`
+  - Network testing from pod perspective without modifying production containers
+
 ## Using These Guides
 
 Each guide follows this structure:
