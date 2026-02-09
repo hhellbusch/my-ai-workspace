@@ -19,6 +19,7 @@ Complete guide for configuring OVN-Kubernetes networking at OpenShift install ti
 | [EXAMPLES.md](./EXAMPLES.md) | Complete install-config.yaml examples | Platform-specific configurations |
 | [VERIFICATION.md](./VERIFICATION.md) | Post-install verification | After installation completes |
 | [install-config-template.yaml](./install-config-template.yaml) | Annotated template | Starting a new configuration |
+| [INSTALL-TIME-VS-POST-INSTALL.md](./INSTALL-TIME-VS-POST-INSTALL.md) | ⭐ Install vs post-install comparison | Understanding configuration methods |
 | [CROSS-REFERENCE-VERIFICATION.md](./CROSS-REFERENCE-VERIFICATION.md) | Accuracy verification vs Red Hat docs | Validating documentation accuracy |
 | [INDEX.md](./INDEX.md) | This file - documentation index | Finding what you need |
 

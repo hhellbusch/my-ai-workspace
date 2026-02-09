@@ -4,6 +4,7 @@ Quick copy-paste configurations for common scenarios.
 
 ## Table of Contents
 
+- [Important: Configuration Methods](#important-configuration-methods)
 - [Minimal Configuration](#minimal-configuration)
 - [Custom Internal Subnets](#custom-internal-subnets-recommended)
 - [IPsec Encryption](#ipsec-encryption)
@@ -11,6 +12,22 @@ Quick copy-paste configurations for common scenarios.
 - [Custom Geneve Port](#custom-geneve-port)
 - [Dual Stack IPv4+IPv6](#dual-stack-ipv4ipv6)
 - [All Options Combined](#all-options-combined)
+
+---
+
+## Important: Configuration Methods
+
+### ⚠️ Schema Verification Results
+
+**Install-Time (install-config.yaml):**
+- ✅ `ipv4.internalJoinSubnet` - **Officially documented** for install-time configuration
+- ❓ Other parameters - **Not documented** in install-config.yaml schema, use post-install method
+
+**Post-Installation (network.operator.openshift.io):**
+- ✅ **All parameters supported** - This is the officially documented method
+- ✅ See "Post-Installation: What Can Be Changed?" section below
+
+**Recommendation:** Use post-installation configuration as your primary method.
 
 ---
 
@@ -42,7 +59,9 @@ networking:
 
 ## Custom Internal Subnets (Recommended)
 
-**Use this if default 100.64.0.0/16 or 100.88.0.0/16 conflicts with your network:**
+**⚠️ Note:** Only `internalJoinSubnet` is officially documented for install-time configuration. For all parameters, the post-installation method is recommended.
+
+**Method 1: Install-Time (Partial - Only internalJoinSubnet officially documented):**
 
 ```yaml
 networking:
@@ -64,9 +83,13 @@ networking:
 ```
 
 **What this does:**
-- Sets join subnet to 10.245.0.0/16 (node-to-overlay interface)
-- Expands masquerade subnet to 169.254.0.0/17 (32K addresses)
-- Sets transit subnet to 10.246.0.0/16 (internal routing)
+- Sets join subnet to 10.245.0.0/16 (node-to-overlay interface) - ✅ Officially documented
+- Expands masquerade subnet to 169.254.0.0/17 (32K addresses) - ❓ Not in schema docs
+- Sets transit subnet to 10.246.0.0/16 (internal routing) - ❓ Not in schema docs
+
+**Method 2: Post-Installation (Officially Documented - Recommended):**
+
+See the "Changing Configuration Post-Install" section below for the officially documented method to configure all OVN subnets after installation.
 
 ---
 

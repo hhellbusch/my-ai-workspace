@@ -230,18 +230,72 @@ While not explicitly stated in Red Hat docs, standard practice (and good guidanc
 
 ---
 
+## Install-Config.yaml Schema Verification
+
+### Critical Finding: Partial Install-Time Support
+
+**Verification Date:** 2026-02-02  
+**Source:** [OKD 4.18 Installation Config Parameters](https://docs.okd.io/4.18/installing/installing_bare_metal/upi/installation-config-parameters-bare-metal.html)
+
+#### ✅ Officially Documented in install-config.yaml
+
+**Only ONE parameter is explicitly documented** in the install-config.yaml schema reference:
+
+```yaml
+networking:
+  ovnKubernetesConfig:
+    ipv4:
+      internalJoinSubnet: 100.64.0.0/16
+```
+
+**Official Documentation Quote:**
+> "Configures the IPv4 join subnet that is used internally by ovn-kubernetes. This subnet must not overlap with any other subnet that OKD is using, including the node network. The size of the subnet must be larger than the number of nodes. **You cannot change the value after installation.**"
+
+**Default:** `100.64.0.0/16`
+
+#### ❓ Not Explicitly Documented in install-config.yaml Schema
+
+These parameters are **documented for post-installation** configuration but are **NOT** in the install-config.yaml schema reference:
+
+- `gatewayConfig.ipv4.internalMasqueradeSubnet` - Documented for Day 2 operations only
+- `gatewayConfig.ipv4.internalTransitSwitchSubnet` - Documented for Day 2 operations only
+- `mtu` - Documented for Day 2 operations only
+- `genevePort` - Documented for Day 2 operations only
+- `ipsecConfig.mode` - Documented for Day 2 operations only
+- `policyAuditConfig` - Documented for Day 2 operations only
+
+#### 📋 Impact on Documentation
+
+**What This Means:**
+1. **Install-time configuration** of most OVN-Kubernetes parameters is **not officially documented**
+2. **Post-installation configuration** via `network.operator.openshift.io` is the **primary documented method**
+3. Only `internalJoinSubnet` is explicitly supported at install time in the schema
+
+**Recommendation:**
+- Emphasize post-installation method as the primary approach
+- Note that install-time configuration (beyond `internalJoinSubnet`) should be validated with Red Hat Support
+- Document both methods for maximum flexibility
+
+---
+
 ## Conclusion
 
 Your documentation is **highly accurate** and well-aligned with official Red Hat/OpenShift documentation. The core technical content, parameter descriptions, and configuration methods are all verified correct.
 
-The main improvement needed is adding the **30-minute propagation time notice** and **prerequisite requirements** that Red Hat emphasizes in their official documentation.
+**Key Findings:**
+1. ✅ Post-installation configuration method is fully documented and verified
+2. ⚠️ Install-time configuration is **only officially documented** for `internalJoinSubnet`
+3. ✅ 30-minute propagation time notice has been added
+4. ✅ Prerequisites have been added
 
-With these minor additions, this documentation will be production-ready and fully aligned with Red Hat's official guidance.
+**Updated Recommendation:**
+Document both approaches but emphasize the post-installation method as the officially documented standard, with install-time configuration as an option to be validated with your OpenShift version.
 
 ---
 
 **Verification Performed By:** Claude (Anthropic AI Assistant)  
 **Verification Date:** 2026-02-02  
-**Documentation Quality:** Production-Ready with Minor Updates Recommended  
-**Alignment with Red Hat Docs:** 9.2/10
+**Schema Verification Source:** OKD 4.18 Official Documentation  
+**Documentation Quality:** Production-Ready with Schema Clarification Added  
+**Alignment with Red Hat Docs:** 9.0/10 (Updated based on schema findings)
 

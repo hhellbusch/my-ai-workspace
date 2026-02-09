@@ -26,9 +26,25 @@ For post-install verification, see [VERIFICATION.md](./VERIFICATION.md).
 
 ## Configuration Reference
 
+### ⚠️ Important: Install-Time vs Post-Installation Configuration
+
+**Key Finding from Schema Verification:**
+
+Red Hat's official install-config.yaml schema **only explicitly documents ONE parameter** for install-time configuration:
+- ✅ `ipv4.internalJoinSubnet` - Officially documented in install-config.yaml schema
+
+**All other parameters** are documented for **post-installation configuration** via `network.operator.openshift.io`:
+- `gatewayConfig.ipv4.internalMasqueradeSubnet` - Day 2 operation
+- `gatewayConfig.ipv4.internalTransitSwitchSubnet` - Day 2 operation
+- `mtu` - Day 2 operation
+- `genevePort` - Day 2 operation
+- `ipsecConfig.mode` - Day 2 operation
+
+**Recommendation:** Use the post-installation method as your primary approach. This is the officially documented and supported method.
+
 ### Basic Structure
 
-The `ovnKubernetesConfig` section goes under `networking` in your `install-config.yaml`:
+The `ovnKubernetesConfig` section goes under `networking` in your `install-config.yaml` (for parameters that support install-time configuration):
 
 ```yaml
 apiVersion: v1
@@ -70,24 +86,24 @@ networking:
 
 ### Top-Level Parameters
 
-| Parameter | Type | Default | Description | Can Change Post-Install? |
-|-----------|------|---------|-------------|--------------------------|
-| `mtu` | integer | 1400 | Maximum Transmission Unit for overlay network | ⚠️ Yes (requires node reboot) |
-| `genevePort` | integer | 6081 | UDP port for Geneve encapsulation | ⚠️ Yes (requires node reboot) |
+| Parameter | Type | Default | Description | Install-Time Support | Can Change Post-Install? |
+|-----------|------|---------|-------------|----------------------|--------------------------|
+| `mtu` | integer | 1400 | Maximum Transmission Unit for overlay network | ❓ Not documented | ⚠️ Yes (requires node reboot) |
+| `genevePort` | integer | 6081 | UDP port for Geneve encapsulation | ❓ Not documented | ⚠️ Yes (requires node reboot) |
 
 ### IPv4 Parameters
 
-| Parameter | Type | Default | Description | Can Change Post-Install? |
-|-----------|------|---------|-------------|--------------------------|
-| `ipv4.internalJoinSubnet` | CIDR | 100.64.0.0/16 | Subnet for node-to-overlay routing (ovn-k8s-mp0 interface) | ⚠️ Yes (via network.operator.openshift.io) |
+| Parameter | Type | Default | Description | Install-Time Support | Can Change Post-Install? |
+|-----------|------|---------|-------------|----------------------|--------------------------|
+| `ipv4.internalJoinSubnet` | CIDR | 100.64.0.0/16 | Subnet for node-to-overlay routing (ovn-k8s-mp0 interface) | ✅ Documented | ⚠️ Yes (via network.operator.openshift.io) |
 
 ### Gateway Config Parameters
 
-| Parameter | Type | Default | Description | Can Change Post-Install? |
-|-----------|------|---------|-------------|--------------------------|
-| `gatewayConfig.routingViaHost` | boolean | false | Route egress traffic via host network stack | ⚠️ Yes (requires careful planning) |
-| `gatewayConfig.ipv4.internalMasqueradeSubnet` | CIDR | 169.254.169.0/29 | Subnet for masquerading pod-to-external traffic | ⚠️ Yes (via network.operator.openshift.io) |
-| `gatewayConfig.ipv4.internalTransitSwitchSubnet` | CIDR | 100.88.0.0/16 | Transit network between node and OVN gateway | ⚠️ Yes (via network.operator.openshift.io) |
+| Parameter | Type | Default | Description | Install-Time Support | Can Change Post-Install? |
+|-----------|------|---------|-------------|----------------------|--------------------------|
+| `gatewayConfig.routingViaHost` | boolean | false | Route egress traffic via host network stack | ❓ Not documented | ⚠️ Yes (requires careful planning) |
+| `gatewayConfig.ipv4.internalMasqueradeSubnet` | CIDR | 169.254.169.0/29 | Subnet for masquerading pod-to-external traffic | ❓ Not documented | ⚠️ Yes (via network.operator.openshift.io) |
+| `gatewayConfig.ipv4.internalTransitSwitchSubnet` | CIDR | 100.88.0.0/16 | Transit network between node and OVN gateway | ❓ Not documented | ⚠️ Yes (via network.operator.openshift.io) |
 
 ### IPsec Config Parameters
 
@@ -193,11 +209,19 @@ gatewayConfig:
 
 ## Common Scenarios
 
+### Recommended Approach: Post-Installation Configuration
+
+For production deployments, Red Hat documents post-installation configuration as the primary method. See "Changing OVN Settings Post-Install" section below.
+
+### Alternative: Install-Time Configuration
+
+**⚠️ Note:** Only `internalJoinSubnet` is officially documented for install-time configuration. Other parameters should be configured post-installation or validated with Red Hat Support for your OpenShift version.
+
 ### Scenario 1: Custom Internal Subnets (Your Configuration)
 
 **Use Case:** Default OVN internal subnets conflict with existing infrastructure
 
-**Configuration:**
+**Install-Time Configuration (Partial Support):**
 ```yaml
 networking:
   networkType: OVNKubernetes
@@ -222,8 +246,8 @@ networking:
 - Provides larger masquerade subnet for scaling
 - Uses dedicated internal addressing space
 
-**Post-Install Changes:**
-These settings can be modified after installation using:
+**Recommended: Post-Install Configuration (Officially Documented):**
+Configure all OVN internal subnets after installation using the officially documented method:
 ```bash
 oc patch networks.operator.openshift.io cluster --type=merge -p '
 {
