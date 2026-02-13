@@ -73,6 +73,14 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
   - [Examples](namespace-stuck-terminating/EXAMPLES.md) - Real-world scenarios including OpenTelemetry, RHACM, and more
   - Scripts: `cleanup-namespace-finalizers.sh`, `investigate-namespace.sh` - Automated investigation and cleanup tools
 
+### Container Images and Registry Issues
+
+- **[Image Signature Policy Blocking MCP Rollout](image-signature-policy-mcp-deadlock/README.md)** - Fix signature validation errors causing MachineConfigPool deadlock
+  - **[Quick Start](image-signature-policy-mcp-deadlock/QUICK-START.md)** - Fast manual fix to break the deadlock ⚡
+  - Script: `manual-fix-signature-policy.sh` - Automated policy fix for all nodes
+  - YAML: `signature-policy-machineconfig.yaml` - Permanent MachineConfig solution
+  - Includes manual step-by-step for understanding the fix
+
 ### Storage Issues
 
 - **[Portworx CSI Pod CrashLoopBackOff](portworx-csi-crashloop/README.md)** - Complete guide for troubleshooting px-csi-ext pod crashes
@@ -205,7 +213,8 @@ Planned troubleshooting guides:
 - [x] CoreOS base system networking - See [CoreOS Networking Issues](coreos-networking-issues/README.md)
 - [x] Storage/PVC problems (Portworx) - See [Portworx CSI Pod CrashLoopBackOff](portworx-csi-crashloop/README.md)
 - [ ] Storage/PVC problems (OCS/ODF)
-- [ ] Image registry issues
+- [x] Image signature policy rejections - See [Image Signature Policy Blocking MCP Rollout](image-signature-policy-mcp-deadlock/README.md)
+- [ ] Image registry issues (general)
 - [ ] Authentication failures
 - [ ] Operator degradation patterns
 - [ ] Upgrade stuck/failed scenarios

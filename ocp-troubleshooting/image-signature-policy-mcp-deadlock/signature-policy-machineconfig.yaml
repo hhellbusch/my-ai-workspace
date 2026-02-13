@@ -1,0 +1,54 @@
+---
+# MachineConfig for Master nodes - Container signature policy
+# This configures /etc/containers/policy.json to accept signed images from Red Hat registries
+#
+# Apply AFTER manual fix and MCP completion:
+#   oc apply -f signature-policy-machineconfig.yaml
+#
+# This will trigger another MCP rollout to make the change permanent
+#
+# AI Disclosure: This configuration was created with AI assistance.
+
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: master
+  name: 99-master-container-signature-policy
+spec:
+  config:
+    ignition:
+      version: 3.2.0  # For OCP 4.6-4.15. Use 3.4.0 for OCP 4.16+
+    storage:
+      files:
+      - contents:
+          # Base64 encoded policy.json
+          # To decode: echo "<base64-string>" | base64 -d | jq .
+          source: data:text/plain;charset=utf-8;base64,ewogICJkZWZhdWx0IjogWwogICAgewogICAgICAidHlwZSI6ICJpbnNlY3VyZUFjY2VwdEFueXRoaW5nIgogICAgfQogIF0sCiAgInRyYW5zcG9ydHMiOiB7CiAgICAiZG9ja2VyLWRhZW1vbiI6IHsKICAgICAgIiI6IFt7InR5cGUiOiAiaW5zZWN1cmVBY2NlcHRBbnl0aGluZyJ9XQogICAgfSwKICAgICJkb2NrZXIiOiB7CiAgICAgICJyZWdpc3RyeS5yZWRoYXQuaW8iOiBbCiAgICAgICAgewogICAgICAgICAgInR5cGUiOiAic2lnbmVkQnkiLAogICAgICAgICAgImtleVR5cGUiOiAiR1BHS2V5cyIsCiAgICAgICAgICAia2V5UGF0aCI6ICIvZXRjL3BraS9ycG0tZ3BnL1JQTS1HUEctS0VZLXJlZGhhdC1yZWxlYXNlIgogICAgICAgIH0KICAgICAgXSwKICAgICAgInJlZ2lzdHJ5LmFjY2Vzcy5yZWRoYXQuY29tIjogWwogICAgICAgIHsKICAgICAgICAgICJ0eXBlIjogInNpZ25lZEJ5IiwKICAgICAgICAgICJrZXlUeXBlIjogIkdQR0tleXMiLAogICAgICAgICAgImtleVBhdGgiOiAiL2V0Yy9wa2kvcnBtLWdwZy9SUE0tR1BHLUtFWS1yZWRoYXQtcmVsZWFzZSIKICAgICAgICB9CiAgICAgIF0sCiAgICAgICJjYXRhbG9nLnJlZGhhdC5jb20iOiBbCiAgICAgICAgewogICAgICAgICAgInR5cGUiOiAic2lnbmVkQnkiLAogICAgICAgICAgImtleVR5cGUiOiAiR1BHS2V5cyIsCiAgICAgICAgICAia2V5UGF0aCI6ICIvZXRjL3BraS9ycG0tZ3BnL1JQTS1HUEctS0VZLXJlZGhhdC1yZWxlYXNlIgogICAgICAgIH0KICAgICAgXQogICAgfQogIH0KfQo=
+        filesystem: root
+        mode: 420
+        path: /etc/containers/policy.json
+
+---
+# MachineConfig for Worker nodes - Container signature policy
+# This configures /etc/containers/policy.json to accept signed images from Red Hat registries
+
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 99-worker-container-signature-policy
+spec:
+  config:
+    ignition:
+      version: 3.2.0  # For OCP 4.6-4.15. Use 3.4.0 for OCP 4.16+
+    storage:
+      files:
+      - contents:
+          # Base64 encoded policy.json
+          # To decode: echo "<base64-string>" | base64 -d | jq .
+          source: data:text/plain;charset=utf-8;base64,ewogICJkZWZhdWx0IjogWwogICAgewogICAgICAidHlwZSI6ICJpbnNlY3VyZUFjY2VwdEFueXRoaW5nIgogICAgfQogIF0sCiAgInRyYW5zcG9ydHMiOiB7CiAgICAiZG9ja2VyLWRhZW1vbiI6IHsKICAgICAgIiI6IFt7InR5cGUiOiAiaW5zZWN1cmVBY2NlcHRBbnl0aGluZyJ9XQogICAgfSwKICAgICJkb2NrZXIiOiB7CiAgICAgICJyZWdpc3RyeS5yZWRoYXQuaW8iOiBbCiAgICAgICAgewogICAgICAgICAgInR5cGUiOiAic2lnbmVkQnkiLAogICAgICAgICAgImtleVR5cGUiOiAiR1BHS2V5cyIsCiAgICAgICAgICAia2V5UGF0aCI6ICIvZXRjL3BraS9ycG0tZ3BnL1JQTS1HUEctS0VZLXJlZGhhdC1yZWxlYXNlIgogICAgICAgIH0KICAgICAgXSwKICAgICAgInJlZ2lzdHJ5LmFjY2Vzcy5yZWRoYXQuY29tIjogWwogICAgICAgIHsKICAgICAgICAgICJ0eXBlIjogInNpZ25lZEJ5IiwKICAgICAgICAgICJrZXlUeXBlIjogIkdQR0tleXMiLAogICAgICAgICAgImtleVBhdGgiOiAiL2V0Yy9wa2kvcnBtLWdwZy9SUE0tR1BHLUtFWS1yZWRoYXQtcmVsZWFzZSIKICAgICAgICB9CiAgICAgIF0sCiAgICAgICJjYXRhbG9nLnJlZGhhdC5jb20iOiBbCiAgICAgICAgewogICAgICAgICAgInR5cGUiOiAic2lnbmVkQnkiLAogICAgICAgICAgImtleVR5cGUiOiAiR1BHS2V5cyIsCiAgICAgICAgICAia2V5UGF0aCI6ICIvZXRjL3BraS9ycG0tZ3BnL1JQTS1HUEctS0VZLXJlZGhhdC1yZWxlYXNlIgogICAgICAgIH0KICAgICAgXQogICAgfQogIH0KfQo=
+        filesystem: root
+        mode: 420
+        path: /etc/containers/policy.json
