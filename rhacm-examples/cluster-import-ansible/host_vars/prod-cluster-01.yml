@@ -1,0 +1,22 @@
+---
+# Host-specific configuration for prod-cluster-01
+#
+# These values override group_vars/target_clusters.yml
+
+# Custom labels for this cluster
+cluster_labels:
+  environment: production
+  cloud: baremetal
+  region: us-east-1
+  datacenter: dc1
+  rack: rack42
+  owner: platform-team
+  cost-center: "12345"
+
+# Custom add-on configuration
+# Disable search collector for performance
+klusterlet_addons:
+  application_manager: true
+  policy_controller: true
+  search_collector: false  # Disabled for this high-performance cluster
+  cert_policy_controller: true

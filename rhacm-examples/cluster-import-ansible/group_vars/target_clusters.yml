@@ -1,0 +1,27 @@
+---
+# Default configuration for all target clusters
+#
+# These values apply to all clusters unless overridden in host_vars/
+
+# Cluster labels used for placement and governance
+# Customize based on your organizational standards
+cluster_labels:
+  environment: production
+  cloud: baremetal
+  region: us-east-1
+
+# Klusterlet add-ons to enable on imported clusters
+# Set to false to disable specific add-ons
+klusterlet_addons:
+  # Application lifecycle management
+  application_manager: true
+  
+  # Policy enforcement and compliance
+  policy_controller: true
+  
+  # Cluster search and indexing
+  # Note: May impact performance on large clusters
+  search_collector: true
+  
+  # Certificate policy management
+  cert_policy_controller: true

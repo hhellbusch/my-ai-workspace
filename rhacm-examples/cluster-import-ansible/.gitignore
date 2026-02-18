@@ -1,0 +1,28 @@
+# Kubeconfig files
+*.kubeconfig
+*kubeconfig*
+
+# Ansible retry files
+*.retry
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Ansible facts cache
+*.json
+
+# Temporary files
+*.tmp
+/tmp/
+
+# Sensitive files
+secrets/
+vault-password.txt
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

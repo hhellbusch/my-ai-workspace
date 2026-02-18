@@ -1,0 +1,206 @@
+---
+# RHACM Cluster Import Playbook
+#
+# This playbook imports existing OpenShift clusters into RHACM by:
+# 1. Creating ManagedCluster and KlusterletAddonConfig on hub
+# 2. Extracting the generated import secret
+# 3. Applying import manifests to target cluster
+# 4. Validating successful import
+#
+# Usage:
+#   ansible-playbook -i inventory/hosts.ini import-cluster.yml --limit <cluster-name>
+#
+# Requirements:
+#   - ansible-core 2.15+
+#   - kubernetes.core collection
+#   - kubeconfig files for hub and target clusters
+
+- name: Import cluster to RHACM Hub
+  hosts: target_clusters
+  gather_facts: false
+  vars:
+    # Timeout for waiting for import secret (seconds)
+    import_secret_timeout_seconds: 120
+    # Timeout for cluster to join and become available (seconds)
+    import_validation_timeout_seconds: 300
+    # Hub cluster details (loaded from hub host)
+    hub_host: "{{ groups['rhacm_hub'][0] }}"
+    hub_kubeconfig: "{{ hostvars[hub_host].kubeconfig_path }}"
+    # Target cluster details
+    cluster_name: "{{ inventory_hostname }}"
+    target_kubeconfig: "{{ kubeconfig_path }}"
+    
+  tasks:
+    - name: Validate required variables
+      assert:
+        that:
+          - cluster_name is defined
+          - target_kubeconfig is defined
+          - hub_kubeconfig is defined
+          - cluster_labels is defined
+          - klusterlet_addons is defined
+        fail_msg: "Required variables missing. Check group_vars or host_vars."
+        
+    - name: Display cluster import configuration
+      debug:
+        msg:
+          - "Importing cluster: {{ cluster_name }}"
+          - "Hub kubeconfig: {{ hub_kubeconfig }}"
+          - "Target kubeconfig: {{ target_kubeconfig }}"
+          - "Labels: {{ cluster_labels }}"
+          - "Add-ons: {{ klusterlet_addons }}"
+
+    # ===== Hub Cluster Tasks =====
+    
+    - name: Create namespace for cluster on hub
+      kubernetes.core.k8s:
+        kubeconfig: "{{ hub_kubeconfig }}"
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: "{{ cluster_name }}"
+      delegate_to: localhost
+      
+    - name: Create ManagedCluster resource on hub
+      kubernetes.core.k8s:
+        kubeconfig: "{{ hub_kubeconfig }}"
+        state: present
+        definition:
+          apiVersion: cluster.open-cluster-management.io/v1
+          kind: ManagedCluster
+          metadata:
+            name: "{{ cluster_name }}"
+            labels: "{{ cluster_labels }}"
+          spec:
+            hubAcceptsClient: true
+            leaseDurationSeconds: 60
+      delegate_to: localhost
+      register: managedcluster_result
+      
+    - name: Create KlusterletAddonConfig resource on hub
+      kubernetes.core.k8s:
+        kubeconfig: "{{ hub_kubeconfig }}"
+        state: present
+        definition:
+          apiVersion: agent.open-cluster-management.io/v1
+          kind: KlusterletAddonConfig
+          metadata:
+            name: "{{ cluster_name }}"
+            namespace: "{{ cluster_name }}"
+          spec:
+            clusterName: "{{ cluster_name }}"
+            clusterNamespace: "{{ cluster_name }}"
+            clusterLabels: "{{ cluster_labels }}"
+            applicationManager:
+              enabled: "{{ klusterlet_addons.application_manager | default(true) }}"
+            policyController:
+              enabled: "{{ klusterlet_addons.policy_controller | default(true) }}"
+            searchCollector:
+              enabled: "{{ klusterlet_addons.search_collector | default(true) }}"
+            certPolicyController:
+              enabled: "{{ klusterlet_addons.cert_policy_controller | default(true) }}"
+      delegate_to: localhost
+      
+    - name: Wait for import secret to be generated
+      kubernetes.core.k8s_info:
+        kubeconfig: "{{ hub_kubeconfig }}"
+        kind: Secret
+        name: "{{ cluster_name }}-import"
+        namespace: "{{ cluster_name }}"
+      delegate_to: localhost
+      register: import_secret
+      until: import_secret.resources | length > 0
+      retries: "{{ (import_secret_timeout_seconds / 5) | int }}"
+      delay: 5
+      
+    - name: Extract import manifest from secret
+      set_fact:
+        import_manifest: "{{ import_secret.resources[0].data['import.yaml'] | b64decode }}"
+      delegate_to: localhost
+      
+    - name: Display import manifest preview
+      debug:
+        msg: "Import manifest extracted ({{ import_manifest | length }} bytes)"
+        
+    # ===== Target Cluster Tasks =====
+    
+    - name: Apply import manifest to target cluster
+      kubernetes.core.k8s:
+        kubeconfig: "{{ target_kubeconfig }}"
+        state: present
+        definition: "{{ import_manifest }}"
+      register: import_apply_result
+      
+    - name: Display import application result
+      debug:
+        msg: "Import manifest applied successfully"
+      when: import_apply_result is succeeded
+      
+    # ===== Validation =====
+    
+    - name: Wait for ManagedCluster to join
+      kubernetes.core.k8s_info:
+        kubeconfig: "{{ hub_kubeconfig }}"
+        kind: ManagedCluster
+        name: "{{ cluster_name }}"
+      delegate_to: localhost
+      register: managedcluster_status
+      until: >
+        managedcluster_status.resources | length > 0 and
+        managedcluster_status.resources[0].status.conditions |
+        selectattr('type', 'equalto', 'ManagedClusterJoined') |
+        selectattr('status', 'equalto', 'True') | list | length > 0
+      retries: "{{ (import_validation_timeout_seconds / 10) | int }}"
+      delay: 10
+      
+    - name: Wait for ManagedCluster to become available
+      kubernetes.core.k8s_info:
+        kubeconfig: "{{ hub_kubeconfig }}"
+        kind: ManagedCluster
+        name: "{{ cluster_name }}"
+      delegate_to: localhost
+      register: managedcluster_status
+      until: >
+        managedcluster_status.resources | length > 0 and
+        managedcluster_status.resources[0].status.conditions |
+        selectattr('type', 'equalto', 'ManagedClusterConditionAvailable') |
+        selectattr('status', 'equalto', 'True') | list | length > 0
+      retries: "{{ (import_validation_timeout_seconds / 10) | int }}"
+      delay: 10
+      
+    - name: Get final ManagedCluster status
+      kubernetes.core.k8s_info:
+        kubeconfig: "{{ hub_kubeconfig }}"
+        kind: ManagedCluster
+        name: "{{ cluster_name }}"
+      delegate_to: localhost
+      register: final_status
+      
+    - name: Display import success
+      debug:
+        msg:
+          - "✓ Cluster {{ cluster_name }} successfully imported to RHACM"
+          - "Status: {{ final_status.resources[0].status.conditions | map(attribute='type') | list }}"
+          - "Available: {{ final_status.resources[0].status.conditions | selectattr('type', 'equalto', 'ManagedClusterConditionAvailable') | map(attribute='status') | first }}"
+          - "Joined: {{ final_status.resources[0].status.conditions | selectattr('type', 'equalto', 'ManagedClusterJoined') | map(attribute='status') | first }}"
+
+# Post-import summary
+- name: Import Summary
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Display summary
+      debug:
+        msg:
+          - "=========================================="
+          - "RHACM Cluster Import Complete"
+          - "=========================================="
+          - "Imported clusters: {{ groups['target_clusters'] | length }}"
+          - ""
+          - "Next steps:"
+          - "1. Verify clusters in RHACM console"
+          - "2. Create Placement resources for cluster targeting"
+          - "3. Apply governance policies"
+          - "4. Deploy applications via ApplicationSets"
