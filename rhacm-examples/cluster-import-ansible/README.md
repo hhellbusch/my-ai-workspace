@@ -32,6 +32,11 @@ ansible-galaxy collection install kubernetes.core
   - Create `KlusterletAddonConfig` resources
   - Read secrets in cluster namespaces
   
+  **Recommended**: Use dedicated service account with minimal permissions
+  - See [hub-rbac/README.md](hub-rbac/README.md) for RBAC setup
+  - Follows principle of least privilege
+  - Better than using cluster-admin kubeconfig
+  
 - **Target Cluster**: Kubeconfig with cluster-admin permissions to:
   - Create namespaces
   - Create operator resources

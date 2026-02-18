@@ -1,0 +1,17 @@
+---
+# ClusterRoleBinding to grant cluster-importer service account permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-importer
+  labels:
+    app: rhacm-automation
+    purpose: cluster-import
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-importer
+subjects:
+  - kind: ServiceAccount
+    name: cluster-importer
+    namespace: open-cluster-management

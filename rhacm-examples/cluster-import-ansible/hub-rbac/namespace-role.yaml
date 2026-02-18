@@ -1,0 +1,49 @@
+---
+# Role for managing resources within cluster namespaces
+# This role is created in each cluster's namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-importer-namespace
+  labels:
+    app: rhacm-automation
+    purpose: cluster-import
+rules:
+  # Permission to create and manage secrets in cluster namespaces
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+  
+  # Permission to manage KlusterletAddonConfig in cluster namespaces
+  - apiGroups: ["agent.open-cluster-management.io"]
+    resources: ["klusterletaddonconfigs"]
+    verbs: ["create", "get", "list", "watch", "update", "patch"]
+  
+  # Permission to read ConfigMaps in cluster namespaces (if needed for config)
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch"]
+---
+# RoleBinding template - create one per cluster namespace
+# This file is a template - you'll need to create a RoleBinding for each cluster
+# Example for a cluster named "prod-cluster-01":
+#
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: RoleBinding
+# metadata:
+#   name: cluster-importer
+#   namespace: prod-cluster-01
+#   labels:
+#     app: rhacm-automation
+#     purpose: cluster-import
+# roleRef:
+#   apiGroup: rbac.authorization.k8s.io
+#   kind: ClusterRole
+#   name: cluster-importer-namespace
+# subjects:
+#   - kind: ServiceAccount
+#     name: cluster-importer
+#     namespace: open-cluster-management
+#
+# Note: The playbook creates namespaces, so you may want to automate
+# RoleBinding creation as part of the import workflow
