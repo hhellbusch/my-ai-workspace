@@ -26,6 +26,11 @@ rules:
     resources: ["managedclusters"]
     verbs: ["create", "get", "list", "watch", "update", "patch"]
   
+  # Permission to accept managed clusters (required for hubAcceptsClient: true)
+  - apiGroups: ["cluster.open-cluster-management.io"]
+    resources: ["managedclusters/accept"]
+    verbs: ["update"]
+  
   # Permission to read ManagedCluster status
   - apiGroups: ["cluster.open-cluster-management.io"]
     resources: ["managedclusters/status"]
