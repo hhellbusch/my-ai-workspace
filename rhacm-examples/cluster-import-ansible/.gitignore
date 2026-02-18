@@ -1,6 +1,11 @@
-# Kubeconfig files
+# Kubeconfig files (but not helper scripts)
 *.kubeconfig
-*kubeconfig*
+*kubeconfig.yaml
+*kubeconfig.yml
+/tmp/*kubeconfig
+
+# Allow helper scripts
+!*kubeconfig.sh
 
 # Ansible retry files
 *.retry
