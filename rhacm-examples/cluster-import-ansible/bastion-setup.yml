@@ -1,0 +1,83 @@
+---
+# Bastion Node Setup Playbook
+#
+# Installs required Python dependencies on bastion nodes for RHACM automation
+#
+# Usage:
+#   ansible-playbook -i inventory/hosts.ini bastion-setup.yml
+
+- name: Setup bastion node for RHACM automation
+  hosts: bastion
+  become: true
+  gather_facts: true
+  
+  tasks:
+    - name: Check if Python 3 is installed
+      command: python3 --version
+      register: python3_check
+      changed_when: false
+      
+    - name: Display Python version
+      debug:
+        msg: "Python version: {{ python3_check.stdout }}"
+        
+    - name: Install pip3 if not present
+      package:
+        name: python3-pip
+        state: present
+      when: ansible_os_family == "RedHat" or ansible_os_family == "Debian"
+      
+    - name: Install Python kubernetes library
+      pip:
+        name: kubernetes
+        state: present
+        executable: pip3
+      register: pip_install
+      
+    - name: Install PyYAML (required by kubernetes library)
+      pip:
+        name: PyYAML
+        state: present
+        executable: pip3
+        
+    - name: Verify kubernetes library installation
+      command: python3 -c "import kubernetes; print(kubernetes.__version__)"
+      register: k8s_version
+      changed_when: false
+      
+    - name: Display installation result
+      debug:
+        msg:
+          - "✓ Python kubernetes library installed successfully"
+          - "Version: {{ k8s_version.stdout }}"
+          
+    - name: Install oc/kubectl CLI (optional)
+      block:
+        - name: Check if oc is installed
+          command: which oc
+          register: oc_check
+          failed_when: false
+          changed_when: false
+          
+        - name: Download and install oc CLI
+          get_url:
+            url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz
+            dest: /tmp/openshift-client-linux.tar.gz
+          when: oc_check.rc != 0
+          
+        - name: Extract oc CLI
+          unarchive:
+            src: /tmp/openshift-client-linux.tar.gz
+            dest: /usr/local/bin
+            remote_src: true
+          when: oc_check.rc != 0
+          
+        - name: Verify oc installation
+          command: oc version --client
+          register: oc_version
+          changed_when: false
+          
+        - name: Display oc version
+          debug:
+            msg: "oc CLI version: {{ oc_version.stdout }}"
+      when: ansible_os_family == "RedHat"
