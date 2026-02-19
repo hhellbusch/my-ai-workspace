@@ -4,12 +4,18 @@
 # Installs required Python dependencies on bastion nodes for RHACM automation
 #
 # Usage:
+#   # System-wide installation (requires sudo)
 #   ansible-playbook -i inventory/hosts.ini bastion-setup.yml
+#
+#   # User-specific installation (no sudo required)
+#   ansible-playbook -i inventory/hosts.ini bastion-setup.yml -e "install_user_only=true"
 
 - name: Setup bastion node for RHACM automation
   hosts: bastion
-  become: true
+  become: "{{ not (install_user_only | default(false) | bool) }}"
   gather_facts: true
+  vars:
+    install_user_only: false  # Set to true for user-only installation
   
   tasks:
     - name: Check if Python 3 is installed
@@ -21,17 +27,20 @@
       debug:
         msg: "Python version: {{ python3_check.stdout }}"
         
-    - name: Install pip3 if not present
+    - name: Install pip3 if not present (system-wide)
       package:
         name: python3-pip
         state: present
-      when: ansible_os_family == "RedHat" or ansible_os_family == "Debian"
+      when: 
+        - not (install_user_only | default(false) | bool)
+        - ansible_os_family == "RedHat" or ansible_os_family == "Debian"
       
     - name: Install Python kubernetes library
       pip:
         name: kubernetes
         state: present
         executable: pip3
+        extra_args: "{{ '--user' if (install_user_only | default(false) | bool) else '' }}"
       register: pip_install
       
     - name: Install PyYAML (required by kubernetes library)
@@ -39,6 +48,11 @@
         name: PyYAML
         state: present
         executable: pip3
+        extra_args: "{{ '--user' if (install_user_only | default(false) | bool) else '' }}"
+        
+    - name: Display installation location
+      debug:
+        msg: "{{ 'User-specific installation (~/.local/lib/python3.x/site-packages)' if (install_user_only | default(false) | bool) else 'System-wide installation (/usr/lib/python3.x/site-packages)' }}"
         
     - name: Verify kubernetes library installation
       command: python3 -c "import kubernetes; print(kubernetes.__version__)"

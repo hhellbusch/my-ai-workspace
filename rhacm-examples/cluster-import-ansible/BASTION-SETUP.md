@@ -44,6 +44,7 @@ If you must delegate to bastion, install required libraries:
 
 #### Manual Installation
 
+**System-wide (requires sudo):**
 ```bash
 # SSH to bastion
 ssh bastion.example.com
@@ -53,15 +54,30 @@ sudo dnf install python3-pip -y  # RHEL/CentOS
 # or
 sudo apt install python3-pip -y  # Ubuntu/Debian
 
-# Install kubernetes library
-pip3 install kubernetes
+# Install kubernetes library (system-wide)
+sudo pip3 install kubernetes
 
 # Verify
 python3 -c "import kubernetes; print(kubernetes.__version__)"
 ```
 
+**User-specific (no sudo required):**
+```bash
+# SSH to bastion
+ssh bastion.example.com
+
+# Install kubernetes library for current user
+pip3 install --user kubernetes
+
+# Verify
+python3 -c "import kubernetes; print(kubernetes.__version__)"
+
+# Location: ~/.local/lib/python3.x/site-packages/
+```
+
 #### Automated Installation with Playbook
 
+**System-wide installation:**
 ```bash
 # Add bastion to inventory
 cat >> inventory/hosts.ini <<EOF
@@ -70,9 +86,20 @@ cat >> inventory/hosts.ini <<EOF
 bastion.example.com ansible_user=admin
 EOF
 
-# Run setup playbook
+# Run setup playbook (installs for all users)
 ansible-playbook -i inventory/hosts.ini bastion-setup.yml
 ```
+
+**User-specific installation:**
+```bash
+# Run setup playbook for current user only (no sudo)
+ansible-playbook -i inventory/hosts.ini bastion-setup.yml \
+  -e "install_user_only=true"
+```
+
+**Choose the right approach:**
+- **System-wide**: Good for shared bastion used by multiple users
+- **User-specific**: Good when you don't have sudo, or want isolated deps
 
 ### Solution 3: Use Container/Podman on Bastion
 
@@ -140,11 +167,46 @@ bastion_host=bastion.example.com
 
 ### Check Python Installation
 
+**System-wide packages:**
 ```bash
 # On the node executing tasks (bastion or localhost)
 python3 --version
 pip3 list | grep kubernetes
 python3 -c "import kubernetes; print(kubernetes.__version__)"
+```
+
+**User-specific packages:**
+```bash
+# Check user-installed packages
+pip3 list --user | grep kubernetes
+
+# Check installation location
+python3 -c "import kubernetes; print(kubernetes.__file__)"
+# Should show: /home/username/.local/lib/python3.x/site-packages/...
+
+# Check Python path
+python3 -c "import sys; print('\n'.join(sys.path))"
+```
+
+### User vs System Installation Issues
+
+**Problem:** User installs package but Ansible can't find it
+
+**Cause:** Ansible may run with different Python interpreter or PATH
+
+**Fix:** Ensure user's `.local/bin` is in PATH
+```bash
+# Add to ~/.bashrc or ~/.bash_profile
+export PATH="$HOME/.local/bin:$PATH"
+
+# Reload
+source ~/.bashrc
+```
+
+**Or specify Python interpreter in inventory:**
+```ini
+[bastion]
+bastion.example.com ansible_python_interpreter=/usr/bin/python3
 ```
 
 ### Check Delegation Target
