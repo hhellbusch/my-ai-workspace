@@ -27,7 +27,13 @@ rules:
     verbs: ["create", "get", "list", "watch", "update", "patch"]
   
   # Permission to accept managed clusters (required for hubAcceptsClient: true)
+  # Note: The accept subresource may use different API groups in different RHACM versions
+  # Try both cluster.open-cluster-management.io and register.open-cluster-management.io
   - apiGroups: ["cluster.open-cluster-management.io"]
+    resources: ["managedclusters/accept"]
+    verbs: ["update"]
+  
+  - apiGroups: ["register.open-cluster-management.io"]
     resources: ["managedclusters/accept"]
     verbs: ["update"]
   
