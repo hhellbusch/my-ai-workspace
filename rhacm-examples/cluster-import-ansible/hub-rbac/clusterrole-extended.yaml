@@ -1,0 +1,86 @@
+---
+# Extended ClusterRole with additional permissions for troubleshooting
+# Use this if the basic clusterrole.yaml doesn't work
+#
+# This includes additional permissions that may be required in some RHACM configurations
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-importer-extended
+  labels:
+    app: rhacm-automation
+    purpose: cluster-import
+rules:
+  # Permission to create and manage namespaces for imported clusters
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["create", "get", "list", "watch"]
+  
+  # Permission to create and read secrets (for import manifests)
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+  
+  # Permission to create and manage ManagedCluster resources
+  - apiGroups: ["cluster.open-cluster-management.io"]
+    resources: ["managedclusters"]
+    verbs: ["create", "get", "list", "watch", "update", "patch"]
+  
+  # Permission to accept managed clusters - both possible API groups
+  - apiGroups: ["cluster.open-cluster-management.io"]
+    resources: ["managedclusters/accept"]
+    verbs: ["update"]
+  
+  - apiGroups: ["register.open-cluster-management.io"]
+    resources: ["managedclusters/accept"]
+    verbs: ["update"]
+  
+  # Permission to read ManagedCluster status
+  - apiGroups: ["cluster.open-cluster-management.io"]
+    resources: ["managedclusters/status"]
+    verbs: ["get", "list", "watch"]
+  
+  # Permission to create and manage KlusterletAddonConfig
+  - apiGroups: ["agent.open-cluster-management.io"]
+    resources: ["klusterletaddonconfigs"]
+    verbs: ["create", "get", "list", "watch", "update", "patch"]
+  
+  # CSR approval permissions (required for cluster registration)
+  - apiGroups: ["certificates.k8s.io"]
+    resources: ["certificatesigningrequests"]
+    verbs: ["get", "list", "watch"]
+  
+  - apiGroups: ["certificates.k8s.io"]
+    resources: ["certificatesigningrequests/approval"]
+    verbs: ["update"]
+  
+  # Specific CSR signer approval for cluster registration
+  - apiGroups: ["certificates.k8s.io"]
+    resources: ["signers"]
+    resourceNames:
+      - "kubernetes.io/kube-apiserver-client"
+      - "open-cluster-management.io/klusterlet-registration"
+    verbs: ["approve"]
+  
+  # ManagedClusterSet permissions (if auto-assigning clusters)
+  - apiGroups: ["cluster.open-cluster-management.io"]
+    resources: ["managedclustersets"]
+    verbs: ["get", "list", "watch"]
+  
+  - apiGroups: ["cluster.open-cluster-management.io"]
+    resources: ["managedclustersets/join"]
+    verbs: ["create"]
+  
+  - apiGroups: ["cluster.open-cluster-management.io"]
+    resources: ["managedclustersets/bind"]
+    verbs: ["create"]
+  
+  # ManagedClusterSetBinding permissions
+  - apiGroups: ["cluster.open-cluster-management.io"]
+    resources: ["managedclustersetbindings"]
+    verbs: ["create", "get", "list", "watch"]
+  
+  # Work API permissions (for work resources on managed clusters)
+  - apiGroups: ["work.open-cluster-management.io"]
+    resources: ["manifestworks"]
+    verbs: ["get", "list", "watch"]
