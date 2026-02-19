@@ -138,7 +138,41 @@
         msg: "Import manifest applied successfully"
       when: import_apply_result is succeeded
       
-    # ===== Validation =====
+    # ===== Target Cluster Validation =====
+    
+    - name: Wait for open-cluster-management-agent namespace to be created
+      kubernetes.core.k8s_info:
+        kubeconfig: "{{ target_kubeconfig }}"
+        kind: Namespace
+        name: open-cluster-management-agent
+      register: agent_namespace
+      until: agent_namespace.resources | length > 0
+      retries: 30
+      delay: 5
+      
+    - name: Wait for klusterlet pods to be ready
+      kubernetes.core.k8s_info:
+        kubeconfig: "{{ target_kubeconfig }}"
+        kind: Pod
+        namespace: open-cluster-management-agent
+        label_selectors:
+          - app=klusterlet
+      register: klusterlet_pods
+      until: >
+        klusterlet_pods.resources | length > 0 and
+        klusterlet_pods.resources | selectattr('status.phase', 'equalto', 'Running') | list | length > 0
+      retries: 60
+      delay: 10
+      failed_when: false
+      
+    - name: Display klusterlet status
+      debug:
+        msg:
+          - "Klusterlet pods running on target cluster"
+          - "Pods: {{ klusterlet_pods.resources | length }}"
+      when: klusterlet_pods.resources | length > 0
+      
+    # ===== Hub Cluster Validation =====
     
     - name: Wait for ManagedCluster to join
       kubernetes.core.k8s_info:
