@@ -115,16 +115,36 @@
       retries: "{{ (import_secret_timeout_seconds / 5) | int }}"
       delay: 5
       
-    - name: Extract import manifest from secret
+    - name: Extract import manifests from secret
       set_fact:
+        import_crds: "{{ import_secret.resources[0].data['crds.yaml'] | b64decode }}"
         import_manifest: "{{ import_secret.resources[0].data['import.yaml'] | b64decode }}"
       delegate_to: localhost
       
-    - name: Display import manifest preview
+    - name: Display import manifests preview
       debug:
-        msg: "Import manifest extracted ({{ import_manifest | length }} bytes)"
+        msg:
+          - "CRDs extracted: {{ import_crds | length }} bytes"
+          - "Import manifest extracted: {{ import_manifest | length }} bytes"
         
     # ===== Target Cluster Tasks =====
+    
+    - name: Apply CRDs to target cluster
+      kubernetes.core.k8s:
+        kubeconfig: "{{ target_kubeconfig }}"
+        state: present
+        definition: "{{ import_crds }}"
+      register: crds_apply_result
+      
+    - name: Display CRD application result
+      debug:
+        msg: "CRDs applied successfully to target cluster"
+      when: crds_apply_result is succeeded
+      
+    - name: Wait for CRDs to be established
+      pause:
+        seconds: 5
+        prompt: "Waiting for CRDs to be established"
     
     - name: Apply import manifest to target cluster
       kubernetes.core.k8s:
