@@ -111,7 +111,7 @@
         namespace: "{{ cluster_name }}"
       delegate_to: localhost
       register: import_secret
-      until: import_secret.resources | length > 0
+      until: import_secret.resources is defined and import_secret.resources | length > 0
       retries: "{{ (import_secret_timeout_seconds / 5) | int }}"
       delay: 5
       
