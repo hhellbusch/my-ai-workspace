@@ -4,12 +4,22 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
 
 ## Available Guides
 
+### Installation Failures
+
+- **[Failed OCP Install](failed-ocp-install/README.md)** - Step-by-step troubleshooting for installations that did not complete (for installers new to Linux; teaches concepts and commands)
+  - **[Quick Reference](failed-ocp-install/QUICK-REFERENCE.md)** - Fast commands and decision tree ⚡
+  - [Index](failed-ocp-install/INDEX.md) - Navigate by install phase or symptom
+  - Links to CSR, control plane kubeconfigs, apiserver cert, bare metal, worker TLS, and related guides
+
 ### Control Plane Issues
 
 - **[API Slowness and Web Console Performance](api-slowness-web-console/README.md)** - Comprehensive guide for API slowness and web console performance issues
   - **[Quick Reference](api-slowness-web-console/QUICK-REFERENCE.md)** - Fast diagnostic commands and decision tree for rapid response ⚡
   - [Index](api-slowness-web-console/INDEX.md) - Guide navigation and symptom-based workflows
   - Script: `diagnostic-script.sh` - Automated performance diagnostic tool
+
+- **[API Server Certificate Deadlock](apiserver-cert-deadlock/README.md)** - Resolve bad apiserver cert when the operator cannot apply a new cert
+  - [Quick Reference](apiserver-cert-deadlock/QUICK-REFERENCE.md) - Commands to get access, replace cert, and restart API/operator ⚡
 
 - **[Control Plane Kubeconfigs](control-plane-kubeconfigs/README.md)** - Complete guide to kubeconfigs on CoreOS control plane nodes
   - [Quick Reference](control-plane-kubeconfigs/QUICK-REFERENCE.md) - Copy-paste commands for monitoring cluster operators
