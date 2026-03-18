@@ -1,0 +1,22 @@
+# Component-level defaults (lowest specificity in the cascade).
+# These values can be overridden by groups/lab-group/values.yaml
+# and further overridden by cluster/lab-cluster/values.yaml.
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  tag: "1.25"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+# The text served by the nginx pod at the Route URL.
+# Change this to see your message appear in the browser after pushing.
+greeting: "Hello from example!"
+
+# Used as the base name for all Kubernetes resources created by this chart.
+# When you copy this component, change this to your own name.
+appName: example

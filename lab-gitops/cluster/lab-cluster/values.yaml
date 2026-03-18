@@ -1,0 +1,18 @@
+# Cluster: lab-cluster
+#
+# This file has the FINAL say on values for every component deployed to this
+# cluster. Values here override both the component defaults and the group values.
+#
+# All component entries live under the `lab-cluster-components` dict.
+#
+# To override a specific value for a component:
+#   lab-cluster-components:
+#     my-component:
+#       replicaCount: 3
+#
+# The key must exactly match the component name in applications.yaml.
+
+# Pre-wired reference component override.
+lab-cluster-components:
+  example:
+    replicaCount: 1

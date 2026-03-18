@@ -1,0 +1,8 @@
+apiVersion: v2
+name: example
+description: |
+  Lab example component. Copy this entire folder to components/lab/<your-name>
+  and use it as your starting point.
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
