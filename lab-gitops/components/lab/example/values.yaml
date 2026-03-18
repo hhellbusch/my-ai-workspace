@@ -5,14 +5,13 @@
 replicaCount: 1
 
 image:
-  # UBI9 nginx runs non-root (port 8080) and is supported on OpenShift.
-  repository: registry.access.redhat.com/ubi9/nginx-124
-  tag: "latest"
+  # nginx-unprivileged runs non-root (UID 101, port 8080), OCP restricted-v2 SCC compatible.
+  repository: quay.io/nginx/nginx-unprivileged
+  tag: "stable-alpine"
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
-  # UBI nginx listens on 8080; the Service exposes port 8080 externally.
   port: 8080
 
 # The text served by the nginx pod at the Route URL.
