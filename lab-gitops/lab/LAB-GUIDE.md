@@ -62,10 +62,12 @@ Open `components/lab/<name>/values.yaml` and update these fields:
 ```yaml
 appName: <name>
 
+namespace: <name>   # must match appName — this is where all resources are created
+
 greeting: "Hello from <name>!"   # this is what the browser will show
 ```
 
-These are your component's base defaults. The `greeting` can be any string — it will be served as an HTML page via the OpenShift Route once ArgoCD deploys your component.
+These are your component's base defaults. The `namespace` and `appName` should always be the same value. The `greeting` can be any string — it will be served as an HTML page via the OpenShift Route once ArgoCD deploys your component.
 
 ---
 
@@ -143,7 +145,7 @@ If auto-sync is enabled, this happens automatically. If not, click **Sync** on t
 Once the Application is **Healthy**, find your Route URL:
 
 ```bash
-oc get route <name> -n <name> -o jsonpath='{.spec.host}'
+oc get route <name> -n <name> -o jsonpath='{.spec.host}{"\n"}'
 ```
 
 Open that URL in your browser. You should see the `greeting` text from your cluster-level override.

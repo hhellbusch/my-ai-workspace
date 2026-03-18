@@ -5,13 +5,15 @@
 replicaCount: 1
 
 image:
-  repository: nginx
-  tag: "1.25"
+  # UBI9 nginx runs non-root (port 8080) and is supported on OpenShift.
+  repository: registry.access.redhat.com/ubi9/nginx-124
+  tag: "latest"
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
-  port: 80
+  # UBI nginx listens on 8080; the Service exposes port 8080 externally.
+  port: 8080
 
 # The text served by the nginx pod at the Route URL.
 # Change this to see your message appear in the browser after pushing.
@@ -20,3 +22,7 @@ greeting: "Hello from example!"
 # Used as the base name for all Kubernetes resources created by this chart.
 # When you copy this component, change this to your own name.
 appName: example
+
+# Namespace all resources are deployed into.
+# Set this to match appName when you copy this component.
+namespace: example

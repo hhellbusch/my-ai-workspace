@@ -50,23 +50,9 @@ oc describe deployment example -n example
 
 ### 5. Namespaces
 
-Each participant component deploys into its own namespace (the component name by default). You have two options:
+Each participant's Helm chart creates its own Namespace resource — no pre-creation or `createNamespace` flag needed. The Namespace is defined in `templates/namespace.yaml` and uses the `namespace` value from `values.yaml`.
 
-**Option A — Pre-create namespaces** (more controlled):
-```bash
-# Create one per expected participant
-for name in alice bob charlie; do
-  oc create namespace $name
-done
-```
-
-**Option B — Enable `createNamespace`** (easier, less control):
-Ensure the ArgoCD Application template in your orchestrator chart includes:
-```yaml
-syncPolicy:
-  syncOptions:
-    - CreateNamespace=true
-```
+Confirm the ArgoCD Application template in your orchestrator chart has cluster-scoped sync permissions so it can create Namespace resources, or ensure the ArgoCD service account has the `cluster-admin` role (typical for lab environments).
 
 ### 6. Distribute to Participants
 
@@ -101,9 +87,10 @@ Walk through this exactly as participants will, narrating each step.
 # Step 1 — copy the example
 cp -r components/lab/example components/lab/demo
 
-# Step 2 — change appName and greeting in values.yaml
+# Step 2 — change appName, namespace, and greeting in values.yaml
 # Edit components/lab/demo/values.yaml:
 #   appName: demo
+#   namespace: demo
 #   greeting: "Hello from the instructor demo!"
 
 # Step 3 — register in the central registry
@@ -136,7 +123,7 @@ After pushing, switch to the ArgoCD UI and show:
 
 Then run in a terminal and open the URL in the browser:
 ```bash
-oc get route demo -n demo -o jsonpath='{.spec.host}'
+oc get route demo -n demo -o jsonpath='{.spec.host}{"\n"}'
 ```
 
 Point out: **`oc apply` was never run.** The greeting shows the cluster-level string, not the component default — demonstrating the cascade immediately.
@@ -168,10 +155,11 @@ The second push will overwrite the first participant's entry. One of them needs 
 
 ### Namespace not found / Pod stuck Pending
 
+The Namespace is created by the Helm chart itself. If it is missing, the ArgoCD service account may lack permission to create Namespace resources. Check:
 ```bash
 oc get events -n <participant-name> --sort-by='.lastTimestamp'
+oc describe application <participant-name> -n openshift-gitops
 ```
-If the namespace does not exist, either create it manually or confirm `CreateNamespace=true` is set in the orchestrator.
 
 ### Pods are ImagePullBackOff
 
