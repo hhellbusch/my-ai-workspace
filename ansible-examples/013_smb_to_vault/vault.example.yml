@@ -1,0 +1,19 @@
+---
+# Example Ansible Vault file for 013_smb_to_vault
+#
+# Copy this to vault.yml, fill in real values, then encrypt:
+#   ansible-vault encrypt vault.yml
+#
+# Run the playbook with:
+#   ansible-playbook playbook.yml -e @vault.yml --ask-vault-pass
+#   # or with a vault password file:
+#   ansible-playbook playbook.yml -e @vault.yml --vault-password-file ~/.vault_pass
+
+# ── SMB credentials ────────────────────────────────────────────────────────────
+vault_smb_username: "svc-ansible"
+vault_smb_password: "CHANGE_ME"
+
+# ── HashiCorp Vault token ──────────────────────────────────────────────────────
+# Generate a short-lived token with only write access to the target path:
+#   vault token create -policy=myapp-write -ttl=1h
+vault_hashi_token: "hvs.CHANGE_ME"

@@ -1,0 +1,10 @@
+---
+# Ansible collection requirements for 013_smb_to_vault
+#
+# Install with:
+#   ansible-galaxy collection install -r requirements.yml
+
+collections:
+  - name: community.hashi_vault
+    # Provides: vault_kv2_write, vault_kv2_get, hashi_vault lookup
+    version: ">=6.0.0"

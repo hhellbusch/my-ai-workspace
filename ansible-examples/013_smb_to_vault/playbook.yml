@@ -1,0 +1,130 @@
+---
+# Read a file from an SMB share and write its contents into HashiCorp Vault.
+#
+# Prerequisites:
+#   - smbclient is installed on the controller (package: samba-client / smbclient)
+#   - community.hashi_vault collection installed (see requirements.yml)
+#   - A Vault token with write access to the target KV path
+#
+# Usage:
+#   # With a vars file for credentials (recommended)
+#   ansible-playbook playbook.yml -e @vault-vars.yml
+#
+#   # Inline (for quick testing only - credentials visible in process list)
+#   ansible-playbook playbook.yml \
+#     -e smb_server=fileserver.example.com \
+#     -e smb_share=data \
+#     -e smb_username=svcaccount \
+#     -e smb_password=s3cr3t \
+#     -e smb_remote_file="reports/config.txt" \
+#     -e hashi_vault_addr=https://vault.example.com:8200 \
+#     -e hashi_vault_token=hvs.XXXXXXXXXX \
+#     -e hashi_vault_kv_path=secret/myapp/config
+
+- name: Read file from SMB share and write to HashiCorp Vault
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    # ── SMB connection ─────────────────────────────────────────────────────────
+    smb_server: "fileserver.example.com"
+    smb_share: "data"
+    smb_domain: ""                              # Leave empty for workgroup/local
+    smb_username: "{{ vault_smb_username }}"    # Loaded from vault.yml
+    smb_password: "{{ vault_smb_password }}"    # Loaded from vault.yml
+    smb_remote_file: "reports/config.txt"       # Path relative to the share root
+    smb_max_protocol: "SMB3"                    # SMB1=NT1, SMB2=SMB2, SMB3=SMB3 (default)
+
+    # ── Temporary local staging ────────────────────────────────────────────────
+    smb_local_temp: "/tmp/.smb_fetch_{{ smb_remote_file | basename }}"
+
+    # ── HashiCorp Vault ────────────────────────────────────────────────────────
+    hashi_vault_addr: "https://vault.example.com:8200"
+    hashi_vault_token: "{{ vault_hashi_token }}"     # Loaded from vault.yml
+    hashi_vault_validate_certs: true
+    # KV v2 path (omit the /data/ prefix - the module adds it automatically)
+    hashi_vault_kv_path: "secret/myapp/config"
+    # The key name written inside the Vault secret
+    hashi_vault_key: "file_content"
+
+  tasks:
+    # ── Preflight ──────────────────────────────────────────────────────────────
+
+    - name: Verify required variables are defined
+      ansible.builtin.assert:
+        that:
+          - smb_server | length > 0
+          - smb_share | length > 0
+          - smb_username | length > 0
+          - smb_password | length > 0
+          - smb_remote_file | length > 0
+          - hashi_vault_addr | length > 0
+          - hashi_vault_token | length > 0
+          - hashi_vault_kv_path | length > 0
+        fail_msg: "One or more required variables are missing. See playbook header for usage."
+      no_log: true
+
+    - name: Check that smbclient is available on the controller
+      ansible.builtin.command:
+        cmd: which smbclient
+      register: smbclient_check
+      changed_when: false
+      failed_when: smbclient_check.rc != 0
+
+    # ── Fetch, read, upload ────────────────────────────────────────────────────
+
+    - name: Fetch file and write to Vault
+      block:
+
+        - name: Fetch file from SMB share to local temp path
+          ansible.builtin.command:
+            # smbclient exits non-zero on failure so Ansible will catch the error.
+            # The password is embedded in the -U flag; no_log prevents it appearing
+            # in logs or callback output.
+            cmd: >-
+              smbclient //{{ smb_server }}/{{ smb_share }}
+              -U "{{ (smb_domain + '\\') if smb_domain else '' }}{{ smb_username }}%{{ smb_password }}"
+              -m {{ smb_max_protocol }}
+              -c "get {{ smb_remote_file }} {{ smb_local_temp }}"
+          no_log: true
+          register: smb_fetch_result
+          changed_when: smb_fetch_result.rc == 0
+
+        - name: Read the fetched file into memory
+          ansible.builtin.slurp:
+            src: "{{ smb_local_temp }}"
+          register: file_raw
+
+        - name: Decode file content
+          ansible.builtin.set_fact:
+            file_content: "{{ file_raw.content | b64decode }}"
+          no_log: true
+
+        - name: Write file content to HashiCorp Vault (KV v2)
+          community.hashi_vault.vault_kv2_write:
+            url: "{{ hashi_vault_addr }}"
+            auth_method: token
+            token: "{{ hashi_vault_token }}"
+            validate_certs: "{{ hashi_vault_validate_certs }}"
+            path: "{{ hashi_vault_kv_path }}"
+            data:
+              "{{ hashi_vault_key }}": "{{ file_content }}"
+          no_log: true
+          register: vault_write_result
+
+        - name: Confirm write succeeded
+          ansible.builtin.debug:
+            msg: >-
+              Successfully wrote '{{ smb_remote_file | basename }}'
+              to Vault path '{{ hashi_vault_kv_path }}' (key: {{ hashi_vault_key }}).
+
+      rescue:
+        - name: Report failure details
+          ansible.builtin.fail:
+            msg: "Pipeline failed: {{ ansible_failed_task.name }} — {{ ansible_failed_result.msg | default(ansible_failed_result.stderr | default('unknown error')) }}"
+
+      always:
+        - name: Remove temporary local file
+          ansible.builtin.file:
+            path: "{{ smb_local_temp }}"
+            state: absent

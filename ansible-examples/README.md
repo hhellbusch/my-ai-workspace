@@ -766,6 +766,47 @@ vars:
 - See `006_parallel_execution_via_bastion/` for general async patterns
 - Both examples demonstrate the power of async execution in Ansible
 
+### 13. Read File from SMB Share and Write to HashiCorp Vault ⭐
+
+Fetches a file from a Windows/Samba SMB share and stores its contents as a
+secret in HashiCorp Vault (KV v2). Uses `smbclient` on the controller — no root
+privileges or CIFS kernel module required.
+
+**The Problem:** A credential or config file lives on a Windows file share and needs to be ingested into Vault  
+**The Solution:** Use `smbclient` to fetch the file, `slurp` to read it, then `vault_kv2_write` to store it
+
+**Key concepts:**
+- `smbclient` for agentless, no-mount SMB file access
+- `ansible.builtin.slurp` to read file content into a variable
+- `community.hashi_vault.vault_kv2_write` for Vault KV v2 writes
+- `block/rescue/always` to guarantee temp-file cleanup on success or failure
+- `no_log: true` to prevent credentials leaking into logs
+
+```bash
+cd 013_smb_to_vault
+
+# Install collections
+ansible-galaxy collection install -r requirements.yml
+
+# Run with an encrypted credentials file
+ansible-playbook playbook.yml \
+  -e @vault.yml \
+  -e smb_server=fileserver.example.com \
+  -e smb_share=data \
+  -e smb_remote_file="reports/config.txt" \
+  -e hashi_vault_addr=https://vault.example.com:8200 \
+  -e hashi_vault_kv_path=secret/myapp/config \
+  --ask-vault-pass
+```
+
+**See the [README.md](013_smb_to_vault/README.md) for:**
+- Variable reference and CIFS mount alternative
+- Vault policy and token setup
+- Structured file variants (YAML/JSON/CSV → individual Vault keys)
+- Troubleshooting guide (SMB error codes, Vault 403, etc.)
+
+---
+
 ### 12. Filter REST API Results (S3 Credentials) ⭐
 
 This example demonstrates how to filter data returned from REST APIs using Ansible's powerful Jinja2 filters. While focused on S3 credentials, these patterns apply to any REST API response.
