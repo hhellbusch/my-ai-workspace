@@ -19,18 +19,23 @@ controller.
 
 ### Controller packages
 
+Both `smbclient` and `cifs-utils` are required. `cifs-utils` provides the
+`mount.cifs` kernel helper — without it the kernel cannot handle the `cifs`
+filesystem type and the error surfaces as a misleading "No route to host".
+
 ```bash
 # RHEL / Fedora
-sudo dnf install -y samba-client
+sudo dnf install -y samba-client cifs-utils
 
 # Debian / Ubuntu
-sudo apt-get install -y smbclient
+sudo apt-get install -y smbclient cifs-utils
 ```
 
 Verify:
 
 ```bash
 smbclient --version
+mount.cifs --version
 ```
 
 ### Ansible collections
@@ -220,6 +225,7 @@ If you prefer to mount the share rather than use `smbclient`, install
 | `SMB1 disabled` | Server requires SMB2/3 | Set `smb_max_protocol: "SMB2"` or `"SMB3"` |
 | Vault `403 Forbidden` | Token lacks write permission | Check token policy covers the KV path |
 | `hvac` import error | Python library missing | `pip install hvac` |
+| `No route to host` on mount | `cifs-utils` not installed | `dnf install -y cifs-utils` |
 
 ### List share contents interactively
 

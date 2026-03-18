@@ -3,6 +3,7 @@
 #
 # Prerequisites:
 #   - smbclient is installed on the controller (package: samba-client / smbclient)
+#   - cifs-utils is installed on the controller (required for CIFS kernel support)
 #   - community.hashi_vault collection installed (see requirements.yml)
 #   - A Vault token with write access to the target KV path
 #
@@ -63,6 +64,14 @@
           - hashi_vault_kv_path | length > 0
         fail_msg: "One or more required variables are missing. See playbook header for usage."
       no_log: true
+
+    - name: Ensure smbclient and cifs-utils are installed
+      ansible.builtin.package:
+        name:
+          - samba-client    # provides smbclient (RHEL/Fedora name)
+          - cifs-utils      # provides mount.cifs kernel helper
+        state: present
+      become: true
 
     - name: Check that smbclient is available on the controller
       ansible.builtin.command:
