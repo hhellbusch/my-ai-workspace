@@ -2,7 +2,7 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: {{ .Values.appName }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.appName }}
   labels:
     app: {{ .Values.appName }}
 spec:

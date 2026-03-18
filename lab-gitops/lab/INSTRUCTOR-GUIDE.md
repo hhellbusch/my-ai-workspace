@@ -87,10 +87,9 @@ Walk through this exactly as participants will, narrating each step.
 # Step 1 — copy the example
 cp -r components/lab/example components/lab/demo
 
-# Step 2 — change appName, namespace, and greeting in values.yaml
+# Step 2 — change appName and greeting in values.yaml
 # Edit components/lab/demo/values.yaml:
 #   appName: demo
-#   namespace: demo
 #   greeting: "Hello from the instructor demo!"
 
 # Step 3 — register in the central registry

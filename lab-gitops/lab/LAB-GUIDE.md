@@ -62,12 +62,10 @@ Open `components/lab/<name>/values.yaml` and update these fields:
 ```yaml
 appName: <name>
 
-namespace: <name>   # must match appName — this is where all resources are created
-
 greeting: "Hello from <name>!"   # this is what the browser will show
 ```
 
-These are your component's base defaults. The `namespace` and `appName` should always be the same value. The `greeting` can be any string — it will be served as an HTML page via the OpenShift Route once ArgoCD deploys your component.
+These are your component's base defaults. `appName` is used as both the name and the namespace for every resource the chart creates. The `greeting` can be any string — it will be served as an HTML page via the OpenShift Route once ArgoCD deploys your component.
 
 ---
 

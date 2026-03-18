@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Values.appName }}-html
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.appName }}
   labels:
     app: {{ .Values.appName }}
 data:
