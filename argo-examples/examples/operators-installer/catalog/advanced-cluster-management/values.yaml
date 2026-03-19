@@ -59,28 +59,17 @@ operators:
     # VERSION PIN (current intermediate hop): This is the exact CSV installed now.
     # Change this ONLY to the immediate next hop in the upgradeChain sequence above.
     # Never jump more than one minor version at a time.
-    csv: advanced-cluster-management.v2.12.0
+    csv: advanced-cluster-management.v2.12.7
     installPlanApproval: Manual
     source: redhat-operators
     sourceNamespace: openshift-marketplace
     namespace: open-cluster-management
 
-    # Staged chain enforced by upgradeChain (requires operators-installer >= 3.5.0).
-    # The chart validates that csv is exactly one step ahead of the installed CSV
-    # in this list before approving any InstallPlan. Setting csv two or more steps
-    # ahead causes an immediate descriptive failure identifying the skipped versions.
-    #
-    # To advance to the next hop:
-    #   1. Update csv: to the next version in this list (v2.13.0).
-    #   2. Update the comments above: add install date + git sha to the current entry.
-    #   3. Open PR -> get approval -> merge.
-    #   4. After ArgoCD syncs, validate the cluster before the next hop.
-    upgradeChain:
-      - advanced-cluster-management.v2.10.7    # installed 2025-01-10 (git sha: abc1234)
-      - advanced-cluster-management.v2.11.3    # installed 2025-02-14 (git sha: def5678)
-      - advanced-cluster-management.v2.12.0    # current — matches csv above
-      - advanced-cluster-management.v2.13.0    # next planned hop (not yet applied)
-    # Time budget for approving the single target InstallPlan.
-    installPlanApproverActiveDeadlineSeconds: 900
-    # Time budget for verifying the operator has fully installed (ACM takes longer than most).
-    installPlanVerifierActiveDeadlineSeconds: 900
+    # Fresh install — no upgrade chain needed. Using automaticIntermediateManualUpgrades
+    # as a safety net in case OLM resolves intermediate CSVs before v2.12.7.
+    # NOTE: upgradeChain (strict ordered chain) requires operators-installer >= 3.5.0.
+    # Swap to upgradeChain once 3.5.0 is published.
+    automaticIntermediateManualUpgrades: true
+    automaticIntermediateManualUpgradesIncrementalInstallBackoffLimit: 15
+    installPlanApproverActiveDeadlineSeconds: 1800
+    installPlanVerifierActiveDeadlineSeconds: 1800

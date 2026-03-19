@@ -39,7 +39,7 @@ operators:
     channel: stable-v1
     # VERSION PIN: This is the exact CSV that will be installed.
     # Change this value (and only this value) to upgrade the operator.
-    csv: cert-manager-operator.v1.13.0
+    csv: cert-manager-operator.v1.15.0
     installPlanApproval: Manual
     source: redhat-operators
     sourceNamespace: openshift-marketplace
