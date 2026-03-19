@@ -24,11 +24,14 @@ gitopsRepo:
   # Each operator's values file is at: <catalogBasePath>/<name>/values.yaml
   catalogBasePath: argo-examples/examples/operators-installer/catalog
 
-# operators-installer Helm chart coordinates.
-# Pin the chart version here so all operators use the same chart release.
+# operators-installer Helm chart source.
+# Points directly at the git repo so chart changes are picked up without
+# needing to package and publish to a Helm repository.
+# Switch repoURL/revision/path to a Helm repo + version for production use.
 operatorsInstallerChart:
-  repoURL: https://hhellbusch.github.io/redhat-cop-helm-charts
-  version: '3.5.0'
+  repoURL: https://github.com/hhellbusch/redhat-cop-helm-charts.git
+  revision: main
+  path: charts/operators-installer
 
 # Destination cluster for all operator Applications.
 destination:

@@ -27,11 +27,15 @@ spec:
   project: {{ $.Values.argocd.project }}
 
   sources:
-    # Source 0: operators-installer Helm chart (upstream, version-pinned).
-    # The chart creates the Subscription, OperatorGroup, and InstallPlan approval Job.
+    # Source 0: operators-installer Helm chart from git.
+    # Using git directly avoids the publish-to-Helm-repo cycle during development.
+    # For production, swap to a Helm repo source with a pinned version:
+    #   repoURL: <helm-repo-url>
+    #   chart: operators-installer
+    #   targetRevision: '<version>'
     - repoURL: {{ $.Values.operatorsInstallerChart.repoURL }}
-      chart: operators-installer
-      targetRevision: {{ $.Values.operatorsInstallerChart.version | quote }}
+      targetRevision: {{ $.Values.operatorsInstallerChart.revision }}
+      path: {{ $.Values.operatorsInstallerChart.path }}
       helm:
         valueFiles:
           # Pull operator-specific values from Source 1 using the $gitops ref.
