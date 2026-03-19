@@ -1,0 +1,51 @@
+# catalog/cert-manager/values.yaml
+#
+# Manages: cert-manager Operator for Red Hat OpenShift
+# Install mode: AllNamespaces
+#   The OperatorGroup has no targetNamespaces, allowing cert-manager to issue
+#   certificates for any namespace across the cluster.
+#
+# Upgrade strategy: Automated chain with low hop count (automaticIntermediateManualUpgrades: true)
+#   The stable-v1 channel for cert-manager is structured to allow direct upgrades
+#   within the stable stream. automaticIntermediateManualUpgrades is set to true as
+#   a safety net in the event OLM introduces a required intermediate step, but in
+#   practice this channel upgrades directly.
+#
+# To upgrade:
+#   1. Find available CSVs:
+#        oc get packagemanifest openshift-cert-manager-operator -n openshift-marketplace \
+#          -o jsonpath='{.status.channels[?(@.name=="stable-v1")].entries[*].name}' \
+#          | tr ' ' '\n' | sort
+#   2. Change csv: below to the target version.
+#   3. Open PR -> merge -> ArgoCD syncs.
+#
+# Dedicated namespace: cert-manager-operator
+#   The operator itself is installed here. cert-manager's operands (certificates,
+#   issuers, etc.) are managed cluster-wide via AllNamespaces mode, but the
+#   operator pod runs in cert-manager-operator.
+
+installPlanApproverAndVerifyJobsImage: registry.redhat.io/openshift4/ose-cli:v4.16
+# Set to false and provide a pre-baked image in disconnected environments.
+installRequiredPythonLibraries: true
+
+operatorGroups:
+  - name: cert-manager-operator
+    createNamespace: true
+    # No targetOwnNamespace and no otherTargetNamespaces -> AllNamespaces install mode.
+    targetOwnNamespace: false
+
+operators:
+  - name: openshift-cert-manager-operator
+    channel: stable-v1
+    # VERSION PIN: This is the exact CSV that will be installed.
+    # Change this value (and only this value) to upgrade the operator.
+    csv: cert-manager-operator.v1.13.0
+    installPlanApproval: Manual
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    namespace: cert-manager-operator
+
+    # Safety net for automated chain in case OLM requires an intermediate step.
+    automaticIntermediateManualUpgrades: true
+    installPlanApproverActiveDeadlineSeconds: 600
+    installPlanVerifierActiveDeadlineSeconds: 600

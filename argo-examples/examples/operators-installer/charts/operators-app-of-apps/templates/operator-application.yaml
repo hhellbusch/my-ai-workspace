@@ -1,0 +1,64 @@
+{{- /*
+  Generates one ArgoCD Application per enabled operator.
+
+  Each Application uses ArgoCD's multiple-sources feature (requires ArgoCD 2.6+):
+    Source 0 — operators-installer chart from the redhat-cop Helm repository.
+               The chart version is pinned in values.yaml (operatorsInstallerChart.version).
+    Source 1 — this git repository, referenced as 'gitops', which provides the
+               per-operator values file at catalog/<name>/values.yaml.
+
+  The csv: field in each catalog values file is the version pin. Changing it and
+  merging a PR is the complete upgrade procedure for that operator.
+*/ -}}
+{{- range .Values.operators }}
+{{- if .enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: operator-{{ .name }}
+  namespace: {{ $.Values.argocd.namespace }}
+  labels:
+    type: operator
+    managed-by: operators-root-app
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ $.Values.argocd.project }}
+
+  sources:
+    # Source 0: operators-installer Helm chart (upstream, version-pinned).
+    # The chart creates the Subscription, OperatorGroup, and InstallPlan approval Job.
+    - repoURL: {{ $.Values.operatorsInstallerChart.repoURL }}
+      chart: operators-installer
+      targetRevision: {{ $.Values.operatorsInstallerChart.version | quote }}
+      helm:
+        valueFiles:
+          # Pull operator-specific values from Source 1 using the $gitops ref.
+          - $gitops/{{ $.Values.gitopsRepo.catalogBasePath }}/{{ .name }}/values.yaml
+
+    # Source 1: This git repository, used only as a values file source.
+    # The ref name 'gitops' is how Source 0 references it via $gitops.
+    - repoURL: {{ $.Values.gitopsRepo.url }}
+      targetRevision: {{ $.Values.gitopsRepo.revision }}
+      ref: gitops
+
+  destination:
+    server: {{ $.Values.destination.server }}
+    # Must match the namespace used in the catalog values.yaml:
+    # operatorGroups[].name and operators[].namespace.
+    namespace: {{ .destinationNamespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      # Prevent ArgoCD from blocking sync due to live Subscription status field diffs
+      # (e.g. status.currentCSV, status.installedCSV) that are set by OLM at runtime.
+      - RespectIgnoreDifferences=true
+      # The operator namespace is created by the operators-installer chart itself
+      # (via operatorGroups[].createNamespace: true), not by ArgoCD.
+      - CreateNamespace=false
+{{- end }}
+{{- end }}

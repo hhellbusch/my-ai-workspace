@@ -511,6 +511,68 @@ argocd app manifests my-app | less
 argocd app get my-app -o yaml | yq .spec.sources
 ```
 
+### New Values File Not Considered in `argocd app diff --revision`
+
+**Symptom:** You changed the list of `valuesFiles` (or added/removed a values file) in the Application manifest at a new git revision, but `argocd app diff my-app --revision NEW_REV` does not show the effect of that new file; the diff seems to ignore it.
+
+**Cause:** `argocd app diff --revision REV` only overrides the **source revision** (chart version or git ref) when building the "desired" state. The rest of the Application spec—including **valuesFiles**, `helm.values`, path, etc.—is taken from the **live** Application in the cluster. So the desired state is "live spec + different revision", not "Application spec as defined in git at REV". This is a known limitation ([argoproj/argo-cd#6942](https://github.com/argoproj/argo-cd/issues/6942)).
+
+**Workarounds:**
+
+1. **Offline diff (same repo):** Use the [diff-app-of-apps script](../../scripts/diff-app-of-apps.sh), which renders from each git revision using the Application definitions (and thus valuesFiles) from that revision:
+   ```bash
+   ./argo-examples/scripts/diff-app-of-apps.sh OLD_REV NEW_REV production
+   ```
+
+2. **Render locally and diff with `--local`:** Check out the new revision, render manifests yourself with the new values files (e.g. `helm template` with all the right `-f` files), then compare to live:
+   ```bash
+   git checkout NEW_REV
+   helm template my-app ./chart -f values.yaml -f values-new.yaml -n my-ns > /tmp/new-manifests.yaml
+   argocd app diff my-app --local /tmp/new-manifests.yaml
+   ```
+
+3. **Temporarily update the live app:** If you need an online diff, patch the live Application to add the new values file (e.g. `argocd app set` or `kubectl edit`), run `argocd app diff my-app --revision NEW_REV`, then revert the live app.
+
+### Understanding `argocd app diff --local`
+
+**What it does:** `--local` changes what the CLI treats as the **desired** state. Normally, desired state is “what Argo CD would render from the live Application spec.” With `--local PATH`, desired state is **the manifests at that path** (your own YAML). So you get:
+
+- **Live:** current resources in the cluster (unchanged).
+- **Desired:** contents of the file(s) at `PATH`, not Git and not the live Application spec.
+
+So the diff is: **cluster state vs. your local manifests.**
+
+**What to pass as `PATH`:**
+
+- A **directory:** Argo CD loads all `*.yaml`, `*.yml`, and `*.json` under it (customize with `--local-include`). Use this if you have multiple manifest files (e.g. one per chart or component).
+- A **single file:** Path to one manifest file (e.g. one big file from `helm template ... > out.yaml`). The CLI will use that file as the desired state.
+
+**Important:** The path must point to **already-rendered** Kubernetes manifests (the kind of YAML you get from `helm template`, `kustomize build`, or raw YAML). Argo CD does **not** re-run Helm or Kustomize for you when using `--local`; it only reads the files. For Helm apps, that means you must run `helm template` yourself (with whatever values files you want) and pass the output path to `--local`.
+
+**Typical workflow (Helm app with custom values):**
+
+```bash
+# 1. Produce desired manifests with your chosen values (e.g. new values file).
+helm template my-app ./path/to/chart \
+  -f values.yaml -f values-new.yaml \
+  -n my-namespace \
+  > /tmp/desired.yaml
+
+# 2. Diff live cluster vs. that file.
+argocd app diff my-app --local /tmp/desired.yaml
+```
+
+**Optional flags:**
+
+- **`--local-repo-root PATH`** — Repository root when using `--local`. Used for resolving relative paths if your manifests or app config reference repo-relative paths. Default is `"/"`.
+- **`--local-include "*.yaml"`** — When `--local` is a directory, only include files matching these patterns (default: `*.yaml`, `*.yml`, `*.json`).
+- **`--server-side-generate`** — Send the local manifests to the Argo CD server so the server performs the diff (e.g. for server-side apply). Without it, diff runs client-side.
+
+**Limitations:**
+
+- No server-side validation against CRDs (unlike `kubectl diff --server-side`).
+- For Helm apps whose chart lives in a **remote** repo, `--local` does not fetch or template the chart; you must template locally and pass the result (as in the workflow above).
+
 ## Related Documentation
 
 - [ArgoCD Multiple Sources Docs](https://argo-cd.readthedocs.io/en/stable/user-guide/multiple_sources/)

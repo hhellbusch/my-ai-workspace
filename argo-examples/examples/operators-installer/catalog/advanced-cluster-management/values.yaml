@@ -1,0 +1,86 @@
+# catalog/advanced-cluster-management/values.yaml
+#
+# Manages: Red Hat Advanced Cluster Management for Kubernetes
+# Install mode: OwnNamespace
+#   The OperatorGroup targets only the open-cluster-management namespace.
+#   ACM does not support AllNamespaces install mode.
+#
+# Upgrade strategy: Staged chain enforced by upgradeChain (operators-installer >= 3.5.0)
+#   ACM requires stepping through each minor version. Minor version upgrades
+#   involve CRD schema changes and Hub controller behavior differences. Each hop
+#   must be validated before advancing to prevent managed cluster disconnection
+#   or Hub CR degradation.
+#
+#   The upgradeChain list below is the source of truth for the upgrade sequence.
+#   The chart validates that csv is exactly one position ahead of the installed
+#   CSV in that list, and fails immediately if any version would be skipped.
+#   Each hop is a separate Git PR. Validation after each sync is required before
+#   opening the next PR.
+#
+# To advance to the next hop:
+#   1. Update csv: below to the next version in the upgradeChain list (v2.13.0).
+#   2. Add a comment to the current entry in upgradeChain with the install date
+#      and git SHA (added after the PR merges).
+#   3. Open PR -> get approval -> merge.
+#   4. Wait for ArgoCD to sync. The chain approver validates the order and
+#      approves the InstallPlan for exactly that version.
+#   5. Validate:
+#        oc get multiclusterhub -n open-cluster-management
+#        oc get managedclusters
+#        oc get clusteroperators
+#   6. Repeat from step 1 for the next hop.
+#
+# To find the next available CSV in a channel:
+#   oc get packagemanifest advanced-cluster-management -n openshift-marketplace \
+#     -o jsonpath='{.status.channels[?(@.name=="release-2.13")].entries[*].name}' \
+#     | tr ' ' '\n' | sort
+#
+# Dedicated namespace: open-cluster-management
+#   This operator MUST NOT share a namespace with any other operator managed by
+#   this system. OLM merges InstallPlans across operators in the same namespace,
+#   which breaks independent version control.
+
+installPlanApproverAndVerifyJobsImage: registry.redhat.io/openshift4/ose-cli:v4.16
+# Set to false and provide a pre-baked image in disconnected environments.
+installRequiredPythonLibraries: true
+
+operatorGroups:
+  - name: open-cluster-management
+    createNamespace: true
+    # targetOwnNamespace: true -> OwnNamespace install mode.
+    # The OperatorGroup will only serve operators in the open-cluster-management namespace.
+    targetOwnNamespace: true
+
+operators:
+  - name: advanced-cluster-management
+    # Channel must match the target minor version. Update the channel when
+    # advancing to a new minor version stream (e.g., release-2.12 -> release-2.13).
+    channel: release-2.12
+    # VERSION PIN (current intermediate hop): This is the exact CSV installed now.
+    # Change this ONLY to the immediate next hop in the upgradeChain sequence above.
+    # Never jump more than one minor version at a time.
+    csv: advanced-cluster-management.v2.12.0
+    installPlanApproval: Manual
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    namespace: open-cluster-management
+
+    # Staged chain enforced by upgradeChain (requires operators-installer >= 3.5.0).
+    # The chart validates that csv is exactly one step ahead of the installed CSV
+    # in this list before approving any InstallPlan. Setting csv two or more steps
+    # ahead causes an immediate descriptive failure identifying the skipped versions.
+    #
+    # To advance to the next hop:
+    #   1. Update csv: to the next version in this list (v2.13.0).
+    #   2. Update the comments above: add install date + git sha to the current entry.
+    #   3. Open PR -> get approval -> merge.
+    #   4. After ArgoCD syncs, validate the cluster before the next hop.
+    upgradeChain:
+      - advanced-cluster-management.v2.10.7    # installed 2025-01-10 (git sha: abc1234)
+      - advanced-cluster-management.v2.11.3    # installed 2025-02-14 (git sha: def5678)
+      - advanced-cluster-management.v2.12.0    # current — matches csv above
+      - advanced-cluster-management.v2.13.0    # next planned hop (not yet applied)
+    # Time budget for approving the single target InstallPlan.
+    installPlanApproverActiveDeadlineSeconds: 900
+    # Time budget for verifying the operator has fully installed (ACM takes longer than most).
+    installPlanVerifierActiveDeadlineSeconds: 900

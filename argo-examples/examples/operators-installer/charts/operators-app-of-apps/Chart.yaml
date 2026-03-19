@@ -1,0 +1,10 @@
+apiVersion: v2
+name: operators-app-of-apps
+description: >
+  App-of-Apps Helm chart that generates one ArgoCD Application per managed OpenShift
+  operator. Each Application sources the operators-installer chart from the redhat-cop
+  Helm repository and pulls per-operator values from this GitOps repo using ArgoCD's
+  multiple-sources feature. Operator versions are pinned via the csv: field in each
+  catalog entry.
+type: application
+version: 0.1.0

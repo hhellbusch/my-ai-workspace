@@ -1,0 +1,68 @@
+# operators-root-app.yaml
+#
+# Bootstrap ArgoCD Application — apply this file exactly once.
+# It manages the operators-app-of-apps Helm chart, which in turn generates
+# one child Application per enabled operator in the catalog.
+#
+# BEFORE APPLYING:
+#   1. Replace <YOUR-REPO-URL> with the actual git repository URL.
+#   2. Apply the Subscription health check:
+#        oc apply -f argocd-cm-subscription-health.yaml -n openshift-gitops
+#      (or follow the RHOG instructions in that file)
+#   3. Ensure ArgoCD has cluster-admin or equivalent permissions to create
+#      Namespace, OperatorGroup, Subscription, Job, ServiceAccount, and
+#      ClusterRoleBinding resources.
+#
+# APPLY:
+#   oc apply -f operators-root-app.yaml -n openshift-gitops
+#
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: operators-root-app
+  # Namespace where Red Hat OpenShift GitOps (ArgoCD) is running.
+  # Change to 'argocd' if using upstream ArgoCD.
+  namespace: openshift-gitops
+  labels:
+    app: operators-root-app
+    type: root-app
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    # Root app always points to main — child app versions are controlled by
+    # the csv: values in each catalog entry, not by git revisions here.
+    repoURL: https://github.com/<YOUR-ORG>/<YOUR-REPO>.git  # CHANGEME
+    targetRevision: main
+    path: argo-examples/examples/operators-installer/charts/operators-app-of-apps
+
+    helm:
+      # Override these values to match your environment without modifying values.yaml.
+      # Only specify what differs from the defaults in charts/operators-app-of-apps/values.yaml.
+      values: |
+        argocd:
+          namespace: openshift-gitops  # Change to 'argocd' for upstream ArgoCD
+
+        gitopsRepo:
+          url: https://github.com/<YOUR-ORG>/<YOUR-REPO>.git  # CHANGEME
+          revision: main
+
+        # Disable operators not applicable to your cluster by adding:
+        # operators:
+        #   - name: advanced-cluster-management
+        #     enabled: false
+        #     destinationNamespace: open-cluster-management
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openshift-gitops
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false

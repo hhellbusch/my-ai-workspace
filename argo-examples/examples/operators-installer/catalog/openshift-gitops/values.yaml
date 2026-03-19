@@ -1,0 +1,68 @@
+# catalog/openshift-gitops/values.yaml
+#
+# Manages: Red Hat OpenShift GitOps Operator
+# Install mode: AllNamespaces
+#   The OperatorGroup has no targetNamespaces, so it serves all namespaces.
+#   This is required for OpenShift GitOps because ArgoCD instances in any
+#   namespace need to be served by this operator.
+#
+# Upgrade strategy: Automated chain (automaticIntermediateManualUpgrades: true)
+#   The operators-installer chart discovers OLM's upgrade graph and approves
+#   each intermediate InstallPlan automatically until the target csv is reached.
+#   Use this strategy when intermediate versions do not require human validation.
+#
+#   The 'latest' channel for openshift-gitops-operator typically allows direct
+#   upgrades within a minor version stream, but may require stepping through
+#   minor versions (e.g., v1.12 → v1.13 may require v1.12.x first). Setting
+#   automaticIntermediateManualUpgrades: true handles this transparently.
+#
+# To upgrade:
+#   1. Find the target CSV:
+#        oc get packagemanifest openshift-gitops-operator -n openshift-marketplace \
+#          -o jsonpath='{.status.channels[?(@.name=="latest")].entries[*].name}' \
+#          | tr ' ' '\n' | sort
+#   2. Change csv: below to the desired target version.
+#   3. Open PR -> merge -> ArgoCD syncs. The chart steps through any required hops.
+#
+# Dedicated namespace: openshift-gitops-operator
+#   This operator MUST NOT share a namespace with any other operator managed by
+#   this system. OLM merges InstallPlans across operators in the same namespace,
+#   which breaks independent version control.
+#   NOTE: This is separate from the openshift-gitops namespace where ArgoCD runs.
+
+installPlanApproverAndVerifyJobsImage: registry.redhat.io/openshift4/ose-cli:v4.16
+# Set to false and provide a pre-baked image in disconnected environments.
+# See README.md — Disconnected Environments section.
+installRequiredPythonLibraries: true
+
+operatorGroups:
+  - name: openshift-gitops-operator
+    createNamespace: true
+    # No targetOwnNamespace and no otherTargetNamespaces -> AllNamespaces install mode.
+    # OLM will configure this OperatorGroup to serve operators across all namespaces.
+    targetOwnNamespace: false
+
+operators:
+  - name: openshift-gitops-operator
+    # Channel controls which release stream OLM resolves CSVs from.
+    # 'latest' tracks the most recent stable release.
+    channel: latest
+    # VERSION PIN: This is the exact CSV that will be installed.
+    # Change this value (and only this value) to upgrade the operator.
+    csv: openshift-gitops-operator.v1.13.1
+    installPlanApproval: Manual
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    namespace: openshift-gitops-operator
+
+    # Automated chain settings.
+    # The chart will step through all intermediate CSVs in OLM's upgrade graph
+    # before approving the target csv above.
+    automaticIntermediateManualUpgrades: true
+    # Increase backoff limit for clusters with slower OLM reconcile times.
+    automaticIntermediateManualUpgradesIncrementalInstallBackoffLimit: 15
+    # Total time budget for the approval phase across all intermediate hops.
+    # For a 3-hop upgrade, allow at least 3x the single-install time.
+    installPlanApproverActiveDeadlineSeconds: 1800
+    # Total time budget for verifying each hop has completed installing.
+    installPlanVerifierActiveDeadlineSeconds: 1800

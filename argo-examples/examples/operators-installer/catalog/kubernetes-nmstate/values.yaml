@@ -1,0 +1,65 @@
+# catalog/kubernetes-nmstate/values.yaml
+#
+# Manages: Kubernetes NMState Operator (kubernetes-nmstate-operator)
+# Install mode: AllNamespaces
+#
+# NON-SEMVER OPERATOR — upgradeChain required
+#   NMState's CSV names embed the OCP version and a build timestamp:
+#     kubernetes-nmstate-operator.v4.16.0-202403050124
+#   The timestamp suffix (202403050124) is a valid semver pre-release identifier,
+#   but the automated incremental approver (automaticIntermediateManualUpgrades: true)
+#   can behave unexpectedly when comparing pre-release versions against each other
+#   because pre-release ordering in semver is distinct from timestamp ordering.
+#
+#   The upgradeChain field is the correct approach: it uses list-position ordering
+#   and does not parse or compare version strings. The chain enforces upgrade sequence
+#   regardless of versioning convention.
+#
+# Upgrade strategy: Staged chain via upgradeChain
+#   Each hop is a separate Git PR. The chain approver validates that csv is exactly
+#   one position ahead of the installed CSV in the list before approving any InstallPlan.
+#
+# To upgrade:
+#   1. Find the target build for your OCP version:
+#        oc get packagemanifest kubernetes-nmstate-operator -n openshift-marketplace \
+#          -o jsonpath='{.status.channels[?(@.name=="stable")].entries[*].name}' \
+#          | tr ' ' '\n' | sort
+#   2. Add the target CSV to the upgradeChain list (after the current entry).
+#   3. Update csv: to the new target.
+#   4. Update the channel if moving to a new OCP minor version stream.
+#   5. Open PR -> merge -> validate nmstate node network state after sync.
+#
+# Dedicated namespace: openshift-nmstate
+#   This operator MUST NOT share a namespace with any other operator managed by
+#   this system. OLM merges InstallPlans across operators in the same namespace,
+#   which breaks independent version control.
+
+installPlanApproverAndVerifyJobsImage: registry.redhat.io/openshift4/ose-cli:v4.16
+installRequiredPythonLibraries: true
+
+operatorGroups:
+  - name: openshift-nmstate
+    createNamespace: true
+    # No targetOwnNamespace -> AllNamespaces install mode
+    targetOwnNamespace: false
+
+operators:
+  - name: kubernetes-nmstate-operator
+    channel: stable
+    # VERSION PIN (current hop): This is the exact CSV installed now.
+    # Change to the next entry in upgradeChain to advance one hop.
+    csv: kubernetes-nmstate-operator.v4.16.0-202403050124
+    installPlanApproval: Manual
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    namespace: openshift-nmstate
+
+    # upgradeChain: list-position ordering — safe for non-semver operators.
+    # No version string parsing occurs. Each entry is matched by exact string equality.
+    # The chain approver fails immediately if csv would skip any entry in this list.
+    upgradeChain:
+      - kubernetes-nmstate-operator.v4.15.0-202312010900   # installed 2024-01-15 (git sha: abc1234)
+      - kubernetes-nmstate-operator.v4.16.0-202403050124   # current — matches csv above
+      - kubernetes-nmstate-operator.v4.17.0-202506010000   # next planned hop (not yet applied)
+    installPlanApproverActiveDeadlineSeconds: 600
+    installPlanVerifierActiveDeadlineSeconds: 600

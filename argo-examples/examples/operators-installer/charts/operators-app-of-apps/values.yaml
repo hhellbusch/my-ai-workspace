@@ -1,0 +1,57 @@
+# values.yaml — operators-app-of-apps
+#
+# This file is the manifest of which operators are managed and where they live.
+# The operators-root-app.yaml points here. Override values inline in the root app
+# rather than editing this file directly, so defaults stay clean.
+#
+# To disable an operator without removing it:
+#   Set enabled: false — the Application will be pruned by ArgoCD.
+#
+# To add a new operator:
+#   1. Create catalog/<name>/values.yaml with the operators-installer values.
+#   2. Add an entry below with enabled: true and the destination namespace.
+
+# ArgoCD configuration
+argocd:
+  namespace: openshift-gitops   # Change to 'argocd' for upstream ArgoCD
+  project: default
+
+# This git repository — used as the values source in each operator Application.
+gitopsRepo:
+  url: https://github.com/your-org/your-repo.git   # CHANGEME
+  revision: main
+  # Path prefix within the repo to the catalog directory.
+  # Each operator's values file is at: <catalogBasePath>/<name>/values.yaml
+  catalogBasePath: argo-examples/examples/operators-installer/catalog
+
+# operators-installer Helm chart coordinates.
+# Pin the chart version here so all operators use the same chart release.
+operatorsInstallerChart:
+  repoURL: https://redhat-cop.github.io/helm-charts
+  version: '1.0.2'
+
+# Destination cluster for all operator Applications.
+destination:
+  server: https://kubernetes.default.svc
+
+# Managed operators.
+# Each entry generates one ArgoCD Application named operator-<name>.
+# destinationNamespace must match the namespace used in the catalog values.yaml
+# (operatorGroups[].name and operators[].namespace).
+operators:
+  - name: openshift-gitops
+    enabled: true
+    destinationNamespace: openshift-gitops-operator
+
+  - name: cert-manager
+    enabled: true
+    destinationNamespace: cert-manager-operator
+
+  - name: advanced-cluster-management
+    enabled: true
+    destinationNamespace: open-cluster-management
+
+  # Non-semver operator example — upgradeChain required
+  - name: kubernetes-nmstate
+    enabled: true
+    destinationNamespace: openshift-nmstate

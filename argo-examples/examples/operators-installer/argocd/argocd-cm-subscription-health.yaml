@@ -1,0 +1,111 @@
+# argocd-cm-subscription-health.yaml
+#
+# Patches ArgoCD's built-in Subscription health check so that a Subscription
+# configured with installPlanApproval: Manual is considered Healthy even when
+# OLM has created a pending InstallPlan for a newer version.
+#
+# WITHOUT this patch:
+#   ArgoCD marks operator Applications as Progressing whenever OLM creates a
+#   pending InstallPlan for any newer CSV — which happens constantly for pinned
+#   operators because OLM always generates plans for newer versions in the channel.
+#   This produces constant false-alarm alerts and prevents ArgoCD from reaching
+#   a stable Healthy state.
+#
+# WITH this patch:
+#   A pending InstallPlan under a Manual-approval Subscription is treated as
+#   Healthy. ArgoCD only alerts on genuinely degraded conditions (failed resolution,
+#   unhealthy CatalogSource, etc).
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# OPTION A — Red Hat OpenShift GitOps (ArgoCD CR resource customizations)
+# ─────────────────────────────────────────────────────────────────────────────
+# The RHOG operator manages argocd-cm and will overwrite direct patches.
+# Configure through the ArgoCD CR instead:
+#
+#   oc patch argocd openshift-gitops -n openshift-gitops --type=merge --patch '
+#   spec:
+#     resourceCustomizations: |
+#       operators.coreos.com/Subscription:
+#         health.lua: |
+#           <paste the Lua script below, indented 10 spaces>'
+#
+# Or edit the ArgoCD CR in your GitOps repo and add:
+#
+#   spec:
+#     resourceCustomizations: |
+#       operators.coreos.com/Subscription:
+#         health.lua: |
+#           health_status = {}
+#           ... (full script below)
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# OPTION B — Upstream ArgoCD (direct ConfigMap patch)
+# ─────────────────────────────────────────────────────────────────────────────
+# Apply this ConfigMap to replace the Subscription health check entry:
+#
+#   kubectl apply -f argocd-cm-subscription-health.yaml
+#
+# NOTE: This is a full ConfigMap, not a patch. If your argocd-cm has other custom
+# entries, merge the data key below into your existing ConfigMap rather than
+# applying this file directly.
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# OPTION C — Manage via ArgoCD itself (recommended for full GitOps)
+# ─────────────────────────────────────────────────────────────────────────────
+# Include this ConfigMap (or the ArgoCD CR patch above) in your ArgoCD bootstrap
+# Application so it is synced and maintained as code.
+#
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  # Change namespace to 'argocd' for upstream ArgoCD,
+  # or 'openshift-gitops' for Red Hat OpenShift GitOps (see OPTION A note above).
+  namespace: openshift-gitops
+data:
+  # Health check for operators.coreos.com/Subscription
+  # Source: https://github.com/redhat-cop/helm-charts/tree/main/charts/operators-installer
+  # Behavior:
+  #   - Healthy:    no pending or degraded conditions
+  #   - Healthy:    pending InstallPlan but installPlanApproval is Manual
+  #                 (we are intentionally holding back; this is expected)
+  #   - Progressing: pending InstallPlan with Automatic installPlanApproval
+  #   - Degraded:   CatalogSourcesUnhealthy, InstallPlanFailed, or ResolutionFailed
+  resource.customizations.health.operators.coreos.com_Subscription: |
+    health_status = {}
+    if obj.status ~= nil then
+      if obj.status.conditions ~= nil then
+        numDegraded = 0
+        numPending = 0
+        msg = ""
+        for i, condition in pairs(obj.status.conditions) do
+          msg = msg .. i .. ": " .. condition.type .. " | " .. condition.status .. "\n"
+          if condition.type == "InstallPlanPending" and condition.status == "True" then
+            numPending = numPending + 1
+          elseif (condition.type == "InstallPlanMissing" and condition.reason ~= "ReferencedInstallPlanNotFound") then
+            numDegraded = numDegraded + 1
+          elseif (condition.type == "CatalogSourcesUnhealthy" or condition.type == "InstallPlanFailed" or condition.type == "ResolutionFailed") and condition.status == "True" then
+            numDegraded = numDegraded + 1
+          end
+        end
+      end
+      if numDegraded == 0 and numPending == 0 then
+        health_status.status = "Healthy"
+        health_status.message = msg
+        return health_status
+      elseif numPending > 0 and numDegraded == 0 and obj.spec.installPlanApproval == "Manual" then
+        health_status.status = "Healthy"
+        health_status.message = "An install plan for a subscription is pending installation but install plan approval is set to manual so considering this as healthy: " .. msg
+        return health_status
+      elseif numPending > 0 and numDegraded == 0 then
+        health_status.status = "Progressing"
+        health_status.message = "An install plan for a subscription is pending installation"
+        return health_status
+      else
+        health_status.status = "Degraded"
+        health_status.message = msg
+        return health_status
+      end
+    end
+    return health_status

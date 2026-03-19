@@ -60,6 +60,13 @@ node_modules/
 *.swo
 
 
+# ===== Sensitive / Local-only Directories =====
+# OCP install working directory contains pull secrets and kubeconfigs
+ocp-install/
+
+# External git project clones — not part of this repo
+git-projects/
+
 # ===== Planning Artifacts =====
 # Internal process files, not for sharing
 
