@@ -24,7 +24,7 @@
 #   issuers, etc.) are managed cluster-wide via AllNamespaces mode, but the
 #   operator pod runs in cert-manager-operator.
 
-installPlanApproverAndVerifyJobsImage: registry.redhat.io/openshift4/ose-cli:v4.18
+installPlanApproverAndVerifyJobsImage: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:51a4c20765f54b6a6b5513f97cf54bb99631c2abe860949293456886a74f87fe
 # Set to false and provide a pre-baked image in disconnected environments.
 installRequiredPythonLibraries: true
 
