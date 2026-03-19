@@ -203,7 +203,7 @@ This example is part of a larger collection:
 
 ## Contributing
 
-Found an issue or have a suggestion? This is part of the ansible-examples collection in the gemini-workspace repository.
+Found an issue or have a suggestion? This is part of the ansible-examples collection in this repository.
 
 ---
 

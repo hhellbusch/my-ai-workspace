@@ -96,7 +96,7 @@ This workspace includes a sophisticated meta-development system with **Skills**,
 ## Directory Structure
 
 ```
-gemini-workspace/
+./
 ├── .cursor/
 │   ├── skills/          # Meta-development skills (7 total)
 │   ├── commands/        # Slash commands (27 total)

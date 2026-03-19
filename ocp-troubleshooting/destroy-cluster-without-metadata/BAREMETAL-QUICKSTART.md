@@ -13,7 +13,7 @@ This guide will help you destroy it manually.
 Run the diagnostic script:
 
 ```bash
-cd ~/gemini-workspace/ocp-troubleshooting/destroy-cluster-without-metadata
+cd ocp-troubleshooting/destroy-cluster-without-metadata
 ./find-cluster-baremetal.sh <your-cluster-name>
 ```
 
@@ -311,7 +311,7 @@ ping 10.0.0.100  # Should be unreachable
 **🚀 Ready to start? Run the diagnostic script now!**
 
 ```bash
-cd ~/gemini-workspace/ocp-troubleshooting/destroy-cluster-without-metadata
+cd ocp-troubleshooting/destroy-cluster-without-metadata
 ./find-cluster-baremetal.sh <your-cluster-name>
 ```
 

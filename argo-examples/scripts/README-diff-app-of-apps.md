@@ -488,4 +488,4 @@ Found a bug or want to add features?
 
 ## License
 
-This script is part of the gemini-workspace DevOps examples collection.
+This script is part of the DevOps examples collection.

@@ -18,7 +18,7 @@
 ### Step 1: Run the Diagnostic Script (2 minutes)
 
 ```bash
-cd ~/gemini-workspace/ocp-troubleshooting/bare-metal-node-inspection-timeout
+cd ocp-troubleshooting/bare-metal-node-inspection-timeout
 
 # Run automated diagnostics
 ./diagnose-bmh.sh master-2

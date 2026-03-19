@@ -21,7 +21,7 @@
 ### Step 1: Run Automated Diagnostics
 
 ```bash
-cd ~/gemini-workspace/ocp-troubleshooting/worker-node-tls-cert-failure
+cd ocp-troubleshooting/worker-node-tls-cert-failure
 
 # Run the diagnostic script
 ./diagnose-tls.sh

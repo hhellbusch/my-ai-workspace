@@ -6,7 +6,7 @@
 
 ```bash
 # AWS
-cd ~/gemini-workspace/ocp-troubleshooting/destroy-cluster-without-metadata
+cd ocp-troubleshooting/destroy-cluster-without-metadata
 ./find-cluster-aws.sh <cluster-name-or-keyword>
 
 # Azure

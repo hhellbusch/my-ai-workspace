@@ -300,7 +300,7 @@ When you need the full methodology and context:
 Update from TÂCHES repository:
 
 ```bash
-cd ~/gemini-workspace
+cd /path/to/repo
 git clone https://github.com/glittercowboy/taches-cc-resources.git .taches-update
 cp -r .taches-update/commands/* .cursor/commands/
 cp -r .taches-update/skills/* .cursor/skills/

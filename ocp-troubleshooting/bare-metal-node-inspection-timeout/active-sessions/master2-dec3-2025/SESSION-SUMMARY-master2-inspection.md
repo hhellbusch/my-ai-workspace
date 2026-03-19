@@ -509,7 +509,7 @@ oc get baremetalhost master-2 -n openshift-machine-api -o jsonpath='{.status.err
 
 ```bash
 # Navigate to troubleshooting directory
-cd ~/gemini-workspace/ocp-troubleshooting/bare-metal-node-inspection-timeout
+cd ocp-troubleshooting/bare-metal-node-inspection-timeout
 
 # Read this summary
 cat SESSION-SUMMARY-master2-inspection.md
