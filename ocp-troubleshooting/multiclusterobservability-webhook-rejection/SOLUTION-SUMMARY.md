@@ -19,7 +19,7 @@ This means: **The webhook has a bug and is not properly receiving/processing the
 ### Option 1: Automated Fix (Easiest) ⚡
 
 ```bash
-cd /home/hhellbusch/gemini-workspace/ocp-troubleshooting/multiclusterobservability-webhook-rejection
+cd ocp-troubleshooting/multiclusterobservability-webhook-rejection
 ./bypass-webhook.sh
 ```
 

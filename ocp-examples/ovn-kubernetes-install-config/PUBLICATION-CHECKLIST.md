@@ -206,7 +206,7 @@ Once published, documentation will be available at:
 
 ```bash
 # If you're ready to publish now:
-cd /home/hhellbusch/gemini-workspace
+cd /path/to/repo
 
 # Review what will be pushed
 git log -1

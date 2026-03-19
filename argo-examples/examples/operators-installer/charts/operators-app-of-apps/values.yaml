@@ -29,7 +29,7 @@ gitopsRepo:
 # needing to package and publish to a Helm repository.
 # Switch repoURL/revision/path to a Helm repo + version for production use.
 operatorsInstallerChart:
-  repoURL: https://github.com/hhellbusch/redhat-cop-helm-charts.git
+  repoURL: https://github.com/your-org/redhat-cop-helm-charts.git
   revision: main
   path: charts/operators-installer
 

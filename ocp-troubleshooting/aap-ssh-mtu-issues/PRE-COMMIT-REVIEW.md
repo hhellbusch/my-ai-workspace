@@ -296,7 +296,7 @@ Files:
 ### Files to Stage:
 
 ```bash
-cd /home/hhellbusch/gemini-workspace
+cd /path/to/repo
 
 git add ocp-troubleshooting/aap-ssh-mtu-issues/README.md
 git add ocp-troubleshooting/aap-ssh-mtu-issues/QUICK-REFERENCE.md
