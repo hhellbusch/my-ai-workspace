@@ -48,18 +48,20 @@ operatorGroups:
 operators:
   - name: kubernetes-nmstate-operator
     channel: stable
-    # VERSION PIN (current hop): This is the exact CSV installed now.
-    # Change to the next entry in upgradeChain to advance one hop.
-    csv: kubernetes-nmstate-operator.4.18.0-202603041813
+    # VERSION PIN: Change ONLY to the immediate next entry in upgradeChain.
+    # Currently installing the older version to test the upgrade procedure.
+    csv: kubernetes-nmstate-operator.4.18.0-202602172216
     installPlanApproval: Manual
     source: redhat-operators
     sourceNamespace: openshift-marketplace
     namespace: openshift-nmstate
 
-    # Fresh install on OCP 4.18 — targeting latest stable build directly.
-    # NOTE: upgradeChain (strict ordered chain, safe for non-semver) requires
-    # operators-installer >= 3.5.0. Swap to upgradeChain once 3.5.0 is published.
-    # For now, using automaticIntermediateManualUpgrades as the approval mechanism.
-    automaticIntermediateManualUpgrades: true
+    # upgradeChain enforces strict hop ordering for this non-semver operator.
+    # The chain approver validates that csv is exactly one position ahead of
+    # the installed CSV before approving any InstallPlan.
+    # To upgrade: change csv above to the next entry in this list, open a PR.
+    upgradeChain:
+      - kubernetes-nmstate-operator.4.18.0-202602172216  # initial install
+      - kubernetes-nmstate-operator.4.18.0-202603041813  # next planned hop
     installPlanApproverActiveDeadlineSeconds: 600
     installPlanVerifierActiveDeadlineSeconds: 600
