@@ -51,7 +51,7 @@ operators:
     channel: latest
     # VERSION PIN: This is the exact CSV that will be installed.
     # Change this value (and only this value) to upgrade the operator.
-    csv: openshift-gitops-operator.v1.13.1
+    csv: openshift-gitops-operator.v1.19.2
     installPlanApproval: Manual
     source: redhat-operators
     sourceNamespace: openshift-marketplace
