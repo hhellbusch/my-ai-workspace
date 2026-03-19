@@ -1,13 +1,10 @@
 # Notes
 
-Miscellaneous notes and resources organized by topic.
+Miscellaneous technical notes and references organized by topic.
 
 ## 📁 Organization
 
 Notes are organized into subdirectories by topic or category:
-
-### Gaming
-- **[sc2-music.md](gaming/sc2-music.md)** - StarCraft II music recommendations
 
 ### OpenShift/Kubernetes
 - **[openshift-useful-commands.md](openshift-useful-commands.md)** - Useful OpenShift and kubectl commands for pod management, troubleshooting, and cluster operations
@@ -22,8 +19,7 @@ When adding new notes:
 
 ## Guidelines
 
-- **Personal notes** → Keep them here
+- **Quick references** → Keep them here
 - **Project-specific docs** → Move to the relevant project (ansible-examples, argo-examples)
 - **Technical references** → Consider if they should be in project documentation
-- **Learning resources** → Keep them organized by topic
 

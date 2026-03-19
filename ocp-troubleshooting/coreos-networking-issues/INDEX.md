@@ -6,7 +6,7 @@
 
 1. **Run the diagnostic script first:**
    ```bash
-   cd ~/gemini-workspace/ocp-troubleshooting/coreos-networking-issues
+   cd ocp-troubleshooting/coreos-networking-issues
    chmod +x diagnose-network.sh
    ./diagnose-network.sh | tee network-diagnostic-output.txt
    ```
@@ -216,7 +216,7 @@ This guide is part of a collection:
 
 ## Contributing
 
-Found an issue or have a suggestion? This is part of a personal knowledge base, but feedback is always appreciated.
+Found an issue or have a suggestion? Feedback is always appreciated.
 
 ---
 

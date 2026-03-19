@@ -93,7 +93,7 @@ See: [ovn-kubernetes-install-config/](ovn-kubernetes-install-config/)
 
 ## Contributing
 
-These examples are part of a personal knowledge base. When adding new examples:
+When adding new examples:
 
 1. Create a dedicated directory for the example
 2. Include a comprehensive README.md

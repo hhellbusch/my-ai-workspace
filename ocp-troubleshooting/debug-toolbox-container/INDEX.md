@@ -330,7 +330,7 @@ If you're still stuck:
 
 ## Contributing
 
-Found an issue or have a suggestion? This is part of a personal knowledge base, but feedback is always appreciated.
+Found an issue or have a suggestion? Feedback is always appreciated.
 
 ---
 
