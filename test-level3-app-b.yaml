@@ -1,0 +1,10 @@
+# Simulated manifests from level-2 app "app-b" at its targetRevision (v1.2.0)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: api-gateway
+spec:
+  source:
+    repoURL: https://github.com/org/repo
+    path: workloads/api-gateway
+    targetRevision: release-1.0

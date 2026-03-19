@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-a
+spec:
+  source:
+    repoURL: https://github.com/org/repo
+    path: apps/a
+    targetRevision: main
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-b
+spec:
+  source:
+    repoURL: https://github.com/org/repo
+    path: apps/b
+    targetRevision: v1.2.0
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-c
+spec:
+  sources:
+    - repoURL: https://github.com/org/repo
+      path: apps/c
+      targetRevision: release-2.0
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-d
+spec:
+  source:
+    repoURL: https://github.com/org/repo
+    path: apps/d
+    # no targetRevision - should default to HEAD
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: not-an-app
+data:
+  foo: bar
