@@ -30,7 +30,7 @@
 #   which breaks independent version control.
 #   NOTE: This is separate from the openshift-gitops namespace where ArgoCD runs.
 
-installPlanApproverAndVerifyJobsImage: registry.redhat.io/openshift4/ose-cli:v4.16
+installPlanApproverAndVerifyJobsImage: registry.redhat.io/openshift4/ose-cli:v4.18
 # Set to false and provide a pre-baked image in disconnected environments.
 # See README.md — Disconnected Environments section.
 installRequiredPythonLibraries: true

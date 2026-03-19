@@ -34,7 +34,7 @@
 #   this system. OLM merges InstallPlans across operators in the same namespace,
 #   which breaks independent version control.
 
-installPlanApproverAndVerifyJobsImage: registry.redhat.io/openshift4/ose-cli:v4.16
+installPlanApproverAndVerifyJobsImage: registry.redhat.io/openshift4/ose-cli:v4.18
 installRequiredPythonLibraries: true
 
 operatorGroups:
