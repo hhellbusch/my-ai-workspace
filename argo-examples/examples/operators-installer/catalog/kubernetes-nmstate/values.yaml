@@ -49,8 +49,7 @@ operators:
   - name: kubernetes-nmstate-operator
     channel: stable
     # VERSION PIN: Change ONLY to the immediate next entry in upgradeChain.
-    # Currently installing the older version to test the upgrade procedure.
-    csv: kubernetes-nmstate-operator.4.18.0-202602172216
+    csv: kubernetes-nmstate-operator.4.18.0-202603041813
     installPlanApproval: Manual
     source: redhat-operators
     sourceNamespace: openshift-marketplace
