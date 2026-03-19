@@ -41,6 +41,8 @@ operatorGroups:
     # No targetOwnNamespace and no otherTargetNamespaces -> AllNamespaces install mode.
     # OLM will configure this OperatorGroup to serve operators across all namespaces.
     targetOwnNamespace: false
+    namespaceLabels:
+      argocd.argoproj.io/managed-by: openshift-gitops
 
 operators:
   - name: openshift-gitops-operator

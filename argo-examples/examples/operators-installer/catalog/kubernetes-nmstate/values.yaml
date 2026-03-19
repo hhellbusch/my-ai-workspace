@@ -42,6 +42,8 @@ operatorGroups:
     createNamespace: true
     # No targetOwnNamespace -> AllNamespaces install mode
     targetOwnNamespace: false
+    namespaceLabels:
+      argocd.argoproj.io/managed-by: openshift-gitops
 
 operators:
   - name: kubernetes-nmstate-operator

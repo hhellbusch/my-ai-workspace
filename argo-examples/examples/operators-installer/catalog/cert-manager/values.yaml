@@ -33,6 +33,8 @@ operatorGroups:
     createNamespace: true
     # No targetOwnNamespace and no otherTargetNamespaces -> AllNamespaces install mode.
     targetOwnNamespace: false
+    namespaceLabels:
+      argocd.argoproj.io/managed-by: openshift-gitops
 
 operators:
   - name: openshift-cert-manager-operator

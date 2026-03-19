@@ -50,6 +50,8 @@ operatorGroups:
     # targetOwnNamespace: true -> OwnNamespace install mode.
     # The OperatorGroup will only serve operators in the open-cluster-management namespace.
     targetOwnNamespace: true
+    namespaceLabels:
+      argocd.argoproj.io/managed-by: openshift-gitops
 
 operators:
   - name: advanced-cluster-management
