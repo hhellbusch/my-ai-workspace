@@ -40,8 +40,8 @@ installRequiredPythonLibraries: true
 operatorGroups:
   - name: openshift-nmstate
     createNamespace: true
-    # No targetOwnNamespace -> AllNamespaces install mode
-    targetOwnNamespace: false
+    # OwnNamespace install mode — nmstate does not support AllNamespaces
+    targetOwnNamespace: true
     namespaceLabels:
       argocd.argoproj.io/managed-by: openshift-gitops
 
