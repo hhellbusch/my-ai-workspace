@@ -28,7 +28,7 @@ gitopsRepo:
 # Pin the chart version here so all operators use the same chart release.
 operatorsInstallerChart:
   repoURL: https://redhat-cop.github.io/helm-charts
-  version: '1.0.2'
+  version: '3.4.0'
 
 # Destination cluster for all operator Applications.
 destination:
