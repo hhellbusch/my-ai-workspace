@@ -1,0 +1,28 @@
+---
+# Placement
+#
+# Selects all OpenShift clusters from the "default" ManagedClusterSet.
+# As clusters are added to the ClusterSet, they are automatically included
+# here and will be registered with ArgoCD via the GitOpsCluster resource.
+#
+# Modify the labelSelector predicates to narrow scope — for example, to target
+# only production clusters or clusters in a specific region.
+#
+# Apply to: hub cluster
+# Namespace: openshift-gitops
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: all-openshift-clusters
+  namespace: openshift-gitops
+spec:
+  clusterSets:
+  - default
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchExpressions:
+        - key: vendor
+          operator: In
+          values:
+          - OpenShift

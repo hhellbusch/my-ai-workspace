@@ -1,0 +1,16 @@
+---
+# ManagedClusterSetBinding
+#
+# Grants the openshift-gitops namespace permission to use clusters from the
+# "default" ManagedClusterSet. Without this binding, the Placement and
+# GitOpsCluster resources in this namespace cannot reference clusters in that set.
+#
+# Apply to: hub cluster
+# Namespace: openshift-gitops
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: default
+  namespace: openshift-gitops
+spec:
+  clusterSet: default

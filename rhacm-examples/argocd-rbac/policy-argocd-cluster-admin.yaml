@@ -1,0 +1,102 @@
+---
+# RHACM Policy: Grant ArgoCD cluster-admin on managed clusters
+#
+# This policy creates a ClusterRoleBinding on each managed cluster that binds
+# the ArgoCD service account to the cluster-admin ClusterRole.
+#
+# Apply this to the hub cluster after ACM is running. The policy will
+# propagate to all clusters matching the PlacementRule below.
+#
+# For hub-local ArgoCD (OpenShift GitOps installed on hub), the binding is
+# applied to the local-cluster.
+#
+# Prerequisites:
+#   - RHACM MultiClusterHub running
+#   - Target namespaces exist on managed clusters
+#
+# Usage:
+#   oc apply -f policy-argocd-cluster-admin.yaml -n open-cluster-management
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-argocd-cluster-admin
+  namespace: open-cluster-management
+  annotations:
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: argocd-cluster-admin-binding
+      spec:
+        remediationAction: enforce
+        severity: low
+        object-templates:
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: ClusterRoleBinding
+            metadata:
+              name: argocd-application-controller-cluster-admin
+            roleRef:
+              apiGroup: rbac.authorization.k8s.io
+              kind: ClusterRole
+              name: cluster-admin
+            subjects:
+            - kind: ServiceAccount
+              name: openshift-gitops-argocd-application-controller
+              namespace: openshift-gitops
+        - complianceType: musthave
+          objectDefinition:
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: ClusterRoleBinding
+            metadata:
+              name: argocd-server-cluster-admin
+            roleRef:
+              apiGroup: rbac.authorization.k8s.io
+              kind: ClusterRole
+              name: cluster-admin
+            subjects:
+            - kind: ServiceAccount
+              name: openshift-gitops-argocd-server
+              namespace: openshift-gitops
+---
+# Bind the Policy to a PlacementRule.
+# The PlacementRule below targets the local hub cluster only.
+# To target all managed clusters, remove the clusterConditions and clusterSelector filters,
+# or adjust to match the clusters you want to grant ArgoCD admin on.
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: placement-argocd-cluster-admin
+  namespace: open-cluster-management
+spec:
+  clusterConditions:
+  - status: "True"
+    type: ManagedClusterConditionAvailable
+  clusterSelector:
+    matchExpressions:
+    - key: local-cluster
+      operator: In
+      values:
+      - "true"
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-argocd-cluster-admin
+  namespace: open-cluster-management
+placementRef:
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+  name: placement-argocd-cluster-admin
+subjects:
+- apiGroup: policy.open-cluster-management.io
+  kind: Policy
+  name: policy-argocd-cluster-admin

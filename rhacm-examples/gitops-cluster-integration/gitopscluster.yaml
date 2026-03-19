@@ -1,0 +1,26 @@
+---
+# GitOpsCluster
+#
+# Registers clusters selected by the Placement with the ArgoCD instance
+# running in the openshift-gitops namespace. RHACM creates a cluster secret
+# in the ArgoCD namespace for each selected cluster, making it available as
+# a deployment destination in ArgoCD.
+#
+# The managed-serviceaccount addon handles credential rotation automatically —
+# no static service account tokens are stored.
+#
+# Apply to: hub cluster
+# Namespace: openshift-gitops
+apiVersion: apps.open-cluster-management.io/v1beta1
+kind: GitOpsCluster
+metadata:
+  name: argo-acm-clusters
+  namespace: openshift-gitops
+spec:
+  argoServer:
+    cluster: local-cluster
+    argoNamespace: openshift-gitops
+  placementRef:
+    kind: Placement
+    apiVersion: cluster.open-cluster-management.io/v1beta1
+    name: all-openshift-clusters

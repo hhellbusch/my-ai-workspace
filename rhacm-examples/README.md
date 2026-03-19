@@ -34,8 +34,14 @@ Red Hat Advanced Cluster Management (RHACM) provides end-to-end management for K
 
 ```
 rhacm-examples/
-├── README.md                    # This file
-└── secret-management/           # Secret management across managed clusters
+├── README.md                          # This file
+├── BARE-METAL-OPERATOR-INTEGRATION.md # Metal³, Assisted Installer, ZTP reference
+├── ocm-subscription-automation/       # Automate OCM subscription settings post-install
+│   ├── README.md                      # OCM CLI and standalone script documentation
+│   ├── set-ocm-subscription.sh        # Standalone automation script
+│   └── cluster-curator/
+│       └── README.md                  # ClusterCurator education for bare metal
+└── secret-management/                 # Secret management across managed clusters
     ├── 1_basic_secret_distribution/
     ├── 2_managed_service_accounts/
     ├── 3_external_secrets_operator/
@@ -90,6 +96,14 @@ Sync secrets from external stores to managed clusters. Good for:
 - Sensitive credentials requiring audit trails
 - Dynamic secret generation
 - Multi-environment deployments
+
+## OCM Subscription Automation
+
+After a bare metal cluster installs and registers with Red Hat, subscription properties (support level, SLA, usage, billing unit) must be configured in OCM. See [`ocm-subscription-automation/`](./ocm-subscription-automation/) for:
+
+- **OCM CLI walkthrough** — interactive one-off subscription management
+- **`set-ocm-subscription.sh`** — standalone script for pipeline/post-install automation
+- **ClusterCurator guide** — how to trigger the script automatically via RHACM lifecycle hooks (for future adoption)
 
 ## Additional Resources
 
