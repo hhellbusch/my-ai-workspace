@@ -1,0 +1,26 @@
+# Default values for sync-lab-orchestrator.
+# These are overridden at deploy time by the three value files loaded by root-app.yaml:
+#   1. bootstrap/helm-values/applications.yaml  → availableApplications
+#   2. groups/lab-group/values.yaml             → lab-group-components
+#   3. cluster/lab-cluster/values.yaml          → lab-cluster-components
+
+argocd:
+  namespace: argocd
+  project: default
+
+source:
+  repoURL: https://github.com/your-org/your-repo.git  # Set in root-app.yaml
+  targetRevision: main
+
+destination:
+  server: https://kubernetes.default.svc
+
+# Populated from bootstrap/helm-values/applications.yaml
+availableApplications: {}
+
+# Populated from groups/lab-group/values.yaml
+# Keys use hyphens to match the existing lab-gitops convention.
+lab-group-components: {}
+
+# Populated from cluster/lab-cluster/values.yaml
+lab-cluster-components: {}

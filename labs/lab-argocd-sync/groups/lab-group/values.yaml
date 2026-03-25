@@ -1,0 +1,22 @@
+# Group: lab-group
+#
+# This file controls which components are enabled for ALL clusters that
+# belong to this group, and optionally sets group-level default overrides.
+#
+# All component entries live under the `lab-group-components` dict.
+#
+# To enable a component with no overrides (inherits component defaults):
+#   lab-group-components:
+#     my-component: {}
+#
+# To enable a component and override a value at the group level:
+#   lab-group-components:
+#     my-component:
+#       replicaCount: 2
+#
+# Values here are merged on top of the component's own values.yaml.
+# Cluster-level values win over these.
+
+# Pre-wired reference component — do not remove.
+lab-group-components:
+  example: {}

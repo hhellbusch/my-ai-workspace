@@ -1,0 +1,12 @@
+# Central component registry.
+# Each entry under availableApplications registers a component by name
+# and declares the path to its Helm chart in the repo.
+#
+# To register a new component, add a new key with its path:
+#
+#   <name>:
+#     path: components/lab/<name>
+#
+availableApplications:
+  example:
+    path: labs/lab-argocd-sync/components/lab/example

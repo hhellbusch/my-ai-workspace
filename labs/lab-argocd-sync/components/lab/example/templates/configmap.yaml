@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.appName }}-html
+  namespace: {{ .Values.appName }}
+  labels:
+    app: {{ .Values.appName }}
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+      <head><title>{{ .Values.appName }}</title></head>
+      <body>
+        <h1>{{ .Values.greeting }}</h1>
+        <p>Deployed by GitOps &mdash; no <code>oc apply</code> required.</p>
+      </body>
+    </html>

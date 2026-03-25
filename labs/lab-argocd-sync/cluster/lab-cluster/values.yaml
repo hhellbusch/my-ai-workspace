@@ -1,0 +1,51 @@
+# Cluster: lab-cluster
+#
+# This file has the FINAL say on values for every component deployed to this
+# cluster. Values here override both the component defaults and the group values.
+#
+# All component entries live under the `lab-cluster-components` dict.
+# The key must exactly match the component name in applications.yaml.
+#
+# Standard app values (replicaCount, greeting, etc.) are passed to the
+# component's Helm chart as Helm values.
+#
+# ArgoCD Application settings are placed under the reserved `argo:` key.
+# The orchestrator extracts this block and applies it to the Application CRD —
+# it is never forwarded to the Helm chart.
+#
+# Full `argo:` reference (all fields shown, most are optional):
+#
+#   argo:
+#     syncPolicy:
+#       automated: {}               # enable automated sync (no prune/selfHeal by default)
+#       # automated:
+#       #   prune: true             # delete resources removed from Git
+#       #   selfHeal: true          # revert manual cluster changes
+#       syncOptions:
+#         - CreateNamespace=true
+#         - ServerSideApply=true
+#         - ApplyOutOfSyncOnly=true
+#         - PruneLast=true
+#         - RespectIgnoreDifferences=true
+#       retry:
+#         limit: 5
+#         backoff:
+#           duration: 5s
+#           factor: 2
+#           maxDuration: 3m
+#     ignoreDifferences:
+#       - group: apps
+#         kind: Deployment
+#         jsonPointers:
+#           - /spec/replicas
+#       - group: apps
+#         kind: Deployment
+#         jqPathExpressions:
+#           - .spec.template.spec.containers[].image
+
+# Pre-wired reference component override.
+# The `argo:` block is intentionally absent so the example starts in manual sync mode.
+lab-cluster-components:
+  example:
+    replicaCount: 1
+    greeting: "Cluster says: hello from example!"

@@ -1,0 +1,11 @@
+apiVersion: v2
+name: sync-lab-orchestrator
+description: |
+  App-of-Apps Helm chart for the ArgoCD Sync Settings Lab.
+  Reads the component registry, group membership, and cluster value overrides
+  to generate one ArgoCD Application per registered participant component.
+  Sync settings (syncPolicy, syncOptions, ignoreDifferences, retry) flow through
+  the same components → groups → cluster cascade as application values.
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

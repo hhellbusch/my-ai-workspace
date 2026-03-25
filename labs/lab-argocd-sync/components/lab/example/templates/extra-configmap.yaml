@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.appName }}-extra
+  namespace: {{ .Values.appName }}
+  labels:
+    app: {{ .Values.appName }}
+data:
+  note: |
+    This ConfigMap exists to demonstrate ArgoCD's prune behavior (Exercise 3).
+    You will delete this template file from Git and observe what happens
+    with and without prune enabled on the Application.

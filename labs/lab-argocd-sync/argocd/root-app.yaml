@@ -1,0 +1,68 @@
+# Sync Lab Root Application — apply this file exactly once to bootstrap the lab.
+#
+# This Application manages the sync-lab-orchestrator Helm chart, which in turn
+# generates one child Application per enabled component. Participants never
+# apply ArgoCD manifests directly — the framework creates their Applications
+# automatically when they push their component to Git.
+#
+# REQUIREMENTS:
+#   ArgoCD 2.6+ (required for the multiple-sources feature used below)
+#
+# BEFORE APPLYING:
+#   Replace <YOUR-ORG> and <YOUR-REPO> with the actual values for your lab repo.
+#
+# APPLY ONCE (instructor only):
+#   oc apply -f labs/lab-argocd-sync/argocd/root-app.yaml -n argocd
+#
+# After applying, the orchestrator syncs and generates Applications for every
+# component registered in bootstrap/helm-values/applications.yaml.
+# Participants add their components by editing those files and pushing to Git.
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sync-lab-orchestrator
+  namespace: argocd
+  labels:
+    app: sync-lab-orchestrator
+    type: root-app
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  # Multiple sources allow the orchestrator chart to load value files from
+  # arbitrary paths in the repo, keeping the cascade files separate from the chart.
+  sources:
+    # Source 1: the orchestrator Helm chart.
+    - repoURL: https://github.com/<YOUR-ORG>/<YOUR-REPO>.git  # CHANGEME
+      targetRevision: main
+      path: labs/lab-argocd-sync/charts/sync-lab-orchestrator
+      helm:
+        # The $values ref resolves relative to Source 2 (the repo root).
+        valueFiles:
+          - $values/labs/lab-argocd-sync/bootstrap/helm-values/applications.yaml
+          - $values/labs/lab-argocd-sync/groups/lab-group/values.yaml
+          - $values/labs/lab-argocd-sync/cluster/lab-cluster/values.yaml
+        # The repoURL for child Applications — must match the repo containing
+        # the component Helm charts.
+        values: |
+          source:
+            repoURL: https://github.com/<YOUR-ORG>/<YOUR-REPO>.git  # CHANGEME
+            targetRevision: main
+
+    # Source 2: the repo itself, used only as the $values reference for value files.
+    - repoURL: https://github.com/<YOUR-ORG>/<YOUR-REPO>.git  # CHANGEME
+      targetRevision: main
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false

@@ -1,0 +1,105 @@
+{{- /*
+  Generates one ArgoCD Application per component that is:
+    1. Listed in availableApplications (the component registry), AND
+    2. Enabled in lab-group-components (the group membership list).
+
+  Values are merged in lowest-to-highest specificity order:
+    component defaults (values.yaml inside the chart)
+    ← group overrides (lab-group-components.<name>)
+    ← cluster overrides (lab-cluster-components.<name>)
+
+  The reserved top-level key `argo` is used to configure the ArgoCD
+  Application spec rather than being passed to the Helm chart:
+
+    argo.syncPolicy       → spec.syncPolicy  (automated, prune, selfHeal, syncOptions, retry)
+    argo.ignoreDifferences → spec.ignoreDifferences
+
+  All other merged values (everything outside `argo`) are forwarded to the
+  component Helm chart as helm.values, overriding that chart's own values.yaml.
+*/ -}}
+
+{{- $root := . -}}
+{{- $groupComponents := index .Values "lab-group-components" | default dict -}}
+{{- $clusterComponents := index .Values "lab-cluster-components" | default dict -}}
+
+{{- range $appName, $appDef := .Values.availableApplications }}
+{{- if hasKey $groupComponents $appName }}
+
+{{- /* Merge: cluster wins over group (mergeOverwrite: dest takes priority) */ -}}
+{{- $groupVals   := index $groupComponents   $appName | default dict }}
+{{- $clusterVals := index $clusterComponents $appName | default dict }}
+{{- $merged := mergeOverwrite (deepCopy $groupVals) (deepCopy $clusterVals) }}
+
+{{- /* Extract the `argo` block — all ArgoCD-specific settings live here */ -}}
+{{- $argo              := $merged.argo              | default dict }}
+{{- $syncPolicy        := $argo.syncPolicy          | default dict }}
+{{- $ignoreDifferences := $argo.ignoreDifferences   | default list }}
+{{- $automated         := $syncPolicy.automated     | default false }}
+
+{{- /* Determine whether there is anything to put in syncPolicy */ -}}
+{{- $hasSyncPolicy := or $automated (hasKey $syncPolicy "syncOptions") (hasKey $syncPolicy "retry") }}
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $appName }}
+  namespace: {{ $root.Values.argocd.namespace }}
+  labels:
+    managed-by: sync-lab-orchestrator
+    app: {{ $appName }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ $root.Values.argocd.project }}
+
+  source:
+    repoURL: {{ $root.Values.source.repoURL }}
+    targetRevision: {{ $root.Values.source.targetRevision }}
+    path: {{ $appDef.path }}
+    helm:
+      # appName is always injected so the component chart uses the correct name
+      # even if the participant forgets to update it in their values.yaml.
+      values: |
+        appName: {{ $appName }}
+        {{- omit $merged "argo" | toYaml | nindent 8 }}
+
+  destination:
+    server: {{ $root.Values.destination.server }}
+    # The component name doubles as the destination namespace, matching the
+    # appName convention used by every component chart in this lab.
+    namespace: {{ $appName }}
+
+  {{- if $hasSyncPolicy }}
+  syncPolicy:
+    {{- if $automated }}
+    automated:
+      {{- if kindIs "map" $automated }}
+      prune: {{ $automated.prune | default false }}
+      selfHeal: {{ $automated.selfHeal | default false }}
+      {{- else }}
+      prune: false
+      selfHeal: false
+      {{- end }}
+    {{- end }}
+    {{- with $syncPolicy.syncOptions }}
+    syncOptions:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with $syncPolicy.retry }}
+    retry:
+      limit: {{ .limit | default 5 }}
+      backoff:
+        duration: {{ (.backoff | default dict).duration | default "5s" }}
+        factor: {{ (.backoff | default dict).factor | default 2 }}
+        maxDuration: {{ (.backoff | default dict).maxDuration | default "3m" }}
+    {{- end }}
+  {{- end }}
+
+  {{- if $ignoreDifferences }}
+  ignoreDifferences:
+    {{- toYaml $ignoreDifferences | nindent 4 }}
+  {{- end }}
+
+{{- end }}
+{{- end }}
