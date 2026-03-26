@@ -11,6 +11,13 @@
 # ===== Credential Protection =====
 # Prevent accidental commits of real credentials
 
+# TLS certificates and keys
+*.crt
+*.key
+*.pem
+*.p12
+*.pfx
+
 # Real inventory files (use .example.yml for templates)
 inventory.yml
 **/inventory.yml
