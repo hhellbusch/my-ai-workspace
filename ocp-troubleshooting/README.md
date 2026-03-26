@@ -199,6 +199,10 @@ oc adm inspect ns/<namespace>
 oc get events --all-namespaces --sort-by='.lastTimestamp' | tail -50
 ```
 
+## Related Resources
+
+- **[Ansible Troubleshooting](../ansible-troubleshooting/README.md)** - General Ansible issues not specific to OpenShift (e.g., connection variable failures, gather_facts errors)
+
 ## Support Resources
 
 - [OpenShift Documentation](https://docs.openshift.com/)
