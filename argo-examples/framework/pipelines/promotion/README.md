@@ -1,8 +1,19 @@
 # Change Control & Promotion
 
-Changes flow through environment stages via Git branches. The procedure is
-intentionally simple: **a change is promoted by merging a PR from one branch
-to the next.**
+The framework supports two Git workflow models:
+
+- **Trunk-based** — all hubs track `main`. Merge to main = deploy everywhere.
+  Safety via RollingSync and sync windows. See
+  [Adopting Trunk-Based](../../docs/ADOPTING-TRUNK-BASED.md).
+- **Branch-per-environment** (this document) — changes flow through
+  environment stages via Git branches. The procedure is intentionally simple:
+  **a change is promoted by merging a PR from one branch to the next.**
+
+For a full comparison, see [Git Workflows](../../docs/GIT-WORKFLOWS.md).
+
+---
+
+## Branch-Per-Environment Model
 
 ## Environment Stages
 

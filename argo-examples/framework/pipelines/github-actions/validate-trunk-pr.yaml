@@ -1,0 +1,347 @@
+# validate-trunk-pr.yaml
+#
+# Trunk-based variant of validate-pr.yaml.
+# Runs on every PR targeting main — the only branch in trunk-based mode.
+#
+# Compared to the multi-branch validate-pr.yaml, this variant:
+#   - Only triggers on PRs to main (no release/* branches)
+#   - Always runs the ArgoCD diff preview (not gated on staging/production)
+#   - Removes the promotion-specific checks
+#
+# If you later graduate to branch-per-environment, switch to validate-pr.yaml
+# which covers PRs to all four branches. See docs/ADOPTING-TRUNK-BASED.md.
+
+name: Validate Fleet Changes (Trunk-Based)
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'argo-examples/framework/**'
+
+env:
+  FRAMEWORK_PATH: argo-examples/framework
+
+jobs:
+  # ── YAML Lint ────────────────────────────────────────────────────────────
+  yaml-lint:
+    name: YAML Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install yamllint
+        run: pip install yamllint
+      - name: Lint all YAML
+        run: |
+          yamllint -c .yamllint ${{ env.FRAMEWORK_PATH }}/ || true
+
+  # ── Helm Lint & Template ─────────────────────────────────────────────────
+  helm-validate:
+    name: Helm Lint & Template
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Lint all app charts
+        run: |
+          for chart_dir in ${{ env.FRAMEWORK_PATH }}/apps/*/; do
+            chart_name=$(basename "$chart_dir")
+            [ "$chart_name" = "_library" ] && continue
+            echo "=== Linting: $chart_name ==="
+            helm lint "$chart_dir" \
+              --values "$chart_dir/values.yaml" \
+              --values "${{ env.FRAMEWORK_PATH }}/groups/all/values.yaml" \
+              || echo "WARN: $chart_name lint failed (may be expected for charts requiring cluster values)"
+          done
+
+      - name: Lint cluster-label-sync chart
+        run: |
+          helm lint ${{ env.FRAMEWORK_PATH }}/hub/rhacm/cluster-labels/
+
+      - name: Template app charts with example cluster values
+        run: |
+          for chart_dir in ${{ env.FRAMEWORK_PATH }}/apps/*/; do
+            chart_name=$(basename "$chart_dir")
+            [ "$chart_name" = "_library" ] && continue
+            echo "=== Templating: $chart_name (prod-east-1 values) ==="
+            helm template "$chart_name" "$chart_dir" \
+              --values "$chart_dir/values.yaml" \
+              --values "${{ env.FRAMEWORK_PATH }}/groups/all/values.yaml" \
+              --values "${{ env.FRAMEWORK_PATH }}/groups/env-production/values.yaml" \
+              --values "${{ env.FRAMEWORK_PATH }}/groups/ocp-4.15/values.yaml" \
+              --values "${{ env.FRAMEWORK_PATH }}/clusters/example-prod-east-1/values.yaml" \
+              > /dev/null \
+              && echo "OK" \
+              || echo "FAIL: $chart_name template rendering failed"
+          done
+
+  # ── Array Safety Lint ────────────────────────────────────────────────────
+  array-safety-lint:
+    name: Array Safety Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yq
+        run: |
+          wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          chmod +x /usr/local/bin/yq
+
+      - name: Check array merge safety
+        run: |
+          bash ${{ env.FRAMEWORK_PATH }}/scripts/lint-array-safety.sh --ci
+          if [ $? -ne 0 ]; then
+            echo "::warning::Array safety violations found. Arrays in values.yaml may be silently overwritten across cascade layers."
+            echo "Run scripts/lint-array-safety.sh --fix-suggestions for remediation steps."
+          fi
+
+  # ── Cascade Order Lint ───────────────────────────────────────────────────
+  cascade-order-lint:
+    name: Cascade Order Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate ApplicationSet cascade order
+        run: |
+          bash ${{ env.FRAMEWORK_PATH }}/scripts/lint-cascade-order.sh
+
+  # ── Cluster Config Validation ────────────────────────────────────────────
+  cluster-config-validate:
+    name: Validate Cluster Configs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yq
+        run: |
+          wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          chmod +x /usr/local/bin/yq
+
+      - name: Validate cluster.yaml files
+        run: |
+          exit_code=0
+          for cluster_dir in ${{ env.FRAMEWORK_PATH }}/clusters/*/; do
+            [ "$(basename "$cluster_dir")" = "_template" ] && continue
+
+            cluster_name=$(basename "$cluster_dir")
+            cluster_yaml="$cluster_dir/cluster.yaml"
+            values_yaml="$cluster_dir/values.yaml"
+
+            echo "=== Validating: $cluster_name ==="
+
+            if [ ! -f "$cluster_yaml" ]; then
+              echo "ERROR: $cluster_yaml missing"
+              exit_code=1
+              continue
+            fi
+            if [ ! -f "$values_yaml" ]; then
+              echo "ERROR: $values_yaml missing"
+              exit_code=1
+              continue
+            fi
+
+            for field in cluster.name cluster.groups.env cluster.groups.ocpVersion; do
+              value=$(yq ".$field" "$cluster_yaml")
+              if [ "$value" = "null" ] || [ -z "$value" ]; then
+                echo "ERROR: $cluster_yaml missing required field: $field"
+                exit_code=1
+              fi
+            done
+
+            yaml_name=$(yq '.cluster.name' "$cluster_yaml")
+            if [ "$yaml_name" != "$cluster_name" ]; then
+              echo "ERROR: cluster.name ($yaml_name) does not match directory name ($cluster_name)"
+              exit_code=1
+            fi
+
+            label_count=$(yq '.cluster.managedClusterLabels | length' "$cluster_yaml")
+            if [ "$label_count" = "0" ] || [ "$label_count" = "null" ]; then
+              echo "ERROR: $cluster_yaml has no managedClusterLabels"
+              exit_code=1
+            fi
+
+            env_label=$(yq '.cluster.managedClusterLabels["group.env"]' "$cluster_yaml")
+            env_group=$(yq '.cluster.groups.env' "$cluster_yaml")
+            if [ "$env_label" != "$env_group" ]; then
+              echo "ERROR: group.env label ($env_label) does not match groups.env ($env_group)"
+              exit_code=1
+            fi
+
+            echo "OK: $cluster_name"
+          done
+          exit $exit_code
+
+  # ── Compatibility Matrix Validation ──────────────────────────────────────
+  compatibility-matrix:
+    name: Compatibility Matrix Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yq
+        run: |
+          wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          chmod +x /usr/local/bin/yq
+
+      - name: Validate OCP group values match compatibility matrix
+        run: |
+          matrix="${{ env.FRAMEWORK_PATH }}/groups/compatibility-matrix.yaml"
+          exit_code=0
+
+          for version in $(yq '.versions | keys | .[]' "$matrix"); do
+            group_file="${{ env.FRAMEWORK_PATH }}/groups/ocp-${version}/values.yaml"
+            if [ ! -f "$group_file" ]; then
+              echo "WARN: Matrix defines OCP $version but groups/ocp-${version}/values.yaml does not exist"
+              continue
+            fi
+
+            expected_prom=$(yq ".versions.\"${version}\".prometheusOperatorVersion" "$matrix")
+            actual_prom=$(yq '.cluster.features.monitoring.prometheusOperatorVersion' "$group_file")
+            if [ "$expected_prom" != "$actual_prom" ]; then
+              echo "ERROR: ocp-${version} prometheusOperatorVersion mismatch: matrix=$expected_prom, group=$actual_prom"
+              exit_code=1
+            fi
+
+            expected_cert=$(yq ".versions.\"${version}\".certManagerChartVersion" "$matrix")
+            actual_cert=$(yq '.cluster.features.certManager.chartVersion' "$group_file")
+            if [ "$expected_cert" != "$actual_cert" ]; then
+              echo "ERROR: ocp-${version} certManagerChartVersion mismatch: matrix=$expected_cert, group=$actual_cert"
+              exit_code=1
+            fi
+
+            echo "OK: ocp-${version}"
+          done
+          exit $exit_code
+
+  # ── Aggregate Cluster Labels ─────────────────────────────────────────────
+  aggregate-labels:
+    name: Aggregate Cluster Labels
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yq
+        run: |
+          wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          chmod +x /usr/local/bin/yq
+
+      - name: Generate aggregated cluster labels
+        run: |
+          bash ${{ env.FRAMEWORK_PATH }}/pipelines/github-actions/aggregate-cluster-config.sh \
+            ${{ env.FRAMEWORK_PATH }}
+
+      - name: Verify aggregated values match committed values
+        run: |
+          diff_output=$(diff \
+            ${{ env.FRAMEWORK_PATH }}/hub/rhacm/cluster-labels/values.yaml \
+            /tmp/aggregated-cluster-labels.yaml \
+            || true)
+          if [ -n "$diff_output" ]; then
+            echo "::error::cluster-labels/values.yaml is out of date. Run: bash pipelines/github-actions/aggregate-cluster-config.sh ${{ env.FRAMEWORK_PATH }}"
+            echo "$diff_output"
+            exit 1
+          fi
+
+  # ── ArgoCD Diff Preview (always runs in trunk-based mode) ───────────────
+  argocd-diff:
+    name: ArgoCD Diff Preview
+    runs-on: ubuntu-latest
+    needs: [helm-validate, cluster-config-validate]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Generate diff for each app x cluster
+        run: |
+          echo "## ArgoCD Diff Preview (trunk-based)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All environments track \`main\`. This diff shows what changes" >> $GITHUB_STEP_SUMMARY
+          echo "across all clusters when this PR is merged." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          changed_files=$(git diff --name-only origin/main...HEAD -- ${{ env.FRAMEWORK_PATH }}/)
+
+          echo "### Changed files:" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "$changed_files" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          has_diff=false
+
+          for chart_dir in ${{ env.FRAMEWORK_PATH }}/apps/*/; do
+            chart_name=$(basename "$chart_dir")
+            [ "$chart_name" = "_library" ] && continue
+
+            if ! echo "$changed_files" | grep -q "apps/$chart_name/"; then
+              if ! echo "$changed_files" | grep -q "groups/\|clusters/"; then
+                continue
+              fi
+            fi
+
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### $chart_name" >> $GITHUB_STEP_SUMMARY
+
+            for cluster_dir in ${{ env.FRAMEWORK_PATH }}/clusters/*/; do
+              [ "$(basename "$cluster_dir")" = "_template" ] && continue
+              cluster_name=$(basename "$cluster_dir")
+
+              git show origin/main:$chart_dir/values.yaml > /tmp/base-app-values.yaml 2>/dev/null || continue
+
+              base_output=$(helm template "$chart_name" "$chart_dir" \
+                --values /tmp/base-app-values.yaml \
+                --values "${{ env.FRAMEWORK_PATH }}/groups/all/values.yaml" \
+                --values "$cluster_dir/values.yaml" \
+                2>/dev/null || echo "TEMPLATE_FAILED")
+
+              head_output=$(helm template "$chart_name" "$chart_dir" \
+                --values "$chart_dir/values.yaml" \
+                --values "${{ env.FRAMEWORK_PATH }}/groups/all/values.yaml" \
+                --values "$cluster_dir/values.yaml" \
+                2>/dev/null || echo "TEMPLATE_FAILED")
+
+              diff_result=$(diff <(echo "$base_output") <(echo "$head_output") || true)
+
+              if [ -n "$diff_result" ]; then
+                has_diff=true
+                echo "" >> $GITHUB_STEP_SUMMARY
+                echo "#### $cluster_name" >> $GITHUB_STEP_SUMMARY
+                echo '```diff' >> $GITHUB_STEP_SUMMARY
+                echo "$diff_result" | head -100 >> $GITHUB_STEP_SUMMARY
+                echo '```' >> $GITHUB_STEP_SUMMARY
+              fi
+            done
+          done
+
+          if [ "$has_diff" = "false" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "No rendered output changes detected." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Post diff as PR comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = process.env.GITHUB_STEP_SUMMARY || 'No diff generated';
+            const maxLen = 60000;
+            const body = summary.length > maxLen
+              ? summary.substring(0, maxLen) + '\n\n... truncated'
+              : summary;
+            if (body.includes('###')) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }

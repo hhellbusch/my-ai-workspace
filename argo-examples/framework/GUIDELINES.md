@@ -42,9 +42,19 @@ committing. The system reacts — no scripts or manual intervention needed.
 
 ### 1.5 Progressive Change Control
 
-Changes flow through environment stages via branch promotion (main → dev →
-staging → production). Each stage can be validated independently. Production
-never sees a change that has not passed through every prior gate.
+The framework supports two Git workflow models. Choose the one that fits your
+team's experience and requirements:
+
+- **Trunk-based** — all hubs track `main`. Safety comes from RollingSync
+  (non-production clusters sync before production) and optional ArgoCD sync
+  windows. Recommended for teams new to Git or GitOps.
+- **Branch-per-environment** — changes flow through environment stages via
+  branch promotion (main → dev → staging → production). Each stage can be
+  validated independently. Production never sees a change that has not passed
+  through every prior gate.
+
+See [Git Workflows](docs/GIT-WORKFLOWS.md) for a full comparison, and
+[Adopting Trunk-Based](docs/ADOPTING-TRUNK-BASED.md) for the starter guide.
 
 ---
 
@@ -60,7 +70,7 @@ These are hard constraints. Violating them breaks the framework's guarantees.
 | 4 | **The `cluster.*` namespace is shared.** Every value file — from app defaults through cluster overrides — writes under the `cluster` key. This is what makes cluster metadata universally accessible to all app templates via `.Values.cluster.*`. |
 | 5 | **One ApplicationSet per app.** Each app has exactly one ApplicationSet in `hub/applicationsets/<app>.yaml` that uses the `clusters` generator. The hub app-of-apps discovers these automatically by syncing that directory. |
 | 6 | **`ignoreMissingValueFiles: true` is required.** Not every cluster belongs to every group. Missing group value files are silently skipped, which is correct behavior. |
-| 7 | **`targetRevision` controls promotion.** Each hub cluster pins to its environment branch. Promotion is a PR merge between branches, not a value change. |
+| 7 | **`targetRevision` controls what each hub sees.** In branch-per-environment mode, each hub pins to its release branch and promotion is a PR merge between branches. In trunk-based mode, all hubs pin to `main` and safety comes from RollingSync and sync windows instead of branch isolation. See [Git Workflows](docs/GIT-WORKFLOWS.md). |
 | 8 | **Secrets never go in Git.** BMC credentials, Vault tokens, TLS keys, and any sensitive material are stored in HashiCorp Vault and pulled onto clusters via External Secrets Operator. |
 | 9 | **The label aggregation script must run before merge.** Any commit that changes a `cluster.yaml` must also include the regenerated `hub/rhacm/cluster-labels/values.yaml`. CI enforces this via drift detection. |
 | 10 | **Arrays replace, maps merge.** Helm replaces arrays wholesale across value files. To accumulate array entries from multiple levels, use the `extraSilences` / `concat` pattern in the chart template — never rely on array merging. |
@@ -227,7 +237,28 @@ comply with Kubernetes label value constraints.
 
 ## 6. Change Control Rules
 
-### 6.1 Branch Model
+The framework supports two Git workflow models. All other rules in this
+section (RollingSync, hotfixes, rollback) apply to both.
+
+### 6.1 Trunk-Based Model (Recommended Starting Point)
+
+All hubs track `main`. There are no `release/*` branches.
+
+| Branch | Environments | Auto-sync | Gate |
+|--------|-------------|-----------|------|
+| `main` | All (lab, dev, staging, production) | Yes | CI passes + PR review |
+
+**Promotion:** merging a PR to `main` deploys to all environments. RollingSync
+ensures non-production clusters sync first, providing a built-in canary.
+
+**Additional safety:** configure ArgoCD sync windows to restrict when
+production clusters can sync (e.g. business hours only). See
+[Adopting Trunk-Based](docs/ADOPTING-TRUNK-BASED.md).
+
+### 6.2 Branch-Per-Environment Model
+
+Each hub pins `targetRevision` to its release branch. Changes are promoted
+by merging PRs between branches.
 
 | Branch | Environment | Auto-sync | Gate |
 |--------|-------------|-----------|------|
@@ -236,7 +267,7 @@ comply with Kubernetes label value constraints.
 | `release/staging` | Staging | Yes | CI + 1 reviewer |
 | `release/production` | Production | Yes | CI + 2 reviewers |
 
-### 6.2 Promotion Procedure
+**Promotion procedure:**
 
 1. Merge to `main` (lab validation).
 2. Create PR: `main` → `release/dev`.
@@ -245,6 +276,9 @@ comply with Kubernetes label value constraints.
 
 Each promotion is a PR. The `fleet-diff` workflow shows the rendered impact
 before merge. Never skip a stage.
+
+See [Git Workflows](docs/GIT-WORKFLOWS.md) for a detailed comparison of both
+models, including when to graduate from trunk-based to branch-per-environment.
 
 ### 6.3 Progressive Rollout (RollingSync)
 
@@ -264,9 +298,13 @@ clusters before reaching production, even within a single branch promotion.
 
 ### 6.4 Emergency Hotfixes
 
-Hotfixes branch directly from `release/production`, are merged to production
-with expedited review, and are then **cherry-picked back** to `main` to prevent
-regression on the next promotion.
+**Trunk-based:** hotfixes are regular PRs to `main` with expedited review.
+If you need to pause production syncs while investigating, disable auto-sync
+on the affected Applications via the ArgoCD UI or CLI.
+
+**Branch-per-environment:** hotfixes branch directly from `release/production`,
+are merged to production with expedited review, and are then **cherry-picked
+back** to `main` to prevent regression on the next promotion.
 
 ### 6.5 Rollback
 
@@ -425,7 +463,7 @@ bash scripts/create-app.sh my-new-app --model opt-in
 | Label key | Dot-separated prefix + slash + name | `app.enabled/cert-manager` |
 | Label value | Lowercase string, quoted if boolean | `"true"`, `production` |
 | Helm chart name | Matches directory name in `Chart.yaml` | `name: baremetal-hosts` |
-| Branch names | `release/<environment>` for env branches | `release/production` |
+| Branch names | `release/<environment>` for env branches (branch-per-env only) | `release/production` |
 
 ---
 
@@ -440,7 +478,8 @@ bash scripts/create-app.sh my-new-app --model opt-in
 | Using opt-out for a risky new feature | All clusters get it immediately | Default to opt-in for new apps |
 | Editing `hub/rhacm/cluster-labels/values.yaml` manually | Next aggregation run overwrites manual edits | File is auto-generated; edit `cluster.yaml` instead |
 | Committing secrets to the repository | Credential exposure; violates security model | Use Vault + ESO; CI should scan for secrets |
-| Skipping a promotion stage | Untested changes reach higher environments | CI gates enforce stage ordering |
+| Skipping a promotion stage (branch-per-env) | Untested changes reach higher environments | CI gates enforce stage ordering |
+| Missing sync windows (trunk-based) | Bad merge to main hits production immediately | Configure ArgoCD sync windows for production clusters |
 | Changing cascade order in template but not in `fleet-diff.sh` | Diff output does not match actual rendering | Update all five locations (see 8.4) |
 | Setting `targetRevision` to a tag instead of a branch | Promotion model breaks; hubs cannot track branch changes | Always use branch names for `targetRevision` |
 

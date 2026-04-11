@@ -35,7 +35,25 @@ spoke clusters. One pane of glass per environment.
 
 ## Change Control & Promotion
 
-Changes flow through environment stages via Git branches. Promotion is a PR merge.
+The framework supports two Git workflow models. Start with trunk-based if your
+team is new to Git or GitOps, and graduate to branch-per-environment when you
+need formal promotion gates.
+
+### Trunk-Based (Recommended Starting Point)
+
+All hubs track `main`. Merge a PR to main and every environment syncs.
+RollingSync ensures non-production clusters update first, providing a built-in
+canary. Add ArgoCD sync windows to control when production clusters sync.
+
+```
+Developer ──PR──▶ main ──▶ All Hubs ──▶ All Clusters (non-prod first, then prod)
+```
+
+See [Adopting Trunk-Based](docs/ADOPTING-TRUNK-BASED.md) for the setup guide.
+
+### Branch-Per-Environment
+
+Changes flow through four long-lived branches via promotion PRs.
 
 ```
 Developer ──push──▶ main (lab) ──PR──▶ release/dev ──PR──▶ release/staging ──PR──▶ release/production
@@ -57,8 +75,9 @@ Each hub cluster bootstraps from the same framework pinned to its release branch
 via `targetRevision`. Changes not merged to `release/production` are invisible
 to production clusters.
 
-See `pipelines/promotion/README.md` for the full procedure, emergency hotfixes,
-and rollback process.
+See [Promotion Guide](pipelines/promotion/README.md) for the full procedure,
+emergency hotfixes, and rollback process. See [Git Workflows](docs/GIT-WORKFLOWS.md)
+for a detailed comparison of both models.
 
 ## Value Resolution (Cascading Priority)
 
@@ -159,15 +178,18 @@ framework/
 │   ├── promotion/
 │   │   └── README.md                     # Change control procedure documentation
 │   └── github-actions/
-│       ├── validate-pr.yaml              # CI: lint, template, validate, diff preview
+│       ├── validate-pr.yaml              # CI: lint, template, validate, diff (branch-per-env)
+│       ├── validate-trunk-pr.yaml        # CI: lint, template, validate, diff (trunk-based)
 │       ├── fleet-diff.yaml               # CI: full fleet desired-state diff
-│       ├── promote.yaml                  # Manual: one-click promotion between environments
+│       ├── promote.yaml                  # Manual: one-click promotion (branch-per-env)
 │       ├── onboard-cluster.yaml          # Manual: automated cluster onboarding workflow
 │       └── aggregate-cluster-config.sh   # Script: aggregates cluster labels for label-sync
 ├── devspaces/
 │   ├── Containerfile                     # Custom DevSpaces image with AI tools
 │   └── devfile.yaml                      # DevSpaces workspace definition
 ├── docs/
+│   ├── GIT-WORKFLOWS.md                  # Comparison: trunk-based, branch-per-env, GitHub Flow, GitFlow
+│   ├── ADOPTING-TRUNK-BASED.md           # Trunk-based setup guide and graduation path
 │   ├── OPERATORS-GUIDE.md                # Learning path for operators
 │   ├── DEVELOPER-ENVIRONMENT.md          # Windows setup: DevSpaces, WSL, Git Bash
 │   ├── HUB-PERFORMANCE-TUNING.md        # ArgoCD scaling and tuning guide
@@ -240,15 +262,17 @@ See `automation/README.md` for full details including Jenkins/GitLab examples.
 
 ## CI/CD Pipelines
 
-| Workflow              | Trigger           | What It Does                                    |
-|-----------------------|-------------------|-------------------------------------------------|
-| **Validate PR**       | Every PR          | YAML lint, Helm lint, cluster config validation, ArgoCD diff preview |
-| **Promote**           | Manual dispatch   | Creates promotion PR between environment branches |
-| **Onboard Cluster**   | Manual dispatch   | Full cluster onboarding lifecycle                |
+| Workflow              | Trigger           | What It Does                                    | Workflow Model |
+|-----------------------|-------------------|-------------------------------------------------|----------------|
+| **Validate PR (trunk)** | PR to `main`   | YAML lint, Helm lint, cluster config, ArgoCD diff preview | Trunk-based |
+| **Validate PR**       | PR to any branch  | YAML lint, Helm lint, cluster config, ArgoCD diff (staging/prod) | Branch-per-env |
+| **Promote**           | Manual dispatch   | Creates promotion PR between environment branches | Branch-per-env |
+| **Onboard Cluster**   | Manual dispatch   | Full cluster onboarding lifecycle                | Both |
 
 Pipelines are provided as GitHub Actions workflows in `pipelines/github-actions/`.
-The Ansible playbook is CI-agnostic — see `automation/README.md` for Jenkins and
-GitLab CI examples.
+Use `validate-trunk-pr.yaml` for trunk-based or `validate-pr.yaml` for
+branch-per-environment. The Ansible playbook is CI-agnostic — see
+`automation/README.md` for Jenkins and GitLab CI examples.
 
 ## Fleet Diff — Desired State Comparison
 
@@ -280,6 +304,8 @@ manually via workflow dispatch to compare any two refs on-demand.
 |----------------------------------------------------------|-----------------------|-----------------------------------------------|
 | This README                                              | Platform engineers    | Architecture, directory structure, conventions |
 | [Guidelines](GUIDELINES.md)                              | All contributors      | Design intent, invariants, cascade contract, extension rules, pitfalls |
+| [Git Workflows](docs/GIT-WORKFLOWS.md)                   | All (esp. newcomers)  | Comparison of trunk-based, branch-per-env, GitHub Flow, GitFlow |
+| [Adopting Trunk-Based](docs/ADOPTING-TRUNK-BASED.md)     | All (esp. newcomers)  | Trunk-based setup, sync windows, graduation path |
 | [Developer Environment](docs/DEVELOPER-ENVIRONMENT.md)   | All (esp. Windows)    | DevSpaces, WSL, Git Bash setup; AI assistant configuration |
 | [Operator's Guide](docs/OPERATORS-GUIDE.md)              | Operators / sysadmins | Learning path: GitOps concepts, Git basics, YAML, day-to-day procedures, troubleshooting |
 | [Hub Performance Tuning](docs/HUB-PERFORMANCE-TUNING.md) | Platform engineers    | ArgoCD scaling, sharding, repo-server, Redis, monitoring |
@@ -302,6 +328,8 @@ manually via workflow dispatch to compare any two refs on-demand.
 ## Conventions
 
 - All repo URLs use `https://github.com/YOUR-ORG/YOUR-REPO.git` — replace globally
-- All `targetRevision` values default to `main` — each hub overrides to its release branch
+- All `targetRevision` values default to `main` — in trunk-based mode this is
+  the production value; in branch-per-environment mode each hub overrides to its
+  release branch
 - ArgoCD namespace is `openshift-gitops` (OpenShift GitOps operator default)
 - RHACM policy namespace is `open-cluster-management-global-set`
