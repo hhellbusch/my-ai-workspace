@@ -1,0 +1,170 @@
+# devfile.yaml — OpenShift DevSpaces workspace for the fleet management framework
+#
+# Start this workspace from the OpenShift DevSpaces dashboard:
+#   1. Open DevSpaces in your browser
+#   2. Click "Create Workspace"
+#   3. Enter the Git repo URL — DevSpaces auto-detects this devfile
+#
+# Or from the command line:
+#   oc devspaces create --devfile=devspaces/devfile.yaml
+#
+# What you get:
+#   - VS Code in the browser with full terminal access
+#   - All framework CLI tools pre-installed (helm, yq, oc, argocd, gh)
+#   - AI coding assistants (GitHub Copilot CLI, Claude Code)
+#   - Shell completions and convenient aliases
+#   - Direct Git access (commits, PRs, branches)
+#   - No local setup required — works from any Windows/Mac/Linux/Chromebook browser
+
+schemaVersion: 2.2.2
+metadata:
+  name: fleet-management-framework
+  displayName: Fleet Management Framework
+  description: >
+    Complete development and operations environment for the ArgoCD fleet
+    management framework. Includes all CLI tools, AI coding assistants,
+    and a pre-configured shell experience.
+  tags:
+    - OpenShift
+    - ArgoCD
+    - GitOps
+    - Fleet Management
+  version: 1.0.0
+
+components:
+  - name: fleet-tools
+    container:
+      # Use the custom image built from devspaces/Containerfile.
+      # Replace with your internal registry path after building and pushing.
+      image: registry.example.com/platform/fleet-devspaces:latest
+      memoryRequest: 512Mi
+      memoryLimit: 4Gi
+      cpuRequest: 500m
+      cpuLimit: 2000m
+      mountSources: true
+      env:
+        # Pre-configure the framework path so scripts work from any directory
+        - name: FRAMEWORK_PATH
+          value: /projects/argo-examples/framework
+        # Editor settings for YAML editing
+        - name: EDITOR
+          value: code --wait
+      endpoints:
+        - name: terminal
+          targetPort: 13131
+          exposure: internal
+      volumeMounts:
+        - name: gh-config
+          path: /home/user/.config/gh
+        - name: git-config
+          path: /home/user/.gitconfig.d
+
+  # Persistent volume for GitHub CLI auth tokens across restarts
+  - name: gh-config
+    volume:
+      size: 64Mi
+
+  # Persistent volume for git configuration
+  - name: git-config
+    volume:
+      size: 64Mi
+
+commands:
+  # ── Setup commands (run once) ───────────────────────────────────────────
+
+  - id: setup-git-identity
+    exec:
+      label: "Setup: Configure Git identity"
+      component: fleet-tools
+      commandLine: |
+        echo "Enter your full name:"
+        read -r name
+        echo "Enter your company email:"
+        read -r email
+        git config --global user.name "$name"
+        git config --global user.email "$email"
+        echo "Git identity configured: $name <$email>"
+      group:
+        kind: run
+
+  - id: setup-gh-auth
+    exec:
+      label: "Setup: Authenticate GitHub CLI"
+      component: fleet-tools
+      commandLine: gh auth login
+      group:
+        kind: run
+
+  - id: setup-copilot
+    exec:
+      label: "Setup: Install GitHub Copilot CLI"
+      component: fleet-tools
+      commandLine: |
+        gh extension install github/gh-copilot 2>/dev/null || echo "Already installed"
+        echo "Test with: gh copilot suggest 'how to check cluster monitoring retention'"
+      group:
+        kind: run
+
+  # ── Daily operations ────────────────────────────────────────────────────
+
+  - id: validate-changes
+    exec:
+      label: "Validate: Lint and template all charts"
+      component: fleet-tools
+      workingDir: ${PROJECTS_ROOT}/argo-examples/framework
+      commandLine: |
+        echo "=== Helm Lint ==="
+        for chart in apps/*/; do
+          [ -f "$chart/Chart.yaml" ] && helm lint "$chart" || true
+        done
+        echo ""
+        echo "=== Array Safety ==="
+        bash scripts/lint-array-safety.sh
+      group:
+        kind: run
+
+  - id: trace-value
+    exec:
+      label: "Debug: Trace a value through the cascade"
+      component: fleet-tools
+      workingDir: ${PROJECTS_ROOT}/argo-examples/framework
+      commandLine: |
+        echo "Enter cluster name (e.g. example-prod-east-1):"
+        read -r cluster
+        echo "Enter value path (e.g. cluster.features.monitoring.retention):"
+        read -r path
+        bash scripts/trace-value.sh "$cluster" "$path"
+      group:
+        kind: run
+
+  - id: fleet-diff
+    exec:
+      label: "Diff: Compare desired state between branches"
+      component: fleet-tools
+      workingDir: ${PROJECTS_ROOT}/argo-examples/framework
+      commandLine: |
+        echo "Enter base ref (e.g. release/production):"
+        read -r base
+        echo "Enter target ref (e.g. main):"
+        read -r target
+        bash scripts/fleet-diff.sh "$base" "$target"
+      group:
+        kind: run
+
+  - id: create-new-app
+    exec:
+      label: "Scaffold: Create a new fleet app"
+      component: fleet-tools
+      workingDir: ${PROJECTS_ROOT}/argo-examples/framework
+      commandLine: |
+        echo "Enter app name (lowercase-kebab-case):"
+        read -r name
+        echo "Model? (opt-in / opt-out):"
+        read -r model
+        bash scripts/create-app.sh "$name" --model "$model"
+      group:
+        kind: run
+
+events:
+  postStart:
+    - setup-git-identity

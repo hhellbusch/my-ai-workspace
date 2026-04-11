@@ -144,14 +144,28 @@ framework/
 │   ├── cert-manager/                     # Example: opt-in app
 │   ├── cluster-monitoring/               # Example: opt-out app (on by default)
 │   └── cluster-logging/                  # Example: opt-in app
+├── scripts/
+│   ├── README.md                          # Documentation for all CLI tools
+│   ├── fleet-diff.sh                     # Desired-state diff between Git refs
+│   ├── trace-value.sh                    # Value provenance trace through cascade
+│   ├── lint-array-safety.sh             # Array merge safety linter
+│   └── create-app.sh                    # App scaffolding generator
 ├── pipelines/
 │   ├── promotion/
 │   │   └── README.md                     # Change control procedure documentation
 │   └── github-actions/
 │       ├── validate-pr.yaml              # CI: lint, template, validate, diff preview
+│       ├── fleet-diff.yaml               # CI: full fleet desired-state diff
 │       ├── promote.yaml                  # Manual: one-click promotion between environments
 │       ├── onboard-cluster.yaml          # Manual: automated cluster onboarding workflow
 │       └── aggregate-cluster-config.sh   # Script: aggregates cluster labels for label-sync
+├── devspaces/
+│   ├── Containerfile                     # Custom DevSpaces image with AI tools
+│   └── devfile.yaml                      # DevSpaces workspace definition
+├── docs/
+│   ├── OPERATORS-GUIDE.md                # Learning path for operators
+│   ├── DEVELOPER-ENVIRONMENT.md          # Windows setup: DevSpaces, WSL, Git Bash
+│   └── HUB-PERFORMANCE-TUNING.md        # ArgoCD scaling and tuning guide
 └── automation/
     ├── README.md
     └── ansible/
@@ -256,17 +270,19 @@ manually via workflow dispatch to compare any two refs on-demand.
 
 ## Documentation
 
-| Document                                          | Audience              | Contents                                      |
-|---------------------------------------------------|-----------------------|-----------------------------------------------|
-| This README                                       | Platform engineers    | Architecture, directory structure, conventions |
-| [Guidelines](GUIDELINES.md)                       | All contributors      | Design intent, invariants, cascade contract, extension rules, pitfalls |
-| [Operator's Guide](docs/OPERATORS-GUIDE.md)       | Operators / sysadmins | Learning path: GitOps concepts, Git basics, YAML, day-to-day procedures, troubleshooting |
-| [Fleet Diff](scripts/README.md)                   | All                   | Desired-state-to-desired-state diff tool       |
-| [Promotion Guide](pipelines/promotion/README.md)  | All                   | Change control procedure, hotfix/rollback      |
-| [Clusters README](clusters/README.md)             | All                   | Cluster onboarding and label schema           |
-| [Groups README](groups/README.md)                 | All                   | Value cascade and group types                 |
-| [Apps README](apps/README.md)                     | Platform engineers    | App chart structure and opt-in/out models     |
-| [Automation README](automation/README.md)          | Platform engineers    | Ansible onboarding and CI/CD examples         |
+| Document                                                 | Audience              | Contents                                      |
+|----------------------------------------------------------|-----------------------|-----------------------------------------------|
+| This README                                              | Platform engineers    | Architecture, directory structure, conventions |
+| [Guidelines](GUIDELINES.md)                              | All contributors      | Design intent, invariants, cascade contract, extension rules, pitfalls |
+| [Developer Environment](docs/DEVELOPER-ENVIRONMENT.md)   | All (esp. Windows)    | DevSpaces, WSL, Git Bash setup; AI assistant configuration |
+| [Operator's Guide](docs/OPERATORS-GUIDE.md)              | Operators / sysadmins | Learning path: GitOps concepts, Git basics, YAML, day-to-day procedures, troubleshooting |
+| [Hub Performance Tuning](docs/HUB-PERFORMANCE-TUNING.md) | Platform engineers    | ArgoCD scaling, sharding, repo-server, Redis, monitoring |
+| [Scripts & CLI Tools](scripts/README.md)                 | All                   | fleet-diff, trace-value, lint-array-safety, create-app |
+| [Promotion Guide](pipelines/promotion/README.md)        | All                   | Change control procedure, hotfix/rollback      |
+| [Clusters README](clusters/README.md)                   | All                   | Cluster onboarding and label schema           |
+| [Groups README](groups/README.md)                        | All                   | Value cascade and group types                 |
+| [Apps README](apps/README.md)                            | Platform engineers    | App chart structure and opt-in/out models     |
+| [Automation README](automation/README.md)                | Platform engineers    | Ansible onboarding and CI/CD examples         |
 
 ## Prerequisites
 

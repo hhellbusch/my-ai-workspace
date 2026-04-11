@@ -1,243 +1,261 @@
 # ArgoCD Examples
 
-Comprehensive examples and patterns for deploying applications with ArgoCD using the App-of-Apps pattern.
+Practical examples and a production-ready framework for deploying and managing
+applications on OpenShift with ArgoCD. Content ranges from standalone reference
+examples to a comprehensive fleet management system.
 
-## 📁 Directory Structure
+> **AI Disclosure:** Parts of this repository were designed and implemented with
+> AI assistance.
+
+## What Is In This Directory
+
+This directory contains three categories of content:
+
+| Category | Path | Purpose |
+|----------|------|---------|
+| [Fleet Management Framework](#fleet-management-framework) | `framework/` | Production-ready hub-and-spoke system for managing a fleet of OpenShift clusters |
+| [Standalone Examples](#standalone-argocd-examples) | `apps/`, `charts/`, `examples/` | Reference ArgoCD Application and Helm chart examples |
+| [CI/CD & Tooling](#cicd-workflows--tooling) | `github-workflows/`, `scripts/` | Example GitHub Actions workflows and utility scripts |
+
+## Directory Structure
 
 ```
 argo-examples/
-├── README.md                        # This file
 │
-├── root-app.yaml                    # Root ArgoCD Application (default)
-├── root-app-production.yaml         # Production root app
-├── root-app-staging.yaml            # Staging root app
-├── hubs.yaml                        # Multi-cluster hub configuration
+├── framework/                             # Fleet management framework (RHACM + ArgoCD)
+│   ├── README.md                          #   Architecture, value cascade, promotion model
+│   ├── GUIDELINES.md                      #   Design invariants and extension rules
+│   ├── apps/                              #   Fleet app charts (cert-manager, monitoring, GPU, etc.)
+│   ├── clusters/                          #   Per-cluster config (identity, values, labels)
+│   ├── groups/                            #   Group value files (env, OCP version, infra)
+│   ├── hub/                               #   Hub bootstrap, ApplicationSets, RHACM resources
+│   ├── pipelines/                         #   CI/CD workflows (validate, promote, onboard)
+│   ├── automation/                        #   Ansible playbooks for onboarding
+│   ├── scripts/                           #   CLI tools (fleet-diff, trace-value, create-app)
+│   ├── devspaces/                         #   DevSpaces workspace with AI tooling
+│   └── docs/                              #   Operator guide, performance tuning, dev environment
 │
-├── docs/                            # 📚 All documentation organized by topic
-│   ├── README.md                    # Documentation guide
-│   ├── getting-started/             # Setup and quick reference guides
-│   ├── patterns/                    # Architecture and design patterns
-│   ├── workflows/                   # CI/CD and deployment workflows
-│   └── deployment/                  # Deployment strategies
+├── apps/                                  # Standalone ArgoCD Application examples
+│   ├── example-app/                       #   Simple deployment manifest
+│   ├── example-single-source.yaml         #   Traditional single-source Application
+│   └── example-multiple-sources.yaml      #   Multi-source Application (ArgoCD 2.6+)
 │
-├── github-workflows/                # 🔄 Example GitHub Actions workflows
-│   ├── README.md                    # Workflow documentation
-│   ├── SETUP.md                     # Setup instructions
-│   ├── WORKFLOW-DIAGRAM.md          # Visual workflow diagrams
-│   ├── argocd-diff-preview.yml      # PR diff preview (no cluster access)
-│   ├── argocd-live-diff.yml         # Live cluster diff (requires access)
-│   ├── deploy-argocd-apps.yml       # Deployment workflow
-│   ├── test-workflow.yml            # Test workflow example
-│   ├── test-oc-install.yml          # OpenShift CLI test
-│   ├── test-diff-locally.sh         # Local testing script
-│   └── .yamllint                    # YAML linting configuration
+├── charts/                                # Standalone Helm chart examples
+│   ├── argocd-apps/                       #   App-of-Apps chart (root app manages child apps)
+│   └── alertmanager-silences/             #   Permanent Alertmanager silences via GitOps
 │
-├── scripts/                         # 🔧 Test and utility scripts
-│   ├── test.sh                      # Quick app discovery test
-│   └── test-app-of-apps.sh         # Comprehensive Helm chart test
+├── examples/                              # Self-contained worked examples
+│   └── operators-installer/               #   Declarative OLM operator management with ArgoCD
 │
-├── charts/                          # ⎈ Helm charts
-│   └── argocd-apps/                # App-of-Apps Helm chart
-│       ├── templates/
-│       ├── values.yaml              # Default values
-│       ├── values-production.yaml   # Production configuration
-│       ├── values-staging.yaml      # Staging configuration
-│       └── values-development.yaml  # Development configuration
+├── docs/                                  # Documentation for standalone examples
+│   ├── README.md                          #   Documentation index
+│   ├── getting-started/                   #   Setup guide and quick reference
+│   ├── patterns/                          #   App-of-Apps, multi-source patterns
+│   ├── workflows/                         #   PR-based deployment, two-repo workflows
+│   └── deployment/                        #   Multi-cluster deployment, ACM rename
 │
-├── apps/                            # 📦 Application manifests
-│   ├── example-app/                # Example application
-│   └── another-app/                # Another example app
+├── github-workflows/                      # Example GitHub Actions workflows
+│   ├── README.md                          #   Workflow documentation
+│   ├── deploy-argocd-apps.yml             #   Multi-cluster deployment
+│   ├── argocd-diff-preview.yml            #   PR diff preview (no cluster access)
+│   └── argocd-live-diff.yml               #   Live cluster diff
 │
-└── infrastructure/                  # 🏗️  Infrastructure components
-    └── monitoring/                  # Monitoring stack example
+├── scripts/                               # Utility scripts for standalone examples
+│   ├── diff-app-of-apps.sh               #   Offline App-of-Apps diff tool
+│   ├── test-app-of-apps.sh               #   Helm chart validation
+│   └── rename-local-cluster.sh            #   ACM local-cluster rename
+│
+├── infrastructure/                        # Infrastructure component examples
+│   └── monitoring/prometheus.yaml         #   Prometheus configuration example
+│
+├── root-app.yaml                          # Root ArgoCD Application (App-of-Apps entry point)
+├── root-app-production.yaml               # Production variant
+├── root-app-staging.yaml                  # Staging variant
+└── hubs.yaml                              # Multi-cluster hub definition (for workflows)
 ```
 
-## 🚀 Quick Start
+---
 
-### 1. Run Tests
+## Fleet Management Framework
 
-Test the Helm chart generation:
+**Path:** [`framework/`](framework/)
+
+A complete hub-and-spoke GitOps system for managing a fleet of OpenShift clusters
+using ArgoCD, RHACM, and Ansible. This is not a tutorial — it is a production-ready
+reference architecture.
+
+### Key Features
+
+- **Hub-and-spoke:** ArgoCD runs only on the RHACM hub. No GitOps on spoke clusters.
+- **Cascading values:** 6-tier priority system (app defaults → all → env → OCP version → infra → cluster).
+- **Git-driven labels:** Cluster group memberships and app opt-in/out are managed entirely in Git.
+- **Change control:** Branch-based promotion (lab → dev → staging → production) with CI gates.
+- **Automated onboarding:** GitHub Actions + Ansible pipeline for new clusters (Vault, CMDB, DNS).
+- **Bare metal support:** BareMetalHost management, GPU operators, BMC credentials via Vault/ESO.
+- **Developer tooling:** fleet-diff, value trace, array safety linter, app scaffolding.
+- **Windows-ready:** DevSpaces workspace with AI assistants for operators on Windows.
+
+### Getting Started
 
 ```bash
-cd argo-examples
-bash scripts/test-app-of-apps.sh
+# Read the architecture overview
+cat framework/README.md
+
+# Read the design guidelines
+cat framework/GUIDELINES.md
+
+# If you are an operator new to GitOps
+cat framework/docs/OPERATORS-GUIDE.md
+
+# If you are setting up your development environment
+cat framework/docs/DEVELOPER-ENVIRONMENT.md
 ```
 
-### 2. Read Documentation
+### Framework Documentation
 
-Start with the setup guide:
+| Document | Audience |
+|----------|----------|
+| [framework/README.md](framework/README.md) | Architecture, directory structure, conventions |
+| [framework/GUIDELINES.md](framework/GUIDELINES.md) | Design invariants, cascade contract, extension rules |
+| [framework/docs/OPERATORS-GUIDE.md](framework/docs/OPERATORS-GUIDE.md) | Learning path for operators (GitOps, Git, YAML, day-to-day ops) |
+| [framework/docs/DEVELOPER-ENVIRONMENT.md](framework/docs/DEVELOPER-ENVIRONMENT.md) | DevSpaces, WSL, Git Bash setup for Windows |
+| [framework/docs/HUB-PERFORMANCE-TUNING.md](framework/docs/HUB-PERFORMANCE-TUNING.md) | ArgoCD scaling for large fleets |
+| [framework/scripts/README.md](framework/scripts/README.md) | CLI tools: fleet-diff, trace-value, lint, scaffold |
+
+---
+
+## Standalone ArgoCD Examples
+
+Reference examples for common ArgoCD patterns. These are independent of the
+fleet framework and useful for learning ArgoCD concepts or bootstrapping
+smaller deployments.
+
+### Application Examples (`apps/`)
+
+| File | Pattern | ArgoCD Version |
+|------|---------|---------------|
+| [`example-single-source.yaml`](apps/example-single-source.yaml) | Traditional single-source Application | Any |
+| [`example-multiple-sources.yaml`](apps/example-multiple-sources.yaml) | Multi-source Application (chart + values separation) | 2.6+ |
+| [`example-app/`](apps/example-app/) | Simple Deployment manifest used as a child app target | Any |
+
+### Helm Charts (`charts/`)
+
+| Chart | Purpose | Docs |
+|-------|---------|------|
+| [`argocd-apps`](charts/argocd-apps/) | App-of-Apps pattern: root app manages child apps via Helm values | [README](charts/argocd-apps/README.md) |
+| [`alertmanager-silences`](charts/alertmanager-silences/) | Manage permanent Alertmanager silences as code | [README](charts/alertmanager-silences/README.md) |
+
+### Worked Examples (`examples/`)
+
+| Example | Purpose | Docs |
+|---------|---------|------|
+| [`operators-installer`](examples/operators-installer/) | Declarative OLM operator management with pinned CSV versions | [README](examples/operators-installer/README.md) |
+
+### Root Applications
+
+These demonstrate how to bootstrap the App-of-Apps pattern:
 
 ```bash
-# View getting started documentation
-cat docs/getting-started/SETUP-GUIDE.md
+# Default root app (points to main branch)
+kubectl apply -f root-app.yaml
 
-# See all available documentation
-ls -R docs/
-```
-
-### 3. Deploy (when ready)
-
-```bash
-# Deploy the production root app
+# Environment-specific variants
 kubectl apply -f root-app-production.yaml
+kubectl apply -f root-app-staging.yaml
 ```
 
-## 📚 Documentation
+---
 
-All documentation is organized in the [`docs/`](docs/) directory:
+## CI/CD Workflows & Tooling
 
-- **[Getting Started](docs/getting-started/)** - Setup guides and quick reference
-- **[Patterns](docs/patterns/)** - App-of-Apps pattern and architecture
-- **[Workflows](docs/workflows/)** - CI/CD and PR-based deployments
-- **[Deployment](docs/deployment/)** - Deployment strategies and examples
+### GitHub Actions Workflows (`github-workflows/`)
 
-See [docs/README.md](docs/README.md) for a complete documentation guide.
+Production-ready workflow examples to copy into your own repositories:
 
-## 🔄 GitHub Workflows
+| Workflow | Purpose | Cluster Access Required |
+|----------|---------|------------------------|
+| [`deploy-argocd-apps.yml`](github-workflows/deploy-argocd-apps.yml) | Multi-cluster deployment with dry-run, validation, health checks | Yes |
+| [`argocd-diff-preview.yml`](github-workflows/argocd-diff-preview.yml) | PR diff preview via `helm template` | No |
+| [`argocd-live-diff.yml`](github-workflows/argocd-live-diff.yml) | Diff against live cluster via `argocd app diff` | Yes |
 
-The [`github-workflows/`](github-workflows/) directory contains production-ready GitHub Actions workflows for ArgoCD automation:
+See [`github-workflows/README.md`](github-workflows/README.md) for setup
+instructions and workflow diagrams.
 
-### Primary Workflow
-- **[deploy-argocd-apps.yml](github-workflows/deploy-argocd-apps.yml)** - **Multi-cluster deployment with advanced features**
-  - ✅ Automatic dry-run validation on pull requests
-  - ✅ Server-side validation against live clusters
-  - ✅ Optional ArgoCD CLI diff analysis
-  - ✅ Health check monitoring
-  - ✅ Operation timeouts and error handling
-  - ✅ Hybrid dry-run mode (PR/manual/per-cluster)
-  - ✅ Preview artifact generation
+### Utility Scripts (`scripts/`)
 
-### Additional Example Workflows
-- **[argocd-diff-preview.yml](github-workflows/argocd-diff-preview.yml)** - Generate Helm template diffs on PRs (no cluster access needed)
-- **[argocd-live-diff.yml](github-workflows/argocd-live-diff.yml)** - Show diffs against live cluster (requires ArgoCD access)
-
-**Note:** These are **production-ready examples** to copy into your own repositories. They are not active in this repository.
-
-See [github-workflows/README.md](github-workflows/README.md) for workflow documentation and [docs/deployment/multi-cluster-deployment.md](docs/deployment/multi-cluster-deployment.md) for complete setup guide.
-
-## 🎯 Key Concepts
-
-### App-of-Apps Pattern
-
-A root ArgoCD Application that manages multiple child applications:
-- **Root App** → Always points to `main` branch
-- **Child Apps** → Each can deploy from different tags/branches
-- **Version Control** → All versions defined in Helm values
-
-### Multi-Environment Support
-
-Different environments use different Helm value files:
-- **Production** → Stable tags (`v1.2.3`)
-- **Staging** → Release candidates (`v1.3.0-rc1`)
-- **Development** → Latest branches (`develop`, `feature/xyz`)
-
-## ✨ Advanced Features
-
-### Dry-Run and Validation
-- **Automatic PR validation** - Every pull request runs in dry-run mode
-- **Manual dry-run** - Trigger via workflow_dispatch for testing
-- **Per-cluster dry-run** - Configure production for preview-only
-- **Server-side validation** - Test against actual cluster constraints
-- **ArgoCD diff analysis** - See changes from ArgoCD's perspective
-- **Preview artifacts** - Download generated manifests for review
-
-### Safety and Reliability
-- **Operation timeouts** - Prevents hung operations (60s login, 120s apply)
-- **Health checks** - Monitors application sync status (warning mode)
-- **Error handling** - Automatic cleanup on failure
-- **Concurrency control** - Prevents conflicting deployments
-- **Job timeout** - 30-minute maximum runtime
-
-### Monitoring and Observability
-- **Clear logging** - Shows deployment progress and status
-- **Artifact upload** - Saves previews for 30 days
-- **Health status** - Tracks application sync and health
-- **Diff analysis** - Multiple perspectives (Helm, Kubernetes, ArgoCD)
-
-## 🔧 Available Scripts
-
-Run from the `argo-examples` directory:
+| Script | Purpose |
+|--------|---------|
+| [`diff-app-of-apps.sh`](scripts/diff-app-of-apps.sh) | Offline diff for App-of-Apps (supports multi-source) |
+| [`test-app-of-apps.sh`](scripts/test-app-of-apps.sh) | Validate the argocd-apps Helm chart across all environments |
+| [`test.sh`](scripts/test.sh) | Quick app discovery sanity check |
+| [`rename-local-cluster.sh`](scripts/rename-local-cluster.sh) | Rename ACM `local-cluster` to a real cluster name |
 
 ```bash
-# Quick app discovery test
-bash scripts/test.sh
-
-# Comprehensive Helm chart testing (all environments)
+# Test the App-of-Apps chart
 bash scripts/test-app-of-apps.sh
 
-# Rename ACM local-cluster to actual cluster name (requires OpenShift ACM)
-bash scripts/rename-local-cluster.sh
-# OR with custom name:
-bash scripts/rename-local-cluster.sh my-custom-cluster-name
+# Diff App-of-Apps between branches
+bash scripts/diff-app-of-apps.sh main HEAD
 ```
 
-## 📖 Common Tasks
+---
 
-### View Generated Manifests
+## Documentation (`docs/`)
 
-```bash
-cd charts/argocd-apps
-helm template argocd-apps . -f values-production.yaml
+The `docs/` directory covers the standalone examples (not the fleet framework,
+which has its own docs under `framework/docs/`).
+
+| Section | Contents |
+|---------|----------|
+| [Getting Started](docs/getting-started/) | Setup guide, quick reference |
+| [Patterns](docs/patterns/) | App-of-Apps pattern, multi-source pattern |
+| [Workflows](docs/workflows/) | PR-based deployment, two-repo tag workflow |
+| [Deployment](docs/deployment/) | Multi-cluster deployment, ACM rename, GitHub Actions integration |
+| [Validation Report](docs/VALIDATION-REPORT.md) | Pipeline validation assessment |
+| [Multi-Source Changelog](docs/CHANGELOG-MULTIPLE-SOURCES.md) | Changelog for multi-source support |
+
+See [`docs/README.md`](docs/README.md) for the full reading order.
+
+---
+
+## How These Pieces Relate
+
+```
+                    ┌──────────────────────────────────┐
+                    │      This Directory              │
+                    │      (argo-examples/)             │
+                    └──────────┬───────────────────────┘
+                               │
+            ┌──────────────────┼──────────────────────┐
+            │                  │                       │
+   ┌────────▼────────┐  ┌─────▼──────────┐  ┌────────▼────────┐
+   │  Standalone      │  │  Fleet          │  │  CI/CD           │
+   │  Examples        │  │  Framework      │  │  Workflows       │
+   │                  │  │                 │  │                  │
+   │  "I want to      │  │  "I want to     │  │  "I want GitHub  │
+   │   learn ArgoCD   │  │   manage 100+   │  │   Actions for    │
+   │   patterns"      │  │   clusters"     │  │   ArgoCD"        │
+   │                  │  │                 │  │                  │
+   │  apps/           │  │  framework/     │  │  github-workflows│
+   │  charts/         │  │                 │  │  scripts/        │
+   │  examples/       │  │                 │  │                  │
+   │  root-app*.yaml  │  │                 │  │                  │
+   └──────────────────┘  └─────────────────┘  └──────────────────┘
 ```
 
-### Test Locally
+- **Standalone examples** are reference implementations of individual ArgoCD
+  concepts. Start here to learn the building blocks.
+- **The fleet framework** is an opinionated, production-ready system that
+  composes those concepts into a fleet management architecture. Start here if
+  you are managing multiple clusters.
+- **CI/CD workflows** are portable GitHub Actions examples that work with
+  either approach.
 
-```bash
-# Generate and validate
-helm template argocd-apps charts/argocd-apps/ -f charts/argocd-apps/values.yaml
+---
 
-# Dry-run apply
-helm template argocd-apps charts/argocd-apps/ -f charts/argocd-apps/values.yaml \
-  | kubectl apply --dry-run=client -f -
-```
-
-### Update Application Version
-
-1. Edit the appropriate values file:
-   ```bash
-   vim charts/argocd-apps/values-production.yaml
-   ```
-
-2. Change the `targetRevision` for your app:
-   ```yaml
-   applications:
-     - name: example-app
-       targetRevision: v1.3.0  # Updated from v1.2.3
-   ```
-
-3. Commit and push to main branch
-
-4. ArgoCD will sync automatically (if auto-sync is enabled)
-
-## 🏗️ Project Structure Philosophy
-
-- **Root Level** → Operational files (root apps, manifests)
-- **docs/** → All documentation, organized by topic
-- **scripts/** → Utilities and test scripts
-- **charts/** → Helm chart definitions
-- **apps/** → Application manifests
-- **infrastructure/** → Infrastructure component manifests
-
-## 🔗 Related Resources
+## Related Resources
 
 - [ArgoCD Documentation](https://argo-cd.readthedocs.io/)
 - [App of Apps Pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/)
 - [Helm Documentation](https://helm.sh/docs/)
-
-## 📝 Next Steps
-
-1. Read the [Setup Guide](docs/getting-started/SETUP-GUIDE.md)
-2. Understand the [App-of-Apps Pattern](docs/patterns/APP-OF-APPS-PATTERN.md)
-3. Review the [Quick Reference](docs/getting-started/QUICK-REFERENCE.md)
-4. Explore [Deployment Strategies](docs/deployment/)
-5. **(OpenShift ACM Users)** [Rename local-cluster](docs/deployment/acm-rename-local-cluster.md)
-6. Set up your own applications following the examples
-
-## 💡 Tips
-
-- Keep the root app always pointing to `main` branch
-- Use semantic versioning for production deployments
-- Test changes in development/staging before production
-- Document any custom modifications in the `docs/` directory
-- Run tests before committing changes
-
+- [RHACM Documentation](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/)

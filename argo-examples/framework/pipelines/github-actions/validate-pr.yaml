@@ -73,6 +73,26 @@ jobs:
               || echo "FAIL: $chart_name template rendering failed"
           done
 
+  # ── Array Safety Lint ────────────────────────────────────────────────────
+  array-safety-lint:
+    name: Array Safety Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yq
+        run: |
+          wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          chmod +x /usr/local/bin/yq
+
+      - name: Check array merge safety
+        run: |
+          bash ${{ env.FRAMEWORK_PATH }}/scripts/lint-array-safety.sh --ci
+          if [ $? -ne 0 ]; then
+            echo "::warning::Array safety violations found. Arrays in values.yaml may be silently overwritten across cascade layers."
+            echo "Run scripts/lint-array-safety.sh --fix-suggestions for remediation steps."
+          fi
+
   # ── Cluster Config Validation ────────────────────────────────────────────
   cluster-config-validate:
     name: Validate Cluster Configs

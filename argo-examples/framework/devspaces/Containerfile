@@ -1,0 +1,104 @@
+# Fleet Management Framework — DevSpaces Tooling Image
+#
+# A purpose-built container for OpenShift DevSpaces that includes every CLI
+# tool needed to operate the fleet management framework, plus AI coding
+# assistants for operators who want help writing YAML and debugging issues.
+#
+# Build:
+#   podman build -t fleet-devspaces:latest -f devspaces/Containerfile .
+#
+# Push to internal registry:
+#   podman tag fleet-devspaces:latest registry.example.com/platform/fleet-devspaces:latest
+#   podman push registry.example.com/platform/fleet-devspaces:latest
+
+FROM registry.redhat.io/devspaces/udi-rhel8:latest
+
+USER 0
+
+# ── Core framework tools ──────────────────────────────────────────────────
+
+# Helm
+ARG HELM_VERSION=3.14.4
+RUN curl -sSL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz \
+    | tar -xz -C /usr/local/bin --strip-components=1 linux-amd64/helm \
+    && chmod +x /usr/local/bin/helm
+
+# yq
+ARG YQ_VERSION=4.43.1
+RUN curl -sSL -o /usr/local/bin/yq \
+    https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 \
+    && chmod +x /usr/local/bin/yq
+
+# GitHub CLI (gh)
+ARG GH_VERSION=2.49.0
+RUN curl -sSL https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz \
+    | tar -xz -C /usr/local/bin --strip-components=2 gh_${GH_VERSION}_linux_amd64/bin/gh \
+    && chmod +x /usr/local/bin/gh
+
+# yamllint
+RUN pip3 install --no-cache-dir yamllint
+
+# colordiff (colorized diffs)
+RUN dnf install -y colordiff && dnf clean all
+
+# shellcheck (for linting framework scripts)
+ARG SHELLCHECK_VERSION=0.10.0
+RUN curl -sSL https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz \
+    | tar -xJ -C /usr/local/bin --strip-components=1 shellcheck-v${SHELLCHECK_VERSION}/shellcheck \
+    && chmod +x /usr/local/bin/shellcheck
+
+# ── OpenShift / Kubernetes tools ──────────────────────────────────────────
+
+# oc CLI (latest stable)
+RUN curl -sSL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz \
+    | tar -xz -C /usr/local/bin oc kubectl \
+    && chmod +x /usr/local/bin/oc /usr/local/bin/kubectl
+
+# ArgoCD CLI
+RUN curl -sSL -o /usr/local/bin/argocd \
+    https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 \
+    && chmod +x /usr/local/bin/argocd
+
+# ── AI coding assistants ─────────────────────────────────────────────────
+# These are optional — operators can use whichever they prefer.
+# Authentication is handled at runtime via environment variables or
+# interactive login.
+
+# GitHub Copilot CLI (via gh extension)
+# Operators authenticate with: gh auth login && gh extension install github/gh-copilot
+# Pre-install the extension scaffold so first-run is faster
+RUN gh extension install github/gh-copilot 2>/dev/null || true
+
+# Claude Code (Anthropic CLI)
+# Installed via npm — operators authenticate with: claude auth login
+RUN npm install -g @anthropic-ai/claude-code 2>/dev/null || true
+
+# ── Shell experience ─────────────────────────────────────────────────────
+
+# bash-completion for helm, oc, kubectl, gh
+RUN helm completion bash > /etc/bash_completion.d/helm \
+    && oc completion bash > /etc/bash_completion.d/oc \
+    && kubectl completion bash > /etc/bash_completion.d/kubectl \
+    && gh completion -s bash > /etc/bash_completion.d/gh
+
+# Custom prompt showing git branch and cluster context
+RUN cat >> /etc/skel/.bashrc <<'BASHRC'
+
+# Fleet framework shell customization
+parse_git_branch() {
+  git branch 2>/dev/null | sed -n 's/* //p'
+}
+export PS1='\[\033[01;32m\]\u\[\033[00m\]:\[\033[01;34m\]\w\[\033[33m\] ($(parse_git_branch))\[\033[00m\]\$ '
+
+# Aliases for common framework operations
+alias fleet-diff='bash scripts/fleet-diff.sh'
+alias trace-value='bash scripts/trace-value.sh'
+alias lint-arrays='bash scripts/lint-array-safety.sh'
+alias create-app='bash scripts/create-app.sh'
+
+# AI assistant shortcuts
+alias ask-copilot='gh copilot suggest'
+alias explain-copilot='gh copilot explain'
+BASHRC
+
+USER 1001

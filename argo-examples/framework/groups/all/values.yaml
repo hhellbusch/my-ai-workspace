@@ -37,6 +37,9 @@ cluster:
         enabled: false
         strategy: single
 
+    testApp:
+      enabled: false
+
   # ── Default storage ───────────────────────────────────────────────────────
   storage:
     defaultStorageClass: ""   # must be set by cluster or group

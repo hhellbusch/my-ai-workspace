@@ -216,7 +216,33 @@ every file, forever, with zero effort after the initial setup.
 
 ### 2.2 Setup and First Steps
 
-**First-time setup** (do this once):
+#### Choosing Your Work Environment
+
+Most operators in our enterprise work on Windows. You have three options for
+getting a terminal where Git and the framework tools work. See the
+**[Developer Environment Setup Guide](DEVELOPER-ENVIRONMENT.md)** for full
+details on each path.
+
+| Option | Setup Effort | Best For |
+|--------|-------------|----------|
+| **OpenShift DevSpaces** (recommended) | None — browser only | Day-to-day operations, learning, on-call |
+| **WSL** (Windows Subsystem for Linux) | One-time IT enablement | Offline work, full Linux experience |
+| **Git Bash** (stopgap) | Installer only | Basic Git while waiting for WSL |
+
+**If you are using DevSpaces**, your workspace is already set up — skip
+ahead to the "First-time setup" commands below. Everything runs in the
+browser terminal.
+
+**If you are using WSL**, open your WSL terminal (search for "Ubuntu" in the
+Start menu). Follow the tool installation steps in the
+[Developer Environment Setup Guide](DEVELOPER-ENVIRONMENT.md#path-2-wsl-windows-subsystem-for-linux)
+first, then return here.
+
+**If you are using Git Bash**, open Git Bash from the Start menu.
+
+#### First-Time Git Setup
+
+Regardless of which environment you chose, run these once to configure Git:
 
 ```bash
 # Tell Git who you are (use your real name and company email)
@@ -239,6 +265,23 @@ git status
 # Show recent changes by others
 git log --oneline -10
 ```
+
+#### AI Assistants (Optional)
+
+The DevSpaces workspace includes AI coding assistants that can help you write
+YAML and understand the framework. These are completely optional but highly
+recommended for operators who are new to YAML and Git.
+
+```bash
+# Ask GitHub Copilot for help with a task
+gh copilot suggest "how to enable cert-manager on a cluster"
+
+# Ask it to explain a command
+gh copilot explain "yq '.cluster.groups.env' clusters/example-prod-east-1/cluster.yaml"
+```
+
+See the [Developer Environment Guide](DEVELOPER-ENVIRONMENT.md#using-the-ai-assistants)
+for setup instructions and more examples.
 
 ### 2.3 The Daily Git Workflow
 
@@ -1211,7 +1254,16 @@ oc get applications -n openshift-gitops -l app=<app-name>
 
 ### 5.5 Values Aren't What I Expected
 
-When a value is not what you expect, trace the cascade:
+When a value is not what you expect, use the trace tool:
+
+```bash
+# See exactly which file sets the value for a specific cluster
+bash scripts/trace-value.sh <cluster-name> cluster.features.monitoring.retention
+```
+
+This shows every layer of the cascade and highlights which file "wins."
+
+If you need to see the full rendered output instead:
 
 ```bash
 # Template the chart with all value files in cascade order to see the result
@@ -1225,6 +1277,12 @@ helm template <app-name> apps/<app-name>/ \
 
 This shows you the final rendered YAML. Search for the value you are
 investigating to see what it resolved to.
+
+**Tip:** If you have an AI assistant available, ask it to help:
+
+```bash
+gh copilot suggest "why is monitoring retention 7d on cluster prod-east-1 when I set it to 30d"
+```
 
 **Remember:** For map values (key-value pairs), Helm deep-merges — a deeper
 file's keys override shallower ones. For lists (arrays of items like workers),

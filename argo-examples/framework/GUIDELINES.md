@@ -279,6 +279,15 @@ the Vault auth role and policy per cluster.
 
 ### 8.1 Adding a New App
 
+**Preferred:** Use the scaffolding tool which handles all of the below
+automatically:
+
+```bash
+scripts/create-app.sh my-new-app --model opt-in
+```
+
+**Manual process** (if not using the scaffolding tool):
+
 1. Create `apps/<app-name>/` with `Chart.yaml`, `values.yaml`,
    `applicationset.yaml`, and `templates/`.
 2. Add a `cluster.features.<appName>.enabled: false` default in
@@ -316,6 +325,8 @@ groups), you must update **all three** of these locations:
 1. `hub/applicationsets/per-app-template.yaml` (reference template)
 2. Every `apps/<app>/applicationset.yaml` (each app's live ApplicationSet)
 3. `scripts/fleet-diff.sh` (the `render_app_cluster()` function)
+4. `scripts/trace-value.sh` (the cascade layer list)
+5. `scripts/create-app.sh` (the generated ApplicationSet `valueFiles`)
 
 ---
 
@@ -328,6 +339,7 @@ groups), you must update **all three** of these locations:
 | YAML syntax | `yamllint` | All YAML files are well-formed |
 | Helm lint | `helm lint` | All charts pass linting |
 | Helm template | `helm template` | All charts render without errors |
+| Array safety | `lint-array-safety.sh` | Arrays in values.yaml have extra*/concat guards |
 | Cluster config | `yq` + custom | `cluster.name` matches directory, required fields present, labels consistent |
 | Label drift | `aggregate-cluster-config.sh` + `diff` | Committed `cluster-labels/values.yaml` matches regenerated output |
 | Fleet diff | `fleet-diff.sh` | Rendered desired-state comparison posted as PR comment |
@@ -338,6 +350,9 @@ groups), you must update **all three** of these locations:
 # Lint a chart
 helm lint apps/<app-name>/
 
+# Lint all charts for array safety
+bash scripts/lint-array-safety.sh
+
 # Template a chart with a cluster's full cascade
 helm template <app-name> apps/<app-name>/ \
   --values apps/<app-name>/values.yaml \
@@ -345,12 +360,18 @@ helm template <app-name> apps/<app-name>/ \
   --values groups/env-production/values.yaml \
   --values clusters/example-prod-east-1/values.yaml
 
+# Trace where a specific value comes from
+bash scripts/trace-value.sh example-prod-east-1 cluster.features.monitoring.retention
+
 # Check label aggregation drift
 bash pipelines/github-actions/aggregate-cluster-config.sh argo-examples/framework
 diff hub/rhacm/cluster-labels/values.yaml /tmp/aggregated-output.yaml
 
 # Full fleet diff between branches
 bash scripts/fleet-diff.sh release/production main
+
+# Scaffold a new app
+bash scripts/create-app.sh my-new-app --model opt-in
 ```
 
 ### 9.3 What to Check After a Change
@@ -430,8 +451,24 @@ bash scripts/fleet-diff.sh release/production main
 | `git` | Version control |
 | `helm` | Chart linting, rendering, local testing |
 | `yq` | YAML processing, aggregation script |
+| `gh` | GitHub CLI — PRs, Copilot CLI |
 | `ansible` | Running onboarding playbooks locally |
 | `colordiff` (optional) | Colorized diff output |
+
+### 12.4 Developer Environment
+
+Most operators work on Windows. Three paths are available:
+
+| Path | Setup | When to Use |
+|------|-------|-------------|
+| **OpenShift DevSpaces** | Zero (browser) | Day-to-day operations, on-call, learning |
+| **WSL** | One-time IT enablement | Offline work, full Linux, complex debugging |
+| **Git Bash** | Installer only | Basic Git while waiting for WSL |
+
+A custom DevSpaces container image (`devspaces/Containerfile`) bundles all
+framework tools and AI coding assistants (GitHub Copilot CLI, Claude Code).
+See [Developer Environment Guide](docs/DEVELOPER-ENVIRONMENT.md) for setup
+instructions.
 
 ---
 
