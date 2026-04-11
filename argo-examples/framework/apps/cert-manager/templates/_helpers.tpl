@@ -17,7 +17,7 @@ Returns the cluster name from cluster values.
 Falls back to "unknown" if not set (prevents empty label values).
 */}}
 {{- define "cert-manager.clusterName" -}}
-{{- .Values.cluster.name | default "unknown" }}
+{{- include "fleet-library.clusterName" . }}
 {{- end }}
 
 {{/*
@@ -42,9 +42,7 @@ This is equivalent to mustMergeOverwrite($base, $override) — override wins.
 Helm's mustMergeOverwrite modifies the first argument in place and returns it.
 */}}
 {{- define "fleet.mergeOverwrite" -}}
-{{- $base := index . 0 }}
-{{- $override := index . 1 }}
-{{- mustMergeOverwrite $base $override | toYaml }}
+{{- include "fleet-library.mergeOverwrite" . }}
 {{- end }}
 
 {{/*
@@ -74,12 +72,5 @@ Common labels applied to all resources in this chart.
 Reads from cluster.commonLabels (merged across group and cluster value files).
 */}}
 {{- define "cert-manager.labels" -}}
-app.kubernetes.io/name: cert-manager
-app.kubernetes.io/instance: {{ include "cert-manager.clusterName" . }}
-app.kubernetes.io/managed-by: argocd
-fleet.cluster: {{ include "cert-manager.clusterName" . }}
-fleet.env: {{ .Values.cluster.environment | default "unknown" }}
-{{- with .Values.cluster.commonLabels }}
-{{ toYaml . }}
-{{- end }}
+{{- include "fleet-library.labels" . }}
 {{- end }}

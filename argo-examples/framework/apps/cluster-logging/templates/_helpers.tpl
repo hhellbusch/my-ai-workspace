@@ -3,18 +3,11 @@ _helpers.tpl — cluster-logging
 */}}
 
 {{- define "cluster-logging.clusterName" -}}
-{{- .Values.cluster.name | default "unknown" }}
+{{- include "fleet-library.clusterName" . }}
 {{- end }}
 
 {{- define "cluster-logging.labels" -}}
-app.kubernetes.io/name: cluster-logging
-app.kubernetes.io/instance: {{ include "cluster-logging.clusterName" . }}
-app.kubernetes.io/managed-by: argocd
-fleet.cluster: {{ include "cluster-logging.clusterName" . }}
-fleet.env: {{ .Values.cluster.environment | default "unknown" }}
-{{- with .Values.cluster.commonLabels }}
-{{ toYaml . }}
-{{- end }}
+{{- include "fleet-library.labels" . }}
 {{- end }}
 
 {{/*
@@ -30,5 +23,5 @@ resolvedStorageClass — cluster storage class with component fallback.
 resolvedRetentionDays — logging retention resolved from cascade.
 */}}
 {{- define "cluster-logging.retentionDays" -}}
-{{- .Values.cluster.features.logging.retentionDays | default .Values.cluster.features.logging.retentionDays | default 7 }}
+{{- .Values.cluster.features.logging.retentionDays | default 7 }}
 {{- end }}

@@ -23,6 +23,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FRAMEWORK_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 APPS_DIR="$FRAMEWORK_DIR/apps"
+APPSETS_DIR="$FRAMEWORK_DIR/hub/applicationsets"
 GROUPS_ALL="$FRAMEWORK_DIR/groups/all/values.yaml"
 
 # ─── Defaults ─────────────────────────────────────────────────────────────
@@ -140,6 +141,10 @@ keywords:
 maintainers:
   - name: Platform Team
     email: platform-team@example.com
+dependencies:
+  - name: fleet-library
+    version: "1.0.0"
+    repository: "file://../_library"
 EOF
 }
 
@@ -168,42 +173,17 @@ EOF
 gen_helpers_tpl() {
   cat <<'HELPERSEOF'
 {{/*
-APPNAME_HELPERS_TPL
+APPNAME — app-specific helpers.
+Common helpers (clusterName, labels, mergeOverwrite) come from the
+fleet-library dependency. These aliases maintain backward compatibility.
 */}}
 
-{{/*
-Returns the cluster name from cluster values.
-*/}}
 {{- define "APPNAME.clusterName" -}}
-{{- .Values.cluster.name | default "unknown" }}
+{{- include "fleet-library.clusterName" . }}
 {{- end }}
 
-{{/*
-Common labels applied to all resources in this chart.
-*/}}
 {{- define "APPNAME.labels" -}}
-app.kubernetes.io/name: APPNAME
-app.kubernetes.io/instance: {{ include "APPNAME.clusterName" . }}
-app.kubernetes.io/managed-by: argocd
-fleet.cluster: {{ include "APPNAME.clusterName" . }}
-fleet.env: {{ .Values.cluster.environment | default "unknown" }}
-{{- with .Values.cluster.commonLabels }}
-{{ toYaml . }}
-{{- end }}
-{{- end }}
-
-{{/*
-mustMergeOverwrite helper — explicit map merge where the second map wins.
-
-Usage:
-  {{- $base := dict "key1" "val1" }}
-  {{- $override := dict "key1" "new-val" "key2" "val2" }}
-  {{- $merged := include "fleet.mergeOverwrite" (list $base $override) | fromYaml }}
-*/}}
-{{- define "fleet.mergeOverwrite" -}}
-{{- $base := index . 0 }}
-{{- $override := index . 1 }}
-{{- mustMergeOverwrite $base $override | toYaml }}
+{{- include "fleet-library.labels" . }}
 {{- end }}
 HELPERSEOF
 }
@@ -247,12 +227,14 @@ gen_applicationset_yaml_optin() {
 # Clusters must have label: app.enabled/$APP_NAME: "true"
 #
 # Value cascade (lowest → highest priority):
-#   1. apps/$APP_NAME/values.yaml       (app defaults)
-#   2. groups/all/values.yaml           (fleet-wide baseline)
-#   3. groups/env-<env>/values.yaml     (environment group)
-#   4. groups/ocp-<version>/values.yaml (OCP version group)
+#   1. apps/$APP_NAME/values.yaml         (app defaults)
+#   2. groups/all/values.yaml             (fleet-wide baseline)
+#   3. groups/env-<env>/values.yaml       (environment group)
+#   4. groups/ocp-<version>/values.yaml   (OCP version group)
+#   5. groups/infra-<type>/values.yaml    (infrastructure group, optional)
 #   5. groups/region-<region>/values.yaml (region group, optional)
-#   6. clusters/<name>/values.yaml      (cluster-specific, HIGHEST)
+#   5. groups/<custom>/values.yaml        (custom group, optional)
+#   6. clusters/<name>/values.yaml        (cluster-specific, HIGHEST)
 #
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -263,6 +245,24 @@ metadata:
     component: fleet-management
     app: $APP_NAME
 spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+
+  strategy:
+    type: RollingSync
+    rollingSync:
+      steps:
+        - matchExpressions:
+            - key: group.env
+              operator: In
+              values:
+                - non-production
+        - matchExpressions:
+            - key: group.env
+              operator: In
+              values:
+                - production
+
   generators:
     - clusters:
         selector:
@@ -337,12 +337,14 @@ gen_applicationset_yaml_optout() {
 # Deploys to all clusters UNLESS label: app.disabled/$APP_NAME: "true"
 #
 # Value cascade (lowest → highest priority):
-#   1. apps/$APP_NAME/values.yaml       (app defaults)
-#   2. groups/all/values.yaml           (fleet-wide baseline)
-#   3. groups/env-<env>/values.yaml     (environment group)
-#   4. groups/ocp-<version>/values.yaml (OCP version group)
+#   1. apps/$APP_NAME/values.yaml         (app defaults)
+#   2. groups/all/values.yaml             (fleet-wide baseline)
+#   3. groups/env-<env>/values.yaml       (environment group)
+#   4. groups/ocp-<version>/values.yaml   (OCP version group)
+#   5. groups/infra-<type>/values.yaml    (infrastructure group, optional)
 #   5. groups/region-<region>/values.yaml (region group, optional)
-#   6. clusters/<name>/values.yaml      (cluster-specific, HIGHEST)
+#   5. groups/<custom>/values.yaml        (custom group, optional)
+#   6. clusters/<name>/values.yaml        (cluster-specific, HIGHEST)
 #
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -353,6 +355,24 @@ metadata:
     component: fleet-management
     app: $APP_NAME
 spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+
+  strategy:
+    type: RollingSync
+    rollingSync:
+      steps:
+        - matchExpressions:
+            - key: group.env
+              operator: In
+              values:
+                - non-production
+        - matchExpressions:
+            - key: group.env
+              operator: In
+              values:
+                - production
+
   generators:
     - clusters:
         selector:
@@ -457,11 +477,11 @@ write_file "$APP_DIR/templates/_helpers.tpl" "$helpers_content"
 template_content=$(gen_template_yaml | sed "s/APPNAME/$APP_NAME/g" | sed "s/FEATUREKEY/$FEATURE_KEY/g")
 write_file "$APP_DIR/templates/$APP_NAME.yaml" "$template_content"
 
-# ApplicationSet
+# ApplicationSet (lives in hub/applicationsets/, not in the app directory)
 if [[ "$MODEL" == "opt-in" ]]; then
-  write_file "$APP_DIR/applicationset.yaml" "$(gen_applicationset_yaml_optin)"
+  write_file "$APPSETS_DIR/$APP_NAME.yaml" "$(gen_applicationset_yaml_optin)"
 else
-  write_file "$APP_DIR/applicationset.yaml" "$(gen_applicationset_yaml_optout)"
+  write_file "$APPSETS_DIR/$APP_NAME.yaml" "$(gen_applicationset_yaml_optout)"
 fi
 
 # ─── Update groups/all/values.yaml with feature flag ─────────────────────
@@ -516,4 +536,8 @@ else
 fi
 echo "  4. Run the aggregation script and commit"
 echo "  5. Verify: helm lint apps/$APP_NAME/"
+echo ""
+echo "Files created:"
+echo "  apps/$APP_NAME/                          (Helm chart)"
+echo "  hub/applicationsets/$APP_NAME.yaml        (ApplicationSet)"
 echo ""

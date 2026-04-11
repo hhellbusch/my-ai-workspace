@@ -1,0 +1,94 @@
+---
+# fleet-health-prometheusrule.yaml
+#
+# PrometheusRule for fleet-wide ArgoCD health monitoring.
+# Deploy this to the hub cluster's openshift-gitops namespace.
+#
+# These alerts fire when fleet-managed Applications remain out of sync
+# or degraded beyond acceptable thresholds, indicating either a failed
+# promotion, infrastructure issue, or configuration drift.
+#
+# AI Disclosure: This file was created with AI assistance.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: fleet-health-alerts
+  namespace: openshift-gitops
+  labels:
+    component: fleet-management
+    app: fleet-health
+spec:
+  groups:
+    - name: fleet-sync-health
+      interval: 60s
+      rules:
+        - alert: FleetApplicationOutOfSync
+          expr: |
+            count(argocd_app_info{namespace="openshift-gitops", sync_status="OutOfSync"}) > 0
+          for: 30m
+          labels:
+            severity: warning
+            fleet_component: argocd
+          annotations:
+            summary: "{{ $value }} fleet Application(s) out of sync for >30 minutes"
+            description: >
+              One or more ArgoCD Applications managed by the fleet framework
+              have been OutOfSync for more than 30 minutes. This may indicate
+              a failed sync, configuration drift, or a promotion issue.
+            runbook_url: "https://github.com/YOUR-ORG/YOUR-REPO/blob/main/argo-examples/framework/docs/OPERATORS-GUIDE.md"
+
+        - alert: FleetApplicationOutOfSyncCritical
+          expr: |
+            count(argocd_app_info{namespace="openshift-gitops", sync_status="OutOfSync"}) > 5
+          for: 15m
+          labels:
+            severity: critical
+            fleet_component: argocd
+          annotations:
+            summary: "{{ $value }} fleet Applications out of sync — possible fleet-wide issue"
+            description: >
+              More than 5 ArgoCD Applications are OutOfSync for over 15 minutes.
+              This suggests a fleet-wide issue such as a bad promotion, hub
+              connectivity problem, or label-sync regression.
+
+        - alert: FleetApplicationDegraded
+          expr: |
+            count(argocd_app_info{namespace="openshift-gitops", health_status="Degraded"}) > 0
+          for: 15m
+          labels:
+            severity: warning
+            fleet_component: argocd
+          annotations:
+            summary: "{{ $value }} fleet Application(s) in Degraded health state"
+            description: >
+              One or more fleet Applications report Degraded health. This
+              typically means resources deployed by the Application are
+              unhealthy on the spoke cluster.
+
+        - alert: FleetApplicationSyncFailing
+          expr: |
+            sum(increase(argocd_app_sync_total{namespace="openshift-gitops", phase="Error"}[1h])) > 10
+          for: 5m
+          labels:
+            severity: warning
+            fleet_component: argocd
+          annotations:
+            summary: "High rate of sync errors across fleet Applications"
+            description: >
+              More than 10 sync errors in the last hour across fleet-managed
+              Applications. Check ArgoCD controller logs and individual
+              Application sync status.
+
+        - alert: FleetNoApplicationsManaged
+          expr: |
+            count(argocd_app_info{namespace="openshift-gitops"}) == 0
+          for: 10m
+          labels:
+            severity: critical
+            fleet_component: argocd
+          annotations:
+            summary: "No fleet Applications found — possible bootstrap or hub issue"
+            description: >
+              Zero ArgoCD Applications found in the openshift-gitops namespace.
+              This may indicate the hub app-of-apps is missing, ApplicationSets
+              are not generating Applications, or ArgoCD itself is down.

@@ -127,6 +127,23 @@ Configure in GitHub/GitLab settings:
 | `release/staging`   | 1                | Yes         | No         | No     |
 | `release/production`| 2                | Yes         | No         | No     |
 
+## Progressive Rollout Within Each Environment
+
+All ApplicationSets use the `RollingSync` strategy. When a promotion PR is
+merged, changes do not hit all clusters simultaneously — they roll out in
+two waves:
+
+1. **Non-production clusters** — all clusters with `group.env: non-production`
+2. **Production clusters** — all clusters with `group.env: production`
+
+ArgoCD waits for all Applications in step 1 to reach healthy sync before
+proceeding to step 2. This provides automatic canary protection: if a change
+breaks non-production clusters, production clusters are not affected.
+
+This is separate from (and complementary to) the branch-based promotion
+model. The branch model gates which environments see a change; the
+RollingSync strategy provides additional safety _within_ each environment.
+
 ## Rollback
 
 Rollback is a reverse promotion — revert the PR and merge:
@@ -139,6 +156,37 @@ gh pr create --base release/production \
 ```
 
 ArgoCD's automated sync picks up the revert immediately.
+
+### Partial Rollback
+
+If a promotion included changes to multiple apps, you can revert only
+specific files:
+
+```bash
+git checkout release/production
+git checkout -b revert-partial
+# Revert only the problematic app's files
+git checkout HEAD~1 -- apps/cluster-monitoring/ hub/applicationsets/cluster-monitoring.yaml
+git commit -m "revert: roll back cluster-monitoring changes from promotion #42"
+```
+
+### Verifying a Rollback Before Merge
+
+Always run `fleet-diff.sh` to confirm the revert produces the expected state:
+
+```bash
+# Compare the revert branch against current production
+./scripts/fleet-diff.sh release/production revert-partial
+```
+
+### Large Blast Radius Reverts
+
+If a revert affects many clusters (e.g., reverting a `groups/all/` change):
+
+1. Pause auto-sync on the hub ArgoCD before merging the revert PR
+2. Merge the revert
+3. Verify the rendered diff is correct with `fleet-diff.sh`
+4. Re-enable auto-sync — the RollingSync strategy will stagger the rollout
 
 ## Visual Summary
 

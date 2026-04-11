@@ -8,7 +8,6 @@ to spoke clusters via a hub ArgoCD ApplicationSet.
 
 ```
 apps/<app-name>/
-├── applicationset.yaml    # Hub ApplicationSet — controls which clusters get this app
 ├── Chart.yaml             # Helm chart metadata
 ├── values.yaml            # App defaults (LOWEST priority in cascade)
 └── templates/
@@ -16,9 +15,41 @@ apps/<app-name>/
     └── *.yaml              # Kubernetes resources (uses .Values.cluster.* for config)
 ```
 
+The ApplicationSet for each app lives in `hub/applicationsets/<app-name>.yaml`,
+not in the app directory. This is because the hub app-of-apps syncs
+`hub/applicationsets/` to discover all ApplicationSets automatically. Keeping
+the chart and the ApplicationSet separate follows the separation of concerns:
+the chart defines _what_ to deploy, the ApplicationSet defines _where_.
+
+## Deployment Patterns
+
+### Direct Deployment (default)
+
+Most apps use direct deployment: the ApplicationSet points the generated
+Application at the spoke cluster, and the chart renders resources directly
+onto the spoke. The ApplicationSet `destination.server` is `{{server}}`
+(the spoke) and the namespace is the app's target namespace.
+
+**Examples:** cluster-monitoring, cluster-logging, external-secrets,
+baremetal-hosts, nvidia-gpu-operator.
+
+### Hub-Side Application (nested pattern)
+
+Some apps require a two-stage deployment: the ApplicationSet creates an
+Application on the **hub** that in turn targets the spoke. This is used when
+the app needs to manage an operator subscription or ArgoCD Application
+resource on the hub before resources appear on the spoke.
+
+In this pattern, `destination.namespace` is `openshift-gitops` (the hub
+ArgoCD namespace), and the chart's templates create a child Application
+pointing at the spoke.
+
+**Example:** cert-manager — creates a hub-side Application that installs
+the cert-manager operator on spoke clusters.
+
 ## App Opt-In / Opt-Out Models
 
-Three patterns are supported — choose one per app in `applicationset.yaml`:
+Three patterns are supported — choose one per app in the ApplicationSet:
 
 | Model        | Description                                           | Label Required             |
 |--------------|-------------------------------------------------------|----------------------------|
@@ -56,9 +87,20 @@ See `cluster-monitoring/templates/_helpers.tpl` for the full pattern.
 
 ## Adding a New App
 
-1. Copy an existing app directory: `cp -r apps/cert-manager apps/my-new-app`
-2. Update `Chart.yaml` with the new app name and description
-3. Update `values.yaml` with the app's defaults
-4. Write templates using `.Values.cluster.*` for cluster-aware configuration
-5. Copy `applicationset.yaml` and update the app name, namespace, and opt-in/out model
-6. Commit — the hub App-of-Apps picks up the new ApplicationSet automatically
+**Preferred:** Use the scaffolding tool:
+
+```bash
+scripts/create-app.sh my-new-app --model opt-in
+```
+
+This creates the chart under `apps/my-new-app/` and the ApplicationSet at
+`hub/applicationsets/my-new-app.yaml`.
+
+**Manual process:**
+
+1. Create `apps/<app-name>/` with `Chart.yaml`, `values.yaml`, and `templates/`
+2. Add a `cluster.features.<appName>.enabled: false` default in `groups/all/values.yaml`
+3. Create `hub/applicationsets/<app-name>.yaml` — copy an existing one and update the app name, namespace, and opt-in/out model
+4. Gate template rendering on the feature flag
+5. Add the app to the relevant cluster `cluster.yaml` files
+6. Run the aggregation script and commit

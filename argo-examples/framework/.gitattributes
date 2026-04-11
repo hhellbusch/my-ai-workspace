@@ -1,0 +1,2 @@
+# Mark auto-generated files so GitHub suppresses diff in PRs
+hub/rhacm/cluster-labels/values.yaml linguist-generated=true

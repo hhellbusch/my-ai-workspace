@@ -58,7 +58,7 @@ These are hard constraints. Violating them breaks the framework's guarantees.
 | 2 | **`cluster.yaml` is the label source of truth.** ManagedCluster labels are set exclusively via the GitOps label sync pipeline, never manually. |
 | 3 | **Cluster `values.yaml` has highest priority.** No group or app default can override a value explicitly set in `clusters/<name>/values.yaml`. |
 | 4 | **The `cluster.*` namespace is shared.** Every value file — from app defaults through cluster overrides — writes under the `cluster` key. This is what makes cluster metadata universally accessible to all app templates via `.Values.cluster.*`. |
-| 5 | **One ApplicationSet per app.** Each app has exactly one `applicationset.yaml` that uses the `clusters` generator. The hub app-of-apps discovers these automatically. |
+| 5 | **One ApplicationSet per app.** Each app has exactly one ApplicationSet in `hub/applicationsets/<app>.yaml` that uses the `clusters` generator. The hub app-of-apps discovers these automatically by syncing that directory. |
 | 6 | **`ignoreMissingValueFiles: true` is required.** Not every cluster belongs to every group. Missing group value files are silently skipped, which is correct behavior. |
 | 7 | **`targetRevision` controls promotion.** Each hub cluster pins to its environment branch. Promotion is a PR merge between branches, not a value change. |
 | 8 | **Secrets never go in Git.** BMC credentials, Vault tokens, TLS keys, and any sensitive material are stored in HashiCorp Vault and pulled onto clusters via External Secrets Operator. |
@@ -133,13 +133,16 @@ resource rendering on `.Values.cluster.features.<name>.enabled`.
 |------|----------|---------|
 | `Chart.yaml` | Yes | Helm chart metadata. `name` must match directory name. |
 | `values.yaml` | Yes | Lowest-priority defaults. Define every key the templates reference. |
-| `applicationset.yaml` | Yes | Hub ApplicationSet. Must use `clusters` generator with label selector. |
 | `templates/_helpers.tpl` | Yes | Must define common labels and any merge helpers the templates need. |
 | `templates/*.yaml` | Yes | Kubernetes resource templates. Must use `.Values.cluster.*` for config. |
 
+The ApplicationSet for each app lives in `hub/applicationsets/<app-name>.yaml`,
+not in the app directory. See section 4.4.
+
 **Adding a new app:**
-1. Copy an existing app directory.
-2. Choose opt-in or opt-out model. Default to opt-in for new features.
+1. Copy an existing app chart directory under `apps/`.
+2. Create `hub/applicationsets/<app>.yaml` with the correct label selector.
+   Choose opt-in or opt-out model. Default to opt-in for new features.
 3. If the app needs a feature flag, add a default `enabled: false` entry under
    `cluster.features` in `groups/all/values.yaml`.
 4. Gate all template rendering on the feature flag using
@@ -184,9 +187,11 @@ not be renamed or removed.
 
 - `bootstrap/hub-app-of-apps.yaml` — Apply once. Do not auto-sync this file;
   it is the bootstrap entry point.
-- `applicationsets/` — Contains the hub app-of-apps target and the
-  `cluster-label-sync.yaml` Application. Per-app ApplicationSets live in
-  `apps/<app>/applicationset.yaml`, not here.
+- `applicationsets/` — Synced by the hub app-of-apps. Contains all per-app
+  ApplicationSets (`<app>.yaml`) and the `cluster-label-sync.yaml` Application.
+  Every YAML file in this directory is applied by ArgoCD automatically.
+  The reference template for new ApplicationSets lives in `docs/per-app-template.yaml`
+  (not in this directory, to avoid ArgoCD applying it as a real resource).
 - `rhacm/` — ManagedClusterSet, Placement, GitOpsCluster, and the label-sync
   chart. The `cluster-labels/values.yaml` is auto-generated — do not edit manually.
 
@@ -241,13 +246,29 @@ comply with Kubernetes label value constraints.
 Each promotion is a PR. The `fleet-diff` workflow shows the rendered impact
 before merge. Never skip a stage.
 
-### 6.3 Emergency Hotfixes
+### 6.3 Progressive Rollout (RollingSync)
+
+All ApplicationSets use the `RollingSync` strategy to prevent a bad chart
+change from hitting all clusters simultaneously. Changes roll out in two
+waves:
+
+1. **Non-production clusters first** — clusters with `group.env: non-production`
+2. **Production clusters second** — clusters with `group.env: production`
+
+ArgoCD waits for all Applications in step 1 to reach a healthy sync state
+before proceeding to step 2. If a non-production cluster fails to sync,
+production clusters are not affected.
+
+This provides a built-in canary mechanism: problems surface on dev/staging
+clusters before reaching production, even within a single branch promotion.
+
+### 6.4 Emergency Hotfixes
 
 Hotfixes branch directly from `release/production`, are merged to production
 with expedited review, and are then **cherry-picked back** to `main` to prevent
 regression on the next promotion.
 
-### 6.4 Rollback
+### 6.5 Rollback
 
 Revert the merge commit on the environment branch via `git revert`. This creates
 a new forward commit rather than rewriting history.
@@ -286,13 +307,17 @@ automatically:
 scripts/create-app.sh my-new-app --model opt-in
 ```
 
+This creates the Helm chart under `apps/my-new-app/` and the ApplicationSet
+at `hub/applicationsets/my-new-app.yaml`.
+
 **Manual process** (if not using the scaffolding tool):
 
-1. Create `apps/<app-name>/` with `Chart.yaml`, `values.yaml`,
-   `applicationset.yaml`, and `templates/`.
-2. Add a `cluster.features.<appName>.enabled: false` default in
+1. Create `apps/<app-name>/` with `Chart.yaml`, `values.yaml`, and `templates/`.
+2. Create `hub/applicationsets/<app-name>.yaml` — copy an existing ApplicationSet
+   and update the app name, namespace, and opt-in/out model. Use
+   `docs/per-app-template.yaml` as a reference.
+3. Add a `cluster.features.<appName>.enabled: false` default in
    `groups/all/values.yaml`.
-3. Choose opt-in (default) or opt-out model in the ApplicationSet.
 4. Gate template rendering on the feature flag.
 5. Add the app to the relevant cluster `cluster.yaml` files.
 6. Run the aggregation script.
@@ -320,10 +345,10 @@ scripts/create-app.sh my-new-app --model opt-in
 ### 8.4 Changing the Value Cascade Order
 
 If you need to reorder priorities (e.g. make infra groups override OCP version
-groups), you must update **all three** of these locations:
+groups), you must update **all** of these locations:
 
-1. `hub/applicationsets/per-app-template.yaml` (reference template)
-2. Every `apps/<app>/applicationset.yaml` (each app's live ApplicationSet)
+1. `docs/per-app-template.yaml` (reference template)
+2. Every `hub/applicationsets/<app>.yaml` (each app's live ApplicationSet)
 3. `scripts/fleet-diff.sh` (the `render_app_cluster()` function)
 4. `scripts/trace-value.sh` (the cascade layer list)
 5. `scripts/create-app.sh` (the generated ApplicationSet `valueFiles`)
@@ -382,8 +407,8 @@ bash scripts/create-app.sh my-new-app --model opt-in
 | Group values | No unintended overrides on other clusters (use `fleet-diff.sh`) |
 | Cluster values | Only the target cluster is affected (use `fleet-diff.sh --cluster`) |
 | Labels in `cluster.yaml` | Aggregation script output is committed, CI passes |
-| ApplicationSet selectors | Correct clusters match (check label schema) |
-| New group dimension | All three cascade locations updated (see 8.2) |
+| ApplicationSet selectors | Correct clusters match (check label schema in `hub/applicationsets/`) |
+| New group dimension | All five cascade locations updated (see 8.4) |
 
 ---
 
@@ -416,7 +441,7 @@ bash scripts/create-app.sh my-new-app --model opt-in
 | Editing `hub/rhacm/cluster-labels/values.yaml` manually | Next aggregation run overwrites manual edits | File is auto-generated; edit `cluster.yaml` instead |
 | Committing secrets to the repository | Credential exposure; violates security model | Use Vault + ESO; CI should scan for secrets |
 | Skipping a promotion stage | Untested changes reach higher environments | CI gates enforce stage ordering |
-| Changing cascade order in template but not in `fleet-diff.sh` | Diff output does not match actual rendering | Update all three locations (see 8.4) |
+| Changing cascade order in template but not in `fleet-diff.sh` | Diff output does not match actual rendering | Update all five locations (see 8.4) |
 | Setting `targetRevision` to a tag instead of a branch | Promotion model breaks; hubs cannot track branch changes | Always use branch names for `targetRevision` |
 
 ---

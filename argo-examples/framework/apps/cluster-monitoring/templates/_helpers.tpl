@@ -29,7 +29,7 @@ it sets cluster.alerting.silences in its values.yaml and leaves extraSilences em
 Returns the cluster name.
 */}}
 {{- define "cluster-monitoring.clusterName" -}}
-{{- .Values.cluster.name | default "unknown" }}
+{{- include "fleet-library.clusterName" . }}
 {{- end }}
 
 {{/*
@@ -92,12 +92,5 @@ Usage:
 Common labels.
 */}}
 {{- define "cluster-monitoring.labels" -}}
-app.kubernetes.io/name: cluster-monitoring
-app.kubernetes.io/instance: {{ include "cluster-monitoring.clusterName" . }}
-app.kubernetes.io/managed-by: argocd
-fleet.cluster: {{ include "cluster-monitoring.clusterName" . }}
-fleet.env: {{ .Values.cluster.environment | default "unknown" }}
-{{- with .Values.cluster.commonLabels }}
-{{ toYaml . }}
-{{- end }}
+{{- include "fleet-library.labels" . }}
 {{- end }}

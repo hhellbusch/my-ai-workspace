@@ -1,0 +1,41 @@
+# compatibility-matrix.yaml
+#
+# Maps OCP versions to supported component versions. This is the single
+# source of truth for version compatibility across the fleet.
+#
+# When updating a component version for an OCP release:
+#   1. Update this matrix
+#   2. Update the corresponding groups/ocp-<version>/values.yaml
+#   3. CI validates the two stay in sync
+#
+# AI Disclosure: This file was created with AI assistance.
+
+versions:
+  "4.14":
+    prometheusOperatorVersion: "0.68"
+    certManagerChartVersion: "1.13.3"
+    knownIssues:
+      - id: BZ-2246001
+        description: "DNS operator intermittent failure"
+        workaround: "suppressDNSOperatorAlert: true"
+        alertSilence: DNSOperatorDegraded
+
+  "4.15":
+    prometheusOperatorVersion: "0.71"
+    certManagerChartVersion: "1.14.4"
+    featureGates:
+      - enhancedProxySupport
+      - cgroupsV2
+    knownIssues:
+      - id: OCPBUGS-12345
+        description: "Transient Prometheus operator sync failure"
+        alertSilence: PrometheusOperatorSyncFailed
+
+  "4.16":
+    prometheusOperatorVersion: "0.73"
+    certManagerChartVersion: "1.15.1"
+    featureGates:
+      - enhancedProxySupport
+      - cgroupsV2
+      - dualStackNetworking
+    knownIssues: []

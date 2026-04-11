@@ -1,0 +1,8 @@
+apiVersion: v2
+name: fleet-library
+description: >
+  Shared Helm library chart for the fleet management framework. Provides
+  common template helpers (cluster name, fleet labels, map merge utilities)
+  used by all app charts. Declared as a dependency in each app's Chart.yaml.
+type: library
+version: 1.0.0

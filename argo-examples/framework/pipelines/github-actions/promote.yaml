@@ -102,6 +102,27 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
           fi
 
+      - name: Check for hotfix divergence
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          # Flag commits present in release/production but absent from main.
+          # This catches forgotten cherry-picks after hotfixes.
+          git fetch origin main release/production 2>/dev/null || true
+
+          diverged=$(git rev-list --oneline origin/main..origin/release/production -- ${{ env.FRAMEWORK_PATH }}/ 2>/dev/null || echo "")
+          if [ -n "$diverged" ]; then
+            echo "::warning::Hotfix divergence detected — the following commits exist in release/production but not in main:"
+            echo "$diverged"
+            echo ""
+            echo "### Hotfix Divergence Warning" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "These commits are in \`release/production\` but missing from \`main\`:" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "$diverged" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "Cherry-pick them to \`main\` to prevent regression on the next promotion." >> $GITHUB_STEP_SUMMARY
+          fi
+
       - name: Create promotion PR
         if: steps.changes.outputs.has_changes == 'true' && github.event.inputs.dry_run == 'false'
         env:

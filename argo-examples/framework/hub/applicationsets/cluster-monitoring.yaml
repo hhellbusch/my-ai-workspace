@@ -26,6 +26,24 @@ metadata:
     component: fleet-management
     app: cluster-monitoring
 spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+
+  strategy:
+    type: RollingSync
+    rollingSync:
+      steps:
+        - matchExpressions:
+            - key: group.env
+              operator: In
+              values:
+                - non-production
+        - matchExpressions:
+            - key: group.env
+              operator: In
+              values:
+                - production
+
   generators:
     - clusters:
         selector:
@@ -64,6 +82,7 @@ spec:
               - $cluster-values/groups/all/values.yaml
               - $cluster-values/groups/env-{{metadata.labels.group.env}}/values.yaml
               - $cluster-values/groups/ocp-{{metadata.labels.group.ocp-version}}/values.yaml
+              - $cluster-values/groups/infra-{{metadata.labels.group.infra}}/values.yaml
               - $cluster-values/groups/region-{{metadata.labels.group.region}}/values.yaml
               - $cluster-values/groups/{{metadata.labels.group.custom}}/values.yaml
               - $cluster-values/clusters/{{name}}/values.yaml

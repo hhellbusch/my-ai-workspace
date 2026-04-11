@@ -93,6 +93,17 @@ jobs:
             echo "Run scripts/lint-array-safety.sh --fix-suggestions for remediation steps."
           fi
 
+  # ── Cascade Order Lint ───────────────────────────────────────────────────
+  cascade-order-lint:
+    name: Cascade Order Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate ApplicationSet cascade order
+        run: |
+          bash ${{ env.FRAMEWORK_PATH }}/scripts/lint-cascade-order.sh
+
   # ── Cluster Config Validation ────────────────────────────────────────────
   cluster-config-validate:
     name: Validate Cluster Configs
@@ -165,6 +176,50 @@ jobs:
           done
           exit $exit_code
 
+  # ── Compatibility Matrix Validation ──────────────────────────────────────
+  compatibility-matrix:
+    name: Compatibility Matrix Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yq
+        run: |
+          wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          chmod +x /usr/local/bin/yq
+
+      - name: Validate OCP group values match compatibility matrix
+        run: |
+          matrix="${{ env.FRAMEWORK_PATH }}/groups/compatibility-matrix.yaml"
+          exit_code=0
+
+          for version in $(yq '.versions | keys | .[]' "$matrix"); do
+            group_file="${{ env.FRAMEWORK_PATH }}/groups/ocp-${version}/values.yaml"
+            if [ ! -f "$group_file" ]; then
+              echo "WARN: Matrix defines OCP $version but groups/ocp-${version}/values.yaml does not exist"
+              continue
+            fi
+
+            # Check prometheusOperatorVersion
+            expected_prom=$(yq ".versions.\"${version}\".prometheusOperatorVersion" "$matrix")
+            actual_prom=$(yq '.cluster.features.monitoring.prometheusOperatorVersion' "$group_file")
+            if [ "$expected_prom" != "$actual_prom" ]; then
+              echo "ERROR: ocp-${version} prometheusOperatorVersion mismatch: matrix=$expected_prom, group=$actual_prom"
+              exit_code=1
+            fi
+
+            # Check certManagerChartVersion
+            expected_cert=$(yq ".versions.\"${version}\".certManagerChartVersion" "$matrix")
+            actual_cert=$(yq '.cluster.features.certManager.chartVersion' "$group_file")
+            if [ "$expected_cert" != "$actual_cert" ]; then
+              echo "ERROR: ocp-${version} certManagerChartVersion mismatch: matrix=$expected_cert, group=$actual_cert"
+              exit_code=1
+            fi
+
+            echo "OK: ocp-${version}"
+          done
+          exit $exit_code
+
   # ── Aggregate Cluster Labels for Label Sync Chart ────────────────────────
   aggregate-labels:
     name: Aggregate Cluster Labels
@@ -189,9 +244,9 @@ jobs:
             /tmp/aggregated-cluster-labels.yaml \
             || true)
           if [ -n "$diff_output" ]; then
-            echo "WARNING: cluster-labels/values.yaml is out of date."
-            echo "Run: bash pipelines/github-actions/aggregate-cluster-config.sh"
+            echo "::error::cluster-labels/values.yaml is out of date. Run: bash pipelines/github-actions/aggregate-cluster-config.sh ${{ env.FRAMEWORK_PATH }}"
             echo "$diff_output"
+            exit 1
           fi
 
   # ── ArgoCD Diff Preview (staging/production PRs only) ───────────────────

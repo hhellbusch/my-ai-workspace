@@ -16,3 +16,7 @@ keywords:
 maintainers:
   - name: Platform Team
     email: platform-team@example.com
+dependencies:
+  - name: fleet-library
+    version: "1.0.0"
+    repository: "file://../_library"

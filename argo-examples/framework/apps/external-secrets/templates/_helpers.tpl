@@ -1,16 +1,9 @@
 {{- define "external-secrets.clusterName" -}}
-{{- .Values.cluster.name | default "unknown" }}
+{{- include "fleet-library.clusterName" . }}
 {{- end }}
 
 {{- define "external-secrets.labels" -}}
-app.kubernetes.io/name: external-secrets
-app.kubernetes.io/instance: {{ include "external-secrets.clusterName" . }}
-app.kubernetes.io/managed-by: argocd
-fleet.cluster: {{ include "external-secrets.clusterName" . }}
-fleet.env: {{ .Values.cluster.environment | default "unknown" }}
-{{- with .Values.cluster.commonLabels }}
-{{ toYaml . }}
-{{- end }}
+{{- include "fleet-library.labels" . }}
 {{- end }}
 
 {{/*

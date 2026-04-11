@@ -3,7 +3,7 @@
 #
 # REFERENCE TEMPLATE — do not apply this file directly.
 #
-# Copy this to apps/<app-name>/applicationset.yaml and replace the
+# Copy this to hub/applicationsets/<app-name>.yaml and replace the
 # placeholder values. Each app in the framework has exactly one ApplicationSet.
 #
 # ─── Value Resolution Order ────────────────────────────────────────────────
@@ -12,7 +12,9 @@
 #  2. groups/all/values.yaml              (fleet-wide baseline)
 #  3. groups/env-<env>/values.yaml        (environment group)
 #  4. groups/ocp-<version>/values.yaml    (OCP version group)
-#  5. groups/<custom-group>/values.yaml   (additional groups, if set)
+#  5. groups/infra-<type>/values.yaml     (infrastructure group, if set)
+#     groups/region-<region>/values.yaml  (region group, if set)
+#     groups/<custom-group>/values.yaml   (additional groups, if set)
 #  6. clusters/<cluster-name>/values.yaml (cluster override, highest priority)
 #
 # All value files share the `cluster.*` key namespace, which makes cluster
@@ -58,8 +60,24 @@ metadata:
     component: fleet-management
     app: REPLACE-APP-NAME
 spec:
-  # Prevent ApplicationSet from deleting Applications when generators produce
-  # no results (e.g. all clusters opt out). Set to false if you want pruning.
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+
+  strategy:
+    type: RollingSync
+    rollingSync:
+      steps:
+        - matchExpressions:
+            - key: group.env
+              operator: In
+              values:
+                - non-production
+        - matchExpressions:
+            - key: group.env
+              operator: In
+              values:
+                - production
+
   ignoreApplicationDifferences:
     - jsonPointers:
         - /spec/source/targetRevision
@@ -114,6 +132,8 @@ spec:
               - $cluster-values/groups/env-{{metadata.labels.group.env}}/values.yaml
               # Priority 4 — OCP version group (e.g. ocp-4.15)
               - $cluster-values/groups/ocp-{{metadata.labels.group.ocp-version}}/values.yaml
+              # Priority 5 — infrastructure group (e.g. infra-baremetal)
+              - $cluster-values/groups/infra-{{metadata.labels.group.infra}}/values.yaml
               # Priority 5 — region group (optional)
               - $cluster-values/groups/region-{{metadata.labels.group.region}}/values.yaml
               # Priority 5 — custom group (optional, for feature flags / hardware tiers)

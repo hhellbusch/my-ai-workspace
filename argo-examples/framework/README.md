@@ -114,8 +114,13 @@ framework/
 │   ├── bootstrap/
 │   │   └── hub-app-of-apps.yaml          # Root ArgoCD app — bootstrap entry point
 │   ├── applicationsets/
-│   │   ├── per-app-template.yaml         # Reference template for per-app ApplicationSets
-│   │   └── cluster-label-sync.yaml       # Hub Application for GitOps label enforcement
+│   │   ├── cluster-label-sync.yaml       # Hub Application for GitOps label enforcement
+│   │   ├── cert-manager.yaml             # Per-app ApplicationSet (opt-in)
+│   │   ├── cluster-monitoring.yaml       # Per-app ApplicationSet (opt-out)
+│   │   ├── cluster-logging.yaml          # Per-app ApplicationSet (opt-in)
+│   │   ├── external-secrets.yaml         # Per-app ApplicationSet (opt-in)
+│   │   ├── baremetal-hosts.yaml          # Per-app ApplicationSet (opt-in)
+│   │   └── nvidia-gpu-operator.yaml      # Per-app ApplicationSet (opt-in)
 │   └── rhacm/
 │       ├── managed-cluster-set.yaml
 │       ├── placement.yaml
@@ -141,9 +146,9 @@ framework/
 │   └── ocp-4.15/values.yaml
 ├── apps/
 │   ├── README.md
-│   ├── cert-manager/                     # Example: opt-in app
-│   ├── cluster-monitoring/               # Example: opt-out app (on by default)
-│   └── cluster-logging/                  # Example: opt-in app
+│   ├── cert-manager/                     # Helm chart: opt-in app
+│   ├── cluster-monitoring/               # Helm chart: opt-out app (on by default)
+│   └── cluster-logging/                  # Helm chart: opt-in app
 ├── scripts/
 │   ├── README.md                          # Documentation for all CLI tools
 │   ├── fleet-diff.sh                     # Desired-state diff between Git refs
@@ -165,7 +170,8 @@ framework/
 ├── docs/
 │   ├── OPERATORS-GUIDE.md                # Learning path for operators
 │   ├── DEVELOPER-ENVIRONMENT.md          # Windows setup: DevSpaces, WSL, Git Bash
-│   └── HUB-PERFORMANCE-TUNING.md        # ArgoCD scaling and tuning guide
+│   ├── HUB-PERFORMANCE-TUNING.md        # ArgoCD scaling and tuning guide
+│   └── per-app-template.yaml            # Reference template for new ApplicationSets
 └── automation/
     ├── README.md
     └── ansible/

@@ -1,16 +1,9 @@
 {{- define "baremetal-hosts.clusterName" -}}
-{{- .Values.cluster.name | default "unknown" }}
+{{- include "fleet-library.clusterName" . }}
 {{- end }}
 
 {{- define "baremetal-hosts.labels" -}}
-app.kubernetes.io/name: baremetal-hosts
-app.kubernetes.io/instance: {{ include "baremetal-hosts.clusterName" . }}
-app.kubernetes.io/managed-by: argocd
-fleet.cluster: {{ include "baremetal-hosts.clusterName" . }}
-fleet.env: {{ .Values.cluster.environment | default "unknown" }}
-{{- with .Values.cluster.commonLabels }}
-{{ toYaml . }}
-{{- end }}
+{{- include "fleet-library.labels" . }}
 {{- end }}
 
 {{/*

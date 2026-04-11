@@ -1,6 +1,12 @@
 ---
 # cert-manager ApplicationSet
 #
+# DEPLOYMENT PATTERN: Hub-side Application (nested pattern)
+# Unlike most apps that deploy resources directly to spokes, cert-manager
+# creates an ArgoCD Application on the hub that targets the spoke. This is
+# why destination.namespace is openshift-gitops (the hub) instead of a spoke
+# namespace. See apps/README.md for details on the two deployment patterns.
+#
 # MODEL: OPT-IN
 # Clusters must have label: app.enabled/cert-manager: "true"
 #
@@ -24,6 +30,24 @@ metadata:
     component: fleet-management
     app: cert-manager
 spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+
+  strategy:
+    type: RollingSync
+    rollingSync:
+      steps:
+        - matchExpressions:
+            - key: group.env
+              operator: In
+              values:
+                - non-production
+        - matchExpressions:
+            - key: group.env
+              operator: In
+              values:
+                - production
+
   generators:
     - clusters:
         selector:
@@ -65,6 +89,8 @@ spec:
               - $cluster-values/groups/env-{{metadata.labels.group.env}}/values.yaml
               # Priority 4: OCP version group (e.g. ocp-4.15)
               - $cluster-values/groups/ocp-{{metadata.labels.group.ocp-version}}/values.yaml
+              # Priority 5: infrastructure group (e.g. infra-baremetal)
+              - $cluster-values/groups/infra-{{metadata.labels.group.infra}}/values.yaml
               # Priority 5: region group (optional — skipped if label absent)
               - $cluster-values/groups/region-{{metadata.labels.group.region}}/values.yaml
               # Priority 5: custom group (optional)

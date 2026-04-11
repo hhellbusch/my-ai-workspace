@@ -1,16 +1,9 @@
 {{- define "nvidia-gpu-operator.clusterName" -}}
-{{- .Values.cluster.name | default "unknown" }}
+{{- include "fleet-library.clusterName" . }}
 {{- end }}
 
 {{- define "nvidia-gpu-operator.labels" -}}
-app.kubernetes.io/name: nvidia-gpu-operator
-app.kubernetes.io/instance: {{ include "nvidia-gpu-operator.clusterName" . }}
-app.kubernetes.io/managed-by: argocd
-fleet.cluster: {{ include "nvidia-gpu-operator.clusterName" . }}
-fleet.env: {{ .Values.cluster.environment | default "unknown" }}
-{{- with .Values.cluster.commonLabels }}
-{{ toYaml . }}
-{{- end }}
+{{- include "fleet-library.labels" . }}
 {{- end }}
 
 {{/*

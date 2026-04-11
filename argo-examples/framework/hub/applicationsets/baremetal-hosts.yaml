@@ -1,46 +1,63 @@
 ---
-# nvidia-gpu-operator ApplicationSet
+# baremetal-hosts ApplicationSet
 #
-# MODEL: OPT-IN
-# Clusters must have label: app.enabled/nvidia-gpu-operator: "true"
+# MODEL: OPT-IN (only bare metal clusters)
+# Clusters must have label: app.enabled/baremetal-hosts: "true"
 #
-# DEPENDENCIES:
-#   - NFD (deployed by this chart alongside the GPU operator)
-#   - baremetal-hosts (labels GPU nodes with nvidia.com/gpu.present=true)
+# DEPENDENCY: Requires external-secrets app to be deployed first
+# (it creates the ClusterSecretStore that BMC ExternalSecrets reference).
 #
-# This is a feature-scoped opt-in: only clusters with GPU-equipped bare metal
-# workers should enable this. The cluster's values.yaml must also set
-# cluster.features.gpu.enabled: true.
+# This ApplicationSet renders BareMetalHost + ExternalSecret resources
+# for every worker defined in clusters/<name>/values.yaml under
+# cluster.baremetal.workers[].
 #
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: nvidia-gpu-operator
+  name: baremetal-hosts
   namespace: openshift-gitops
   labels:
     component: fleet-management
-    app: nvidia-gpu-operator
+    app: baremetal-hosts
 spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+
+  strategy:
+    type: RollingSync
+    rollingSync:
+      steps:
+        - matchExpressions:
+            - key: group.env
+              operator: In
+              values:
+                - non-production
+        - matchExpressions:
+            - key: group.env
+              operator: In
+              values:
+                - production
+
   generators:
     - clusters:
         selector:
           matchLabels:
-            app.enabled/nvidia-gpu-operator: "true"
+            app.enabled/baremetal-hosts: "true"
 
   template:
     metadata:
-      name: "nvidia-gpu-operator-{{name}}"
+      name: "baremetal-hosts-{{name}}"
       namespace: openshift-gitops
       labels:
         component: fleet-management
-        app: nvidia-gpu-operator
+        app: baremetal-hosts
         cluster: "{{name}}"
         env: "{{metadata.labels.group.env}}"
       annotations:
         fleet.cluster-name: "{{name}}"
-        fleet.app: nvidia-gpu-operator
-        # Deploy after baremetal-hosts (-1) so nodes are labelled first
-        argocd.argoproj.io/sync-wave: "5"
+        fleet.app: baremetal-hosts
+        # Deploy after external-secrets (-3) but before workloads
+        argocd.argoproj.io/sync-wave: "-1"
       finalizers:
         - resources-finalizer.argocd.argoproj.io
 
@@ -50,7 +67,7 @@ spec:
       sources:
         - repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
           targetRevision: main
-          path: argo-examples/framework/apps/nvidia-gpu-operator
+          path: argo-examples/framework/apps/baremetal-hosts
           helm:
             ignoreMissingValueFiles: true
             valueFiles:
@@ -70,14 +87,14 @@ spec:
 
       destination:
         server: "{{server}}"
-        namespace: nvidia-gpu-operator
+        namespace: openshift-machine-api
 
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
         syncOptions:
-          - CreateNamespace=true
+          - CreateNamespace=false
           - ServerSideApply=true
         retry:
           limit: 5
@@ -87,7 +104,9 @@ spec:
             maxDuration: 10m
 
       ignoreDifferences:
-        - group: nvidia.com
-          kind: ClusterPolicy
+        # Metal3 operator manages these status fields
+        - group: metal3.io
+          kind: BareMetalHost
           jsonPointers:
-            - /spec/driver/version
+            - /spec/online
+            - /status
