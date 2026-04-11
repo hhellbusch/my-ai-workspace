@@ -1,0 +1,300 @@
+---
+# onboard-cluster/tasks/main.yaml
+#
+# Orchestrates all onboarding integration tasks.
+# Each task block is gated by integrations.* feature flags.
+
+- name: Initialize onboarding results tracker
+  ansible.builtin.set_fact:
+    onboarding_results: {}
+
+# ── Vault: Provision secrets ──────────────────────────────────────────────
+- name: Provision secrets in Vault
+  when: integrations.vault | default(false)
+  block:
+    - name: Create Vault secret path for cluster
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/{{ vault_secret_path_prefix }}/{{ cluster_name }}/metadata"
+        method: POST
+        headers:
+          X-Vault-Token: "{{ vault_token }}"
+        body_format: json
+        body:
+          max_versions: 10
+          delete_version_after: "0s"
+        status_code: [200, 204]
+      register: vault_path_result
+      failed_when: false
+
+    - name: Store cluster metadata in Vault
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/{{ vault_secret_path_prefix }}/{{ cluster_name }}/data/cluster-info"
+        method: POST
+        headers:
+          X-Vault-Token: "{{ vault_token }}"
+        body_format: json
+        body:
+          data:
+            cluster_name: "{{ cluster_name }}"
+            environment: "{{ cluster_environment }}"
+            server_url: "{{ cluster_server_url }}"
+            ingress_domain: "{{ cluster_ingress_domain }}"
+            region: "{{ cluster_region }}"
+            ocp_version: "{{ cluster_ocp_version }}"
+            onboarded_at: "{{ ansible_date_time.iso8601 | default(lookup('pipe', 'date -u +%Y-%m-%dT%H:%M:%SZ')) }}"
+        status_code: [200, 204]
+      register: vault_metadata_result
+      failed_when: false
+
+    - name: Copy global secrets to cluster path
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/{{ item.source_path }}/data/{{ item.name }}"
+        method: GET
+        headers:
+          X-Vault-Token: "{{ vault_token }}"
+        status_code: [200, 404]
+      register: global_secret
+      loop: "{{ vault_secrets_to_generate | selectattr('type', 'eq', 'copy_from_global') | list }}"
+      loop_control:
+        label: "{{ item.name }}"
+      failed_when: false
+      when: item.condition | default(true)
+
+    - name: Write copied secrets to cluster path
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/{{ vault_secret_path_prefix }}/{{ cluster_name }}/data/{{ item.item.name }}"
+        method: POST
+        headers:
+          X-Vault-Token: "{{ vault_token }}"
+        body_format: json
+        body:
+          data: "{{ item.json.data.data | default({}) }}"
+        status_code: [200, 204]
+      loop: "{{ global_secret.results | default([]) }}"
+      loop_control:
+        label: "{{ item.item.name | default('unknown') }}"
+      when:
+        - item.status | default(404) == 200
+        - item.json is defined
+      failed_when: false
+
+    - name: Record Vault integration result
+      ansible.builtin.set_fact:
+        onboarding_results: "{{ onboarding_results | combine({'vault': 'completed'}) }}"
+
+  rescue:
+    - name: Record Vault integration failure
+      ansible.builtin.set_fact:
+        onboarding_results: "{{ onboarding_results | combine({'vault': 'failed'}) }}"
+    - name: Warn about Vault failure
+      ansible.builtin.debug:
+        msg: "WARNING: Vault integration failed. Secrets may need manual provisioning."
+
+# ── CMDB: Register cluster ───────────────────────────────────────────────
+- name: Register cluster in CMDB
+  when: integrations.cmdb | default(false)
+  block:
+    - name: Create CMDB configuration item
+      ansible.builtin.uri:
+        url: "{{ cmdb_api_url }}/configuration-items"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ cmdb_api_token }}"
+          Content-Type: application/json
+        body_format: json
+        body:
+          name: "{{ cluster_name }}"
+          type: openshift-cluster
+          environment: "{{ cluster_environment }}"
+          region: "{{ cluster_region }}"
+          attributes:
+            ocp_version: "{{ cluster_ocp_version }}"
+            server_url: "{{ cluster_server_url }}"
+            ingress_domain: "{{ cluster_ingress_domain }}"
+            storage_class: "{{ cluster_storage_class }}"
+            managed_by: fleet-gitops
+          tags:
+            - fleet-managed
+            - "env:{{ cluster_environment }}"
+            - "region:{{ cluster_region }}"
+        status_code: [200, 201, 409]
+      register: cmdb_result
+      failed_when: false
+
+    - name: Record CMDB integration result
+      ansible.builtin.set_fact:
+        onboarding_results: >-
+          {{ onboarding_results | combine({
+            'cmdb': 'completed (status: ' + (cmdb_result.status | string) + ')'
+          }) }}
+
+  rescue:
+    - name: Record CMDB integration failure
+      ansible.builtin.set_fact:
+        onboarding_results: "{{ onboarding_results | combine({'cmdb': 'failed'}) }}"
+    - name: Warn about CMDB failure
+      ansible.builtin.debug:
+        msg: "WARNING: CMDB registration failed. Manual entry may be needed."
+
+# ── Vault: Provision BMC credentials for bare metal hosts ─────────────────
+# For bare metal clusters, each worker needs BMC (iDRAC) credentials in Vault.
+# The credentials are stored at: <vault_bmc_secret_path>/<cluster_name>/<host_name>
+# The baremetal-hosts app creates ExternalSecrets that reference these paths.
+- name: Provision BMC credentials in Vault
+  when:
+    - integrations.vault | default(false)
+    - integrations.bmc | default(false)
+    - baremetal_hosts | default([]) | length > 0
+  block:
+    - name: Check for existing BMC credentials in Vault
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/{{ vault_bmc_secret_path }}/data/{{ cluster_name }}/{{ item.name }}"
+        method: GET
+        headers:
+          X-Vault-Token: "{{ vault_token }}"
+        status_code: [200, 404]
+      register: existing_bmc_secrets
+      loop: "{{ baremetal_hosts }}"
+      loop_control:
+        label: "{{ item.name }}"
+      failed_when: false
+
+    - name: Provision BMC credentials for hosts without existing secrets
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/{{ vault_bmc_secret_path }}/data/{{ cluster_name }}/{{ item.item.name }}"
+        method: POST
+        headers:
+          X-Vault-Token: "{{ vault_token }}"
+        body_format: json
+        body:
+          data:
+            username: "{{ item.item.bmc_username | default(bmc_default_username) }}"
+            password: "{{ item.item.bmc_password | default(bmc_default_password) }}"
+            bmc_address: "{{ item.item.bmc_address }}"
+            host_name: "{{ item.item.name }}"
+            cluster_name: "{{ cluster_name }}"
+        status_code: [200, 204]
+      loop: "{{ existing_bmc_secrets.results | default([]) }}"
+      loop_control:
+        label: "{{ item.item.name | default('unknown') }}"
+      when: item.status | default(200) == 404
+      failed_when: false
+
+    - name: Record BMC credential provisioning result
+      ansible.builtin.set_fact:
+        onboarding_results: >-
+          {{ onboarding_results | combine({
+            'bmc_credentials': 'provisioned ' + (baremetal_hosts | length | string) + ' hosts'
+          }) }}
+
+  rescue:
+    - name: Record BMC credential provisioning failure
+      ansible.builtin.set_fact:
+        onboarding_results: "{{ onboarding_results | combine({'bmc_credentials': 'failed'}) }}"
+    - name: Warn about BMC credential failure
+      ansible.builtin.debug:
+        msg: |
+          WARNING: BMC credential provisioning failed.
+          Manually provision credentials in Vault at:
+            {{ vault_bmc_secret_path }}/{{ cluster_name }}/<host-name>
+          Each secret needs: { "username": "root", "password": "..." }
+
+# ── Vault: Configure Kubernetes auth role for ESO ─────────────────────────
+# Creates a Vault auth role that allows the External Secrets Operator
+# service account on the spoke cluster to authenticate and read secrets.
+- name: Configure Vault Kubernetes auth for cluster
+  when:
+    - integrations.vault | default(false)
+    - integrations.vault_k8s_auth | default(false)
+  block:
+    - name: Create Vault Kubernetes auth role for the cluster
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/auth/kubernetes/role/{{ cluster_name }}"
+        method: POST
+        headers:
+          X-Vault-Token: "{{ vault_token }}"
+        body_format: json
+        body:
+          bound_service_account_names:
+            - external-secrets
+          bound_service_account_namespaces:
+            - external-secrets
+          policies:
+            - "fleet-cluster-{{ cluster_name }}"
+          ttl: 1h
+        status_code: [200, 204]
+      failed_when: false
+
+    - name: Create Vault policy for cluster secrets access
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/sys/policies/acl/fleet-cluster-{{ cluster_name }}"
+        method: PUT
+        headers:
+          X-Vault-Token: "{{ vault_token }}"
+        body_format: json
+        body:
+          policy: |
+            # Read cluster-specific secrets
+            path "{{ vault_secret_path_prefix }}/data/{{ cluster_name }}/*" {
+              capabilities = ["read"]
+            }
+            # Read BMC credentials for this cluster
+            path "{{ vault_bmc_secret_path }}/data/{{ cluster_name }}/*" {
+              capabilities = ["read"]
+            }
+            # Read global shared secrets
+            path "secret/fleet/global/*" {
+              capabilities = ["read"]
+            }
+        status_code: [200, 204]
+      failed_when: false
+
+    - name: Record Vault k8s auth result
+      ansible.builtin.set_fact:
+        onboarding_results: "{{ onboarding_results | combine({'vault_k8s_auth': 'completed'}) }}"
+
+  rescue:
+    - name: Record Vault k8s auth failure
+      ansible.builtin.set_fact:
+        onboarding_results: "{{ onboarding_results | combine({'vault_k8s_auth': 'failed'}) }}"
+
+# ── Notification: Create alerting channels ────────────────────────────────
+- name: Set up notification channels
+  when: integrations.notification_channels | default(false)
+  block:
+    - name: Send Slack notification for new cluster
+      ansible.builtin.uri:
+        url: "{{ notification_slack_webhook }}"
+        method: POST
+        body_format: json
+        body:
+          text: |
+            :rocket: *New cluster onboarding: {{ cluster_name }}*
+            • Environment: {{ cluster_environment }}
+            • Region: {{ cluster_region }}
+            • OCP Version: {{ cluster_ocp_version }}
+            • Onboarded by: fleet-management pipeline
+        status_code: [200]
+      when: notification_slack_webhook | length > 0
+      failed_when: false
+
+    - name: Record notification result
+      ansible.builtin.set_fact:
+        onboarding_results: "{{ onboarding_results | combine({'notifications': 'completed'}) }}"
+
+  rescue:
+    - name: Record notification failure
+      ansible.builtin.set_fact:
+        onboarding_results: "{{ onboarding_results | combine({'notifications': 'failed (non-critical)'}) }}"
+
+# ── Summary ──────────────────────────────────────────────────────────────
+- name: Display onboarding results
+  ansible.builtin.debug:
+    msg: |
+      ═══════════════════════════════════════════════
+      Onboarding Results for: {{ cluster_name }}
+      ═══════════════════════════════════════════════
+      {% for task_name, result in onboarding_results.items() %}
+        {{ task_name }}: {{ result }}
+      {% endfor %}
+      ═══════════════════════════════════════════════

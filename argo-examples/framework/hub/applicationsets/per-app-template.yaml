@@ -1,0 +1,152 @@
+---
+# per-app-template.yaml
+#
+# REFERENCE TEMPLATE — do not apply this file directly.
+#
+# Copy this to apps/<app-name>/applicationset.yaml and replace the
+# placeholder values. Each app in the framework has exactly one ApplicationSet.
+#
+# ─── Value Resolution Order ────────────────────────────────────────────────
+#
+#  1. apps/<app>/values.yaml              (app chart defaults, lowest priority)
+#  2. groups/all/values.yaml              (fleet-wide baseline)
+#  3. groups/env-<env>/values.yaml        (environment group)
+#  4. groups/ocp-<version>/values.yaml    (OCP version group)
+#  5. groups/<custom-group>/values.yaml   (additional groups, if set)
+#  6. clusters/<cluster-name>/values.yaml (cluster override, highest priority)
+#
+# All value files share the `cluster.*` key namespace, which makes cluster
+# metadata (networking, storage, OCP version, feature flags) available to
+# every app chart template.
+#
+# ─── Opt-In / Opt-Out Models ───────────────────────────────────────────────
+#
+# OPT-IN  (safe default — nothing deploys without explicit consent):
+#   selector.matchLabels:
+#     app.enabled/<app-name>: "true"
+#
+# OPT-OUT (app deploys everywhere unless explicitly disabled):
+#   selector.matchExpressions:
+#   - key: app.disabled/<app-name>
+#     operator: DoesNotExist
+#
+# GROUP-SCOPED (deploy only to clusters in a specific group):
+#   selector.matchLabels:
+#     group.env: production
+#
+# ─── Cluster Label Schema ──────────────────────────────────────────────────
+#
+# Labels on ArgoCD cluster secrets (set via RHACM ManagedCluster labels):
+#
+#   group.env                    production | non-production
+#   group.ocp-version            4.14 | 4.15 | 4.16
+#   group.region                 us-east | us-west | eu-west
+#   group.network                ovn-kubernetes | sdn
+#   group.custom                 <any additional group name>
+#   app.enabled/<app-name>       "true"          (opt-in model)
+#   app.disabled/<app-name>      "true"          (opt-out model)
+#
+# ───────────────────────────────────────────────────────────────────────────
+
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  # REPLACE: use the app name
+  name: REPLACE-APP-NAME
+  namespace: openshift-gitops
+  labels:
+    component: fleet-management
+    app: REPLACE-APP-NAME
+spec:
+  # Prevent ApplicationSet from deleting Applications when generators produce
+  # no results (e.g. all clusters opt out). Set to false if you want pruning.
+  ignoreApplicationDifferences:
+    - jsonPointers:
+        - /spec/source/targetRevision
+
+  generators:
+    - clusters:
+        selector:
+          matchLabels:
+            # ── CHOOSE OPT-IN OR OPT-OUT MODEL ──────────────────────────
+            # OPT-IN: uncomment the next line (comment out opt-out below)
+            app.enabled/REPLACE-APP-NAME: "true"
+          # OPT-OUT: uncomment the matchExpressions block below instead
+          # matchExpressions:
+          # - key: app.disabled/REPLACE-APP-NAME
+          #   operator: DoesNotExist
+
+  template:
+    metadata:
+      # Name pattern: <app>-<cluster-name>
+      name: "REPLACE-APP-NAME-{{name}}"
+      namespace: openshift-gitops
+      labels:
+        component: fleet-management
+        app: REPLACE-APP-NAME
+        cluster: "{{name}}"
+        env: "{{metadata.labels.group.env}}"
+      annotations:
+        # Preserves the cluster name for tooling / dashboards
+        fleet.cluster-name: "{{name}}"
+        fleet.app: REPLACE-APP-NAME
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+
+    spec:
+      project: default
+
+      sources:
+        # ── Source 0: App Helm chart ─────────────────────────────────────
+        - repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+          targetRevision: main
+          path: argo-examples/framework/apps/REPLACE-APP-NAME
+          helm:
+            # ignoreMissingValueFiles: true requires ArgoCD 2.10+
+            # For older versions, ensure all group directories have a values.yaml
+            ignoreMissingValueFiles: true
+            valueFiles:
+              # Priority 1 — app chart defaults (relative to chart path)
+              - values.yaml
+              # Priority 2 — fleet-wide baseline
+              - $cluster-values/groups/all/values.yaml
+              # Priority 3 — environment group (e.g. env-production)
+              - $cluster-values/groups/env-{{metadata.labels.group.env}}/values.yaml
+              # Priority 4 — OCP version group (e.g. ocp-4.15)
+              - $cluster-values/groups/ocp-{{metadata.labels.group.ocp-version}}/values.yaml
+              # Priority 5 — region group (optional)
+              - $cluster-values/groups/region-{{metadata.labels.group.region}}/values.yaml
+              # Priority 5 — custom group (optional, for feature flags / hardware tiers)
+              - $cluster-values/groups/{{metadata.labels.group.custom}}/values.yaml
+              # Priority 6 — cluster-specific overrides (HIGHEST PRIORITY)
+              - $cluster-values/clusters/{{name}}/values.yaml
+
+        # ── Source 1: Values ref ─────────────────────────────────────────
+        # Makes the framework root accessible as $cluster-values/...
+        # so valueFiles above resolve against argo-examples/framework/
+        - repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+          targetRevision: main
+          path: argo-examples/framework
+          ref: cluster-values
+
+      destination:
+        server: "{{server}}"
+        # REPLACE: set the target namespace for this app
+        namespace: REPLACE-APP-NAMESPACE
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+        retry:
+          limit: 3
+          backoff:
+            duration: 10s
+            factor: 2
+            maxDuration: 3m
+
+      # Ignore differences that are expected to drift (e.g. operator-managed fields)
+      ignoreDifferences: []

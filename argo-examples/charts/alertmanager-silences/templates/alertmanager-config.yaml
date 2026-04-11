@@ -1,0 +1,75 @@
+{{- $hasSilences := gt (len .Values.silences) 0 }}
+{{- $hasInhibitRules := gt (len .Values.inhibitRules) 0 }}
+{{- if or $hasSilences $hasInhibitRules }}
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: {{ .Values.alertmanagerConfig.name }}
+  namespace: {{ .Values.alertmanagerConfig.namespace }}
+  labels:
+    managed-by: gitops
+    {{- include "alertmanager-silences.labels" . | nindent 4 }}
+spec:
+  {{- if $hasSilences }}
+  route:
+    # Top-level receiver required by AlertmanagerConfig; routes alerts not
+    # matched by any child route to a no-op receiver.
+    receiver: "null"
+    routes:
+      {{- range .Values.silences }}
+      # {{ .comment }}
+      - receiver: "null"
+        matchers:
+          {{- range .matchers }}
+          - name: {{ .name | quote }}
+            value: {{ .value | quote }}
+            {{- if .matchType }}
+            matchType: {{ .matchType | quote }}
+            {{- end }}
+          {{- end }}
+        muteTimeIntervals:
+          - {{ .name | quote }}
+      {{- end }}
+  receivers:
+    - name: "null"
+  muteTimeIntervals:
+    {{- range .Values.silences }}
+    # Spans all time — effective permanent silence until this entry is removed.
+    - name: {{ .name | quote }}
+      timeIntervals:
+        - times:
+            - startTime: "00:00"
+              endTime: "24:00"
+          weekdays: ["sunday:saturday"]
+          months: ["january:december"]
+          years: ["2020:2099"]
+    {{- end }}
+  {{- end }}
+  {{- if $hasInhibitRules }}
+  inhibitRules:
+    {{- range .Values.inhibitRules }}
+    - sourceMatch:
+        {{- range .sourceMatch }}
+        - name: {{ .name | quote }}
+          value: {{ .value | quote }}
+          {{- if .matchType }}
+          matchType: {{ .matchType | quote }}
+          {{- end }}
+        {{- end }}
+      targetMatch:
+        {{- range .targetMatch }}
+        - name: {{ .name | quote }}
+          value: {{ .value | quote }}
+          {{- if .matchType }}
+          matchType: {{ .matchType | quote }}
+          {{- end }}
+        {{- end }}
+      {{- if .equal }}
+      equal:
+        {{- range .equal }}
+        - {{ . | quote }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

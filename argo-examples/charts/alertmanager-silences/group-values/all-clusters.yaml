@@ -1,0 +1,18 @@
+# group-values/all-clusters.yaml
+#
+# Silences applied to EVERY cluster in the fleet.
+# Reference this file as the first values source in every cluster's ArgoCD
+# Application (before any environment-specific overrides).
+
+silences:
+  - name: watchdog
+    comment: "Watchdog is a heartbeat alert used by external monitoring; not actionable by on-call"
+    matchers:
+      - name: alertname
+        value: Watchdog
+
+  - name: placeholder-silence-example
+    comment: "Replace with a real alert — this entry is here as a documented placeholder"
+    matchers:
+      - name: alertname
+        value: PlaceholderAlert

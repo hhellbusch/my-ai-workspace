@@ -1,0 +1,63 @@
+# groups/env-production/values.yaml
+#
+# Values for all clusters in the production environment.
+# Overrides groups/all/values.yaml for production-tier concerns.
+
+cluster:
+  environment: production
+
+  features:
+    certManager:
+      # Production uses real Let's Encrypt, not staging
+      issuer: letsencrypt-prod
+      email: platform-alerts@example.com
+    monitoring:
+      enabled: true
+      # Production retains metrics longer
+      retention: 30d
+      alertmanager:
+        enabled: true
+    logging:
+      # Production logging is opt-in per cluster (default off)
+      enabled: false
+      retentionDays: 30
+
+  # ── Production-specific alerting silences ─────────────────────────────────
+  # IMPORTANT: Helm replaces arrays entirely. This list MUST include the
+  # fleet-wide silences from groups/all/values.yaml plus production-specific ones.
+  # Use mustMergeOverwrite in the app chart template to avoid duplication.
+  # See apps/cluster-monitoring/templates/_helpers.tpl for the merge pattern.
+  alerting:
+    silences:
+      # Inherited from all-clusters (must be repeated — Helm replaces arrays)
+      - name: Watchdog
+        comment: "Permanent silence for the Watchdog alert"
+        matchers:
+          - name: alertname
+            value: Watchdog
+            isRegex: false
+      # Production-specific silences
+      - name: PrometheusOperatorSyncFailed
+        comment: "Known intermittent issue in 4.15 — resolved in 4.16"
+        matchers:
+          - name: alertname
+            value: PrometheusOperatorSyncFailed
+            isRegex: false
+          - name: severity
+            value: warning
+            isRegex: false
+
+  # ── Production resource constraints ───────────────────────────────────────
+  resources:
+    # Production clusters enforce resource limits
+    enforceResourceLimits: true
+    defaultLimitCPU: "2"
+    defaultLimitMemory: "4Gi"
+
+  storage:
+    # Production default — must be overridden per cluster if different storage class
+    defaultStorageClass: ""
+
+  commonLabels:
+    env: production
+    sla: tier-1

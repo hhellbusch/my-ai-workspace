@@ -1,0 +1,32 @@
+# groups/ocp-4.15/values.yaml
+#
+# Values specific to OpenShift 4.15 clusters.
+# Use for API compatibility, feature enablement, and version-specific defaults.
+
+cluster:
+  ocp:
+    version: "4.15"
+
+  features:
+    monitoring:
+      prometheusOperatorVersion: "0.71"
+    certManager:
+      # cert-manager 1.14 is the supported version for OCP 4.15
+      chartVersion: "1.14.4"
+
+  # ── OCP 4.15 feature gates ────────────────────────────────────────────────
+  featureGates:
+    # 4.15 introduces cluster-wide proxy support improvements
+    enhancedProxySupport: true
+    # 4.15 graduates cgroups v2 to stable
+    cgroupsV2: true
+
+  alerting:
+    silences:
+      # 4.15-specific known alert suppression
+      - name: PrometheusOperatorSyncFailed-415
+        comment: "Transient sync issue in 4.15 Prometheus operator — being tracked"
+        matchers:
+          - name: alertname
+            value: PrometheusOperatorSyncFailed
+            isRegex: false

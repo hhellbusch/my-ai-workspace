@@ -1,0 +1,73 @@
+---
+# Default variables for the onboard-cluster role.
+# Override via -e, group_vars, or host_vars.
+
+# ── Vault ────────────────────────────────────────────────────────────────
+vault_addr: "https://vault.example.com"
+vault_token: "{{ lookup('env', 'VAULT_TOKEN') | default('', true) }}"
+vault_secret_path_prefix: "secret/fleet/clusters"
+vault_bmc_secret_path: "secret/fleet/bmc"
+vault_kv_version: 2
+
+# ── BMC (Bare Metal Controller) ─────────────────────────────────────────
+# Default BMC credentials for Dell iDRAC hosts.
+# These are written to Vault during onboarding — NOT stored in Git.
+# Override per-host in baremetal_hosts[].bmc_username / bmc_password.
+bmc_default_username: "root"
+bmc_default_password: "{{ lookup('env', 'BMC_DEFAULT_PASSWORD') | default('', true) }}"
+
+# Bare metal host inventory for this cluster.
+# Populated from the cluster's values.yaml during the onboarding pipeline,
+# or passed manually via -e for CLI onboarding.
+#
+# Format:
+#   baremetal_hosts:
+#     - name: worker-0
+#       bmc_address: "10.20.1.10"
+#       bmc_username: root       # optional, uses bmc_default_username
+#       bmc_password: s3cret     # optional, uses bmc_default_password
+#     - name: gpu-worker-0
+#       bmc_address: "10.20.2.10"
+baremetal_hosts: []
+
+# ── CMDB / ITSM ─────────────────────────────────────────────────────────
+cmdb_api_url: "https://cmdb.example.com/api/v1"
+cmdb_api_token: "{{ lookup('env', 'CMDB_API_TOKEN') | default('', true) }}"
+
+# ── DNS ──────────────────────────────────────────────────────────────────
+dns_provider: route53          # route53 | clouddns | manual
+dns_zone: example.com
+
+# ── External monitoring ──────────────────────────────────────────────────
+external_monitoring_provider: ""  # datadog | splunk | ""
+datadog_api_key: "{{ lookup('env', 'DATADOG_API_KEY') | default('', true) }}"
+
+# ── Notification channels ────────────────────────────────────────────────
+notification_slack_webhook: "{{ lookup('env', 'SLACK_WEBHOOK_URL') | default('', true) }}"
+notification_pagerduty_key: "{{ lookup('env', 'PAGERDUTY_SERVICE_KEY') | default('', true) }}"
+
+# ── Integration feature flags ────────────────────────────────────────────
+# Toggle which integration steps to run during onboarding.
+integrations:
+  vault: true
+  bmc: true                      # Provision BMC credentials in Vault
+  vault_k8s_auth: true           # Configure Vault k8s auth role for ESO
+  cmdb: true
+  dns: false
+  monitoring_external: false
+  notification_channels: true
+
+# ── Legacy: secrets to generate and store in Vault ──────────────────────
+vault_secrets_to_generate:
+  - name: argocd-cluster-token
+    description: "Token for ArgoCD to authenticate to {{ cluster_name }}"
+    type: serviceaccount
+  - name: pull-secret
+    description: "Image pull secret for {{ cluster_name }}"
+    type: copy_from_global
+    source_path: "secret/fleet/global/pull-secret"
+  - name: cert-manager-route53
+    description: "Route53 credentials for cert-manager DNS challenges"
+    type: copy_from_global
+    source_path: "secret/fleet/global/route53-credentials"
+    condition: "{{ 'cert-manager' in (enabled_apps | default('')) }}"

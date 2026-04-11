@@ -1,0 +1,51 @@
+# groups/infra-baremetal/values.yaml
+#
+# Values specific to bare metal infrastructure clusters.
+# Applied when group.infra=baremetal label is set on the cluster.
+#
+# Covers: BareMetalHost defaults, BMC configuration, firmware settings,
+# external secrets for BMC credentials, and bare metal-specific storage.
+
+cluster:
+  ocp:
+    infrastructure: baremetal
+
+  features:
+    # Bare metal clusters should generally have ESO for BMC secrets
+    externalSecrets:
+      enabled: true
+    baremetalHosts:
+      enabled: true
+
+  # ── Bare metal defaults ────────────────────────────────────────────────
+  # These defaults apply to all bare metal clusters unless the cluster
+  # values.yaml overrides them. Individual worker entries in the cluster's
+  # values.yaml can further override per-host.
+  baremetal:
+    bmcDefaults:
+      disableCertificateVerification: true
+      # Dell iDRAC Redfish via virtual media (standard for Dell hardware)
+      protocol: "idrac-virtualmedia+https"
+
+    rootDeviceDefaults:
+      deviceName: "/dev/sda"
+
+    # Dell iDRAC BIOS settings — conservative defaults for the fleet
+    firmwareSettings:
+      enabled: false
+      settings:
+        SysProfile: PerfOptimized
+        WorkloadProfile: HPCProfile
+        LogicalProc: Disabled
+        ProcTurboMode: Enabled
+
+  # ── Bare metal storage ─────────────────────────────────────────────────
+  # OCS/ODF is common on bare metal clusters
+  storage:
+    defaultStorageClass: ocs-storagecluster-ceph-rbd
+
+# ── Vault configuration defaults for bare metal BMC secrets ──────────────
+vault:
+  server: "https://vault.example.com"
+  bmcSecretPath: "secret/fleet/bmc"
+  clusterSecretStoreName: vault-backend

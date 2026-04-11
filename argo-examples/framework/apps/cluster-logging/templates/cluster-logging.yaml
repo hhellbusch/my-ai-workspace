@@ -1,0 +1,158 @@
+{{/*
+cluster-logging.yaml
+
+Deploys the OpenShift Logging stack to the spoke cluster.
+Uses the opt-in model: only renders if cluster.features.logging.enabled = true.
+
+Resources created:
+  - Namespace: openshift-logging (if not exists)
+  - Subscription: OpenShift Logging operator
+  - LokiStack: Loki log aggregation backend
+  - ClusterLogging: activates the logging stack
+  - ClusterLogForwarder: routes logs to Loki (and optionally external outputs)
+*/}}
+
+{{- $loggingEnabled := .Values.cluster.features.logging.enabled | default false }}
+
+{{- if $loggingEnabled }}
+
+{{- $retentionDays := include "cluster-logging.retentionDays" . }}
+{{- $storageClass := include "cluster-logging.storageClass" . }}
+
+---
+# Loki operator subscription
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: loki-operator
+  namespace: openshift-operators-redhat
+  labels:
+    {{- include "cluster-logging.labels" . | nindent 4 }}
+spec:
+  channel: stable-5.9
+  installPlanApproval: Automatic
+  name: loki-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+
+---
+# OpenShift Logging operator subscription
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: cluster-logging
+  namespace: openshift-logging
+  labels:
+    {{- include "cluster-logging.labels" . | nindent 4 }}
+spec:
+  channel: stable-5.9
+  installPlanApproval: Automatic
+  name: cluster-logging
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+
+---
+# LokiStack — log aggregation backend
+# Storage class and size resolved from cluster values cascade
+apiVersion: loki.grafana.com/v1
+kind: LokiStack
+metadata:
+  name: logging-loki
+  namespace: openshift-logging
+  labels:
+    {{- include "cluster-logging.labels" . | nindent 4 }}
+spec:
+  size: 1x.small
+  storage:
+    schemas:
+      - version: v13
+        effectiveDate: "2024-01-01"
+    secret:
+      name: logging-loki-s3
+      type: s3
+  storageClassName: {{ $storageClass | required (printf "cluster-logging: storageClass required for cluster %s — set cluster.storage.defaultStorageClass" (include "cluster-logging.clusterName" .)) }}
+  tenants:
+    mode: openshift-logging
+  limits:
+    global:
+      retention:
+        days: {{ $retentionDays }}
+        streams:
+          - days: {{ $retentionDays }}
+            selector: '{log_type="application"}'
+          - days: {{ $retentionDays }}
+            selector: '{log_type="infrastructure"}'
+
+---
+# ClusterLogging — activates the logging stack
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogging
+metadata:
+  name: instance
+  namespace: openshift-logging
+  labels:
+    {{- include "cluster-logging.labels" . | nindent 4 }}
+spec:
+  managementState: Managed
+  logStore:
+    type: lokistack
+    lokistack:
+      name: logging-loki
+
+---
+# ClusterLogForwarder — routes logs
+# Routes all log types to Loki; optionally forwards to external outputs
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: instance
+  namespace: openshift-logging
+  labels:
+    {{- include "cluster-logging.labels" . | nindent 4 }}
+spec:
+  inputs:
+    - name: application-logs
+      type: application
+    - name: infrastructure-logs
+      type: infrastructure
+    - name: audit-logs
+      type: audit
+  outputs:
+    - name: default-lokistack
+      type: lokiStack
+      lokiStack:
+        name: logging-loki
+        namespace: openshift-logging
+        labelKeys:
+          - kubernetes.namespace_name
+          - kubernetes.pod_name
+          - log_type
+    {{- if .Values.logForwarding.enabled }}
+    {{- range .Values.logForwarding.outputs }}
+    - name: {{ .name }}
+      type: {{ .type }}
+      url: {{ .url }}
+    {{- end }}
+    {{- end }}
+  pipelines:
+    - name: all-to-loki
+      inputRefs:
+        - application-logs
+        - infrastructure-logs
+        - audit-logs
+      outputRefs:
+        - default-lokistack
+    {{- if .Values.logForwarding.enabled }}
+    {{- range .Values.logForwarding.pipelines }}
+    - name: {{ .name }}
+      inputRefs: {{- toYaml .inputRefs | nindent 8 }}
+      outputRefs: {{- toYaml .outputRefs | nindent 8 }}
+    {{- end }}
+    {{- end }}
+
+{{- else }}
+# cluster-logging is disabled for cluster {{ include "cluster-logging.clusterName" . }}
+# (cluster.features.logging.enabled = false)
+# Set app.enabled/cluster-logging: "true" on the ManagedCluster to opt in,
+# then set cluster.features.logging.enabled: true in clusters/<name>/values.yaml
+{{- end }}

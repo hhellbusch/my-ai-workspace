@@ -1,0 +1,9 @@
+---
+# Inventory for onboarding playbook.
+# The playbook runs locally (connection: local) — it makes API calls
+# to external systems (Vault, CMDB, etc.) from whatever host runs it.
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+      ansible_python_interpreter: "{{ ansible_playbook_python }}"

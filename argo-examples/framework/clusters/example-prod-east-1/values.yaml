@@ -1,0 +1,214 @@
+# values.yaml — example-prod-east-1 (HIGHEST PRIORITY overrides)
+#
+# Production bare metal cluster: 3 control plane + 5 standard workers + 3 GPU workers.
+# Dell R750 (compute) and R750xa (GPU with NVIDIA A100 40GB).
+# iDRAC BMC management via Redfish. BMC credentials stored in Vault.
+
+cluster:
+  name: example-prod-east-1
+  displayName: "Production East-1"
+  environment: production
+  region: us-east
+
+  ocp:
+    version: "4.15"
+    infrastructure: baremetal
+    controlPlane:
+      replicas: 3
+
+  networking:
+    ingressDomain: "apps.example-prod-east-1.example.com"
+    clusterCIDR: "10.128.0.0/14"
+    serviceCIDR: "172.30.0.0/16"
+    networkType: OVNKubernetes
+
+  storage:
+    defaultStorageClass: ocs-storagecluster-ceph-rbd
+
+  # ── Feature flags ─────────────────────────────────────────────────────
+  features:
+    certManager:
+      enabled: true
+      issuer: letsencrypt-prod
+      email: platform-team@example.com
+
+    externalSecrets:
+      enabled: true
+
+    baremetalHosts:
+      enabled: true
+
+    gpu:
+      enabled: true
+      driver:
+        usePrecompiled: true
+        version: "550.90.07"
+      dcgmExporter:
+        enabled: true
+      mig:
+        enabled: false
+
+    monitoring:
+      retention: 15d
+
+    logging:
+      enabled: false
+
+  # ── Bare metal worker inventory ────────────────────────────────────────
+  # Each entry creates a BareMetalHost + ExternalSecret (for BMC creds).
+  # BMC creds are pre-provisioned in Vault at:
+  #   secret/fleet/bmc/example-prod-east-1/<host-name>
+  baremetal:
+    bmcDefaults:
+      disableCertificateVerification: true
+      protocol: "idrac-virtualmedia+https"
+
+    rootDeviceDefaults:
+      deviceName: "/dev/sda"
+
+    firmwareSettings:
+      enabled: true
+      settings:
+        SysProfile: PerfOptimized
+        WorkloadProfile: HPCProfile
+        LogicalProc: Disabled
+        ProcTurboMode: Enabled
+
+    workers:
+      # ── Standard compute workers (Dell R750) ───────────────────────────
+      - name: worker-0
+        role: worker
+        hardwareProfile: dell-r750
+        bmc:
+          address: "idrac-virtualmedia+https://10.20.1.10/redfish/v1/Systems/System.Embedded.1"
+          disableCertificateVerification: true
+        bootMACAddress: "AA:BB:CC:01:00:00"
+        rootDeviceHints:
+          deviceName: "/dev/sda"
+
+      - name: worker-1
+        role: worker
+        hardwareProfile: dell-r750
+        bmc:
+          address: "idrac-virtualmedia+https://10.20.1.11/redfish/v1/Systems/System.Embedded.1"
+          disableCertificateVerification: true
+        bootMACAddress: "AA:BB:CC:01:00:01"
+        rootDeviceHints:
+          deviceName: "/dev/sda"
+
+      - name: worker-2
+        role: worker
+        hardwareProfile: dell-r750
+        bmc:
+          address: "idrac-virtualmedia+https://10.20.1.12/redfish/v1/Systems/System.Embedded.1"
+          disableCertificateVerification: true
+        bootMACAddress: "AA:BB:CC:01:00:02"
+        rootDeviceHints:
+          deviceName: "/dev/sda"
+
+      - name: worker-3
+        role: worker
+        hardwareProfile: dell-r750
+        bmc:
+          address: "idrac-virtualmedia+https://10.20.1.13/redfish/v1/Systems/System.Embedded.1"
+          disableCertificateVerification: true
+        bootMACAddress: "AA:BB:CC:01:00:03"
+        rootDeviceHints:
+          deviceName: "/dev/sda"
+
+      - name: worker-4
+        role: worker
+        hardwareProfile: dell-r750
+        bmc:
+          address: "idrac-virtualmedia+https://10.20.1.14/redfish/v1/Systems/System.Embedded.1"
+          disableCertificateVerification: true
+        bootMACAddress: "AA:BB:CC:01:00:04"
+        rootDeviceHints:
+          deviceName: "/dev/sda"
+
+      # ── GPU workers (Dell R750xa + NVIDIA A100 40GB) ───────────────────
+      # Role: gpu — automatically gets labels:
+      #   nvidia.com/gpu.present=true
+      #   node-role.kubernetes.io/gpu=""
+      #   node-role.kubernetes.io/worker=""
+      - name: gpu-worker-0
+        role: gpu
+        hardwareProfile: dell-r750xa
+        bmc:
+          address: "idrac-virtualmedia+https://10.20.2.10/redfish/v1/Systems/System.Embedded.1"
+          disableCertificateVerification: true
+        bootMACAddress: "AA:BB:CC:02:00:00"
+        rootDeviceHints:
+          deviceName: "/dev/sda"
+        labels:
+          nvidia.com/gpu.product: "NVIDIA-A100-SXM4-40GB"
+          nvidia.com/gpu.count: "4"
+        taints:
+          - key: nvidia.com/gpu
+            value: "true"
+            effect: NoSchedule
+        # GPU nodes use different BIOS settings
+        firmwareSettings:
+          SysProfile: PerfPerWattOptimizedDapc
+          WorkloadProfile: HPCProfile
+          LogicalProc: Enabled
+          ProcTurboMode: Enabled
+          SystemMemoryMode: OptimizerMode
+
+      - name: gpu-worker-1
+        role: gpu
+        hardwareProfile: dell-r750xa
+        bmc:
+          address: "idrac-virtualmedia+https://10.20.2.11/redfish/v1/Systems/System.Embedded.1"
+          disableCertificateVerification: true
+        bootMACAddress: "AA:BB:CC:02:00:01"
+        rootDeviceHints:
+          deviceName: "/dev/sda"
+        labels:
+          nvidia.com/gpu.product: "NVIDIA-A100-SXM4-40GB"
+          nvidia.com/gpu.count: "4"
+        taints:
+          - key: nvidia.com/gpu
+            value: "true"
+            effect: NoSchedule
+        firmwareSettings:
+          SysProfile: PerfPerWattOptimizedDapc
+          WorkloadProfile: HPCProfile
+          LogicalProc: Enabled
+          ProcTurboMode: Enabled
+          SystemMemoryMode: OptimizerMode
+
+      - name: gpu-worker-2
+        role: gpu
+        hardwareProfile: dell-r750xa
+        bmc:
+          address: "idrac-virtualmedia+https://10.20.2.12/redfish/v1/Systems/System.Embedded.1"
+          disableCertificateVerification: true
+        bootMACAddress: "AA:BB:CC:02:00:02"
+        rootDeviceHints:
+          deviceName: "/dev/sda"
+        labels:
+          nvidia.com/gpu.product: "NVIDIA-A100-SXM4-40GB"
+          nvidia.com/gpu.count: "4"
+        taints:
+          - key: nvidia.com/gpu
+            value: "true"
+            effect: NoSchedule
+        firmwareSettings:
+          SysProfile: PerfPerWattOptimizedDapc
+          WorkloadProfile: HPCProfile
+          LogicalProc: Enabled
+          ProcTurboMode: Enabled
+          SystemMemoryMode: OptimizerMode
+
+  custom:
+    datacenter: DC-EAST-1
+    rack: RACK-42
+    owner: platform-team
+
+# ── Vault configuration overrides ────────────────────────────────────────
+# This cluster's BMC creds are at: secret/fleet/bmc/example-prod-east-1/<host>
+vault:
+  server: "https://vault.example.com"
+  bmcSecretPath: "secret/fleet/bmc"
+  clusterSecretStoreName: vault-backend

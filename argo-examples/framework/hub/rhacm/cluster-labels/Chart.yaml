@@ -1,0 +1,18 @@
+apiVersion: v2
+name: cluster-label-sync
+description: >
+  Generates RHACM Policies that enforce ManagedCluster labels from Git.
+  Each cluster defined in values.clusters gets a Policy that sets group
+  memberships and app opt-in/out labels on the ManagedCluster resource.
+  This is the GitOps mechanism for managing cluster labels — no manual
+  oc label commands required.
+type: application
+version: 1.0.0
+keywords:
+  - rhacm
+  - labels
+  - gitops
+  - fleet
+maintainers:
+  - name: Platform Team
+    email: platform-team@example.com

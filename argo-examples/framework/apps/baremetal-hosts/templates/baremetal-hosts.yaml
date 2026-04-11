@@ -1,0 +1,162 @@
+{{/*
+baremetal-hosts.yaml
+
+For each entry in cluster.baremetal.workers[], this template creates:
+
+  1. ExternalSecret — pulls BMC credentials (username/password) from Vault
+     via the ClusterSecretStore set up by the external-secrets app.
+     The resulting Kubernetes Secret is referenced by the BareMetalHost.
+
+  2. BareMetalHost — registers the physical server with the Metal3 bare metal
+     operator. The BMH spec includes iDRAC/Dell Redfish BMC address, boot MAC,
+     root device hints, and node labels/taints.
+
+  3. HostFirmwareSettings (optional) — configures Dell iDRAC BIOS settings
+     via the Redfish API (e.g. performance profiles, hyperthreading).
+
+Secrets never touch Git. The path in Vault follows the convention:
+  <vault.bmcSecretPath>/<cluster-name>/<host-name>
+  e.g. secret/fleet/bmc/prod-east-1/worker-0
+
+The Ansible onboarding playbook pre-provisions these Vault secrets during
+cluster onboarding. See automation/ansible/roles/onboard-cluster/.
+*/}}
+
+{{- if .Values.cluster.features.baremetalHosts.enabled }}
+{{- $clusterName := include "baremetal-hosts.clusterName" . }}
+{{- $namespace := .Values.baremetalNamespace }}
+
+{{- range .Values.cluster.baremetal.workers }}
+{{- $host := . }}
+{{- $hostName := printf "%s-%s" $clusterName $host.name }}
+---
+# ── ExternalSecret: BMC credentials for {{ $host.name }} ────────────────
+# Pulls from Vault: {{ $.Values.vault.bmcSecretPath }}/{{ $clusterName }}/{{ $host.name }}
+# Creates Secret: bmc-{{ $hostName }} in {{ $namespace }}
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: bmc-{{ $hostName }}
+  namespace: {{ $namespace }}
+  labels:
+    {{- include "baremetal-hosts.labels" $ | nindent 4 }}
+    fleet.host: {{ $host.name }}
+    fleet.host-role: {{ $host.role | default "worker" }}
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: {{ $.Values.vault.clusterSecretStoreName }}
+    kind: ClusterSecretStore
+  target:
+    name: bmc-{{ $hostName }}
+    creationPolicy: Owner
+    template:
+      type: Opaque
+      data:
+        username: "{{ "{{ .username }}" }}"
+        password: "{{ "{{ .password }}" }}"
+  data:
+    - secretKey: username
+      remoteRef:
+        key: {{ include "baremetal-hosts.vaultBmcPath" (list $host.name $) }}
+        property: username
+    - secretKey: password
+      remoteRef:
+        key: {{ include "baremetal-hosts.vaultBmcPath" (list $host.name $) }}
+        property: password
+
+---
+# ── BareMetalHost: {{ $host.name }} ─────────────────────────────────────
+# Hardware: {{ $host.hardwareProfile | default "unknown" }}
+# Role: {{ $host.role | default "worker" }}
+# BMC: {{ $host.bmc.address }}
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  name: {{ $hostName }}
+  namespace: {{ $namespace }}
+  labels:
+    {{- include "baremetal-hosts.labels" $ | nindent 4 }}
+    fleet.host: {{ $host.name }}
+    fleet.host-role: {{ $host.role | default "worker" }}
+    {{- with $host.hardwareProfile }}
+    fleet.hardware-profile: {{ . }}
+    {{- end }}
+  annotations:
+    inspect.metal3.io: disabled
+spec:
+  online: true
+  automatedCleaningMode: disabled
+
+  bmc:
+    address: {{ include "baremetal-hosts.bmcAddress" (list $host $) }}
+    credentialsName: bmc-{{ $hostName }}
+    disableCertificateVerification: {{ $host.bmc.disableCertificateVerification | default ($.Values.cluster.baremetal.bmcDefaults.disableCertificateVerification | default true) }}
+
+  bootMACAddress: {{ $host.bootMACAddress | quote }}
+  bootMode: UEFI
+
+  rootDeviceHints:
+    {{- include "baremetal-hosts.rootDeviceHints" (list $host $) | nindent 4 }}
+
+  {{- if or $host.labels (eq ($host.role | default "worker") "gpu") (eq ($host.role | default "worker") "infra") }}
+  nodeLabels:
+    {{- include "baremetal-hosts.nodeLabels" $host | nindent 4 }}
+  {{- end }}
+
+  {{- if $host.taints }}
+  nodeTaints:
+    {{- toYaml $host.taints | nindent 4 }}
+  {{- end }}
+
+  {{- if $host.networkConfig }}
+  preprovisioningNetworkDataName: netconfig-{{ $hostName }}
+  {{- end }}
+
+{{- if $host.networkConfig }}
+---
+# ── NMState network config for {{ $host.name }} ─────────────────────────
+apiVersion: v1
+kind: Secret
+metadata:
+  name: netconfig-{{ $hostName }}
+  namespace: {{ $namespace }}
+  labels:
+    {{- include "baremetal-hosts.labels" $ | nindent 4 }}
+    fleet.host: {{ $host.name }}
+type: Opaque
+stringData:
+  nmstate: |
+    {{- toYaml $host.networkConfig | nindent 4 }}
+{{- end }}
+
+{{- end }}
+
+{{- if and .Values.cluster.baremetal.firmwareSettings.enabled (gt (len .Values.cluster.baremetal.workers) 0) }}
+{{- range .Values.cluster.baremetal.workers }}
+{{- $host := . }}
+{{- $hostName := printf "%s-%s" $clusterName $host.name }}
+---
+# ── HostFirmwareSettings: {{ $host.name }} ──────────────────────────────
+# Applies Dell iDRAC BIOS settings via Redfish.
+# Settings are merged: host-specific overrides cluster defaults.
+apiVersion: metal3.io/v1alpha1
+kind: HostFirmwareSettings
+metadata:
+  name: {{ $hostName }}
+  namespace: {{ $namespace }}
+  labels:
+    {{- include "baremetal-hosts.labels" $ | nindent 4 }}
+    fleet.host: {{ $host.name }}
+spec:
+  settings:
+    {{- $defaults := $.Values.cluster.baremetal.firmwareSettings.settings | default dict }}
+    {{- $hostOverrides := $host.firmwareSettings | default dict }}
+    {{- $merged := mustMergeOverwrite (deepCopy $defaults) $hostOverrides }}
+    {{- toYaml $merged | nindent 4 }}
+{{- end }}
+{{- end }}
+
+{{- else }}
+# baremetal-hosts is disabled for cluster {{ include "baremetal-hosts.clusterName" . }}
+{{- end }}

@@ -1,0 +1,42 @@
+# apps/cluster-monitoring/values.yaml
+#
+# App defaults — LOWEST priority in the cascade.
+
+cluster:
+  name: ""
+  environment: ""
+  storage:
+    defaultStorageClass: ""
+  features:
+    monitoring:
+      enabled: true
+      retention: 7d
+      alertmanager:
+        enabled: true
+  # Silences are managed under cluster.alerting (accessible to this app)
+  alerting:
+    silences: []
+
+# ── User Workload Monitoring ───────────────────────────────────────────────
+userWorkloadMonitoring:
+  enabled: true
+  retention: 7d
+  storageClass: ""          # falls back to cluster.storage.defaultStorageClass
+  storageSize: "10Gi"
+
+# ── Prometheus (cluster monitoring) ───────────────────────────────────────
+prometheus:
+  retention: "7d"           # overridden by cluster.features.monitoring.retention
+  storageClass: ""          # falls back to cluster.storage.defaultStorageClass
+  storageSize: "40Gi"
+
+# ── Alertmanager ──────────────────────────────────────────────────────────
+alertmanager:
+  storageClass: ""          # falls back to cluster.storage.defaultStorageClass
+  storageSize: "2Gi"
+
+# ── Additional silences ───────────────────────────────────────────────────
+# Silences are sourced from cluster.alerting.silences (set by group/cluster files).
+# Cluster-specific extra silences can be appended here without overriding group silences.
+# See _helpers.tpl for the mustMergeOverwrite / concat merge strategy.
+extraSilences: []

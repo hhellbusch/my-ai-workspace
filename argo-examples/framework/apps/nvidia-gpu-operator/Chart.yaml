@@ -1,0 +1,20 @@
+apiVersion: v2
+name: nvidia-gpu-operator
+description: >
+  Deploys the NVIDIA GPU Operator and Node Feature Discovery (NFD) operator
+  to bare metal OpenShift clusters with GPU-equipped nodes. Opt-in only —
+  applied to clusters that have GPU workers in their host inventory.
+  Configures the ClusterPolicy for GPU driver management, device plugins,
+  monitoring, and DCGM exporter.
+type: application
+version: 1.0.0
+appVersion: "24.3.0"
+keywords:
+  - nvidia
+  - gpu
+  - operator
+  - baremetal
+  - fleet
+maintainers:
+  - name: Platform Team
+    email: platform-team@example.com

@@ -1,0 +1,40 @@
+# apps/cluster-logging/values.yaml
+#
+# App defaults — LOWEST priority in the cascade.
+
+cluster:
+  name: ""
+  environment: ""
+  storage:
+    defaultStorageClass: ""
+  features:
+    logging:
+      enabled: false
+      retentionDays: 7
+
+# Loki configuration
+loki:
+  mode: SingleBinary       # SingleBinary | Distributed
+  storageClass: ""         # falls back to cluster.storage.defaultStorageClass
+  storageSize: "50Gi"
+
+# Vector (log collector) configuration
+vector:
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+
+# Log forwarder: where to send logs (in addition to Loki)
+logForwarding:
+  enabled: false
+  # Example external output:
+  # outputs:
+  #   - name: splunk
+  #     type: splunk_hec
+  #     url: https://splunk.example.com:8088
+  outputs: []
+  pipelines: []

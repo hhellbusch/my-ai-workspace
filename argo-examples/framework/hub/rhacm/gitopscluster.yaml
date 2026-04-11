@@ -1,0 +1,33 @@
+---
+# gitopscluster.yaml
+#
+# RHACM GitOpsCluster registers all clusters selected by the Placement with
+# the hub ArgoCD instance. RHACM will create/maintain ArgoCD cluster secrets
+# in the openshift-gitops namespace for each matched cluster.
+#
+# The ArgoCD cluster secrets will be labelled with metadata from the
+# ManagedCluster resource, making those labels available in ApplicationSet
+# generators via {{metadata.labels.*}}.
+#
+# IMPORTANT: Cluster group labels must be added to the ManagedCluster resource
+# (or via RHACM Policies) so they propagate to the ArgoCD cluster secret.
+# See clusters/_template/cluster.yaml for the full label schema.
+#
+# Apply to the hub cluster:
+#   oc apply -f gitopscluster.yaml -n openshift-gitops
+#
+apiVersion: apps.open-cluster-management.io/v1beta1
+kind: GitOpsCluster
+metadata:
+  name: fleet-gitopscluster
+  namespace: openshift-gitops
+  labels:
+    component: fleet-management
+spec:
+  argoServer:
+    argoNamespace: openshift-gitops
+    cluster: local-cluster
+  placementRef:
+    apiGroup: cluster.open-cluster-management.io
+    kind: Placement
+    name: fleet-gitops-placement

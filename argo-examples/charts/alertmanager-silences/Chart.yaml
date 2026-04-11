@@ -1,0 +1,15 @@
+apiVersion: v2
+name: alertmanager-silences
+description: >
+  Manages permanent Alertmanager silences for OpenShift cluster monitoring via
+  the AlertmanagerConfig CRD. Silences are expressed as mute time intervals
+  spanning all time, making them GitOps-declarative and removable via PR.
+type: application
+version: 0.1.0
+keywords:
+  - alertmanager
+  - monitoring
+  - openshift
+  - silences
+maintainers:
+  - name: platform-team

@@ -1,0 +1,39 @@
+---
+# placement.yaml
+#
+# RHACM Placement that selects which clusters in the ManagedClusterSet should
+# be registered with the hub ArgoCD instance. All clusters in the fleet-clusters
+# ManagedClusterSet are eligible by default.
+#
+# This Placement is referenced by the GitOpsCluster resource below.
+# Clusters matching this placement will have their ArgoCD cluster secrets
+# automatically created in the openshift-gitops namespace on the hub.
+#
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: fleet-gitops-placement
+  # Must be in the same namespace as the GitOpsCluster
+  namespace: openshift-gitops
+  labels:
+    component: fleet-management
+spec:
+  clusterSets:
+    - fleet-clusters
+  # Optionally restrict to clusters with specific labels:
+  # predicates:
+  #   - requiredClusterSelector:
+  #       labelSelector:
+  #         matchLabels:
+  #           gitops-managed: "true"
+
+---
+# ManagedClusterSetBinding grants the openshift-gitops namespace permission
+# to use clusters from the fleet-clusters ManagedClusterSet.
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: fleet-clusters
+  namespace: openshift-gitops
+spec:
+  clusterSet: fleet-clusters

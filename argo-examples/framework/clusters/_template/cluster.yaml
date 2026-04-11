@@ -1,0 +1,53 @@
+---
+# cluster.yaml — CLUSTER-NAME
+#
+# Cluster registration file — the single source of truth for this cluster's
+# identity, group memberships, and app opt-in/out state.
+#
+# HOW THIS FILE DRIVES LABELS (GitOps):
+#   1. You edit managedClusterLabels in this file and commit
+#   2. The aggregate-cluster-config.sh script collects all cluster labels
+#   3. The cluster-label-sync Helm chart generates RHACM Policies
+#   4. RHACM enforces labels on the ManagedCluster resource
+#   5. Labels propagate to the ArgoCD cluster secret
+#   6. ApplicationSet generators react to label changes
+#
+# No manual `oc label` commands needed — everything flows from this file.
+
+cluster:
+  # ── Identity ──────────────────────────────────────────────────────────────
+  name: CLUSTER-NAME
+  displayName: "Human Readable Cluster Name"
+  serverURL: "https://api.CLUSTER-NAME.example.com:6443"
+
+  # ── Group memberships ──────────────────────────────────────────────────────
+  # These determine which group value files are merged for this cluster.
+  # Each group maps to a label and a value file in groups/<group-type>-<value>/values.yaml
+  groups:
+    env: ENVIRONMENT          # production | non-production
+    ocpVersion: "VERSION"     # 4.14 | 4.15 | 4.16
+    region: REGION            # us-east | us-west | eu-west
+    network: ovn-kubernetes   # ovn-kubernetes | sdn
+    custom: ""                # optional: additional group dimension
+
+  # ── App opt-in/opt-out ────────────────────────────────────────────────────
+  # For opt-in apps: set to true to enable the app on this cluster
+  # For opt-out apps: set to true to DISABLE the app on this cluster
+  apps:
+    enabled: {}               # e.g. cert-manager: true
+    disabled: {}              # e.g. cluster-logging: true
+
+  # ── ManagedCluster labels (GitOps-enforced) ────────────────────────────────
+  # These labels are enforced on the RHACM ManagedCluster resource via Policy.
+  # The cluster-label-sync chart reads these and generates the enforcement policy.
+  #
+  # IMPORTANT: Keep managedClusterLabels in sync with the groups and apps sections.
+  # The CI validation pipeline will flag mismatches.
+  managedClusterLabels:
+    group.env: ENVIRONMENT
+    group.ocp-version: "VERSION"
+    group.region: REGION
+    group.network: ovn-kubernetes
+    # Add app.enabled/* or app.disabled/* labels as needed:
+    # app.enabled/cert-manager: "true"
+    # app.disabled/cluster-logging: "true"

@@ -1,0 +1,99 @@
+---
+# onboard-cluster.yaml
+#
+# Ansible playbook for cluster onboarding automation.
+# Handles the non-GitOps integration tasks that accompany cluster registration:
+#
+#   - Provision secrets in HashiCorp Vault
+#   - Register cluster in external CMDB/ITSM
+#   - Configure DNS entries (if needed)
+#   - Set up alerting/notification channels
+#   - Generate TLS certificates (if pre-provisioned)
+#   - Register with external monitoring (e.g. Datadog, Splunk)
+#
+# This playbook is idempotent — safe to re-run.
+#
+# Usage:
+#   ansible-playbook onboard-cluster.yaml \
+#     -e cluster_name=prod-east-2 \
+#     -e cluster_environment=production \
+#     -e cluster_server_url=https://api.prod-east-2.example.com:6443 \
+#     -e cluster_ingress_domain=apps.prod-east-2.example.com \
+#     -e cluster_region=us-east \
+#     -e cluster_ocp_version=4.15 \
+#     -e cluster_storage_class=ocs-storagecluster-ceph-rbd
+#
+# Can be run:
+#   - From the onboard-cluster GitHub Actions workflow (automated)
+#   - Manually from a bastion host (manual onboarding)
+#   - As part of a Jenkins/GitLab pipeline
+
+- name: Onboard cluster to fleet management ecosystem
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    # Required — must be passed via -e or from CI environment
+    cluster_name: ""
+    cluster_environment: ""
+    cluster_server_url: ""
+    cluster_ingress_domain: ""
+    cluster_region: ""
+    cluster_ocp_version: ""
+    cluster_storage_class: ""
+
+    # Vault configuration
+    vault_addr: "{{ lookup('env', 'VAULT_ADDR') | default('https://vault.example.com', true) }}"
+    vault_token: "{{ lookup('env', 'VAULT_TOKEN') | default('', true) }}"
+    vault_secret_path_prefix: "secret/fleet/clusters"
+
+    # Feature flags — toggle integration steps
+    integrations:
+      vault: true
+      cmdb: true
+      dns: false
+      monitoring_external: false
+      notification_channels: true
+
+  pre_tasks:
+    - name: Validate required variables
+      ansible.builtin.assert:
+        that:
+          - cluster_name | length > 0
+          - cluster_environment in ['production', 'non-production']
+          - cluster_server_url | length > 0
+          - cluster_ingress_domain | length > 0
+        fail_msg: "Missing required variables. See playbook header for usage."
+
+    - name: Display onboarding summary
+      ansible.builtin.debug:
+        msg: |
+          ═══════════════════════════════════════════════
+          Onboarding cluster: {{ cluster_name }}
+          Environment:        {{ cluster_environment }}
+          Server URL:         {{ cluster_server_url }}
+          Ingress Domain:     {{ cluster_ingress_domain }}
+          Region:             {{ cluster_region }}
+          OCP Version:        {{ cluster_ocp_version }}
+          Storage Class:      {{ cluster_storage_class }}
+          ═══════════════════════════════════════════════
+
+  roles:
+    - role: onboard-cluster
+
+  post_tasks:
+    - name: Onboarding complete
+      ansible.builtin.debug:
+        msg: |
+          Cluster {{ cluster_name }} onboarding complete.
+
+          Integration results:
+          {% for task_name, result in onboarding_results.items() | default([]) %}
+            - {{ task_name }}: {{ result }}
+          {% endfor %}
+
+          Next steps:
+            1. Verify cluster config in clusters/{{ cluster_name }}/
+            2. Merge the onboarding PR
+            3. Promote through environments: lab → dev → staging → production

@@ -1,0 +1,68 @@
+# alertmanager-silences chart values
+#
+# Deploy this chart to each cluster via ArgoCD. Clusters opt-in to specific
+# silences via their group values files using mustMergeOverwrite.
+#
+# REMOVING A SILENCE: Delete the entry from the silences list and let ArgoCD
+# sync. The AlertmanagerConfig is reconciled by the Prometheus Operator — no
+# manual API cleanup needed.
+#
+# NAMESPACE NOTE: AlertmanagerConfig resources in openshift-monitoring are
+# namespace-scoped by the Prometheus Operator, which appends a
+# `namespace="openshift-monitoring"` matcher to all routes. This works
+# correctly for alerts that carry a namespace label pointing to
+# openshift-monitoring (e.g. Watchdog, most cluster-operator alerts).
+# For alerts with no namespace label, use inhibitRules instead (see below).
+
+alertmanagerConfig:
+  # Name of the AlertmanagerConfig resource created in the cluster
+  name: gitops-silences
+  namespace: openshift-monitoring
+
+# List of alerts to permanently silence.
+# Each entry produces a dedicated sub-route + mute time interval pair so that
+# individual silences can be tracked, commented, and removed independently.
+#
+# Schema:
+#   name        - unique identifier used as the mute interval name (no spaces)
+#   comment     - human-readable reason for the silence (required for auditability)
+#   matchers    - list of label matchers; all must match for the silence to apply
+#     name      - label name
+#     value     - label value
+#     matchType - "=" (default), "!=", "=~" (regex), "!~" (neg-regex)
+#
+# Example:
+# silences:
+#   - name: watchdog
+#     comment: "Watchdog is a heartbeat alert; not actionable by on-call"
+#     matchers:
+#       - name: alertname
+#         value: Watchdog
+#
+#   - name: placeholder-alert
+#     comment: "Suppress until JIRA-1234 is resolved"
+#     matchers:
+#       - name: alertname
+#         value: PlaceholderAlert
+#       - name: severity
+#         value: warning
+silences: []
+
+# inhibitRules suppresses target alerts whenever all source matchers fire.
+# Use this instead of (or alongside) silences for alerts that have no namespace
+# label, where the namespace-scoped route would not match.
+#
+# Schema mirrors the AlertmanagerConfig spec.inhibitRules array.
+# See: https://prometheus-operator.dev/docs/operator/api/#monitoring.coreos.com/v1alpha1.InhibitRule
+#
+# Example:
+# inhibitRules:
+#   - sourceMatch:
+#       - name: alertname
+#         value: ClusterNotUpgradeable
+#     targetMatch:
+#       - name: alertname
+#         value: ClusterOperatorDegraded
+#     equal:
+#       - namespace
+inhibitRules: []

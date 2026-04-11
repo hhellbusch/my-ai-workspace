@@ -1,0 +1,69 @@
+# apps/baremetal-hosts/values.yaml
+#
+# App defaults — LOWEST priority in the cascade.
+#
+# The actual host inventory is defined per-cluster in clusters/<name>/values.yaml
+# under cluster.baremetal.workers[]. This chart only provides the schema defaults
+# and renders BareMetalHost + ExternalSecret resources from that inventory.
+
+cluster:
+  name: ""
+  environment: ""
+  features:
+    externalSecrets:
+      enabled: false
+    baremetalHosts:
+      enabled: false
+
+  # ── Bare metal host inventory ──────────────────────────────────────────
+  # Defined per-cluster. Each worker entry creates:
+  #   - BareMetalHost CR (in openshift-machine-api)
+  #   - ExternalSecret for BMC credentials (from Vault)
+  #   - Optional: HostFirmwareSettings for Dell iDRAC configuration
+  #
+  # Worker schema:
+  #   - name: worker-0                      # hostname
+  #     role: worker                         # worker | infra | gpu
+  #     bmc:
+  #       address: idrac-virtualmedia+https://192.168.1.10/redfish/v1/Systems/System.Embedded.1
+  #       disableCertificateVerification: true
+  #     bootMACAddress: "AA:BB:CC:DD:EE:00"
+  #     rootDeviceHints:
+  #       deviceName: /dev/sda
+  #     hardwareProfile: dell-r750           # dell-r750 | dell-r760 | dell-r750xa (GPU)
+  #     labels: {}                           # additional node labels
+  #     taints: []                           # node taints (e.g. for GPU nodes)
+  #     networkConfig: {}                    # NMState network config (optional)
+  baremetal:
+    workers: []
+
+    # Default BMC settings applied to all hosts unless overridden
+    bmcDefaults:
+      disableCertificateVerification: true
+      # Protocol prefix for Dell iDRAC Redfish
+      protocol: "idrac-virtualmedia+https"
+
+    # Default root device hints
+    rootDeviceDefaults:
+      deviceName: "/dev/sda"
+
+    # Firmware settings for Dell iDRAC (applied via HostFirmwareSettings)
+    firmwareSettings:
+      enabled: false
+      # Common BIOS settings for Dell servers
+      settings:
+        SysProfile: PerfOptimized
+        WorkloadProfile: HPCProfile
+        LogicalProc: Disabled
+        ProcTurboMode: Enabled
+
+# ── Vault configuration for BMC secrets ──────────────────────────────────
+# BMC credentials are stored in Vault, one secret per host:
+#   <vault.bmcSecretPath>/<cluster-name>/<host-name>
+# Each secret contains: { username: "root", password: "..." }
+vault:
+  bmcSecretPath: "secret/fleet/bmc"
+  clusterSecretStoreName: vault-backend
+
+# Namespace where BareMetalHost resources live
+baremetalNamespace: openshift-machine-api

@@ -1,0 +1,17 @@
+apiVersion: v2
+name: cluster-monitoring
+description: >
+  Configures OpenShift cluster monitoring (user workload monitoring, Alertmanager
+  silences, retention, and storage) for managed spoke clusters via the fleet framework.
+  Uses mustMergeOverwrite to resolve alerting silences across the group cascade.
+type: application
+version: 1.0.0
+appVersion: "4.15"
+keywords:
+  - monitoring
+  - alertmanager
+  - prometheus
+  - fleet
+maintainers:
+  - name: Platform Team
+    email: platform-team@example.com

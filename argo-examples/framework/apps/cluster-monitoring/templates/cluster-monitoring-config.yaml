@@ -1,0 +1,140 @@
+{{/*
+cluster-monitoring-config.yaml
+
+Configures OpenShift cluster monitoring stack for the target spoke cluster:
+  - ClusterMonitoringConfig: enables user workload monitoring, sets retention/storage
+  - UserWorkloadMonitoringConfig: configures user workload Prometheus
+  - AlertmanagerConfig: applies resolved silences from the group cascade
+
+The silences are resolved using the two-layer approach in _helpers.tpl to
+handle Helm's array replacement semantics correctly.
+*/}}
+
+{{- $monitoringEnabled := .Values.cluster.features.monitoring.enabled | default true }}
+
+{{- if $monitoringEnabled }}
+---
+# ClusterMonitoringConfig — configures the OCP cluster monitoring stack
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-monitoring-config
+  namespace: openshift-monitoring
+  labels:
+    {{- include "cluster-monitoring.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    enableUserWorkload: {{ .Values.userWorkloadMonitoring.enabled }}
+    prometheusK8s:
+      retention: {{ include "cluster-monitoring.resolvedRetention" . }}
+      {{- $storageClass := include "cluster-monitoring.storageClass" (list .Values.prometheus.storageClass .) }}
+      {{- if $storageClass }}
+      volumeClaimTemplate:
+        spec:
+          storageClassName: {{ $storageClass }}
+          resources:
+            requests:
+              storage: {{ .Values.prometheus.storageSize }}
+      {{- end }}
+    alertmanagerMain:
+      enabled: {{ .Values.cluster.features.monitoring.alertmanager.enabled | default true }}
+      {{- $amStorageClass := include "cluster-monitoring.storageClass" (list .Values.alertmanager.storageClass .) }}
+      {{- if $amStorageClass }}
+      volumeClaimTemplate:
+        spec:
+          storageClassName: {{ $amStorageClass }}
+          resources:
+            requests:
+              storage: {{ .Values.alertmanager.storageSize }}
+      {{- end }}
+
+---
+# UserWorkloadMonitoringConfig — configures user workload monitoring
+{{- if .Values.userWorkloadMonitoring.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-workload-monitoring-config
+  namespace: openshift-user-workload-monitoring
+  labels:
+    {{- include "cluster-monitoring.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    prometheus:
+      retention: {{ .Values.userWorkloadMonitoring.retention }}
+      {{- $uwmStorageClass := include "cluster-monitoring.storageClass" (list .Values.userWorkloadMonitoring.storageClass .) }}
+      {{- if $uwmStorageClass }}
+      volumeClaimTemplate:
+        spec:
+          storageClassName: {{ $uwmStorageClass }}
+          resources:
+            requests:
+              storage: {{ .Values.userWorkloadMonitoring.storageSize }}
+      {{- end }}
+{{- end }}
+
+---
+# AlertmanagerConfig — applies resolved silences from the cascade
+#
+# Silences come from two sources (resolved by _helpers.tpl):
+#   1. cluster.alerting.silences — set by the highest-priority group or cluster
+#      value file that defines this key (Helm picks the last file's array)
+#   2. extraSilences — cluster-specific additions that don't override group silences
+#
+# Example resolved silences for example-prod-east-1:
+#   - Watchdog (from groups/all)
+#   - PrometheusOperatorSyncFailed (from groups/env-production)
+#   - DNSOperatorDegraded-414 (from groups/ocp-4.14, if applicable)
+#   - Any cluster-specific silences from extraSilences in clusters/*/values.yaml
+#
+{{- $resolvedSilences := include "cluster-monitoring.resolvedSilences" . | fromYamlArray }}
+{{- if $resolvedSilences }}
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: fleet-silences-{{ include "cluster-monitoring.clusterName" . }}
+  namespace: openshift-monitoring
+  labels:
+    {{- include "cluster-monitoring.labels" . | nindent 4 }}
+    # This label makes AlertmanagerConfig apply to the default Alertmanager
+    alertmanagerConfig: cluster-monitoring
+spec:
+  route:
+    # Dummy route required by AlertmanagerConfig — does not affect routing
+    receiver: "null"
+    matchers:
+      - name: alertname
+        value: "DoNotMatch"
+  receivers:
+    - name: "null"
+  # Silences are set at the Alertmanager API level, not via AlertmanagerConfig.
+  # See the AlertmanagerSilence resource below (or use the Alertmanager API).
+{{- end }}
+
+{{- range $resolvedSilences }}
+---
+# Silence: {{ .name }}
+# Applied to cluster: {{ include "cluster-monitoring.clusterName" $ }}
+apiVersion: monitoring.rhobs/v1alpha1
+kind: AlertmanagerSilence
+metadata:
+  name: {{ .name | lower | replace " " "-" }}-{{ include "cluster-monitoring.clusterName" $ }}
+  namespace: openshift-monitoring
+  labels:
+    {{- include "cluster-monitoring.labels" $ | nindent 4 }}
+  annotations:
+    fleet.silence-name: {{ .name | quote }}
+    fleet.cluster: {{ include "cluster-monitoring.clusterName" $ }}
+spec:
+  comment: {{ .comment | default (printf "Fleet-managed silence: %s" .name) | quote }}
+  {{- with .duration }}
+  duration: {{ . | quote }}
+  {{- end }}
+  matchers:
+    {{- toYaml .matchers | nindent 4 }}
+{{- end }}
+
+{{- else }}
+# cluster-monitoring is disabled for cluster {{ include "cluster-monitoring.clusterName" . }}
+# (cluster.features.monitoring.enabled = false)
+{{- end }}

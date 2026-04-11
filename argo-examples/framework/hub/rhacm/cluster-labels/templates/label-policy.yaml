@@ -1,0 +1,91 @@
+{{/*
+label-policy.yaml
+
+Generates one RHACM Policy per cluster that enforces the labels defined in
+clusters/<name>/cluster.yaml onto the ManagedCluster resource.
+
+This is the GitOps bridge: labels in Git → RHACM Policy → ManagedCluster labels
+→ ArgoCD cluster secret labels → ApplicationSet selector matching.
+
+The Policy uses mustnothave/musthave object-templates to enforce each label.
+When remediationAction is "enforce", RHACM will auto-remediate any drift
+(i.e. if someone manually removes or changes a label, RHACM puts it back).
+*/}}
+
+{{- range .Values.clusters }}
+{{- $clusterName := .name }}
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: fleet-labels-{{ $clusterName }}
+  namespace: {{ $.Values.policyNamespace }}
+  labels:
+    component: fleet-management
+    fleet.cluster: {{ $clusterName }}
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/standards: Fleet Management
+    policy.open-cluster-management.io/controls: Label Enforcement
+spec:
+  remediationAction: {{ $.Values.remediationAction }}
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: fleet-labels-{{ $clusterName }}
+        spec:
+          remediationAction: {{ $.Values.remediationAction }}
+          severity: medium
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1
+                kind: ManagedCluster
+                metadata:
+                  name: {{ $clusterName }}
+                  labels:
+                    {{- toYaml .managedClusterLabels | nindent 20 }}
+
+---
+# PlacementBinding — targets this specific cluster
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: fleet-labels-{{ $clusterName }}-binding
+  namespace: {{ $.Values.policyNamespace }}
+  labels:
+    component: fleet-management
+    fleet.cluster: {{ $clusterName }}
+spec:
+  placementRef:
+    apiGroup: cluster.open-cluster-management.io
+    kind: Placement
+    name: fleet-labels-{{ $clusterName }}-placement
+  subjects:
+    - apiGroup: policy.open-cluster-management.io
+      kind: Policy
+      name: fleet-labels-{{ $clusterName }}
+
+---
+# Placement — selects exactly this cluster
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: fleet-labels-{{ $clusterName }}-placement
+  namespace: {{ $.Values.policyNamespace }}
+  labels:
+    component: fleet-management
+    fleet.cluster: {{ $clusterName }}
+spec:
+  clusterSets:
+    - fleet-clusters
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchLabels:
+            name: {{ $clusterName }}
+
+{{- end }}

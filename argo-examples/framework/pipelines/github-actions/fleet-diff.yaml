@@ -1,0 +1,205 @@
+# fleet-diff.yaml
+#
+# Renders the full desired state at the base branch and the PR head, then diffs
+# every app × cluster combination. Posts a structured report as a PR comment.
+#
+# This replaces the simpler argocd-diff job in validate-pr.yaml with a
+# full-cascade, dual-ref comparison.
+#
+# Can also be triggered manually to compare any two refs (useful for
+# "what changed between last week's release and today's staging?").
+
+name: Fleet Desired-State Diff
+
+on:
+  pull_request:
+    branches:
+      - main
+      - release/dev
+      - release/staging
+      - release/production
+    paths:
+      - 'argo-examples/framework/**'
+
+  workflow_dispatch:
+    inputs:
+      ref_a:
+        description: 'Base reference (before)'
+        required: true
+        type: string
+        default: 'release/production'
+      ref_b:
+        description: 'Target reference (after)'
+        required: true
+        type: string
+        default: 'main'
+      filter_app:
+        description: 'Filter to a specific app (blank = all apps)'
+        required: false
+        type: string
+      filter_cluster:
+        description: 'Filter to a specific cluster (blank = all clusters)'
+        required: false
+        type: string
+
+env:
+  FRAMEWORK_PATH: argo-examples/framework
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  fleet-diff:
+    name: Fleet Diff
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Install yq
+        run: |
+          wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          chmod +x /usr/local/bin/yq
+
+      - name: Determine refs
+        id: refs
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "ref_a=origin/${{ github.base_ref }}" >> "$GITHUB_OUTPUT"
+            echo "ref_b=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+            echo "label_a=${{ github.base_ref }}" >> "$GITHUB_OUTPUT"
+            echo "label_b=${{ github.head_ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref_a=${{ github.event.inputs.ref_a }}" >> "$GITHUB_OUTPUT"
+            echo "ref_b=${{ github.event.inputs.ref_b }}" >> "$GITHUB_OUTPUT"
+            echo "label_a=${{ github.event.inputs.ref_a }}" >> "$GITHUB_OUTPUT"
+            echo "label_b=${{ github.event.inputs.ref_b }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build filter flags
+        id: filters
+        run: |
+          flags=""
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            [ -n "${{ github.event.inputs.filter_app }}" ] && flags="$flags --app ${{ github.event.inputs.filter_app }}"
+            [ -n "${{ github.event.inputs.filter_cluster }}" ] && flags="$flags --cluster ${{ github.event.inputs.filter_cluster }}"
+          fi
+          echo "flags=$flags" >> "$GITHUB_OUTPUT"
+
+      - name: Run fleet-diff
+        id: diff
+        run: |
+          chmod +x ${{ env.FRAMEWORK_PATH }}/scripts/fleet-diff.sh
+
+          # Run with full output to a file, summary to stdout
+          ${{ env.FRAMEWORK_PATH }}/scripts/fleet-diff.sh \
+            "${{ steps.refs.outputs.ref_a }}" \
+            "${{ steps.refs.outputs.ref_b }}" \
+            --output /tmp/fleet-diff-full.txt \
+            ${{ steps.filters.outputs.flags }} \
+            > /tmp/fleet-diff-summary.txt 2>&1 \
+            || true
+
+          # Capture exit code semantics: 0 = no changes, 1 = changes found
+          if grep -q "Changed:   0" /tmp/fleet-diff-summary.txt; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate PR comment
+        if: github.event_name == 'pull_request'
+        run: |
+          label_a="${{ steps.refs.outputs.label_a }}"
+          label_b="${{ steps.refs.outputs.label_b }}"
+
+          cat > /tmp/pr-comment.md <<HEADER
+          ## Fleet Desired-State Diff
+
+          **Comparing:** \`$label_a\` → \`$label_b\`
+
+          This shows exactly what would change on each cluster if this PR were merged and deployed.
+
+          HEADER
+
+          # Add summary
+          echo '```' >> /tmp/pr-comment.md
+          cat /tmp/fleet-diff-summary.txt >> /tmp/pr-comment.md
+          echo '```' >> /tmp/pr-comment.md
+
+          # Add diffs (truncated for PR comment size limit)
+          if [ "${{ steps.diff.outputs.has_changes }}" = "true" ]; then
+            echo "" >> /tmp/pr-comment.md
+            echo "<details>" >> /tmp/pr-comment.md
+            echo "<summary>View full diff</summary>" >> /tmp/pr-comment.md
+            echo "" >> /tmp/pr-comment.md
+            echo '```diff' >> /tmp/pr-comment.md
+            # Truncate to avoid GitHub comment limit (65536 chars)
+            head -c 55000 /tmp/fleet-diff-full.txt >> /tmp/pr-comment.md
+            if [ "$(wc -c < /tmp/fleet-diff-full.txt)" -gt 55000 ]; then
+              echo "" >> /tmp/pr-comment.md
+              echo "... (truncated — download artifacts for full diff)" >> /tmp/pr-comment.md
+            fi
+            echo '```' >> /tmp/pr-comment.md
+            echo "</details>" >> /tmp/pr-comment.md
+          fi
+
+      - name: Post or update PR comment
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('/tmp/pr-comment.md', 'utf8');
+            const marker = 'Fleet Desired-State Diff';
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body,
+              });
+            }
+
+      - name: Upload diff artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: fleet-diff
+          path: |
+            /tmp/fleet-diff-full.txt
+            /tmp/fleet-diff-summary.txt
+          retention-days: 30
+
+      - name: Step summary
+        run: |
+          echo "## Fleet Desired-State Diff" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Comparing:** \`${{ steps.refs.outputs.label_a }}\` → \`${{ steps.refs.outputs.label_b }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat /tmp/fleet-diff-summary.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

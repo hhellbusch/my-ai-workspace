@@ -1,0 +1,64 @@
+# groups/all/values.yaml
+#
+# Fleet-wide baseline values — applied to EVERY cluster regardless of group.
+# These are the lowest-priority group overrides; any group or cluster file wins.
+#
+# Purpose: establish safe defaults for all apps across the fleet.
+
+cluster:
+  # ── Default feature flags ─────────────────────────────────────────────────
+  # These represent the fleet-wide default for each app.
+  # Groups or clusters override individual keys.
+  features:
+    certManager:
+      enabled: false          # opt-in: clusters must explicitly enable
+      issuer: letsencrypt-staging
+      email: platform-alerts@example.com
+    monitoring:
+      enabled: true           # opt-out: all clusters get monitoring by default
+      retention: 7d
+      alertmanager:
+        enabled: true
+    logging:
+      enabled: false          # opt-in: clusters must explicitly enable
+      retentionDays: 7
+    externalSecrets:
+      enabled: false          # opt-in: clusters needing Vault integration
+    baremetalHosts:
+      enabled: false          # opt-in: bare metal clusters only
+    gpu:
+      enabled: false          # opt-in: clusters with GPU hardware only
+      driver:
+        usePrecompiled: true
+        version: "550.90.07"
+      dcgmExporter:
+        enabled: true
+      mig:
+        enabled: false
+        strategy: single
+
+  # ── Default storage ───────────────────────────────────────────────────────
+  storage:
+    defaultStorageClass: ""   # must be set by cluster or group
+
+  # ── Default networking ────────────────────────────────────────────────────
+  networking:
+    networkType: OVNKubernetes
+
+  # ── Alertmanager silences ─────────────────────────────────────────────────
+  # Applied to every cluster. Groups/clusters extend this list via mustMergeOverwrite
+  # in the app chart (arrays must be redefined in full in each value file).
+  alerting:
+    # Watchdog silence is universal — fires on all clusters to verify alerting works
+    silences:
+      - name: Watchdog
+        comment: "Permanent silence for the Watchdog alert — this alert is expected to always fire"
+        matchers:
+          - name: alertname
+            value: Watchdog
+            isRegex: false
+
+  # ── Common labels applied to all managed resources ────────────────────────
+  commonLabels:
+    managed-by: fleet-gitops
+    fleet.framework.version: "1.0"

@@ -1,0 +1,22 @@
+apiVersion: v2
+name: baremetal-hosts
+description: >
+  Manages BareMetalHost resources for worker nodes on bare metal OpenShift
+  clusters. Defines the full worker inventory per cluster — each host gets a
+  BareMetalHost CR with iDRAC/Dell BMC connection details. BMC credentials
+  are pulled from Vault via External Secrets Operator (no secrets in Git).
+  Supports heterogeneous hardware: standard compute, GPU-equipped nodes,
+  and infrastructure nodes with distinct labels and taints.
+type: application
+version: 1.0.0
+appVersion: "4.15"
+keywords:
+  - baremetal
+  - baremetalhost
+  - idrac
+  - dell
+  - bmc
+  - fleet
+maintainers:
+  - name: Platform Team
+    email: platform-team@example.com

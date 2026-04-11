@@ -1,0 +1,92 @@
+# apps/nvidia-gpu-operator/values.yaml
+#
+# App defaults — LOWEST priority in the cascade.
+#
+# The GPU operator is opt-in: only clusters with GPU workers and the
+# app.enabled/nvidia-gpu-operator label receive this app.
+
+cluster:
+  name: ""
+  environment: ""
+  features:
+    gpu:
+      enabled: false
+      # Driver configuration
+      driver:
+        # Use pre-compiled driver containers (recommended for OCP)
+        usePrecompiled: true
+        # NVIDIA driver version — must match the GPU hardware generation
+        version: "550.90.07"
+      # DCGM exporter for GPU metrics in Prometheus
+      dcgmExporter:
+        enabled: true
+      # MIG (Multi-Instance GPU) support — for A100/H100 partitioning
+      mig:
+        enabled: false
+        strategy: single  # single | mixed
+
+  # ── GPU node selector ──────────────────────────────────────────────────
+  # The GPU operator targets nodes with this label (set by NFD or manually).
+  # The baremetal-hosts app automatically labels GPU-role nodes with
+  # nvidia.com/gpu.present=true.
+  gpu:
+    nodeSelector:
+      nvidia.com/gpu.present: "true"
+
+# ── NFD (Node Feature Discovery) ────────────────────────────────────────
+# NFD detects hardware features (GPUs, NICs, etc.) and labels nodes.
+# Required by the GPU operator to auto-discover GPU nodes.
+nfd:
+  enabled: true
+  channel: "stable"
+
+# ── GPU Operator ─────────────────────────────────────────────────────────
+gpuOperator:
+  channel: "v24.3"
+  # InstallPlan approval — Manual for production, Automatic for non-production
+  installPlanApproval: ""  # resolved from cluster.environment
+
+# ── ClusterPolicy ────────────────────────────────────────────────────────
+clusterPolicy:
+  # Operator namespace
+  namespace: nvidia-gpu-operator
+
+  # Driver container settings
+  driver:
+    enabled: true
+    # For RHCOS — use the entitlement-free precompiled driver path
+    useOpenKernelModules: true
+    rdma:
+      enabled: false
+    upgradePolicy:
+      autoUpgrade: true
+      maxParallelUpgrades: 1
+      maxUnavailable: "25%"
+      waitForCompletion:
+        timeoutSeconds: 0
+
+  # Toolkit — NVIDIA Container Toolkit
+  toolkit:
+    enabled: true
+
+  # Device plugin — exposes nvidia.com/gpu resource
+  devicePlugin:
+    enabled: true
+
+  # DCGM exporter — GPU metrics for Prometheus
+  dcgmExporter:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+  # GFD (GPU Feature Discovery) — labels nodes with GPU model info
+  gfd:
+    enabled: true
+
+  # Sandbox workloads (vGPU / time-slicing) — disabled by default
+  sandboxWorkloads:
+    enabled: false
+
+  # Node status exporter
+  nodeStatusExporter:
+    enabled: true

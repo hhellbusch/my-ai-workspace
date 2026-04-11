@@ -1,0 +1,93 @@
+---
+# nvidia-gpu-operator ApplicationSet
+#
+# MODEL: OPT-IN
+# Clusters must have label: app.enabled/nvidia-gpu-operator: "true"
+#
+# DEPENDENCIES:
+#   - NFD (deployed by this chart alongside the GPU operator)
+#   - baremetal-hosts (labels GPU nodes with nvidia.com/gpu.present=true)
+#
+# This is a feature-scoped opt-in: only clusters with GPU-equipped bare metal
+# workers should enable this. The cluster's values.yaml must also set
+# cluster.features.gpu.enabled: true.
+#
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: nvidia-gpu-operator
+  namespace: openshift-gitops
+  labels:
+    component: fleet-management
+    app: nvidia-gpu-operator
+spec:
+  generators:
+    - clusters:
+        selector:
+          matchLabels:
+            app.enabled/nvidia-gpu-operator: "true"
+
+  template:
+    metadata:
+      name: "nvidia-gpu-operator-{{name}}"
+      namespace: openshift-gitops
+      labels:
+        component: fleet-management
+        app: nvidia-gpu-operator
+        cluster: "{{name}}"
+        env: "{{metadata.labels.group.env}}"
+      annotations:
+        fleet.cluster-name: "{{name}}"
+        fleet.app: nvidia-gpu-operator
+        # Deploy after baremetal-hosts (-1) so nodes are labelled first
+        argocd.argoproj.io/sync-wave: "5"
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+
+    spec:
+      project: default
+
+      sources:
+        - repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+          targetRevision: main
+          path: argo-examples/framework/apps/nvidia-gpu-operator
+          helm:
+            ignoreMissingValueFiles: true
+            valueFiles:
+              - values.yaml
+              - $cluster-values/groups/all/values.yaml
+              - $cluster-values/groups/env-{{metadata.labels.group.env}}/values.yaml
+              - $cluster-values/groups/ocp-{{metadata.labels.group.ocp-version}}/values.yaml
+              - $cluster-values/groups/infra-{{metadata.labels.group.infra}}/values.yaml
+              - $cluster-values/groups/region-{{metadata.labels.group.region}}/values.yaml
+              - $cluster-values/groups/{{metadata.labels.group.custom}}/values.yaml
+              - $cluster-values/clusters/{{name}}/values.yaml
+
+        - repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+          targetRevision: main
+          path: argo-examples/framework
+          ref: cluster-values
+
+      destination:
+        server: "{{server}}"
+        namespace: nvidia-gpu-operator
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 30s
+            factor: 2
+            maxDuration: 10m
+
+      ignoreDifferences:
+        - group: nvidia.com
+          kind: ClusterPolicy
+          jsonPointers:
+            - /spec/driver/version

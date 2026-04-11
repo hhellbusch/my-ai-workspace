@@ -1,0 +1,17 @@
+apiVersion: v2
+name: cert-manager
+description: >
+  Deploys cert-manager to a managed OpenShift cluster via the fleet framework.
+  Configures a ClusterIssuer based on cluster values (issuer type, environment).
+  Wraps the upstream cert-manager Helm chart as an ArgoCD Application.
+type: application
+version: 1.0.0
+appVersion: "1.14.4"
+keywords:
+  - cert-manager
+  - certificates
+  - tls
+  - fleet
+maintainers:
+  - name: Platform Team
+    email: platform-team@example.com

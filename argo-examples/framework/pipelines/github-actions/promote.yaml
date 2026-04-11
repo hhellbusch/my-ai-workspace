@@ -1,0 +1,151 @@
+# promote.yaml
+#
+# Manual workflow to promote changes between environment stages.
+# Creates a PR from the source branch to the target branch with the
+# appropriate approvals configured via branch protection rules.
+#
+# This makes promotion a one-click operation from the GitHub Actions UI.
+
+name: Promote to Environment
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_environment:
+        description: 'Target environment to promote to'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+      dry_run:
+        description: 'Dry run — show what would be promoted without creating the PR'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  FRAMEWORK_PATH: argo-examples/framework
+
+jobs:
+  promote:
+    name: Promote to ${{ github.event.inputs.target_environment }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine source and target branches
+        id: branches
+        run: |
+          target="${{ github.event.inputs.target_environment }}"
+          case "$target" in
+            dev)
+              echo "source=main" >> "$GITHUB_OUTPUT"
+              echo "target=release/dev" >> "$GITHUB_OUTPUT"
+              echo "reviewers=0" >> "$GITHUB_OUTPUT"
+              ;;
+            staging)
+              echo "source=release/dev" >> "$GITHUB_OUTPUT"
+              echo "target=release/staging" >> "$GITHUB_OUTPUT"
+              echo "reviewers=1" >> "$GITHUB_OUTPUT"
+              ;;
+            production)
+              echo "source=release/staging" >> "$GITHUB_OUTPUT"
+              echo "target=release/production" >> "$GITHUB_OUTPUT"
+              echo "reviewers=2" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+      - name: Check for changes to promote
+        id: changes
+        run: |
+          source="${{ steps.branches.outputs.source }}"
+          target="${{ steps.branches.outputs.target }}"
+
+          # Fetch remote branches
+          git fetch origin "$source" "$target"
+
+          # Count commits ahead
+          ahead=$(git rev-list --count "origin/$target..origin/$source")
+          echo "commits_ahead=$ahead" >> "$GITHUB_OUTPUT"
+
+          if [ "$ahead" -eq 0 ]; then
+            echo "No changes to promote from $source to $target"
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "$ahead commits to promote from $source to $target"
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+
+            # Show the changes
+            echo "## Changes to promote" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Source:** \`$source\` → **Target:** \`$target\`" >> $GITHUB_STEP_SUMMARY
+            echo "**Commits:** $ahead" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            echo "### Commit log:" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            git log --oneline "origin/$target..origin/$source" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Changed files:" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            git diff --stat "origin/$target..origin/$source" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Create promotion PR
+        if: steps.changes.outputs.has_changes == 'true' && github.event.inputs.dry_run == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          source="${{ steps.branches.outputs.source }}"
+          target="${{ steps.branches.outputs.target }}"
+          target_env="${{ github.event.inputs.target_environment }}"
+          commits="${{ steps.changes.outputs.commits_ahead }}"
+
+          # Generate commit summary for PR body
+          commit_log=$(git log --oneline "origin/$target..origin/$source" | head -20)
+
+          pr_body=$(cat <<EOF
+          ## Promotion: $source → $target
+
+          **Environment:** $target_env
+          **Commits:** $commits
+
+          ### Changes included:
+          \`\`\`
+          $commit_log
+          \`\`\`
+
+          ### Checklist:
+          - [ ] Changes were validated in the previous environment stage
+          - [ ] No unexpected diff in the ArgoCD preview
+          - [ ] Relevant stakeholders have been notified
+          EOF
+          )
+
+          gh pr create \
+            --base "$target" \
+            --head "$source" \
+            --title "Promote to $target_env ($commits commits)" \
+            --body "$pr_body"
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ "${{ steps.changes.outputs.has_changes }}" = "false" ]; then
+            echo "Nothing to promote — ${{ steps.branches.outputs.source }} and ${{ steps.branches.outputs.target }} are in sync."
+          elif [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "Dry run complete. See step summary for details."
+          else
+            echo "Promotion PR created."
+          fi

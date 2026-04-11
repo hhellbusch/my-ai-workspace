@@ -1,0 +1,18 @@
+apiVersion: v2
+name: external-secrets
+description: >
+  Deploys the External Secrets Operator and configures a ClusterSecretStore
+  backed by HashiCorp Vault. Provides the secret bridge between Vault and
+  Kubernetes — other apps (baremetal-hosts, cert-manager) reference secrets
+  that ESO pulls from Vault automatically.
+type: application
+version: 1.0.0
+appVersion: "0.9.x"
+keywords:
+  - external-secrets
+  - vault
+  - secrets
+  - fleet
+maintainers:
+  - name: Platform Team
+    email: platform-team@example.com

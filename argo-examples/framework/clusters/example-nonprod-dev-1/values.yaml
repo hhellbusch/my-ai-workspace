@@ -1,0 +1,45 @@
+# values.yaml — example-nonprod-dev-1 (HIGHEST PRIORITY overrides)
+#
+# Non-production dev cluster deviations from group values.
+# Most settings inherit from groups/env-non-production/values.yaml.
+
+cluster:
+  name: example-nonprod-dev-1
+  displayName: "Non-Production Dev-1"
+  environment: non-production
+  region: us-east
+
+  ocp:
+    version: "4.15"
+    infrastructure: vsphere
+    controlPlane:
+      replicas: 3
+
+  networking:
+    ingressDomain: "apps.example-nonprod-dev-1.example.com"
+    clusterCIDR: "10.132.0.0/14"
+    serviceCIDR: "172.31.0.0/16"
+    networkType: OVNKubernetes
+
+  storage:
+    defaultStorageClass: thin-csi
+
+  features:
+    certManager:
+      enabled: true
+      # Dev uses staging Let's Encrypt to avoid rate limits
+      issuer: letsencrypt-staging
+      email: platform-team@example.com
+    monitoring:
+      enabled: true
+      # Non-production retains less data
+      retention: 7d
+    logging:
+      enabled: true
+      # Dev uses smaller log retention window
+      retentionDays: 3
+
+  custom:
+    datacenter: DC-EAST-1
+    owner: platform-team
+    purpose: development

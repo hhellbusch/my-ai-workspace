@@ -1,0 +1,186 @@
+{{/*
+nvidia-gpu-operator.yaml
+
+Deploys the full NVIDIA GPU stack on bare metal OpenShift:
+
+  1. NFD (Node Feature Discovery) operator — auto-labels GPU nodes
+  2. NVIDIA GPU Operator — manages driver lifecycle, device plugin, toolkit
+  3. ClusterPolicy — configures the GPU operator behavior
+
+The GPU operator runs cluster-wide but only targets nodes with the
+nvidia.com/gpu.present=true label (set by NFD or the baremetal-hosts app).
+
+InstallPlan approval defaults to Manual for production and Automatic
+for non-production (overridable via gpuOperator.installPlanApproval).
+*/}}
+
+{{- if .Values.cluster.features.gpu.enabled }}
+{{- $clusterName := include "nvidia-gpu-operator.clusterName" . }}
+
+{{- if .Values.nfd.enabled }}
+---
+# ── Namespace: NFD ───────────────────────────────────────────────────────
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openshift-nfd
+  labels:
+    {{- include "nvidia-gpu-operator.labels" . | nindent 4 }}
+
+---
+# ── OperatorGroup: NFD ───────────────────────────────────────────────────
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: openshift-nfd
+  namespace: openshift-nfd
+  labels:
+    {{- include "nvidia-gpu-operator.labels" . | nindent 4 }}
+spec:
+  targetNamespaces:
+    - openshift-nfd
+
+---
+# ── Subscription: NFD ────────────────────────────────────────────────────
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: nfd
+  namespace: openshift-nfd
+  labels:
+    {{- include "nvidia-gpu-operator.labels" . | nindent 4 }}
+spec:
+  channel: {{ .Values.nfd.channel | quote }}
+  installPlanApproval: {{ include "nvidia-gpu-operator.installPlanApproval" . }}
+  name: nfd
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+
+---
+# ── NodeFeatureDiscovery CR ──────────────────────────────────────────────
+# Activates NFD to scan hardware and label nodes.
+# GPU nodes will receive labels like:
+#   feature.node.kubernetes.io/pci-10de.present=true (NVIDIA PCI vendor ID)
+apiVersion: nfd.openshift.io/v1
+kind: NodeFeatureDiscovery
+metadata:
+  name: nfd-instance
+  namespace: openshift-nfd
+  labels:
+    {{- include "nvidia-gpu-operator.labels" . | nindent 4 }}
+spec:
+  operand:
+    image: registry.redhat.io/openshift4/ose-node-feature-discovery:latest
+    servicePort: 12000
+  workerConfig:
+    configData: |
+      core:
+        sleepInterval: 60s
+      sources:
+        pci:
+          deviceClassWhitelist:
+            - "0300"  # VGA compatible controller (GPU)
+            - "0302"  # 3D controller (compute GPU)
+          deviceLabelFields:
+            - vendor
+            - device
+{{- end }}
+
+---
+# ── Namespace: GPU Operator ──────────────────────────────────────────────
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.clusterPolicy.namespace }}
+  labels:
+    {{- include "nvidia-gpu-operator.labels" . | nindent 4 }}
+
+---
+# ── OperatorGroup: GPU Operator ──────────────────────────────────────────
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: nvidia-gpu-operator-group
+  namespace: {{ .Values.clusterPolicy.namespace }}
+  labels:
+    {{- include "nvidia-gpu-operator.labels" . | nindent 4 }}
+spec:
+  targetNamespaces:
+    - {{ .Values.clusterPolicy.namespace }}
+
+---
+# ── Subscription: GPU Operator ───────────────────────────────────────────
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: gpu-operator-certified
+  namespace: {{ .Values.clusterPolicy.namespace }}
+  labels:
+    {{- include "nvidia-gpu-operator.labels" . | nindent 4 }}
+spec:
+  channel: {{ .Values.gpuOperator.channel | quote }}
+  installPlanApproval: {{ include "nvidia-gpu-operator.installPlanApproval" . }}
+  name: gpu-operator-certified
+  source: certified-operators
+  sourceNamespace: openshift-marketplace
+
+---
+# ── ClusterPolicy ────────────────────────────────────────────────────────
+# Configures the GPU operator's behavior across the cluster.
+# The operator only acts on nodes matching the node selector.
+apiVersion: nvidia.com/v1
+kind: ClusterPolicy
+metadata:
+  name: gpu-cluster-policy
+  labels:
+    {{- include "nvidia-gpu-operator.labels" . | nindent 4 }}
+spec:
+  operator:
+    defaultRuntime: crio
+    use_ocp_driver_toolkit: true
+
+  driver:
+    enabled: {{ .Values.clusterPolicy.driver.enabled }}
+    useOpenKernelModules: {{ .Values.clusterPolicy.driver.useOpenKernelModules }}
+    {{- if .Values.cluster.features.gpu.driver.usePrecompiled }}
+    usePrecompiled: true
+    {{- end }}
+    {{- with .Values.cluster.features.gpu.driver.version }}
+    version: {{ . | quote }}
+    {{- end }}
+    rdma:
+      enabled: {{ .Values.clusterPolicy.driver.rdma.enabled }}
+    upgradePolicy:
+      {{- toYaml .Values.clusterPolicy.driver.upgradePolicy | nindent 6 }}
+
+  toolkit:
+    enabled: {{ .Values.clusterPolicy.toolkit.enabled }}
+
+  devicePlugin:
+    enabled: {{ .Values.clusterPolicy.devicePlugin.enabled }}
+
+  dcgmExporter:
+    enabled: {{ .Values.clusterPolicy.dcgmExporter.enabled }}
+    {{- if .Values.clusterPolicy.dcgmExporter.serviceMonitor.enabled }}
+    serviceMonitor:
+      enabled: true
+    {{- end }}
+
+  gfd:
+    enabled: {{ .Values.clusterPolicy.gfd.enabled }}
+
+  nodeStatusExporter:
+    enabled: {{ .Values.clusterPolicy.nodeStatusExporter.enabled }}
+
+  sandboxWorkloads:
+    enabled: {{ .Values.clusterPolicy.sandboxWorkloads.enabled }}
+
+  {{- if .Values.cluster.features.gpu.mig.enabled }}
+  mig:
+    strategy: {{ .Values.cluster.features.gpu.mig.strategy }}
+  {{- end }}
+
+{{- else }}
+# nvidia-gpu-operator is disabled for cluster {{ include "nvidia-gpu-operator.clusterName" . }}
+# Set app.enabled/nvidia-gpu-operator: "true" and cluster.features.gpu.enabled: true
+{{- end }}

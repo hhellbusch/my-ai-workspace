@@ -1,0 +1,47 @@
+---
+# hub-app-of-apps.yaml
+#
+# Bootstrap entry point for the entire fleet management framework.
+# Apply this Application once on the hub cluster to activate the framework.
+#
+# This is an App-of-Apps: it points ArgoCD at the framework's hub/applicationsets/
+# directory, which contains all per-app ApplicationSets. From there, ArgoCD
+# generates one Application per cluster per app automatically.
+#
+# Apply with:
+#   oc apply -f hub-app-of-apps.yaml -n openshift-gitops
+#
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fleet-management-hub
+  namespace: openshift-gitops
+  labels:
+    component: fleet-management
+    managed-by: hub-bootstrap
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+    targetRevision: main
+    # Points at the directory containing all per-app ApplicationSets.
+    # ArgoCD will discover and apply all YAML files in this directory.
+    path: argo-examples/framework/hub/applicationsets
+
+  destination:
+    # Deploy ApplicationSets to the hub cluster (local cluster)
+    server: https://kubernetes.default.svc
+    namespace: openshift-gitops
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true

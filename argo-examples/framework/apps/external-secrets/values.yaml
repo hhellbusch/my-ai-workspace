@@ -1,0 +1,34 @@
+# apps/external-secrets/values.yaml
+#
+# App defaults — LOWEST priority in the cascade.
+
+cluster:
+  name: ""
+  environment: ""
+  features:
+    externalSecrets:
+      enabled: false
+
+# External Secrets Operator configuration
+eso:
+  namespace: external-secrets
+  chartVersion: "0.9.13"
+  repoURL: "https://charts.external-secrets.io"
+
+# Vault backend configuration for the ClusterSecretStore
+vault:
+  server: "https://vault.example.com"
+  path: "secret/fleet/clusters"
+  version: "v2"
+  # Auth method: kubernetes | token | approle
+  authMethod: kubernetes
+  # For kubernetes auth — the SA and role are created by ESO on the spoke
+  kubernetesAuth:
+    mountPath: kubernetes
+    # Role name in Vault — conventionally matches the cluster name
+    # Resolved from cluster.name at template time
+    role: ""
+  # For token auth (less preferred — token stored in a Secret)
+  tokenAuth:
+    secretName: vault-token
+    secretKey: token

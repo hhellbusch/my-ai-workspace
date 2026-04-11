@@ -1,0 +1,70 @@
+# groups/env-non-production/values.yaml
+#
+# Values for all non-production clusters (dev, staging, test, etc.).
+# More permissive than production; lower resource usage; faster iteration.
+
+cluster:
+  environment: non-production
+
+  features:
+    certManager:
+      # Non-production uses staging Let's Encrypt to avoid rate limits
+      issuer: letsencrypt-staging
+      email: platform-alerts@example.com
+    monitoring:
+      enabled: true
+      # Non-production retains less data to save storage
+      retention: 7d
+      alertmanager:
+        enabled: true
+    logging:
+      # Non-production clusters get logging by default for debugging
+      enabled: true
+      retentionDays: 7
+
+  # ── Non-production alerting silences ─────────────────────────────────────
+  # IMPORTANT: Helm replaces arrays. Include all-cluster silences here too.
+  # See the mustMergeOverwrite pattern in app chart templates to avoid duplication.
+  alerting:
+    silences:
+      # Inherited from all-clusters (must be repeated — Helm replaces arrays)
+      - name: Watchdog
+        comment: "Permanent silence for the Watchdog alert"
+        matchers:
+          - name: alertname
+            value: Watchdog
+            isRegex: false
+      # Silence noisy alerts in non-production
+      - name: KubePodNotReady
+        comment: "Non-production pods frequently restart during development"
+        duration: "168h"
+        matchers:
+          - name: alertname
+            value: KubePodNotReady
+            isRegex: false
+          - name: namespace
+            value: "^(dev|test|staging)-.*"
+            isRegex: true
+      - name: TargetDown-nonprod
+        comment: "Non-production targets are expected to be intermittently unavailable"
+        matchers:
+          - name: alertname
+            value: TargetDown
+            isRegex: false
+          - name: job
+            value: ".*-nonprod"
+            isRegex: true
+
+  # ── Non-production resource constraints ──────────────────────────────────
+  resources:
+    # Non-production clusters do not enforce limits by default
+    enforceResourceLimits: false
+    defaultLimitCPU: "4"
+    defaultLimitMemory: "8Gi"
+
+  storage:
+    defaultStorageClass: thin-csi
+
+  commonLabels:
+    env: non-production
+    sla: best-effort

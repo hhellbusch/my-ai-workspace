@@ -1,0 +1,48 @@
+---
+# cluster.yaml — example-prod-east-1
+#
+# Production bare metal cluster in DC-EAST-1 running OCP 4.15.
+# Dell R750 compute nodes + Dell R750xa GPU nodes (NVIDIA A100).
+#
+# Apps enabled:
+#   - cert-manager (TLS automation)
+#   - external-secrets (Vault integration for BMC creds + other secrets)
+#   - baremetal-hosts (worker node lifecycle via BareMetalHost CRs)
+#   - nvidia-gpu-operator (GPU driver management on R750xa nodes)
+#
+# Apps disabled:
+#   - cluster-logging (not yet ready for production logging)
+
+cluster:
+  name: example-prod-east-1
+  displayName: "Production East-1"
+  serverURL: "https://api.example-prod-east-1.example.com:6443"
+
+  groups:
+    env: production
+    ocpVersion: "4.15"
+    region: us-east
+    network: ovn-kubernetes
+    infra: baremetal
+    custom: ""
+
+  apps:
+    enabled:
+      cert-manager: true
+      external-secrets: true
+      baremetal-hosts: true
+      nvidia-gpu-operator: true
+    disabled:
+      cluster-logging: true
+
+  managedClusterLabels:
+    group.env: production
+    group.ocp-version: "4.15"
+    group.region: us-east
+    group.network: ovn-kubernetes
+    group.infra: baremetal
+    app.enabled/cert-manager: "true"
+    app.enabled/external-secrets: "true"
+    app.enabled/baremetal-hosts: "true"
+    app.enabled/nvidia-gpu-operator: "true"
+    app.disabled/cluster-logging: "true"

@@ -1,0 +1,37 @@
+# group-values/non-production.yaml
+#
+# Silences applied to dev and staging clusters.
+# These tend to be noisier — silence alerts that would page on-call but are
+# expected and non-actionable in lower environments.
+
+silences:
+  - name: watchdog
+    comment: "Watchdog is a heartbeat alert used by external monitoring; not actionable by on-call"
+    matchers:
+      - name: alertname
+        value: Watchdog
+
+  - name: placeholder-silence-example
+    comment: "Replace with a real alert — this entry is here as a documented placeholder"
+    matchers:
+      - name: alertname
+        value: PlaceholderAlert
+
+  # Non-production-specific silences below
+  - name: kube-cpu-overcommit-nonprod
+    comment: "Dev/staging clusters are intentionally over-committed for cost savings"
+    matchers:
+      - name: alertname
+        value: KubeCPUOvercommit
+      - name: severity
+        value: warning
+
+inhibitRules:
+  - sourceMatch:
+      - name: alertname
+        value: KubeNodeNotReady
+    targetMatch:
+      - name: severity
+        value: critical
+    equal:
+      - node

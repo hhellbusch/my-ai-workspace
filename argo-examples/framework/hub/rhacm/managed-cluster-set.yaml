@@ -1,0 +1,16 @@
+---
+# managed-cluster-set.yaml
+#
+# RHACM ManagedClusterSet that groups all clusters managed by this framework.
+# ManagedClusterSets are the RHACM unit for controlling which clusters an
+# ArgoCD instance (GitOpsCluster) can deploy to.
+#
+# Apply to the hub cluster:
+#   oc apply -f managed-cluster-set.yaml
+#
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSet
+metadata:
+  name: fleet-clusters
+  labels:
+    component: fleet-management

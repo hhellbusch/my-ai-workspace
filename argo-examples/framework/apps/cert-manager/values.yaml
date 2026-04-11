@@ -1,0 +1,60 @@
+# apps/cert-manager/values.yaml
+#
+# App defaults — LOWEST priority in the value cascade.
+# These apply when no group or cluster file overrides a key.
+#
+# The `cluster` section here seeds the cluster metadata schema.
+# Group and cluster value files merge into this structure.
+
+cluster:
+  name: ""
+  environment: ""
+  networking:
+    ingressDomain: ""
+  features:
+    certManager:
+      enabled: false
+      # issuer: which ClusterIssuer type to create
+      #   letsencrypt-prod     — ACME prod (use in production)
+      #   letsencrypt-staging  — ACME staging (use in non-production)
+      #   self-signed          — Self-signed (use in air-gapped or dev)
+      issuer: letsencrypt-staging
+      email: ""
+      # acme: DNS challenge configuration (optional, for wildcard certs)
+      acme:
+        dnsProvider: ""   # route53 | clouddns | azuredns | ""
+      # Additional issuers to create beyond the primary
+      additionalIssuers: []
+
+# cert-manager Helm chart version to deploy (can be overridden per OCP version group)
+certManagerChartVersion: "1.14.4"
+
+# cert-manager Helm chart repository
+certManagerRepoURL: "https://charts.jetstack.io"
+
+# Namespace where cert-manager is installed (existing namespace on OCP)
+certManagerNamespace: cert-manager
+
+# Resource configuration for cert-manager controller
+resources:
+  controller:
+    requests:
+      cpu: "10m"
+      memory: "32Mi"
+    limits:
+      cpu: "500m"
+      memory: "256Mi"
+  webhook:
+    requests:
+      cpu: "10m"
+      memory: "32Mi"
+    limits:
+      cpu: "100m"
+      memory: "64Mi"
+  cainjector:
+    requests:
+      cpu: "10m"
+      memory: "32Mi"
+    limits:
+      cpu: "100m"
+      memory: "128Mi"

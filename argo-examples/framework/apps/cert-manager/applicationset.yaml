@@ -1,0 +1,101 @@
+---
+# cert-manager ApplicationSet
+#
+# MODEL: OPT-IN
+# Clusters must have label: app.enabled/cert-manager: "true"
+#
+# Value cascade (lowest → highest priority):
+#   1. apps/cert-manager/values.yaml       (app defaults)
+#   2. groups/all/values.yaml              (fleet-wide baseline)
+#   3. groups/env-<env>/values.yaml        (environment group)
+#   4. groups/ocp-<version>/values.yaml    (OCP version group)
+#   5. groups/region-<region>/values.yaml  (region group, optional)
+#   6. clusters/<name>/values.yaml         (cluster-specific, HIGHEST)
+#
+# Set cluster labels via:
+#   oc label managedcluster <name> app.enabled/cert-manager=true
+#
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cert-manager
+  namespace: openshift-gitops
+  labels:
+    component: fleet-management
+    app: cert-manager
+spec:
+  generators:
+    - clusters:
+        selector:
+          matchLabels:
+            # OPT-IN: only clusters explicitly opting in receive cert-manager
+            app.enabled/cert-manager: "true"
+
+  template:
+    metadata:
+      name: "cert-manager-{{name}}"
+      namespace: openshift-gitops
+      labels:
+        component: fleet-management
+        app: cert-manager
+        cluster: "{{name}}"
+        env: "{{metadata.labels.group.env}}"
+      annotations:
+        fleet.cluster-name: "{{name}}"
+        fleet.app: cert-manager
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+
+    spec:
+      project: default
+
+      sources:
+        # ── Source 0: cert-manager app chart ─────────────────────────────
+        - repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+          targetRevision: main
+          path: argo-examples/framework/apps/cert-manager
+          helm:
+            ignoreMissingValueFiles: true
+            valueFiles:
+              # Priority 1: app chart defaults
+              - values.yaml
+              # Priority 2: fleet-wide baseline
+              - $cluster-values/groups/all/values.yaml
+              # Priority 3: environment group (e.g. env-production)
+              - $cluster-values/groups/env-{{metadata.labels.group.env}}/values.yaml
+              # Priority 4: OCP version group (e.g. ocp-4.15)
+              - $cluster-values/groups/ocp-{{metadata.labels.group.ocp-version}}/values.yaml
+              # Priority 5: region group (optional — skipped if label absent)
+              - $cluster-values/groups/region-{{metadata.labels.group.region}}/values.yaml
+              # Priority 5: custom group (optional)
+              - $cluster-values/groups/{{metadata.labels.group.custom}}/values.yaml
+              # Priority 6: cluster-specific overrides (HIGHEST)
+              - $cluster-values/clusters/{{name}}/values.yaml
+
+        # ── Source 1: Values repository ref ──────────────────────────────
+        # Exposes argo-examples/framework/ as $cluster-values/
+        # so all group and cluster value files resolve correctly.
+        - repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+          targetRevision: main
+          path: argo-examples/framework
+          ref: cluster-values
+
+      destination:
+        server: "{{server}}"
+        # cert-manager chart creates an Application on the hub targeting the spoke,
+        # so destination namespace here is the hub ArgoCD namespace
+        namespace: openshift-gitops
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=false
+          - ServerSideApply=true
+        retry:
+          limit: 3
+          backoff:
+            duration: 10s
+            factor: 2
+            maxDuration: 3m

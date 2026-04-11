@@ -1,0 +1,95 @@
+---
+# cluster-logging ApplicationSet
+#
+# MODEL: OPT-IN
+# Clusters must have label: app.enabled/cluster-logging: "true"
+#
+# Cluster-level feature flag must also be set in values.yaml:
+#   cluster.features.logging.enabled: true
+#
+# The double gate (label + feature flag) gives two control points:
+#   1. Label: controls whether this ApplicationSet generates an Application
+#      for the cluster (fast, label-based, no Git commit needed)
+#   2. Feature flag in values.yaml: controls whether the chart renders any
+#      resources (Git-controlled, version-tracked)
+#
+# Value cascade (lowest → highest priority):
+#   1. apps/cluster-logging/values.yaml   (app defaults, logging disabled)
+#   2. groups/all/values.yaml             (fleet baseline, logging disabled)
+#   3. groups/env-<env>/values.yaml       (non-production enables logging)
+#   4. groups/ocp-<version>/values.yaml   (version-specific log collector config)
+#   5. clusters/<name>/values.yaml        (cluster-specific retention, log forwarding)
+#
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-logging
+  namespace: openshift-gitops
+  labels:
+    component: fleet-management
+    app: cluster-logging
+spec:
+  generators:
+    - clusters:
+        selector:
+          matchLabels:
+            # OPT-IN: only clusters that explicitly opted in
+            app.enabled/cluster-logging: "true"
+
+  template:
+    metadata:
+      name: "cluster-logging-{{name}}"
+      namespace: openshift-gitops
+      labels:
+        component: fleet-management
+        app: cluster-logging
+        cluster: "{{name}}"
+        env: "{{metadata.labels.group.env}}"
+      annotations:
+        fleet.cluster-name: "{{name}}"
+        fleet.app: cluster-logging
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+
+    spec:
+      project: default
+
+      sources:
+        # ── Source 0: cluster-logging app chart ──────────────────────────
+        - repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+          targetRevision: main
+          path: argo-examples/framework/apps/cluster-logging
+          helm:
+            ignoreMissingValueFiles: true
+            valueFiles:
+              - values.yaml
+              - $cluster-values/groups/all/values.yaml
+              - $cluster-values/groups/env-{{metadata.labels.group.env}}/values.yaml
+              - $cluster-values/groups/ocp-{{metadata.labels.group.ocp-version}}/values.yaml
+              - $cluster-values/groups/region-{{metadata.labels.group.region}}/values.yaml
+              - $cluster-values/groups/{{metadata.labels.group.custom}}/values.yaml
+              - $cluster-values/clusters/{{name}}/values.yaml
+
+        # ── Source 1: Values ref ──────────────────────────────────────────
+        - repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+          targetRevision: main
+          path: argo-examples/framework
+          ref: cluster-values
+
+      destination:
+        server: "{{server}}"
+        namespace: openshift-logging
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 30s
+            factor: 2
+            maxDuration: 5m

@@ -1,0 +1,100 @@
+---
+# cluster-monitoring ApplicationSet
+#
+# MODEL: OPT-OUT
+# All clusters receive cluster-monitoring unless they explicitly opt out with:
+#   app.disabled/cluster-monitoring: "true"
+#
+# Value cascade (lowest → highest priority):
+#   1. apps/cluster-monitoring/values.yaml  (app defaults)
+#   2. groups/all/values.yaml               (fleet-wide baseline, monitoring enabled)
+#   3. groups/env-<env>/values.yaml         (retention, alerting per environment)
+#   4. groups/ocp-<version>/values.yaml     (version-specific Prometheus config)
+#   5. groups/region-<region>/values.yaml   (regional config, optional)
+#   6. clusters/<name>/values.yaml          (cluster-specific, HIGHEST)
+#
+# Silences are resolved using a two-layer strategy (see _helpers.tpl):
+#   - cluster.alerting.silences: group-level silences (highest-priority group wins the array)
+#   - extraSilences: cluster-specific additions (appended without overriding group silences)
+#
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-monitoring
+  namespace: openshift-gitops
+  labels:
+    component: fleet-management
+    app: cluster-monitoring
+spec:
+  generators:
+    - clusters:
+        selector:
+          matchExpressions:
+            # OPT-OUT: all clusters get monitoring unless they explicitly disable it
+            - key: app.disabled/cluster-monitoring
+              operator: DoesNotExist
+
+  template:
+    metadata:
+      name: "cluster-monitoring-{{name}}"
+      namespace: openshift-gitops
+      labels:
+        component: fleet-management
+        app: cluster-monitoring
+        cluster: "{{name}}"
+        env: "{{metadata.labels.group.env}}"
+      annotations:
+        fleet.cluster-name: "{{name}}"
+        fleet.app: cluster-monitoring
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+
+    spec:
+      project: default
+
+      sources:
+        # ── Source 0: cluster-monitoring app chart ────────────────────────
+        - repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+          targetRevision: main
+          path: argo-examples/framework/apps/cluster-monitoring
+          helm:
+            ignoreMissingValueFiles: true
+            valueFiles:
+              - values.yaml
+              - $cluster-values/groups/all/values.yaml
+              - $cluster-values/groups/env-{{metadata.labels.group.env}}/values.yaml
+              - $cluster-values/groups/ocp-{{metadata.labels.group.ocp-version}}/values.yaml
+              - $cluster-values/groups/region-{{metadata.labels.group.region}}/values.yaml
+              - $cluster-values/groups/{{metadata.labels.group.custom}}/values.yaml
+              - $cluster-values/clusters/{{name}}/values.yaml
+
+        # ── Source 1: Values ref ──────────────────────────────────────────
+        - repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+          targetRevision: main
+          path: argo-examples/framework
+          ref: cluster-values
+
+      destination:
+        server: "{{server}}"
+        namespace: openshift-monitoring
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=false
+          - ServerSideApply=true
+        retry:
+          limit: 3
+          backoff:
+            duration: 10s
+            factor: 2
+            maxDuration: 3m
+
+      ignoreDifferences:
+        # Prometheus operator manages these fields after initial deploy
+        - group: monitoring.coreos.com
+          kind: Prometheus
+          jsonPointers:
+            - /spec/replicas

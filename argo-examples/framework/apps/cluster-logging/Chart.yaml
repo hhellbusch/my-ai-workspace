@@ -1,0 +1,17 @@
+apiVersion: v2
+name: cluster-logging
+description: >
+  Deploys and configures the OpenShift Logging stack (Loki + Vector) to managed
+  spoke clusters. Uses opt-in model — clusters must explicitly enable this app.
+  Log retention is resolved through the fleet value cascade.
+type: application
+version: 1.0.0
+appVersion: "5.9"
+keywords:
+  - logging
+  - loki
+  - vector
+  - fleet
+maintainers:
+  - name: Platform Team
+    email: platform-team@example.com

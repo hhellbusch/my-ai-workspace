@@ -1,0 +1,33 @@
+# groups/ocp-4.14/values.yaml
+#
+# Values specific to OpenShift 4.14 clusters.
+# Use for API compatibility, known-issue workarounds, and version-specific config.
+
+cluster:
+  ocp:
+    version: "4.14"
+
+  features:
+    monitoring:
+      # OCP 4.14-specific Prometheus configuration
+      prometheusOperatorVersion: "0.68"
+    certManager:
+      # cert-manager 1.13 is the supported version for OCP 4.14
+      chartVersion: "1.13.3"
+
+  # ── OCP 4.14 known issue workarounds ─────────────────────────────────────
+  workarounds:
+    # BZ-2246001: DNS operator intermittently fails — suppress the alert
+    suppressDNSOperatorAlert: true
+
+  alerting:
+    # Additional silence for a 4.14-specific known alert
+    silences:
+      # Must include all-cluster and env-level silences (arrays are replaced by Helm)
+      # See mustMergeOverwrite pattern in app charts to avoid full duplication.
+      - name: DNSOperatorDegraded-414
+        comment: "Known issue BZ-2246001 — DNS operator transient failure in 4.14"
+        matchers:
+          - name: alertname
+            value: DNSOperatorDegraded
+            isRegex: false

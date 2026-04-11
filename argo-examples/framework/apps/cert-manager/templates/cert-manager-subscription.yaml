@@ -1,0 +1,126 @@
+{{/*
+cert-manager-subscription.yaml
+
+Deploys cert-manager to the target cluster by creating an ArgoCD Application
+on the hub that points at the upstream cert-manager Helm chart.
+
+The "app of apps" pattern: this chart generates an ArgoCD Application resource,
+which ArgoCD on the hub then reconciles by deploying cert-manager to the spoke cluster.
+
+Reads configuration from .Values.cluster.features.certManager (resolved via cascade).
+*/}}
+
+{{- $certMgrConfig := include "cert-manager.resolvedConfig" . | fromYaml }}
+
+{{- if $certMgrConfig.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: "cert-manager-{{ include "cert-manager.clusterName" . }}"
+  namespace: openshift-gitops
+  labels:
+    {{- include "cert-manager.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+    fleet.cluster: {{ include "cert-manager.clusterName" . }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: {{ .Values.certManagerRepoURL }}
+    chart: cert-manager
+    targetRevision: {{ $certMgrConfig.chartVersion | default .Values.certManagerChartVersion }}
+    helm:
+      values: |
+        installCRDs: true
+        global:
+          leaderElection:
+            namespace: {{ .Values.certManagerNamespace }}
+        resources:
+          {{- toYaml .Values.resources.controller | nindent 10 }}
+        webhook:
+          resources:
+            {{- toYaml .Values.resources.webhook | nindent 12 }}
+        cainjector:
+          resources:
+            {{- toYaml .Values.resources.cainjector | nindent 12 }}
+  destination:
+    server: {{ .Values.cluster.serverURL | default "https://kubernetes.default.svc" }}
+    namespace: {{ .Values.certManagerNamespace }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+
+---
+# ClusterIssuer — primary issuer based on cluster.features.certManager.issuer
+{{- if eq $certMgrConfig.issuer "letsencrypt-prod" }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: cluster-issuer-letsencrypt-prod
+  labels:
+    {{- include "cert-manager.labels" . | nindent 4 }}
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: {{ $certMgrConfig.email | required "cert-manager: cluster.features.certManager.email is required" }}
+    privateKeySecretRef:
+      name: letsencrypt-prod-account-key
+    solvers:
+      - http01:
+          ingress:
+            class: openshift-default
+
+{{- else if eq $certMgrConfig.issuer "letsencrypt-staging" }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: cluster-issuer-letsencrypt-staging
+  labels:
+    {{- include "cert-manager.labels" . | nindent 4 }}
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: {{ $certMgrConfig.email | default "platform-team@example.com" }}
+    privateKeySecretRef:
+      name: letsencrypt-staging-account-key
+    solvers:
+      - http01:
+          ingress:
+            class: openshift-default
+
+{{- else if eq $certMgrConfig.issuer "self-signed" }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: cluster-issuer-self-signed
+  labels:
+    {{- include "cert-manager.labels" . | nindent 4 }}
+spec:
+  selfSigned: {}
+
+{{- end }}
+
+{{- range $certMgrConfig.additionalIssuers }}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: cluster-issuer-{{ .name }}
+  labels:
+    {{- include "cert-manager.labels" $ | nindent 4 }}
+spec:
+  {{- toYaml .spec | nindent 2 }}
+{{- end }}
+
+{{- else }}
+# cert-manager is disabled for cluster {{ include "cert-manager.clusterName" . }}
+# (cluster.features.certManager.enabled = false)
+# No resources will be deployed.
+{{- end }}

@@ -1,0 +1,95 @@
+# values.yaml — Cluster-specific value overrides
+#
+# HIGHEST PRIORITY in the cascade. Values set here override ALL group values.
+#
+# The `cluster` key is the shared namespace for cluster identity data.
+# Every app chart can read from `.Values.cluster.*` without any extra setup.
+#
+# Pattern for overriding:
+#   - For map keys: just set the key; Helm deep-merges maps across value files.
+#   - For array fields: you MUST redefine the full array (Helm replaces arrays).
+#   - Use mustMergeOverwrite inside templates when you need to merge arrays
+#     from group values with cluster-specific additions.
+#
+# NOTE: Only set values here that are cluster-specific. Common values belong
+# in the appropriate group file under groups/.
+
+cluster:
+  # ── Identity ──────────────────────────────────────────────────────────────
+  name: CLUSTER-NAME
+  displayName: "Human Readable Cluster Name"
+  environment: ENVIRONMENT     # production | non-production
+  region: REGION
+
+  # ── OpenShift metadata ────────────────────────────────────────────────────
+  ocp:
+    version: "VERSION"         # e.g. "4.15"
+    infrastructure: baremetal  # baremetal | vsphere | aws | gcp | azure
+    controlPlane:
+      replicas: 3
+
+  # ── Networking ────────────────────────────────────────────────────────────
+  networking:
+    ingressDomain: "apps.CLUSTER-NAME.example.com"
+    clusterCIDR: "10.128.0.0/14"
+    serviceCIDR: "172.30.0.0/16"
+    networkType: OVNKubernetes  # OVNKubernetes | OpenShiftSDN
+
+  # ── Storage ───────────────────────────────────────────────────────────────
+  storage:
+    defaultStorageClass: ""    # override group default if needed
+
+  # ── Feature flags ─────────────────────────────────────────────────────────
+  features:
+    certManager:
+      enabled: false
+    externalSecrets:
+      enabled: false
+    baremetalHosts:
+      enabled: false
+    gpu:
+      enabled: false
+    monitoring:
+      enabled: false
+    logging:
+      enabled: false
+
+  # ── Bare metal worker inventory ────────────────────────────────────────
+  # Only needed for bare metal clusters. Each entry creates a BareMetalHost
+  # CR and an ExternalSecret for BMC credentials.
+  #
+  # Uncomment and populate for bare metal clusters:
+  # baremetal:
+  #   bmcDefaults:
+  #     disableCertificateVerification: true
+  #     protocol: "idrac-virtualmedia+https"
+  #   rootDeviceDefaults:
+  #     deviceName: "/dev/sda"
+  #   firmwareSettings:
+  #     enabled: false
+  #     settings: {}
+  #   workers:
+  #     - name: worker-0
+  #       role: worker            # worker | infra | gpu
+  #       hardwareProfile: dell-r750
+  #       bmc:
+  #         address: "idrac-virtualmedia+https://10.20.1.10/redfish/v1/Systems/System.Embedded.1"
+  #         disableCertificateVerification: true
+  #       bootMACAddress: "AA:BB:CC:01:00:00"
+  #       rootDeviceHints:
+  #         deviceName: "/dev/sda"
+  #     - name: gpu-worker-0
+  #       role: gpu
+  #       hardwareProfile: dell-r750xa
+  #       bmc:
+  #         address: "idrac-virtualmedia+https://10.20.2.10/redfish/v1/Systems/System.Embedded.1"
+  #       bootMACAddress: "AA:BB:CC:02:00:00"
+  #       labels:
+  #         nvidia.com/gpu.product: "NVIDIA-A100-SXM4-40GB"
+  #       taints:
+  #         - key: nvidia.com/gpu
+  #           value: "true"
+  #           effect: NoSchedule
+
+  # ── Custom cluster metadata ────────────────────────────────────────────
+  custom: {}

@@ -1,0 +1,30 @@
+# group-values/production.yaml
+#
+# Silences applied only to production clusters.
+# Merged on top of all-clusters.yaml via mustMergeOverwrite in the
+# cascading values chain.
+#
+# mustMergeOverwrite on the silences list means production clusters carry
+# both the all-clusters silences AND the ones defined here.
+
+silences:
+  - name: watchdog
+    comment: "Watchdog is a heartbeat alert used by external monitoring; not actionable by on-call"
+    matchers:
+      - name: alertname
+        value: Watchdog
+
+  - name: placeholder-silence-example
+    comment: "Replace with a real alert — this entry is here as a documented placeholder"
+    matchers:
+      - name: alertname
+        value: PlaceholderAlert
+
+  # Production-specific silences below
+  - name: cluster-not-upgradeable-prod
+    comment: "Suppress upgrade-readiness noise on prod during planned freeze window (JIRA-5678)"
+    matchers:
+      - name: alertname
+        value: ClusterNotUpgradeable
+      - name: severity
+        value: warning
