@@ -68,8 +68,8 @@ This repository also includes a sophisticated AI-assisted development system (Sk
 
 This workspace includes a sophisticated meta-development system with **Skills**, **Commands**, and **Agents** that provide AI-assisted development capabilities:
 
-- **27 Commands** - Slash commands for planning, debugging, todo management, and thinking frameworks
-- **7 Skills** - Autonomous workflows for creating skills, plans, prompts, and more
+- **21 Commands** - Slash commands for planning, debugging, quality gates, backlog management, and thinking frameworks
+- **10 Skills** (+2 expertise) - Autonomous workflows for planning, research, debugging, and more
 - **3 Agents** - Specialized auditors for quality assurance
 
 **Quick Start:**
@@ -102,10 +102,11 @@ This workspace includes a sophisticated meta-development system with **Skills**,
 ```
 ./
 ├── .cursor/
-│   ├── skills/                # Meta-development skills
-│   ├── commands/              # Slash commands (including /organize)
+│   ├── skills/                # Meta-development skills (10 + 2 expertise)
+│   ├── commands/              # Slash commands (21 total, including /review, /audit, /organize)
 │   ├── agents/                # Specialized subagents
-│   └── rules/                 # Always-applied conventions (repo structure, etc.)
+│   └── rules/                 # Always-applied conventions (repo structure, pre-commit review, cross-linking)
+├── .planning/                 # Project briefs, roadmaps, style guides, phase plans
 ├── ansible/
 │   ├── examples/              # Runnable Ansible playbooks and patterns (numbered)
 │   └── troubleshooting/       # Ansible/AAP troubleshooting guides
@@ -114,7 +115,7 @@ This workspace includes a sophisticated meta-development system with **Skills**,
 │   └── labs/                  # Hands-on ArgoCD/GitOps lab exercises
 ├── coreos/
 │   └── examples/              # CoreOS/Ignition/Butane configurations
-├── docs/                      # AI-assisted engineering essays and guides
+├── docs/                      # Essays and guides (engineering + philosophy tracks)
 ├── examples/                  # Standalone scripts and artifacts referenced by docs
 ├── git-projects/              # External git repos for exploration/contribution (gitignored)
 ├── notes/                     # Informal notes and quick references
