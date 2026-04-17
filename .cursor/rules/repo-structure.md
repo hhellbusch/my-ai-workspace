@@ -31,7 +31,6 @@ Content is organized by **product/technology**, then by **content type** within 
 | `notes/` | Informal notes and quick references | Markdown files, loosely organized |
 | `prompts/` | Structured AI prompt templates for repeatable tasks | Numbered files: `NNN-description.md`; completed outputs go in `completed/` |
 | `research/` | Research workspaces — fetched sources, analysis findings, assessments | One dir per topic: `research/{topic}/` with `manifest.md`, `sources/`, `findings/`, `assessment.md` |
-| `tools/` | Utility scripts not tied to a specific example | Scripts with usage comments |
 
 ## Placement Rules
 

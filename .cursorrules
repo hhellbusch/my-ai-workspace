@@ -62,9 +62,6 @@ Research workspaces with fetched sources, analysis findings, and assessments:
 - OpenShift AI LLM deployment article verification (62 references, 53 fetched)
 - NVIDIA GPU Operator OCP 4.18 production impact analysis
 
-#### Tools (`tools/`)
-Utility scripts: ISO server for CoreOS installations
-
 ## Development Guidelines
 
 ### Documentation Standards

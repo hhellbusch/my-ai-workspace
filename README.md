@@ -122,7 +122,6 @@ This workspace includes a sophisticated meta-development system with **Skills**,
 ├── research/                  # Research workspaces (sources, findings, assessments)
 ├── rhacm/
 │   └── examples/              # RHACM configurations
-├── tools/                     # Utility scripts not tied to a specific example
 └── vault/
     └── integration/           # HashiCorp Vault integration patterns
 ```
