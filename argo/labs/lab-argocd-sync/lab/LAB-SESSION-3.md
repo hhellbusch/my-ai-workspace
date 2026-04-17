@@ -26,7 +26,7 @@ Individual Kubernetes resources can carry `argocd.argoproj.io/sync-options` anno
 
 Some resources should never be deleted by ArgoCD even when `prune: true` is set at the Application level — PersistentVolumeClaims containing data, manually-populated Secrets, or resources managed by a separate process.
 
-Add a new template to your component. Create `labs/lab-argocd-sync/components/lab/<name>/templates/protected-configmap.yaml`:
+Add a new template to your component. Create `argo/labs/lab-argocd-sync/components/lab/<name>/templates/protected-configmap.yaml`:
 
 ```yaml
 apiVersion: v1
@@ -45,7 +45,7 @@ data:
 Commit and push. ArgoCD creates the ConfigMap. Now delete the template file:
 
 ```bash
-rm labs/lab-argocd-sync/components/lab/<name>/templates/protected-configmap.yaml
+rm argo/labs/lab-argocd-sync/components/lab/<name>/templates/protected-configmap.yaml
 git add .
 git commit -m "exercise 6a - delete protected configmap template"
 git push
@@ -65,7 +65,7 @@ The ConfigMap survives. The `Prune=false` annotation on the resource overrides t
 
 Certain resource types cannot be updated with a patch — notably Jobs (immutable spec) and some CRDs. The `Replace=true` annotation tells ArgoCD to delete and recreate the resource on every sync rather than attempting a patch.
 
-Create `labs/lab-argocd-sync/components/lab/<name>/templates/init-job.yaml`:
+Create `argo/labs/lab-argocd-sync/components/lab/<name>/templates/init-job.yaml`:
 
 ```yaml
 apiVersion: batch/v1
@@ -180,7 +180,7 @@ Hook resources are not included in the Application's persistent resource tree. T
 
 ### Add a PreSync hook
 
-Create `labs/lab-argocd-sync/components/lab/<name>/templates/pre-sync-check.yaml`:
+Create `argo/labs/lab-argocd-sync/components/lab/<name>/templates/pre-sync-check.yaml`:
 
 ```yaml
 apiVersion: batch/v1
@@ -210,7 +210,7 @@ spec:
 
 ### Add a PostSync hook
 
-Create `labs/lab-argocd-sync/components/lab/<name>/templates/post-sync-notify.yaml`:
+Create `argo/labs/lab-argocd-sync/components/lab/<name>/templates/post-sync-notify.yaml`:
 
 ```yaml
 apiVersion: batch/v1

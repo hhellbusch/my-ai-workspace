@@ -38,25 +38,25 @@ Complete all steps below before participants arrive.
 
 ### 2. Repository
 
-- [ ] Lab repo is available and contains `labs/lab-argocd-sync/`
+- [ ] Lab repo is available and contains `argo/labs/lab-argocd-sync/`
 - [ ] All participants have push access (or have forked the repo)
 - [ ] Repo URL and credentials are ready to share
 - [ ] `main` is the tracked branch (or update `targetRevision` in `argocd/root-app.yaml` to match)
 
 ### 3. Bootstrap the root app
 
-Edit `labs/lab-argocd-sync/argocd/root-app.yaml` and replace both `<YOUR-ORG>/<YOUR-REPO>` placeholders with the actual repo:
+Edit `argo/labs/lab-argocd-sync/argocd/root-app.yaml` and replace both `<YOUR-ORG>/<YOUR-REPO>` placeholders with the actual repo:
 
 ```bash
 # Verify the file is updated
-grep "YOUR-ORG" labs/lab-argocd-sync/argocd/root-app.yaml
+grep "YOUR-ORG" argo/labs/lab-argocd-sync/argocd/root-app.yaml
 # Should return nothing if placeholders are replaced
 ```
 
 Commit and push the updated root-app.yaml, then apply it:
 
 ```bash
-oc apply -f labs/lab-argocd-sync/argocd/root-app.yaml -n argocd
+oc apply -f argo/labs/lab-argocd-sync/argocd/root-app.yaml -n argocd
 ```
 
 This is the **only `oc apply`** required. Everything else is managed by ArgoCD.
@@ -140,8 +140,8 @@ Walk through this before participants start their hands-on work. Narrate every d
 
 ```bash
 # Step 1 — copy the example component
-cp -r labs/lab-argocd-sync/components/lab/example \
-      labs/lab-argocd-sync/components/lab/demo
+cp -r argo/labs/lab-argocd-sync/components/lab/example \
+      argo/labs/lab-argocd-sync/components/lab/demo
 
 # Step 2 — update values.yaml
 # Edit components/lab/demo/values.yaml:
@@ -151,7 +151,7 @@ cp -r labs/lab-argocd-sync/components/lab/example \
 # Step 3 — register in the component registry
 # Edit bootstrap/helm-values/applications.yaml:
 #   demo:
-#     path: labs/lab-argocd-sync/components/lab/demo
+#     path: argo/labs/lab-argocd-sync/components/lab/demo
 
 # Step 4 — enable in the group
 # Edit groups/lab-group/values.yaml:

@@ -62,7 +62,7 @@ Click **Sync** → **Synchronize** to bring replicas back to 1.
 
 ### Enable automated sync
 
-Open `labs/lab-argocd-sync/cluster/lab-cluster/values.yaml` and add an `argo:` block to your component entry:
+Open `argo/labs/lab-argocd-sync/cluster/lab-cluster/values.yaml` and add an `argo:` block to your component entry:
 
 ```yaml
 lab-cluster-components:
@@ -86,7 +86,7 @@ The orchestrator detects the change and updates your Application's `syncPolicy`.
 
 ### Test it
 
-Edit `labs/lab-argocd-sync/components/lab/<name>/templates/configmap.yaml`. Change the `<h1>` line:
+Edit `argo/labs/lab-argocd-sync/components/lab/<name>/templates/configmap.yaml`. Change the `<h1>` line:
 
 ```html
 <h1>Auto-synced by ArgoCD!</h1>
@@ -113,7 +113,7 @@ oc get configmap <name>-extra -n <name>
 Now delete the template file from your component:
 
 ```bash
-rm labs/lab-argocd-sync/components/lab/<name>/templates/extra-configmap.yaml
+rm argo/labs/lab-argocd-sync/components/lab/<name>/templates/extra-configmap.yaml
 git add .
 git commit -m "exercise 3 - remove extra-configmap, no prune yet"
 git push

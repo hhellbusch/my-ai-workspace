@@ -88,11 +88,11 @@ Open the ArgoCD UI. Find the `example` Application and confirm it is **Synced** 
 ### Step 0.2 — Copy the example component
 
 ```bash
-cp -r labs/lab-argocd-sync/components/lab/example \
-      labs/lab-argocd-sync/components/lab/<name>
+cp -r argo/labs/lab-argocd-sync/components/lab/example \
+      argo/labs/lab-argocd-sync/components/lab/<name>
 ```
 
-Open `labs/lab-argocd-sync/components/lab/<name>/values.yaml` and update these two fields:
+Open `argo/labs/lab-argocd-sync/components/lab/<name>/values.yaml` and update these two fields:
 
 ```yaml
 appName: <name>
@@ -104,19 +104,19 @@ greeting: "Hello from <name>!"
 
 ### Step 0.3 — Register your component
 
-Open `labs/lab-argocd-sync/bootstrap/helm-values/applications.yaml` and add your component:
+Open `argo/labs/lab-argocd-sync/bootstrap/helm-values/applications.yaml` and add your component:
 
 ```yaml
 availableApplications:
   example:
-    path: labs/lab-argocd-sync/components/lab/example
+    path: argo/labs/lab-argocd-sync/components/lab/example
   <name>:                                               # add these two lines
-    path: labs/lab-argocd-sync/components/lab/<name>
+    path: argo/labs/lab-argocd-sync/components/lab/<name>
 ```
 
 ### Step 0.4 — Enable in the group
 
-Open `labs/lab-argocd-sync/groups/lab-group/values.yaml` and add your component:
+Open `argo/labs/lab-argocd-sync/groups/lab-group/values.yaml` and add your component:
 
 ```yaml
 lab-group-components:
@@ -126,7 +126,7 @@ lab-group-components:
 
 ### Step 0.5 — Add a cluster-level entry
 
-Open `labs/lab-argocd-sync/cluster/lab-cluster/values.yaml` and add your entry:
+Open `argo/labs/lab-argocd-sync/cluster/lab-cluster/values.yaml` and add your entry:
 
 ```yaml
 lab-cluster-components:
@@ -162,10 +162,10 @@ Run this after your final session.
 # Remove your component from the three cascade files
 # (edit applications.yaml, lab-group/values.yaml, lab-cluster/values.yaml)
 # then remove your component folder
-git rm -r labs/lab-argocd-sync/components/lab/<name>/
-git add labs/lab-argocd-sync/bootstrap/helm-values/applications.yaml \
-        labs/lab-argocd-sync/groups/lab-group/values.yaml \
-        labs/lab-argocd-sync/cluster/lab-cluster/values.yaml
+git rm -r argo/labs/lab-argocd-sync/components/lab/<name>/
+git add argo/labs/lab-argocd-sync/bootstrap/helm-values/applications.yaml \
+        argo/labs/lab-argocd-sync/groups/lab-group/values.yaml \
+        argo/labs/lab-argocd-sync/cluster/lab-cluster/values.yaml
 git commit -m "cleanup <name> component"
 git push
 

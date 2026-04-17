@@ -13,6 +13,7 @@ Content is organized by **product/technology**, then by **content type** within 
 | `ansible/examples/` | Runnable Ansible playbooks demonstrating patterns | Numbered dirs: `NNN_description/`, each with `README.md` and playbook |
 | `ansible/troubleshooting/` | Ansible/AAP troubleshooting guides | Named dirs: `topic-slug/README.md` following symptom → cause → fix structure |
 | `argo/examples/` | ArgoCD configurations, app-of-apps patterns, GitOps workflows | Subdirs: `apps/`, `charts/`, `scripts/`, `docs/`, `infrastructure/`, `examples/` |
+| `argo/labs/` | Hands-on ArgoCD/GitOps lab exercises | Named dirs: `lab-description/` with `LAB-GUIDE.md` or session files |
 | `coreos/examples/` | CoreOS/Ignition/Butane configurations | Named dirs with Butane configs and READMEs |
 | `ocp/examples/` | OpenShift configuration examples and templates | Named dirs with configs and READMEs |
 | `ocp/troubleshooting/` | OpenShift troubleshooting guides | Named dirs: `topic-slug/README.md`, same structure as ansible/troubleshooting |
@@ -27,7 +28,6 @@ Content is organized by **product/technology**, then by **content type** within 
 | `docs/` | AI-assisted engineering essays and guides — a cohesive documentation suite | Markdown files linked from `docs/README.md`; no troubleshooting guides here |
 | `examples/` | Standalone scripts and artifacts referenced by docs | Named dirs: `topic-slug/` (e.g., `gif-recoloring/`) |
 | `git-projects/` | External git repos cloned for exploration and upstream contributions (**gitignored**) | Clone repos directly; not committed to this repo |
-| `labs/` | Hands-on lab exercises | Named dirs: `lab-description/` |
 | `notes/` | Informal notes and quick references | Markdown files, loosely organized |
 | `prompts/` | Structured AI prompt templates for repeatable tasks | Numbered files: `NNN-description.md`; completed outputs go in `completed/` |
 | `research/` | Research workspaces — fetched sources, analysis findings, assessments | One dir per topic: `research/{topic}/` with `manifest.md`, `sources/`, `findings/`, `assessment.md` |

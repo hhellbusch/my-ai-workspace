@@ -106,13 +106,13 @@ This workspace includes a sophisticated meta-development system with **Skills**,
 │   ├── examples/              # Runnable Ansible playbooks and patterns (numbered)
 │   └── troubleshooting/       # Ansible/AAP troubleshooting guides
 ├── argo/
-│   └── examples/              # ArgoCD configs, app-of-apps, GitOps workflows
+│   ├── examples/              # ArgoCD configs, app-of-apps, GitOps workflows
+│   └── labs/                  # Hands-on ArgoCD/GitOps lab exercises
 ├── coreos/
 │   └── examples/              # CoreOS/Ignition/Butane configurations
 ├── docs/                      # AI-assisted engineering essays and guides
 ├── examples/                  # Standalone scripts and artifacts referenced by docs
 ├── git-projects/              # External git repos for exploration/contribution (gitignored)
-├── labs/                      # Hands-on lab exercises
 ├── notes/                     # Informal notes and quick references
 ├── ocp/
 │   ├── examples/              # OpenShift configuration examples and templates

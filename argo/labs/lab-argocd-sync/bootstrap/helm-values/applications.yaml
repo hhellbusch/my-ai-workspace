@@ -9,4 +9,4 @@
 #
 availableApplications:
   example:
-    path: labs/lab-argocd-sync/components/lab/example
+    path: argo/labs/lab-argocd-sync/components/lab/example

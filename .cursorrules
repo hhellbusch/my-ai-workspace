@@ -12,6 +12,7 @@ This workspace contains practical DevOps examples, configurations, and troublesh
 
 #### ArgoCD (`argo/`)
 - **`examples/`** — Multi-hub GitOps pipelines, app-of-apps patterns, Helm charts, GitHub Actions workflows, test scripts, framework with devspaces and guidelines
+- **`labs/`** — Hands-on lab exercises: ArgoCD sync patterns, GitOps fundamentals
 
 #### CoreOS (`coreos/`)
 - **`examples/`** — Butane configurations: ISO ejection after installation, first-boot automation
@@ -46,9 +47,6 @@ Standalone scripts and artifacts referenced by documentation:
 External git repositories cloned for exploration and upstream contributions:
 - argocd-diff-preview — explored feasibility improvement, resulted in upstream issue
 - helm-charts — Helm chart improvement in progress
-
-#### Labs (`labs/`)
-Hands-on lab exercises: ArgoCD sync, GitOps fundamentals
 
 #### Notes (`notes/`)
 Informal notes and quick references: OpenShift useful commands, idea captures
