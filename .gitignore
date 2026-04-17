@@ -75,9 +75,9 @@ ocp/install/
 git-projects/
 
 # ===== Planning Artifacts =====
-# Internal process files, not for sharing
-
-.planning/
+# Project briefs, roadmaps, and style guides are tracked.
+# Phase execution files (PLAN.md, SUMMARY.md) are also tracked
+# for cross-session continuity.
 
 # ===== Meta-System Artifacts =====
 # Backup and temporary import directories

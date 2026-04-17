@@ -25,7 +25,7 @@ Content is organized by **product/technology**, then by **content type** within 
 
 | Directory | Purpose | Convention |
 |---|---|---|
-| `docs/` | AI-assisted engineering essays and guides — a cohesive documentation suite | Markdown files linked from `docs/README.md`; no troubleshooting guides here |
+| `docs/` | Essays and guides — AI-assisted engineering and philosophy/practice tracks | Markdown files linked from `docs/README.md`; no troubleshooting guides here |
 | `examples/` | Standalone scripts and artifacts referenced by docs | Named dirs: `topic-slug/` (e.g., `gif-recoloring/`) |
 | `git-projects/` | External git repos cloned for exploration and upstream contributions (**gitignored**) | Clone repos directly; not committed to this repo |
 | `notes/` | Informal notes and quick references | Markdown files, loosely organized |
@@ -40,7 +40,7 @@ Content is organized by **product/technology**, then by **content type** within 
 4. **Scripts that support a doc or example** live alongside that doc or example, not in the repo root.
 5. **The repo root** should only contain repo-level files: `README.md`, `AI-DISCLOSURE.md`, `BACKLOG.md`, `.gitignore`, `.cursorrules`, `.actrc`, `.actrc.example`, `.secrets`. Note: `git-projects/` and `ocp/install/` exist locally but are gitignored.
 6. **New top-level directories** need a clear reason. For new products/technologies, create a `{product}/` directory with appropriate content type subdirectories. For cross-cutting content, prefer fitting into the existing structure.
-7. **The `docs/` folder** is specifically for the AI-assisted engineering documentation suite. It is a curated, ordered reading list — not a dumping ground for all markdown files.
+7. **The `docs/` folder** contains curated essay tracks: AI-assisted engineering and philosophy/practice (Zen, karate, and applied philosophy). It is an ordered reading list — not a dumping ground for all markdown files.
 8. **The top-level `examples/` folder** is for doc-supporting artifacts (e.g., scripts referenced by essays in `docs/`), not for product-specific examples.
 
 ## Naming Conventions

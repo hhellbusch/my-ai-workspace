@@ -1,0 +1,91 @@
+# Voice and Style Guide — Zen, Karate, and the Way of Working
+
+Reference document for maintaining consistent voice across the essay series. Every meta-prompt in the drafting pipeline should reference this file.
+
+---
+
+## The Blended Voice
+
+This series uses two registers that alternate based on content:
+
+### Personal Voice (philosophical and experiential sections)
+- First person ("I," "my practice," "when I trained")
+- Reflective, unhurried — the reader should feel the writer thinking, not performing
+- Specific over abstract: name the dojo, the kata, the moment — not "one time in training"
+- Comfortable with uncertainty and paradox (Zen is not a system of answers)
+- Does not explain away the ineffable; acknowledges what can only be experienced
+
+### Practitioner Voice (applied and analytical sections)
+- Second person or inclusive "we" where it helps ("you notice this in teams," "we carry this into work")
+- Direct and grounded, matching the existing `docs/` tone
+- Claims paired with honest limits — what transfers and what doesn't
+- Avoids motivational speaker energy; this is observation, not prescription
+
+### Transitions Between Registers
+
+The shift between personal and practitioner voice should feel natural, not jarring. Common patterns:
+- Personal anecdote → generalized principle → applied observation
+- Philosophical concept → how it's experienced in practice → where it appears outside the dojo
+- Avoid abrupt register changes mid-paragraph
+
+---
+
+## Structural Conventions
+
+Match the existing `docs/` essay format:
+
+- **Title**: `#` heading, optionally with an em-dash subtitle
+- **Front matter**: Blockquote with bold **Audience:** and **Purpose:** lines
+- **Section breaks**: Horizontal rules `---` between major thematic blocks
+- **Hierarchy**: `##` for main sections, `###` for subtopics
+- **Related Reading**: Table at the end linking to other essays in the series and to the existing AI-focused docs where natural
+- **AI Disclosure**: Standard italic footer: *This document was written with AI assistance (Cursor). See [AI-DISCLOSURE.md](../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*
+
+---
+
+## Japanese Terminology
+
+### When to Use Original Terms
+- Use the Japanese/Zen term when it carries meaning that the English translation loses (mushin is not just "no-mind")
+- Italicize on first use with a brief parenthetical: *mushin* (no-mind)
+- After first use in an essay, use the term without explanation
+- The [glossary](glossary.md) (once created) provides the canonical definitions; individual essays don't need to replicate them
+
+### When to Use English
+- For concepts where the English is sufficient and the Japanese would feel like unnecessary exoticization
+- For terms the reader needs to understand immediately in an applied context
+
+### Avoid
+- Overloading paragraphs with untranslated terms (more than 2-3 per paragraph signals the writing needs to breathe)
+- Using Japanese terms as decoration or to signal authenticity — use them because they're precise
+
+---
+
+## What This Series Is Not
+
+These guardrails prevent common failure modes:
+
+- **Not a martial arts textbook.** Don't explain techniques, ranks, or organizational politics unless they serve a philosophical point.
+- **Not a Zen Buddhism primer.** Assume the reader is curious and intelligent but not a practitioner. Teach through experience, not doctrine.
+- **Not motivational content.** No "ancient warriors knew the secret to success" framing. The philosophy is valuable because it's true, not because it's exotic.
+- **Not memoir.** Personal experience serves the ideas, not the other way around. The reader should remember the insight, not the autobiography.
+- **Not prescriptive.** "This is what I've found" rather than "you should do this." The dojo teaches that the path is individual.
+
+---
+
+## Tone Benchmarks
+
+For calibration, the target tone sits between:
+
+- **Too academic**: "The phenomenological reduction inherent in zazen practice creates epistemic conditions favorable to non-dual awareness..."
+- **Too casual**: "Karate totally changed my life, and here's why you should try it too!"
+- **Target**: "There's a moment in kumite where you stop thinking about what to do next. Your body knows. Your hands are already moving. The first time this happens, you realize that everything you've been told about mushin isn't metaphor — it's description."
+
+---
+
+## Cross-Linking Approach
+
+- Essays within the zen-karate series reference each other naturally ("as explored in *The Way Is in Training*...")
+- Bridge essays (4 and 5) explicitly connect to the existing AI-focused docs
+- Don't force connections — if an essay stands alone, let it stand alone
+- The `docs/README.md` will organize these as a second reading track alongside the existing AI-focused sequence

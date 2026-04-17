@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-17
+> Last updated: 2026-04-17 (zen-karate essay library scaffolding added)
 
 ## In Progress
 
@@ -11,6 +11,24 @@
 - **Started:** 2026-03
 
 ## Up Next
+
+### Zen-karate personal knowledge base
+- **Product:** docs
+- **Context:** Structured template for capturing training history, key teachers, formative moments, philosophical anchors, and examples of how martial arts philosophy has guided life and work decisions. This is the most critical input to the essay series — everything downstream gets better when it has real personal experience to draw from. Template created at `research/zen-karate-philosophy/personal-notes.md`, needs user to populate.
+- **Links:** `research/zen-karate-philosophy/personal-notes.md`, `.planning/zen-karate/`
+- **Added:** 2026-04-17
+
+### Zen-karate curated reading list
+- **Product:** docs
+- **Context:** Annotated bibliography of books, teachers, passages, and media that shaped a lifelong karate practice. Goes beyond what web research can find — captures why each source matters, not just what it says. Feeds directly into the research manifest. Template at `research/zen-karate-philosophy/curated-reading.md`, needs user to populate.
+- **Links:** `research/zen-karate-philosophy/curated-reading.md`, `.planning/zen-karate/`
+- **Added:** 2026-04-17
+
+### Zen-karate essay voice/style guide
+- **Product:** docs
+- **Context:** Reference document defining the blended voice for the essay series: personal first-person for philosophical/experiential sections, practitioner tone for applied sections. Includes structural conventions, Japanese terminology approach, and "this, not that" examples. Referenced by all meta-prompts in the drafting pipeline.
+- **Links:** `.planning/zen-karate/STYLE.md`, `.planning/zen-karate/`
+- **Added:** 2026-04-17
 
 ### Headless browser fallback for research fetcher
 - **Product:** meta
@@ -25,6 +43,48 @@
 - **Added:** 2026-04-10
 
 ## Ideas
+
+### Essay: The Way Is in Training
+- **Product:** docs
+- **Context:** Foundation essay for the zen-karate series. The historical and philosophical connection between Zen Buddhism and karate. Core concepts: mushin (no-mind), zanshin (awareness), fudoshin (immovable mind). What lifelong practice teaches that cannot be learned from books. This is the personal anchor essay that establishes vocabulary for the rest of the series.
+- **Links:** `.planning/zen-karate/`, `research/zen-karate-philosophy/`
+- **Added:** 2026-04-17
+
+### Essay: Five Hindrances
+- **Product:** docs
+- **Context:** Shi Heng Yi's five hindrances to self-mastery (sensual desire, ill will, dullness/heaviness, restlessness, doubt) mapped to everyday life and work. How a martial artist recognizes and works through these in practice and in professional life.
+- **Links:** `.planning/zen-karate/`
+- **Added:** 2026-04-17
+
+### Essay: Discipline as Freedom
+- **Product:** docs
+- **Context:** The paradox that restriction enables growth. Structure in the dojo, structure in work. How kata (prescribed forms) build the foundation for spontaneous, creative action. Connects to Shi Heng Yi's teaching that freedom grows inside discipline.
+- **Links:** `.planning/zen-karate/`
+- **Added:** 2026-04-17
+
+### Essay: The Dojo and the Team
+- **Product:** docs
+- **Context:** Bridge essay connecting martial arts philosophy to engineering team culture. How dojo culture (mutual respect, senpai/kohai, cleaning the floor, showing up) translates to ways of working and leadership. Presence over performance. Non-attachment to outcomes in collaborative work.
+- **Links:** `.planning/zen-karate/`
+- **Added:** 2026-04-17
+
+### Essay: Beginner's Mind in the Age of AI
+- **Product:** docs
+- **Context:** Explicit bridge to the existing AI-focused essay track. Shoshin (beginner's mind) as the essential posture for working with AI. Connects back to themes in The Shift and AI-Assisted Development Workflows.
+- **Links:** `.planning/zen-karate/`, `docs/the-shift.md`, `docs/ai-assisted-development-workflows.md`
+- **Added:** 2026-04-17
+
+### Zen-karate concept glossary
+- **Product:** docs
+- **Context:** Shared glossary of Japanese/Zen terms (mushin, zanshin, fudoshin, shoshin, kata, kihon, kumite, senpai/kohai, dojo kun, etc.) extracted after Essay 1 is drafted. Keeps definitions consistent across the series so later essays don't re-explain foundational vocabulary.
+- **Links:** `research/zen-karate-philosophy/`
+- **Added:** 2026-04-17
+
+### Zen-essay slash command
+- **Product:** meta
+- **Context:** Dedicated slash command encoding the proven essay pipeline after 2-3 essays have been written manually. Pulls from shared research library and personal-notes.md, applies voice/style guide, enforces docs/ conventions, prompts for personal content at the right points.
+- **Links:** `.cursor/commands/`
+- **Added:** 2026-04-17
 
 ### Expand OCP troubleshooting guides
 - **Product:** ocp
