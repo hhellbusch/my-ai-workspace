@@ -52,7 +52,7 @@ This disclosure is provided in the interest of transparency and to help you make
 **Getting Started:**
 
 1. **Clone the repository**: `git clone <repo-url>`
-2. **Explore examples**: Browse `ansible-examples/`, `ocp-troubleshooting/`, etc.
+2. **Explore examples**: Browse `ansible/examples/`, `ocp/troubleshooting/`, etc.
 3. **Copy and customize**: Use `.example.yml` templates, update for your infrastructure
 4. **Keep secrets safe**: Real inventory files and credentials should be in `.gitignore`
 
@@ -102,23 +102,29 @@ This workspace includes a sophisticated meta-development system with **Skills**,
 │   ├── commands/              # Slash commands (including /organize)
 │   ├── agents/                # Specialized subagents
 │   └── rules/                 # Always-applied conventions (repo structure, etc.)
-├── ansible-examples/          # Runnable Ansible playbooks and patterns (numbered)
-├── ansible-troubleshooting/   # Ansible/AAP troubleshooting guides
-├── argo-examples/             # ArgoCD configurations, app-of-apps, GitOps workflows
-├── coreos-examples/           # CoreOS/Ignition/Butane configurations
+├── ansible/
+│   ├── examples/              # Runnable Ansible playbooks and patterns (numbered)
+│   └── troubleshooting/       # Ansible/AAP troubleshooting guides
+├── argo/
+│   └── examples/              # ArgoCD configs, app-of-apps, GitOps workflows
+├── coreos/
+│   └── examples/              # CoreOS/Ignition/Butane configurations
 ├── docs/                      # AI-assisted engineering essays and guides
 ├── examples/                  # Standalone scripts and artifacts referenced by docs
 ├── git-projects/              # External git repos for exploration/contribution (gitignored)
 ├── labs/                      # Hands-on lab exercises
 ├── notes/                     # Informal notes and quick references
-├── ocp-examples/              # OpenShift configuration examples and templates
-├── ocp-install/               # Local OCP install working directory (gitignored)
-├── ocp-troubleshooting/       # OpenShift troubleshooting guides
+├── ocp/
+│   ├── examples/              # OpenShift configuration examples and templates
+│   ├── troubleshooting/       # OpenShift troubleshooting guides
+│   └── install/               # Local OCP install working directory (gitignored)
 ├── prompts/                   # Structured AI prompt templates for repeatable tasks
 ├── research/                  # Research workspaces (sources, findings, assessments)
-├── rhacm-examples/            # Red Hat Advanced Cluster Management configurations
+├── rhacm/
+│   └── examples/              # RHACM configurations
 ├── tools/                     # Utility scripts not tied to a specific example
-└── vault-integration/         # HashiCorp Vault integration patterns
+└── vault/
+    └── integration/           # HashiCorp Vault integration patterns
 ```
 
 See [`.cursor/rules/repo-structure.md`](.cursor/rules/repo-structure.md) for full conventions on where new content should go.
@@ -154,97 +160,36 @@ Located in `.cursor/skills/`, `.cursor/commands/`, and `.cursor/agents/`. An int
 
 [View Meta-Development Documentation →](INTEGRATION.md)
 
-## 📁 Ansible Examples
+## 📁 Ansible
 
-Located in `ansible-examples/`. Contains runnable Ansible playbooks demonstrating best practices and common patterns.
+Located in `ansible/`. Playbooks, patterns, and troubleshooting for Ansible and AAP.
 
-**What's included:**
-- Retry logic for flaky operations
-- Error handling with block/rescue
-- Conditional task execution
-- Virtual media management (Dell iDRAC)
-- Recovery and retry patterns
+- [Examples](ansible/examples/README.md) — 13 runnable playbooks: retry logic, error handling, parallel execution, BMC operations, Dell memory validation
+- [Troubleshooting](ansible/troubleshooting/README.md) — AAP 2.5 token 404 and other guides
 
-[View Ansible Examples →](ansible-examples/README.md)
+## 📁 ArgoCD
 
-## 📁 Argo CD Examples
+Located in `argo/examples/`. App-of-Apps patterns, multi-environment configurations, Helm charts, and GitHub Actions workflows.
 
-Located in `argo-examples/`. Contains ArgoCD App-of-Apps patterns, multi-environment configurations, and GitHub Actions workflows.
+- [Overview](argo/examples/README.md) — Main index
+- [Documentation](argo/examples/docs/README.md) — Getting started, patterns, workflows
+- [Setup Guide](argo/examples/docs/getting-started/SETUP-GUIDE.md)
+- [App-of-Apps Pattern](argo/examples/docs/patterns/APP-OF-APPS-PATTERN.md)
 
-**What's included:**
-- App-of-Apps pattern implementation
-- Multi-environment deployments (dev/staging/production)
-- GitHub Actions integration
-- Helm chart templates
-- Tag-based deployment workflows
-- Test scripts and utilities
+## 📁 CoreOS
 
-**Directory structure:**
-- `docs/` - All documentation organized by topic (getting-started, patterns, workflows, deployment)
-- `scripts/` - Test and utility scripts
-- `charts/` - Helm chart definitions
-- `apps/` - Example application manifests
-- `infrastructure/` - Infrastructure component manifests
+Located in `coreos/examples/`. Ignition configurations and Butane patterns for RHEL CoreOS and Fedora CoreOS.
 
-**Key documentation:**
-- [ArgoCD Examples Overview](argo-examples/README.md) - Main overview
-- [Documentation Guide](argo-examples/docs/README.md) - Complete documentation index
-- [Setup Guide](argo-examples/docs/getting-started/SETUP-GUIDE.md) - Getting started
-- [Quick Reference](argo-examples/docs/getting-started/QUICK-REFERENCE.md) - Common commands
-- [App-of-Apps Pattern](argo-examples/docs/patterns/APP-OF-APPS-PATTERN.md) - Pattern explanation
+- [Examples](coreos/examples/README.md) — ISO auto-eject, systemd patterns, multi-deployment scenarios
+- [ISO Auto-Eject](coreos/examples/iso-eject-after-install/) — Featured example
 
-## 📁 CoreOS Examples
+## 📁 OpenShift
 
-Located in `coreos-examples/`. Contains Ignition configurations and patterns for RHEL CoreOS and Fedora CoreOS.
+Located in `ocp/`. Configuration examples, troubleshooting guides, and install working directory.
 
-**What's included:**
-- Auto-eject installation media after install
-- Systemd service patterns
-- Butane (YAML) to Ignition (JSON) examples
-- Multiple deployment scenarios (physical, VMware, Redfish/BMC)
-- Production-ready configurations with error handling
-
-[View CoreOS Examples →](coreos-examples/README.md)
-
-**Featured example:**
-- [ISO Auto-Eject](coreos-examples/iso-eject-after-install/) - Automatically eject installation media after CoreOS completes installation
-
-## 📁 OpenShift Examples
-
-Located in `ocp-examples/`. Configuration examples and templates for OpenShift clusters.
-
-**What's included:**
-- NetworkAttachmentDefinition (NAD) configuration for VLANs and additional networks
-- OVN-Kubernetes networking configuration
-- Real-world examples with complete configurations
-- Quick reference guides for fast lookups
-- Troubleshooting guides for common issues
-
-[View OpenShift Configuration Examples →](ocp-examples/README.md)
-
-**Available examples:**
-- [NetworkAttachmentDefinition (NAD)](ocp-examples/network-attachment-definitions/README.md) - Complete guide for configuring additional networks, VLANs, and multi-network pods
-- [OVN-Kubernetes Install Config](ocp-examples/ovn-kubernetes-install-config/README.md) - Install-config.yaml examples for OVN-Kubernetes networking with MTU configuration
-
-## 📁 OpenShift Troubleshooting
-
-Located in `ocp-troubleshooting/`. Comprehensive troubleshooting guides for common OpenShift cluster issues.
-
-**What's included:**
-- Control plane component troubleshooting
-- Step-by-step diagnostic procedures
-- Automated diagnostic scripts
-- Visual decision trees and flowcharts
-- Quick reference guides
-- Example outputs and resolution steps
-
-[View OpenShift Troubleshooting Guides →](ocp-troubleshooting/README.md)
-
-**Available guides:**
-- [Debug Toolbox Container](ocp-troubleshooting/debug-toolbox-container/README.md) - Use ephemeral debug containers for network troubleshooting with MTU testing, packet captures, and VLAN diagnostics
-- [kube-controller-manager Crash Loop](ocp-troubleshooting/kube-controller-manager-crashloop/README.md) - Complete guide for diagnosing and fixing controller manager issues
-- [Bare Metal Node Inspection Timeout](ocp-troubleshooting/bare-metal-node-inspection-timeout/README.md) - Troubleshooting nodes stuck in inspecting state during bare metal installation
-- [CSR Management](ocp-troubleshooting/csr-management/README.md) - Certificate Signing Request approval and troubleshooting with real-world examples
+- [Examples](ocp/examples/README.md) — NAD configs, OVN-Kubernetes, SNO KVM lab
+- [Troubleshooting](ocp/troubleshooting/README.md) — 13+ guides: API slowness, bare metal inspection, CSR management, kube-controller-manager crashes, and more
+- [Debug Toolbox Container](ocp/troubleshooting/debug-toolbox-container/README.md) — Ephemeral debug containers for network troubleshooting
 
 ## Getting Started
 
@@ -274,13 +219,13 @@ Located in `ocp-troubleshooting/`. Comprehensive troubleshooting guides for comm
 
 **Ansible:**
 ```bash
-cd ansible-examples/001_retry_on_timeout
+cd ansible/examples/001_retry_on_timeout
 ansible-playbook playbook.yml
 ```
 
 **ArgoCD:**
 ```bash
-cd argo-examples
+cd argo/examples
 # Test Helm chart generation
 bash scripts/test-app-of-apps.sh
 
@@ -290,7 +235,7 @@ bash scripts/test.sh
 
 **CoreOS:**
 ```bash
-cd coreos-examples/iso-eject-after-install
+cd coreos/examples/iso-eject-after-install
 # Convert Butane YAML to Ignition JSON
 butane --pretty --strict basic-eject.bu -o basic-eject.ign
 
@@ -299,7 +244,7 @@ butane --pretty --strict basic-eject.bu -o basic-eject.ign
 
 **OpenShift Troubleshooting:**
 ```bash
-cd ocp-troubleshooting/kube-controller-manager-crashloop
+cd ocp/troubleshooting/kube-controller-manager-crashloop
 # Run automated diagnostic script
 ./diagnostic-script.sh
 

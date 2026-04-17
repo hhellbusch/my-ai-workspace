@@ -4,35 +4,32 @@ This workspace contains practical DevOps examples, configurations, and troublesh
 
 ## Project Contents
 
-### Ansible Examples (`ansible-examples/`)
-Ansible playbooks demonstrating specific patterns and use cases:
-- Retry and error handling patterns
-- Conditional execution and blocks
-- Parallel execution via bastion hosts
-- ISO boot monitoring and validation
-- IP subnet validation
-- Global defaults and role inheritance
-- Dell hardware memory validation
-- REST API result filtering
+### Product Directories
 
-### Ansible Troubleshooting (`ansible-troubleshooting/`)
-Ansible and AAP troubleshooting guides:
-- AAP Controller token 404 on AAP 2.5.x (Gateway API path change)
+#### Ansible (`ansible/`)
+- **`examples/`** — Runnable playbooks: retry patterns, error handling, parallel execution, BMC operations, Dell memory validation, REST API filtering
+- **`troubleshooting/`** — AAP Controller token 404 on AAP 2.5.x (Gateway API path change)
 
-### ArgoCD Examples (`argo-examples/`)
-ArgoCD and GitOps configurations:
-- Multi-hub GitOps pipelines
-- Application and chart configurations
-- Infrastructure as Code patterns
-- GitHub workflow integrations
-- App-of-apps revision scripts and test fixtures
+#### ArgoCD (`argo/`)
+- **`examples/`** — Multi-hub GitOps pipelines, app-of-apps patterns, Helm charts, GitHub Actions workflows, test scripts, framework with devspaces and guidelines
 
-### CoreOS Examples (`coreos-examples/`)
-CoreOS Butane configurations:
-- ISO ejection after installation
-- First-boot automation
+#### CoreOS (`coreos/`)
+- **`examples/`** — Butane configurations: ISO ejection after installation, first-boot automation
 
-### Documentation (`docs/`)
+#### OpenShift (`ocp/`)
+- **`examples/`** — OVN-Kubernetes networking, install config templates, SNO KVM lab
+- **`troubleshooting/`** — API slowness, bare metal inspection timeouts, kubeconfig recovery, CoreOS networking, CSR management, kube-controller-manager crashloops, KubeVirt VM provisioning, namespace termination, Portworx CSI, worker TLS cert failures, image registry auth, API server cert deadlock
+- **`install/`** *(gitignored)* — Local install working directory with pull secrets and kubeconfigs
+
+#### RHACM (`rhacm/`)
+- **`examples/`** — Secret management patterns, multi-cluster management, policy and governance
+
+#### Vault (`vault/`)
+- **`integration/`** — HashiCorp Vault integration patterns and configurations
+
+### Cross-Cutting Directories
+
+#### Documentation (`docs/`)
 AI-assisted engineering essays and guides (a curated, ordered reading list):
 - The Shift — engineering skills in the age of AI
 - AI-assisted development workflows
@@ -41,73 +38,32 @@ AI-assisted engineering essays and guides (a curated, ordered reading list):
 - Enterprise LLM deployment summary (with verification caveats)
 - Building a research and verification skill
 
-### Examples (`examples/`)
+#### Examples (`examples/`)
 Standalone scripts and artifacts referenced by documentation:
 - GIF recoloring script and output files
 
-### Git Projects (`git-projects/`) — gitignored
-External git repositories cloned into the workspace for exploration and upstream contributions:
+#### Git Projects (`git-projects/`) — gitignored
+External git repositories cloned for exploration and upstream contributions:
 - argocd-diff-preview — explored feasibility improvement, resulted in upstream issue
 - helm-charts — Helm chart improvement in progress
 
-### Labs (`labs/`)
-Hands-on lab exercises:
-- ArgoCD sync lab
-- GitOps lab
+#### Labs (`labs/`)
+Hands-on lab exercises: ArgoCD sync, GitOps fundamentals
 
-### Notes (`notes/`)
-Informal notes and quick references:
-- OpenShift useful commands
+#### Notes (`notes/`)
+Informal notes and quick references: OpenShift useful commands, idea captures
 
-### OCP Install (`ocp-install/`) — gitignored
-Local OCP install working directory containing install-config, agent-config, and pull secrets.
-
-### OpenShift Examples (`ocp-examples/`)
-OpenShift cluster configurations:
-- OVN-Kubernetes networking configurations
-- Install config templates and examples
-- SNO KVM lab configuration
-
-### Prompts (`prompts/`)
+#### Prompts (`prompts/`)
 Structured AI prompt templates for repeatable tasks (run with `/run-prompt`):
-- AI disclosure notice generation
-- ArgoCD multi-hub pipeline validation
-- NVIDIA GPU Operator production impact analysis
-- RHACM examples validation
+- AI disclosure notice, ArgoCD pipeline validation, NVIDIA GPU analysis, RHACM validation
 
-### OpenShift Troubleshooting (`ocp-troubleshooting/`)
-Systematic troubleshooting guides with investigation workflows:
-- API slowness and web console issues
-- Bare metal node inspection timeouts
-- Control plane kubeconfig recovery
-- CoreOS networking issues
-- CSR management
-- Cluster destruction without metadata
-- Kube-controller-manager crashloops
-- KubeVirt VM provisioning issues
-- Namespace termination issues
-- Portworx CSI troubleshooting
-- Worker node TLS certificate failures
-- Image registry auth issues
-- API server cert deadlock
-
-### Research (`research/`)
+#### Research (`research/`)
 Research workspaces with fetched sources, analysis findings, and assessments:
 - OpenShift AI LLM deployment article verification (62 references, 53 fetched)
 - NVIDIA GPU Operator OCP 4.18 production impact analysis
 
-### RHACM Examples (`rhacm-examples/`)
-Red Hat Advanced Cluster Management configurations:
-- Secret management patterns
-- Multi-cluster management
-- Policy and governance examples
-
-### Tools (`tools/`)
-Utility scripts not tied to a specific example:
-- ISO server for CoreOS installations
-
-### Vault Integration (`vault-integration/`)
-HashiCorp Vault integration patterns and configurations
+#### Tools (`tools/`)
+Utility scripts: ISO server for CoreOS installations
 
 ## Development Guidelines
 
@@ -162,11 +118,11 @@ Per project standards, all AI-assisted work includes disclosure notices in relev
 ## Quick Reference
 
 ### Common Patterns
-- Ansible retry patterns: See `ansible-examples/001_retry_on_timeout/`
-- Error handling: See `ansible-examples/002_log_ignored_errors/`
-- Parallel execution: See `ansible-examples/006_parallel_execution_via_bastion/`
-- ArgoCD apps: See `argo-examples/apps/` and `argo-examples/charts/`
-- OCP troubleshooting: See individual guides in `ocp-troubleshooting/`
+- Ansible retry patterns: See `ansible/examples/001_retry_on_timeout/`
+- Error handling: See `ansible/examples/002_log_ignored_errors/`
+- Parallel execution: See `ansible/examples/006_parallel_execution_via_bastion/`
+- ArgoCD apps: See `argo/examples/apps/` and `argo/examples/charts/`
+- OCP troubleshooting: See individual guides in `ocp/troubleshooting/`
 
 ### Useful Commands
 - Ansible syntax check: `ansible-playbook --syntax-check playbook.yml`
