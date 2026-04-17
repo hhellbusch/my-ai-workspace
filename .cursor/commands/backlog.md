@@ -1,0 +1,153 @@
+---
+description: View, add, pick, complete, or review items in the project backlog
+argument-hint: "[add <description> | pick | done <title> | review]"
+allowed-tools:
+  - Read
+  - Write
+  - StrReplace
+  - Shell
+  - Glob
+  - Grep
+---
+
+# Backlog — Project Tracking
+
+Manage the persistent project backlog in `BACKLOG.md`. This file tracks ideas, in-flight work, and completed items across sessions. It is shareable — peers browse it to understand what's happening in this workspace.
+
+## Context
+
+- Backlog file: `BACKLOG.md` (repo root)
+- Current date: !`date "+%Y-%m-%d"`
+
+## Instructions
+
+Parse `$ARGUMENTS` to determine the subcommand. If empty or unrecognized, default to **status**.
+
+---
+
+### Subcommand: `status` (default, no arguments)
+
+1. Read `BACKLOG.md`
+2. Count items in each section (In Progress, Up Next, Ideas, Done)
+3. Display a compact summary:
+
+```
+Backlog Summary:
+  In Progress (N):  <titles, comma-separated>
+  Up Next (N):      <titles, comma-separated>
+  Ideas (N):        <count only>
+  Done (N):         <count only>
+```
+
+4. If any In Progress items have been there for a while, note it: "Heads up: <title> has been in progress since <date>."
+
+---
+
+### Subcommand: `add <description>`
+
+1. Read `BACKLOG.md`
+2. From the description and the current conversation context, infer:
+   - **Title**: concise 3-8 word heading
+   - **Product**: match to an existing product tag in the backlog (`ansible`, `argo`, `coreos`, `meta`, `ocp`, `rhacm`, `vault`) or use a new short tag if needed
+   - **Context**: 1-3 sentences explaining what this is and why it matters, with enough detail for a fresh AI session to understand
+   - **Links**: relevant file paths or URLs (if identifiable from conversation)
+3. Add the item to the **Ideas** section (append before the `## Done` heading)
+4. Update the `Last updated` date at the top
+5. Confirm:
+
+```
+Added to Ideas: <title>
+Product: <tag> | Links: <paths>
+```
+
+6. If the user said something suggesting urgency or priority, ask: "This sounds like it might belong in Up Next instead of Ideas. Want me to move it?"
+
+---
+
+### Subcommand: `pick`
+
+1. Read `BACKLOG.md`
+2. Display numbered list of **Up Next** items:
+
+```
+Up Next:
+  1. <title> — <first line of context>
+  2. <title> — <first line of context>
+```
+
+3. Prompt: "Which item do you want to start? Reply with the number."
+4. Wait for user response
+5. Move the selected item from **Up Next** to **In Progress**:
+   - Change the `Added:` field to `Started:` with today's date
+   - Place it at the bottom of the In Progress section
+6. Update the `Last updated` date
+7. Confirm: "Moved to In Progress: <title>"
+
+---
+
+### Subcommand: `done <title>`
+
+1. Read `BACKLOG.md`
+2. Find the item in **In Progress** matching the title (fuzzy match on the heading text)
+3. If not found, search **Up Next** and **Ideas** as fallback
+4. If still not found, list In Progress items and ask user to clarify
+5. Move the item to the **Done** section:
+   - Change `Started:` (or `Added:`) to `Completed:` with today's date
+   - Place it at the top of the Done section (most recent first)
+6. Update the `Last updated` date
+7. Confirm: "Completed: <title>"
+
+---
+
+### Subcommand: `review`
+
+1. Read `BACKLOG.md` in full
+2. Analyze and report:
+
+**Staleness check:**
+- Flag In Progress items older than 2 weeks as potentially stale
+- Flag Up Next items that have been waiting more than a month
+
+**Promotion candidates:**
+- Suggest Ideas that relate to recent conversation topics or recent commits as candidates for Up Next
+
+**Done section hygiene:**
+- If Done has more than 10 items, suggest trimming the oldest ones (they've served their changelog purpose)
+
+**Consistency check:**
+- Verify all items have the required fields (Product, Context, Links or date)
+- Flag any items missing fields
+
+3. Present findings as a checklist and ask: "Want me to fix any of these? Reply with the numbers or 'all'."
+
+---
+
+## Backlog Item Format
+
+Every item follows this structure:
+
+```markdown
+### <Title>
+- **Product:** <tag>
+- **Context:** <1-3 sentences>
+- **Links:** <file paths, URLs> (optional for Ideas)
+- **Added:** <YYYY-MM-DD or YYYY-MM> (Ideas and Up Next)
+- **Started:** <YYYY-MM-DD or YYYY-MM> (In Progress)
+- **Completed:** <YYYY-MM-DD or YYYY-MM> (Done)
+```
+
+## File Structure
+
+`BACKLOG.md` has four sections in this order:
+
+```markdown
+# Backlog
+> Last updated: YYYY-MM-DD
+
+## In Progress
+## Up Next
+## Ideas
+## Done
+```
+
+Items move downward through the lifecycle: Ideas → Up Next → In Progress → Done.

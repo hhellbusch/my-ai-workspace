@@ -56,6 +56,10 @@ This disclosure is provided in the interest of transparency and to help you make
 3. **Copy and customize**: Use `.example.yml` templates, update for your infrastructure
 4. **Keep secrets safe**: Real inventory files and credentials should be in `.gitignore`
 
+**Project Backlog:**
+
+See [`BACKLOG.md`](BACKLOG.md) for what's currently in progress, what's coming next, and recent completed work.
+
 **Meta-Development System:**
 
 This repository also includes a sophisticated AI-assisted development system (Skills, Commands, Agents). See the Meta-Development System section below for details. This is optional - the core examples work independently.
@@ -136,7 +140,7 @@ Located in `.cursor/skills/`, `.cursor/commands/`, and `.cursor/agents/`. An int
 - **Planning & Execution** - Create hierarchical project plans and execute them with `/create-plan` and `/run-plan`
 - **Skill Creation** - Build new skills with `/create-agent-skill` and audit with `/audit-skill`
 - **Expert Debugging** - Systematic investigation with `/debug`
-- **Todo Management** - Capture context with `/add-to-todos`, resume with `/check-todos`
+- **Project Backlog** - Track ideas, in-flight work, and completed items with `/backlog`
 - **Thinking Frameworks** - Apply mental models with `/consider:first-principles`, `/consider:pareto`, etc.
 
 **Quick Examples:**
@@ -153,8 +157,8 @@ Located in `.cursor/skills/`, `.cursor/commands/`, and `.cursor/agents/`. An int
 # Debug an issue systematically
 /debug
 
-# Capture a task for later
-/add-to-todos Optimize database queries for user search
+# Add to project backlog
+/backlog add Optimize database queries for user search
 ```
 
 [View Meta-Development Documentation →](INTEGRATION.md)

@@ -152,9 +152,8 @@ Cursor auto-discovers commands in `.cursor/commands/`. Use them like built-in co
 
 **Context Management:**
 ```
-/whats-next - Create handoff document
-/add-to-todos - Capture ideas
-/check-todos - Review tasks
+/whats-next - Create handoff document (includes backlog snapshot)
+/backlog - View, add, pick, complete, or review project backlog items
 ```
 
 ### Skills (Reference with @)
@@ -173,7 +172,7 @@ Load skills for deep methodologies:
 - Project: `/create-plan`, `/create-prompt`, `/run-prompt`
 - Meta: `/create-agent-skill`, `/create-slash-command`, `/create-subagent`
 - Debug: `/debug`
-- Context: `/whats-next`, `/add-to-todos`, `/check-todos`
+- Context: `/whats-next`, `/backlog`
 - Audit: `/audit-skill`, `/audit-slash-command`, `/audit-subagent`
 - Frameworks: `/consider:first-principles`, `/consider:5-whys`, etc. (12 total)
 

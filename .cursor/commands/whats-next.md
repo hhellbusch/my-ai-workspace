@@ -15,6 +15,17 @@ Create a comprehensive, detailed handoff document that captures all context from
 
 **PRIORITY: Comprehensive detail and precision over brevity.** The goal is to enable someone (or a fresh Claude instance) to pick up exactly where you left off with zero information loss.
 
+### Step 0: Read the project backlog
+
+Read `BACKLOG.md` from the repo root. Include a **Project Backlog Snapshot** section in the handoff that captures:
+- All **In Progress** items (title + context)
+- All **Up Next** items (title only)
+- Count of Ideas
+
+This bridges session-level context with project-level priorities so the next session knows what's active beyond the immediate task.
+
+### Step 1: Capture session context
+
 Adapt the level of detail to the task type (coding, research, analysis, writing, configuration, etc.) but maintain comprehensive coverage:
 
 1. **Original Task**: Identify what was initially requested (not new scope or side tasks)
@@ -54,9 +65,21 @@ Adapt the level of detail to the task type (coding, research, analysis, writing,
 
 Write to `whats-next.md` in the current working directory using the format below.
 
+### Step 2: Update the backlog if needed
+
+If work completed in this session resolved a backlog item, move it to Done in `BACKLOG.md`. If new ideas or follow-up work emerged, add them to Ideas. Update the `Last updated` date.
+
 ## Output Format
 
 ```xml
+<project_backlog>
+[Snapshot from BACKLOG.md:
+- In Progress items with titles and context
+- Up Next item titles
+- Ideas count
+- Note any items that should be updated based on this session's work]
+</project_backlog>
+
 <original_task>
 [The specific task that was initially requested - be precise about scope]
 </original_task>

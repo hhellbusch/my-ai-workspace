@@ -26,7 +26,7 @@ Flag anything else as **"Misplaced root file"** with a suggested destination bas
 
 ### Step 3: Check top-level directories
 
-List all top-level directories (excluding `.git/`, `.cursor/`, `.claude/`, `.meta-system-backup/`, `.prompts/`, `.planning/`, `.taches-import/`, `.cursor-skills/`, `.claude-plugin/`).
+List all top-level directories (excluding `.git/`, `.cursor/`, `.claude/`, `.meta-system-backup/`, `.planning/`, `.taches-import/`, `.cursor-skills/`, `.claude-plugin/`).
 
 For each directory:
 1. Check if it appears in the directory map from the rule. Flag unknown directories as **"Unregistered directory"**.
