@@ -3,6 +3,8 @@
 > **Source:** [Enterprise Generative AI: Architecting and Self-Hosting Large Language Models on Red Hat OpenShift](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) by Jared Burck (March 2026)
 >
 > **What this is:** A layered summary of a comprehensive architecture guide. Start at the top for the strategic picture, go deeper for architecture decisions and practitioner detail.
+>
+> **Verification note:** This summary has been checked against the article's 62 cited sources. The architecture and operational content is well-sourced; the economic claims and some agentic AI maturity assertions carry caveats. See the [full verification assessment](../research/openshift-ai-llm-deployment/assessment.md) for details. Inline notes below flag the key areas where the original article's claims required qualification.
 
 ---
 
@@ -14,7 +16,7 @@ Enterprises are moving from consuming LLMs via public APIs (OpenAI, Anthropic, e
 
 **Red Hat OpenShift AI (RHOAI)** is the Kubernetes-native platform for this. It extends OpenShift with MLOps capabilities for deploying, scaling, and governing LLMs across hybrid cloud environments.
 
-**Key economics:** Self-hosting breaks even with API consumption at approximately **11 billion tokens per month** (~500M tokens/day). Below that, APIs are cheaper. Above that, self-hosting delivers up to **18x cost advantage** per million tokens, with full hardware ROI achievable in under 4 months on modern GPU architectures.
+**Key economics:** The article claims self-hosting breaks even at approximately **11 billion tokens per month**, with up to **18x cost advantage** and ROI in under 4 months. *These figures carry significant caveats: the 11B threshold could not be verified (cited source was unreachable); the 18x figure compares on-prem hardware against GPT-5 mini API pricing (~$2/M tokens), a budget tier — not premium APIs; and the <4 month ROI applies specifically to on-demand cloud pricing at high utilization (6-10 months against reserved instances). See the [verification assessment](../research/openshift-ai-llm-deployment/assessment.md#finding-2-economics-built-on-vendor-marketing) for the full analysis.*
 
 **The decision isn't binary.** Most organizations prototype with APIs or RHEL AI (single-server), then transition to OpenShift AI when they need distributed serving, multi-tenancy, autoscaling, and governance.
 
@@ -53,7 +55,7 @@ The natural path: start on RHEL AI for experimentation, move to OpenShift AI for
 | | S3-Compatible Storage | ModelCar (OCI Images) |
 |---|---|---|
 | **How it works** | Model weights stored in S3 bucket; init-container downloads to pod on startup | Model weights baked into a container image; pulled and cached like any other image |
-| **Cold start** | Full network download every scale-out event | First pull is slow; subsequent pods use node cache (milliseconds) |
+| **Cold start** | Full network download every scale-out event | First pull is slow; subsequent pods use node cache (significantly faster) |
 | **Infra overhead** | Requires provisioning and maintaining separate S3 infrastructure | Uses existing container registry (e.g., Quay) |
 | **CI/CD alignment** | Loose files in buckets; awkward to promote across environments | Immutable OCI artifact; can be versioned, signed, scanned like app images |
 | **When to choose** | Existing S3 infrastructure already in place; very large models where image builds are impractical | New deployments; teams with existing DevSecOps container pipelines |
@@ -117,11 +119,11 @@ RHOAI supports autonomous agent workflows beyond simple inference:
 
 **Function calling** — vLLM 0.6.3+ supports tool/function calling. The model outputs structured JSON describing which function to call and with what arguments, instead of generating text. Requires three ServingRuntime flags: `--enable-auto-tool-choice`, `--tool-call-parser`, and `--chat-template`. Guided decoding ensures the JSON output strictly conforms to the provided schema.
 
-**Model Context Protocol (MCP)** — an open standard for LLM-to-tool communication. Instead of writing bespoke integrations for every enterprise system (GitHub, Postgres, Slack), deploy standardized MCP Servers that handle auth, API translation, and execution routing. The LLM outputs a standardized tool call; the MCP gateway handles the rest.
+**Model Context Protocol (MCP)** — an open standard for LLM-to-tool communication. Instead of writing bespoke integrations for every enterprise system, deploy standardized MCP Servers that handle auth, API translation, and execution routing. *Note: the original article compares MCP to USB-C as a "universal standard," but MCP's actual specification (modelcontextprotocol.io) does not support this analogy — MCP defines a protocol between hosts and servers, not a universal connector standard. The analogy overpromises. MCP is useful and gaining adoption, but it is still early-stage and not a solved interoperability problem.*
 
 **Llama Stack** (Technology Preview) — end-to-end agentic framework deployed via `LlamaStackDistribution` CR. Provides inference, vector storage (Milvus), and document ingestion (Docling). Exposes an OpenAI-compatible API layer including the experimental Responses API for RAG.
 
-**Security for agents** — agents are non-deterministic and execute code based on probabilistic generation. RHOAI provides kernel-level sandbox isolation (Kata Containers) and cryptographic identity verification (Kagenti + SPIFFE/SPIRE) with short-lived, scoped tokens. No hardcoded API keys.
+**Security for agents** — agents are non-deterministic and execute code based on probabilistic generation. RHOAI provides kernel-level sandbox isolation via Kata Containers (GA as a layered product). *Note: per-session agent sandbox integration and Kagenti identity injection via SPIFFE/SPIRE are described as planned/roadmap capabilities in Red Hat's source material, not shipping features. The original article does not distinguish these maturity levels.*
 
 ---
 
@@ -150,7 +152,7 @@ Serving uncompressed models wastes GPU resources. Key optimization techniques:
 | **INT4 (W4A16)** | VRAM-constrained / edge | Ultra-low latency, maximum memory reduction |
 | **AWQ** | General GPU | Single-GPU deployment of large models with high accuracy retention |
 
-Red Hat provides pre-compressed Granite 3.1/3.3 models optimized for each hardware tier. Compressed Granite 3.1 achieves **3.3x size reduction** and **2.8x throughput improvement** while maintaining **99% accuracy** vs. uncompressed FP16.
+Red Hat provides pre-compressed Granite 3.1 models optimized for each hardware tier. Compressed Granite 3.1 achieves **up to 3.3x size reduction** and **up to 2.8x throughput improvement** while maintaining **99% accuracy recovery on average** vs. uncompressed FP16. *These are best-case figures that vary by quantization format, hardware, and workload. The original article presents them without the "up to" and "on average" qualifiers found in the [source material](https://developers.redhat.com/articles/2025/01/30/compressed-granite-3-1-powerful-performance-small-package).*
 
 ---
 
@@ -165,23 +167,25 @@ Red Hat provides pre-compressed Granite 3.1/3.3 models optimized for each hardwa
 
 ## TCO Decision Framework
 
+The article presents a clear breakeven model. The directional logic is sound — self-hosting economics improve with volume — but the specific numbers require scrutiny.
+
 ```
                 Token volume per month
                         |
-          < 11B tokens  |  > 11B tokens
+       Low volume       |    High, sustained volume
                 |               |
-         API consumption    Self-hosting
-         (pure OpEx,        (CapEx or reserved cloud,
-          zero infra)        18x cost advantage at scale)
-                             ROI in < 4 months on Hopper/Blackwell
+         API consumption    Self-hosting becomes viable
+         (pure OpEx,        (but breakeven depends heavily on
+          zero infra)        hardware, utilization, cloud pricing tier,
+                             and API comparator — see caveats below)
 ```
 
-**Below breakeven:** Use APIs. Zero infrastructure burden, pay-per-token.
+**Low volume:** Use APIs. Zero infrastructure burden, pay-per-token.
 
-**Above breakeven:** Self-host. The cost advantage compounds with volume. A GPU at 10% utilization is 10x more expensive per token than one at full load — continuous batching (vLLM) is critical to keep utilization high.
+**High volume:** Self-hosting can be significantly cheaper, but the economics depend on hardware utilization, whether you're comparing against on-demand or reserved cloud instances, and which API tier you benchmark against. The article's headline numbers (18x, <4 months ROI) come from a [Lenovo vendor whitepaper](https://lenovopress.lenovo.com/lp2368-on-premise-vs-cloud-generative-ai-total-cost-of-ownership-2026-edition) with specific assumptions — run your own TCO analysis for your workload profile.
 
-**Hybrid approach:** Prototype and validate with APIs or RHEL AI. Transition to OpenShift AI when token volume, compliance, or latency requirements justify the infrastructure investment.
+**Hybrid approach:** Prototype and validate with APIs or RHEL AI. Transition to OpenShift AI when token volume, compliance, or latency requirements justify the infrastructure investment. A GPU at low utilization is far more expensive per token than one at full load — continuous batching (vLLM) is critical to keep utilization high.
 
 ---
 
-*This summary was created with AI assistance (Cursor) from the [original article](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) by Jared Burck. See [AI-DISCLOSURE.md](../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*
+*This summary was created with AI assistance (Cursor) from the [original article](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) by Jared Burck. Claims were verified against the article's 62 cited sources — see the [full verification assessment](../research/openshift-ai-llm-deployment/assessment.md) for methodology and detailed findings. See [AI-DISCLOSURE.md](../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*

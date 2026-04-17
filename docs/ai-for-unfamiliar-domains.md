@@ -121,7 +121,7 @@ For a contrast, consider the architecture decisions involved in [deploying LLMs 
 
 ## What the AI Actually Produced
 
-The final script (`recolor-gif.py`) is ~240 lines of Python that:
+The final script ([`recolor-gif.py`](../examples/gif-recoloring/recolor-gif.py)) is ~240 lines of Python that:
 
 1. Extracts all frames from an animated GIF preserving timing metadata
 2. Converts each frame to HSV color space using vectorized NumPy operations
@@ -182,7 +182,7 @@ This is **quality assurance thinking** in practice: defining acceptance criteria
 | Resource | Where |
 |---|---|
 | The Shift — engineering skills in the age of AI | `docs/the-shift.md` |
-| The recolor script | `recolor-gif.py` |
+| The recolor script | [`examples/gif-recoloring/recolor-gif.py`](../examples/gif-recoloring/recolor-gif.py) |
 | AI-Assisted Development Workflows (general guide) | `docs/ai-assisted-development-workflows.md` |
 | Cursor skills and commands | `.cursor/skills/`, `.cursor/commands/` |
 

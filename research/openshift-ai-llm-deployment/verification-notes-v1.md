@@ -1,5 +1,7 @@
 # Reference Verification Notes
 
+> **Superseded:** This document is a partial analysis from an early manual verification session. A comprehensive assessment covering 53 of 62 cited sources (vs. ~30 here) is available at [assessment.md](assessment.md). The findings below are consistent with the full assessment but less complete. See [Building a Research Skill](../../docs/building-a-research-skill.md) for the story of how the manual approach evolved into an automated pipeline.
+
 Analysis of key claims from [Enterprise Generative AI: Architecting and Self-Hosting Large Language Models on Red Hat OpenShift](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) against its cited sources.
 
 **Methodology:** Fetched and read primary sources where accessible. Compared specific claims, numbers, and characterizations against what the sources actually say.

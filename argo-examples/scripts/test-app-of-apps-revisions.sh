@@ -15,7 +15,7 @@ _parse_app_revisions() {
 }
 
 # Level 2 from "root"
-ROOT_APPS=$(cat test-root-apps.yaml)
+ROOT_APPS=$(cat test-fixtures/test-root-apps.yaml)
 declare -A APP_REVISION_MAP
 while IFS= read -r line; do
   app="${line%% *}"
@@ -28,7 +28,7 @@ declare -A FINAL_APP_REVISION_MAP
 for level2_app in "${!APP_REVISION_MAP[@]}"; do
   level2_rev="${APP_REVISION_MAP[$level2_app]}"
   # Simulate argocd app manifests: use local file if it exists
-  child_file="test-level3-${level2_app}.yaml"
+  child_file="test-fixtures/test-level3-${level2_app}.yaml"
   if [[ -f "$child_file" ]]; then
     child_yaml=$(cat "$child_file")
   else

@@ -283,7 +283,7 @@ For Analysis Tasks:
 
 <output_format>
 [How results should be structured]
-Save analysis to: `./analyses/[descriptive-name].md`
+Save analysis to: `./research/[topic]/analysis.md`
 </output_format>
 
 <verification>

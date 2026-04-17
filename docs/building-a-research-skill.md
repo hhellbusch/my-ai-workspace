@@ -38,7 +38,7 @@ We attempted to verify the article's claims by fetching and reading its 62 cited
 
 Despite these constraints, we produced a partial verification analysis covering about half the sources. The findings were useful — we identified qualifier stripping, maturity level omissions, and vendor marketing presented as independent analysis. But the process was fragile and unrepeatable.
 
-**Output:** [Verification Notes](reference-analysis/verification-notes.md) (partial, from the first session)
+**Output:** [Verification Notes](../research/openshift-ai-llm-deployment/verification-notes-v1.md) (partial, from the first session)
 
 ### Phase 3: Designing the Skill
 
@@ -83,7 +83,7 @@ The key architectural decisions:
    - v1: Sequential, basic requests, single User-Agent
    - v2: Concurrent (ThreadPoolExecutor), rotating User-Agents, stealth browser-mimicry headers, per-domain rate limiting, proxy support, PDF extraction via pdfplumber
 
-**Output:** The complete skill at `.cursor/skills/research-and-analyze/`
+**Output:** The complete skill at `.cursor/skills/research-and-analyze/` (this is a [Cursor IDE](https://cursor.sh/) AI skill — a structured set of instructions, workflows, and scripts that the IDE's AI agent follows when performing research tasks)
 
 ### Phase 4: Validation Run
 
@@ -168,6 +168,8 @@ The article verification exercise is a concrete example of what [The Shift](the-
 | [Building a Research Skill](building-a-research-skill.md) | This document |
 
 ### Research and Analysis Skill
+
+> **Note:** These files live under `.cursor/skills/` — the convention for [Cursor IDE](https://cursor.sh/) AI agent skills. They are structured Markdown instructions and Python scripts that the AI agent follows during research tasks. The scripts (e.g., `fetch-sources.py`) are standard Python and can be used independently of Cursor.
 
 | File | Purpose |
 | --- | --- |
