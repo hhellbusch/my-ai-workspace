@@ -1,6 +1,6 @@
 # Docs
 
-Shared documentation on AI-assisted engineering, practical patterns, and troubleshooting summaries.
+Shared documentation on AI-assisted engineering and practical patterns.
 
 ## Contents
 
@@ -17,5 +17,3 @@ Start here and read in order, or jump to what's relevant.
 5. **[Enterprise LLM Deployment on OpenShift AI — Summary](openshift-ai-llm-deployment-summary.md)** — Layered summary of Jared Burck's comprehensive architecture guide for self-hosting LLMs on OpenShift. Executive overview at the top, architecture decision matrices in the middle, practitioner detail at the bottom. Includes inline verification caveats for economic claims and maturity assertions, with a link to the [full assessment](../research/openshift-ai-llm-deployment/assessment.md). Based on the [full article](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/).
 
 6. **[Building a Research and Verification Skill](building-a-research-skill.md)** — Meta case study documenting how a failed manual verification attempt led to building a reusable research automation skill. Covers the problem discovery, skill design, fetcher engineering, parallel analysis architecture, and a validation run that verified 53 of 62 cited sources across 8 parallel analysis batches. Connects back to patterns from *The Shift* and *AI-Assisted Development Workflows*.
-
-7. **[AAP Controller Token 404 Summary](AAP-controller-token-404-summary.md)** — Why `ansible.controller.token` returns 404 on AAP 2.5.x and how to fix it (use pre-created token; Gateway API path). For sharing with teams using AAP and the controller collection.
