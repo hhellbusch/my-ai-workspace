@@ -306,11 +306,13 @@ The Day 2 concerns in that article — rate limiting, auth governance, observabi
 |---|---|
 | The Shift — engineering skills in the age of AI | `docs/the-shift.md` |
 | Using AI outside your expertise — case study | `docs/ai-for-unfamiliar-domains.md` |
+| AI-assisted upstream contributions — responsible open source workflow | `docs/ai-assisted-upstream-contributions.md` |
 | Enterprise LLM deployment on OpenShift AI | [jaredburck.me](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) |
 | Ansible playbook examples | `ansible/examples/` |
 | ArgoCD / GitOps patterns | `argo/examples/` |
 | OpenShift troubleshooting guides | `ocp/troubleshooting/` |
 | AAP 2.5 token 404 root cause write-up | `ansible/troubleshooting/aap-controller-token-404/` |
+| External project clones for upstream contribution | `git-projects/` |
 | Cursor commands | `.cursor/commands/` |
 | Cursor skills | `.cursor/skills/` |
 
