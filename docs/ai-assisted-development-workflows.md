@@ -142,6 +142,42 @@ When ordering ArgoCD sync-waves for a new component, describe the dependency cha
 
 The AI produces a table you can review before implementing. The back-and-forth to refine it is faster than working through the dependency graph by hand.
 
+### PR review via GitHub MCP
+
+AI coding assistants with GitHub MCP access (such as GitHub Copilot with the GitHub MCP server, or Cursor/Claude Code with `gh` CLI access) can pull a PR's diff, understand the change in context, and provide meaningful review feedback. This goes well beyond syntax checking:
+
+> _"Review PR #42. Focus on whether the Helm values changes are backward-compatible with clusters still running the previous chart version."_
+
+The AI reads the full diff, cross-references the values schema, and flags breaking changes — the kind of review that requires understanding both the before and after state. Other useful review prompts:
+
+> _"Are there any resources in this PR that are missing sync-wave annotations?"_
+
+> _"Does this PR introduce any new required values that don't have defaults? If so, which existing values files would break?"_
+
+This is especially valuable for large PRs where the diff is too big to review manually in one pass. The AI can triage which files have substantive changes vs. mechanical ones, summarize what each file change does, and flag the parts that need human attention.
+
+The same principle applies to understanding *other people's* PRs — when you're reviewing work from a teammate and need to quickly understand the intent and impact of a change across multiple files.
+
+### Stale branch triage
+
+Most repositories accumulate branches over time — experiments, abandoned features, branches that got merged via a different path, hotfixes that were cherry-picked elsewhere. Nobody cleans them up because evaluating each one takes effort: what was this branch for? Was it merged? Is there anything worth keeping?
+
+An AI with GitHub MCP access can systematically audit branches:
+
+> _"List all branches in this repo with their last commit date and author. For any branch with no commits in the last 90 days, compare its diff against main and categorize it: already fully merged, has unmerged changes worth reviewing, or safe to delete."_
+
+The AI can produce a triage report:
+
+| Branch | Last commit | Author | Status | Recommendation |
+|---|---|---|---|---|
+| `feature/old-migration` | 2024-11-03 | jsmith | All changes present in main | Safe to delete |
+| `experiment/new-sync-policy` | 2025-01-15 | jdoe | 3 files with unique changes | Review before deleting |
+| `hotfix/csr-renewal` | 2025-03-20 | jsmith | Cherry-picked to main, branch has extra debug logging | Safe to delete |
+
+This turns a tedious manual audit into a 5-minute conversation. For repositories with dozens of stale branches, the time savings are significant — and more importantly, it actually gets done instead of being perpetually deferred.
+
+The pattern generalizes: any repository housekeeping task that requires *understanding context to make a judgment call* (not just mechanical cleanup) is a strong fit for AI-assisted workflows.
+
 ---
 
 ## 4. Ansible Automation Patterns
