@@ -40,7 +40,13 @@ When you describe a task to an AI, you're forced to break it into pieces whether
 
 Each of these is a distinct subproblem with its own constraints and failure modes. The AI can implement each one, but *you* need to recognize when a step is wrong, missing, or conflated with another. If you can't decompose the problem, you can't evaluate the solution.
 
-### Design thinking
+### Design thinking at scale
+
+The same decomposition skill applies to enterprise architecture. Consider the decision space for [self-hosting LLMs on OpenShift AI](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/): RHEL AI vs. OpenShift AI for your deployment topology. vLLM vs. TGIS for your inference runtime. S3 object storage vs. ModelCar OCI images for model delivery. On-premise hardware vs. ROSA/ARO for your infrastructure. Each choice has cascading consequences for cost, compliance, operational complexity, and team capability requirements. AI can explain any of these options clearly — but it will also confidently endorse whichever one you lean toward, because that's what the sycophancy incentive produces.
+
+The engineering skill is recognizing that these are tradeoff decisions with organizational context, not technical questions with objectively correct answers. The right architecture depends on your regulatory constraints, your team's depth, your existing infrastructure, and your economics — none of which AI knows unless you tell it, and all of which it will agree with uncritically.
+
+### Design thinking in code
 
 AI produces code that works. It doesn't necessarily produce code that's well-structured, maintainable, or appropriate for your context. Decisions like:
 
@@ -344,6 +350,7 @@ AI doesn't create your engineering culture. It amplifies it. A team with strong 
 |---|---|
 | [AI-Assisted Development Workflows](ai-assisted-development-workflows.md) | Practical patterns for using AI effectively in daily engineering work |
 | [Using AI Outside Your Expertise](ai-for-unfamiliar-domains.md) | A case study demonstrating these skills in action (the siren GIF example) |
+| [Enterprise LLM Deployment on OpenShift AI](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) | Architecture decisions at enterprise scale where engineering judgment matters most |
 | [debug-like-expert skill](.cursor/skills/debug-like-expert/SKILL.md) | A codified version of systematic debugging methodology |
 
 ---

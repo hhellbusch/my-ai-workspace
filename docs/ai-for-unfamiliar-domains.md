@@ -115,6 +115,8 @@ This pattern is **less effective** when:
 - The task requires real-world context the AI doesn't have (your network topology, your team's conventions)
 - Mistakes are costly or hard to detect
 
+For a contrast, consider the architecture decisions involved in [deploying LLMs on enterprise OpenShift infrastructure](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/). The same engineering skills apply (decomposition, verification, systematic reasoning), but the stakes and context-dependence are much higher — runtime selection, storage architecture, compliance posture, and cost modeling all require organizational context that AI doesn't have. AI can help you *implement* whatever architecture you choose, but selecting the right one remains a human judgment call.
+
 ---
 
 ## What the AI Actually Produced

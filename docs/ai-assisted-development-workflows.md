@@ -282,12 +282,31 @@ Start with low-stakes work (docs, linting, scaffolding) before using it on produ
 
 ---
 
+## 8. Where AI Assists but Doesn't Replace Engineering Judgment
+
+The patterns in this guide cover tasks where AI can meaningfully accelerate your work. But some of the most consequential engineering work involves decisions where AI can inform but cannot substitute for human judgment — particularly in complex architecture selection.
+
+A concrete example: [Enterprise Generative AI: Architecting and Self-Hosting Large Language Models on Red Hat OpenShift](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) walks through the full decision space for deploying LLMs on enterprise infrastructure. The decisions involved are exactly the kind AI will *help you implement* but cannot *make for you*:
+
+- **RHEL AI vs. OpenShift AI** — single-node prototyping vs. distributed Kubernetes-native orchestration, depending on your scale requirements and operational maturity
+- **vLLM vs. TGIS runtimes** — PagedAttention throughput vs. tensor parallelism, OpenAI API compatibility vs. gRPC interfaces
+- **S3 storage vs. ModelCar** — maintaining separate object storage infrastructure vs. packaging model weights as OCI images that fit your existing DevSecOps pipeline
+- **On-premise vs. hyperscaler (ROSA/ARO)** — CapEx hardware ownership vs. OpEx elasticity, air-gapped compliance requirements vs. managed SRE
+- **The 11B token/month breakeven** — below this threshold API consumption is cheaper; above it, self-hosting delivers up to 18x cost advantage per million tokens
+
+Each of these is a high-stakes tradeoff with real financial and operational consequences. AI will confidently recommend whichever option you lean toward in your prompt — which is precisely why the sycophancy awareness described in [The Shift](the-shift.md) matters most for architecture decisions.
+
+The Day 2 concerns in that article — rate limiting, auth governance, observability, lifecycle management — are also examples of quality assurance thinking applied at the platform level. "How do I know this inference endpoint is correctly serving traffic, not being abused, and will still be supported in 12 months?" is the same verification discipline whether you're checking GIF transparency or monitoring token throughput.
+
+---
+
 ## Related Resources in This Workspace
 
 | Resource | Where |
 |---|---|
 | The Shift — engineering skills in the age of AI | `docs/the-shift.md` |
 | Using AI outside your expertise — case study | `docs/ai-for-unfamiliar-domains.md` |
+| Enterprise LLM deployment on OpenShift AI | [jaredburck.me](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) |
 | Ansible playbook examples | `ansible-examples/` |
 | ArgoCD / GitOps patterns | `argo-examples/` |
 | OpenShift troubleshooting guides | `ocp-troubleshooting/` |
