@@ -153,7 +153,7 @@ Cursor auto-discovers commands in `.cursor/commands/`. Use them like built-in co
 **Context Management:**
 ```
 /whats-next - Create handoff document (includes backlog snapshot)
-/backlog - View, add, pick, complete, or review project backlog items
+/backlog - View, add, pick, complete, review, or prioritize project backlog items
 ```
 
 ### Skills (Reference with @)

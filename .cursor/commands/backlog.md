@@ -1,6 +1,6 @@
 ---
 description: View, add, pick, complete, or review items in the project backlog
-argument-hint: "[add <description> | pick | done <title> | review]"
+argument-hint: "[add <description> | pick | done <title> | review | prioritize]"
 allowed-tools:
   - Read
   - Write
@@ -119,6 +119,63 @@ Up Next:
 - Flag any items missing fields
 
 3. Present findings as a checklist and ask: "Want me to fix any of these? Reply with the numbers or 'all'."
+
+---
+
+### Subcommand: `prioritize`
+
+A deliberate analysis and reordering of the backlog. Unlike `review` (which checks hygiene), `prioritize` evaluates what matters most and recommends a ranked order.
+
+1. Read `BACKLOG.md` in full
+2. Read recent git history: `git log --oneline -15`
+3. Scan the conversation context for topics the user has been discussing
+
+4. **Analyze each non-Done item** across these dimensions:
+
+| Dimension | Question | Weight |
+|---|---|---|
+| **Peer value** | Would this help someone browsing the repo? | High |
+| **Momentum** | Is there recent work that makes this easier to do now? | High |
+| **Dependency** | Does anything else depend on this being done first? | Medium |
+| **Effort** | How much work is this (small/medium/large)? | Medium |
+| **Staleness risk** | Will this get harder or less relevant if delayed? | Low |
+
+5. **Present the analysis** as a ranked table:
+
+```
+Backlog Priority Analysis:
+
+## Recommended Order
+
+| # | Item | Section | Rationale |
+|---|------|---------|-----------|
+| 1 | <title> | Up Next | <1-sentence reason> |
+| 2 | <title> | Ideas → Up Next | <1-sentence reason, recommend promotion> |
+| 3 | <title> | Ideas | <1-sentence reason> |
+
+## In Progress Check
+- <title>: <assessment — still active? blocked? should it be deprioritized?>
+
+## Quick Wins
+- <any items that are small effort + high value>
+
+## Items to Consider Dropping
+- <any items that no longer seem relevant>
+```
+
+6. **Ask the user** what to act on:
+
+"Based on this analysis, I'd recommend:
+- Promote <title> from Ideas to Up Next
+- Reorder Up Next to: 1. <x>, 2. <y>
+- <other suggestions>
+
+Want me to make these changes? Reply with 'yes', specific numbers, or tell me what you'd adjust."
+
+7. If the user confirms, update `BACKLOG.md`:
+   - Reorder items within sections based on the agreed priority
+   - Promote items from Ideas to Up Next as agreed
+   - Update the `Last updated` date
 
 ---
 
