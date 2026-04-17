@@ -15,17 +15,65 @@ Ansible playbooks demonstrating specific patterns and use cases:
 - Dell hardware memory validation
 - REST API result filtering
 
+### Ansible Troubleshooting (`ansible-troubleshooting/`)
+Ansible and AAP troubleshooting guides:
+- AAP Controller token 404 on AAP 2.5.x (Gateway API path change)
+
 ### ArgoCD Examples (`argo-examples/`)
 ArgoCD and GitOps configurations:
 - Multi-hub GitOps pipelines
 - Application and chart configurations
 - Infrastructure as Code patterns
 - GitHub workflow integrations
+- App-of-apps revision scripts and test fixtures
+
+### CoreOS Examples (`coreos-examples/`)
+CoreOS Butane configurations:
+- ISO ejection after installation
+- First-boot automation
+
+### Documentation (`docs/`)
+AI-assisted engineering essays and guides (a curated, ordered reading list):
+- The Shift — engineering skills in the age of AI
+- AI-assisted development workflows
+- Using AI outside your expertise (GIF recoloring case study)
+- AI-driven continuous improvement for legacy systems
+- Enterprise LLM deployment summary (with verification caveats)
+- Building a research and verification skill
+
+### Examples (`examples/`)
+Standalone scripts and artifacts referenced by documentation:
+- GIF recoloring script and output files
+
+### Git Projects (`git-projects/`) — gitignored
+External git repositories cloned into the workspace for exploration and upstream contributions:
+- argocd-diff-preview — explored feasibility improvement, resulted in upstream issue
+- helm-charts — Helm chart improvement in progress
+
+### Labs (`labs/`)
+Hands-on lab exercises:
+- ArgoCD sync lab
+- GitOps lab
+
+### Notes (`notes/`)
+Informal notes and quick references:
+- OpenShift useful commands
+
+### OCP Install (`ocp-install/`) — gitignored
+Local OCP install working directory containing install-config, agent-config, and pull secrets.
 
 ### OpenShift Examples (`ocp-examples/`)
 OpenShift cluster configurations:
 - OVN-Kubernetes networking configurations
 - Install config templates and examples
+- SNO KVM lab configuration
+
+### Prompts (`prompts/`)
+Structured AI prompt templates for repeatable tasks (run with `/run-prompt`):
+- AI disclosure notice generation
+- ArgoCD multi-hub pipeline validation
+- NVIDIA GPU Operator production impact analysis
+- RHACM examples validation
 
 ### OpenShift Troubleshooting (`ocp-troubleshooting/`)
 Systematic troubleshooting guides with investigation workflows:
@@ -40,6 +88,13 @@ Systematic troubleshooting guides with investigation workflows:
 - Namespace termination issues
 - Portworx CSI troubleshooting
 - Worker node TLS certificate failures
+- Image registry auth issues
+- API server cert deadlock
+
+### Research (`research/`)
+Research workspaces with fetched sources, analysis findings, and assessments:
+- OpenShift AI LLM deployment article verification (62 references, 53 fetched)
+- NVIDIA GPU Operator OCP 4.18 production impact analysis
 
 ### RHACM Examples (`rhacm-examples/`)
 Red Hat Advanced Cluster Management configurations:
@@ -47,10 +102,12 @@ Red Hat Advanced Cluster Management configurations:
 - Multi-cluster management
 - Policy and governance examples
 
-### CoreOS Examples (`coreos-examples/`)
-CoreOS Butane configurations:
-- ISO ejection after installation
-- First-boot automation
+### Tools (`tools/`)
+Utility scripts not tied to a specific example:
+- ISO server for CoreOS installations
+
+### Vault Integration (`vault-integration/`)
+HashiCorp Vault integration patterns and configurations
 
 ## Development Guidelines
 

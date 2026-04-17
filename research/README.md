@@ -1,0 +1,25 @@
+# Research
+
+Research workspaces containing fetched sources, analysis findings, and assessments. Each directory is a self-contained research exercise created using the [research-and-analyze skill](../.cursor/skills/research-and-analyze/SKILL.md).
+
+## Contents
+
+| Directory | Topic | Sources | Key output |
+|---|---|---|---|
+| `openshift-ai-llm-deployment/` | Verification of Jared Burck's enterprise LLM deployment article | 53 of 62 references fetched | [assessment.md](openshift-ai-llm-deployment/assessment.md) |
+| `nvidia-gpu-operator-ocp418/` | NVIDIA GPU Operator production impact on OCP 4.18 | Single analysis | [analysis.md](nvidia-gpu-operator-ocp418/analysis.md) |
+
+## Structure Convention
+
+Each research workspace follows this layout:
+
+```
+research/{topic}/
+├── manifest.md          # Reference tracking (URL, status, file path)
+├── sources/             # Fetched source content (one .md per reference)
+├── findings/            # Per-batch analysis results
+├── assessment.md        # Final synthesized assessment
+└── verification-notes-*.md  # Earlier partial analyses (if any)
+```
+
+See [Building a Research Skill](../docs/building-a-research-skill.md) for the full story behind this workflow.

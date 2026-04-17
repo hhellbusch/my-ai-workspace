@@ -98,15 +98,30 @@ This workspace includes a sophisticated meta-development system with **Skills**,
 ```
 ./
 ├── .cursor/
-│   ├── skills/          # Meta-development skills (7 total)
-│   ├── commands/        # Slash commands (27 total)
-│   └── agents/          # Specialized subagents (3 total)
-├── ansible-examples/    # Ansible playbooks and patterns
-├── argo-examples/       # ArgoCD configurations and workflows
-├── coreos-examples/     # CoreOS/Ignition configurations and patterns
-├── ocp-troubleshooting/ # OpenShift troubleshooting guides
-└── notes/               # Miscellaneous notes organized by topic
+│   ├── skills/                # Meta-development skills
+│   ├── commands/              # Slash commands (including /organize)
+│   ├── agents/                # Specialized subagents
+│   └── rules/                 # Always-applied conventions (repo structure, etc.)
+├── ansible-examples/          # Runnable Ansible playbooks and patterns (numbered)
+├── ansible-troubleshooting/   # Ansible/AAP troubleshooting guides
+├── argo-examples/             # ArgoCD configurations, app-of-apps, GitOps workflows
+├── coreos-examples/           # CoreOS/Ignition/Butane configurations
+├── docs/                      # AI-assisted engineering essays and guides
+├── examples/                  # Standalone scripts and artifacts referenced by docs
+├── git-projects/              # External git repos for exploration/contribution (gitignored)
+├── labs/                      # Hands-on lab exercises
+├── notes/                     # Informal notes and quick references
+├── ocp-examples/              # OpenShift configuration examples and templates
+├── ocp-install/               # Local OCP install working directory (gitignored)
+├── ocp-troubleshooting/       # OpenShift troubleshooting guides
+├── prompts/                   # Structured AI prompt templates for repeatable tasks
+├── research/                  # Research workspaces (sources, findings, assessments)
+├── rhacm-examples/            # Red Hat Advanced Cluster Management configurations
+├── tools/                     # Utility scripts not tied to a specific example
+└── vault-integration/         # HashiCorp Vault integration patterns
 ```
+
+See [`.cursor/rules/repo-structure.md`](.cursor/rules/repo-structure.md) for full conventions on where new content should go.
 
 ## 🧠 Meta-Development System
 
