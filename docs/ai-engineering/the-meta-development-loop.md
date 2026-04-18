@@ -144,20 +144,28 @@ If you're using AI for multi-session work and haven't started building reusable 
 
 ## The Case Studies
 
-Every case study in this repository demonstrates the loop. They're listed here not as a reading assignment but as a reference — each one traces the full cycle from gap to tool to application to outcome.
+The case studies in this repository fall into three types. Most demonstrate the loop directly. Some document failure modes and the fixes they produced — a close variant where the gap is a visible breakage rather than friction. Others document design decisions or process disciplines that belong to the same practice without following the four-step sequence.
+
+The table below covers eight case studies that most directly trace the full loop cycle. For the complete index — including failure modes, design decisions, and process case studies — see [docs/case-studies/README.md](../case-studies/README.md).
 
 | Case Study | Gap | Tool | Immediate application |
 |---|---|---|---|
-| [Building a Research Skill](../case-studies/building-a-research-skill.md) | Manual verification failed | [Research automation skill](../../.cursor/skills/research-and-analyze/SKILL.md) | Validated against same article |
-| [Adversarial Review](../case-studies/adversarial-review-meta-development.md) | No pushback in essay pipeline | [`/spar` command](../../.cursor/commands/spar.md), [spar pipeline stage](../../.cursor/skills/create-meta-prompts/references/spar-patterns.md) | 7 counterarguments against the essay |
-| [Debugging AI Judgment](../case-studies/debugging-ai-judgment.md) | Priorities always confirmed | [Zero-base evaluation](../../.cursor/commands/backlog.md) | Re-prioritized the biased backlog |
-| [Choosing Scripts Over Services](../case-studies/choosing-scripts-over-services.md) | No transcript fetching | [`fetch-transcript.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-transcript.py) | Fetched primary research interview |
-| [Building Knowledge Management](../case-studies/building-knowledge-management-with-ai.md) | No cross-session context | 6 interlocking tools | Populated and tested same session |
-| [Evolving Creative Scope](../case-studies/evolving-creative-scope.md) | Scope changes break coherence | [Set-update convention](../../.cursor/rules/cross-linking.md), [stable directory names](../../.cursor/rules/repo-structure.md) | Applied to active scope broadening |
-| [Case Studies as Discovery](../case-studies/case-studies-as-discovery.md) | Case study surfaced missing tools | [Shoshin rule](../../.cursor/rules/shoshin.md), [CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md) | Filled the gaps the case study named |
-| [Conversation to Essay](../case-studies/conversation-to-essay.md) | *No gap — compounding test* | All prior tools fired together | Essay produced through the full pipeline |
+| [Building a Research Skill](../case-studies/building-a-research-skill.md) | Manual verification failed — URLs blocked, context overflowed, nothing persisted | [Research automation skill](../../.cursor/skills/research-and-analyze/SKILL.md) | Validated against the same article whose manual verification had failed |
+| [Adversarial Review](../case-studies/adversarial-review-meta-development.md) | No pushback anywhere in the essay pipeline | [`/spar` command](../../.cursor/commands/spar.md), [spar pipeline stage](../../.cursor/skills/create-meta-prompts/references/spar-patterns.md) | 7 counterarguments against the essay that prompted the build |
+| [Debugging AI Judgment](../case-studies/debugging-ai-judgment.md) | Re-prioritization always confirmed existing priorities | [Zero-base evaluation](../../.cursor/commands/backlog.md) | Re-prioritized the backlog that had exposed the anchoring pattern |
+| [Building Knowledge Management](../case-studies/building-knowledge-management-with-ai.md) | New sessions started from scratch — no persistent context, tracking, or orientation | 6 interlocking tools | Populated and tested in the same session they were built |
+| [Case Studies as Discovery](../case-studies/case-studies-as-discovery.md) | Writing a case study surfaced three gaps with no existing fix | [Shoshin rule](../../.cursor/rules/shoshin.md), [CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md), `/start` step 2.5, others | Filled the gaps the case study named — the same session |
+| [When AI Fabricates Evidence](../case-studies/fabricated-references.md) | No external URL verification anywhere in the workflow | URL verification step in [`/review`](../../.cursor/commands/review.md) and [cross-linking rule](../../.cursor/rules/cross-linking.md) | Applied to the essay that contained the fabricated URL |
+| [Who Is Speaking?](../case-studies/who-is-speaking.md) | No distinction between reading your content and approving content that speaks *as* you | `voice-approved` validation type across generation, commit, audit, and validation | Retroactively applied to existing biographical content |
+| [When the Safety Net Is Too Heavy](../case-studies/heavy-safety-nets.md) | Rigid 11-step review was skipped for small changes, silently invalidating reviewed files | Scaled review depth, three-layer staleness detection, SHA tracking | Immediately tested: `git diff SHA..HEAD` showed the precise changes since last review |
 
-The last row is the one that demonstrates compounding. The "From Conversation to Essay" case study didn't reveal a gap. It revealed that the gaps had already been filled, and the infrastructure worked end-to-end on a real piece of writing.
+**The cases that don't fit the loop directly:**
+
+[Choosing Scripts Over Services](../case-studies/choosing-scripts-over-services.md) is a design decision, not a gap-fill. The question wasn't "what tool do we need?" but "which of these three tools fits the workflow?" Problem decomposition and workflow-fit reasoning — the same skills — but the loop shape doesn't apply.
+
+[Conversation to Essay](../case-studies/conversation-to-essay.md) had no gap. It demonstrated compounding: all prior tools fired together on a real essay, end to end, in one session. It's the evidence that the loop had paid off, not an instance of the loop running.
+
+[The Landscape Pass](../case-studies/landscape-before-depth.md) and [What the Corpus Sees](../case-studies/corpus-level-spar.md) are process disciplines — ways of working that emerged from practice rather than tools built to fill a specific gap.
 
 ---
 

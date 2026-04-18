@@ -40,7 +40,9 @@ A suggested path through the collection. It is not a curriculum — each piece w
 
 ### Philosophy and Practice
 
-8. `philosophy` [Ego, AI, and the Zen Antidote](philosophy/ego-ai-and-the-zen-antidote.md) — Companion to *The Shift* sections 6-7. AI assistants are trained to agree; Zen practices like mushin and shoshin offer structural (not just behavioral) resistance. The essay was itself adversarially reviewed — see the open review section.
+This track is in active development. The current published essay connects directly to the AI-engineering track. Later essays in the series — on the dojo as a way of working, on embodied practice, on karate lineage — are planned and will stand more independently from the engineering material. The track's reading order will grow.
+
+8. `philosophy` [Ego, AI, and the Zen Antidote](philosophy/ego-ai-and-the-zen-antidote.md) — Companion to *The Shift* sections 6-7. AI assistants are trained to agree; Zen practices like mushin and shoshin offer structural (not just behavioral) resistance. The essay was itself adversarially reviewed — see the open review section. *(Bridge essay between the engineering and philosophy tracks; later essays in this track stand more independently.)*
 
 ---
 
