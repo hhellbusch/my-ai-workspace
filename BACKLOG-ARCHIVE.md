@@ -6,7 +6,13 @@ New archival batches are prepended below (newest batch first).
 
 ---
 
-## Archived 2026-04-17 (2 items)
+## Archived 2026-04-17 (3 items)
+
+### AI prioritization bias — meta-system guard
+- **Product:** meta
+- **Context:** Implemented zero-base evaluation in `/backlog prioritize`: strips current section labels, scores items on merits, compares zero-base ranking against current ranking, and flags anchoring bias. Addresses the observed behavior where AI weights prior priorities into re-prioritization.
+- **Links:** `.cursor/commands/backlog.md`
+- **Completed:** 2026-04-17
 
 ### Adversarial review (sparring) meta-system integration
 - **Product:** meta

@@ -171,6 +171,12 @@
 
 Rolling cap: at most **15** items stay here (newest first). Older completions live in `BACKLOG-ARCHIVE.md` (see `/backlog` command — **Done retention**). Git history remains authoritative.
 
+### Case study: stale context in multi-agent sessions
+- **Product:** docs
+- **Context:** AI agent removed the backlog archive system, another session restored it, and the first agent continued editing based on stale assumptions — overwriting the rolling cap and exceeding the item limit. Documented as a case study exploring anchoring on session memory vs. repository state.
+- **Links:** `docs/case-studies/stale-context-in-long-sessions.md`, `.cursor/rules/shoshin.md`, `BACKLOG.md`
+- **Completed:** 2026-04-17
+
 ### Case study: fabricated URL in the sycophancy section
 - **Product:** docs
 - **Context:** AI fabricated a plausible Anthropic URL while defining sycophancy, demonstrating a related failure mode in the same paragraph. Documented as a case study tracing the immediate fix (corrected URL) and systemic fix (external URL verification rule and /review check).
@@ -252,9 +258,4 @@ Rolling cap: at most **15** items stay here (newest first). Older completions li
 - **Links:** `docs/philosophy/ego-ai-and-the-zen-antidote.md`, `docs/ai-engineering/the-shift.md`, `.planning/zen-karate/threads.md` (thread 14)
 - **Completed:** 2026-04-17
 
-### AI prioritization bias — meta-system guard
-- **Product:** meta
-- **Context:** Implemented zero-base evaluation in `/backlog prioritize`: strips current section labels, scores items on merits, compares zero-base ranking against current ranking, and flags anchoring bias. Addresses the observed behavior where AI weights prior priorities into re-prioritization.
-- **Links:** `.cursor/commands/backlog.md`
-- **Completed:** 2026-04-17
 
