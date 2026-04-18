@@ -84,6 +84,8 @@ None of this infrastructure was built for that specific essay. It was built for 
 
 This is the compounding effect: each cycle's output becomes the next cycle's input. The cost of each subsequent piece of work goes down because the infrastructure already exists. The quality goes up because the conventions are enforced automatically.
 
+A note on what "compounding" means here — and what it doesn't. This is an experienced observation, not a measured one. There are no session timings comparing how long a comparable task took in session 3 versus session 1. What the pattern describes is *accretion with reuse*: more scaffolding means more starting points, which reduces setup friction. Whether that reduction is exponential (compounding) or linear (accretion) is genuinely unclear without measurement. The practical claim is more modest: infrastructure built once gets used repeatedly without rebuilding, and that reuse is worth the build cost across enough cycles. Whether your project runs enough cycles to pay off depends on how long the project runs — which brings you back to the ratio check in the next section.
+
 ---
 
 ## When the Loop Becomes Self-Indulgent
