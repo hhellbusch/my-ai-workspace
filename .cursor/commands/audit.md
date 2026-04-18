@@ -107,6 +107,50 @@ Identify content that exists but isn't linked from its natural parent or peers.
 - If any `.cursor/commands/*.md` references files via @ syntax that don't exist
 - If any `.cursor/rules/*.md` references files that don't exist
 
+## Layer 5: Review Coverage
+
+Scan all committed markdown files for `review:` frontmatter blocks. Categorize files by content type and report validation status.
+
+Reference: `.cursor/rules/review-tracking.md` for the frontmatter convention and `AI-DISCLOSURE.md` for validation type definitions.
+
+### 5a. Coverage by Category
+
+For each content category, count:
+- Files with `review:` frontmatter (reviewed)
+- Files without `review:` frontmatter (assumed direction-reviewed)
+- Validation types present (how many `read`, `tested`, `fact-checked`, etc.)
+
+Categories:
+- **Essays**: `docs/**/*.md` (excluding README.md files)
+- **DevOps**: `ansible/**/*.md`, `ocp/**/*.md`, `argo/**/*.md`, `coreos/**/*.md`, `rhacm/**/*.md`, `vault/**/*.md`
+- **Meta-system**: `.cursor/commands/*.md`, `.cursor/skills/**/*.md`, `.cursor/rules/*.md`
+- **Research**: `research/**/*.md`, `library/**/*.md`
+
+### 5b. Recently Added Without Review
+
+Find markdown files committed in the last 14 days that have no `review:` frontmatter. These are candidates for the next review pass.
+
+### 5c. Stale Reviews
+
+Find files where the most recent validation date is older than the file's last git modification date. This means the file was changed after the last review — the review may no longer be current.
+
+Present as:
+
+```
+### Review Coverage
+- Essays: 3/16 reviewed (19%) — 2 read, 1 fact-checked
+- DevOps: 12/248 reviewed (5%) — 8 read, 4 tested
+- Meta-system: 15/237 reviewed (6%) — 10 read, 5 used-in-practice
+- Research: 0/100 reviewed (0%)
+- **Total: 30/601 reviewed (5%)**
+
+### Needs Review (recently added)
+- docs/case-studies/new-essay.md (committed 2026-04-17)
+
+### Stale Reviews (modified after last review)
+- docs/ai-engineering/the-shift.md — reviewed 2026-04-10, modified 2026-04-15
+```
+
 ## Report
 
 Present findings organized by severity:
@@ -147,6 +191,8 @@ After reporting, ask: "Want me to fix any of these? Reply with numbers, categori
 - All registry documents (.cursorrules, README.md, docs/README.md, research/README.md) compared against disk
 - Meta-system artifacts (skills, commands, rules, agents) checked for coherence
 - Cross-reference gaps identified with specific suggestions
+- Review coverage reported by content category with validation type breakdown
+- Stale reviews flagged when files were modified after their last review date
 - Clear severity-based report with actionable items
 - No false positives from gitignored directories or expected-empty directories
 </success_criteria>

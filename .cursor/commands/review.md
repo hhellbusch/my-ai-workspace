@@ -46,9 +46,14 @@ This command is read-only. It reports findings and asks for confirmation before 
    - Config files: check for valid syntax if tooling is available
    - No secrets, credentials, or sensitive data (flag `.env`, `*secret*`, `*credential*`, `*password*`, `*token*` patterns in content)
 
-6. **Backlog alignment** — Read `BACKLOG.md` and check if the work being committed relates to a tracked item. If not, note it (not a blocker, just a reminder).
+6. **Review status note** — For new files in `docs/`, `research/`, or product directories (`ansible/`, `ocp/`, `argo/`, etc.):
+   - Note that these files will start as **direction-reviewed** (no `review:` frontmatter)
+   - Remind: "Run `/validate <path> read` after you've reviewed these files"
+   - This is informational, not a blocker — new files are expected to lack review metadata
 
-7. **Present findings** as a structured report:
+7. **Backlog alignment** — Read `BACKLOG.md` and check if the work being committed relates to a tracked item. If not, note it (not a blocker, just a reminder).
+
+8. **Present findings** as a structured report:
 
 ```
 ## Pre-Commit Review
@@ -65,10 +70,11 @@ This command is read-only. It reports findings and asks for confirmation before 
 - Cross-references: OK / issues
 - Content quality: OK / issues
 - Secrets scan: OK / issues
+- Review status: N new files start as direction-reviewed (run `/validate` after reading)
 - Backlog alignment: tracked / untracked
 ```
 
-8. **Assumptions to challenge** (for documentation and essay commits) — If the changes include `docs/`, `research/`, or essay-type content, add 1-3 brief adversarial observations. These are not blockers — they surface things the author should have considered:
+9. **Assumptions to challenge** (for documentation and essay commits) — If the changes include `docs/`, `research/`, or essay-type content, add 1-3 brief adversarial observations. These are not blockers — they surface things the author should have considered:
 
 ```
 ### Assumptions to Challenge
@@ -79,7 +85,7 @@ This command is read-only. It reports findings and asks for confirmation before 
 
 Skip this section entirely for purely mechanical changes (config files, tooling, scaffolding). This is only useful for content that makes claims.
 
-8.5. **Brief alignment check (shoshin)** — If the changes include files in `docs/` or `.planning/`, check for framing drift:
+9.5. **Brief alignment check (shoshin)** — If the changes include files in `docs/` or `.planning/`, check for framing drift:
 
 - Read the relevant project brief (`.planning/*/BRIEF.md`) for any planning project connected to the changed files
 - Compare the content being committed against the brief's stated scope and purpose
@@ -101,9 +107,9 @@ Skip for changes that don't touch docs or planning files. If no `.planning/` pro
 [READY TO COMMIT / FIX ISSUES FIRST]
 ```
 
-9. If issues are found, ask: "Want me to fix these before committing? Reply with numbers or 'all'."
+10. If issues are found, ask: "Want me to fix these before committing? Reply with numbers or 'all'."
 
-10. If clean, ask: "Ready to commit. Want me to proceed?"
+11. If clean, ask: "Ready to commit. Want me to proceed?"
 </process>
 
 <success_criteria>

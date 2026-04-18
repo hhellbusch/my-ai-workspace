@@ -54,7 +54,11 @@ Read `BACKLOG.md` and present:
 **Ideas:** [N] items queued
 
 **Recently Completed:** [last 2-3 Done items with dates]
+
+**Review coverage:** N/M files reviewed (X%)
 ```
+
+For the review coverage line, do a quick count: `rg -l "^  status: reviewed" --glob "*.md"` for reviewed files vs. total markdown files (excluding `.git/`). One line is enough — `/audit` has the detailed breakdown.
 
 ### Step 2.5: Fresh-eyes check (shoshin)
 
