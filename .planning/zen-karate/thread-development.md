@@ -298,10 +298,25 @@ These threads form the applied essay — connecting dojo philosophy to engineeri
 - Engineering culture (common knowledge, not uniquely sourced)
 - Belt/rank progression philosophy (general, not sourced from specific texts)
 
+6. **DAVE and neurodivergence in tech.** Many tech workers show symptoms associated with ADHD, autism, or "DAVE" (Distractibility, Attention Deficit, Variability, Executive Dysfunction). The question the thread should explore: is this individual neurology, or is the industry *creating* these symptoms by rewarding context-switching and multitasking? Research shows task switching consumes up to 40% of productive time and recovery to full cognitive depth takes ~23 minutes. The average knowledge worker switches apps 1,200+ times per day. The environment produces the symptoms, then pathologizes the person. (Source: personal observation + single-tasking research)
+
+7. **Quarterly short-termism as organizational dopamine seeking.** "Making the board/stockholders happy" drives 90-day planning horizons, cuts to R&D, technical debt accumulation, and metric optimization over substance. This is the organizational version of Doris's desensitization cycle: the company seeks the next quarter's "hit" instead of building for the long term. The dojo counterpoint: training is measured in decades, not sprints. Rank progression takes years. There is no quarterly earnings call in karate. (Source: personal observation)
+
+**Available evidence:**
+- Shi Heng Yi transcript (strong on naming the pattern)
+- Rian Doris on dopamine desensitization cycle (strong — neuroscience mechanism for the "never enough" pattern, with practical exit strategy)
+- Simple Lucas's mental bandwidth model (moderate — informal mapping to Five Hindrances, modern tech-worker framing)
+- Single-tasking research: task switching consumes 40% productivity, 23-min recovery, Stanford multitasker study (strong — published research, multiple sources)
+- DAVE / neurodivergence in tech (moderate — personal observation + emerging research on transdiagnostic characterization)
+- Short-termism literature: quarterly earnings pressure, R&D cuts, governance solutions (moderate — established in business literature)
+- Engineering culture (common knowledge, not uniquely sourced)
+- Belt/rank progression philosophy (general, not sourced from specific texts)
+- Personal observation: "work smart not hard" as core belief, one-task-at-a-time as personal practice (new — first direct practitioner input on this thread)
+
 **Gaps:**
-- *Personal experience:* Have you experienced the "never enough" pattern in tech work? How does it compare to the drive in karate training — where did they feel different?
-- *Research:* Doris provides the neuroscience mechanism; Shi Heng Yi provides the philosophical naming. What's still missing is the organizational/cultural dimension — how do companies and teams create environments that amplify the desensitization cycle? (Open offices, Slack, always-on expectations.)
-- *Logical:* The distinction between "the art is deep" and "you are not enough" is the thread's insight, but it needs concrete development. How does a good sensei communicate this differently from a bad manager? Doris's framework suggests the answer: the dojo structures practice to resensitize (single focus, deliberate rest), while the corporate environment structures work to desensitize (constant context-switching, always-on, more inputs).
+- *Personal experience:* ~~Have you experienced the "never enough" pattern in tech work?~~ **Partially filled:** User identifies as a strong advocate of single-tasking and "work smart not hard" — and observes that most tech workers and organizations operate contrary to this. The gap that remains: specific examples of seeing the pattern play out and choosing the alternative. What did it cost? What did it produce?
+- *Research:* Doris provides the neuroscience mechanism; Shi Heng Yi provides the philosophical naming. DAVE/neurodivergence research adds the individual dimension. What's still missing is the intersection — how the organizational environment (quarterly pressure, always-on) interacts with individual neurology (ADHD/DAVE symptoms) to create a compound problem.
+- *Logical:* The distinction between "the art is deep" and "you are not enough" is the thread's insight. The organizational short-termism angle adds a new dimension: the company that operates on quarterly cycles tells its people to "be patient with career growth" while modeling the opposite. The dojo structures practice to resensitize (single focus, deliberate rest); the corporate environment structures work to desensitize (constant context-switching, always-on, more inputs). The contradiction is structural, not individual.
 
 **Spar:**
 
@@ -597,6 +612,50 @@ These threads form the applied essay — connecting dojo philosophy to engineeri
 
 ---
 
+## Thread 17: The Quarterly Dojo — Short-Termism, Instant Gratification, and the Long Way
+
+**Thesis:** Tech organizations structurally optimize for short-term gratification — quarterly earnings, sprint commitments, context-switching productivity theater — while the dojo model demonstrates that the deepest capability comes from long-horizon, single-focus investment that modern business culture has systematically abandoned.
+
+**Key arguments:**
+
+1. **Quarterly earnings as organizational dopamine seeking.** The 90-day reporting cycle drives R&D cuts, technical debt accumulation, and metric optimization over substance. Companies use share buybacks to inflate earnings per share rather than invest in innovation. Each "beat" rewards the behavior and desensitizes the organization to its long-term cost. This is Doris's dopamine desensitization cycle operating at organizational scale. (Source: short-termism research, personal observation)
+
+2. **The dojo's time horizon.** Hayashi spent 8 years in Okinawa learning. Inoue was uchi-deshi for 4 years. Rika trained 7 years under Inoue before her first World Championship gold. Rank progression takes years, mastery a lifetime. The investment horizon is generational. There is no quarterly earnings call in karate. The structure and the message are aligned: the Way is long.
+
+3. **DAVE and the environment-as-cause.** Many tech workers show symptoms of ADHD, autism, or "DAVE" (Distractibility, Attention Deficit, Variability, Executive Dysfunction). But the industry *rewards* context-switching: Slack responsiveness, "always-on" availability, meeting-heavy days. Research shows task switching consumes up to 40% of productive time, recovery to full cognitive depth takes ~23 minutes, and the average knowledge worker switches apps 1,200+ times per day. The environment produces the symptoms, then pathologizes the person. (Source: single-tasking research, DAVE concept, personal observation)
+
+4. **"Work smart, not work hard" as dojo principle.** Single-tasking — one thing, full attention — is both Doris's third principle and the dojo's fundamental practice mode. Inoue's students practice basics for 10 hours a day — that sounds like "work hard," but it's the deepest "work smart": the same thing, with total attention, until the body understands. It's the opposite of the scattered 1,200-app-switch knowledge worker. (Source: Doris, Inoue teaching method, personal philosophy)
+
+5. **The structural contradiction.** Companies tell employees to "be patient with career growth" while modeling quarterly urgency. They ask for "deep work" while requiring Slack responsiveness. They fund "innovation labs" while cutting R&D when earnings dip. The dojo doesn't have this contradiction — the structure (train daily, for years, one art) and the message (the Way is long) are aligned. (Source: personal observation)
+
+**Available evidence:**
+- Rian Doris on dopamine desensitization and single-tasking (strong)
+- Single-tasking research: 40% productivity tax, 23-min recovery, Stanford study (strong — published research)
+- DAVE / neurodivergence framing (moderate — emerging concept, personal observation)
+- Short-termism literature: quarterly earnings pressure, R&D cuts, share buybacks (moderate — established in business literature)
+- Dojo time horizons: Hayashi, Inoue, Rika documented timelines (strong)
+- Inoue's kihon drilling as "work smart" (strong)
+- Personal philosophy: single-tasking advocate, "work smart" practitioner (new — direct practitioner input)
+
+**Gaps:**
+- *Personal experience:* **Partially filled.** User identifies as a single-tasking advocate who sees most tech workers and organizations operating contrary to this. What remains: specific examples of choosing the one-task path in an environment that rewards the opposite. What did it cost? What did it produce? Have you been penalized or rewarded for "working smart" in environments that value visible busyness?
+- *Research:* The DAVE concept needs more depth — is it a legitimate diagnostic evolution or a social media renaming? Cal Newport's "Deep Work" framework is relevant but not cached. The quarterly earnings / short-termism literature is well-established but not project-specific.
+- *Logical:* The thread needs to distinguish between "short-term thinking is always wrong" (it isn't — startups, emergencies, pivots require it) and "the default to short-term thinking is the problem." The dojo isn't anti-urgency — kumite requires split-second reaction. The issue is when the entire organization operates in kumite mode when it should be in kata mode.
+
+**Spar:**
+
+> **Type: Scope | Strength: Strong**
+> **The argument:** "Corporations are short-sighted and karate is long-sighted" is a comparison of fundamentally different systems. A corporation has shareholders, employees, competitors, and market forces. A dojo has a sensei and students. The corporation's 90-day horizon isn't stupidity — it's a rational response to capital markets, competition, and the need to retain talent who also operate on short time horizons (people change jobs every 2-3 years). The dojo can afford decade-long thinking because nobody's retirement fund depends on its quarterly kata performance. Comparing the two without acknowledging the structural differences that drive their time horizons is intellectually dishonest.
+> **Why it matters:** If the essay doesn't address WHY organizations default to short-termism (it's not because they haven't heard of karate), the prescription ("think long-term like a dojo") is useless advice that ignores real constraints.
+
+> **Type: Evidence | Strength: Moderate**
+> **The argument:** The DAVE framing risks medicalizing normal variation in attention. Not everyone who struggles to focus in an open office has a neurodevelopmental condition — some people just work in poorly designed environments. Using diagnostic language (even alternative diagnostic language) to describe an environmental problem could reinforce the individual-pathology framing the thread claims to critique.
+> **Why it matters:** The thread argues "the environment produces the symptoms, then pathologizes the person" — but then uses a diagnostic acronym (DAVE) to describe the symptoms. That's still pathologizing the person, just with a friendlier label.
+
+**Verdict:** **Strong thread with practitioner grounding.** This is one of the few threads with direct personal philosophical input ("one task at a time," "work smart"). The dojo time horizons are well-documented. The spar raises a real challenge about structural differences between corporations and dojos — the essay must address this honestly rather than pretending the comparison is straightforward. The DAVE angle is interesting but needs careful handling to avoid reinforcing what it critiques.
+
+---
+
 # Cross-Thread Spar
 
 Adversarial review at the project level — not individual threads, but the thesis as a whole.
@@ -617,7 +676,8 @@ Adversarial review at the project level — not individual threads, but the thes
 
 - **Thread 16 (Science/Tradition):** The Usami-cameras-as-metaphor-for-engineering-metrics connection was generated by me. No indication the user has thought about this intersection. The thread reads as clever but may not be grounded.
 - **Thread 8 (Organizational Karma):** "Karma" as organizational vocabulary was generated by me from Shi Heng Yi's transcript. The user hasn't indicated this framing resonates.
-- **Thread 1 (Never Enough):** The "dojo as counterpoint to never-enough culture" argument was generated by me. The user named the tech culture problem but the dojo resolution was AI synthesis.
+- **Thread 1 (Never Enough):** The "dojo as counterpoint to never-enough culture" argument was generated by me. The user has since named the tech culture problem more concretely (single-tasking advocate, "work smart," DAVE/neurodivergence observations, short-termism critique) — shifting the practitioner ratio for this thread.
+- **Thread 17 (Quarterly Dojo):** The strongest practitioner-grounded thread — built directly from user's personal philosophy (one task at a time, work smart not hard) and observations (DAVE, short-termism, structural contradictions). AI contributed the framing and the spar, but the core content is user-provided.
 - **Threads 2, 4, 5, 7, 9, 13, 15:** Stronger — these connect to specific source material and/or the user's direct observations (lineage recognition, Hayashi-ha vs. Shotokan, return to practice).
 - **Threads 11, 12:** Mixed — the sub-arguments are AI-developed from user-provided observations (sitting damage, knowledge hoarding, collaboration gaps).
 
@@ -637,7 +697,7 @@ Adversarial review at the project level — not individual threads, but the thes
 - The project has more infrastructure than content. One published philosophy essay vs. 16 threads, 10 cached sources, 5 library entries, a roadmap, a brief, a style guide, sparring notes, and now this development document.
 
 **The honest ratio of practitioner insight to research compilation:**
-Currently about 20/80. The research is thorough. The personal voice is thin. The project's credibility depends on shifting this ratio. The threads that depend most on personal experience (2, 4, 5, 7, 15) are also the ones marked "needs your voice" — which is not a coincidence. The AI can build the scaffolding. The essays won't be worth reading until the scaffolding is inhabited.
+Improving from 20/80 toward 25/75. The user's recent inputs — single-tasking advocacy, "work smart" philosophy, DAVE/neurodivergence observations, short-termism critique, organizational structural contradictions — are genuine practitioner perspectives that several threads were missing. Thread 17 is the most practitioner-grounded thread in the project. Thread 1 is now better anchored. The threads that still depend most on personal experience (2, 4, 5, 7, 15) remain marked "needs your voice" — the karate-specific experiential core is still the critical gap.
 
 ## Existing Spar Note #7 — Is This Project What It Warns Against?
 

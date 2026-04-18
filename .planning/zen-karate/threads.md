@@ -162,6 +162,20 @@ Inoue himself was precise — "90/10 weight distribution in neko ashi dachi, wei
 
 ---
 
+## 17. The Quarterly Dojo — Short-Termism, Instant Gratification, and the Long Way
+
+Tech organizations optimize for 90-day cycles — quarterly earnings, sprint commitments, OKR periods. The board wants results. The stockholders want returns. The engineers want to ship. Everything conspires toward immediate gratification. This is the organizational version of Doris's dopamine desensitization: the company seeks the next quarter's "hit" instead of investing in what compounds over decades.
+
+The dojo operates on a fundamentally different time horizon. Rank progression takes years. Mastery takes a lifetime. There is no quarterly earnings call in karate. Hayashi spent eight years in Okinawa learning. Inoue was uchi-deshi for four years before beginning to teach. Rika trained for seven years under Inoue before her first World Championship gold. The investment horizon is generational.
+
+**The DAVE angle:** Many tech workers show symptoms of ADHD/executive dysfunction — or the newer framing "DAVE" (Distractibility, Attention Deficit, Variability, Executive Dysfunction). But the question isn't just individual neurology — the industry *rewards* context-switching and multitasking. Research shows task switching consumes up to 40% of productive time. The average knowledge worker switches apps 1,200+ times per day. Recovery to full cognitive depth after interruption takes 23 minutes. The environment produces the symptoms, then pathologizes the person.
+
+**The "work smart" counterpoint:** Single-tasking — one thing at a time, with full attention — is both Doris's third principle and the dojo's fundamental practice mode. "Work smart, not work hard" is the practical application. Inoue's students practice basics for 10 hours a day — that sounds like "work hard," but it's actually the deepest form of "work smart": the same thing, with total attention, until the body understands. It's the opposite of the scattered 1,200-app-switches-per-day knowledge worker.
+
+**The structural critique:** Companies tell employees to "be patient with career growth" while modeling quarterly urgency. They ask for "deep work" while requiring Slack responsiveness. They fund "innovation labs" while cutting R&D when earnings dip. The contradiction is structural, not individual. The dojo doesn't have this contradiction — the structure (train daily, for years, one art) and the message (the Way is long) are aligned.
+
+---
+
 ## Mapping to Planned Essays
 
 | Thread | Planned essay(s) | Notes |
@@ -182,3 +196,4 @@ Inoue himself was precise — "90/10 weight distribution in neko ashi dachi, wei
 | 14. Ego, AI, and Zen | **Published:** `docs/philosophy/ego-ai-and-the-zen-antidote.md` | Bridges *The Shift* with zen practices |
 | 15. Lineage as Transmission | The Way Is in Training | **First essay** — Chatanyara Kushanku chain, independent branches, what survives the gap |
 | 16. Science and Tradition | Later essays (or bridge to AI track) | Usami's biomechanics vs. Inoue's "99% feeling"; parallels AI/metrics culture |
+| 17. The Quarterly Dojo | Dojo/Ways of Working, Five Hindrances | Short-termism, DAVE/neurodivergence, "work smart," structural contradictions |
