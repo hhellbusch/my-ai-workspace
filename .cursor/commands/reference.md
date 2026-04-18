@@ -56,7 +56,7 @@ Parse `$ARGUMENTS` to determine the subcommand. If empty or unrecognized, defaul
 3. **Enrich the entry** (this is the key step):
    - Search the web for summaries, reviews, chapter outlines, and key themes
    - For books: find book reviews, practitioner analyses, publisher descriptions
-   - For talks/videos: find transcripts or detailed summaries
+   - For talks/videos: fetch transcripts using `python3 .cursor/skills/research-and-analyze/scripts/fetch-transcript.py <url> <output-dir>`, then find additional summaries
    - For articles: fetch the article content if possible
    - Fetch the best 2-3 sources and synthesize into the "Key Themes" and "Notable Ideas" sections
    - Cache the source URLs in the "Sources" section

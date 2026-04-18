@@ -106,4 +106,5 @@ All domain knowledge in `references/`:
 | Script | Purpose |
 |----------|---------|
 | fetch-sources.py | Concurrent batch URL fetcher with stealth headers, proxy support, PDF extraction, and domain-aware rate limiting |
+| fetch-transcript.py | YouTube transcript fetcher — single video or batch mode, saves timestamped markdown to disk |
 </scripts_index>
