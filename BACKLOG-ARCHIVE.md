@@ -1,0 +1,105 @@
+# Backlog archive
+
+Completed items moved out of `BACKLOG.md` so **`## Done`** stays a short rolling window (at most **15** entries). Git history on `BACKLOG.md` and this file remains authoritative; this file is an index for quick lookup without replaying large diffs.
+
+New archival batches are prepended below (newest batch first).
+
+---
+
+## Archived 2026-04-18 (16 items) — initial Done cap migration
+
+### Zen-karate essay voice/style guide
+- **Product:** docs
+- **Context:** Blended voice reference: personal first-person for philosophical/experiential sections, practitioner tone for applied sections. Structural conventions, Japanese terminology approach, "this, not that" examples, cross-linking conventions. Referenced by all meta-prompts in the drafting pipeline.
+- **Links:** `.planning/zen-karate/STYLE.md`
+- **Completed:** 2026-04-17
+
+### Zen-karate source library (Inoue, Rika Usami, Hayashi, Athens lineage)
+- **Product:** docs
+- **Context:** 10 cached source files covering Inoue Yoshimi (3 files — comprehensive bio, Jesse Enkamp seminar recap, 42 secrets), Rika Usami (biography + career + coaching), Teruo Hayashi (biography), Athens Shotokan lineage (Golden, Kanazawa, Okazaki), Jesse Enkamp articles (3 — Okinawan vs. Japanese, mushin, modern karate history), Shi Heng Yi transcript. Plus 5 library entries (Karate by Jesse, Finding Karate, Karate Philosophy, Deshimaru book, curated reading list). Built across multiple research sessions.
+- **Links:** `research/zen-karate-philosophy/sources/`, `library/`
+- **Completed:** 2026-04-17
+
+### AI-engineering track updates — behavioral failure modes, meta-development loop, multi-session management
+- **Product:** docs
+- **Context:** Three updates driven by case study analysis: (1) expanded The Shift section 6 with behavioral failure modes beyond sycophancy — anchoring on own outputs, framing drift, self-reinforcing infrastructure — with structural mitigations and case study references; (2) new essay "The Meta-Development Loop" synthesizing the gap → tool → apply → reshape pattern from all 8 case studies into a teachable engineering pattern; (3) expanded AI-Assisted Development Workflows section 2 with multi-session project management patterns — zero-base evaluation, session orientation with drift checks, handoffs that name their assumptions, set-based scope updates, planning evolution logs.
+- **Links:** `docs/ai-engineering/the-shift.md`, `docs/ai-engineering/the-meta-development-loop.md`, `docs/ai-engineering/ai-assisted-development-workflows.md`
+- **Completed:** 2026-04-17
+
+### Case study: when case studies generate system improvements
+- **Product:** docs
+- **Context:** Published case study documenting how writing the evolving-scope case study surfaced three concrete gaps, how the user's shoshin observation became a design principle with five integration points, and how the case study format itself functions as a discovery mechanism.
+- **Links:** `docs/case-studies/case-studies-as-discovery.md`, `docs/case-studies/evolving-creative-scope.md`, `.cursor/rules/shoshin.md`
+- **Completed:** 2026-04-17
+
+### Case study: adversarial review as a meta-development pattern
+- **Product:** docs
+- **Context:** Published case study documenting how the absence of pushback in the essay workflow led to building `/spar`, spar pipeline stage, and zero-base de-biasing — then immediately applying it to the ego/AI essay, producing 7 counterarguments that feed back into the essay's Open Review section.
+- **Links:** `docs/case-studies/adversarial-review-meta-development.md`, `.cursor/commands/spar.md`, `research/zen-karate-philosophy/sparring-notes.md`
+- **Completed:** 2026-04-17
+
+### Case study: debugging your AI assistant's judgment
+- **Product:** docs
+- **Context:** Published case study documenting how noticing AI anchoring on prior priorities led to naming the mechanism (sycophancy toward own outputs), building a structural fix (zero-base evaluation in `/backlog prioritize`), and connecting it to the philosophical thesis on ego and non-attachment.
+- **Links:** `docs/case-studies/debugging-ai-judgment.md`, `.cursor/commands/backlog.md`, `docs/ai-engineering/the-shift.md`
+- **Completed:** 2026-04-17
+
+### Case study: from conversation to essay in one session
+- **Product:** docs
+- **Context:** Published case study tracing how the ego/AI/zen essay went from a conversational observation to a published essay with source provenance and adversarial review in one session. Demonstrates the full write-challenge-revise cycle and how project infrastructure (cached sources, style guide, cross-linking rules, sparring system) compounds.
+- **Links:** `docs/case-studies/conversation-to-essay.md`, `docs/philosophy/ego-ai-and-the-zen-antidote.md`, `.planning/zen-karate/threads.md`
+- **Completed:** 2026-04-17
+
+### Case study: choosing scripts over services — the YouTube transcript decision
+- **Product:** docs
+- **Context:** Published case study documenting the architectural decision between MCP server, Gemini API, and Python script for YouTube transcript fetching. The script won because it fit the file-based research workflow — persistent output, batch mode, same conventions as `fetch-sources.py`. Demonstrates problem decomposition and workflow-fit thinking.
+- **Links:** `docs/case-studies/choosing-scripts-over-services.md`, `.cursor/skills/research-and-analyze/scripts/fetch-transcript.py`
+- **Completed:** 2026-04-17
+
+### Case study: building a personal knowledge management system with AI
+- **Product:** docs
+- **Context:** Published case study documenting how one extended session produced six interlocking organizational tools (backlog, library, session orientation, pre-commit review, content audit, cross-linking). Explores the meta-development loop applied to infrastructure and the self-reinforcing nature of AI building systems that organize AI work.
+- **Links:** `docs/case-studies/building-knowledge-management-with-ai.md`, `BACKLOG.md`, `library/`, `.cursor/commands/`
+- **Completed:** 2026-04-17
+
+### Case study: how AI handles evolving creative scope across sessions
+- **Product:** docs
+- **Context:** Published case study documenting how the zen-karate project broadened from "Zen and Karate" to "Martial Arts, Zen, and the Way of Working" as the user's learning expanded. Covers cascade effects through planning documents, what conventions (set updates, stable names, nuanced framing) help maintain coherence, and what's missing (evolution logs, tonal drift detection).
+- **Links:** `docs/case-studies/evolving-creative-scope.md`, `.planning/zen-karate/BRIEF.md`, `.planning/zen-karate/STYLE.md`
+- **Completed:** 2026-04-17
+
+### Session-start context loading
+- **Product:** meta
+- **Context:** Built `/start` command for session orientation (loads backlog, checks handoffs, shows planning state, suggests focus) and `session-awareness` cursor rule for passive context. Complements `/whats-next` (session end) with a session-begin workflow.
+- **Links:** `.cursor/commands/start.md`, `.cursor/rules/session-awareness.md`
+- **Completed:** 2026-04-17
+
+### Personal reference library
+- **Product:** meta
+- **Context:** Built `library/` directory with README, entry template, `/reference` command (add, search, enrich, link), and first enriched entry (Deshimaru's "The Zen Way to Martial Arts"). Integrated with repo-structure rule, cross-linking rule, and project curated-reading lists.
+- **Links:** `library/`, `.cursor/commands/reference.md`
+- **Completed:** 2026-04-17
+
+### Proactive backlog capture rule
+- **Product:** meta
+- **Context:** Created `backlog-capture` cursor rule that reminds agent to capture ideas and deferred tasks as backlog entries during conversation, not after.
+- **Links:** `.cursor/rules/backlog-capture.md`
+- **Completed:** 2026-04-17
+
+### ArgoCD diff preview upstream contribution
+- **Product:** argo
+- **Context:** Explored feasibility improvement in `git-projects/argocd-diff-preview/`. Resulted in [upstream issue #381](https://github.com/dag-andersen/argocd-diff-preview/issues/381).
+- **Links:** `git-projects/argocd-diff-preview/`
+- **Completed:** 2026-03
+
+### Research and verification skill
+- **Product:** meta
+- **Context:** Built a reusable research automation skill that fetches sources, runs parallel analysis, and produces structured assessments. Validated against 53 of 62 cited sources from an enterprise LLM deployment article.
+- **Links:** `.cursor/skills/research-and-analyze/`, `docs/case-studies/building-a-research-skill.md`
+- **Completed:** 2026-04
+
+### Documentation suite
+- **Product:** meta
+- **Context:** Created six interconnected essays covering AI-assisted development, working outside expertise, legacy system improvement, LLM deployment analysis, and the research skill meta case study.
+- **Links:** `docs/README.md`
+- **Completed:** 2026-04
