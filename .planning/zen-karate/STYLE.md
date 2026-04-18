@@ -96,6 +96,13 @@ The essays distill meaningful principles — they don't just tell a personal sto
 - When new threads, research, or personal experience changes the picture, existing essays should be updated to reflect the improved understanding — not preserved as monuments to a previous session's thinking.
 - This applies to the `docs/` essays, the planning docs, the style guide itself, and every other artifact. The project practices what it preaches about non-attachment.
 
+### Guiding Stars
+The project has a primary purpose and supporting interests. When prioritizing, the guiding star wins.
+
+- **Primary: AI-engineering and case studies.** Sharing practical insights with peers about AI-assisted development, workflows, and the meta-development patterns emerging from this work. This is what the `docs/ai-engineering/` and `docs/case-studies/` tracks exist for. The philosophy track supports this — it doesn't overshadow it.
+- **Supporting: Philosophy / martial arts / zen.** The `docs/philosophy/` track explores how practice informs work and life. It's genuine and worth pursuing, but it serves the larger goal of distilling useful principles, not building a standalone philosophy library.
+- **Personal interest (not essay material): Lineage research.** Karate lineage, historical connections, style genealogy — genuinely interesting to the author but not the audience. Keep in research files as reference, don't plan essays around it.
+
 ### Purpose of the Essays
 - Distill principles from practice that are meaningful beyond the personal story
 - The personal experience serves the ideas, not the other way around (this echoes "Not memoir" above, but extends to the project level)
