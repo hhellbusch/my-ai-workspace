@@ -30,18 +30,6 @@
 - **Links:** `.planning/zen-karate/STYLE.md`, `.planning/zen-karate/`
 - **Added:** 2026-04-17
 
-### YouTube transcript MCP server integration
-- **Product:** meta
-- **Context:** Add `jkawamoto/mcp-youtube-transcript` MCP server to Cursor config. Enables fetching YouTube video transcripts directly during conversations — no API key needed. Supports the zen-karate research (Shi Heng Yi interviews) and any future video-based references in the library.
-- **Links:** `.cursor/mcp.json`, `library/`, `research/zen-karate-philosophy/`
-- **Added:** 2026-04-17
-
-### YouTube transcript fetcher script
-- **Product:** meta
-- **Context:** Python script (like fetch-sources.py but for YouTube) using the free `youtube-transcript-api` package. Extracts transcripts from YouTube URLs and saves as markdown files in library/ or research/ with metadata. Integrates into `/reference add` workflow for video entries. Enables batch processing and cached transcripts that survive across sessions.
-- **Links:** `.cursor/skills/research-and-analyze/`, `library/`
-- **Added:** 2026-04-17
-
 ### Headless browser fallback for research fetcher
 - **Product:** meta
 - **Context:** The research skill's `fetch-sources.py` gets blocked by some sites (HTTP 403/429). A headless browser fallback was designed during the skill validation run but not implemented. Would improve source capture rate beyond the current ~85%.
@@ -84,6 +72,12 @@
 - **Product:** docs
 - **Context:** Explicit bridge to the existing AI-focused essay track. Shoshin (beginner's mind) as the essential posture for working with AI. Connects back to themes in The Shift and AI-Assisted Development Workflows.
 - **Links:** `.planning/zen-karate/`, `docs/the-shift.md`, `docs/ai-assisted-development-workflows.md`
+- **Added:** 2026-04-17
+
+### YouTube transcript MCP server
+- **Product:** meta
+- **Context:** `jkawamoto/mcp-youtube-transcript` MCP server could enable fetching transcripts directly during conversations without running the script manually. Lower priority since `fetch-transcript.py` covers the need and caches to disk (which MCP wouldn't do automatically).
+- **Links:** `.cursor/skills/research-and-analyze/scripts/fetch-transcript.py`
 - **Added:** 2026-04-17
 
 ### Gemini API video understanding integration
@@ -140,6 +134,12 @@
 - **Product:** meta
 - **Context:** Built `/review` (pre-commit quality gate), `/audit` (content health check), `pre-commit-review` rule (enforcement), and `cross-linking` rule (cross-reference maintenance). First audit run caught 6 registry drift issues.
 - **Links:** `.cursor/commands/review.md`, `.cursor/commands/audit.md`, `.cursor/rules/pre-commit-review.md`, `.cursor/rules/cross-linking.md`
+- **Completed:** 2026-04-17
+
+### YouTube transcript tooling
+- **Product:** meta
+- **Context:** Built `fetch-transcript.py` script using `youtube-transcript-api` — fetches YouTube transcripts as timestamped markdown with metadata. Supports single video and batch mode. Integrated into the research skill's scripts index and the `/reference` command's video enrichment workflow. Tested successfully with Shi Heng Yi interview (2142 segments, 1:37:35 duration). MCP server option deferred to Ideas as the script-based approach covers the immediate need.
+- **Links:** `.cursor/skills/research-and-analyze/scripts/fetch-transcript.py`, `.cursor/commands/reference.md`
 - **Completed:** 2026-04-17
 
 ### Zen-karate essay library scaffolding
