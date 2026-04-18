@@ -17,7 +17,6 @@ Run this at the beginning of a new session, or whenever you need to re-orient.
 
 <context>
 - Backlog: @BACKLOG.md
-- Older completed items: `BACKLOG-ARCHIVE.md` (when **`## Done`** in the backlog is trimmed to the rolling cap)
 - Recent commits: !`git log --oneline -10`
 - Handoff file: !`ls whats-next.md 2>/dev/null || echo "No handoff file"`
 - Planning projects: !`ls -d .planning/*/ 2>/dev/null || echo "No planning projects"`
@@ -54,7 +53,7 @@ Read `BACKLOG.md` and present:
 
 **Ideas:** [N] items queued
 
-**Recently Completed:** [last 2-3 items from **`## Done`** in `BACKLOG.md` — newest are listed first; older completions live in `BACKLOG-ARCHIVE.md`]
+**Recently Completed:** [last 2-3 Done items with dates]
 
 **Review coverage:** N/M files reviewed (X%)
 ```

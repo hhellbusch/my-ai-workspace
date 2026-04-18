@@ -1,6 +1,6 @@
 ---
 description: View, add, pick, complete, or review items in the project backlog
-argument-hint: "[add <description> | pick | done <title> | review | prioritize | archive-done]"
+argument-hint: "[add <description> | pick | done <title> | review | prioritize]"
 allowed-tools:
   - Read
   - Write
@@ -17,7 +17,6 @@ Manage the persistent project backlog in `BACKLOG.md`. This file tracks ideas, i
 ## Context
 
 - Backlog file: `BACKLOG.md` (repo root)
-- Archive file: `BACKLOG-ARCHIVE.md` (older **`## Done`** items; see **Done retention** below)
 - Current date: !`date "+%Y-%m-%d"`
 
 ## Instructions
@@ -37,7 +36,7 @@ Backlog Summary:
   In Progress (N):  <titles, comma-separated>
   Up Next (N):      <titles, comma-separated>
   Ideas (N):        <count only>
-  Done (N):         <count only>  (max 15 in file; older in BACKLOG-ARCHIVE.md)
+  Done (N):         <count only>
 ```
 
 4. If any In Progress items have been there for a while, note it: "Heads up: <title> has been in progress since <date>."
@@ -97,22 +96,6 @@ Up Next:
    - Place it at the top of the Done section (most recent first)
 6. Update the `Last updated` date
 7. Confirm: "Completed: <title>"
-8. If **`## Done`** now has **more than 15** items (count `###` headings only), run **`archive-done`** automatically as part of the same edit (no extra confirmation unless the user previously asked to skip archival).
-
----
-
-### Subcommand: `archive-done`
-
-Trim **`## Done`** in `BACKLOG.md` to the rolling cap by moving excess items to `BACKLOG-ARCHIVE.md`.
-
-1. Read `BACKLOG.md` and `BACKLOG-ARCHIVE.md` (if the archive is missing, create it using the header template in **Done retention**).
-2. Count Done items: `###` headings under **`## Done`** only (ignore the rolling-cap note paragraph).
-3. If count ≤ **15**, report: `Done has N items (cap 15). Nothing to archive.` and stop.
-4. **`## Done` order:** newest completions **first** (most recent at the top, oldest at the bottom). If order has drifted, re-sort to that convention before cutting.
-5. Remove whole item blocks from the **bottom** of **`## Done`** until exactly **15** remain. Each block starts at `###` and runs until the next `###` or end of section.
-6. In `BACKLOG-ARCHIVE.md`, **prepend** a new batch **after the intro** and **immediately before** the first existing `## Archived` heading (so newer batches stay at the top of the archive). Use heading `## Archived YYYY-MM-DD (N items)` where the date is **today** and **N** is the number of items moved. Paste the **full** markdown for each archived item (preserve original **`Completed:`** lines).
-7. Update `Last updated` in `BACKLOG.md`.
-8. Confirm: `Archived N Done item(s) to BACKLOG-ARCHIVE.md. Done now has 15 items.`
 
 ---
 
@@ -129,8 +112,7 @@ Trim **`## Done`** in `BACKLOG.md` to the rolling cap by moving excess items to 
 - Suggest Ideas that relate to recent conversation topics or recent commits as candidates for Up Next
 
 **Done section hygiene:**
-- If **`## Done`** has **more than 15** items, offer to run **`archive-done`** (or run it if the user asked to fix hygiene in bulk)
-- If count is ≤15 but the section is not **newest-first**, suggest reordering to match **Done retention**
+- If Done has more than 10 items, suggest trimming the oldest ones (they've served their changelog purpose)
 
 **Consistency check:**
 - Verify all items have the required fields (Product, Context, Links or date)
@@ -243,13 +225,3 @@ Every item follows this structure:
 ```
 
 Items move downward through the lifecycle: Ideas → Up Next → In Progress → Done.
-
----
-
-## Done retention (rolling cap)
-
-- **`## Done`** holds at most **15** completed items so `BACKLOG.md` stays a current board, not a full history.
-- **Order:** **newest first** — when moving an item to Done, insert it **immediately after** the rolling-cap note paragraph (at the top of the list).
-- **Overflow:** When a completion pushes Done past 15, move items from the **bottom** (oldest in that section) to `BACKLOG-ARCHIVE.md` in the same change set as the completion, or run **`/backlog archive-done`** explicitly.
-- **Archive file:** `BACKLOG-ARCHIVE.md` — each batch uses `## Archived YYYY-MM-DD (N items)`; keep full item bodies (title, Product, Context, Links, Completed). **Newer batches go above older ones** in the file for quick scanning.
-- **Git** remains authoritative for diffs; the archive is for **cheap lookup** without `git log -p` on large backlog edits.

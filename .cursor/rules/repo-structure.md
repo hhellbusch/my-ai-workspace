@@ -40,7 +40,7 @@ Content is organized by **product/technology**, then by **content type** within 
 2. **Product-specific examples** go in `{product}/examples/`, not in the top-level `examples/` directory.
 3. **Research and analysis output** goes in `research/{topic}/`, never in `docs/` or a standalone `analyses/` directory.
 4. **Scripts that support a doc or example** live alongside that doc or example, not in the repo root.
-5. **The repo root** should only contain repo-level files: `README.md`, `AI-DISCLOSURE.md`, `BACKLOG.md`, `BACKLOG-ARCHIVE.md`, `.gitignore`, `.cursorrules`, `.actrc`, `.actrc.example`, `.secrets`. Note: `git-projects/` and `ocp/install/` exist locally but are gitignored.
+5. **The repo root** should only contain repo-level files: `README.md`, `AI-DISCLOSURE.md`, `BACKLOG.md`, `.gitignore`, `.cursorrules`, `.actrc`, `.actrc.example`, `.secrets`. Note: `git-projects/` and `ocp/install/` exist locally but are gitignored.
 6. **New top-level directories** need a clear reason. For new products/technologies, create a `{product}/` directory with appropriate content type subdirectories. For cross-cutting content, prefer fitting into the existing structure.
 7. **The `docs/` folder** contains curated essay tracks organized into subdirectories: `ai-engineering/` (skills, workflows, risks), `philosophy/` (martial arts, Zen, applied practice), and `case-studies/` (documented meta-development patterns). Each track has its own `README.md` with a reading order. `docs/README.md` is the master index linking into all tracks. New essays go in their track directory, not in `docs/` root.
 8. **The top-level `examples/` folder** is for doc-supporting artifacts (e.g., scripts referenced by essays in `docs/`), not for product-specific examples.
