@@ -18,30 +18,56 @@ Documented examples of meta-development patterns, workflow decisions, and AI-ass
 
 **Evidence scope:** Essays and case studies here are grounded in **one workspace’s** long-running, git-backed AI-assisted work. They are written so patterns can **transfer**, but they are not an industry sample — compounding, cadence, and what feels “natural” to read next depend on tooling, review gates, and team context elsewhere.
 
-## Cross-Track Reading Order
+## Reading Order
 
-For someone reading everything **in this collection**, this order follows a deliberate arc — AI engineering foundations first, then the philosophical companion pieces, then case studies that show how the meta-development system **evolved here**. It is a reading path, not a universal curriculum.
+A suggested path through the collection. It is not a curriculum — each piece works as a standalone. Pick your entry point; the labels help.
 
-1. [The Shift — Engineering Skills in the Age of AI](ai-engineering/the-shift.md)
-2. [AI-Assisted Development Workflows](ai-engineering/ai-assisted-development-workflows.md)
-3. [Using AI to Work Outside Your Expertise](ai-engineering/ai-for-unfamiliar-domains.md)
-4. [AI-Driven Continuous Improvement for Legacy Systems](ai-engineering/ai-legacy-improvement.md)
-5. [Enterprise LLM Deployment on OpenShift AI — Summary](ai-engineering/openshift-ai-llm-deployment-summary.md)
-6. [AI-Assisted Open Source Contributions](ai-engineering/ai-assisted-upstream-contributions.md)
-7. [The Meta-Development Loop](ai-engineering/the-meta-development-loop.md) *(the engineering pattern: gap → tool → apply → reshape — synthesized from the case studies below)*
-8. [Ego, AI, and the Zen Antidote](philosophy/ego-ai-and-the-zen-antidote.md) *(companion to The Shift sections 6-7)*
-9. [Building a Research and Verification Skill](case-studies/building-a-research-skill.md)
-10. [Adversarial Review as a Meta-Development Pattern](case-studies/adversarial-review-meta-development.md) *(builds the sparring system, applies it immediately)*
-11. [Debugging Your AI Assistant's Judgment](case-studies/debugging-ai-judgment.md) *(catches AI anchoring bias, builds structural fix)*
-12. [From Conversation to Essay in One Session](case-studies/conversation-to-essay.md) *(full pipeline: observation → thread → draft → provenance → challenge)*
-13. [Choosing Scripts Over Services](case-studies/choosing-scripts-over-services.md) *(problem decomposition applied to tooling decisions)*
-14. [Building a Personal Knowledge Management System with AI](case-studies/building-knowledge-management-with-ai.md) *(AI builds the infrastructure for AI-assisted work)*
-15. [How AI Handles Evolving Creative Scope Across Sessions](case-studies/evolving-creative-scope.md) *(shoshin at the project level — scope that learns)*
-16. [When Case Studies Generate System Improvements](case-studies/case-studies-as-discovery.md) *(structured reflection as a discovery mechanism)*
-17. [When AI Fabricates the Evidence for Its Own Argument](case-studies/fabricated-references.md) *(fabricated URL in the sycophancy section — verification as primary skill)*
-18. [Who Is Speaking? — When AI Writes in Your Voice](case-studies/who-is-speaking.md) *(biographical content requires a different kind of review)*
-19. [When AI Ignores Changes Made by Other Sessions](case-studies/stale-context-in-long-sessions.md) *(stale context in multi-agent environments — shoshin applied within sessions)*
-20. [When the Safety Net Is Too Heavy to Use](case-studies/heavy-safety-nets.md) *(disproportionate review processes get bypassed — scale the check to the risk)*
-21. [When the Source Says the Opposite of the Claim](case-studies/context-stripped-citations.md) *(selective citation — the number is real but the framing is reversed)*
-22. [The Landscape Pass — Assess All Threads Before Drafting Any](case-studies/landscape-before-depth.md) *(aerial view before deep dive — contradictions and ratios only visible at scale)*
-23. [What the Corpus Sees That the Document Can't](case-studies/corpus-level-spar.md) *(corpus-level spar catches scope overclaims no per-document review would find)*
+**Labels:** `essay` — foundational piece in a track · `philosophy` — philosophy & practice track · `build` — case study: built a tool or system from a gap · `failure` — case study: AI failure mode and its fix · `workflow` — case study: process discipline or design decision
+
+---
+
+### AI-Assisted Engineering
+
+1. `essay` [The Shift — Engineering Skills in the Age of AI](ai-engineering/the-shift.md) — When AI handles implementation, the bottleneck moves to problem decomposition, verification, and communication. Covers the new skill priorities, the risks of adoption (sycophancy, ego reinforcement), and practical mitigations.
+2. `essay` [AI-Assisted Development Workflows](ai-engineering/ai-assisted-development-workflows.md) — Transferable patterns for using AI coding assistants effectively across multi-session projects. Examples skew infrastructure; from *Beyond context sharing* onward, this repo is the reference implementation.
+3. `essay` [Using AI to Work Outside Your Expertise](ai-engineering/ai-for-unfamiliar-domains.md) — Skills from *The Shift* applied in practice: solving an image-processing problem with zero prior domain knowledge, through iterative conversation. The implementation is trivial; the verification process is the point.
+4. `essay` [AI-Driven Continuous Improvement for Legacy Systems](ai-engineering/ai-legacy-improvement.md) — When AI compresses implementation cost, the economics of improvement change. Explores how conversational AI unlocks frozen backlogs, undocumented processes, and incremental modernization.
+5. `essay` [Enterprise LLM Deployment on OpenShift AI — Summary](ai-engineering/openshift-ai-llm-deployment-summary.md) — Layered summary of a comprehensive self-hosting architecture guide. Includes inline verification caveats where the source's conclusions differ from common framing.
+6. `essay` [AI-Assisted Open Source Contributions](ai-engineering/ai-assisted-upstream-contributions.md) — Using AI to lower the barrier to upstream contribution while respecting maintainers. Includes a walkthrough of contributing to argocd-diff-preview and an in-progress Helm chart improvement.
+7. `essay` [The Meta-Development Loop](ai-engineering/the-meta-development-loop.md) — Names the pattern behind every case study below: notice a gap → build a tool → apply immediately → let the output reshape the work. Also documents when the loop tips into infrastructure theater.
+
+---
+
+### Philosophy and Practice
+
+8. `philosophy` [Ego, AI, and the Zen Antidote](philosophy/ego-ai-and-the-zen-antidote.md) — Companion to *The Shift* sections 6-7. AI assistants are trained to agree; Zen practices like mushin and shoshin offer structural (not just behavioral) resistance. The essay was itself adversarially reviewed — see the open review section.
+
+---
+
+### Case Studies — Building Tools and Systems
+
+9. `build` [Building a Research and Verification Skill](case-studies/building-a-research-skill.md) — Manual source verification failed; the fix was a reusable research skill that fetched and analyzed 53 of 62 cited sources across 8 parallel batches.
+10. `build` [Adversarial Review as a Meta-Development Pattern](case-studies/adversarial-review-meta-development.md) — The essay workflow had no structural pushback. Built a `/spar` command, a spar pipeline stage, and zero-base de-biasing — then applied all three immediately.
+11. `build` [Debugging Your AI Assistant's Judgment](case-studies/debugging-ai-judgment.md) — Re-prioritization always confirmed existing priorities. Naming the anchoring mechanism led to a zero-base evaluation step that strips section labels before scoring.
+12. `build` [Building a Personal Knowledge Management System with AI](case-studies/building-knowledge-management-with-ai.md) — One extended session produced six interlocking tools: backlog, library, session orientation, pre-commit review, content audit, cross-linking. AI building the infrastructure for AI-assisted work.
+13. `build` [When Case Studies Generate System Improvements](case-studies/case-studies-as-discovery.md) — Writing a case study surfaced three concrete gaps; the user noticed the philosophical connection (shoshin) and it produced five system enhancements. The case study format as discovery mechanism — with a pass/fail test for when reflection becomes theater.
+
+---
+
+### Case Studies — AI Failure Modes
+
+14. `failure` [When AI Fabricates the Evidence for Its Own Argument](case-studies/fabricated-references.md) — AI fabricated a plausible Anthropic URL while defining sycophancy — in the same paragraph it was being explained. Fix: external URL verification rule and pre-commit review step.
+15. `failure` [Who Is Speaking? — When AI Writes in Your Voice](case-studies/who-is-speaking.md) — AI-generated biographical claims speak as the author, not about the author. Reading content and approving content that speaks *as you* are different acts. Led to a `voice-approved` validation type at every workflow checkpoint.
+16. `failure` [When AI Ignores Changes Made by Other Sessions](case-studies/stale-context-in-long-sessions.md) — One agent removed the backlog archive system; another restored it; the first agent continued editing from its stale model. Explores anchoring on session memory vs. repository state.
+17. `failure` [When the Source Says the Opposite of the Claim](case-studies/context-stripped-citations.md) — A cited economic number was real, the source existed, but the source's conclusion was the reverse of how the article used it. Context stripping is harder to catch than fabrication because the citation resolves.
+
+---
+
+### Case Studies — Workflow and Process Decisions
+
+18. `workflow` [From Conversation to Essay in One Session](case-studies/conversation-to-essay.md) — A single observation ("what if Zen concepts help with the AI sycophancy problem?") became a published essay with source provenance and adversarial review in one session. Demonstrates the full write-challenge-revise cycle.
+19. `workflow` [Choosing Scripts Over Services](case-studies/choosing-scripts-over-services.md) — MCP server vs. Python script for YouTube transcripts. The simpler tool won because it fit the file-based research workflow without adaptation.
+20. `workflow` [How AI Handles Evolving Creative Scope Across Sessions](case-studies/evolving-creative-scope.md) — A project broadened mid-session as research expanded. How scope changes cascade through planning documents and what conventions help — and don't help — maintain coherence.
+21. `workflow` [When the Safety Net Is Too Heavy to Use](case-studies/heavy-safety-nets.md) — A pre-commit review requiring 11 steps for every commit got skipped for small changes, silently invalidating a reviewed file. Fix: scaled review depth, three-layer staleness detection, SHA-based "diff since last review."
+22. `workflow` [The Landscape Pass — Assess All Threads Before Drafting Any](case-studies/landscape-before-depth.md) — A 16-thread creative project had research ready and a drafting urge. Assessing all threads first revealed a structural contradiction between two threads, a 20/80 practitioner-to-research ratio, and merge candidates invisible from inside any single thread.
+23. `workflow` [What the Corpus Sees That the Document Can't](case-studies/corpus-level-spar.md) — Sparring the full essay collection simultaneously caught scope overclaims, conditional universals, and framing drift that per-document review had missed. Documents can be individually coherent while collectively misleading.
