@@ -6,6 +6,22 @@ New archival batches are prepended below (newest batch first).
 
 ---
 
+## Archived 2026-04-18 (2 items)
+
+### Zen-karate essay library scaffolding
+- **Product:** docs
+- **Context:** Created planning artifacts (BRIEF, ROADMAP, STYLE guide), research workspace (personal-notes.md, curated-reading.md templates), and backlog items for the zen-karate essay series.
+- **Links:** `.planning/zen-karate/`, `research/zen-karate-philosophy/`
+- **Completed:** 2026-04-17
+
+### Essay: Ego, AI, and the Zen Antidote
+- **Product:** docs
+- **Context:** Companion essay to *The Shift*. Connects Shi Heng Yi's teaching on ego as "a collection of thoughts," the mechanism of "hooking" onto identity, and zen practices (mushin, shoshin, non-attachment) as structural resistance to AI-fueled sycophancy. Bridges the AI essay track and the martial arts/zen track. Published at `docs/philosophy/ego-ai-and-the-zen-antidote.md`, cross-linked from *The Shift* and added to `docs/README.md`.
+- **Links:** `docs/philosophy/ego-ai-and-the-zen-antidote.md`, `docs/ai-engineering/the-shift.md`, `.planning/zen-karate/threads.md` (thread 14)
+- **Completed:** 2026-04-17
+
+---
+
 ## Archived 2026-04-17 (3 items)
 
 ### AI prioritization bias — meta-system guard
