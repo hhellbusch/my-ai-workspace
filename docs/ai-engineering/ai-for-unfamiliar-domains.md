@@ -121,7 +121,7 @@ For a contrast, consider the architecture decisions involved in [deploying LLMs 
 
 ## What the AI Actually Produced
 
-The final script ([`recolor-gif.py`](../examples/gif-recoloring/recolor-gif.py)) is ~240 lines of Python that:
+The final script ([`recolor-gif.py`](../../examples/gif-recoloring/recolor-gif.py)) is ~240 lines of Python that:
 
 1. Extracts all frames from an animated GIF preserving timing metadata
 2. Converts each frame to HSV color space using vectorized NumPy operations

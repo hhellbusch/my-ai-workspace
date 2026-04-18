@@ -50,7 +50,7 @@ Informal notes and quick references: OpenShift useful commands, idea captures
 
 #### Prompts (`prompts/`)
 Structured AI prompt templates for repeatable tasks (run with `/run-prompt`):
-- AI disclosure notice, ArgoCD pipeline validation, NVIDIA GPU analysis, RHACM validation
+- AI disclosure notice, ArgoCD pipeline validation, Dell memory validation research, NVIDIA GPU analysis, RHACM validation
 
 #### Library (`library/`)
 Personal reference library — books, talks, articles, videos, and other sources with AI-enriched summaries. Managed via `/reference add`, each entry combines personal notes with cached context (summaries, reviews, key themes) so any session can draw from the source without re-explaining it.
@@ -64,6 +64,7 @@ Research workspaces with fetched sources, analysis findings, and assessments:
 #### Planning (`.planning/`)
 Project briefs, roadmaps, style guides, and phase plans for multi-session work:
 - zen-karate/ — Essay library on Zen Buddhism, karate, and ways of working
+- paude-integration/ — Evaluation of Paude for containerized agent workflows
 
 ## Development Guidelines
 
@@ -177,12 +178,13 @@ Load skills for deep methodologies:
 
 ### Available Resources
 
-**Slash Commands (23 commands):**
+**Slash Commands (25 commands):**
 - Project: `/create-plan`, `/create-prompt`, `/run-prompt`, `/run-plan`
 - Meta: `/create-agent-skill`, `/create-slash-command`, `/create-subagent`, `/create-meta-prompt`, `/create-hook`
 - Debug: `/debug`
 - Context: `/start` (session orientation), `/whats-next` (session handoff), `/backlog`, `/reference`
-- Quality: `/review` (pre-commit), `/audit` (content health), `/organize` (repo structure)
+- Quality: `/review` (pre-commit), `/audit` (content health), `/organize` (repo structure), `/validate` (review tracking), `/spar` (adversarial review)
+- Utility: `/ask-me-questions`, `/heal-skill`, `/setup-ralph`
 - Audit: `/audit-skill`, `/audit-slash-command`, `/audit-subagent`
 - Frameworks: `/consider:first-principles`, `/consider:5-whys`, etc.
 

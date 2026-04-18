@@ -35,11 +35,15 @@ This command is read-only. It reports findings and asks for confirmation before 
 
 3. **README coverage** — For each new directory, check it has a README.md. For each new file in an existing directory, check the directory's README is updated to mention it (if the README maintains a contents list).
 
-4. **Cross-reference check** — For new content:
+4. **Cross-reference and registry check** — For new content, verify the registries from `.cursor/rules/cross-linking.md` are updated:
+   - If new doc in `docs/`: is it in the track `README.md` and `docs/README.md` cross-track list?
+   - If new file in `library/`: is it in `library/README.md` enriched entries table AND `library/catalog.md`?
    - If new research directory: is it listed in `research/README.md`?
-   - If new doc: is it linked from `docs/README.md`?
-   - If new prompt: is it numbered correctly in `prompts/`?
+   - If new command in `.cursor/commands/`: is `.cursorrules` command count and list updated?
+   - If new project in `.planning/`: is it in `.cursorrules` planning section?
+   - If new prompt: is it numbered correctly in `prompts/` and listed in `.cursorrules`?
    - If new backlog items: are dates and product tags present?
+   - **Quick link spot-check**: For each new or modified markdown file, verify any internal links (relative paths) resolve to files that exist. Flag broken links.
 
 5. **Content quality** — For each new or modified file:
    - Markdown files: check for title heading, no obvious structural issues

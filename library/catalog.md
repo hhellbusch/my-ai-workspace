@@ -11,6 +11,8 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Title | Author(s) | Year Read | ISBN/URL | Tags | Entry |
 |---|---|---|---|---|---|
 | The Zen Way to Martial Arts | Taisen Deshimaru | recent | 978-0140193442 | zen, martial-arts, philosophy | [enriched](zen-way-martial-arts.md) |
+| Finding Karate | Gavin Mulholland | recent | — | karate, philosophy, training | [enriched](finding-karate.md) |
+| Karate Philosophy | Gichin Funakoshi et al. | recent | — | karate, philosophy, dojo-kun | [enriched](karate-philosophy.md) |
 | Zen and the Art of Motorcycle Maintenance | Robert M. Pirsig | 2021 | 978-0060839871 | zen, philosophy, quality, values | — |
 | The Goal | Eliyahu M. Goldratt | 2011 | 978-0884271956 | systems-thinking, lean, constraints | — |
 | The Phoenix Project | Gene Kim et al. | 2017 | 978-0988262508 | devops, systems-thinking, lean | — |
@@ -71,6 +73,14 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | CS106B — Programming Abstractions | Stanford SEE | 2010 | https://see.stanford.edu/Course/CS106B | cs-fundamentals, data-structures | — |
 | CS107 — Programming Paradigms | Stanford SEE | 2010 | https://see.stanford.edu/Course/CS107 | cs-fundamentals, paradigms | — |
 | JulieOps documentation | JulieOps | 2022 | https://julieops.readthedocs.io/en/3.x/index.html | gitops, kafka | — |
+
+## YouTube / Video
+
+| Title | Creator | Year | URL | Tags | Entry |
+|---|---|---|---|---|---|
+| Karate by Jesse (Jesse Enkamp) | Jesse Enkamp | ongoing | https://www.karatebyjesse.com | karate, okinawa, history, bunkai | [enriched](karate-by-jesse.md) |
+| Simple Lucas | Simple Lucas | ongoing | https://www.youtube.com/@SimpleLucas | productivity, single-tasking | [enriched](simple-lucas.md) |
+| Rian Doris / FlowState | Rian Doris | ongoing | https://www.youtube.com/@RianDoris | neuroscience, flow, dopamine, focus | [enriched](rian-doris.md) |
 
 ## Other Training
 

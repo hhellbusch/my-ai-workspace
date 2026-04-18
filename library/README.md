@@ -18,6 +18,10 @@ These references have deep AI-researched context (summaries, key themes, notable
 |---|---|---|---|
 | [The Zen Way to Martial Arts](zen-way-martial-arts.md) | Book | zen, karate, martial-arts, philosophy | 2026-04-17 |
 | [Karate by Jesse (Jesse Enkamp)](karate-by-jesse.md) | Website | karate, okinawa, history, bunkai, shito-ryu | 2026-04-17 |
+| [Finding Karate](finding-karate.md) | Book | karate, philosophy, training | 2026-04-17 |
+| [Karate Philosophy](karate-philosophy.md) | Book | karate, philosophy, dojo-kun | 2026-04-17 |
+| [Simple Lucas](simple-lucas.md) | YouTube | productivity, single-tasking, zen-parallels | 2026-04-17 |
+| [Rian Doris / FlowState](rian-doris.md) | YouTube | neuroscience, flow, dopamine, focus | 2026-04-17 |
 
 See [`catalog.md`](catalog.md) for the complete reference list (50+ books, courses, and training).
 

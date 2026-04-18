@@ -42,7 +42,7 @@ The AI-assisted workflow system used to build this workspace. Optional — the e
 
 Includes slash commands for planning, debugging, research, quality gates, and session management. Built on [TÂCHES CC Resources](https://github.com/glittercowboy/taches-cc-resources).
 
-[Integration guide →](INTEGRATION.md) · [Commands reference →](.cursor/commands/README.md) · [Skills registry →](.cursor/skills/REGISTRY.md)
+Details in [.cursor/README.md](.cursor/README.md).
 
 ## AI-Generated Content Notice
 
@@ -52,7 +52,7 @@ This is an honest accounting, not a caveat — the project is partly an explorat
 
 ## Getting Started
 
-Browse the [essays](docs/) to understand the patterns. Explore the [examples](ansible/examples/, ocp/troubleshooting/) for practical implementations. The [backlog](BACKLOG.md) shows what's in progress.
+Browse the [essays](docs/) to understand the patterns. Explore the [examples](ansible/examples/) and [troubleshooting guides](ocp/troubleshooting/) for practical implementations. The [backlog](BACKLOG.md) shows what's in progress.
 
 ```bash
 git clone <repo-url>

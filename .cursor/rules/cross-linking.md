@@ -43,13 +43,26 @@ When writing prose that mentions a specific file, command, script, rule, or skil
 
 Use relative paths from the document's location, not absolute paths.
 
+## Registry Update Checklist
+
+These registries MUST be updated when their content changes. This is the most common source of drift — content gets added but registries aren't updated in the same session.
+
+| When you add... | Update these registries |
+|---|---|
+| New essay in `docs/` | Track `README.md`, `docs/README.md` cross-track list |
+| New file in `library/` | `library/README.md` enriched entries table, `library/catalog.md` |
+| New directory in `research/` | `research/README.md` contents table |
+| New command in `.cursor/commands/` | `.cursorrules` command count and list |
+| New project in `.planning/` | `.cursorrules` planning section, `BACKLOG.md` |
+| New prompt in `prompts/` | `.cursorrules` prompts description |
+
 ## Don't Over-Link
 
 Not every file needs to be linked from everywhere. The key registries are:
 - `docs/README.md` — Every published essay
 - `research/README.md` — Every research directory
-- `library/README.md` — Every personal reference entry
+- `library/README.md` and `library/catalog.md` — Every personal reference entry
 - `BACKLOG.md` — Every tracked work item
-- `.cursorrules` — High-level project description (not every file, but every major content area)
+- `.cursorrules` — High-level project description (not every file, but every major content area and accurate counts)
 
 When in doubt, run `/audit` to check.
