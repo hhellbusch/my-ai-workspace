@@ -93,6 +93,11 @@
 - **Links:** `library/`
 - **Added:** 2026-04-17
 
+### Session boundary anchoring — /start and /whats-next improvements
+- **Product:** meta
+- **Context:** `/start` checks for `whats-next.md` as Step 1 — before the backlog, before planning status — and asks "Want to pick up where you left off?" This gives the previous session's framing structural primacy, anchoring the next session on continuity rather than first-principles priority assessment. Same mechanism as the prioritization bias problem: AI writes the handoff, AI reads the handoff, AI weights it highly. Three identified fixes: (1) reorder `/start` to show backlog first, handoff second (context before continuity); (2) make `/whats-next` conditional — only create handoffs when there's genuinely in-flight state not captured in committed artifacts; (3) add a staleness/decay check for old handoffs. Related concern: reflexive handoff creation adds noise when a session's work is fully persisted in `.planning/` and `BACKLOG.md`.
+- **Links:** `.cursor/commands/start.md`, `.cursor/commands/whats-next.md`, `.cursor/rules/session-awareness.md`
+- **Added:** 2026-04-17
 
 ### Zen-karate concept glossary
 - **Product:** docs
