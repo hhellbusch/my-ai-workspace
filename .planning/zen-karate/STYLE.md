@@ -96,3 +96,4 @@ For calibration, the target tone sits between:
 - Bridge essays (4 and 5) explicitly connect to the existing AI-focused docs
 - Don't force connections — if an essay stands alone, let it stand alone
 - `docs/philosophy/README.md` maintains the reading order for this track; `docs/README.md` provides a cross-track reading order
+- When mentioning a specific command, rule, script, or skill by name in prose, link to the implementation on first mention (see [cross-linking rule](../../.cursor/rules/cross-linking.md) "Inline Implementation Links")
