@@ -2,6 +2,8 @@
 
 Documented examples of meta-development patterns, workflow decisions, and AI-assisted processes in action. Each case study traces a real piece of work from this repository — what happened, what pattern it demonstrates, and what it connects to.
 
+**Survivorship note:** Every case study here documents something that was noticed, named, and addressed. Sessions that produced net losses without useful recovery, work that had to be abandoned, or tools that made things worse without a recoverable fix are not represented — not because they didn't happen, but because a clean failure record didn't emerge. This is a selection effect worth naming. The `failure` label below means *AI failure mode that was caught and fixed*, not *unrecovered loss*.
+
 **Labels:** `build` — built a tool or system from a gap · `failure` — AI failure mode and its fix · `workflow` — process discipline or design decision
 
 ## Building Tools and Systems

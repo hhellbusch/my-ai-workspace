@@ -16,7 +16,7 @@ Connecting martial arts, Zen, and contemplative practice to engineering culture,
 
 Documented examples of meta-development patterns, workflow decisions, and AI-assisted processes traced from real work in this repository.
 
-**Evidence scope:** Essays and case studies here are grounded in **one workspace’s** long-running, git-backed AI-assisted work. They are written so patterns can **transfer**, but they are not an industry sample — compounding, cadence, and what feels “natural” to read next depend on tooling, review gates, and team context elsewhere.
+**Evidence scope:** Essays and case studies here are grounded in **one workspace’s** long-running, git-backed AI-assisted work. They are written so patterns can **transfer**, but they are not an industry sample — compounding, cadence, and what feels “natural” to read next depend on tooling, review gates, and team context elsewhere. The case studies also have survivorship bias: every documented example was noticed, named, and addressed. Sessions that produced net losses without clean recovery are not represented — not because they didn’t happen, but because a useful failure record didn’t emerge.
 
 ## Reading Order
 
@@ -34,7 +34,7 @@ A suggested path through the collection. It is not a curriculum — each piece w
 4. `essay` [AI-Driven Continuous Improvement for Legacy Systems](ai-engineering/ai-legacy-improvement.md) — When AI compresses implementation cost, the economics of improvement change. Explores how conversational AI unlocks frozen backlogs, undocumented processes, and incremental modernization.
 5. `essay` [Enterprise LLM Deployment on OpenShift AI — Summary](ai-engineering/openshift-ai-llm-deployment-summary.md) — Layered summary of a comprehensive self-hosting architecture guide. Includes inline verification caveats where the source's conclusions differ from common framing.
 6. `essay` [AI-Assisted Open Source Contributions](ai-engineering/ai-assisted-upstream-contributions.md) — Using AI to lower the barrier to upstream contribution while respecting maintainers. Includes a walkthrough of contributing to argocd-diff-preview and an in-progress Helm chart improvement.
-7. `essay` [The Meta-Development Loop](ai-engineering/the-meta-development-loop.md) — Names the pattern behind every case study below: notice a gap → build a tool → apply immediately → let the output reshape the work. Also documents when the loop tips into infrastructure theater.
+7. `essay` [The Meta-Development Loop](ai-engineering/the-meta-development-loop.md) — Names the pattern behind most case studies below: notice a gap → build a tool → apply immediately → let the output reshape the work. Also documents when the loop tips into infrastructure theater, and which case study types don’t fit the loop (failure modes, design decisions, process disciplines).
 
 ---
 
