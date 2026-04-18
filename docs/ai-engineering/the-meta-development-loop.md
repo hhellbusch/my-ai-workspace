@@ -112,6 +112,8 @@ The counterargument: infrastructure built in one burst pays dividends across man
 
 The honest answer for any project: track the ratio. If you've built tools, use them. If the tools aren't producing output, stop building tools.
 
+For this repository, the non-meta outputs the infrastructure enabled include: 8 published essays (including two long-form pieces that required multi-session source verification across 62+ references), 15 documented case studies, a verified assessment of a 62-source article with corrected economic framing, an in-progress upstream Helm chart contribution adding a new operator upgrade sequencing feature, an argocd-diff-preview feasibility issue filed upstream, and an image processing script built through iterative AI-assisted domain-crossing. The case study documentation is partly meta (it documents the process); the essays, upstream contributions, and verified research are not. Whether that ratio justifies the infrastructure investment is a judgment call — it's offered here as the concrete answer to "what did this actually produce?" rather than an abstract claim that the loop pays off.
+
 ---
 
 ## The Pattern as an Engineering Skill
