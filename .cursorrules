@@ -113,6 +113,9 @@ Project briefs, roadmaps, style guides, and phase plans for multi-session work:
 - Keep commits focused on single changes
 - Update documentation with code changes
 
+## Collaboration ethos
+This workspace defaults to **heavy use of AI tools** with **human-owned verification** — speed without mistaking fluency for truth. Each behavioral area has an authoritative rule (verification: `cross-linking.md`; voice/review status: `review-tracking.md`; framing: `shoshin.md`). Project spirit and privacy policy: `.cursor/rules/workspace-ethos.md`. Long-form prioritization for essays: `.planning/zen-karate/STYLE.md` (*Guiding Stars*).
+
 ## AI Disclosure and Review Tracking
 Per project standards, all AI-assisted work includes disclosure notices in relevant files. The standard footer acknowledges that content was created with AI assistance and has not been fully reviewed by the author unless explicitly stated otherwise. See `AI-DISCLOSURE.md` for the full disclosure policy, review status definitions (reviewed, direction-reviewed, unreviewed), and validation types by content category (read, tested, fact-checked, commands-verified, used-in-practice, sources-checked, voice-approved). The `voice-approved` type has elevated priority — it covers content that speaks in the author's voice (biographical claims, professional identity, personal opinions) and requires explicit review since readers attribute these statements directly to the author.
 

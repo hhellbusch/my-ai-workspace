@@ -10,6 +10,7 @@ Research workspaces containing fetched sources, analysis findings, and assessmen
 | `nvidia-gpu-operator-ocp418/` | NVIDIA GPU Operator production impact on OCP 4.18 | Single analysis | [analysis.md](nvidia-gpu-operator-ocp418/analysis.md) |
 | `zen-karate-philosophy/` | Zen Buddhism, karate, and applied philosophy for life and work | In progress | [personal-notes.md](zen-karate-philosophy/personal-notes.md), [curated-reading.md](zen-karate-philosophy/curated-reading.md) |
 | `3blue1brown/` | Deep Learning series transcripts (neural networks, transformers, attention, LLMs) | 5 videos fetched | [README.md](3blue1brown/README.md) |
+| `ai-engineering-public/` | Public talks supporting the AI-engineering essay track | Transcript(s) on disk | [README.md](ai-engineering-public/README.md) |
 
 ## Structure Convention
 

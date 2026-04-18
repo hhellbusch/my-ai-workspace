@@ -18,6 +18,11 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 7. **[The Meta-Development Loop](the-meta-development-loop.md)** — Names and teaches the engineering pattern behind building AI tools that improve AI workflows: notice a gap, build a tool, apply it immediately, let the output reshape the work. Synthesizes the pattern from 8 case studies, documents when it compounds productively and when it becomes infrastructure theater.
 
+## Primary narratives (public)
+
+- **Dan Walsh — *Lessons learned with a career in software?*** (DevConf.US 2025) — [YouTube](https://www.youtube.com/watch?v=YKDi-ePTmRA). Full transcript and theme index: [`research/ai-engineering-public/sources/youtube-YKDi-ePTmRA-transcript.md`](../../research/ai-engineering-public/sources/youtube-YKDi-ePTmRA-transcript.md), [`library/dan-walsh-devconf-2025-career-lessons.md`](../../library/dan-walsh-devconf-2025-career-lessons.md). Useful as a **public** anchor for security-through-containers history, mentorship/succession, and late-career AI tooling (e.g. RamaLama) without relying on private correspondence.
+- **Anonymized collaboration patterns** — [`research/ai-engineering-public/motivation-patterns-paraphrase.md`](../../research/ai-engineering-public/motivation-patterns-paraphrase.md). Paraphrased **ideas** only (stacked assistants, async delegate, issue-first work, review-loop closure); no private quotations — for essays and ethos alongside the workflows guide.
+
 ## Cross-Track Links
 
 - *The Shift* sections 6-7 (sycophancy, ego reinforcement, anchoring, self-reinforcing infrastructure) connect to [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) in the philosophy track

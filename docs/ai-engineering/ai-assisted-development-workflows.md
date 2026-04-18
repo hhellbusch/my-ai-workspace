@@ -1,10 +1,10 @@
 ---
 review:
-  status: reviewed
+  status: direction-reviewed
   read: 2026-04-18
   fact-checked: 2026-04-18
   at: 1f2f9d8
-  notes: "Author pass after spar: scope/Purpose, epistemic fixes (§6–§7), product-doc caveat, iteration note, triage table disclaimer, Argo CD naming."
+  notes: "Author pass after spar: scope/Purpose, epistemic fixes (§6–§7), product-doc caveat, iteration note, triage table disclaimer, Argo CD naming. 2026-04-18: Replaced orphan pointer with 'Six patterns at a glance' table — restore reviewed after author pass."
 ---
 
 # AI-Assisted Development Workflows — A Practical Guide
@@ -40,6 +40,19 @@ You are the architect and the reviewer. Think of the AI as a **very fast collabo
 **The most important skill is learning to give AI the right context.**
 
 This is more than a workflow change — it's a shift in which engineering skills carry the most weight. Problem decomposition, verification discipline, clear communication, and systematic reasoning become your primary value, not implementation speed. For a deeper look at this shift and the risks that come with it (including the sycophancy problem and over-reliance), see [The Shift — Engineering Skills in the Age of AI](the-shift.md).
+
+### Six patterns, at a glance
+
+These patterns recur throughout the sections below and the wider essay track. Named here so they can be referenced without re-explaining from scratch.
+
+| Pattern | In brief | Covered in |
+|---|---|---|
+| **Stacked assistants** | One tool for editing, a second for review — separation of concerns catches different failure classes | §1 Daily Workflow, §3 PR review |
+| **Unfamiliar ground** | Task an assistant with a platform you cannot run locally — valid *if* something real validates the result | [Using AI Outside Your Expertise](ai-for-unfamiliar-domains.md) |
+| **Async cadence** | Assign a bounded task, step away, return to inspect diffs — wall-clock time is low; safety requires a clear success criterion and scope *before* stepping away | §1 Daily Workflow, §5 Meta-Development |
+| **Issue-first delegation** | A tracker link, log excerpt, or crisp failure description plus repo context is enough for a useful first pass — human still reproduces, tests, and merges | §1 Prompting principles, §3–§4 |
+| **Review-loop closure** | Feed review comments (human, automation, or a second model) back into the same assistant loop — treat review as pipeline input, not a separate rewrite session | §3 PR review, §2 multi-session |
+| **Compounding through habit** | Gains come from *defaulting* to the assistant for unfamiliar work, review churn, and mechanical fixups — not from any single clever prompt; verification habits are the floor | §5 Meta-Development, §6 What to expect |
 
 ---
 
