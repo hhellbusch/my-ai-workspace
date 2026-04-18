@@ -100,7 +100,7 @@ The essays distill meaningful principles — they don't just tell a personal sto
 The project has a primary purpose and supporting interests. When prioritizing, the guiding star wins.
 
 - **Primary: AI-engineering and case studies.** Sharing practical insights with peers about AI-assisted development, workflows, and the meta-development patterns emerging from this work. This is what the `docs/ai-engineering/` and `docs/case-studies/` tracks exist for. The philosophy track supports this — it doesn't overshadow it.
-- **Supporting: Philosophy / martial arts / zen.** The `docs/philosophy/` track explores how practice informs work and life. It's genuine and worth pursuing, but it serves the larger goal of distilling useful principles, not building a standalone philosophy library.
+- **Supporting: Applied philosophy for work.** The `docs/philosophy/` track explores how martial arts and zen practice produce principles applicable to work — broadly in technology (software, hardware, semiconductor manufacturing). The audience is peers, not philosophy students. If an insight can't land with someone in a fab, a code review, or a production meeting, it hasn't been distilled enough. This is not a standalone philosophy library — it's philosophy in service of better work.
 - **Personal interest (not essay material): Lineage research.** Karate lineage, historical connections, style genealogy — genuinely interesting to the author but not the audience. Keep in research files as reference, don't plan essays around it.
 
 ### Purpose of the Essays
