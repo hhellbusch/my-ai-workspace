@@ -30,6 +30,18 @@
 - **Links:** `.planning/zen-karate/STYLE.md`, `.planning/zen-karate/`
 - **Added:** 2026-04-17
 
+### YouTube transcript MCP server integration
+- **Product:** meta
+- **Context:** Add `jkawamoto/mcp-youtube-transcript` MCP server to Cursor config. Enables fetching YouTube video transcripts directly during conversations — no API key needed. Supports the zen-karate research (Shi Heng Yi interviews) and any future video-based references in the library.
+- **Links:** `.cursor/mcp.json`, `library/`, `research/zen-karate-philosophy/`
+- **Added:** 2026-04-17
+
+### YouTube transcript fetcher script
+- **Product:** meta
+- **Context:** Python script (like fetch-sources.py but for YouTube) using the free `youtube-transcript-api` package. Extracts transcripts from YouTube URLs and saves as markdown files in library/ or research/ with metadata. Integrates into `/reference add` workflow for video entries. Enables batch processing and cached transcripts that survive across sessions.
+- **Links:** `.cursor/skills/research-and-analyze/`, `library/`
+- **Added:** 2026-04-17
+
 ### Headless browser fallback for research fetcher
 - **Product:** meta
 - **Context:** The research skill's `fetch-sources.py` gets blocked by some sites (HTTP 403/429). A headless browser fallback was designed during the skill validation run but not implemented. Would improve source capture rate beyond the current ~85%.
@@ -72,6 +84,12 @@
 - **Product:** docs
 - **Context:** Explicit bridge to the existing AI-focused essay track. Shoshin (beginner's mind) as the essential posture for working with AI. Connects back to themes in The Shift and AI-Assisted Development Workflows.
 - **Links:** `.planning/zen-karate/`, `docs/the-shift.md`, `docs/ai-assisted-development-workflows.md`
+- **Added:** 2026-04-17
+
+### Gemini API video understanding integration
+- **Product:** meta
+- **Context:** Future option for native video understanding via Gemini API. Can process YouTube videos directly by URL — visual understanding, not just transcripts. Useful for martial arts demonstrations or content where visuals matter. Requires API key and has per-request costs. Lower priority than transcript-based approaches.
+- **Links:** `library/`
 - **Added:** 2026-04-17
 
 ### Zen-karate concept glossary
