@@ -49,6 +49,8 @@ Three articles fetched and saved in `research/zen-karate-philosophy/sources/`:
 | 10 Differences Between Okinawan & Japanese Karate | `karatebyjesse-10-differences-okinawan-japanese.md` | Thread 13, Thread 11 |
 | Musings on Mushin: Karate's Equivalent of Mindfulness | `karatebyjesse-mushin-mindfulness.md` | Thread 5, Thread 9, Thread 12 |
 | Why Modern Karate Is Broken | `karatebyjesse-why-modern-karate-is-broken.md` | Thread 13, Thread 11 |
+| The Wisdom of Inoue Yoshimi (Seminar Recap) | `karatebyjesse-wisdom-of-inoue-yoshimi.md` | Lineage, Thread 2, Thread 12 |
+| 42 Secrets from the World's Greatest Kata Coach | `karatebyjesse-42-secrets-inoue-yoshimi.md` | Thread 2, Thread 11, Thread 12, Thread 13, Thread 14 |
 
 ## Additional Articles of Interest (not yet fetched)
 
@@ -59,3 +61,5 @@ Three articles fetched and saved in `research/zen-karate-philosophy/sources/`:
 - [The Birth of Today's Karate](https://www.karatebyjesse.com/the-birth-of-todays-karate/)
 - [10 Japanese Words Everyone Misunderstands in Karate](https://www.karatebyjesse.com/10-important-karate-words-japanese/)
 - [The 9 Lost Throws of Funakoshi Gichin](https://www.karatebyjesse.com/funakoshi-9-throws-shotokan-karate/)
+- [Rika Usami interview](https://www.karatebyjesse.com/rika-usami-karate-kata-queen-interview/) — Inoue's most famous student
+- [Antonio Diaz interview](https://www.karatebyjesse.com/exclusive-interview-antonio-diaz-world-karate-champion-pt-1/) — Inoue's top international student
