@@ -36,3 +36,5 @@ For someone reading everything, this order follows the natural arc — AI engine
 14. [Building a Personal Knowledge Management System with AI](case-studies/building-knowledge-management-with-ai.md) *(AI builds the infrastructure for AI-assisted work)*
 15. [How AI Handles Evolving Creative Scope Across Sessions](case-studies/evolving-creative-scope.md) *(shoshin at the project level — scope that learns)*
 16. [When Case Studies Generate System Improvements](case-studies/case-studies-as-discovery.md) *(structured reflection as a discovery mechanism)*
+17. [When AI Fabricates the Evidence for Its Own Argument](case-studies/fabricated-references.md) *(fabricated URL in the sycophancy section — verification as primary skill)*
+18. [Who Is Speaking? — When AI Writes in Your Voice](case-studies/who-is-speaking.md) *(biographical content requires a different kind of review)*
