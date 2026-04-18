@@ -3,8 +3,8 @@ review:
   status: reviewed
   read: 2026-04-18
   voice-approved: 2026-04-17
-  at: 7a08bb7
-  notes: "Spar follow-up #2: under The Bottleneck Has Moved, qualified when design/verification vs implementation is the tightest gate."
+  at: 7c80914
+  notes: "Spar follow-up #2: under The Bottleneck Has Moved, qualified when design/verification vs implementation is the tightest gate. Author read re-validation after corpus spar commit."
 ---
 
 # The Shift — Engineering Skills in the Age of AI
