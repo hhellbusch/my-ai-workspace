@@ -106,6 +106,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/zen-karate-philosophy/mobility-and-recovery.md`, `.planning/zen-karate/thread-development.md` (Thread 12)
 - **Added:** 2026-04-18
 
+### Essay: The Full Cup — organizational bandwidth as the barrier to learning
+- **Product:** docs (bridge: philosophy ↔ AI-engineering)
+- **Context:** Thread 19. Shi Heng Yi's "empty the cup" reframed as an organizational engineering problem, not a personal mindfulness exercise. The shoshin × capacity matrix (4 quadrants: open/closed × empty/full) structures the diagnosis. The practitioner's intervention: cutting off the tap by fixing compounding systemic issues. AI angle (north star): AI as either the flood that fills the cup further or the tool that empties it. The dojo's bow at the door as a structural answer vs. professional "rituals" that fill the cup instead of emptying it. **Has thesis, matrix, and AI framing — needs the author's concrete examples and personal experience prompts are captured in thread.**
+- **Links:** `.planning/zen-karate/threads.md` (thread 19), `research/zen-karate-philosophy/sources/youtube-WZPDGVIN0qA-transcript.md`
+- **Added:** 2026-04-18
+
 ### Essay: Five Hindrances
 - **Product:** docs
 - **Context:** Shi Heng Yi's five hindrances to self-mastery (sensual desire, ill will, dullness/heaviness, restlessness, doubt) mapped to everyday life and work. How a martial artist recognizes and works through these in practice and in professional life.
