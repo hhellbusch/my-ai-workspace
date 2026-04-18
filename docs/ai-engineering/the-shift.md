@@ -1,3 +1,10 @@
+---
+review:
+  status: reviewed
+  read: 2026-04-17
+  voice-approved: 2026-04-17
+---
+
 # The Shift — Engineering Skills in the Age of AI
 
 > **Audience:** Engineers and engineering leaders at every level.
@@ -399,4 +406,4 @@ AI doesn't create your engineering culture. It amplifies it. A team with strong 
 
 ---
 
-*This document was created with AI assistance (Cursor) and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
+*This document was created with AI assistance (Cursor) and has been reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
