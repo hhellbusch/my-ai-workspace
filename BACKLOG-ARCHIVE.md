@@ -6,6 +6,15 @@ New archival batches are prepended below (newest batch first).
 
 ---
 
+## Archived 2026-04-18 (1 item — batch 3)
+
+### Consolidate .prompts/ into prompts/
+- **Product:** meta
+- **Context:** Removed hidden `.prompts/` directory (leftover from older TACHES import) and moved the dell memory validation research prompt into the visible `prompts/` directory.
+- **Completed:** 2026-04-17
+
+---
+
 ## Archived 2026-04-18 (1 item — batch 2)
 
 ### Project tracking system

@@ -36,18 +36,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Up Next
 
-### Add AI disclosure check to pre-commit review
-- **Product:** meta
-- **Context:** The pre-commit review rule (`.cursor/rules/pre-commit-review.md`) checks file placement, READMEs, cross-references, content quality, secrets, and backlog alignment — but doesn't verify that new `docs/` files include the standard AI disclosure footer. Adding a step would catch missing footers before commit.
-- **Links:** `.cursor/rules/pre-commit-review.md`, `.planning/zen-karate/STYLE.md` (footer template), `AI-DISCLOSURE.md`
-- **Added:** 2026-04-18
-
-### Harmonize DevOps README disclosure notices
-- **Product:** docs
-- **Context:** DevOps READMEs (ansible, ocp, argo, coreos, rhacm, vault) have various disclosure notices — some link to `AI-DISCLOSURE.md`, some have inline notices, some have nothing. Predates the current standard. Evaluate whether to normalize to the new footer or leave as-is (they serve a different audience than the essays).
-- **Links:** `AI-DISCLOSURE.md`
-- **Added:** 2026-04-18
-
 ### Zen-karate personal knowledge base — experiential content (CRITICAL PATH)
 - **Product:** docs
 - **Context:** Template and structural scaffolding complete. AI-enriched content in place: training history, lineage maps, teachers/influences (Shihan, Sensei, Inoue, Rika Usami), Athens club context, notes/fragments. **What remains is the experiential core that only the user can provide:** formative moments, philosophical anchors (what concepts mean through practice), life application examples, Shi Heng Yi connection, "what's hard to convey," and the crystallizing moments for Shihan and Sensei. This is the critical path to essay readiness — without it, drafting leans on research rather than practitioner voice.
@@ -201,6 +189,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 Rolling cap: at most **15** items stay here (newest first). Older completions live in `BACKLOG-ARCHIVE.md` (see `/backlog` command — **Done retention**). Git history remains authoritative.
 
+### AI disclosure footer check and DevOps notice harmonization
+- **Product:** meta / docs
+- **Context:** Added AI disclosure footer check to pre-commit review (always-applied rule step 4, /review command step 9). Normalized 16 DevOps READMEs with inconsistent disclosure patterns to the standard italic footer linking to AI-DISCLOSURE.md. Added the footer to 6 top-level product READMEs that had none. Individual example READMEs without existing disclosure left as-is — top-level coverage is sufficient.
+- **Links:** `.cursor/rules/pre-commit-review.md`, `.cursor/commands/review.md`, `AI-DISCLOSURE.md`
+- **Completed:** 2026-04-18
+
 ### Source recovery: ref-61 economics claim verification
 - **Product:** research
 - **Context:** Recovered the braincuber.com source (ref-61) that was previously unreachable (Vercel security checkpoint blocked automated fetching). User copied the article from their browser. Key finding: the 11B token/month breakeven is real, but the source argues API wins for 87% of cases — the Jared Burck article reversed the framing. Updated verification notes, assessment, and added inline caveats to the workflows essay and deployment summary.
@@ -281,11 +275,6 @@ Rolling cap: at most **15** items stay here (newest first). Older completions li
 ### Move labs into product directories
 - **Product:** argo
 - **Context:** Moved `labs/lab-argocd-sync/` and `labs/lab-gitops/` into `argo/labs/` for consistency with product-based nesting.
-- **Completed:** 2026-04-17
-
-### Consolidate .prompts/ into prompts/
-- **Product:** meta
-- **Context:** Removed hidden `.prompts/` directory (leftover from older TACHES import) and moved the dell memory validation research prompt into the visible `prompts/` directory.
 - **Completed:** 2026-04-17
 
 
