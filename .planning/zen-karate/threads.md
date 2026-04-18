@@ -94,6 +94,10 @@ Karate did not start as a sport. The *te* (hand) and *tode* (Chinese hand) tradi
 
 This matters for the essays because "karate" is not monolithic. Styles closer to the Okinawan roots (like Hayashi-ha Shito-ryu) carry a different flavor than mainland Japanese styles (Shotokan, Wado-ryu), and both differ from modern sport karate (WKF/Olympic). The dojo culture, the kata, the relationship to Zen — these vary depending on which karate you're talking about. The essays should be honest about this spectrum rather than romanticizing one end of it or dismissing the other.
 
+Jesse Enkamp (Karate by Jesse) documents this spectrum with practitioner depth — 10 concrete differences from years of training in both Okinawa and Japan, plus the historical arc of how karate was "ruthlessly pigeonholed" into the 3K format (kata, kihon, kumite). Mabuni Kenwa's own admission: "The Karate that has been introduced to Tokyo is actually just a part of the whole." The fix, according to Jesse and the Okinawan tradition: bunkai. The original techniques are hidden in plain sight in kata.
+
+**The parallel to agile and technology is striking.** Take something deep and personal (Okinawan karate / the Agile Manifesto). Scale it for mass adoption (Japanese university system / SAFe and corporate frameworks). Simplify it for large groups. Lose the essence. Wonder why it doesn't work. Then some practitioners go back to the source and try to recover what was stripped away. This pattern — depth lost to scale, recovered through intentional return to fundamentals — is a thread that runs directly through the priority essay.
+
 This thread also opens a wider lens: the philosophical principles aren't confined to karate or even to Japanese martial arts. The same threads — discipline, presence, teacher-student dynamics, embodied learning — run through martial traditions globally. The author's expanding study beyond Okinawa/Japan is itself an expression of beginner's mind.
 
 ---

@@ -17,6 +17,7 @@ These references have deep AI-researched context (summaries, key themes, notable
 | Entry | Type | Tags | Added |
 |---|---|---|---|
 | [The Zen Way to Martial Arts](zen-way-martial-arts.md) | Book | zen, karate, martial-arts, philosophy | 2026-04-17 |
+| [Karate by Jesse (Jesse Enkamp)](karate-by-jesse.md) | Website | karate, okinawa, history, bunkai, shito-ryu | 2026-04-17 |
 
 See [`catalog.md`](catalog.md) for the complete reference list (50+ books, courses, and training).
 

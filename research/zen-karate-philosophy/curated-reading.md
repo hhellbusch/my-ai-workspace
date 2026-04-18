@@ -54,11 +54,13 @@ Mark sources with a priority to help focus the research phase:
 
 ## Articles and Essays
 
-### [Article Title]
-- **Author / Source:**
-- **Priority:** Core / Influential / Background
-- **Why it matters:**
-- **URL:**
+### Karate by Jesse (blog) — Jesse Enkamp
+- **Author / Source:** Jesse Enkamp
+- **Priority:** Core
+- **Why it matters:** Jesse bridges Okinawan and Japanese karate with genuine depth in both — he lived in Okinawa, competed at WKF world level, and writes from practitioner experience. His articles on the Okinawan vs. Japanese distinction, how modern karate became "broken" through systematization, and mushin as mindfulness are directly relevant to the essay series. His Shito-ryu coverage (Mabuni Kenwa) connects to the Hayashi-ha lineage.
+- **Key articles:** "10 Differences Between Okinawan & Japanese Karate," "Why Modern Karate Is Broken," "Musings on Mushin"
+- **URL:** https://www.karatebyjesse.com/
+- **Library entry:** [`library/karate-by-jesse.md`](../../library/karate-by-jesse.md) (AI-enriched summary + 3 cached articles)
 
 (Add more as needed)
 
