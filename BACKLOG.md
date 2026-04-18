@@ -4,6 +4,12 @@
 
 ## In Progress
 
+### Essay: Ego, AI, and the Zen Antidote
+- **Product:** docs
+- **Context:** Companion essay to *The Shift*. The Shift identified ego reinforcement and sycophancy as structural risks of AI assistants. This essay provides the deeper framework: Shi Heng Yi's teaching that ego is "a collection of thoughts," the mechanism of "hooking" onto identity, and how zen practices (mushin, shoshin, non-attachment) build structural resistance to AI-fueled overconfidence. Not a rewrite of The Shift — a companion that bridges the AI essay track and the martial arts/zen track. Source material: thread 14, The Shift sections 6-7, Shi Heng Yi transcript, Jesse Enkamp mushin article, Deshimaru on emptiness.
+- **Links:** `.planning/zen-karate/threads.md` (thread 14), `docs/the-shift.md`, `research/zen-karate-philosophy/sources/`
+- **Started:** 2026-04-17
+
 ### Helm chart upstream contribution
 - **Product:** argo
 - **Context:** Improving chart templates in `git-projects/helm-charts/`. Working branch has changes ready for review and testing before submitting upstream.
@@ -75,10 +81,10 @@
 - **Links:** `.planning/zen-karate/`, `.planning/zen-karate/threads.md`
 - **Added:** 2026-04-17
 
-### Essay: Beginner's Mind in the Age of AI
+### Essay: Beginner's Mind in the Age of AI (partially absorbed into ego/AI essay)
 - **Product:** docs
-- **Context:** Explicit bridge to the existing AI-focused essay track. Shoshin (beginner's mind) as the essential posture for working with AI. Connects back to themes in The Shift and AI-Assisted Development Workflows.
-- **Links:** `.planning/zen-karate/`, `docs/the-shift.md`, `docs/ai-assisted-development-workflows.md`
+- **Context:** Shoshin (beginner's mind) as the essential posture for working with AI. The core shoshin concept is now a key section in the in-progress ego/AI essay. May still emerge as a standalone essay if there's enough material beyond the ego angle — e.g., shoshin applied to learning new domains with AI, approaching unfamiliar codebases.
+- **Links:** `.planning/zen-karate/`, `docs/the-shift.md`
 - **Added:** 2026-04-17
 
 ### YouTube transcript MCP server
@@ -91,6 +97,12 @@
 - **Product:** meta
 - **Context:** Future option for native video understanding via Gemini API. Can process YouTube videos directly by URL — visual understanding, not just transcripts. Useful for martial arts demonstrations or content where visuals matter. Requires API key and has per-request costs. Lower priority than transcript-based approaches.
 - **Links:** `library/`
+- **Added:** 2026-04-17
+
+### AI prioritization bias — meta-system guard
+- **Product:** meta
+- **Context:** Observed behavior: when AI re-prioritizes the backlog, it tends to weight pre-existing priorities into the next revision rather than evaluating from first principles. This is a form of AI sycophancy toward its own prior outputs — the same ego reinforcement problem described in The Shift, applied to project management. Explore meta-prompting or systematic guards (e.g., a rule that forces fresh evaluation, a "devil's advocate" step in the `/backlog prioritize` workflow, or a prompt structure that explicitly separates "what was previously prioritized" from "what should be prioritized now"). Could also be essay material — it's a concrete example of the ego/AI problem.
+- **Links:** `.cursor/commands/backlog.md`, `docs/the-shift.md`, `.planning/zen-karate/threads.md` (thread 14)
 - **Added:** 2026-04-17
 
 ### Zen-karate concept glossary
