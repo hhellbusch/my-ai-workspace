@@ -22,9 +22,10 @@ Add resources as you find them. Keep it simple:
 
 ## Resources
 
-### [First resource — add when ready]
-- **Type:**
-- **URL:**
-- **What it helped with:**
-- **Connection to training:**
+### 10 Minute Toe Health & Function Routine — The Foot Collective
+- **Type:** YouTube video (exercises)
+- **URL:** https://www.youtube.com/watch?v=ZBwNuZgzmdw
+- **Transcript:** [`youtube-ZBwNuZgzmdw-transcript.md`](../zen-karate-philosophy/sources/youtube-ZBwNuZgzmdw-transcript.md)
+- **What it helped with:** Toe splay, foot mobility, toe function — foundational exercises for reconnecting with the ground
+- **Connection to training:** Karate starts from the ground up. Stances, weight distribution, power generation all depend on foot-to-surface connection. Inoue's "rotate on the center of your foot" in neko ashi dachi requires toe splay and foot articulation that modern shoes have atrophied. This routine rebuilds the foundation.
 
