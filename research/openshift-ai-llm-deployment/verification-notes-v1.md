@@ -11,10 +11,13 @@ Analysis of key claims from [Enterprise Generative AI: Architecting and Self-Hos
 ## Economics Claims
 
 ### Claim: "Breakeven threshold at approximately 11 billion tokens per month"
-- **Cited as:** refs 61 (braincuber.com — could not fetch, timed out)
-- **Verdict: UNVERIFIABLE** — the cited source was unreachable
-- **Cross-check against ref 1 (arXiv paper, Pan et al.):** The arXiv paper does NOT support this number. It finds breakeven at ≥50M tokens/month for small models, with wide variance by model size. The paper's analysis assumes 8hr/day, 20 days/month — not continuous operation. 11B tokens/month is 220x higher than the arXiv paper's threshold.
-- **Impact on summary:** Our summary reproduced this claim. Needs correction or caveat.
+- **Cited as:** refs 61 (braincuber.com)
+- **Verdict: VERIFIED IN SOURCE, BUT CONTEXT REVERSAL IN ARTICLE**
+- **Source recovered:** 2026-04-18 via manual browser copy (site blocks automated fetching). Saved as `sources/ref-61.md`.
+- **What the source actually says:** The 11B tokens/month (~500M tokens/day) breakeven is stated clearly. But Braincuber's argument is that **API wins for 87% of use cases** and self-hosting only makes sense above this threshold or for regulated industries. The article frames self-hosting as the *exception*, not the rule. At typical volumes (1M tokens/day), self-hosting on Azure is 733× more expensive than API.
+- **How the Jared Burck article used it:** Presented the 11B number as supporting self-hosting economics — the opposite of the source's conclusion. The source is a consulting firm marketing piece arguing *against* self-hosting for most organizations.
+- **Cross-check against ref 1 (arXiv paper, Pan et al.):** The arXiv paper finds breakeven at ≥50M tokens/month for small models, with wide variance by model size. The paper's analysis assumes 8hr/day, 20 days/month — not continuous operation. 11B tokens/month is 220× higher than the arXiv paper's threshold. The two sources are analyzing different scenarios and models.
+- **Impact on summary:** Our summary reproduced this claim without the source's actual framing. The number itself is from the source, but the implication (self-hosting wins) is the reverse of the source's conclusion.
 
 ### Claim: "up to an 18x cost advantage per million tokens"
 - **Cited as:** ref 62 (Lenovo Press LP2368)

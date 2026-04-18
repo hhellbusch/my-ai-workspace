@@ -312,7 +312,7 @@ A concrete example: [Enterprise Generative AI: Architecting and Self-Hosting Lar
 - **vLLM vs. TGIS runtimes** — PagedAttention throughput vs. tensor parallelism, OpenAI API compatibility vs. gRPC interfaces
 - **S3 storage vs. ModelCar** — maintaining separate object storage infrastructure vs. packaging model weights as OCI images that fit your existing DevSecOps pipeline
 - **On-premise vs. hyperscaler (ROSA/ARO)** — CapEx hardware ownership vs. OpEx elasticity, air-gapped compliance requirements vs. managed SRE
-- **The 11B token/month breakeven** — below this threshold API consumption is cheaper; above it, self-hosting delivers up to 18x cost advantage per million tokens
+- **The 11B token/month breakeven** — below this threshold API consumption is cheaper; above it, self-hosting becomes viable. *(Note: the [original source](https://www.braincuber.com/blog/self-hosted-llms-vs-api-based-llms-cost-performance-analysis) — a consulting firm's analysis — actually argues API wins for 87% of use cases. The separately cited "18x cost advantage" compares on-prem hardware against a budget API tier, not premium APIs. See the [verification assessment](../../research/openshift-ai-llm-deployment/assessment.md#finding-2-economics-built-on-vendor-marketing) for the full analysis.)*
 
 Each of these is a high-stakes tradeoff with real financial and operational consequences. AI will confidently recommend whichever option you lean toward in your prompt — which is precisely why the sycophancy awareness described in [The Shift](the-shift.md) matters most for architecture decisions.
 

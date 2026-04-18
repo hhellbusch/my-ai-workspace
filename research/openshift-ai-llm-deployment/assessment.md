@@ -34,7 +34,7 @@ The article is most trustworthy for its **architectural** and **operational** co
 | Compression / Granite Ecosystem | **MEDIUM** | Numbers are traceable but qualifiers stripped: "strictly maintaining 99%" should be "99% on average"; "3.3x" should be "up to 3.3x"; Granite 3.3 not in cited sources |
 | Agentic AI / MCP / Llama Stack | **LOW-MEDIUM** | Heaviest mix of GA, Tech Preview, Developer Preview, and planned features presented without maturity labels; MCP "TCP" analogy unsupported (source uses "USB-C"); Kagenti/SPIFFE described as shipping but is roadmap |
 | Lifecycle and Support | **MEDIUM-HIGH** | OCP cadence and EUS verified; RHOAI 2.25 compatibility range unverifiable from captured ref-58 |
-| Economics / TCO | **LOW** | 11B tokens/month breakeven unverifiable (ref-61 not fetched); 18x advantage is Lenovo marketing vs GPT-5 mini (not "premium APIs"); <4 month ROI only for on-demand cloud + high utilization |
+| Economics / TCO | **LOW** | 11B tokens/month breakeven verified in source but **context reversed** — source argues API wins for 87% of cases; 18x advantage is Lenovo marketing vs GPT-5 mini (not "premium APIs"); <4 month ROI only for on-demand cloud + high utilization |
 
 ---
 
@@ -56,7 +56,7 @@ Replacing "on average" with "strictly maintaining" is the single most misleading
 The article's two headline economic claims:
 - **18x cost advantage:** Traced to Lenovo Press whitepaper comparing on-prem 8xH100 to **GPT-5 mini** at ~$2/M output tokens. "GPT-5 mini" is a budget API tier, not a "premium" API as the article implies.
 - **ROI in under 4 months:** Applies specifically to on-demand cloud pricing at high utilization. Against 1-year reserved instances the same Lenovo analysis shows ~6 months; against 3-year reserved, ~9.3 months.
-- **11 billion tokens/month breakeven:** Source (braincuber.com) was unreachable (HTTP 429). This claim is unverifiable.
+- **11 billion tokens/month breakeven:** Source (braincuber.com) recovered 2026-04-18 via manual browser copy. The number is stated in the source, but the source's conclusion is the **opposite** of how the article uses it: Braincuber argues API wins for 87% of use cases and self-hosting only makes sense *above* 11B tokens/month or for regulated industries. The article cherry-picked the number without the framing.
 
 ### Finding 3: Agentic AI Maturity Levels Not Disclosed
 
