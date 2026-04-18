@@ -21,6 +21,7 @@ Manage the personal reference library in `library/`. This persistent collection 
 <context>
 - Library directory: `library/`
 - Library index: @library/README.md
+- Catalog (all references): @library/catalog.md
 - Current date: !`date "+%Y-%m-%d"`
 </context>
 
@@ -31,9 +32,12 @@ Parse `$ARGUMENTS` to determine the subcommand. If empty or unrecognized, defaul
 
 ### Subcommand: `list` (default)
 
-1. Read `library/README.md`
-2. Display the index table
-3. Count total entries by type (Book, Talk, Article, etc.)
+1. Read `library/README.md` for enriched entries
+2. Read `library/catalog.md` for the full reference count
+3. Display:
+   - Enriched entries (with links)
+   - Catalog summary: N books, M courses, P training entries
+   - Suggest candidates for enrichment based on active projects
 
 ---
 
@@ -64,7 +68,7 @@ Parse `$ARGUMENTS` to determine the subcommand. If empty or unrecognized, defaul
    - "Notable Ideas" section highlighting concepts most likely to be referenced
    - "Sources" section with the URLs used for enrichment
 
-5. Update the index table in `library/README.md`
+5. Add the entry to `library/catalog.md` (if not already there) and update the enriched entries table in `library/README.md`
 
 6. **Check project relevance**: Read `BACKLOG.md` and scan `.planning/` for active projects. If the new reference is relevant to any project, suggest adding it to that project's curated reading list.
 
@@ -80,9 +84,17 @@ Parse `$ARGUMENTS` to determine the subcommand. If empty or unrecognized, defaul
 
 ### Subcommand: `search <term>`
 
-1. Search across all `library/*.md` files for the term (title, tags, themes, notable ideas)
-2. Display matching entries with the relevant context snippet
-3. If no matches, suggest broadening the search
+1. Search `library/catalog.md` tables for the term (title, author, tags)
+2. Search enriched entry files (`library/*.md`) for deeper matches (themes, notable ideas)
+3. Display matching entries with the relevant context snippet, noting which have enriched entries
+4. If no matches, suggest broadening the search
+
+### Subcommand: `catalog`
+
+Quick view of the full catalog:
+1. Read `library/catalog.md`
+2. Present summary by tag or category
+3. Highlight entries relevant to active projects that could benefit from enrichment
 
 ---
 

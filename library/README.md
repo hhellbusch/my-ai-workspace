@@ -4,16 +4,21 @@ A persistent collection of books, talks, articles, videos, and other sources tha
 
 ## How It Works
 
-- **Adding references**: Use `/reference add <title>` or create entries manually using the template below.
-- **AI enrichment**: When a reference is added, the system searches for reliable summaries, reviews, and analyses, then caches them into the entry file alongside your personal notes.
-- **Connecting to projects**: Project-specific reading lists (like `research/zen-karate-philosophy/curated-reading.md`) link to library entries rather than duplicating context.
-- **Searching**: Use `/reference search <term>` to find references by keyword, or browse the index below.
+- **Catalog**: [`catalog.md`](catalog.md) is the master table of all references with basic metadata (50+ entries covering books, courses, and training from 2010–present).
+- **Enriched entries**: References that need deep context for active projects get their own file with AI-researched summaries, key themes, and cached sources.
+- **Adding references**: Use `/reference add <title>` for enriched entries, or add rows directly to `catalog.md` for quick logging.
+- **Connecting to projects**: Project-specific reading lists (like `research/zen-karate-philosophy/curated-reading.md`) link to enriched entries rather than duplicating context.
+- **Searching**: Use `/reference search <term>` to find references by keyword across both the catalog and enriched entries.
 
-## Index
+## Enriched Entries
+
+These references have deep AI-researched context (summaries, key themes, notable ideas, cached sources):
 
 | Entry | Type | Tags | Added |
 |---|---|---|---|
 | [The Zen Way to Martial Arts](zen-way-martial-arts.md) | Book | zen, karate, martial-arts, philosophy | 2026-04-17 |
+
+See [`catalog.md`](catalog.md) for the complete reference list (50+ books, courses, and training).
 
 ## Entry Template
 
