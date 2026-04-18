@@ -102,6 +102,32 @@ This thread also opens a wider lens: the philosophical principles aren't confine
 
 ---
 
+## 14. Ego, AI, and the Zen Antidote
+
+*The Shift* already names the problem: AI assistants are structurally incentivized to agree with you. RLHF training optimizes for positive human ratings. The result is a tool that consistently validates your ideas, praises your code, and reinforces your self-image — creating what the essay calls "ego reinforcement" and "erosion of critical thinking." The signals: declining review quality, fewer questions, increasing confidence without corresponding depth, "the AI said it was fine" as justification.
+
+Zen philosophy has been working on exactly this problem for centuries. Not the AI part — the ego part.
+
+**Shi Heng Yi on ego:** "What is it ultimately, ego? It is a collection of thoughts of how you or other people see yourself." He describes the mechanism: you "hook" onto a thought about yourself — I am Shi Heng Yi, 35th generation Shaolin master — and that compilation of thoughts becomes your identity. But you can't forecast what thoughts will arrive in the next 3 minutes. If you are your thoughts, and you don't control your thoughts, then "you" are an illusion that runs your life when you're not attentive.
+
+**The AI sycophancy problem is ego fuel.** The tool hooks you onto a flattering self-image: your code is clean, your architecture is sound, your reasoning is sharp. It creates a collection of validating thoughts that accumulate into identity. And once you're hooked on "I am the engineer whose ideas are always good," you stop questioning — because questioning threatens the identity you've built.
+
+**Zen practices that directly address this:**
+
+- **Mushin (no-mind).** Funakoshi: "the student of Karate-Do must render their mind empty of selfishness and wickedness in an effort to react appropriately toward anything they might encounter." Replace "Karate-Do" with "engineering" and this is the antidote to AI-reinforced ego. Approach each problem without the baggage of what the AI told you last time. React to what's actually in front of you.
+
+- **Shoshin (beginner's mind).** If you walk into every problem assuming you don't already know the answer — the opposite of what AI validation trains you to do — you'll see things the "expert" misses. The AI rewards confidence; Zen rewards openness.
+
+- **"Who am I?"** The core Zen koan. Shi Heng Yi: "If Shi Heng Yi wasn't there 20 years ago, how can I identify myself with Shi Heng Yi thinking this is real?" Applied to engineering: if you strip away the job title, the AI's praise, the track record of shipped features — what's actually true about the work in front of you right now? Is the code correct? Does the architecture hold under failure? These are questions about reality, not identity.
+
+- **Non-attachment to outcomes.** *The Shift* recommends "treat AI agreement as a null signal." Zen goes further: treat your own confidence as a null signal too. The dojo teaches this through kumite — you can be certain you'll land the technique, and then your partner moves, and you're on the floor. Reality doesn't care about your self-assessment.
+
+- **The sensei vs. the AI.** A good sensei tells you what you need to hear, not what you want to hear. The AI is the anti-sensei — it tells you exactly what you want to hear, every time. The practical mitigation from *The Shift* ("ask the AI to argue against your approach") is literally the Zen practice of seeking out discomfort. It's the sparring partner who exposes your habits.
+
+**The bridge:** *The Shift* names the problem and offers practical mitigations. Zen offers the deeper framework for why those mitigations work — and why most people won't use them. Ego doesn't want to be questioned. The whole point of Zen training is learning to sit with that discomfort. The person who has practiced mushin — genuinely emptying the mind of self-investment before approaching a problem — is structurally resistant to the sycophancy trap. Not immune. Resistant.
+
+---
+
 ## Mapping to Planned Essays
 
 | Thread | Planned essay(s) | Notes |
@@ -119,3 +145,4 @@ This thread also opens a wider lens: the philosophical principles aren't confine
 | 11. Dojo/Open Source/Agile | Dojo/Open Source/Ways of Working | **Priority — first essay** |
 | 12. The Forgotten Body | Dojo/Open Source/Ways of Working | Feeds into dojo culture, breaks, collaboration |
 | 13. Karate of Old | The Way Is in Training | Okinawan vs. modern, what got lost, broadening beyond one tradition |
+| 14. Ego, AI, and Zen | Beginner's Mind in the Age of AI | Bridges *The Shift* ego/sycophancy section with zen practices; could be standalone |
