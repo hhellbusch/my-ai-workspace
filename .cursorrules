@@ -56,6 +56,9 @@ Informal notes and quick references: OpenShift useful commands, idea captures
 Structured AI prompt templates for repeatable tasks (run with `/run-prompt`):
 - AI disclosure notice, ArgoCD pipeline validation, NVIDIA GPU analysis, RHACM validation
 
+#### Library (`library/`)
+Personal reference library — books, talks, articles, videos, and other sources with AI-enriched summaries. Managed via `/reference add`, each entry combines personal notes with cached context (summaries, reviews, key themes) so any session can draw from the source without re-explaining it.
+
 #### Research (`research/`)
 Research workspaces with fetched sources, analysis findings, and assessments:
 - OpenShift AI LLM deployment article verification (62 references, 53 fetched)

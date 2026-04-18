@@ -11,19 +11,19 @@ Mark sources with a priority to help focus the research phase:
 
 ## Books
 
+### The Zen Way to Martial Arts
+- **Author:** Taisen Deshimaru
+- **Priority:** Core
+- **Why it matters:** *(Fill in — what this book taught you, how it connects to your practice)*
+- **Key passages or ideas:** "Every moment of life is kata." Budo as "stopping the spear." Transcending technique through mastery of technique. Gyodo — practicing the Way of living.
+- **Library entry:** [`library/zen-way-martial-arts.md`](../../library/zen-way-martial-arts.md) (AI-enriched summary available)
+
 ### [Book Title]
 - **Author:**
 - **Priority:** Core / Influential / Background
 - **Why it matters:** (What this book taught you that stuck. Not a review — your relationship to it.)
 - **Key passages or ideas:** (Specific chapters, quotes, or concepts to revisit)
 - **URL:** (If available online; otherwise leave blank — manifest will mark as "offline reference")
-
-### [Book Title]
-- **Author:**
-- **Priority:**
-- **Why it matters:**
-- **Key passages or ideas:**
-- **URL:**
 
 (Add more as needed)
 

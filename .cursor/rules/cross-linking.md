@@ -16,6 +16,7 @@ When creating or modifying content, check whether cross-references need updating
 - **New skill in `.cursor/skills/`** — Consider whether `.cursorrules` TACHES section needs updating.
 - **New rule in `.cursor/rules/`** — No registry to update, but verify the rule doesn't conflict with existing rules.
 - **New planning project in `.planning/`** — Ensure a corresponding backlog item exists in `BACKLOG.md`.
+- **New library entry in `library/`** — Update `library/README.md` index. Check if the reference is relevant to any active project's curated reading list.
 
 ## Modified Content Triggers
 
@@ -28,6 +29,7 @@ When creating or modifying content, check whether cross-references need updating
 Not every file needs to be linked from everywhere. The key registries are:
 - `docs/README.md` — Every published essay
 - `research/README.md` — Every research directory
+- `library/README.md` — Every personal reference entry
 - `BACKLOG.md` — Every tracked work item
 - `.cursorrules` — High-level project description (not every file, but every major content area)
 

@@ -26,6 +26,7 @@ Content is organized by **product/technology**, then by **content type** within 
 | Directory | Purpose | Convention |
 |---|---|---|
 | `docs/` | Essays and guides — AI-assisted engineering and philosophy/practice tracks | Markdown files linked from `docs/README.md`; no troubleshooting guides here |
+| `library/` | Personal reference library — books, talks, articles with AI-enriched summaries | One `.md` per reference, indexed in `library/README.md`; managed via `/reference` |
 | `examples/` | Standalone scripts and artifacts referenced by docs | Named dirs: `topic-slug/` (e.g., `gif-recoloring/`) |
 | `git-projects/` | External git repos cloned for exploration and upstream contributions (**gitignored**) | Clone repos directly; not committed to this repo |
 | `notes/` | Informal notes and quick references | Markdown files, loosely organized |

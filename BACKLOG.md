@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-17 (zen-karate essay library scaffolding added)
+> Last updated: 2026-04-17
 
 ## In Progress
 
@@ -28,6 +28,24 @@
 - **Product:** docs
 - **Context:** Reference document defining the blended voice for the essay series: personal first-person for philosophical/experiential sections, practitioner tone for applied sections. Includes structural conventions, Japanese terminology approach, and "this, not that" examples. Referenced by all meta-prompts in the drafting pipeline.
 - **Links:** `.planning/zen-karate/STYLE.md`, `.planning/zen-karate/`
+- **Added:** 2026-04-17
+
+### Session-start context loading
+- **Product:** meta
+- **Context:** When starting a new session, the agent has no memory of what was in progress. Need a combination of a Cursor rule (passive awareness of backlog/planning state) and a `/start` or `/resume` command (active orientation — reads backlog, checks for .continue-here.md handoffs in .planning/, presents "here's where things stand"). The backlog and /whats-next already exist but neither runs automatically.
+- **Links:** `.cursor/commands/`, `.cursor/rules/`, `BACKLOG.md`, `.planning/`
+- **Added:** 2026-04-17
+
+### Personal reference library
+- **Product:** meta
+- **Context:** A workspace-level system for logging books, videos, trainings, readings, websites, essays, and other personal references. Goes beyond project-specific curated-reading.md files — this is a persistent collection that any project can draw from. Should include AI-assisted enrichment: when a reference is added, search for summaries/reviews/key themes and cache them in the filesystem. Needs a `/reference` command and a storage convention. First reference to process: Taisen Deshimaru's "The Zen Way to Martial Arts."
+- **Links:** `research/`, `.cursor/commands/`
+- **Added:** 2026-04-17
+
+### Proactive backlog capture rule
+- **Product:** meta
+- **Context:** Cursor rule reminding the agent to capture ideas, work items, and deferred tasks as backlog entries during conversation — not after. When the user mentions wanting to do something later, or when a natural follow-up task emerges from current work, it should become a backlog item immediately. Prevents ideas from falling through the cracks across sessions.
+- **Links:** `.cursor/rules/`, `BACKLOG.md`
 - **Added:** 2026-04-17
 
 ### Headless browser fallback for research fetcher

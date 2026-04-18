@@ -118,6 +118,7 @@ This workspace includes a sophisticated meta-development system with **Skills**,
 ├── docs/                      # Essays and guides (engineering + philosophy tracks)
 ├── examples/                  # Standalone scripts and artifacts referenced by docs
 ├── git-projects/              # External git repos for exploration/contribution (gitignored)
+├── library/                   # Personal reference library (books, talks, articles with AI summaries)
 ├── notes/                     # Informal notes and quick references
 ├── ocp/
 │   ├── examples/              # OpenShift configuration examples and templates
