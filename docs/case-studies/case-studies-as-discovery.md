@@ -3,6 +3,8 @@
 > **Audience:** Engineers and teams using structured documentation practices who suspect that writing things down does more than record what happened.
 > **Purpose:** Documents how writing a case study about evolving project scope surfaced three concrete gaps in the meta-system, and how the user's observation about the philosophical concept in the case study led directly to a system-wide enhancement. The case study format itself became a discovery mechanism.
 
+Structured reflection can surface real gaps; the same habit can justify **endless meta-work**. The pass/fail test is whether the next artifact **shortens the path** to non-meta output (essay, fix, upstream contribution) — not whether the recursion reads elegantly on its own.
+
 ---
 
 ## The Sequence

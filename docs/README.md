@@ -16,9 +16,11 @@ Connecting martial arts, Zen, and contemplative practice to engineering culture,
 
 Documented examples of meta-development patterns, workflow decisions, and AI-assisted processes traced from real work in this repository.
 
+**Evidence scope:** Essays and case studies here are grounded in **one workspace’s** long-running, git-backed AI-assisted work. They are written so patterns can **transfer**, but they are not an industry sample — compounding, cadence, and what feels “natural” to read next depend on tooling, review gates, and team context elsewhere.
+
 ## Cross-Track Reading Order
 
-For someone reading everything, this order follows the natural arc — AI engineering foundations first, then the philosophical companion pieces, then case studies that show the meta-development system in action.
+For someone reading everything **in this collection**, this order follows a deliberate arc — AI engineering foundations first, then the philosophical companion pieces, then case studies that show how the meta-development system **evolved here**. It is a reading path, not a universal curriculum.
 
 1. [The Shift — Engineering Skills in the Age of AI](ai-engineering/the-shift.md)
 2. [AI-Assisted Development Workflows](ai-engineering/ai-assisted-development-workflows.md)

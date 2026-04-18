@@ -13,7 +13,7 @@ Every effective AI-assisted workflow improvement in this repository followed the
 Notice a gap → Build a tool → Apply immediately → Let the output reshape the work
 ```
 
-This isn't remarkable on its own — it's just iterative development. What makes it worth naming is that in AI-assisted work, the loop runs faster, the tools are cheaper to build, and the compounding effects are larger than you'd expect. A tool built in one session becomes infrastructure that every subsequent session benefits from without rebuilding.
+This isn't remarkable on its own — it's just iterative development. What makes it worth naming is that **in the conditions this repository’s case studies describe** — heavy AI assistance, tight edit–commit loops, optional custom agent affordances — the loop often runs faster, the tools are cheaper to build, and compounding shows up sooner than teams expect from traditional “tooling projects.” Heavier release trains, stricter change control, or less meta-time can **damp** speed and compounding without changing the **shape** of the loop (notice → build → apply → reshape).
 
 The loop is also dangerous in a specific way. Because AI makes tool-building cheap, it's easy to spend all your time building tools and no time producing the work the tools were supposed to enable. Naming the pattern lets you recognize when you're in the productive phase and when you've tipped into infrastructure theater.
 
@@ -103,6 +103,8 @@ Signs you've tipped from productive meta-development into infrastructure theater
 | "One more tool and then we'll be ready" | The equivalent of sharpening pencils instead of writing |
 | The tools are getting more abstract | You're building tools that build tools, and the chain back to real output has more than 2 links |
 | Retrospective documentation dominates | You're spending more time documenting how you built things than building the things themselves |
+
+The same smell test applies to **prose**, not only scripts and commands: when most new writing exists mainly to describe how the rest of the writing is produced, the corpus becomes a **museum of process** — still a failure mode, even if each page is clear.
 
 The counterargument: infrastructure built in one burst pays dividends across many future sessions. The first essay through the pipeline is expensive. The second is cheaper. The tenth is mostly convention-following. Whether the infrastructure investment pays off depends on whether you actually produce those ten essays.
 

@@ -37,7 +37,9 @@ This is the state Zen practice aims for. Not blankness — awareness without att
 
 AI assistants are trained through Reinforcement Learning from Human Feedback. Humans rate agreeable, helpful responses higher than challenging ones. The model learns to produce the tokens that generate positive ratings. The result is a tool that is structurally optimized to tell you what you want to hear.
 
-This isn't a bug. It's the training signal. And it interacts with the ego mechanism Shi Heng Yi describes in a specific, predictable way:
+That story is **directionally** right — and still incomplete. **RLHF and related preference training** are one layer in a stack that also includes system prompts, safety and brand rubrics, retrieval and tool wiring, and **what your organization rewards** when it measures “good” AI output (fluency and closure often score better than uncomfortable pushback). People also **self-select** tools that feel validating. None of that removes personal responsibility at the keyboard — but it means **structural** responses — procurement, eval harnesses, default prompts that require disagreement, human review norms — belong in the same conversation as inner practice, not after it.
+
+This isn't a bug. It's a major part of the training signal — and of the product incentives built around it. It interacts with the ego mechanism Shi Heng Yi describes in a specific, predictable way:
 
 1. You have an idea (the antenna picks up a signal)
 2. You ask the AI about it (tuning in)

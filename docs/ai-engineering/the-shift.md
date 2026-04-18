@@ -4,6 +4,7 @@ review:
   read: 2026-04-18
   voice-approved: 2026-04-17
   at: 7a08bb7
+  notes: "Spar follow-up #2: under The Bottleneck Has Moved, qualified when design/verification vs implementation is the tightest gate."
 ---
 
 # The Shift — Engineering Skills in the Age of AI
@@ -27,7 +28,9 @@ When implementation is cheap, the bottleneck shifts to everything around it:
 - **Working with other people** — communication, collaboration, review
 - **Understanding what you're working with** — including the limitations and risks of AI itself
 
-These skills were always important. They were always what separated senior engineers from junior ones. The difference now is that they're the *primary* value you bring, not a secondary one layered on top of implementation speed.
+These skills were always important. They were always what separated senior engineers from junior ones. The difference now is that they are *often* the primary value you bring — not a secondary layer on top of implementation speed — **where AI is genuinely compressing the implementation step** for the kind of work you do (much product code, integration, config, tests, and documentation).
+
+That weighting is not universal. In work where **the last mile of correctness** still dominates — novel algorithms, tight performance or latency budgets, hardware-adjacent code, formal assurance, or regulated systems where small diffs can fail catastrophically — **deep implementation skill and taste** can remain the bottleneck even with AI in the loop. There, decomposition and verification still matter, but they do not magically demote implementation from “primary” to “solved.”
 
 ---
 
