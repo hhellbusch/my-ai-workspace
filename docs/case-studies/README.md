@@ -14,9 +14,6 @@ Documented examples of meta-development patterns, workflow decisions, and AI-ass
 
 5. **[Choosing Scripts Over Services](choosing-scripts-over-services.md)** — A small architectural decision — MCP server vs. Python script for YouTube transcripts — that demonstrates problem decomposition and workflow-fit thinking. The simpler tool won because it fit the file-based research workflow without adaptation.
 
-## Planned
+6. **[Building a Personal Knowledge Management System with AI](building-knowledge-management-with-ai.md)** — How one extended session produced six interlocking organizational tools (backlog, library, session orientation, pre-commit review, content audit, cross-linking) and what it reveals about AI building the infrastructure for its own productivity.
 
-See `BACKLOG.md` for case study seeds (items with `Case study:` title prefix). Current candidates:
-
-- Building a personal knowledge management system with AI
-- How AI handles evolving creative scope across sessions
+7. **[How AI Handles Evolving Creative Scope Across Sessions](evolving-creative-scope.md)** — A project broadened from "Zen and Karate" to "Martial Arts, Zen, and the Way of Working" as the user's learning expanded mid-project. Documents how scope changes cascade through planning documents, what conventions help maintain coherence, and what's still missing.

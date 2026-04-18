@@ -99,18 +99,6 @@
 - **Links:** `.cursor/commands/start.md`, `.cursor/commands/whats-next.md`, `.cursor/rules/session-awareness.md`
 - **Added:** 2026-04-17
 
-### Case study: building a personal knowledge management system with AI
-- **Product:** docs
-- **Context:** In a single extended session, the repo gained: project tracking (BACKLOG.md + /backlog), a personal reference library (library/ + /reference), session orientation (/start + session-awareness rule), pre-commit review (/review + /audit), proactive backlog capture, and cross-linking conventions. This is AI building the infrastructure for its own productivity — the meta-development system section of ai-assisted-development-workflows.md in action. The interesting angle: the human identifies the organizational need, the AI builds the tooling, and then both immediately use it. What does it look like when you let AI build the system that organizes AI-assisted work?
-- **Links:** `BACKLOG.md`, `library/`, `.cursor/commands/`, `.cursor/rules/`, `docs/ai-engineering/ai-assisted-development-workflows.md`
-- **Added:** 2026-04-18
-
-### Case study: how AI handles evolving creative scope across sessions
-- **Product:** docs
-- **Context:** The zen-karate project started as "Zen and Karate," broadened to "Martial Arts, Zen, and the Way of Working" when the user's learning expanded beyond Japan/Okinawa, then self-corrected with "Funakoshi's karate is still karate" to prevent the broadening from being dismissive. Multiple planning documents updated across sessions to reflect evolving nuance. This is shoshin (beginner's mind) practiced at the project level — the scope itself is learning. The case study angle: how does AI maintain coherence across documents when the human's understanding is evolving mid-project? What conventions help vs. hinder?
-- **Links:** `.planning/zen-karate/BRIEF.md`, `.planning/zen-karate/STYLE.md`, `research/zen-karate-philosophy/personal-notes.md`, `.planning/zen-karate/threads.md`
-- **Added:** 2026-04-18
-
 ### Zen-karate concept glossary
 - **Product:** docs
 - **Context:** Shared glossary of Japanese/Zen terms (mushin, zanshin, fudoshin, shoshin, kata, kihon, kumite, senpai/kohai, dojo kun, etc.) extracted after Essay 1 is drafted. Keeps definitions consistent across the series so later essays don't re-explain foundational vocabulary.
@@ -172,6 +160,18 @@
 - **Product:** docs
 - **Context:** Published case study documenting the architectural decision between MCP server, Gemini API, and Python script for YouTube transcript fetching. The script won because it fit the file-based research workflow — persistent output, batch mode, same conventions as `fetch-sources.py`. Demonstrates problem decomposition and workflow-fit thinking.
 - **Links:** `docs/case-studies/choosing-scripts-over-services.md`, `.cursor/skills/research-and-analyze/scripts/fetch-transcript.py`
+- **Completed:** 2026-04-17
+
+### Case study: building a personal knowledge management system with AI
+- **Product:** docs
+- **Context:** Published case study documenting how one extended session produced six interlocking organizational tools (backlog, library, session orientation, pre-commit review, content audit, cross-linking). Explores the meta-development loop applied to infrastructure and the self-reinforcing nature of AI building systems that organize AI work.
+- **Links:** `docs/case-studies/building-knowledge-management-with-ai.md`, `BACKLOG.md`, `library/`, `.cursor/commands/`
+- **Completed:** 2026-04-17
+
+### Case study: how AI handles evolving creative scope across sessions
+- **Product:** docs
+- **Context:** Published case study documenting how the zen-karate project broadened from "Zen and Karate" to "Martial Arts, Zen, and the Way of Working" as the user's learning expanded. Covers cascade effects through planning documents, what conventions (set updates, stable names, nuanced framing) help maintain coherence, and what's missing (evolution logs, tonal drift detection).
+- **Links:** `docs/case-studies/evolving-creative-scope.md`, `.planning/zen-karate/BRIEF.md`, `.planning/zen-karate/STYLE.md`
 - **Completed:** 2026-04-17
 
 ### Session-start context loading

@@ -32,3 +32,5 @@ For someone reading everything, this order follows the natural arc — AI engine
 10. [Debugging Your AI Assistant's Judgment](case-studies/debugging-ai-judgment.md) *(catches AI anchoring bias, builds structural fix)*
 11. [From Conversation to Essay in One Session](case-studies/conversation-to-essay.md) *(full pipeline: observation → thread → draft → provenance → challenge)*
 12. [Choosing Scripts Over Services](case-studies/choosing-scripts-over-services.md) *(problem decomposition applied to tooling decisions)*
+13. [Building a Personal Knowledge Management System with AI](case-studies/building-knowledge-management-with-ai.md) *(AI builds the infrastructure for AI-assisted work)*
+14. [How AI Handles Evolving Creative Scope](case-studies/evolving-creative-scope.md) *(shoshin at the project level — scope that learns)*
