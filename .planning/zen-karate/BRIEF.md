@@ -12,7 +12,7 @@ The scope is deliberately wider than one style or tradition. The philosophical t
 
 How we know it worked:
 
-- [ ] Essay 1 ("The Dojo, Open Source, and Ways of Working") published in `docs/` — applied entry point
+- [ ] Essay 1 ("The Way Is in Training") published in `docs/` — philosophical anchor essay
 - [ ] At least 3 essays published, forming a coherent reading track in `docs/README.md`
 - [ ] Bridge essay connecting martial arts philosophy to engineering culture/ways of working
 - [ ] Research library with fetchable sources, personal notes, and curated reading list populated

@@ -12,29 +12,30 @@
 
 ## Up Next
 
-### Essay: The Dojo, Open Source, and Ways of Working (PRIORITY — first essay)
+### Zen-karate personal knowledge base — experiential content (CRITICAL PATH)
 - **Product:** docs
-- **Context:** First essay in the zen-karate series. The dojo as "a place of the Way" and how that concept has been adopted — sometimes deeply, often superficially — in agile transformation (engineering dojos), open source culture (contributor etiquette, senpai/kohai in PR review), and DevOps practice (code kata, architectural kata). Explores what's lost when teams borrow the vocabulary without the philosophy: cleaning the floor as shared ownership, kata as embodied learning not rote repetition, mutual respect within hierarchy. Draws from threads 2, 3, 6, 7, 10 as supporting ideas. Connects to the existing upstream contributions essay as a real worked example. This leads with because it's the most applied and accessible entry point — grounded in business outcomes (team capability, learning organizations, reducing key-person dependency) while introducing the philosophical foundation that deeper essays will build on.
-- **Source material available:** Deshimaru (dojo, kata, gyodo), Shi Heng Yi transcript (master-student, teaching fish, lonely wolf), `docs/ai-engineering/ai-assisted-upstream-contributions.md` (real open source example), agile dojo movement (needs targeted research). Personal notes will enrich but aren't blocking.
-- **Links:** `.planning/zen-karate/threads.md`, `.planning/zen-karate/`, `docs/ai-engineering/ai-assisted-upstream-contributions.md`
-- **Added:** 2026-04-17
-
-### Zen-karate personal knowledge base
-- **Product:** docs
-- **Context:** Structured template for capturing training history, key teachers, formative moments, philosophical anchors, and examples of how martial arts philosophy has guided life and work decisions. This is the most critical input to the essay series — everything downstream gets better when it has real personal experience to draw from. Template created at `research/zen-karate-philosophy/personal-notes.md`, needs user to populate.
+- **Context:** Template and structural scaffolding complete. AI-enriched content in place: training history, lineage maps, teachers/influences (Shihan, Sensei, Inoue, Rika Usami), Athens club context, notes/fragments. **What remains is the experiential core that only the user can provide:** formative moments, philosophical anchors (what concepts mean through practice), life application examples, Shi Heng Yi connection, "what's hard to convey," and the crystallizing moments for Shihan and Sensei. This is the critical path to essay readiness — without it, drafting leans on research rather than practitioner voice.
 - **Links:** `research/zen-karate-philosophy/personal-notes.md`, `.planning/zen-karate/`
 - **Added:** 2026-04-17
 
-### Zen-karate curated reading list
+### Essay: The Way Is in Training (PRIORITY — first essay)
 - **Product:** docs
-- **Context:** Annotated bibliography of books, teachers, passages, and media that shaped a lifelong karate practice. Goes beyond what web research can find — captures why each source matters, not just what it says. Feeds directly into the research manifest. Template at `research/zen-karate-philosophy/curated-reading.md`, needs user to populate.
-- **Links:** `research/zen-karate-philosophy/curated-reading.md`, `.planning/zen-karate/`
+- **Context:** First essay in the zen-karate series (swapped from second position). The philosophical anchor: what lifelong practice teaches that cannot be learned from books. Inoue's "if kihon can do, any kata can do" as the spine. The Hayashi → Inoue → Usami lineage as visible proof that the Way transmits through training. Rika's 7-year journey, 5-hour train rides, retirement at 27 as non-attachment. The uchi-deshi experience in Inoue's own words. Deshimaru's "every moment of life is kata." The personal return to practice after the gap — what survived, what atrophied, what the body remembers. Draws from threads 2, 4, 5, 7, 12, 13, 15. Source material is deep (3 Inoue sources, Rika bio, Hayashi bio, Jesse Enkamp articles, Deshimaru). **Blocked on personal experiential content in Phase 1.**
+- **Source material available:** Inoue comprehensive bio + teaching philosophy, Rika Usami biography, Hayashi biography, Jesse Enkamp articles (5), Deshimaru, personal practice notes (partial — needs formative moments, philosophical anchors).
+- **Links:** `.planning/zen-karate/threads.md`, `.planning/zen-karate/`, `research/zen-karate-philosophy/sources/`
 - **Added:** 2026-04-17
 
-### Zen-karate essay voice/style guide
+### Essay: The Dojo, Open Source, and Ways of Working (second essay)
 - **Product:** docs
-- **Context:** Reference document defining the blended voice for the essay series: personal first-person for philosophical/experiential sections, practitioner tone for applied sections. Includes structural conventions, Japanese terminology approach, and "this, not that" examples. Referenced by all meta-prompts in the drafting pipeline.
-- **Links:** `.planning/zen-karate/STYLE.md`, `.planning/zen-karate/`
+- **Context:** Second essay in the zen-karate series (moved from first position). Takes the philosophical vocabulary from Essay 1 and applies it: the dojo as "a place of the Way" adopted — sometimes deeply, often superficially — in agile transformation (engineering dojos), open source culture (contributor etiquette, senpai/kohai in PR review), and DevOps practice (code kata, architectural kata). What's lost when teams borrow the vocabulary without the philosophy. Draws from threads 3, 6, 7, 10, 11, 12. Connects to `docs/ai-engineering/ai-assisted-upstream-contributions.md` as a worked example. **Needs targeted research on agile dojo movement (Target, Ford, Pivotal Labs), open source etiquette formalization, code kata origins (Dave Thomas).**
+- **Source material available:** Deshimaru, Shi Heng Yi transcript, upstream contributions essay, Inoue "no style" philosophy, Jesse Enkamp articles. Agile dojo research still needed.
+- **Links:** `.planning/zen-karate/threads.md`, `.planning/zen-karate/`, `docs/ai-engineering/ai-assisted-upstream-contributions.md`
+- **Added:** 2026-04-17
+
+### Zen-karate curated reading list — user annotations
+- **Product:** docs
+- **Context:** Structural scaffolding complete. AI-enriched entries for 10 teachers/lineage figures, 1 book, 2 talks, 1 blog. What remains: user's personal "why it matters" annotations for each source, additional books/talks/teachers from personal experience. The more specific the annotations, the stronger the research phase.
+- **Links:** `research/zen-karate-philosophy/curated-reading.md`, `.planning/zen-karate/`
 - **Added:** 2026-04-17
 
 ### Headless browser fallback for research fetcher
@@ -50,12 +51,6 @@
 - **Added:** 2026-04-10
 
 ## Ideas
-
-### Essay: The Way Is in Training
-- **Product:** docs
-- **Context:** Foundation essay for the zen-karate series. The historical and philosophical connection between Zen Buddhism and karate. Core concepts: mushin (no-mind), zanshin (awareness), fudoshin (immovable mind). What lifelong practice teaches that cannot be learned from books. This is the personal anchor essay that establishes vocabulary for the rest of the series.
-- **Links:** `.planning/zen-karate/`, `research/zen-karate-philosophy/`
-- **Added:** 2026-04-17
 
 ### Essay: Five Hindrances
 - **Product:** docs
@@ -137,6 +132,18 @@
 - **Added:** 2026-04-17
 
 ## Done
+
+### Zen-karate essay voice/style guide
+- **Product:** docs
+- **Context:** Blended voice reference: personal first-person for philosophical/experiential sections, practitioner tone for applied sections. Structural conventions, Japanese terminology approach, "this, not that" examples, cross-linking conventions. Referenced by all meta-prompts in the drafting pipeline.
+- **Links:** `.planning/zen-karate/STYLE.md`
+- **Completed:** 2026-04-17
+
+### Zen-karate source library (Inoue, Rika Usami, Hayashi, Athens lineage)
+- **Product:** docs
+- **Context:** 10 cached source files covering Inoue Yoshimi (3 files — comprehensive bio, Jesse Enkamp seminar recap, 42 secrets), Rika Usami (biography + career + coaching), Teruo Hayashi (biography), Athens Shotokan lineage (Golden, Kanazawa, Okazaki), Jesse Enkamp articles (3 — Okinawan vs. Japanese, mushin, modern karate history), Shi Heng Yi transcript. Plus 5 library entries (Karate by Jesse, Finding Karate, Karate Philosophy, Deshimaru book, curated reading list). Built across multiple research sessions.
+- **Links:** `research/zen-karate-philosophy/sources/`, `library/`
+- **Completed:** 2026-04-17
 
 ### AI-engineering track updates — behavioral failure modes, meta-development loop, multi-session management
 - **Product:** docs

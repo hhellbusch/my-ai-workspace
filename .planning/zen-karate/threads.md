@@ -4,7 +4,7 @@ Emerging themes from the material gathered so far. These are starting points, no
 
 > **Scope:** Martial arts broadly, with karate (Hayashi-ha Shito-ryu, Okinawan tradition) as the primary lens. The philosophical threads run across traditions.
 >
-> **Source material:** Shi Heng Yi transcript (Mulligan Brothers, 2026), Deshimaru's *The Zen Way to Martial Arts*, existing `docs/` essays (*The Shift*, *AI-Assisted Development Workflows*), personal practice experience (via `personal-notes.md`).
+> **Source material:** Shi Heng Yi transcript (Mulligan Brothers, 2026), Deshimaru's *The Zen Way to Martial Arts*, existing `docs/` essays (*The Shift*, *AI-Assisted Development Workflows*), personal practice experience (via `personal-notes.md`), Inoue Yoshimi research (Inoue-ha Karate official site, Karate Philosophy, Jesse Enkamp articles), Rika Usami research (Finding Karate, Karate by Jesse interview), Hayashi Teruo biography, Athens Shotokan lineage research.
 
 ---
 
@@ -23,6 +23,8 @@ Shi Heng Yi's confession: he pulled everyone along, built the thing, handed out 
 ## 4. Identity and Letting Go of What You Built
 
 "I wanted to be someone and now I'm trying to be no one." Deliberately dismantling an identity he spent decades building. Connects to *The Shift*: when AI compresses implementation, engineers who identify as "the person who writes code" face a quiet crisis. Deshimaru's "transcending technique through mastery of technique" — you master something deeply enough to go beyond needing it to define you.
+
+**Rika Usami as a concrete example:** She retired from competition at 27, at the absolute peak — reigning world champion, five-time national champion, every international tournament she entered. She had achieved her goal and moved on to coaching and study rather than clinging to the competitor identity. This is non-attachment to outcome as a life choice, not just a concept. The contrast with athletes who can't let go of competition is striking. She chose to become something else — and in doing so, arguably carries the lineage forward more effectively than continued competition would have.
 
 ## 5. Movement Without Mind
 
@@ -43,6 +45,8 @@ Proud of his obedience for years — until he realized it led him to sacrifice h
 ## 9. "When Emptiness Becomes Your Foundation, Everything Becomes Possible"
 
 Non-attachment to identity and outcome creates possibility, not apathy. Shoshin (beginner's mind) as the practical version. The engineer who walks into every problem without assuming they know the answer sees things the "expert" misses.
+
+**Inoue's "no style" as shoshin applied to institutional boundaries.** Inoue trained 20+ world champions from Shotokan, Goju-ryu, and other styles — not just Shito-ryu. "Your Karate style doesn't matter. As long as you have one head, two legs and two arms, human body mechanics and universal principles of efficient movement are the same across all styles." This is beginner's mind operationalized: he emptied himself of style allegiance and taught principles. Hayashi did the same through dojo yaburi — walking into any dojo, from any tradition, and testing what works against what actually beats him. The anti-tribal posture as a form of emptiness that makes everything possible.
 
 ## 10. Breaking the Cycle — What You Don't Process, You Transmit
 
@@ -65,6 +69,8 @@ The dojo is literally "a place of the Way" — a place of study and learning, no
 - **Mutual respect vs. hierarchy.** The dojo has hierarchy (belt, seniority), but the floor levels everyone during practice. You bow to your partner regardless of rank. Open source has a similar tension: maintainers hold power, but the contribution is what matters, not the title. Agile aspires to this ("self-organizing teams") but often reintroduces hierarchy through role inflation. What does genuine mutual respect look like in a team that still needs leadership?
 
 - **The difference between borrowing a word and understanding a practice.** "Dojo," "kata," "sensei" appear frequently in agile and DevOps literature. Often they're borrowed as metaphor without the depth of the source. What's lost in translation? What would change if teams took the philosophy as seriously as the vocabulary?
+
+- **Uchi-deshi vs. corporate mentoring.** Inoue's uchi-deshi experience under Hayashi is what genuine apprenticeship looks like: living with the teacher, cleaning the dojo, training all day, getting knocked out in kumite and being told to get up. "Pretty much training all day." The modern corporate mentoring program — a monthly 30-minute meeting, an assigned senior who may not even want to be there — is the empty form of this. The dojo model says: learning happens through proximity, observation, and shared difficulty, not through scheduled conversations. What would engineering mentorship look like if it were designed with the uchi-deshi model in mind?
 
 ---
 
@@ -128,21 +134,51 @@ Zen philosophy has been working on exactly this problem for centuries. Not the A
 
 ---
 
+## 15. Lineage as Living Transmission
+
+The Way doesn't transmit through books or videos. It transmits through training — teacher to student, body to body, over years. The Hayashi lineage makes this visible:
+
+**The Chatanyara Kushanku chain.** Hisami Yokoyama introduced this kata to the world stage at the 1994 World Championships under Inoue's coaching. Eighteen years later, Rika Usami performed the same kata at the 2012 Worlds — same coach, same lineage, standing ovation from 12,000. The kata is the same; the expression is personal. This is what transmission looks like: not copying, but the same principles surfacing through different bodies.
+
+**Independent branches, same root.** Shihan studied under Hayashi. Inoue studied under Hayashi. They may never have met. But watching Inoue teach and watching what Shihan taught — the shared influence is unmistakable. The same movement quality, the same principles. The root is Hayashi, but what grew from it is each person's own expression. This is kata as personal expression (thread 12) made visible across independent paths.
+
+**What survives the gap.** The author stopped practicing for nearly two decades. The knowledge didn't leave. The muscle memory persists. What atrophied was the body and the discipline — but the transmission held. This is the case for depth over breadth: what was deeply learned endures, even through neglect. Surface knowledge wouldn't survive that gap.
+
+**The parallel to engineering knowledge.** Frameworks change, languages evolve, tools get replaced. What endures? Fundamentals — the "kihon" of engineering. Problem decomposition, debugging instinct, system thinking. These are transmitted through working alongside people who have them, not through documentation. The teams that lose their senior engineers and can't recover are the ones where the transmission was never deep enough.
+
+---
+
+## 16. Science and Tradition — When Measurement Meets Embodied Knowledge
+
+Rika Usami brought 40 cameras in a 360-degree configuration to the JKF national team. Biomechanical analysis. "Free viewpoint cameras" synthesizing athlete movements. She studied sports systems research at Kokushikan's graduate school, analyzing kata from a scientific perspective. Meanwhile, Inoue taught that "karate is 99% feeling" and that technique should take 0.2 seconds — the speed of a blink.
+
+Is this tension or synthesis?
+
+Inoue himself was precise — "90/10 weight distribution in neko ashi dachi, weight on your back heel, rear foot 30 degrees out, rotate on the center of your foot." He quantified. He measured. But he also said the goal is feeling, not numbers. The numbers serve the feeling.
+
+**The AI parallel is direct.** We build metrics, dashboards, sprint velocity charts, code coverage reports. These are the 40 cameras. They can show you what's happening, but they can't tell you *why* it matters or whether the movement is beautiful. The team with 100% code coverage and zero understanding of the domain is Usami's cameras without Inoue's feeling.
+
+**Tradition without science** risks stagnation — "this is how we've always done it." **Science without tradition** risks losing the thing it's measuring — optimizing the metric until the art disappears. The synthesis is what both Inoue and Usami represent: deep traditional grounding with willingness to use every available tool to understand and improve. Measure, but don't let the measurement replace the practice.
+
+---
+
 ## Mapping to Planned Essays
 
 | Thread | Planned essay(s) | Notes |
 |--------|------------------|-------|
-| 1. Never Enough | Five Hindrances, The Dojo and the Team | Connects to "restlessness" hindrance |
-| 2. Kindness/Unkind | The Dojo and the Team | Teaching and leadership |
-| 3. Teaching Fish | The Dojo and the Team | Delegation and growth |
-| 4. Identity | The Way Is in Training, Beginner's Mind | Core philosophical theme |
+| 1. Never Enough | Five Hindrances, Dojo/Ways of Working | Connects to "restlessness" hindrance |
+| 2. Kindness/Unkind | The Way Is in Training, Dojo/Ways of Working | Teaching and leadership |
+| 3. Teaching Fish | Dojo/Ways of Working | Delegation and growth |
+| 4. Identity | The Way Is in Training | Core philosophical theme; Usami's retirement as example |
 | 5. Movement/Mind | The Way Is in Training | Foundation concept |
-| 6. Lonely Wolf | The Dojo and the Team | Individual → collective |
-| 7. Obedience/Agency | The Way Is in Training | Master-student dynamics |
-| 8. Organizational Karma | The Dojo and the Team | Could be standalone |
-| 9. Emptiness/Possibility | Beginner's Mind in the Age of AI | Shoshin |
-| 10. Breaking the Cycle | The Dojo and the Team | Could be standalone |
-| 11. Dojo/Open Source/Agile | Dojo/Open Source/Ways of Working | **Priority — first essay** |
-| 12. The Forgotten Body | Dojo/Open Source/Ways of Working | Feeds into dojo culture, breaks, collaboration |
-| 13. Karate of Old | The Way Is in Training | Okinawan vs. modern, what got lost, broadening beyond one tradition |
-| 14. Ego, AI, and Zen | **Published:** `docs/philosophy/ego-ai-and-the-zen-antidote.md` | Bridges *The Shift* ego/sycophancy section with zen practices; absorbed most of "Beginner's Mind" scope |
+| 6. Lonely Wolf | Dojo/Ways of Working | Individual → collective |
+| 7. Obedience/Agency | The Way Is in Training | Master-student dynamics; uchi-deshi experience |
+| 8. Organizational Karma | Dojo/Ways of Working | Could be standalone |
+| 9. Emptiness/Possibility | The Way Is in Training | Shoshin; Inoue's "no style" as example |
+| 10. Breaking the Cycle | Dojo/Ways of Working | Could be standalone |
+| 11. Dojo/Open Source/Agile | Dojo/Open Source/Ways of Working | **Second essay** — applied entry point |
+| 12. The Forgotten Body | Dojo/Ways of Working | Feeds into dojo culture, breaks, collaboration |
+| 13. Karate of Old | The Way Is in Training | Okinawan vs. modern, what got lost |
+| 14. Ego, AI, and Zen | **Published:** `docs/philosophy/ego-ai-and-the-zen-antidote.md` | Bridges *The Shift* with zen practices |
+| 15. Lineage as Transmission | The Way Is in Training | **First essay** — Chatanyara Kushanku chain, independent branches, what survives the gap |
+| 16. Science and Tradition | Later essays (or bridge to AI track) | Usami's biomechanics vs. Inoue's "99% feeling"; parallels AI/metrics culture |
