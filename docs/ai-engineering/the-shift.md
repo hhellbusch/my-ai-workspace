@@ -353,7 +353,7 @@ The skills to invest in, in roughly priority order:
 
 ### Evaluate judgment, not output volume
 
-AI makes it easy to produce large quantities of code, documentation, and configuration quickly. Volume is no longer a useful signal. Instead, evaluate:
+AI makes it easy to produce large quantities of code, documentation, and configuration quickly. Volume is no longer a useful signal. This includes token consumption — some organizations have started evaluating engineers by how many tokens they use, treating AI API usage as a proxy for productivity. This is the "lines of code" fallacy in new clothing. Judging someone's value by a consumption metric is naive at best. An engineer who uses fewer tokens but asks better questions, catches the right bugs, and makes sound design decisions is more valuable than one who generates enormous volumes of AI output without evaluating it. Instead, evaluate:
 
 - Does this person catch subtle bugs in review?
 - Do they ask questions that reveal hidden assumptions?
