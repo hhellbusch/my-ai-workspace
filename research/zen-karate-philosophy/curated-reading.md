@@ -115,6 +115,14 @@ People whose teachings inform your understanding, even if they haven't written b
 
 Documentaries, podcasts, films, or other sources that informed your perspective.
 
+### I Tried the World's Simplest Productivity Trick (it worked) — Simple Lucas
+- **Type:** YouTube video
+- **Priority:** Background
+- **Why it matters:** Software developer independently rediscovers zen/martial arts principles (mushin, shoshin, emptiness as foundation) through a secular productivity experiment. Wall staring as accidental zazen. Mental bandwidth model maps to Five Hindrances informally. Valuable as independent confirmation that the principles work outside their traditional context, and directly relevant as a modern tech-worker account. Connects to threads 1, 5, 6, 8, 9, 12.
+- **URL:** https://www.youtube.com/watch?v=NZD5IFpyDcE
+- **Cached:** [`youtube-NZD5IFpyDcE-transcript.md`](sources/youtube-NZD5IFpyDcE-transcript.md)
+- **Library entry:** [`simple-lucas.md`](../../library/simple-lucas.md)
+
 ### [Title]
 - **Type:** Documentary / Podcast / Film / Other
 - **Priority:** Core / Influential / Background
