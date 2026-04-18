@@ -79,6 +79,21 @@ The distinction matters because collections make implicit claims. A `docs/README
 
 ---
 
+## When This Applies — and When It Doesn't
+
+**Good fit:**
+- A collection of related documents (essays, specs, runbooks) that have each been reviewed in isolation but never together
+- When framing language has evolved across documents over time and nobody has checked for consistency
+- Before publishing or sharing a collection as a unit — what the whole claims is different from what each piece says
+- When a single document's scope language seems fine but you suspect it's making implicit promises on behalf of content it doesn't control
+
+**Not needed for:**
+- A single document or a small set with obvious shared framing — per-document review is sufficient
+- Early drafts where cross-document consistency isn't yet the constraint
+- Collections where documents are genuinely independent and don't make claims about each other or about the collection's scope
+
+**What it won't catch:** Internal logic errors within any single document — that's per-document review's job. The corpus spar catches what the *collection* claims; it doesn't re-audit what each piece argues on its own terms.
+
 ## What This Connects To
 
 The corpus spar is a natural escalation of the per-document [`/spar` command](../../.cursor/commands/spar.md). The per-document spar asks "is this argument sound?" The corpus spar asks "does this collection of arguments add up to a coherent and honest claim?"

@@ -60,6 +60,19 @@ The effect: the verdicts were already stress-tested. A thread that survived the 
 
 ---
 
+## When This Applies — and When It Doesn't
+
+**Good fit:**
+- Creative or analytical projects with multiple possible threads, directions, or features where the drafting order isn't obvious
+- Projects where research has accumulated but writing hasn't started — the pass converts latent material into a prioritized map
+- Projects where the practitioner-vs-synthesis ratio matters — the pass makes that ratio explicit before it gets embedded in finished work
+- Before committing to a drafting order or essay sequence that will be expensive to reverse
+
+**Not needed for:**
+- Single-thread work with a clear thesis — the pass adds overhead without revealing anything new
+- Technical documentation where the facts determine the structure — verdicts don't apply when there's one right answer
+- Projects where research and writing happen in the same pass — the pass presupposes a research phase that has already closed
+
 ## What the Pass Doesn't Do
 
 The landscape pass does not produce finished prose. Each thread assessment is scaffolding — thesis, evidence map, gaps, verdict. The essays still need to be written.

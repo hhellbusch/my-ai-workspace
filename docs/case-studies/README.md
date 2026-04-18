@@ -6,6 +6,8 @@ Documented examples of meta-development patterns, workflow decisions, and AI-ass
 
 **Attribution convention:** Where the human contribution is clearly traceable — a specific observation, question, or judgment that the AI could not have originated — case studies include a `## What the Human Brought` section before the artifacts table. Where the record isn't clear, that section is omitted rather than manufactured. New case studies should include it when the human's contribution is documentable.
 
+**Scope convention:** Workflow and process case studies (the `workflow` label) should include a `## When This Applies — and When It Doesn't` section. Unlike build and failure case studies, where the scope is bounded by the gap and the fix, workflow patterns have fuzzier applicability — naming when the pattern helps and when it's overhead makes the case study transferable rather than just descriptive.
+
 **Labels:** `build` — built a tool or system from a gap · `failure` — AI failure mode and its fix · `workflow` — process discipline or design decision
 
 ## Building Tools and Systems
