@@ -74,6 +74,12 @@
 - **Links:** `.planning/zen-karate/`, `docs/the-shift.md`, `docs/ai-assisted-development-workflows.md`
 - **Added:** 2026-04-17
 
+### Essay: The Dojo, Open Source, and Ways of Working
+- **Product:** docs
+- **Context:** The dojo as "a place of the Way" — and how that concept has been lifted into agile transformation, engineering dojos, and open source culture. Cleaning the floor, mutual respect, kata as embodied learning, senpai/kohai in PR review. The difference between borrowing vocabulary and understanding the practice. Intersects with open source contribution etiquette, agile team dynamics, and the question of genuine shared ownership.
+- **Links:** `.planning/zen-karate/`, `research/zen-karate-philosophy/threads.md`
+- **Added:** 2026-04-17
+
 ### YouTube transcript MCP server
 - **Product:** meta
 - **Context:** `jkawamoto/mcp-youtube-transcript` MCP server could enable fetching transcripts directly during conversations without running the script manually. Lower priority since `fetch-transcript.py` covers the need and caches to disk (which MCP wouldn't do automatically).
