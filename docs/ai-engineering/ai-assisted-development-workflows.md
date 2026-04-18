@@ -30,7 +30,7 @@ AI-assisted development loop:
 Describe intent → Review AI output → Guide + Correct → Commit → Describe next intent
 ```
 
-You are the architect and the reviewer. The AI is a fast, knowledgeable collaborator that never gets tired — but also never knows your specific codebase unless you show it.
+You are the architect and the reviewer. Think of the AI as the world's fastest junior engineer — broad knowledge, tireless output, but no judgment about your specific codebase unless you show it, and no instinct for when it's wrong.
 
 **The most important skill is learning to give AI the right context.**
 
@@ -54,11 +54,11 @@ The AI generates a candidate. You review it, tweak it, and move on.
 
 | Principle | Why it matters |
 |---|---|
-| Provide the file before asking about it | AI has no ambient context — reference `#file` or paste the relevant section |
+| Give the AI access to the relevant code | AI has no ambient context — use workspace indexing, `@file` references, or a CLI pointed at your repo so the agent can traverse and analyze the actual source, not just a pasted snippet |
 | State constraints explicitly | "This must be idempotent", "Do not add error handling I haven't asked for" |
 | Ask for one thing at a time | Large multi-part requests produce mediocre results |
 | Name the pattern, not just the task | "Convert this Helm pre-install hook to an ArgoCD sync-wave" beats a vague description |
-| Verify before committing | AI can produce plausible-but-wrong Jinja2, wrong indent levels, stale API syntax |
+| Verify before committing | AI can produce plausible-but-wrong Jinja2, wrong indent levels, stale API syntax, and entirely fabricated APIs or capabilities that never existed |
 
 ### What works especially well
 
@@ -72,7 +72,7 @@ The AI generates a candidate. You review it, tweak it, and move on.
 
 ## 2. Context Sharing Across Sessions
 
-This is the #1 practical challenge with AI assistants: **each conversation starts with zero memory.**
+One of the core practical challenges with AI assistants: **each conversation starts with zero memory.**
 
 ### The problem
 
