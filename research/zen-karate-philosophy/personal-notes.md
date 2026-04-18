@@ -24,7 +24,7 @@ In retrospect, I wish I had kept karate with me into my 20s and 30s. Paying the 
 
 ### Current Research and Reconnection
 
-Researching what is publicly available now — books, content online, video. Back in the day, information was not shared so widely; knowledge was intended to be passed on in the dojo only. Watching Rika Usami's performances and content — they remind greatly of what my sensei taught. Can see the Hayashi lineage flowing through: Hayashi → Inoue → Rika. Similarly, can see my sensei's influence in Inoue's teaching. Rika seems like the closest thing to a successor to the Hayashi lineage.
+Researching what is publicly available now — books, content online, video. Back in the day, information was not shared so widely; knowledge was intended to be passed on in the dojo only. Watching Rika Usami's performances and content — they remind greatly of what my sensei taught. Can see the Hayashi lineage flowing through: Hayashi → Inoue → Rika. Whether my sensei and Inoue ever interacted directly is unknown — but watching Inoue teach, the shared Hayashi influence is unmistakable. They clearly learned from the same source; the same principles, the same movement quality. It makes sense — both studied under Hayashi. Rika seems like the closest thing to a successor to the Hayashi lineage.
 
 ### Athens Club Context
 
@@ -156,7 +156,7 @@ What specifically resonates about Shi Heng Yi's teachings? Which talks or interv
 
 Anything else — half-formed thoughts, quotes you return to, connections you've noticed but can't quite articulate yet. Raw material is valuable here.
 
-- Watching Rika Usami perform is like watching my sensei's teaching expressed at the highest level. The lineage is visible in the movement — Hayashi → Inoue → Rika. This is what "the Way is in training" looks like across generations.
+- Watching Rika Usami perform is like watching my sensei's teaching expressed at the highest level. The shared Hayashi influence is visible in the movement — my sensei, Inoue, Rika all learned from the same root. Whether my sensei and Inoue ever crossed paths is unknown, but the common source is unmistakable. This is what "the Way is in training" looks like across generations.
 - Inoue: "Kata is not A, B, C, D — it's how you get from A to B to C to D." This maps directly to process vs. ceremony in agile — it's not the standup, it's what happens between standups.
 - Hayashi's dojo yaburi practice — walking into dojos and challenging whoever could beat him, then asking to study there — is the opposite of ego. He went looking for people who were better than him. That's shoshin as a lifestyle.
 - The gap in training (2007 to now) is itself material. What survives when you stop practicing? The muscle memory is there. The knowledge is there. What atrophied was the body and the discipline of regular practice. The return is its own lesson.
