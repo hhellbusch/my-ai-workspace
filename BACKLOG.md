@@ -15,8 +15,8 @@
 ### Essay: The Dojo, Open Source, and Ways of Working (PRIORITY — first essay)
 - **Product:** docs
 - **Context:** First essay in the zen-karate series. The dojo as "a place of the Way" and how that concept has been adopted — sometimes deeply, often superficially — in agile transformation (engineering dojos), open source culture (contributor etiquette, senpai/kohai in PR review), and DevOps practice (code kata, architectural kata). Explores what's lost when teams borrow the vocabulary without the philosophy: cleaning the floor as shared ownership, kata as embodied learning not rote repetition, mutual respect within hierarchy. Draws from threads 2, 3, 6, 7, 10 as supporting ideas. Connects to the existing upstream contributions essay as a real worked example. This leads with because it's the most applied and accessible entry point — grounded in business outcomes (team capability, learning organizations, reducing key-person dependency) while introducing the philosophical foundation that deeper essays will build on.
-- **Source material available:** Deshimaru (dojo, kata, gyodo), Shi Heng Yi transcript (master-student, teaching fish, lonely wolf), `docs/ai-assisted-upstream-contributions.md` (real open source example), agile dojo movement (needs targeted research). Personal notes will enrich but aren't blocking.
-- **Links:** `.planning/zen-karate/threads.md`, `.planning/zen-karate/`, `docs/ai-assisted-upstream-contributions.md`
+- **Source material available:** Deshimaru (dojo, kata, gyodo), Shi Heng Yi transcript (master-student, teaching fish, lonely wolf), `docs/ai-engineering/ai-assisted-upstream-contributions.md` (real open source example), agile dojo movement (needs targeted research). Personal notes will enrich but aren't blocking.
+- **Links:** `.planning/zen-karate/threads.md`, `.planning/zen-karate/`, `docs/ai-engineering/ai-assisted-upstream-contributions.md`
 - **Added:** 2026-04-17
 
 ### Zen-karate personal knowledge base
@@ -40,7 +40,7 @@
 ### Headless browser fallback for research fetcher
 - **Product:** meta
 - **Context:** The research skill's `fetch-sources.py` gets blocked by some sites (HTTP 403/429). A headless browser fallback was designed during the skill validation run but not implemented. Would improve source capture rate beyond the current ~85%.
-- **Links:** `.cursor/skills/research-and-analyze/`, `docs/building-a-research-skill.md`
+- **Links:** `.cursor/skills/research-and-analyze/`, `docs/case-studies/building-a-research-skill.md`
 - **Added:** 2026-04-10
 
 ### Low-content capture improvements for research skill
@@ -78,7 +78,7 @@
 ### Essay: Beginner's Mind in the Age of AI (partially absorbed into ego/AI essay)
 - **Product:** docs
 - **Context:** Shoshin (beginner's mind) as the essential posture for working with AI. The core shoshin concept is now a key section in the in-progress ego/AI essay. May still emerge as a standalone essay if there's enough material beyond the ego angle — e.g., shoshin applied to learning new domains with AI, approaching unfamiliar codebases.
-- **Links:** `.planning/zen-karate/`, `docs/the-shift.md`
+- **Links:** `.planning/zen-karate/`, `docs/ai-engineering/the-shift.md`
 - **Added:** 2026-04-17
 
 ### YouTube transcript MCP server
@@ -102,25 +102,25 @@
 ### Case study: adversarial review as a meta-development pattern
 - **Product:** docs
 - **Context:** Building the `/spar` command, `spar-patterns.md`, and zero-base de-biasing in a single session demonstrated the same meta-development loop documented in `building-a-research-skill.md` — gap identified (AI prioritization bias, lack of pushback), tool built (`/spar`, spar pipeline stage), immediately applied (adversarial review of the ego/AI essay, which produced 7 counterarguments and a sparring notes document). The sparring itself then became material for the essay it was critiquing. Could extend the AI-Assisted Development Workflows essay or become a standalone piece on adversarial review as a development practice.
-- **Links:** `.cursor/commands/spar.md`, `.cursor/skills/create-meta-prompts/references/spar-patterns.md`, `docs/building-a-research-skill.md`, `docs/ai-assisted-development-workflows.md`, `research/zen-karate-philosophy/sparring-notes.md`
+- **Links:** `.cursor/commands/spar.md`, `.cursor/skills/create-meta-prompts/references/spar-patterns.md`, `docs/case-studies/building-a-research-skill.md`, `docs/ai-engineering/ai-assisted-development-workflows.md`, `research/zen-karate-philosophy/sparring-notes.md`
 - **Added:** 2026-04-18
 
 ### Case study: from conversation to essay in one session
 - **Product:** docs
 - **Context:** The ego/AI/zen essay went from thread ideation to published essay with source provenance and adversarial review in a single session. The process: (1) user noticed a connection between existing content (The Shift's sycophancy section) and the zen research, (2) thread 14 crystallized the idea, (3) essay drafted drawing from cached sources, (4) adversarial review challenged it immediately, (5) sparring notes created for user response. This is a concrete example of the essay pipeline working end-to-end — and of the provenance convention (Sources/References, Open Review sections) keeping things connected. Connects to the workflows essay and could demonstrate the full write-challenge-revise cycle.
-- **Links:** `docs/ego-ai-and-the-zen-antidote.md`, `.planning/zen-karate/threads.md`, `research/zen-karate-philosophy/sparring-notes.md`, `docs/ai-assisted-development-workflows.md`
+- **Links:** `docs/philosophy/ego-ai-and-the-zen-antidote.md`, `.planning/zen-karate/threads.md`, `research/zen-karate-philosophy/sparring-notes.md`, `docs/ai-engineering/ai-assisted-development-workflows.md`
 - **Added:** 2026-04-18
 
 ### Case study: building a personal knowledge management system with AI
 - **Product:** docs
 - **Context:** In a single extended session, the repo gained: project tracking (BACKLOG.md + /backlog), a personal reference library (library/ + /reference), session orientation (/start + session-awareness rule), pre-commit review (/review + /audit), proactive backlog capture, and cross-linking conventions. This is AI building the infrastructure for its own productivity — the meta-development system section of ai-assisted-development-workflows.md in action. The interesting angle: the human identifies the organizational need, the AI builds the tooling, and then both immediately use it. What does it look like when you let AI build the system that organizes AI-assisted work?
-- **Links:** `BACKLOG.md`, `library/`, `.cursor/commands/`, `.cursor/rules/`, `docs/ai-assisted-development-workflows.md`
+- **Links:** `BACKLOG.md`, `library/`, `.cursor/commands/`, `.cursor/rules/`, `docs/ai-engineering/ai-assisted-development-workflows.md`
 - **Added:** 2026-04-18
 
 ### Case study: debugging your AI assistant's judgment
 - **Product:** docs
 - **Context:** The user noticed AI was anchoring on prior priorities during re-prioritization — a systematic behavioral flaw, not a one-off error. That observation led to naming the problem precisely ("AI sycophancy toward its own prior outputs"), building a structural guard (zero-base de-biasing), and connecting it to the ego/AI essay's thesis. This is The Shift's "skepticism as a habit" practiced against the tool itself. The deeper story: how do you notice, name, and fix systematic AI judgment failures? Connects to the-shift.md (section 6-7), ego-ai-and-the-zen-antidote.md (the essay it produced), and the sparring integration.
-- **Links:** `.cursor/commands/backlog.md`, `docs/the-shift.md`, `docs/ego-ai-and-the-zen-antidote.md`
+- **Links:** `.cursor/commands/backlog.md`, `docs/ai-engineering/the-shift.md`, `docs/philosophy/ego-ai-and-the-zen-antidote.md`
 - **Added:** 2026-04-18
 
 ### Case study: how AI handles evolving creative scope across sessions
@@ -132,7 +132,7 @@
 ### Case study: choosing scripts over services — the YouTube transcript decision
 - **Product:** docs
 - **Context:** The transcript tooling went through an architectural decision: MCP server vs. Python script. The script won because it caches to disk (persistent across sessions), works in batch mode, and integrates with the existing research skill's file-based workflow. The MCP server was deferred to Ideas. Small decision, but demonstrates the problem decomposition principle from The Shift — choosing the simpler tool that fits the actual workflow rather than the architecturally elegant one. Also an example of AI presenting options and the human making the judgment call.
-- **Links:** `.cursor/skills/research-and-analyze/scripts/fetch-transcript.py`, `docs/the-shift.md`
+- **Links:** `.cursor/skills/research-and-analyze/scripts/fetch-transcript.py`, `docs/ai-engineering/the-shift.md`
 - **Added:** 2026-04-18
 
 ### Zen-karate concept glossary
@@ -218,8 +218,8 @@
 
 ### Essay: Ego, AI, and the Zen Antidote
 - **Product:** docs
-- **Context:** Companion essay to *The Shift*. Connects Shi Heng Yi's teaching on ego as "a collection of thoughts," the mechanism of "hooking" onto identity, and zen practices (mushin, shoshin, non-attachment) as structural resistance to AI-fueled sycophancy. Bridges the AI essay track and the martial arts/zen track. Published at `docs/ego-ai-and-the-zen-antidote.md`, cross-linked from *The Shift* and added to `docs/README.md`.
-- **Links:** `docs/ego-ai-and-the-zen-antidote.md`, `docs/the-shift.md`, `.planning/zen-karate/threads.md` (thread 14)
+- **Context:** Companion essay to *The Shift*. Connects Shi Heng Yi's teaching on ego as "a collection of thoughts," the mechanism of "hooking" onto identity, and zen practices (mushin, shoshin, non-attachment) as structural resistance to AI-fueled sycophancy. Bridges the AI essay track and the martial arts/zen track. Published at `docs/philosophy/ego-ai-and-the-zen-antidote.md`, cross-linked from *The Shift* and added to `docs/README.md`.
+- **Links:** `docs/philosophy/ego-ai-and-the-zen-antidote.md`, `docs/ai-engineering/the-shift.md`, `.planning/zen-karate/threads.md` (thread 14)
 - **Completed:** 2026-04-17
 
 ### Zen-karate essay library scaffolding
@@ -270,7 +270,7 @@
 ### Research and verification skill
 - **Product:** meta
 - **Context:** Built a reusable research automation skill that fetches sources, runs parallel analysis, and produces structured assessments. Validated against 53 of 62 cited sources from an enterprise LLM deployment article.
-- **Links:** `.cursor/skills/research-and-analyze/`, `docs/building-a-research-skill.md`
+- **Links:** `.cursor/skills/research-and-analyze/`, `docs/case-studies/building-a-research-skill.md`
 - **Completed:** 2026-04
 
 ### Documentation suite

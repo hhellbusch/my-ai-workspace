@@ -25,7 +25,7 @@ Content is organized by **product/technology**, then by **content type** within 
 
 | Directory | Purpose | Convention |
 |---|---|---|
-| `docs/` | Essays and guides — AI-assisted engineering and philosophy/practice tracks | Markdown files linked from `docs/README.md`; no troubleshooting guides here |
+| `docs/` | Essays and guides organized by track | Three subdirs: `ai-engineering/`, `philosophy/`, `case-studies/`, each with its own `README.md`; master index at `docs/README.md` |
 | `library/` | Personal reference library — books, talks, articles with AI-enriched summaries | One `.md` per reference, indexed in `library/README.md`; managed via `/reference` |
 | `examples/` | Standalone scripts and artifacts referenced by docs | Named dirs: `topic-slug/` (e.g., `gif-recoloring/`) |
 | `git-projects/` | External git repos cloned for exploration and upstream contributions (**gitignored**) | Clone repos directly; not committed to this repo |
@@ -41,7 +41,7 @@ Content is organized by **product/technology**, then by **content type** within 
 4. **Scripts that support a doc or example** live alongside that doc or example, not in the repo root.
 5. **The repo root** should only contain repo-level files: `README.md`, `AI-DISCLOSURE.md`, `BACKLOG.md`, `.gitignore`, `.cursorrules`, `.actrc`, `.actrc.example`, `.secrets`. Note: `git-projects/` and `ocp/install/` exist locally but are gitignored.
 6. **New top-level directories** need a clear reason. For new products/technologies, create a `{product}/` directory with appropriate content type subdirectories. For cross-cutting content, prefer fitting into the existing structure.
-7. **The `docs/` folder** contains curated essay tracks: AI-assisted engineering and philosophy/practice (Zen, karate, and applied philosophy). It is an ordered reading list — not a dumping ground for all markdown files.
+7. **The `docs/` folder** contains curated essay tracks organized into subdirectories: `ai-engineering/` (skills, workflows, risks), `philosophy/` (martial arts, Zen, applied practice), and `case-studies/` (documented meta-development patterns). Each track has its own `README.md` with a reading order. `docs/README.md` is the master index linking into all tracks. New essays go in their track directory, not in `docs/` root.
 8. **The top-level `examples/` folder** is for doc-supporting artifacts (e.g., scripts referenced by essays in `docs/`), not for product-specific examples.
 
 ## Naming Conventions

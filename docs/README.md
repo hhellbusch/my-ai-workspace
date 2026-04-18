@@ -1,23 +1,30 @@
 # Docs
 
-Shared documentation on AI-assisted engineering and practical patterns.
+Essays and case studies across three tracks — AI-assisted engineering, philosophy and practice, and documented case studies from the meta-development process itself.
 
-## Contents
+## Tracks
 
-Start here and read in order, or jump to what's relevant.
+### [AI-Assisted Engineering](ai-engineering/)
 
-1. **[The Shift — Engineering Skills in the Age of AI](the-shift.md)** — When AI handles implementation, the bottleneck moves. Covers the skills that matter more now (problem decomposition, systematic debugging, QA thinking, communication), the risks that come with AI adoption (sycophancy, ego reinforcement, erosion of critical thinking), and practical mitigations for engineers and leaders.
+Skills, workflows, risks, and practical patterns for using AI effectively in engineering work. Six essays covering the foundational thesis, daily workflows, working outside expertise, legacy systems, enterprise LLM deployment, and open source contributions.
 
-2. **[AI-Assisted Development Workflows](ai-assisted-development-workflows.md)** — Practical, tool-agnostic patterns for using AI coding assistants effectively in infrastructure and platform engineering work. Covers daily editor workflows, context sharing across sessions, GitOps and Ansible patterns, and the meta-development system (Skills, Commands, Agents).
+### [Philosophy and Practice](philosophy/)
 
-3. **[Using AI to Work Outside Your Expertise](ai-for-unfamiliar-domains.md)** — A real, step-by-step case study demonstrating the skills from *The Shift* in action. An infrastructure engineer uses AI to solve an image processing problem (recoloring animated GIFs) with zero prior domain knowledge, through iterative conversation.
+Connecting martial arts, Zen, and contemplative practice to engineering culture, teamwork, and ways of working. Primary lens: karate (Hayashi-ha Shito-ryu, Okinawan tradition), drawing from martial arts broadly.
 
-4. **[AI-Driven Continuous Improvement for Legacy Systems](ai-legacy-improvement.md)** — When AI compresses implementation cost, the economics of improvement change. Explores how conversational AI and exploratory "vibe coding" can unlock previously deprioritized work on legacy systems — frozen backlogs, undocumented processes, configuration drift, missing test coverage, and incremental modernization.
+### [Case Studies](case-studies/)
 
-5. **[Enterprise LLM Deployment on OpenShift AI — Summary](openshift-ai-llm-deployment-summary.md)** — Layered summary of Jared Burck's comprehensive architecture guide for self-hosting LLMs on OpenShift. Executive overview at the top, architecture decision matrices in the middle, practitioner detail at the bottom. Includes inline verification caveats for economic claims and maturity assertions, with a link to the [full assessment](../research/openshift-ai-llm-deployment/assessment.md). Based on the [full article](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/).
+Documented examples of meta-development patterns, workflow decisions, and AI-assisted processes traced from real work in this repository.
 
-6. **[Building a Research and Verification Skill](building-a-research-skill.md)** — Meta case study documenting how a failed manual verification attempt led to building a reusable research automation skill. Covers the problem discovery, skill design, fetcher engineering, parallel analysis architecture, and a validation run that verified 53 of 62 cited sources across 8 parallel analysis batches. Connects back to patterns from *The Shift* and *AI-Assisted Development Workflows*.
+## Cross-Track Reading Order
 
-7. **[AI-Assisted Open Source Contributions](ai-assisted-upstream-contributions.md)** — A framework for using AI to lower the barrier to upstream open source contribution while respecting maintainers and community norms. Covers disclosure, quality, and engagement as three pillars of responsible contribution. Includes a walkthrough of contributing to the argocd-diff-preview project (issue-first pattern leading to a new feature in v0.2.2) and a second example of in-progress Helm chart improvements.
+For someone reading everything, this order follows the natural arc — AI engineering foundations first, then the philosophical companion pieces, then case studies that show the meta-development system in action.
 
-8. **[Ego, AI, and the Zen Antidote](ego-ai-and-the-zen-antidote.md)** — Companion to *The Shift*. Explores why AI sycophancy and ego reinforcement are deeper than bad habits — they exploit the same identity-attachment mechanisms that Zen and martial arts traditions have been addressing for centuries. Connects Shi Heng Yi's teachings on ego as "a collection of thoughts," the Zen practices of mushin (no-mind) and shoshin (beginner's mind), and the dojo culture of honest feedback to build structural resistance to the AI validation trap.
+1. [The Shift — Engineering Skills in the Age of AI](ai-engineering/the-shift.md)
+2. [AI-Assisted Development Workflows](ai-engineering/ai-assisted-development-workflows.md)
+3. [Using AI to Work Outside Your Expertise](ai-engineering/ai-for-unfamiliar-domains.md)
+4. [AI-Driven Continuous Improvement for Legacy Systems](ai-engineering/ai-legacy-improvement.md)
+5. [Enterprise LLM Deployment on OpenShift AI — Summary](ai-engineering/openshift-ai-llm-deployment-summary.md)
+6. [AI-Assisted Open Source Contributions](ai-engineering/ai-assisted-upstream-contributions.md)
+7. [Ego, AI, and the Zen Antidote](philosophy/ego-ai-and-the-zen-antidote.md) *(companion to The Shift sections 6-7)*
+8. [Building a Research and Verification Skill](case-studies/building-a-research-skill.md)

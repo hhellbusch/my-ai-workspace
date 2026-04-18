@@ -4,7 +4,7 @@
 >
 > **What this is:** A layered summary of a comprehensive architecture guide. Start at the top for the strategic picture, go deeper for architecture decisions and practitioner detail.
 >
-> **Verification note:** This summary has been checked against the article's 62 cited sources. The architecture and operational content is well-sourced; the economic claims and some agentic AI maturity assertions carry caveats. See the [full verification assessment](../research/openshift-ai-llm-deployment/assessment.md) for details. Inline notes below flag the key areas where the original article's claims required qualification.
+> **Verification note:** This summary has been checked against the article's 62 cited sources. The architecture and operational content is well-sourced; the economic claims and some agentic AI maturity assertions carry caveats. See the [full verification assessment](../../research/openshift-ai-llm-deployment/assessment.md) for details. Inline notes below flag the key areas where the original article's claims required qualification.
 
 ---
 
@@ -16,7 +16,7 @@ Enterprises are moving from consuming LLMs via public APIs (OpenAI, Anthropic, e
 
 **Red Hat OpenShift AI (RHOAI)** is the Kubernetes-native platform for this. It extends OpenShift with MLOps capabilities for deploying, scaling, and governing LLMs across hybrid cloud environments.
 
-**Key economics:** The article claims self-hosting breaks even at approximately **11 billion tokens per month**, with up to **18x cost advantage** and ROI in under 4 months. *These figures carry significant caveats: the 11B threshold could not be verified (cited source was unreachable); the 18x figure compares on-prem hardware against GPT-5 mini API pricing (~$2/M tokens), a budget tier — not premium APIs; and the <4 month ROI applies specifically to on-demand cloud pricing at high utilization (6-10 months against reserved instances). See the [verification assessment](../research/openshift-ai-llm-deployment/assessment.md#finding-2-economics-built-on-vendor-marketing) for the full analysis.*
+**Key economics:** The article claims self-hosting breaks even at approximately **11 billion tokens per month**, with up to **18x cost advantage** and ROI in under 4 months. *These figures carry significant caveats: the 11B threshold could not be verified (cited source was unreachable); the 18x figure compares on-prem hardware against GPT-5 mini API pricing (~$2/M tokens), a budget tier — not premium APIs; and the <4 month ROI applies specifically to on-demand cloud pricing at high utilization (6-10 months against reserved instances). See the [verification assessment](../../research/openshift-ai-llm-deployment/assessment.md#finding-2-economics-built-on-vendor-marketing) for the full analysis.*
 
 **The decision isn't binary.** Most organizations prototype with APIs or RHEL AI (single-server), then transition to OpenShift AI when they need distributed serving, multi-tenancy, autoscaling, and governance.
 
@@ -188,4 +188,4 @@ The article presents a clear breakeven model. The directional logic is sound —
 
 ---
 
-*This summary was created with AI assistance (Cursor) from the [original article](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) by Jared Burck. Claims were verified against the article's 62 cited sources — see the [full verification assessment](../research/openshift-ai-llm-deployment/assessment.md) for methodology and detailed findings. See [AI-DISCLOSURE.md](../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*
+*This summary was created with AI assistance (Cursor) from the [original article](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) by Jared Burck. Claims were verified against the article's 62 cited sources — see the [full verification assessment](../../research/openshift-ai-llm-deployment/assessment.md) for methodology and detailed findings. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*

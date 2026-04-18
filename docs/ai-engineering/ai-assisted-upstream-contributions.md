@@ -240,4 +240,4 @@ This essay connects to several themes in the documentation suite:
 
 ---
 
-*This essay was written with AI assistance. See [AI-DISCLOSURE.md](../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*
+*This essay was written with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*

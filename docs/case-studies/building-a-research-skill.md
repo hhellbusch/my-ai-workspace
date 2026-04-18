@@ -23,7 +23,7 @@ The work demonstrates several themes from [The Shift](the-shift.md):
 
 A colleague published a long-form technical article on deploying LLMs with Red Hat OpenShift AI, citing 62 references. The first task was straightforward: create a layered summary for different audiences.
 
-**Output:** [Enterprise LLM Deployment on OpenShift AI — Summary](openshift-ai-llm-deployment-summary.md)
+**Output:** [Enterprise LLM Deployment on OpenShift AI — Summary](../ai-engineering/openshift-ai-llm-deployment-summary.md)
 
 This worked well for summarization. But when we tried to verify the article's accuracy against its cited sources, the workflow broke down.
 
@@ -38,7 +38,7 @@ We attempted to verify the article's claims by fetching and reading its 62 cited
 
 Despite these constraints, we produced a partial verification analysis covering about half the sources. The findings were useful — we identified qualifier stripping, maturity level omissions, and vendor marketing presented as independent analysis. But the process was fragile and unrepeatable.
 
-**Output:** [Verification Notes](../research/openshift-ai-llm-deployment/verification-notes-v1.md) (partial, from the first session)
+**Output:** [Verification Notes](../../research/openshift-ai-llm-deployment/verification-notes-v1.md) (partial, from the first session)
 
 ### Phase 3: Designing the Skill
 
@@ -121,7 +121,7 @@ We re-ran the entire pipeline against the same Jared Burck article to validate t
 
 ### The meta-development loop
 
-This is the pattern described in [AI-Assisted Development Workflows](ai-assisted-development-workflows.md) taken to its logical conclusion: using AI to build a system that makes AI better at a specific class of task. The skill doesn't replace human judgment — it structures the workflow so that judgment can be applied efficiently to source material that's already on disk, organized, and tracked.
+This is the pattern described in [AI-Assisted Development Workflows](../ai-engineering/ai-assisted-development-workflows.md) taken to its logical conclusion: using AI to build a system that makes AI better at a specific class of task. The skill doesn't replace human judgment — it structures the workflow so that judgment can be applied efficiently to source material that's already on disk, organized, and tracked.
 
 ### Known limitations compensated for
 
@@ -134,7 +134,7 @@ The skill's design directly addresses known AI limitations:
 
 ### The sycophancy problem in practice
 
-The article verification exercise is a concrete example of what [The Shift](the-shift.md) calls the sycophancy risk. The Jared Burck article is well-written and confident. An AI asked to summarize it will faithfully reproduce its claims, including the ones that strip qualifiers ("99% accuracy" becomes "strictly maintaining 99% accuracy") or present roadmap features as shipping capabilities. The skill forces a comparison between what the article says and what the cited sources actually say — creating the adversarial pressure that summarization alone doesn't provide.
+The article verification exercise is a concrete example of what [The Shift](../ai-engineering/the-shift.md) calls the sycophancy risk. The Jared Burck article is well-written and confident. An AI asked to summarize it will faithfully reproduce its claims, including the ones that strip qualifiers ("99% accuracy" becomes "strictly maintaining 99% accuracy") or present roadmap features as shipping capabilities. The skill forces a comparison between what the article says and what the cited sources actually say — creating the adversarial pressure that summarization alone doesn't provide.
 
 ### What still requires a human
 
@@ -161,10 +161,10 @@ The article verification exercise is a concrete example of what [The Shift](the-
 
 | File | Purpose |
 | --- | --- |
-| [The Shift](the-shift.md) | Core thesis on engineering skills in the AI era |
-| [AI-Assisted Development Workflows](ai-assisted-development-workflows.md) | Practical patterns for AI-assisted infrastructure work |
-| [Using AI Outside Your Expertise](ai-for-unfamiliar-domains.md) | Case study: GIF recoloring as an unfamiliar domain |
-| [Enterprise LLM Summary](openshift-ai-llm-deployment-summary.md) | Layered summary of the Jared Burck article |
+| [The Shift](../ai-engineering/the-shift.md) | Core thesis on engineering skills in the AI era |
+| [AI-Assisted Development Workflows](../ai-engineering/ai-assisted-development-workflows.md) | Practical patterns for AI-assisted infrastructure work |
+| [Using AI Outside Your Expertise](../ai-engineering/ai-for-unfamiliar-domains.md) | Case study: GIF recoloring as an unfamiliar domain |
+| [Enterprise LLM Summary](../ai-engineering/openshift-ai-llm-deployment-summary.md) | Layered summary of the Jared Burck article |
 | [Building a Research Skill](building-a-research-skill.md) | This document |
 
 ### Research and Analysis Skill

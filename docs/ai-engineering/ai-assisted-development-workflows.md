@@ -304,9 +304,9 @@ The Day 2 concerns in that article — rate limiting, auth governance, observabi
 
 | Resource | Where |
 |---|---|
-| The Shift — engineering skills in the age of AI | `docs/the-shift.md` |
-| Using AI outside your expertise — case study | `docs/ai-for-unfamiliar-domains.md` |
-| AI-assisted upstream contributions — responsible open source workflow | `docs/ai-assisted-upstream-contributions.md` |
+| The Shift — engineering skills in the age of AI | `docs/ai-engineering/the-shift.md` |
+| Using AI outside your expertise — case study | `docs/ai-engineering/ai-for-unfamiliar-domains.md` |
+| AI-assisted upstream contributions — responsible open source workflow | `docs/ai-engineering/ai-assisted-upstream-contributions.md` |
 | Enterprise LLM deployment on OpenShift AI | [jaredburck.me](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) |
 | Ansible playbook examples | `ansible/examples/` |
 | ArgoCD / GitOps patterns | `argo/examples/` |
@@ -318,4 +318,4 @@ The Day 2 concerns in that article — rate limiting, auth governance, observabi
 
 ---
 
-*This guide was written with AI assistance (GitHub Copilot). See [AI-DISCLOSURE.md](../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*
+*This guide was written with AI assistance (GitHub Copilot). See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*

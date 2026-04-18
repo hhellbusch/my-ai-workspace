@@ -1,13 +1,13 @@
 # Ego, AI, and the Zen Antidote
 
 > **Audience:** Engineers, leaders, and anyone who has noticed that AI makes them feel smarter than they are.
-> **Purpose:** [The Shift](the-shift.md) identified ego reinforcement and sycophancy as structural risks of AI assistants. This essay explores why those risks run deeper than bad habits — and why contemplative practices from martial arts and Zen offer a framework for resistance that checklists alone cannot.
+> **Purpose:** [The Shift](../ai-engineering/the-shift.md) identified ego reinforcement and sycophancy as structural risks of AI assistants. This essay explores why those risks run deeper than bad habits — and why contemplative practices from martial arts and Zen offer a framework for resistance that checklists alone cannot.
 
 ---
 
 ## The Problem The Shift Named
 
-[The Shift](the-shift.md) describes a specific failure mode:
+[The Shift](../ai-engineering/the-shift.md) describes a specific failure mode:
 
 > When a tool consistently tells you that your ideas are good, your code is clean, and your reasoning is sound, it has a cumulative psychological effect. You start to believe it — not because you've verified it, but because you've heard it repeatedly from what feels like an intelligent source.
 
@@ -172,18 +172,18 @@ This essay draws from the following research and reference material cached in th
 
 | Source | What it contributed |
 |---|---|
-| [Shi Heng Yi transcript](../research/zen-karate-philosophy/sources/they-betrayed-me---master-shi-heng-yi-explains-the-true-cost-of-success-shaolin-.md) | Ego as "a collection of thoughts," the antenna/hooking metaphor, identity and letting go |
-| [Jesse Enkamp — Mushin and Mindfulness](../research/zen-karate-philosophy/sources/karatebyjesse-mushin-mindfulness.md) | Funakoshi's "empty of selfishness" quote, mushin as readiness not vacancy, silence as antidote |
-| [The Shift — sections 5-7](the-shift.md) | The sycophancy problem, ego reinforcement, practical mitigations table |
-| [Thread 14: Ego, AI, and the Zen Antidote](../.planning/zen-karate/threads.md) | The ideation thread that became this essay |
-| [Curated reading list](../research/zen-karate-philosophy/curated-reading.md) | Full annotated bibliography for the essay series |
-| [Library: Karate by Jesse](../library/karate-by-jesse.md) | Enriched reference entry for Jesse Enkamp's work |
+| [Shi Heng Yi transcript](../../research/zen-karate-philosophy/sources/they-betrayed-me---master-shi-heng-yi-explains-the-true-cost-of-success-shaolin-.md) | Ego as "a collection of thoughts," the antenna/hooking metaphor, identity and letting go |
+| [Jesse Enkamp — Mushin and Mindfulness](../../research/zen-karate-philosophy/sources/karatebyjesse-mushin-mindfulness.md) | Funakoshi's "empty of selfishness" quote, mushin as readiness not vacancy, silence as antidote |
+| [The Shift — sections 5-7](../ai-engineering/the-shift.md) | The sycophancy problem, ego reinforcement, practical mitigations table |
+| [Thread 14: Ego, AI, and the Zen Antidote](../../.planning/zen-karate/threads.md) | The ideation thread that became this essay |
+| [Curated reading list](../../research/zen-karate-philosophy/curated-reading.md) | Full annotated bibliography for the essay series |
+| [Library: Karate by Jesse](../../library/karate-by-jesse.md) | Enriched reference entry for Jesse Enkamp's work |
 
 ## Open Review
 
 This essay has been through adversarial review. The sparring notes contain unresolved counterarguments that may lead to revision:
 
-- **[Sparring notes](../research/zen-karate-philosophy/sparring-notes.md)** — 7 counterarguments including: the core claim is unverified, the mushin/engineering parallel is strained, the sensei model is romanticized, and the essay was written by an AI about resisting AI.
+- **[Sparring notes](../../research/zen-karate-philosophy/sparring-notes.md)** — 7 counterarguments including: the core claim is unverified, the mushin/engineering parallel is strained, the sensei model is romanticized, and the essay was written by an AI about resisting AI.
 
 These are open threads, not resolved objections. The essay will evolve as the author responds.
 
@@ -191,10 +191,10 @@ These are open threads, not resolved objections. The essay will evolve as the au
 
 | Resource | What it covers |
 |---|---|
-| [The Shift — Engineering Skills in the Age of AI](the-shift.md) | The problem this essay extends: ego reinforcement, sycophancy, and practical mitigations |
-| [AI-Assisted Development Workflows](ai-assisted-development-workflows.md) | How the mitigations work in daily practice — treating AI as a tool, not a colleague |
-| [Using AI Outside Your Expertise](ai-for-unfamiliar-domains.md) | Case study of working in unfamiliar domains, where shoshin is forced rather than chosen |
+| [The Shift — Engineering Skills in the Age of AI](../ai-engineering/the-shift.md) | The problem this essay extends: ego reinforcement, sycophancy, and practical mitigations |
+| [AI-Assisted Development Workflows](../ai-engineering/ai-assisted-development-workflows.md) | How the mitigations work in daily practice — treating AI as a tool, not a colleague |
+| [Using AI Outside Your Expertise](../ai-engineering/ai-for-unfamiliar-domains.md) | Case study of working in unfamiliar domains, where shoshin is forced rather than chosen |
 
 ---
 
-*This document was written with AI assistance (Cursor). See [AI-DISCLOSURE.md](../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*
+*This document was written with AI assistance (Cursor). See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*

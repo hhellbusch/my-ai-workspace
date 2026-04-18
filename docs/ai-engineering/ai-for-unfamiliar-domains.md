@@ -181,11 +181,11 @@ This is **quality assurance thinking** in practice: defining acceptance criteria
 
 | Resource | Where |
 |---|---|
-| The Shift — engineering skills in the age of AI | `docs/the-shift.md` |
-| The recolor script | [`examples/gif-recoloring/recolor-gif.py`](../examples/gif-recoloring/recolor-gif.py) |
-| AI-Assisted Development Workflows (general guide) | `docs/ai-assisted-development-workflows.md` |
+| The Shift — engineering skills in the age of AI | `docs/ai-engineering/the-shift.md` |
+| The recolor script | [`examples/gif-recoloring/recolor-gif.py`](../../examples/gif-recoloring/recolor-gif.py) |
+| AI-Assisted Development Workflows (general guide) | `docs/ai-engineering/ai-assisted-development-workflows.md` |
 | Cursor skills and commands | `.cursor/skills/`, `.cursor/commands/` |
 
 ---
 
-*This document was written with AI assistance (Cursor). The conversation it describes was a real working session — the iterations, bugs, and fixes are presented as they occurred. See [AI-DISCLOSURE.md](../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*
+*This document was written with AI assistance (Cursor). The conversation it describes was a real working session — the iterations, bugs, and fixes are presented as they occurred. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*

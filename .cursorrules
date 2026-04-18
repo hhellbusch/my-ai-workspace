@@ -31,14 +31,10 @@ This workspace contains practical DevOps examples, configurations, and troublesh
 ### Cross-Cutting Directories
 
 #### Documentation (`docs/`)
-Essays and guides across two tracks (a curated, ordered reading list):
-- The Shift — engineering skills in the age of AI
-- AI-assisted development workflows
-- Using AI outside your expertise (GIF recoloring case study)
-- AI-driven continuous improvement for legacy systems
-- Enterprise LLM deployment summary (with verification caveats)
-- Building a research and verification skill
-- AI-assisted open source contributions
+Essays and case studies organized by track, each with its own README and reading order:
+- **`ai-engineering/`** — The Shift, AI-assisted development workflows, working outside expertise, legacy improvement, LLM deployment summary, upstream contributions
+- **`philosophy/`** — Martial arts, Zen, and applied practice (Ego, AI, and the Zen Antidote; future essays)
+- **`case-studies/`** — Documented meta-development patterns (Building a Research Skill; future case studies)
 
 #### Examples (`examples/`)
 Standalone scripts and artifacts referenced by documentation:

@@ -10,7 +10,7 @@ When creating or modifying content, check whether cross-references need updating
 
 ## New Content Triggers
 
-- **New file in `docs/`** — Add to `docs/README.md` reading list. Add to the Related Reading section of related essays. For essays in the zen-karate series: include a **Sources and References** section linking to specific research sources, threads, and library entries that informed the essay, and an **Open Review** section linking to any sparring notes with a summary of unresolved counterarguments.
+- **New file in `docs/`** — Place in the correct track subdirectory (`ai-engineering/`, `philosophy/`, or `case-studies/`). Add to that track's `README.md` reading list and to the master `docs/README.md` cross-track reading order. Add to the Related Reading section of related essays. For essays in the zen-karate series: include a **Sources and References** section linking to specific research sources, threads, and library entries that informed the essay, and an **Open Review** section linking to any sparring notes with a summary of unresolved counterarguments.
 - **New directory in `research/`** — Add to `research/README.md` contents table. If it relates to a docs/ essay, mention it there.
 - **New command in `.cursor/commands/`** — Consider whether `.cursorrules` TACHES section needs updating.
 - **New skill in `.cursor/skills/`** — Consider whether `.cursorrules` TACHES section needs updating.

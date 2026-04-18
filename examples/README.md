@@ -8,7 +8,7 @@ These are hands-on outputs from AI-assisted development sessions — the code th
 
 | Directory | What it is | Referenced by |
 |---|---|---|
-| `gif-recoloring/` | Python script to recolor animated GIFs (red siren → amber, green, blue, white) | [Using AI Outside Your Expertise](../docs/ai-for-unfamiliar-domains.md) |
+| `gif-recoloring/` | Python script to recolor animated GIFs (red siren → amber, green, blue, white) | [Using AI Outside Your Expertise](../docs/ai-engineering/ai-for-unfamiliar-domains.md) |
 
 ## Adding New Examples
 

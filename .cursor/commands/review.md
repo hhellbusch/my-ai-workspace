@@ -73,7 +73,7 @@ This command is read-only. It reports findings and asks for confirmation before 
 ```
 ### Assumptions to Challenge
 - [observation] — e.g., "The central claim in section 3 is asserted without evidence"
-- [observation] — e.g., "This contradicts the framing in docs/the-shift.md section 6"
+- [observation] — e.g., "This contradicts the framing in docs/ai-engineering/the-shift.md section 6"
 - [observation] — e.g., "The example assumes a single-region deployment"
 ```
 

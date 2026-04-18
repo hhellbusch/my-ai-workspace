@@ -23,4 +23,4 @@ research/{topic}/
 └── verification-notes-*.md  # Earlier partial analyses (if any)
 ```
 
-See [Building a Research Skill](../docs/building-a-research-skill.md) for the full story behind this workflow.
+See [Building a Research Skill](../docs/case-studies/building-a-research-skill.md) for the full story behind this workflow.

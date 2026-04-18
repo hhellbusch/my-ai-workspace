@@ -41,7 +41,7 @@ Plans:
 - [ ] 02-02: Batched analysis (classical foundations, Shi Heng Yi, applied philosophy, karate-Zen history) + assessment.md
 
 ### Phase 3: Essay 1 — The Dojo, Open Source, and Ways of Working
-**Goal**: First essay drafted, reviewed, published in `docs/` — the applied entry point
+**Goal**: First essay drafted, reviewed, published in `docs/philosophy/` — the applied entry point
 **Depends on**: Phase 2 (research findings). Personal notes enrich but don't block.
 **Plans**: 3 plans
 
@@ -77,7 +77,7 @@ Plans:
 **Depends on**: Phases 3-5 (foundation established)
 **Plans**: TBD
 
-**Note:** "Ego, AI, and the Zen Antidote" (`docs/ego-ai-and-the-zen-antidote.md`) was written ahead of the planned sequence because thread 14 matured rapidly and bridged directly to *The Shift*. It absorbs most of the "Beginner's Mind in the Age of AI" material. The remaining candidates are:
+**Note:** "Ego, AI, and the Zen Antidote" (`docs/philosophy/ego-ai-and-the-zen-antidote.md`) was written ahead of the planned sequence because thread 14 matured rapidly and bridged directly to *The Shift*. It absorbs most of the "Beginner's Mind in the Age of AI" material. The remaining candidates are:
 
 - [ ] "Discipline as Freedom" — paradox of restriction and growth
 - [ ] Others emerging from threads (organizational karma, breaking the cycle, etc.)

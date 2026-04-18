@@ -17,7 +17,7 @@ This series uses two registers that alternate based on content:
 
 ### Practitioner Voice (applied and analytical sections)
 - Second person or inclusive "we" where it helps ("you notice this in teams," "we carry this into work")
-- Direct and grounded, matching the existing `docs/` tone
+- Direct and grounded, matching the existing `docs/ai-engineering/` tone
 - Claims paired with honest limits — what transfers and what doesn't
 - Avoids motivational speaker energy; this is observation, not prescription
 
@@ -32,16 +32,16 @@ The shift between personal and practitioner voice should feel natural, not jarri
 
 ## Structural Conventions
 
-Match the existing `docs/` essay format:
+Match the existing essay format (see `docs/ai-engineering/` and `docs/philosophy/`):
 
 - **Title**: `#` heading, optionally with an em-dash subtitle
 - **Front matter**: Blockquote with bold **Audience:** and **Purpose:** lines
 - **Section breaks**: Horizontal rules `---` between major thematic blocks
 - **Hierarchy**: `##` for main sections, `###` for subtopics
-- **Sources and References**: Table linking to the specific research material, cached sources, threads, and library entries that informed the essay. Every claim that draws from a source should be traceable through this section. Use relative paths so links work from `docs/`.
+- **Sources and References**: Table linking to the specific research material, cached sources, threads, and library entries that informed the essay. Every claim that draws from a source should be traceable through this section. Use relative paths so links work from the essay's track directory (e.g., `docs/philosophy/`).
 - **Open Review**: If the essay has been through adversarial review (`/spar` or manual sparring), link to the sparring notes and summarize the key unresolved counterarguments in 1-2 sentences. This signals to future sessions (and human readers) that the essay has known open threads.
 - **Related Reading**: Table at the end linking to other essays in the series and to the existing AI-focused docs where natural
-- **AI Disclosure**: Standard italic footer: *This document was written with AI assistance (Cursor). See [AI-DISCLOSURE.md](../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*
+- **AI Disclosure**: Standard italic footer: *This document was written with AI assistance (Cursor). See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.* (path is `../../` because essays live two levels below repo root)
 
 ---
 
@@ -95,4 +95,4 @@ For calibration, the target tone sits between:
 - Essays within the zen-karate series reference each other naturally ("as explored in *The Way Is in Training*...")
 - Bridge essays (4 and 5) explicitly connect to the existing AI-focused docs
 - Don't force connections — if an essay stands alone, let it stand alone
-- The `docs/README.md` will organize these as a second reading track alongside the existing AI-focused sequence
+- `docs/philosophy/README.md` maintains the reading order for this track; `docs/README.md` provides a cross-track reading order
