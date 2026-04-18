@@ -6,6 +6,16 @@ New archival batches are prepended below (newest batch first).
 
 ---
 
+## Archived 2026-04-18 (1 item — batch 2)
+
+### Project tracking system
+- **Product:** meta
+- **Context:** Designed and implemented `BACKLOG.md` with `/backlog` slash command, replacing the unused TACHES TO-DOS.md pattern with a persistent, shareable project board.
+- **Links:** `BACKLOG.md`, `.cursor/commands/backlog.md`
+- **Completed:** 2026-04-17
+
+---
+
 ## Archived 2026-04-18 (2 items)
 
 ### Zen-karate essay library scaffolding

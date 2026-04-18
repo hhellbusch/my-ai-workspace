@@ -345,6 +345,7 @@ The Day 2 concerns in that article — rate limiting, auth governance, observabi
 | Who Is Speaking? When AI Writes in Your Voice — case study | [docs/case-studies/who-is-speaking.md](../case-studies/who-is-speaking.md) |
 | When AI Ignores Changes Made by Other Sessions — case study | [docs/case-studies/stale-context-in-long-sessions.md](../case-studies/stale-context-in-long-sessions.md) |
 | When the Safety Net Is Too Heavy to Use — case study | [docs/case-studies/heavy-safety-nets.md](../case-studies/heavy-safety-nets.md) |
+| When the Source Says the Opposite of the Claim — case study | [docs/case-studies/context-stripped-citations.md](../case-studies/context-stripped-citations.md) |
 
 ---
 

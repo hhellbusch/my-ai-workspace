@@ -40,3 +40,4 @@ For someone reading everything, this order follows the natural arc — AI engine
 18. [Who Is Speaking? — When AI Writes in Your Voice](case-studies/who-is-speaking.md) *(biographical content requires a different kind of review)*
 19. [When AI Ignores Changes Made by Other Sessions](case-studies/stale-context-in-long-sessions.md) *(stale context in multi-agent environments — shoshin applied within sessions)*
 20. [When the Safety Net Is Too Heavy to Use](case-studies/heavy-safety-nets.md) *(disproportionate review processes get bypassed — scale the check to the risk)*
+21. [When the Source Says the Opposite of the Claim](case-studies/context-stripped-citations.md) *(selective citation — the number is real but the framing is reversed)*
