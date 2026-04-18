@@ -9,7 +9,7 @@ Fill in what resonates. Leave sections blank if they don't apply yet — this is
 ## Training History
 
 - **Primary style:** Hayashi-ha Shito-ryu karate
-- **Orientation:** More Okinawan than Japanese in character — contrasts with Gichin Funakoshi's "Japanesed" karate (Shotokan). Hayashi-ha preserves closer ties to the Okinawan roots of the art.
+- **Orientation:** More Okinawan than Japanese in character. Funakoshi's Shotokan is a legitimate and influential tradition, but it adapted karate for the mainland Japanese context. Hayashi-ha Shito-ryu preserves closer ties to the Okinawan roots — different flavor, not better or worse.
 - **Years of practice:**
 - **Rank:**
 - **Lineage / organization:**
@@ -18,7 +18,7 @@ Fill in what resonates. Leave sections blank if they don't apply yet — this is
 
 ### Okinawan vs. Modern Karate
 
-An important distinction for the essays: Okinawan karate (the karate of old, *te* or *tode*) differs significantly from the modern sport karate that emerged after Funakoshi brought it to mainland Japan. The Okinawan roots are closer to practical self-defense, Chinese martial arts influence, and a less formalized, more personal transmission of knowledge. Modern karate (especially post-WKF/Olympic) has diverged toward sport and spectacle. The essays should acknowledge this tension rather than treating "karate" as monolithic.
+An important distinction for the essays: karate exists on a spectrum. The Okinawan roots (*te*, *tode*) are closer to practical self-defense, Chinese martial arts influence, and a less formalized, more personal transmission of knowledge. Funakoshi's adaptation for mainland Japan was a legitimate evolution that made karate accessible to the world — but it is a different expression of the art. Modern sport karate (WKF/Olympic) has diverged further still. All of these are karate. The essays should acknowledge this spectrum honestly rather than treating "karate" as monolithic or romanticizing one branch over another.
 
 ## Key Teachers and Influences
 
