@@ -6,7 +6,7 @@ Essays and case studies across three tracks — AI-assisted engineering, philoso
 
 ### [AI-Assisted Engineering](ai-engineering/)
 
-Skills, workflows, risks, and practical patterns for using AI effectively in engineering work. Six essays covering the foundational thesis, daily workflows, working outside expertise, legacy systems, enterprise LLM deployment, and open source contributions.
+Skills, workflows, risks, and practical patterns for using AI effectively in engineering work. Seven essays covering the foundational thesis, daily workflows, working outside expertise, legacy systems, enterprise LLM deployment, open source contributions, and the meta-development loop.
 
 ### [Philosophy and Practice](philosophy/)
 
@@ -26,12 +26,13 @@ For someone reading everything, this order follows the natural arc — AI engine
 4. [AI-Driven Continuous Improvement for Legacy Systems](ai-engineering/ai-legacy-improvement.md)
 5. [Enterprise LLM Deployment on OpenShift AI — Summary](ai-engineering/openshift-ai-llm-deployment-summary.md)
 6. [AI-Assisted Open Source Contributions](ai-engineering/ai-assisted-upstream-contributions.md)
-7. [Ego, AI, and the Zen Antidote](philosophy/ego-ai-and-the-zen-antidote.md) *(companion to The Shift sections 6-7)*
-8. [Building a Research and Verification Skill](case-studies/building-a-research-skill.md)
-9. [Adversarial Review as a Meta-Development Pattern](case-studies/adversarial-review-meta-development.md) *(builds the sparring system, applies it immediately)*
-10. [Debugging Your AI Assistant's Judgment](case-studies/debugging-ai-judgment.md) *(catches AI anchoring bias, builds structural fix)*
-11. [From Conversation to Essay in One Session](case-studies/conversation-to-essay.md) *(full pipeline: observation → thread → draft → provenance → challenge)*
-12. [Choosing Scripts Over Services](case-studies/choosing-scripts-over-services.md) *(problem decomposition applied to tooling decisions)*
-13. [Building a Personal Knowledge Management System with AI](case-studies/building-knowledge-management-with-ai.md) *(AI builds the infrastructure for AI-assisted work)*
-14. [How AI Handles Evolving Creative Scope](case-studies/evolving-creative-scope.md) *(shoshin at the project level — scope that learns)*
-15. [When Case Studies Generate System Improvements](case-studies/case-studies-as-discovery.md) *(structured reflection as a discovery mechanism)*
+7. [The Meta-Development Loop](ai-engineering/the-meta-development-loop.md) *(the engineering pattern: gap → tool → apply → reshape — synthesized from the case studies below)*
+8. [Ego, AI, and the Zen Antidote](philosophy/ego-ai-and-the-zen-antidote.md) *(companion to The Shift sections 6-7)*
+9. [Building a Research and Verification Skill](case-studies/building-a-research-skill.md)
+10. [Adversarial Review as a Meta-Development Pattern](case-studies/adversarial-review-meta-development.md) *(builds the sparring system, applies it immediately)*
+11. [Debugging Your AI Assistant's Judgment](case-studies/debugging-ai-judgment.md) *(catches AI anchoring bias, builds structural fix)*
+12. [From Conversation to Essay in One Session](case-studies/conversation-to-essay.md) *(full pipeline: observation → thread → draft → provenance → challenge)*
+13. [Choosing Scripts Over Services](case-studies/choosing-scripts-over-services.md) *(problem decomposition applied to tooling decisions)*
+14. [Building a Personal Knowledge Management System with AI](case-studies/building-knowledge-management-with-ai.md) *(AI builds the infrastructure for AI-assisted work)*
+15. [How AI Handles Evolving Creative Scope](case-studies/evolving-creative-scope.md) *(shoshin at the project level — scope that learns)*
+16. [When Case Studies Generate System Improvements](case-studies/case-studies-as-discovery.md) *(structured reflection as a discovery mechanism)*

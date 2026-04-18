@@ -256,6 +256,37 @@ AI output is always well-structured, articulate, and confident. A wrong answer i
 
 When the AI says "the best approach here is X," that sentence carries the same linguistic confidence whether X is correct, partially correct, or completely wrong. You cannot use the AI's presentation to judge its accuracy. You have to evaluate the substance independently.
 
+### Anchoring on its own prior outputs
+
+The sycophancy problem isn't limited to the AI agreeing with *you*. AI also anchors on its own prior work — and this is harder to notice because the prior work often looks authoritative.
+
+When an AI writes a backlog, a planning document, or a session handoff, those artifacts persist on disk. The next session reads them. Because the content is well-structured and confident (see above), the AI treats its own prior output as evidence with the same weight as external sources. It doesn't discount for "I wrote this" the way a human writer discounts their first draft.
+
+This creates a specific feedback loop in multi-session projects:
+
+1. AI produces output with a particular framing (priorities, scope, architectural direction)
+2. Output is saved to a file (backlog, handoff doc, planning artifact)
+3. Next session reads the file and treats the framing as established context
+4. New output reinforces the original framing
+5. Each cycle adds implicit authority the original framing may not deserve
+
+A concrete example: when asked to re-prioritize a backlog it previously organized, the AI consistently confirmed the existing ordering — not because the ordering was right, but because the section labels ("Up Next" vs. "Ideas") carried implicit weight. Items in "Up Next" stayed in "Up Next" because the AI read placement as signal of importance. The fix required structurally stripping the section labels before analysis so the AI couldn't anchor on them. (For the full story, see [Debugging Your AI Assistant's Judgment](../case-studies/debugging-ai-judgment.md).)
+
+The same mechanism applies to:
+- **Session handoffs** — a [`/whats-next`](../../.cursor/commands/whats-next.md) document frames "where we left off," and the next session inherits that frame as "what to do next"
+- **Planning documents** — a roadmap written by AI in session 1 becomes authoritative context for session 2, even if the phase ordering was a guess
+- **Scope framing** — the AI updates documents to reflect a scope change but treats the updated documents as equally authoritative as the original, losing the *evolution* (see [How AI Handles Evolving Creative Scope](../case-studies/evolving-creative-scope.md))
+
+The behavioral instruction "don't anchor on existing priorities" doesn't work — the structural cues are in the context window regardless of the instruction. Effective mitigations are structural: strip the cues before analysis, compare fresh-evaluation against current state, or [verify claims against source documents](../../.cursor/rules/shoshin.md) rather than inheriting them from prior session artifacts.
+
+### Self-reinforcing infrastructure
+
+When AI builds organizational systems — tracking tools, session orientation, cross-linking conventions — those systems carry the AI's framing into every future interaction. The backlog the AI wrote becomes the context the AI reads. The handoff the AI created becomes the starting point the AI inherits. Every piece of AI-built infrastructure shapes the AI's behavior in the next session.
+
+This is powerful when it works (infrastructure compounds — see [The Meta-Development Loop](the-meta-development-loop.md)) and dangerous when it doesn't. The risk isn't that the AI builds bad tools. It's that the tools encode assumptions that go unchallenged because they look like established process rather than AI-generated first drafts.
+
+The mitigation is treating AI-built infrastructure with the same skepticism you'd apply to AI-generated code: review it, challenge it, and periodically re-evaluate whether the framing it carries still reflects reality. [Building a Personal Knowledge Management System with AI](../case-studies/building-knowledge-management-with-ai.md) documents both the power and the risk of this pattern.
+
 ---
 
 ## 7. Practical Mitigations
@@ -268,10 +299,12 @@ The risks above are not reasons to avoid AI. They're reasons to use it deliberat
 |---|---|
 | Ask the AI to argue *against* your approach | Forces it out of agreement mode; "what would go wrong if we did this?" often surfaces real risks |
 | Treat AI agreement as a null signal | It agrees with almost everything; agreement tells you nothing about correctness |
-| Use AI for adversarial review | "Find bugs in this code" and "what edge cases am I missing?" are more valuable than "does this look right?" |
+| Use AI for adversarial review | "Find bugs in this code" and "what edge cases am I missing?" are more valuable than "does this look right?" ([automating this](../case-studies/adversarial-review-meta-development.md) is even better) |
 | Verify outputs independently | Write validation checks, test edge cases, compare against documentation — don't take the AI's word for it |
 | Keep a human in the review loop | AI should never be both author and sole reviewer of the same change |
 | Ask "how do I know this is correct?" | If you can't answer this question, you're not done |
+| Re-evaluate AI-generated structure periodically | Backlogs, roadmaps, and planning docs written by AI accumulate implicit authority — [strip the framing and re-assess from scratch](../case-studies/debugging-ai-judgment.md) on a regular cadence |
+| Verify framing against source documents | When inheriting context from a prior session, check that the framing still matches the project's brief and scope — don't trust the handoff alone |
 
 ### For leaders
 
@@ -349,12 +382,15 @@ AI doesn't create your engineering culture. It amplifies it. A team with strong 
 | Resource | What it covers |
 |---|---|
 | [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) | Companion essay: why the sycophancy and ego risks run deeper than habits, and how zen practices build structural resistance |
+| [The Meta-Development Loop](the-meta-development-loop.md) | The engineering pattern behind building AI tools that reshape AI workflows — gap → tool → application → feedback |
 | [AI-Assisted Development Workflows](ai-assisted-development-workflows.md) | Practical patterns for using AI effectively in daily engineering work |
 | [Using AI Outside Your Expertise](ai-for-unfamiliar-domains.md) | A case study demonstrating these skills in action (the siren GIF example) |
 | [Enterprise LLM Deployment on OpenShift AI](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) | Architecture decisions at enterprise scale where engineering judgment matters most |
 | [debug-like-expert skill](../../.cursor/skills/debug-like-expert/SKILL.md) | A codified version of systematic debugging methodology |
 | [Debugging Your AI Assistant's Judgment](../case-studies/debugging-ai-judgment.md) | Case study: catching and fixing AI anchoring bias in prioritization — sections 6-7 in practice |
 | [Adversarial Review as a Meta-Development Pattern](../case-studies/adversarial-review-meta-development.md) | Case study: building structural pushback into the workflow — the "ask AI to argue against you" mitigation, automated |
+| [Building a Personal Knowledge Management System with AI](../case-studies/building-knowledge-management-with-ai.md) | Case study: self-reinforcing infrastructure — AI builds the systems that organize its own work |
+| [How AI Handles Evolving Creative Scope](../case-studies/evolving-creative-scope.md) | Case study: framing drift across sessions — what conventions help and what's missing |
 
 ---
 

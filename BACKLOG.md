@@ -138,6 +138,12 @@
 
 ## Done
 
+### AI-engineering track updates — behavioral failure modes, meta-development loop, multi-session management
+- **Product:** docs
+- **Context:** Three updates driven by case study analysis: (1) expanded The Shift section 6 with behavioral failure modes beyond sycophancy — anchoring on own outputs, framing drift, self-reinforcing infrastructure — with structural mitigations and case study references; (2) new essay "The Meta-Development Loop" synthesizing the gap → tool → apply → reshape pattern from all 8 case studies into a teachable engineering pattern; (3) expanded AI-Assisted Development Workflows section 2 with multi-session project management patterns — zero-base evaluation, session orientation with drift checks, handoffs that name their assumptions, set-based scope updates, planning evolution logs.
+- **Links:** `docs/ai-engineering/the-shift.md`, `docs/ai-engineering/the-meta-development-loop.md`, `docs/ai-engineering/ai-assisted-development-workflows.md`
+- **Completed:** 2026-04-17
+
 ### Case study: when case studies generate system improvements
 - **Product:** docs
 - **Context:** Published case study documenting how writing the evolving-scope case study surfaced three concrete gaps, how the user's shoshin observation became a design principle with five integration points, and how the case study format itself functions as a discovery mechanism.

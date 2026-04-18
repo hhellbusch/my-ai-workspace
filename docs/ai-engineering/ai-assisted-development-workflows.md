@@ -114,6 +114,28 @@ At the start of a new session: point the AI at this file. It picks up where you 
 
 Keep a separate repo (like this one) as a curated collection of solved patterns, examples, and reference implementations. The AI can search and reference it. You accumulate institutional knowledge that transfers between projects.
 
+### Beyond context sharing: multi-session project management
+
+Solutions A through C solve the *context loading* problem — getting a new session up to speed on what exists. But multi-session projects create a harder problem: **accumulated context shapes the AI's judgment, not just its knowledge.**
+
+When a project runs across many sessions, the AI isn't just reading context — it's inheriting framing. A backlog written in session 1 tells session 5 what matters. A handoff from session 3 tells session 4 where to start. A roadmap from the project's first week tells month-two sessions what the plan is. Each of these artifacts carries implicit authority that may not be deserved.
+
+This is [The Shift](the-shift.md)'s sycophancy problem (section 6) expressed as a project management concern. The AI doesn't just agree with your code — it agrees with your priorities, your scope, your framing, because all of those are in the context window and all of them look authoritative.
+
+**Patterns that help:**
+
+**Persistent tracking with periodic fresh evaluation.** A [`BACKLOG.md`](../../BACKLOG.md) managed through a structured command ([`/backlog`](../../.cursor/commands/backlog.md)) keeps work visible across sessions. But periodic re-prioritization should use [zero-base evaluation](../case-studies/debugging-ai-judgment.md) — strip existing section labels and score items on merits before comparing against the current ordering. Without this, each re-prioritization reinforces the last one.
+
+**Session orientation that checks for drift.** A [`/start`](../../.cursor/commands/start.md) command that reads the backlog, checks recent git activity, and suggests focus options gives a new session structure. Adding a [fresh-eyes check](../../.cursor/rules/shoshin.md) — comparing project brief goals against current backlog items — catches scope drift that accumulates across sessions without anyone noticing.
+
+**Handoffs that name their assumptions.** A session handoff document (e.g., from a [`/whats-next`](../../.cursor/commands/whats-next.md) command) is useful for continuity but dangerous for anchoring. The mitigation is to include an assumptions section: what framing decisions did this session make? What was taken as given that a fresh session should question? This gives the next session permission to disagree with the handoff rather than inheriting it uncritically.
+
+**Scope changes updated as a set.** When a project's scope shifts — the user's understanding evolves, priorities change, a new direction emerges — update all related documents in the same session: brief, roadmap, style guide, personal notes, threads. AI sessions read documents independently. If the brief says "broad scope" but the style guide still says "narrow terminology," the AI gets conflicting signals. Updating as a set eliminates the inconsistency. (See [How AI Handles Evolving Creative Scope](../case-studies/evolving-creative-scope.md) for the full pattern.)
+
+**Planning evolution logs.** Git history captures *what* changed in a file. It doesn't capture *why* the scope shifted, which documents were updated as a set, or what the user's reasoning was. A [CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md) in the planning directory — entries like "broadened from X to Y because the user's learning expanded" — gives future sessions the evolution story, not just the current state.
+
+These patterns aren't theoretical. They were built iteratively through the [meta-development loop](the-meta-development-loop.md) — each one created in response to a specific friction point encountered during real multi-session work.
+
 ---
 
 ## 3. GitOps Development Patterns
@@ -315,8 +337,12 @@ The Day 2 concerns in that article — rate limiting, auth governance, observabi
 | External project clones for upstream contribution | `git-projects/` |
 | Cursor commands | `.cursor/commands/` |
 | Cursor skills | `.cursor/skills/` |
-| From Conversation to Essay in One Session — case study | `docs/case-studies/conversation-to-essay.md` |
-| Adversarial Review as a Meta-Development Pattern — case study | `docs/case-studies/adversarial-review-meta-development.md` |
+| The Meta-Development Loop — building tools that build your workflow | [docs/ai-engineering/the-meta-development-loop.md](the-meta-development-loop.md) |
+| From Conversation to Essay in One Session — case study | [docs/case-studies/conversation-to-essay.md](../case-studies/conversation-to-essay.md) |
+| Adversarial Review as a Meta-Development Pattern — case study | [docs/case-studies/adversarial-review-meta-development.md](../case-studies/adversarial-review-meta-development.md) |
+| Debugging Your AI Assistant's Judgment — case study | [docs/case-studies/debugging-ai-judgment.md](../case-studies/debugging-ai-judgment.md) |
+| How AI Handles Evolving Creative Scope — case study | [docs/case-studies/evolving-creative-scope.md](../case-studies/evolving-creative-scope.md) |
+| Building Knowledge Management with AI — case study | [docs/case-studies/building-knowledge-management-with-ai.md](../case-studies/building-knowledge-management-with-ai.md) |
 
 ---
 

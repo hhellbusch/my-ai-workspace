@@ -16,7 +16,10 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 6. **[AI-Assisted Open Source Contributions](ai-assisted-upstream-contributions.md)** — A framework for using AI to lower the barrier to upstream open source contribution while respecting maintainers and community norms. Includes a walkthrough of contributing to the argocd-diff-preview project and in-progress Helm chart improvements.
 
+7. **[The Meta-Development Loop](the-meta-development-loop.md)** — Names and teaches the engineering pattern behind building AI tools that improve AI workflows: notice a gap, build a tool, apply it immediately, let the output reshape the work. Synthesizes the pattern from 8 case studies, documents when it compounds productively and when it becomes infrastructure theater.
+
 ## Cross-Track Links
 
-- *The Shift* sections 6-7 (sycophancy, ego reinforcement) connect to [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) in the philosophy track
-- The meta-development pattern from *AI-Assisted Development Workflows* is explored further in [Building a Research and Verification Skill](../case-studies/building-a-research-skill.md)
+- *The Shift* sections 6-7 (sycophancy, ego reinforcement, anchoring, self-reinforcing infrastructure) connect to [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) in the philosophy track
+- The meta-development loop is demonstrated by every case study in the [case-studies track](../case-studies/) — the essay synthesizes the pattern, the case studies show it in action
+- *AI-Assisted Development Workflows* section 2 (multi-session management) connects to [Debugging AI Judgment](../case-studies/debugging-ai-judgment.md), [Evolving Creative Scope](../case-studies/evolving-creative-scope.md), and [Building Knowledge Management](../case-studies/building-knowledge-management-with-ai.md)
