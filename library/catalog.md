@@ -82,6 +82,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Simple Lucas | Simple Lucas | ongoing | https://www.youtube.com/@SimpleLucas | productivity, single-tasking | [enriched](simple-lucas.md) |
 | Rian Doris / FlowState | Rian Doris | ongoing | https://www.youtube.com/@RianDoris | neuroscience, flow, dopamine, focus | [enriched](rian-doris.md) |
 | 3Blue1Brown — Deep Learning Series | Grant Sanderson | 2017–2024 | https://www.youtube.com/playlist?list=PLLMP7TazTxHrgVk7w1EKpLBIDoC50QrPS | ai, neural-networks, deep-learning, transformers, llm, attention | [enriched](3blue1brown.md) |
+| Shi Heng Yi — Isolation Is The Gateway to Success | Mulligan Brothers | 2026 | https://www.youtube.com/watch?v=WZPDGVIN0qA | zen, shaolin, isolation, solitude, self-mastery, internal-practice, martial-arts | [enriched](shi-heng-yi-isolation.md) |
 
 ## Other Training
 

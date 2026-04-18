@@ -36,6 +36,15 @@ Mark sources with a priority to help focus the research phase:
 - **Key moments or quotes:**
 - **URL:**
 
+### Shi Heng Yi — Isolation Is The Gateway to Success (Mulligan Brothers)
+- **Speaker:** Shi Heng Yi
+- **Priority:** Core
+- **Why it resonates:** *(Currently listening — notes to be added)*
+- **Key moments or quotes:** "The higher I walk the mountain, the more I can speak out and the whole valley is going to hear it." Mind freed by mastery: "The capacity of thinking about what to do disappears… now the mind is free to discover." Internal awareness as the real practice. Universal principles across all disciplines.
+- **URL:** https://www.youtube.com/watch?v=WZPDGVIN0qA
+- **Cached:** [`youtube-WZPDGVIN0qA-transcript.md`](sources/youtube-WZPDGVIN0qA-transcript.md)
+- **Library entry:** [`library/shi-heng-yi-isolation.md`](../../library/shi-heng-yi-isolation.md)
+
 ### Shi Heng Yi — "They Betrayed Me" (True Cost of Success)
 - **Speaker:** Shi Heng Yi
 - **Priority:** Core

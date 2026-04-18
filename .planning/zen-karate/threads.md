@@ -4,7 +4,7 @@ Emerging themes from the material gathered so far. These are starting points, no
 
 > **Scope:** Martial arts broadly, with karate (Hayashi-ha Shito-ryu, Okinawan tradition) as the primary lens. The philosophical threads run across traditions.
 >
-> **Source material:** Shi Heng Yi transcript (Mulligan Brothers, 2026), Deshimaru's *The Zen Way to Martial Arts*, existing `docs/` essays (*The Shift*, *AI-Assisted Development Workflows*), personal practice experience (via `personal-notes.md`), Inoue Yoshimi research (Inoue-ha Karate official site, Karate Philosophy, Jesse Enkamp articles), Rika Usami research (Finding Karate, Karate by Jesse interview), Hayashi Teruo biography, Athens Shotokan lineage research.
+> **Source material:** Shi Heng Yi transcripts (Mulligan Brothers, 2026 — "They Betrayed Me" + "Isolation Is The Gateway to Success"), Deshimaru's *The Zen Way to Martial Arts*, existing `docs/` essays (*The Shift*, *AI-Assisted Development Workflows*), personal practice experience (via `personal-notes.md`), Inoue Yoshimi research (Inoue-ha Karate official site, Karate Philosophy, Jesse Enkamp articles), Rika Usami research (Finding Karate, Karate by Jesse interview), Hayashi Teruo biography, Athens Shotokan lineage research.
 
 ---
 
