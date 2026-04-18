@@ -22,6 +22,7 @@ These references have deep AI-researched context (summaries, key themes, notable
 | [Karate Philosophy](karate-philosophy.md) | Book | karate, philosophy, dojo-kun | 2026-04-17 |
 | [Simple Lucas](simple-lucas.md) | YouTube | productivity, single-tasking, zen-parallels | 2026-04-17 |
 | [Rian Doris / FlowState](rian-doris.md) | YouTube | neuroscience, flow, dopamine, focus | 2026-04-17 |
+| [3Blue1Brown — Deep Learning Series](3blue1brown.md) | YouTube | ai, neural-networks, deep-learning, transformers, llm | 2026-04-17 |
 
 See [`catalog.md`](catalog.md) for the complete reference list (50+ books, courses, and training).
 
