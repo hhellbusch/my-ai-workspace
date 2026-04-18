@@ -9,7 +9,7 @@
 
 This document traces a single thread of work across two extended AI-assisted sessions. It started with a simple request — summarize a technical blog post — and evolved through progressive discovery into a reusable research automation system.
 
-The work demonstrates several themes from [The Shift](the-shift.md):
+The work demonstrates several themes from [The Shift](../ai-engineering/the-shift.md):
 - Problem decomposition applied to a process, not just code
 - Systematic debugging applied to workflow failures, not just bugs
 - Building tools that compensate for known AI limitations
@@ -147,7 +147,7 @@ The article verification exercise is a concrete example of what [The Shift](../a
 
 ## Remaining Gaps
 
-- **`developers.redhat.com` bot protection:** 7 of the 9 unfetched sources were blocked by Cloudflare on this domain. A headless browser fallback (Playwright) is designed but not yet implemented. The architecture and approach are documented in `references/fetcher-notes.md`.
+- **`developers.redhat.com` bot protection:** 7 of the 9 unfetched sources were blocked by Cloudflare on this domain. A headless browser fallback (Playwright) is designed but not yet implemented. The architecture and approach are documented in [`references/fetcher-notes.md`](../../.cursor/skills/research-and-analyze/references/fetcher-notes.md).
 
 - **Low-content captures:** Some pages returned minimal content (46-75 characters) where the content extraction missed the main article body. The domain-specific selector system can be extended for these cases.
 
@@ -169,27 +169,27 @@ The article verification exercise is a concrete example of what [The Shift](../a
 
 ### Research and Analysis Skill
 
-> **Note:** These files live under `.cursor/skills/` — the convention for [Cursor IDE](https://cursor.sh/) AI agent skills. They are structured Markdown instructions and Python scripts that the AI agent follows during research tasks. The scripts (e.g., `fetch-sources.py`) are standard Python and can be used independently of Cursor.
+> **Note:** These files live under `.cursor/skills/` — the convention for [Cursor IDE](https://cursor.sh/) AI agent skills. They are structured Markdown instructions and Python scripts that the AI agent follows during research tasks. The scripts (e.g., [`fetch-sources.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-sources.py)) are standard Python and can be used independently of Cursor.
 
 | File | Purpose |
 | --- | --- |
-| `.cursor/skills/research-and-analyze/SKILL.md` | Skill router — intake, routing, principles |
-| `workflows/gather-sources.md` | Fetch all URLs to disk |
-| `workflows/analyze-claims.md` | Parallel batch claim verification |
-| `workflows/synthesize-findings.md` | Compile assessment from findings |
-| `scripts/fetch-sources.py` | Concurrent batch fetcher (stealth, proxy, PDF) |
-| `references/verification-patterns.md` | Claim types and verification approaches |
-| `references/fetcher-notes.md` | Architecture, anti-bot notes, browser fallback plan |
+| [`SKILL.md`](../../.cursor/skills/research-and-analyze/SKILL.md) | Skill router — intake, routing, principles |
+| [`gather-sources.md`](../../.cursor/skills/research-and-analyze/workflows/gather-sources.md) | Fetch all URLs to disk |
+| [`analyze-claims.md`](../../.cursor/skills/research-and-analyze/workflows/analyze-claims.md) | Parallel batch claim verification |
+| [`synthesize-findings.md`](../../.cursor/skills/research-and-analyze/workflows/synthesize-findings.md) | Compile assessment from findings |
+| [`fetch-sources.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-sources.py) | Concurrent batch fetcher (stealth, proxy, PDF) |
+| [`verification-patterns.md`](../../.cursor/skills/research-and-analyze/references/verification-patterns.md) | Claim types and verification approaches |
+| [`fetcher-notes.md`](../../.cursor/skills/research-and-analyze/references/fetcher-notes.md) | Architecture, anti-bot notes, browser fallback plan |
 | `templates/*.md` | Manifest, batch findings, and assessment templates |
 
 ### Research Workspace (Validation Run)
 
 | File | Purpose |
 | --- | --- |
-| `research/openshift-ai-llm-deployment/manifest.md` | 62-reference tracking manifest |
-| `research/.../sources/` (54 files) | Fetched reference content |
-| `research/.../findings/` (15 files) | Per-batch analysis results |
-| `research/.../assessment.md` | Final synthesized assessment |
+| [`manifest.md`](../../research/openshift-ai-llm-deployment/manifest.md) | 62-reference tracking manifest |
+| [`sources/`](../../research/openshift-ai-llm-deployment/sources/) (54 files) | Fetched reference content |
+| [`findings/`](../../research/openshift-ai-llm-deployment/findings/) (15 files) | Per-batch analysis results |
+| [`assessment.md`](../../research/openshift-ai-llm-deployment/assessment.md) | Final synthesized assessment |
 
 ---
 

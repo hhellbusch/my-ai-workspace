@@ -7,7 +7,7 @@
 
 ## The Starting Point
 
-The workspace had content — essays, troubleshooting guides, research, examples — spread across product directories. It had a `.cursorrules` file describing the structure and a `repo-structure.md` rule defining conventions. What it didn't have was any system for tracking work across sessions, managing references, orienting new conversations, or catching drift as content evolved.
+The workspace had content — essays, troubleshooting guides, research, examples — spread across product directories. It had a [`.cursorrules`](../../.cursorrules) file describing the structure and a [`repo-structure.md`](../../.cursor/rules/repo-structure.md) rule defining conventions. What it didn't have was any system for tracking work across sessions, managing references, orienting new conversations, or catching drift as content evolved.
 
 Each session started from scratch. The AI would read what it could find, make reasonable guesses about priorities, and the user would redirect as needed. Context was rebuilt from the filesystem every time. Ideas mentioned in conversation vanished when the session ended. There was no way to say "what were we working on?" and get a coherent answer.
 
@@ -27,7 +27,7 @@ The backlog replaced an earlier TACHES TO-DOS.md pattern that wasn't being used.
 
 A [directory](../../library/) with a master catalog of 50+ references (books, courses, training from 2010–present) and enriched entries for sources that need deep context. The [/reference command](../../.cursor/commands/reference.md) handles adding, searching, enriching (with AI-researched summaries, key themes, cached sources), and linking references to active projects.
 
-The enrichment workflow is the key feature. When adding a video reference, the command calls `fetch-transcript.py` to cache the transcript, then searches the web for reviews and analyses, synthesizes the findings into the entry's Key Themes and Notable Ideas sections, and caches the source URLs. A future session can read the enriched entry and understand the source without re-researching it.
+The enrichment workflow is the key feature. When adding a video reference, the command calls [`fetch-transcript.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-transcript.py) to cache the transcript, then searches the web for reviews and analyses, synthesizes the findings into the entry's Key Themes and Notable Ideas sections, and caches the source URLs. A future session can read the enriched entry and understand the source without re-researching it.
 
 ### 3. Session orientation (`/start` + session-awareness rule)
 
@@ -74,7 +74,7 @@ This mirrors the problem decomposition pattern from [The Shift](../ai-engineerin
 
 ### Both sides immediately use the result
 
-The backlog was populated the same session it was built. The library got its first enriched entry (Deshimaru's "The Zen Way to Martial Arts") within minutes of the `/reference` command being created. The `/start` command was tested by simulating a session orientation. The `/audit` command found real issues on its first run.
+The backlog was populated the same session it was built. The library got its first enriched entry (Deshimaru's "[The Zen Way to Martial Arts](../../library/zen-way-martial-arts.md)") within minutes of the [`/reference`](../../.cursor/commands/reference.md) command being created. The [`/start`](../../.cursor/commands/start.md) command was tested by simulating a session orientation. The [`/audit`](../../.cursor/commands/audit.md) command found real issues on its first run.
 
 This immediate feedback is what separates meta-development from planning. Planning produces documents about what to build. Meta-development produces tools that are used the moment they exist.
 
@@ -82,7 +82,7 @@ This immediate feedback is what separates meta-development from planning. Planni
 
 The cross-linking rule ensures new content connects to existing content. The backlog-capture rule ensures ideas don't get lost. The session-awareness rule ensures future sessions find the infrastructure. The pre-commit review checks that conventions are followed. Each piece reinforces the others.
 
-This self-reinforcement is also a risk. The [debugging AI judgment](debugging-ai-judgment.md) case study documents how the AI anchors on its own prior outputs — and the session orientation system is a mechanism for exactly that. The `/start` command reads the backlog the AI wrote, the handoff the AI created, and the planning docs the AI drafted. Every piece of the infrastructure carries the AI's framing into the next session.
+This self-reinforcement is also a risk. The [debugging AI judgment](debugging-ai-judgment.md) case study documents how the AI anchors on its own prior outputs — and the session orientation system is a mechanism for exactly that. The [`/start`](../../.cursor/commands/start.md) command reads the backlog the AI wrote, the handoff the AI created, and the planning docs the AI drafted. Every piece of the infrastructure carries the AI's framing into the next session.
 
 ### The infrastructure-to-output ratio is worth watching
 

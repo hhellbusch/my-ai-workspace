@@ -116,7 +116,7 @@ The project brief handles this with: "The scope is deliberately wider than one s
 | Gap | Why it matters |
 |---|---|
 | No "project evolution" log | Git history captures changes but not *why* the scope shifted |
-| No cross-session scope-drift detection | The `/audit` command checks links and registries but not tonal consistency |
+| No cross-session scope-drift detection | The [`/audit`](../../.cursor/commands/audit.md) command checks links and registries but not tonal consistency |
 | No mechanism for propagating subtle nuance | Structural changes cascade; tonal shifts don't |
 
 ---
@@ -133,7 +133,7 @@ The project brief handles this with: "The scope is deliberately wider than one s
 
 ## What Happened Next
 
-The gaps identified in "What Conventions Are Missing" above led directly to the [shoshin meta-system integration](../../.cursor/rules/shoshin.md) — a new always-applied rule, fresh-eyes checks in `/start`, assumptions tracking in `/whats-next`, brief-alignment drift detection in `/review`, and the [CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md) convention for planning projects. The full story of how this case study produced the system improvements it was documenting the absence of is in [When Case Studies Generate System Improvements](case-studies-as-discovery.md).
+The gaps identified in "What Conventions Are Missing" above led directly to the [shoshin meta-system integration](../../.cursor/rules/shoshin.md) — a new always-applied rule, fresh-eyes checks in [`/start`](../../.cursor/commands/start.md), assumptions tracking in [`/whats-next`](../../.cursor/commands/whats-next.md), brief-alignment drift detection in [`/review`](../../.cursor/commands/review.md), and the [CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md) convention for planning projects. The full story of how this case study produced the system improvements it was documenting the absence of is in [When Case Studies Generate System Improvements](case-studies-as-discovery.md).
 
 ---
 

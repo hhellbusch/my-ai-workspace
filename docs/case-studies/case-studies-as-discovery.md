@@ -18,7 +18,7 @@ The act of documenting what happened — not just summarizing it, but tracing th
 | Gap | What it means |
 |---|---|
 | No "project evolution" log | Git history captures diffs but not *why* the scope shifted |
-| No cross-session scope-drift detection | The `/audit` command checks links and registries but not tonal consistency |
+| No cross-session scope-drift detection | The [`/audit`](../../.cursor/commands/audit.md) command checks links and registries but not tonal consistency |
 | No mechanism for propagating subtle nuance | Structural changes cascade through cross-linking; tonal shifts don't |
 
 These gaps weren't visible before the case study was written. They were implicit in the project's history but had never been articulated. The case study format — which requires a "What Conventions Are Missing" section — forced the articulation.
@@ -33,17 +33,17 @@ The user's words: "the shoshin connection is an interesting one. how could we us
 
 That question led to a plan with five integration points:
 
-- **`shoshin.md` rule** — Always-applied. Verify project claims against source documents (brief, roadmap, style guide) rather than relying on conversation summaries. Detect scope-shift language and trigger set-based document updates.
-- **`/start` step 2.5** — Fresh-eyes check comparing brief goals against current backlog work.
-- **`/whats-next` assumptions section** — Capture framing decisions the next session should question.
-- **`/review` step 8.5** — Brief-alignment drift check for docs/planning commits.
-- **CHANGELOG.md convention** — Evolution log for `.planning/` projects capturing *why* scope changed.
+- **[`shoshin.md` rule](../../.cursor/rules/shoshin.md)** — Always-applied. Verify project claims against source documents (brief, roadmap, style guide) rather than relying on conversation summaries. Detect scope-shift language and trigger set-based document updates.
+- **[`/start`](../../.cursor/commands/start.md) step 2.5** — Fresh-eyes check comparing brief goals against current backlog work.
+- **[`/whats-next`](../../.cursor/commands/whats-next.md) assumptions section** — Capture framing decisions the next session should question.
+- **[`/review`](../../.cursor/commands/review.md) step 8.5** — Brief-alignment drift check for docs/planning commits.
+- **[CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md) convention** — Evolution log for `.planning/` projects capturing *why* scope changed.
 
 All five were implemented in one pass. The zen-karate project got a backfilled changelog with five retroactive entries.
 
 ### 5. The circle closed
 
-The case study documented the absence of an evolution log. The shoshin integration created the evolution log. The case study documented the absence of tonal drift detection. The shoshin integration added brief-alignment checking to `/review`. The case study documented the absence of nuance propagation. The shoshin rule addresses this by triggering set-based document updates when scope language appears.
+The case study documented the absence of an evolution log. The shoshin integration created the [evolution log](../../.planning/zen-karate/CHANGELOG.md). The case study documented the absence of tonal drift detection. The shoshin integration added brief-alignment checking to [`/review`](../../.cursor/commands/review.md). The case study documented the absence of nuance propagation. The [shoshin rule](../../.cursor/rules/shoshin.md) addresses this by triggering set-based document updates when scope language appears.
 
 The case study *produced* the system improvements it was documenting the need for.
 
@@ -75,7 +75,7 @@ The other case studies document gaps that were noticed during work. This one doc
 
 ## The Recursive Observation
 
-This case study is itself an example of the pattern it describes. Writing the evolving-scope case study surfaced the shoshin integration opportunity. Now writing *this* case study surfaces the observation that structured reflection is a discovery mechanism. If the pattern holds, this observation should eventually produce something too — perhaps a convention for "reflection prompts" in the case study template, or a step in the `/whats-next` command that asks "what would a case study about this session reveal?"
+This case study is itself an example of the pattern it describes. Writing the evolving-scope case study surfaced the shoshin integration opportunity. Now writing *this* case study surfaces the observation that structured reflection is a discovery mechanism. If the pattern holds, this observation should eventually produce something too — perhaps a convention for "reflection prompts" in the case study template, or a step in the [`/whats-next`](../../.cursor/commands/whats-next.md) command that asks "what would a case study about this session reveal?"
 
 Whether that's genuinely useful or just recursive navel-gazing is an open question. The [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md) argument #4 — "meta-infrastructure outweighs output" — applies here. At some point the system for reflecting on the system should produce essays, not more system.
 

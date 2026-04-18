@@ -37,7 +37,7 @@ Google's Gemini API can process YouTube videos directly by URL — not just tran
 
 A standalone script using the `youtube-transcript-api` library. Fetch a transcript, save it as a timestamped markdown file. Support single video and batch mode. Integrate with the existing research skill's file-based workflow.
 
-**Advantages:** Output is a file on disk — persistent across sessions, cacheable, grep-able, version-controllable. Batch mode handles multiple videos. Fits the existing pattern: `fetch-sources.py` fetches web pages as markdown, `fetch-transcript.py` fetches transcripts as markdown. Same directory, same conventions, same workflow.
+**Advantages:** Output is a file on disk — persistent across sessions, cacheable, grep-able, version-controllable. Batch mode handles multiple videos. Fits the existing pattern: [`fetch-sources.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-sources.py) fetches web pages as markdown, [`fetch-transcript.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-transcript.py) fetches transcripts as markdown. Same directory, same conventions, same workflow.
 
 **Disadvantages:** Manual invocation. The AI can't call it silently during conversation — someone has to run `python3 fetch-transcript.py <url> <output-dir>`.
 
@@ -74,7 +74,7 @@ The script handles all four. The MCP server handles #1 and #2 but pushes #3 and 
 
 MCP servers are the more modern approach. They integrate with the AI's tool-calling infrastructure. They feel like the "right" way to extend an AI assistant's capabilities. But "right" in the abstract and "right for this workflow" are different questions.
 
-The project already has `fetch-sources.py` — a Python script that fetches web pages as markdown with stealth headers, proxy support, and domain-aware rate limiting. Adding `fetch-transcript.py` alongside it is consistent. Adding an MCP server introduces a new category of dependency for one use case.
+The project already has [`fetch-sources.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-sources.py) — a Python script that fetches web pages as markdown with stealth headers, proxy support, and domain-aware rate limiting. Adding [`fetch-transcript.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-transcript.py) alongside it is consistent. Adding an MCP server introduces a new category of dependency for one use case.
 
 This is the same judgment pattern the AI workflows essay describes: choosing tools that fit the actual work, not tools that fit an architectural vision.
 
@@ -89,9 +89,9 @@ The [`fetch-transcript.py`](../../.cursor/skills/research-and-analyze/scripts/fe
 - Saves as markdown with YAML-style metadata (title, channel, URL, duration, language, segment count, fetch date)
 - Timestamps every segment for reference
 - Supports batch mode via a text file of URLs
-- Lives in `.cursor/skills/research-and-analyze/scripts/` alongside `fetch-sources.py`
+- Lives in [`.cursor/skills/research-and-analyze/scripts/`](../../.cursor/skills/research-and-analyze/scripts/) alongside [`fetch-sources.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-sources.py)
 
-The first test run fetched the Shi Heng Yi interview: 2,142 segments, 1 hour 37 minutes, saved as a markdown file that the research skill could immediately process. The `/reference` command's video enrichment workflow was updated to call the script automatically.
+The first test run fetched the Shi Heng Yi interview: 2,142 segments, 1 hour 37 minutes, saved as a markdown file that the research skill could immediately process. The [`/reference`](../../.cursor/commands/reference.md) command's video enrichment workflow was updated to call the script automatically.
 
 Total development time: one conversation exchange for the script, one for testing, one for integration.
 
