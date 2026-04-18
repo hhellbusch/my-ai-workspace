@@ -90,6 +90,12 @@ The essays distill meaningful principles — they don't just tell a personal sto
 - Language should signal openness: "being explored," "in progress," "under development" — not "planned," "upcoming," or "next in the series"
 - The project itself practices non-attachment to outcomes. A thread that gets killed after honest sparring is a success, not a failure.
 
+### Nothing Is Sacred — Published Work Can Be Revised
+- Published essays are not finished — they're the current best version. They can be pulled back in, rewritten, merged, split, or retired as the project evolves.
+- "Published" means "committed to the repo and readable," not "final." The git history preserves every version.
+- When new threads, research, or personal experience changes the picture, existing essays should be updated to reflect the improved understanding — not preserved as monuments to a previous session's thinking.
+- This applies to the `docs/` essays, the planning docs, the style guide itself, and every other artifact. The project practices what it preaches about non-attachment.
+
 ### Purpose of the Essays
 - Distill principles from practice that are meaningful beyond the personal story
 - The personal experience serves the ideas, not the other way around (this echoes "Not memoir" above, but extends to the project level)
