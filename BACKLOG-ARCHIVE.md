@@ -6,6 +6,20 @@ New archival batches are prepended below (newest batch first).
 
 ---
 
+## Archived 2026-04-17 (2 items)
+
+### Adversarial review (sparring) meta-system integration
+- **Product:** meta
+- **Context:** Integrated adversarial review into the workflow system at four points: (1) `/spar` slash command for on-demand adversarial review, (2) Spar as a fifth purpose in the `create-meta-prompts` skill with `spar-patterns.md` reference and chain integration (research → spar → plan → do), (3) zero-base de-biasing in `/backlog prioritize` to counter AI anchoring on prior priorities, (4) "Assumptions to challenge" subsection in `/review` for documentation commits.
+- **Links:** `.cursor/commands/spar.md`, `.cursor/skills/create-meta-prompts/references/spar-patterns.md`, `.cursor/commands/backlog.md`, `.cursor/commands/review.md`
+- **Completed:** 2026-04-17
+
+### YouTube transcript tooling
+- **Product:** meta
+- **Context:** Built `fetch-transcript.py` script using `youtube-transcript-api` — fetches YouTube transcripts as timestamped markdown with metadata. Supports single video and batch mode. Integrated into the research skill's scripts index and the `/reference` command's video enrichment workflow. Tested successfully with Shi Heng Yi interview (2142 segments, 1:37:35 duration). MCP server option deferred to Ideas as the script-based approach covers the immediate need.
+- **Links:** `.cursor/skills/research-and-analyze/scripts/fetch-transcript.py`, `.cursor/commands/reference.md`
+- **Completed:** 2026-04-17
+
 ## Archived 2026-04-18 (17 items) — rolling Done cap restored
 
 ### ArgoCD diff preview upstream contribution
