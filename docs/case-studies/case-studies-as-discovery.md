@@ -83,6 +83,10 @@ Whether that's genuinely useful or just recursive navel-gazing is an open questi
 
 ---
 
+## What the Human Brought
+
+The leap from observation to design principle was the user's. The case study noted that the project's scope evolution was an example of shoshin — the scope was learning. The user read that and connected it forward: "the shoshin connection is an interesting one. how could we use that call out to help the meta system?" That question — whether a philosophical observation could become a structural tool — drove the five system enhancements. The AI can build a shoshin rule; it cannot decide that shoshin should be a design principle rather than an essay topic.
+
 ## Artifacts
 
 | Artifact | What it is |

@@ -88,6 +88,10 @@ The novel element is that this gap isn't about *correctness* — it's about *ide
 
 ---
 
+## What the Human Brought
+
+The concern was the author's — triggered by a single sentence that claimed a professional identity the author hadn't chosen to state. The author's response ("remove it") and the follow-on question ("how many other files contain identity claims I didn't write?") drove the `voice-approved` system. The distinction between reading content and approving content that speaks *as you* came from that author-specific concern. An AI reviewing biographical accuracy would check the facts; it would not ask the identity question.
+
 ## Artifacts
 
 | Artifact | What it is |

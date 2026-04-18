@@ -113,6 +113,10 @@ This is [The Shift](../ai-engineering/the-shift.md)'s systematic debugging metho
 
 ---
 
+## What the Human Brought
+
+The user noticed the anchoring pattern and named it precisely before any fix was designed. The behavioral diagnosis — "the AI tends to weight pre-existing priorities into the next rev of prioritization" — was the insight that made the structural fix possible. The AI can build a zero-base evaluation step; it cannot notice that its own re-prioritizations are systematically self-confirming without being told.
+
 ## Artifacts
 
 | Artifact | What it is |

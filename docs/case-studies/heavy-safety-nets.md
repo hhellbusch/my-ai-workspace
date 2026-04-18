@@ -100,6 +100,10 @@ In AI-assisted workflows specifically, this connects to [The Shift](../ai-engine
 
 ---
 
+## What the Human Brought
+
+The retrospective question — "did our review mechanisms kick in appropriately?" — was the author's. It is a different question from "is this file correct?" or "does this commit look right?": it asks whether the workflow itself performed as designed, after the fact. That accountability question is what surfaced the three silent failures. The AI detects stale reviews when prompted; it does not proactively ask whether its own process safeguards failed without anyone noticing.
+
 ## Artifacts
 
 | Artifact | What it is |

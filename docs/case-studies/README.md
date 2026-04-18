@@ -4,6 +4,8 @@ Documented examples of meta-development patterns, workflow decisions, and AI-ass
 
 **Survivorship note:** Every case study here documents something that was noticed, named, and addressed. Sessions that produced net losses without useful recovery, work that had to be abandoned, or tools that made things worse without a recoverable fix are not represented — not because they didn't happen, but because a clean failure record didn't emerge. This is a selection effect worth naming. The `failure` label below means *AI failure mode that was caught and fixed*, not *unrecovered loss*.
 
+**Attribution convention:** Where the human contribution is clearly traceable — a specific observation, question, or judgment that the AI could not have originated — case studies include a `## What the Human Brought` section before the artifacts table. Where the record isn't clear, that section is omitted rather than manufactured. New case studies should include it when the human's contribution is documentable.
+
 **Labels:** `build` — built a tool or system from a gap · `failure` — AI failure mode and its fix · `workflow` — process discipline or design decision
 
 ## Building Tools and Systems

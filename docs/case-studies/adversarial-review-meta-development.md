@@ -93,6 +93,10 @@ The research skill case study ([Building a Research and Verification Skill](buil
 
 ---
 
+## What the Human Brought
+
+The observation that the essay "read too well" was the human's. An AI reviewing the same essay would likely confirm it read well — that's the failure mode the essay was warning about. The user recognized that confident, well-organized prose is not the same as challenged prose, and that the absence of pushback was itself a structural problem in the workflow, not a sign that everything was correct. Naming that gap as a workflow flaw — rather than an editorial oversight to patch once — is what made the `/spar` system possible.
+
 ## Artifacts
 
 | Artifact | What it is |
