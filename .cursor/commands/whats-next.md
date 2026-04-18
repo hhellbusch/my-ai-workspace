@@ -77,6 +77,16 @@ If yes to any, include a **Case Study Opportunities** section in the handoff doc
 
 If nothing stands out, skip this section entirely. Not every session produces essay-worthy material.
 
+### Step 1.75: Assumptions check (shoshin)
+
+Before writing the handoff, identify assumptions this session is carrying that a fresh session should question rather than inherit:
+
+- What framing decisions were made in this session? (e.g., "we decided the essay should lead with X" or "we treated the backlog ordering as settled")
+- What was taken as given that might not be true? (e.g., "we assumed the brief's scope is still accurate" or "we relied on a source without re-verifying it")
+- Did the project's scope or framing shift during this session? If so, were all related planning documents updated as a set?
+
+If any assumptions are worth surfacing, include an `<assumptions_carried>` section in the handoff (see output format below). If the session was straightforward with no framing decisions, skip it.
+
 ### Step 2: Update the backlog if needed
 
 If work completed in this session resolved a backlog item, move it to Done in `BACKLOG.md`. If new ideas or follow-up work emerged, add them to Ideas. Update the `Last updated` date.
@@ -147,4 +157,12 @@ If work completed in this session resolved a backlog item, move it to Done in `B
 - Which existing essay(s) it connects to
 - Whether it was already added to the backlog as a seed]
 </case_study_opportunities>
+
+<assumptions_carried>
+[Optional — only include if this session made framing decisions or carried assumptions that the next session should question rather than inherit.
+- Framing decisions: "We decided X" — is that still the right call?
+- Unverified assumptions: "We assumed Y" — should the next session check?
+- Scope shifts: "The user broadened/narrowed Z" — were all planning docs updated?
+- Context reliance: "We relied on [handoff/summary] without re-reading the brief"]
+</assumptions_carried>
 ```

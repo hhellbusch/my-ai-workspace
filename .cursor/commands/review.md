@@ -79,6 +79,23 @@ This command is read-only. It reports findings and asks for confirmation before 
 
 Skip this section entirely for purely mechanical changes (config files, tooling, scaffolding). This is only useful for content that makes claims.
 
+8.5. **Brief alignment check (shoshin)** — If the changes include files in `docs/` or `.planning/`, check for framing drift:
+
+- Read the relevant project brief (`.planning/*/BRIEF.md`) for any planning project connected to the changed files
+- Compare the content being committed against the brief's stated scope and purpose
+- Flag if the content narrows scope the brief says is broad, broadens scope the brief says is focused, or introduces framing that contradicts the style guide
+
+```
+### Brief Alignment
+- [project]: Content aligns with brief scope.
+  OR
+- [project]: This essay narrows focus to [X] but the brief says the scope includes [Y]. Update the brief or broaden the essay.
+  OR
+- [project]: The style guide says [convention] but this content [violates it].
+```
+
+Skip for changes that don't touch docs or planning files. If no `.planning/` project is connected to the changed files, skip.
+
 ```
 ### Recommendation
 [READY TO COMMIT / FIX ISSUES FIRST]

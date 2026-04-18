@@ -32,6 +32,7 @@ Content is organized by **product/technology**, then by **content type** within 
 | `notes/` | Informal notes and quick references | Markdown files, loosely organized |
 | `prompts/` | Structured AI prompt templates for repeatable tasks | Numbered files: `NNN-description.md`; completed outputs go in `completed/` |
 | `research/` | Research workspaces — fetched sources, analysis findings, assessments | One dir per topic: `research/{topic}/` with `manifest.md`, `sources/`, `findings/`, `assessment.md` |
+| `.planning/` | Multi-session project planning — briefs, roadmaps, style guides, evolution logs | One dir per project: `.planning/{project}/` with `BRIEF.md`, `ROADMAP.md`, optional `STYLE.md`, `CHANGELOG.md` |
 
 ## Placement Rules
 
@@ -43,6 +44,7 @@ Content is organized by **product/technology**, then by **content type** within 
 6. **New top-level directories** need a clear reason. For new products/technologies, create a `{product}/` directory with appropriate content type subdirectories. For cross-cutting content, prefer fitting into the existing structure.
 7. **The `docs/` folder** contains curated essay tracks organized into subdirectories: `ai-engineering/` (skills, workflows, risks), `philosophy/` (martial arts, Zen, applied practice), and `case-studies/` (documented meta-development patterns). Each track has its own `README.md` with a reading order. `docs/README.md` is the master index linking into all tracks. New essays go in their track directory, not in `docs/` root.
 8. **The top-level `examples/` folder** is for doc-supporting artifacts (e.g., scripts referenced by essays in `docs/`), not for product-specific examples.
+9. **Planning projects** (`.planning/{project}/`) should include a `CHANGELOG.md` that captures *why* scope or framing changed — not just what changed. Git history records the diffs; the changelog captures the user's reasoning and which documents were updated as a set. Format: `## YYYY-MM-DD — [Change title]` with `What changed`, `Why`, and `Documents updated` fields.
 
 ## Naming Conventions
 

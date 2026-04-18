@@ -56,6 +56,27 @@ Read `BACKLOG.md` and present:
 **Recently Completed:** [last 2-3 Done items with dates]
 ```
 
+### Step 2.5: Fresh-eyes check (shoshin)
+
+For each directory in `.planning/` that has a `BRIEF.md`:
+
+1. Read the brief's **one-liner**, **problem** statement, and **success criteria**
+2. Compare against the current In Progress and Up Next backlog items
+3. If there's a gap — work that doesn't connect to any stated goal, or stated goals with no active work — note it briefly:
+
+```
+## Brief Alignment
+- **[project]**: Current work aligns with stated goals.
+  OR
+- **[project]**: In Progress item "[title]" doesn't connect to any success criterion in the brief. Has the scope evolved, or has the work drifted?
+  OR
+- **[project]**: Brief lists "[criterion]" as a goal but nothing in the backlog is working toward it.
+```
+
+If a `CHANGELOG.md` exists in the planning directory, check the most recent entry — it captures why the scope last changed and may explain apparent drift.
+
+This step is lightweight. If everything aligns, one line is enough. Only surface conflicts.
+
 ### Step 3: Recent activity
 
 From the git log, identify:
@@ -95,6 +116,7 @@ What would you like to work on? Pick a number or tell me something else.
 <success_criteria>
 - Handoff files detected and summarized if they exist
 - Backlog state presented clearly
+- Brief alignment checked — drift surfaced if present
 - Recent activity summarized from git log
 - Planning project status checked
 - 2-3 actionable suggestions presented
