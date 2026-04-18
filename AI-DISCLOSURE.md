@@ -31,13 +31,15 @@ Different content requires different kinds of validation. Each category has a ba
 
 | Content category | Location | Validation types |
 |---|---|---|
-| Essays and case studies | `docs/**` | `read`, `fact-checked` |
+| Essays and case studies | `docs/**` | `read`, `fact-checked`, `voice-approved` |
 | DevOps examples | `{product}/examples/**` | `read`, `tested` |
 | Troubleshooting guides | `{product}/troubleshooting/**` | `read`, `commands-verified` |
 | Meta-system | `.cursor/commands/`, `.cursor/skills/`, `.cursor/rules/` | `read`, `used-in-practice` |
 | Research and library | `research/**`, `library/**` | `read`, `sources-checked` |
 
 Files can have additional validation types beyond what's listed for their category (e.g., a troubleshooting guide that's also been `tested`). Validation dates are tracked per type.
+
+**`voice-approved`** has special significance: it means the author has reviewed content that speaks in their voice — biographical claims, professional identity, personal opinions, experience statements. Since AI writes in the author's voice by default, readers will attribute these statements directly to the author. Content with biographical elements that lacks `voice-approved` validation should be treated with extra caution.
 
 ## Why this matters
 

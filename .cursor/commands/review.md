@@ -50,9 +50,18 @@ This command is read-only. It reports findings and asks for confirmation before 
    - Config files: check for valid syntax if tooling is available
    - No secrets, credentials, or sensitive data (flag `.env`, `*secret*`, `*credential*`, `*password*`, `*token*` patterns in content)
 
-6. **Review status note** — For new files in `docs/`, `research/`, or product directories (`ansible/`, `ocp/`, `argo/`, etc.):
+6. **Biographical/voice check** — For new or modified files in `docs/`, scan for content that speaks in the author's voice or makes biographical claims. Flag lines containing:
+   - Professional titles or role descriptions applied to the author
+   - First-person claims about experience, training, or career ("I trained," "in my years of")
+   - Personal opinions stated as fact ("I believe," "I've found that")
+   - Biographical details (training history, personal philosophy, specific life events)
+
+   Present flagged lines with their file and line number under a **"Biographical Content — Needs `voice-approved`"** section. This is the highest-priority review item — readers will attribute these statements to the author. This is NOT a blocker, but it must be visible.
+
+7. **Review status note** — For new files in `docs/`, `research/`, or product directories (`ansible/`, `ocp/`, `argo/`, etc.):
    - Note that these files will start as **direction-reviewed** (no `review:` frontmatter)
    - Remind: "Run `/validate <path> read` after you've reviewed these files"
+   - If biographical content was flagged in step 6, remind: "Run `/validate <path> voice-approved` after reviewing the biographical content"
    - This is informational, not a blocker — new files are expected to lack review metadata
 
 7. **Backlog alignment** — Read `BACKLOG.md` and check if the work being committed relates to a tracked item. If not, note it (not a blocker, just a reminder).
@@ -65,6 +74,10 @@ This command is read-only. It reports findings and asks for confirmation before 
 ### Changes Summary
 - N new files, M modified, D deleted
 
+### Biographical Content — Needs `voice-approved`
+- [ ] `file.md` line N: "quote of biographical claim"
+(or: No biographical content detected in changed files.)
+
 ### Issues Found
 - [ ] [severity] Description — suggested fix
 
@@ -74,6 +87,7 @@ This command is read-only. It reports findings and asks for confirmation before 
 - Cross-references: OK / issues
 - Content quality: OK / issues
 - Secrets scan: OK / issues
+- Biographical scan: N lines flagged / clean
 - Review status: N new files start as direction-reviewed (run `/validate` after reading)
 - Backlog alignment: tracked / untracked
 ```

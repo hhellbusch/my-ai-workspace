@@ -14,6 +14,7 @@ This series uses two registers that alternate based on content:
 - Specific over abstract: name the dojo, the kata, the moment — not "one time in training"
 - Comfortable with uncertainty and paradox (Zen is not a system of answers)
 - Does not explain away the ineffable; acknowledges what can only be experienced
+- **Biographical caution**: Every sentence that claims something about the author's identity, experience, or background will be attributed to them by readers. AI must not fabricate or embellish biographical details. When the author has not provided specific personal input for a section, use general or hypothetical framing ("a practitioner might notice...") rather than fabricating first-person claims. Content containing biographical statements requires `voice-approved` validation before the author considers it reviewed — see `AI-DISCLOSURE.md`.
 
 ### Practitioner Voice (applied and analytical sections)
 - Second person or inclusive "we" where it helps ("you notice this in teams," "we carry this into work")

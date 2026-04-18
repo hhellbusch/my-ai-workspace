@@ -126,11 +126,29 @@ Categories:
 - **Meta-system**: `.cursor/commands/*.md`, `.cursor/skills/**/*.md`, `.cursor/rules/*.md`
 - **Research**: `research/**/*.md`, `library/**/*.md`
 
-### 5b. Recently Added Without Review
+### 5b. Biographical Content Without `voice-approved`
+
+Scan all `docs/**/*.md` files for biographical patterns — first-person experience claims, professional identity statements, personal opinions, training history. For each file with biographical content, check if the file has `voice-approved` validation in its frontmatter. Files with biographical content but no `voice-approved` are the highest-priority review items.
+
+Patterns to detect:
+- First-person experience: "I trained," "in my years," "I've worked," "I practiced," "my experience"
+- Professional identity: "an engineer," "a consultant," "infrastructure engineer," "my role"
+- Personal philosophy: "I believe," "I've found that," "my approach," "in my view"
+- Biographical narrative: "when I started," "growing up," "my sensei," "my training"
+
+Present as:
+
+```
+### Biographical Content — Needs voice-approved
+- docs/philosophy/ego-ai-and-the-zen-antidote.md — biographical claims on lines N, M (no voice-approved)
+- docs/ai-engineering/the-shift.md — biographical claims on lines N, M (voice-approved: 2026-04-18 ✓)
+```
+
+### 5c. Recently Added Without Review
 
 Find markdown files committed in the last 14 days that have no `review:` frontmatter. These are candidates for the next review pass.
 
-### 5c. Stale Reviews
+### 5d. Stale Reviews
 
 Find files where the most recent validation date is older than the file's last git modification date. This means the file was changed after the last review — the review may no longer be current.
 

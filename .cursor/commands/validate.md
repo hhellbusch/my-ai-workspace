@@ -28,15 +28,18 @@ Record that the author has reviewed and validated specific files, tracking what 
 Parse `$ARGUMENTS` to extract:
 
 - **Target**: file path or directory path
-- **Validation types**: one or more of `read`, `fact-checked`, `tested`, `commands-verified`, `used-in-practice`, `sources-checked`
+- **Validation types**: one or more of `read`, `fact-checked`, `tested`, `commands-verified`, `used-in-practice`, `sources-checked`, `voice-approved`
 - **Notes**: optional, after `--notes` flag
 
 Examples:
 - `/validate docs/ai-engineering/the-shift.md read`
+- `/validate docs/philosophy/ego-ai-and-the-zen-antidote.md read voice-approved`
 - `/validate ocp/troubleshooting/api-slowness-web-console/ read commands-verified --notes "Verified on OCP 4.14"`
 - `/validate .cursor/commands/backlog.md read used-in-practice`
 
-If no validation type is provided, ask: "What kind of validation? Options: `read`, `fact-checked`, `tested`, `commands-verified`, `used-in-practice`, `sources-checked`"
+If no validation type is provided, ask: "What kind of validation? Options: `read`, `fact-checked`, `tested`, `commands-verified`, `used-in-practice`, `sources-checked`, `voice-approved`"
+
+**Special note on `voice-approved`**: This type means the author has reviewed content that speaks in their voice — biographical claims, professional identity, personal opinions, experience statements. If a `docs/` file contains biographical content and the user validates with `read` but not `voice-approved`, note: "This file contains biographical content. Consider also running `/validate <path> voice-approved` after reviewing those sections."
 
 If the target is a directory, expand to all `.md` files in that directory (non-recursive by default; ask if the user wants recursive).
 
