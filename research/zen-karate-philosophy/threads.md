@@ -66,6 +66,26 @@ The dojo is literally "a place of the Way" — a place of study and learning, no
 
 ---
 
+## 12. The Forgotten Body — What Tech Culture Gets Backwards
+
+The irony is thick. Shi Heng Yi's central realization is "you will never find it in movement — the teaching is about mind, not body." But tech work has the opposite pathology: all mind, no body at all. Engineers sit for 8-12 hours in "ergonomic" chairs that are really just comfortable prisons. Muscle atrophies. Hips lock up. Shoulders round forward. The body becomes something you haul to a desk and ignore until it breaks.
+
+This isn't just a health problem — it's a philosophical one.
+
+**Deshimaru's bunbu ryodo** (the way of both sword and pen) insists that strength and wisdom develop together. Neither is sufficient alone. Tech culture chose pen without sword and wonders why people burn out, lose focus, and can't think clearly after lunch. The dojo teaches that physical practice *is* mental practice — that the body's state shapes the mind's capacity. Every karateka knows that a hard training session clears the head in ways that no "mindfulness app" can replicate.
+
+**The "never enough" pattern applied to the body.** The same culture that says "why not grade A?" about code output says nothing at all about physical well-being. Breaks are seen as unproductive. Getting up from the desk feels like slacking. The restlessness Shi Heng Yi describes — "this very strong urge that something needs to be done" — keeps people glued to screens when their body is screaming for movement. The chair becomes the trap, and "ergonomic" is the lie that makes the trap comfortable enough to stay in.
+
+**Knowledge hoarding as the opposite of dojo culture.** In the dojo, knowledge flows. The senior student teaches the junior. The sensei demonstrates, corrects, demonstrates again. Hoarding technique would be absurd — your training partners need to be good for *you* to get better. Keeping your sparring partner weak makes your own training worthless. In tech organizations, knowledge hoarding is rewarded: the person who holds the keys is "indispensable." This is the lonely wolf problem (thread 6) institutionalized. It creates fragile teams where one person's absence is a crisis.
+
+**Lack of collaboration as the absence of kumite.** Kumite (sparring) requires a partner. You cannot practice it alone. You learn by engaging, by being challenged, by having your habits exposed by someone who moves differently than you expect. The team that doesn't collaborate is doing solo kata forever — refining their own patterns but never testing them against reality. Code review, pair programming, architecture discussions — these are kumite. They're supposed to be uncomfortable. That's the point.
+
+**Breaks as practice, not absence of practice.** In the dojo, the pause between techniques is not wasted time. Zanshin — lingering awareness — means the practice continues in the space between movements. Rest is part of the kata. Tech culture treats breaks as the opposite of work. But Deshimaru's gyodo says every moment is practice: standing, sitting, walking, even washing your face. The walk away from the desk isn't a break *from* work — it's a different mode of work. The insight arrives in the hallway, not at the keyboard.
+
+**The chair as anti-zazen.** In zazen, posture matters intensely. Spine straight, hips open, weight grounded. The body is deliberately positioned to support clarity of mind. The modern office chair does the opposite: it supports collapse. It holds you in a shape that your muscles should hold themselves. Over years, the muscles that should keep you upright simply stop firing. The "ergonomic" solution to sitting badly is sitting slightly-less-badly in a more expensive chair. The dojo solution is: stand up. Move. Sit on the floor. Let your body remember what it's for.
+
+---
+
 ## Mapping to Planned Essays
 
 | Thread | Planned essay(s) | Notes |
@@ -80,4 +100,5 @@ The dojo is literally "a place of the Way" — a place of study and learning, no
 | 8. Organizational Karma | The Dojo and the Team | Could be standalone |
 | 9. Emptiness/Possibility | Beginner's Mind in the Age of AI | Shoshin |
 | 10. Breaking the Cycle | The Dojo and the Team | Could be standalone |
-| 11. Dojo/Open Source/Agile | **New — not yet planned** | Rich enough for its own essay |
+| 11. Dojo/Open Source/Agile | Dojo/Open Source/Ways of Working | **Priority — first essay** |
+| 12. The Forgotten Body | Dojo/Open Source/Ways of Working | Feeds into dojo culture, breaks, collaboration |
