@@ -42,7 +42,7 @@ Each of these is a distinct subproblem with its own constraints and failure mode
 
 ### Design thinking at scale
 
-The same decomposition skill applies to enterprise architecture. Consider the decision space for [self-hosting LLMs on OpenShift AI](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/): RHEL AI vs. OpenShift AI for your deployment topology. vLLM vs. TGIS for your inference runtime. S3 object storage vs. ModelCar OCI images for model delivery. On-premise hardware vs. ROSA/ARO for your infrastructure. Each choice has cascading consequences for cost, compliance, operational complexity, and team capability requirements. AI can explain any of these options clearly — but it will also confidently endorse whichever one you lean toward, because that's what the sycophancy incentive produces.
+The same decomposition skill applies to enterprise architecture. Consider the decision space for [self-hosting LLMs on OpenShift AI](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/): RHEL AI vs. OpenShift AI for your deployment topology. vLLM vs. TGIS for your inference runtime. S3 object storage vs. ModelCar OCI images for model delivery. On-premise hardware vs. ROSA/ARO for your infrastructure. Each choice has cascading consequences for cost, compliance, operational complexity, and team capability requirements. AI can explain any of these options clearly — but it will also confidently endorse whichever one you lean toward. This is [sycophancy](https://www.anthropic.com/research/understanding-sycophancy): the well-documented tendency of AI models to tell you what you want to hear rather than what's accurate, a behavior reinforced by how these models are trained on human feedback.
 
 The engineering skill is recognizing that these are tradeoff decisions with organizational context, not technical questions with objectively correct answers. The right architecture depends on your regulatory constraints, your team's depth, your existing infrastructure, and your economics — none of which AI knows unless you tell it, and all of which it will agree with uncritically.
 
@@ -258,7 +258,7 @@ When the AI says "the best approach here is X," that sentence carries the same l
 
 ### Anchoring on its own prior outputs
 
-The sycophancy problem isn't limited to the AI agreeing with *you*. AI also anchors on its own prior work — and this is harder to notice because the prior work often looks authoritative.
+The sycophancy problem described above isn't limited to the AI agreeing with *you*. AI also anchors on its own prior work — and this is harder to notice because the prior work often looks authoritative.
 
 When an AI writes a backlog, a planning document, or a session handoff, those artifacts persist on disk. The next session reads them. Because the content is well-structured and confident (see above), the AI treats its own prior output as evidence with the same weight as external sources. It doesn't discount for "I wrote this" the way a human writer discounts their first draft.
 
