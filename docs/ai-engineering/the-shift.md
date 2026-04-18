@@ -194,7 +194,7 @@ Teams that replace peer review with AI review will ship more bugs, not fewer.
 
 Before discussing the risks, it helps to ground what AI coding assistants actually are — without mystification or dismissal.
 
-A large language model is a statistical model trained on text. It predicts the most likely next sequence of tokens given the preceding context. Modern AI assistants wrap this core capability in layers that make it more useful:
+A large language model is a statistical model trained on text. It predicts the most likely next sequence of *tokens* — small chunks of text, typically words or pieces of words — given the preceding context. (For a visual, intuition-first explanation of how this works, [3Blue1Brown's deep learning series](https://www.youtube.com/playlist?list=PLLMP7TazTxHrgVk7w1EKpLBIDoC50QrPS) is an excellent starting point.) Modern AI assistants wrap this core capability in layers that make it more useful:
 
 - **RLHF (Reinforcement Learning from Human Feedback)** tunes the model to produce outputs that humans rate as helpful
 - **Tool use** lets the model execute code, read files, and run commands
@@ -255,6 +255,8 @@ It *can* say these things if you explicitly ask. But the default mode is agreeme
 AI output is always well-structured, articulate, and confident. A wrong answer is indistinguishable in tone and style from a right one. This is unlike human communication, where hesitation, hedging, and "I'm not sure" are signals you unconsciously use to calibrate trust.
 
 When the AI says "the best approach here is X," that sentence carries the same linguistic confidence whether X is correct, partially correct, or completely wrong. You cannot use the AI's presentation to judge its accuracy. You have to evaluate the substance independently.
+
+This is not a new problem. Polished presentation has always been used to make weak arguments look strong — in advertising, in politics, in any context where persuasion matters more than truth. The skill that counters it is critical thinking: evaluating claims on their substance rather than their delivery. That skill gets built in many ways — formal education, professional experience, mentorship, independent study, hard-won mistakes. However you developed it, this is where it pays off. AI makes the fluency-accuracy gap universal and constant in a way that previous information environments did not.
 
 ### Anchoring on its own prior outputs
 
@@ -391,6 +393,9 @@ AI doesn't create your engineering culture. It amplifies it. A team with strong 
 | [Adversarial Review as a Meta-Development Pattern](../case-studies/adversarial-review-meta-development.md) | Case study: building structural pushback into the workflow — the "ask AI to argue against you" mitigation, automated |
 | [Building a Personal Knowledge Management System with AI](../case-studies/building-knowledge-management-with-ai.md) | Case study: self-reinforcing infrastructure — AI builds the systems that organize its own work |
 | [How AI Handles Evolving Creative Scope](../case-studies/evolving-creative-scope.md) | Case study: framing drift across sessions — what conventions help and what's missing |
+| [When AI Fabricates the Evidence for Its Own Argument](../case-studies/fabricated-references.md) | Case study: AI fabricated a plausible URL in the sycophancy section — fluency-accuracy gap applied to references |
+| [Who Is Speaking?](../case-studies/who-is-speaking.md) | Case study: AI writes biographical claims in the author's voice — a trust problem that fact-checking can't catch |
+| [When AI Ignores Changes Made by Other Sessions](../case-studies/stale-context-in-long-sessions.md) | Case study: AI anchored on its own earlier edit, ignoring an external override — stale context in multi-agent environments |
 
 ---
 
