@@ -109,7 +109,7 @@
 ### Explore Paude for containerized agent workflows
 - **Product:** meta
 - **Context:** [Paude](https://github.com/bbrowning/paude) runs AI coding agents (Claude Code, Cursor CLI, Gemini CLI, OpenClaw) in secure containers with git-based sync. Could strengthen the meta-prompting system by enabling isolated, parallelizable agent sessions — e.g., running research, drafting, and review agents concurrently in containers with `--yolo` safely enabled, or orchestrating fire-and-forget agent tasks against this workspace. Worth exploring whether its orchestration model (harvest, PRs, multi-session) maps to the multi-stage meta-prompt pipelines already in use here.
-- **Links:** https://github.com/bbrowning/paude
+- **Links:** https://github.com/bbrowning/paude, `.planning/paude-integration/`
 - **Added:** 2026-04-17
 
 ### Expand OCP troubleshooting guides
@@ -122,6 +122,13 @@
 - **Product:** coreos
 - **Context:** Currently only have `coreos/examples/` with Butane configurations. No troubleshooting guides yet. Could document common ignition/butane issues encountered during deployments.
 - **Links:** `coreos/examples/`
+- **Added:** 2026-04-17
+
+### Paude as external executor for meta-prompting pipelines
+- **Product:** meta
+- **Context:** If the Paude evaluation succeeds (see `.planning/paude-integration/`), explore wiring it into the meta-prompting architecture as an alternative execution backend. Integration points: a `/paude` slash command wrapping create -> assign -> harvest; a `--paude` flag in `/run-prompt` to delegate to a container session instead of a Task subagent; a Paude variant for `/run-plan` strategy C (plans without interactive checkpoints); a "containerized executor" pattern in the orchestration references; multi-agent comparison (`--agent claude` vs `--agent gemini`) as a first-class option for adversarial review. Fundamentally different from in-session Task subagents — Paude is fire-and-forget with git sync, not shared-context pipelines.
+- **Links:** https://github.com/bbrowning/paude, `.planning/paude-integration/`, `.cursor/skills/create-subagents/references/orchestration-patterns.md`
+- **Blocked on:** Paude evaluation Phase 5 assessment
 - **Added:** 2026-04-17
 
 ## Done
