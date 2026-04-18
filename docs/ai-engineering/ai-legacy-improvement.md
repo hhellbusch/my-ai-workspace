@@ -266,4 +266,4 @@ The organizations that recognize this shift early will quietly eat away at their
 
 ---
 
-*This document was written with AI assistance (Cursor). See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*
+*This document was created with AI assistance (Cursor) and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

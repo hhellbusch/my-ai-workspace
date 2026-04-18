@@ -346,4 +346,4 @@ The Day 2 concerns in that article — rate limiting, auth governance, observabi
 
 ---
 
-*This guide was written with AI assistance (GitHub Copilot). See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*
+*This guide was created with AI assistance (GitHub Copilot) and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

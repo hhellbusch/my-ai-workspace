@@ -188,4 +188,4 @@ The article presents a clear breakeven model. The directional logic is sound —
 
 ---
 
-*This summary was created with AI assistance (Cursor) from the [original article](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) by Jared Burck. Claims were verified against the article's 62 cited sources — see the [full verification assessment](../../research/openshift-ai-llm-deployment/assessment.md) for methodology and detailed findings. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*
+*This summary was created with AI assistance (Cursor) and has not been fully reviewed by the author. Based on the [original article](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) by Jared Burck. Claims were verified against the article's 62 cited sources — see the [full verification assessment](../../research/openshift-ai-llm-deployment/assessment.md) for methodology and detailed findings. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

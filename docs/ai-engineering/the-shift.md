@@ -394,4 +394,4 @@ AI doesn't create your engineering culture. It amplifies it. A team with strong 
 
 ---
 
-*This document was written with AI assistance (Cursor). See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*
+*This document was created with AI assistance (Cursor) and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
