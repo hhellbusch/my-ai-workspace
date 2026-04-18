@@ -24,6 +24,14 @@ When creating or modifying content, check whether cross-references need updating
 - **Deleted file** — Search for markdown links pointing to it and remove or redirect them.
 - **Scope change to a directory** — Check if its parent README description is still accurate.
 
+## External Links — Verify Before Committing
+
+When adding external URLs (http/https) to any markdown file, **verify the link resolves before committing**. AI models fabricate plausible-looking URLs — this is a known failure mode, not an edge case.
+
+**Required**: Fetch or check every new external URL before including it. If the URL returns a 404 or redirect to an unrelated page, find the correct URL or remove the link.
+
+**The `/review` pre-commit check should flag new external URLs for verification.**
+
 ## Inline Implementation Links
 
 When writing prose that mentions a specific file, command, script, rule, or skill by name, link it to the actual implementation on first mention. The reader should be able to follow the reference without searching.
