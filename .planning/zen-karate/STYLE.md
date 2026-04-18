@@ -38,6 +38,8 @@ Match the existing `docs/` essay format:
 - **Front matter**: Blockquote with bold **Audience:** and **Purpose:** lines
 - **Section breaks**: Horizontal rules `---` between major thematic blocks
 - **Hierarchy**: `##` for main sections, `###` for subtopics
+- **Sources and References**: Table linking to the specific research material, cached sources, threads, and library entries that informed the essay. Every claim that draws from a source should be traceable through this section. Use relative paths so links work from `docs/`.
+- **Open Review**: If the essay has been through adversarial review (`/spar` or manual sparring), link to the sparring notes and summarize the key unresolved counterarguments in 1-2 sentences. This signals to future sessions (and human readers) that the essay has known open threads.
 - **Related Reading**: Table at the end linking to other essays in the series and to the existing AI-focused docs where natural
 - **AI Disclosure**: Standard italic footer: *This document was written with AI assistance (Cursor). See [AI-DISCLOSURE.md](../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*
 

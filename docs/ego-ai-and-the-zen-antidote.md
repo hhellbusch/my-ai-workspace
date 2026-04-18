@@ -166,6 +166,27 @@ The practical mitigations from *The Shift* work better when they're built on thi
 
 ---
 
+## Sources and References
+
+This essay draws from the following research and reference material cached in the repository:
+
+| Source | What it contributed |
+|---|---|
+| [Shi Heng Yi transcript](../research/zen-karate-philosophy/sources/they-betrayed-me---master-shi-heng-yi-explains-the-true-cost-of-success-shaolin-.md) | Ego as "a collection of thoughts," the antenna/hooking metaphor, identity and letting go |
+| [Jesse Enkamp — Mushin and Mindfulness](../research/zen-karate-philosophy/sources/karatebyjesse-mushin-mindfulness.md) | Funakoshi's "empty of selfishness" quote, mushin as readiness not vacancy, silence as antidote |
+| [The Shift — sections 5-7](the-shift.md) | The sycophancy problem, ego reinforcement, practical mitigations table |
+| [Thread 14: Ego, AI, and the Zen Antidote](../.planning/zen-karate/threads.md) | The ideation thread that became this essay |
+| [Curated reading list](../research/zen-karate-philosophy/curated-reading.md) | Full annotated bibliography for the essay series |
+| [Library: Karate by Jesse](../library/karate-by-jesse.md) | Enriched reference entry for Jesse Enkamp's work |
+
+## Open Review
+
+This essay has been through adversarial review. The sparring notes contain unresolved counterarguments that may lead to revision:
+
+- **[Sparring notes](../research/zen-karate-philosophy/sparring-notes.md)** — 7 counterarguments including: the core claim is unverified, the mushin/engineering parallel is strained, the sensei model is romanticized, and the essay was written by an AI about resisting AI.
+
+These are open threads, not resolved objections. The essay will evolve as the author responds.
+
 ## Related Reading
 
 | Resource | What it covers |
