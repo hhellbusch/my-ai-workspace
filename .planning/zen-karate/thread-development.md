@@ -778,8 +778,18 @@ Improving from 20/80 toward 25/75. The user's recent inputs — single-tasking a
 - The ego/AI essay — covers the no-shoshin column of the matrix (strong — published)
 - The meta-development loop — AI as the tool that empties the cup (strong — demonstrated in this repo)
 
-**Gaps:**
-- *Personal experience:* **Voice prompts captured but unanswered.** What does an org with the tap permanently on look like from inside? A specific time you cut off the tap — what did you do? The bottom-right quadrant (full + closed) — what does it look like, when do you walk away? Does the "bow at the door" have a professional equivalent?
+**Author's voice (from conversation):**
+
+1. **Org with tap permanently on:** Burnout, lack of ownership, lack of mindfulness. People "just trying to get through the day." Toxic traits emerge — not because people are bad, but because they have no capacity for anything beyond survival mode.
+
+2. **Cutting off the tap:** Slow down the work if possible. Identify bottlenecks (The Goal, The Phoenix Project as strategy references). Identify pain points and make them better. This is continuous improvement applied to the system that's filling people's cups.
+
+3. **The bottom-right (full + closed):** "Sometimes the right words will dump the cup out." Even the hardest case — overloaded AND closed — can crack if you find the right framing. This contradicts the "walk away" impulse and suggests the practitioner's skill isn't just engineering the system but also finding the precise insight that reaches someone who seems unreachable.
+
+4. **Bow at the door:** Likes the concept. Applying the dojo mindset — everything outside the room is left behind when you enter. The question remains: what's the professional ritual that actually achieves this?
+
+**Gaps (remaining):**
+- *Personal experience:* Core voice captured. Still needs: specific stories that make these patterns concrete (not just the pattern, but a moment). The Goal/Phoenix Project references need to be explicit about which strategies map — theory of constraints? WIP limits? The three ways?
 - *Logical:* The matrix needs testing against real cases. Is the shoshin axis really binary (open/closed), or is it a spectrum? Does "cutting off the tap" actually work, or does the organization just turn it back on? What happens when you're the one with the full cup?
 
 **Spar (from this session):**
