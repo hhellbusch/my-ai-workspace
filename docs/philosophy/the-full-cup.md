@@ -107,6 +107,14 @@ The choice isn't whether to adopt AI. It's whether AI will be deployed as anothe
 
 ---
 
+## For the Practitioner
+
+Everything above is diagnosis and theory. If you're the person standing in front of a team — or more likely, sitting on a remote call with a grid of muted avatars — and trying to create the conditions for learning, the question is: *what do you actually do?*
+
+The answer depends on which quadrant you're facing, whether you're at a kickoff or mid-flight, and how much organizational authority you carry. The [Practitioner's Guide](the-full-cup-practitioners-guide.md) walks through the full transformation arc: reading the room, setting tap controls, creating structural bows in a cameras-off world, and sustaining the change once you've started. It's designed for the remote-first context where most of this work happens now — where the full cup announces itself as a silent avatar and the bow at the door has to be engineered into the format rather than felt in the room.
+
+---
+
 ## The Cup Grows by Doing So
 
 Shi Heng Yi offers one more insight that reframes the entire practice:
@@ -145,6 +153,7 @@ This essay was developed through adversarial sparring during drafting. Key unres
 
 | Resource | What it covers |
 |---|---|
+| [The Full Cup — Practitioner's Guide](the-full-cup-practitioners-guide.md) | The practical companion: diagnosis, intervention, remote facilitation, sustaining change |
 | [Ego, AI, and the Zen Antidote](ego-ai-and-the-zen-antidote.md) | The no-shoshin column of the matrix — when the cup is sealed, not just full |
 | [The Shift — Engineering Skills in the Age of AI](../ai-engineering/the-shift.md) | AI's uniform confidence (section 6) and what happens when exhausted humans can't push back |
 | [The Meta-Development Loop](../ai-engineering/the-meta-development-loop.md) | AI as the tool that empties the cup — building systems that reduce human load |

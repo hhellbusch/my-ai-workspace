@@ -44,6 +44,7 @@ This track is in active development. The current published essay connects direct
 
 8. `philosophy` [Ego, AI, and the Zen Antidote](philosophy/ego-ai-and-the-zen-antidote.md) — Companion to *The Shift* sections 6-7. AI assistants are trained to agree; Zen practices like mushin and shoshin offer structural (not just behavioral) resistance. The essay was itself adversarially reviewed — see the open review section. *(Bridge essay between the engineering and philosophy tracks; later essays in this track stand more independently.)*
 9. `philosophy` [The Full Cup — Why Nobody Can Learn When the Tap Is Always On](philosophy/the-full-cup.md) — Reframes "empty the cup" from personal mindfulness to organizational engineering. The shoshin × capacity matrix, cutting off the tap, the dojo's bow at the door, and AI as either overload source or capacity creator. *(Bridge essay between philosophy and systems thinking.)*
+   - `philosophy` [Practitioner's Guide](philosophy/the-full-cup-practitioners-guide.md) — Companion playbook: diagnosing quadrants, setting tap controls, remote facilitation, sustaining change.
 
 ---
 

@@ -10,6 +10,8 @@ The primary lens is karate (Hayashi-ha Shito-ryu, Okinawan tradition), but the s
 
 2. **[The Full Cup — Why Nobody Can Learn When the Tap Is Always On](the-full-cup.md)** — Reframes "empty the cup" from a personal mindfulness exercise to an organizational engineering problem. The shoshin x capacity matrix diagnoses four quadrants of learning failure. Bridges the philosophy track to systems thinking (The Goal, The Phoenix Project) and to AI as either a source of overload or a tool that creates capacity.
 
+   - **[Practitioner's Guide](the-full-cup-practitioners-guide.md)** — Companion to *The Full Cup*. The practical playbook: diagnosing quadrants, setting tap controls at kickoff or mid-flight, facilitating in remote cameras-off environments, and sustaining change through organizational entropy.
+
 *More essays planned — see [roadmap](../../.planning/zen-karate/ROADMAP.md) and [threads](../../.planning/zen-karate/threads.md) for what's coming.*
 
 ## Cross-Track Links

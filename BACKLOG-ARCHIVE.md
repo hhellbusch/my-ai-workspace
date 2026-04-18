@@ -6,6 +6,16 @@ New archival batches are prepended below (newest batch first).
 
 ---
 
+## Archived 2026-04-18 (1 item — batch 6)
+
+### Repository organization tooling
+- **Product:** meta
+- **Context:** Created `.cursor/rules/repo-structure.md` conventions rule and `/organize` audit command to keep the repo tidy.
+- **Links:** `.cursor/rules/repo-structure.md`, `.cursor/commands/organize.md`
+- **Completed:** 2026-04-17
+
+---
+
 ## Archived 2026-04-18 (2 items — batch 5)
 
 ### Product-based directory nesting

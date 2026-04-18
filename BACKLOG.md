@@ -274,11 +274,11 @@ Rolling cap: at most **15** items stay here (newest first). Older completions li
 - **Links:** `AI-DISCLOSURE.md`, `.planning/zen-karate/STYLE.md`
 - **Completed:** 2026-04-18
 
-### Repository organization tooling
-- **Product:** meta
-- **Context:** Created `.cursor/rules/repo-structure.md` conventions rule and `/organize` audit command to keep the repo tidy.
-- **Links:** `.cursor/rules/repo-structure.md`, `.cursor/commands/organize.md`
-- **Completed:** 2026-04-17
+### Practitioner's guide: The Full Cup — transformation arc for remote teams
+- **Product:** docs
+- **Context:** Companion to the Full Cup essay. Four-phase transformation arc: diagnose the quadrant (observable signals for each, remote diagnostic), intervene (tap controls at kickoff vs. mid-flight), facilitate (structural bows for cameras-off remote sessions), sustain (keeping the tap off through organizational entropy). Remote-first framing throughout. Added bridge section to the essay and updated reading orders.
+- **Links:** `docs/philosophy/the-full-cup-practitioners-guide.md`, `docs/philosophy/the-full-cup.md`
+- **Completed:** 2026-04-18
 
 ### Essay draft: The Full Cup — organizational bandwidth as barrier to learning
 - **Product:** docs
