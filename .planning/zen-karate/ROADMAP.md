@@ -44,7 +44,7 @@ Plans:
 **Depends on**: Phase 2 (research findings). Personal notes enrich but don't block.
 **Plans**: 3 plans
 
-This essay leads because it sits at the intersection of zen philosophy, engineering culture, and technology practices. It draws from threads 2, 3, 5, 6, 7, 10, 11, 12 in `research/zen-karate-philosophy/threads.md` and connects to the existing upstream contributions essay as a worked example.
+This essay leads because it sits at the intersection of zen philosophy, engineering culture, and technology practices. It draws from threads 2, 3, 5, 6, 7, 10, 11, 12 in `.planning/zen-karate/threads.md` and connects to the existing upstream contributions essay as a worked example.
 
 Plans:
 - [ ] 03-01: Targeted research — agile dojo movement (Target, Ford, Pivotal Labs), open source etiquette, code kata origins
@@ -76,7 +76,7 @@ Plans:
 **Depends on**: Phases 3-5 (foundation established)
 **Plans**: TBD
 
-Candidates (see `research/zen-karate-philosophy/threads.md` for full list):
+Candidates (see `.planning/zen-karate/threads.md` for full list):
 - [ ] "Discipline as Freedom" — paradox of restriction and growth
 - [ ] "Beginner's Mind in the Age of AI" — bridge to AI essay track
 - [ ] Others emerging from threads (organizational karma, breaking the cycle, etc.)

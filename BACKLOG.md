@@ -16,7 +16,7 @@
 - **Product:** docs
 - **Context:** First essay in the zen-karate series. The dojo as "a place of the Way" and how that concept has been adopted — sometimes deeply, often superficially — in agile transformation (engineering dojos), open source culture (contributor etiquette, senpai/kohai in PR review), and DevOps practice (code kata, architectural kata). Explores what's lost when teams borrow the vocabulary without the philosophy: cleaning the floor as shared ownership, kata as embodied learning not rote repetition, mutual respect within hierarchy. Draws from threads 2, 3, 6, 7, 10 as supporting ideas. Connects to the existing upstream contributions essay as a real worked example. This leads with because it's the most applied and accessible entry point — grounded in business outcomes (team capability, learning organizations, reducing key-person dependency) while introducing the philosophical foundation that deeper essays will build on.
 - **Source material available:** Deshimaru (dojo, kata, gyodo), Shi Heng Yi transcript (master-student, teaching fish, lonely wolf), `docs/ai-assisted-upstream-contributions.md` (real open source example), agile dojo movement (needs targeted research). Personal notes will enrich but aren't blocking.
-- **Links:** `research/zen-karate-philosophy/threads.md`, `.planning/zen-karate/`, `docs/ai-assisted-upstream-contributions.md`
+- **Links:** `.planning/zen-karate/threads.md`, `.planning/zen-karate/`, `docs/ai-assisted-upstream-contributions.md`
 - **Added:** 2026-04-17
 
 ### Zen-karate personal knowledge base
@@ -72,7 +72,7 @@
 ### Essay: The Dojo and the Team (merged into priority essay)
 - **Product:** docs
 - **Context:** Originally a standalone bridge essay. Core themes (mutual respect, senpai/kohai, cleaning the floor, presence over performance) are now absorbed into the priority essay "The Dojo, Open Source, and Ways of Working" at the top of Up Next. May re-emerge as a separate essay if the priority essay can't cover the team dynamics depth, but for now treat as merged.
-- **Links:** `.planning/zen-karate/`, `research/zen-karate-philosophy/threads.md`
+- **Links:** `.planning/zen-karate/`, `.planning/zen-karate/threads.md`
 - **Added:** 2026-04-17
 
 ### Essay: Beginner's Mind in the Age of AI
