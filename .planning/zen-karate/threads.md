@@ -145,4 +145,4 @@ Zen philosophy has been working on exactly this problem for centuries. Not the A
 | 11. Dojo/Open Source/Agile | Dojo/Open Source/Ways of Working | **Priority — first essay** |
 | 12. The Forgotten Body | Dojo/Open Source/Ways of Working | Feeds into dojo culture, breaks, collaboration |
 | 13. Karate of Old | The Way Is in Training | Okinawan vs. modern, what got lost, broadening beyond one tradition |
-| 14. Ego, AI, and Zen | Beginner's Mind in the Age of AI | Bridges *The Shift* ego/sycophancy section with zen practices; could be standalone |
+| 14. Ego, AI, and Zen | **Published:** `docs/ego-ai-and-the-zen-antidote.md` | Bridges *The Shift* ego/sycophancy section with zen practices; absorbed most of "Beginner's Mind" scope |

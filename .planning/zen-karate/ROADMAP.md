@@ -11,7 +11,8 @@ This series leads with an applied entry point — connecting dojo culture to ope
 - [ ] **Phase 3: Essay 1** - "The Dojo, Open Source, and Ways of Working" — applied entry point
 - [ ] **Phase 4: Essay 2** - "The Way Is in Training" — philosophical anchor essay
 - [ ] **Phase 5: Essay 3** - "Five Hindrances" — Shi Heng Yi's framework applied to life and work
-- [ ] **Phase 6: Later Essays** - "Discipline as Freedom", "Beginner's Mind in the Age of AI", others from threads
+- [x] **Ego, AI, and the Zen Antidote** - Companion to *The Shift*, bridging AI and zen tracks (published ahead of sequence)
+- [ ] **Phase 6: Later Essays** - "Discipline as Freedom", others from threads
 
 ## Phase Details
 
@@ -76,9 +77,9 @@ Plans:
 **Depends on**: Phases 3-5 (foundation established)
 **Plans**: TBD
 
-Candidates (see `.planning/zen-karate/threads.md` for full list):
+**Note:** "Ego, AI, and the Zen Antidote" (`docs/ego-ai-and-the-zen-antidote.md`) was written ahead of the planned sequence because thread 14 matured rapidly and bridged directly to *The Shift*. It absorbs most of the "Beginner's Mind in the Age of AI" material. The remaining candidates are:
+
 - [ ] "Discipline as Freedom" — paradox of restriction and growth
-- [ ] "Beginner's Mind in the Age of AI" — bridge to AI essay track
 - [ ] Others emerging from threads (organizational karma, breaking the cycle, etc.)
 - [ ] Update `docs/README.md` with complete reading track + cross-links
 

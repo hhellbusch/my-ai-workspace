@@ -4,12 +4,6 @@
 
 ## In Progress
 
-### Essay: Ego, AI, and the Zen Antidote
-- **Product:** docs
-- **Context:** Companion essay to *The Shift*. The Shift identified ego reinforcement and sycophancy as structural risks of AI assistants. This essay provides the deeper framework: Shi Heng Yi's teaching that ego is "a collection of thoughts," the mechanism of "hooking" onto identity, and how zen practices (mushin, shoshin, non-attachment) build structural resistance to AI-fueled overconfidence. Not a rewrite of The Shift — a companion that bridges the AI essay track and the martial arts/zen track. Source material: thread 14, The Shift sections 6-7, Shi Heng Yi transcript, Jesse Enkamp mushin article, Deshimaru on emptiness.
-- **Links:** `.planning/zen-karate/threads.md` (thread 14), `docs/the-shift.md`, `research/zen-karate-philosophy/sources/`
-- **Started:** 2026-04-17
-
 ### Helm chart upstream contribution
 - **Product:** argo
 - **Context:** Improving chart templates in `git-projects/helm-charts/`. Working branch has changes ready for review and testing before submitting upstream.
@@ -159,6 +153,12 @@
 - **Product:** meta
 - **Context:** Built `fetch-transcript.py` script using `youtube-transcript-api` — fetches YouTube transcripts as timestamped markdown with metadata. Supports single video and batch mode. Integrated into the research skill's scripts index and the `/reference` command's video enrichment workflow. Tested successfully with Shi Heng Yi interview (2142 segments, 1:37:35 duration). MCP server option deferred to Ideas as the script-based approach covers the immediate need.
 - **Links:** `.cursor/skills/research-and-analyze/scripts/fetch-transcript.py`, `.cursor/commands/reference.md`
+- **Completed:** 2026-04-17
+
+### Essay: Ego, AI, and the Zen Antidote
+- **Product:** docs
+- **Context:** Companion essay to *The Shift*. Connects Shi Heng Yi's teaching on ego as "a collection of thoughts," the mechanism of "hooking" onto identity, and zen practices (mushin, shoshin, non-attachment) as structural resistance to AI-fueled sycophancy. Bridges the AI essay track and the martial arts/zen track. Published at `docs/ego-ai-and-the-zen-antidote.md`, cross-linked from *The Shift* and added to `docs/README.md`.
+- **Links:** `docs/ego-ai-and-the-zen-antidote.md`, `docs/the-shift.md`, `.planning/zen-karate/threads.md` (thread 14)
 - **Completed:** 2026-04-17
 
 ### Zen-karate essay library scaffolding

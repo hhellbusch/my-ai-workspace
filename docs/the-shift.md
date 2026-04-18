@@ -348,6 +348,7 @@ AI doesn't create your engineering culture. It amplifies it. A team with strong 
 
 | Resource | What it covers |
 |---|---|
+| [Ego, AI, and the Zen Antidote](ego-ai-and-the-zen-antidote.md) | Companion essay: why the sycophancy and ego risks run deeper than habits, and how zen practices build structural resistance |
 | [AI-Assisted Development Workflows](ai-assisted-development-workflows.md) | Practical patterns for using AI effectively in daily engineering work |
 | [Using AI Outside Your Expertise](ai-for-unfamiliar-domains.md) | A case study demonstrating these skills in action (the siren GIF example) |
 | [Enterprise LLM Deployment on OpenShift AI](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) | Architecture decisions at enterprise scale where engineering judgment matters most |
