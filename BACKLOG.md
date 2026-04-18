@@ -12,6 +12,13 @@
 
 ## Up Next
 
+### Essay: The Dojo, Open Source, and Ways of Working (PRIORITY — first essay)
+- **Product:** docs
+- **Context:** First essay in the zen-karate series. The dojo as "a place of the Way" and how that concept has been adopted — sometimes deeply, often superficially — in agile transformation (engineering dojos), open source culture (contributor etiquette, senpai/kohai in PR review), and DevOps practice (code kata, architectural kata). Explores what's lost when teams borrow the vocabulary without the philosophy: cleaning the floor as shared ownership, kata as embodied learning not rote repetition, mutual respect within hierarchy. Draws from threads 2, 3, 6, 7, 10 as supporting ideas. Connects to the existing upstream contributions essay as a real worked example. This leads with because it's the most applied and accessible entry point — grounded in business outcomes (team capability, learning organizations, reducing key-person dependency) while introducing the philosophical foundation that deeper essays will build on.
+- **Source material available:** Deshimaru (dojo, kata, gyodo), Shi Heng Yi transcript (master-student, teaching fish, lonely wolf), `docs/ai-assisted-upstream-contributions.md` (real open source example), agile dojo movement (needs targeted research). Personal notes will enrich but aren't blocking.
+- **Links:** `research/zen-karate-philosophy/threads.md`, `.planning/zen-karate/`, `docs/ai-assisted-upstream-contributions.md`
+- **Added:** 2026-04-17
+
 ### Zen-karate personal knowledge base
 - **Product:** docs
 - **Context:** Structured template for capturing training history, key teachers, formative moments, philosophical anchors, and examples of how martial arts philosophy has guided life and work decisions. This is the most critical input to the essay series — everything downstream gets better when it has real personal experience to draw from. Template created at `research/zen-karate-philosophy/personal-notes.md`, needs user to populate.
@@ -72,12 +79,6 @@
 - **Product:** docs
 - **Context:** Explicit bridge to the existing AI-focused essay track. Shoshin (beginner's mind) as the essential posture for working with AI. Connects back to themes in The Shift and AI-Assisted Development Workflows.
 - **Links:** `.planning/zen-karate/`, `docs/the-shift.md`, `docs/ai-assisted-development-workflows.md`
-- **Added:** 2026-04-17
-
-### Essay: The Dojo, Open Source, and Ways of Working
-- **Product:** docs
-- **Context:** The dojo as "a place of the Way" — and how that concept has been lifted into agile transformation, engineering dojos, and open source culture. Cleaning the floor, mutual respect, kata as embodied learning, senpai/kohai in PR review. The difference between borrowing vocabulary and understanding the practice. Intersects with open source contribution etiquette, agile team dynamics, and the question of genuine shared ownership.
-- **Links:** `.planning/zen-karate/`, `research/zen-karate-philosophy/threads.md`
 - **Added:** 2026-04-17
 
 ### YouTube transcript MCP server
