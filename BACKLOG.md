@@ -64,6 +64,12 @@
 
 ## Ideas
 
+### Essay: The economics of AI — tokens, context windows, and what it actually costs
+- **Product:** docs
+- **Context:** Tokens are both the computational unit (what the model processes) and the billing unit (what you pay for). This dual meaning confuses engineers new to AI. A dedicated piece could cover: token pricing models, context window economics (the 128K window isn't a fuel tank — it's simultaneous visibility), the gas analogy (Ethereum gas, fuel), how cost shapes architectural decisions (self-hosted vs. API, model selection, prompt engineering for efficiency). Connects to the enterprise LLM deployment decisions in Jared Burck's article. Could be a companion to The Shift section 5 or a standalone essay in the AI-engineering track.
+- **Links:** `docs/ai-engineering/the-shift.md` (section 5), `docs/ai-engineering/openshift-ai-llm-deployment-summary.md`
+- **Added:** 2026-04-17
+
 ### Guiding stars as meta-framework concept
 - **Product:** meta
 - **Context:** Projects need explicit "guiding stars" — primary purposes that drive prioritization. When a project has multiple tracks (AI-engineering, philosophy, personal research), the guiding star determines what gets attention first and what supports vs. leads. Encode this into session orientation (`/start`), backlog prioritization (`/backlog`), and planning docs. Prevents supporting interests from consuming the budget meant for primary work. This session's shoshin review revealed the zen-karate track had been consuming attention disproportionate to its role as a supporting interest.

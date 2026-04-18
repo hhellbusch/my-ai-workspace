@@ -201,7 +201,7 @@ Teams that replace peer review with AI review will ship more bugs, not fewer.
 
 Before discussing the risks, it helps to ground what AI coding assistants actually are — without mystification or dismissal.
 
-A large language model is a statistical model trained on text. It predicts the most likely next sequence of *tokens* — small chunks of text, typically words or pieces of words — given the preceding context. (For a visual, intuition-first explanation of how this works, [3Blue1Brown's deep learning series](https://www.youtube.com/playlist?list=PLLMP7TazTxHrgVk7w1EKpLBIDoC50QrPS) is an excellent starting point.) Modern AI assistants wrap this core capability in layers that make it more useful:
+A large language model is a statistical model trained on text. It predicts the most likely next sequence of *tokens* — small chunks of text, typically words or pieces of words — given the preceding context. Tokens are also the unit you're billed for when using AI APIs, so the same word carries both a technical meaning (what the model processes) and a cost meaning (what you pay for). (For a visual, intuition-first explanation of how this works, [3Blue1Brown's deep learning series](https://www.youtube.com/playlist?list=PLLMP7TazTxHrgVk7w1EKpLBIDoC50QrPS) is an excellent starting point.) Modern AI assistants wrap this core capability in layers that make it more useful:
 
 - **RLHF (Reinforcement Learning from Human Feedback)** tunes the model to produce outputs that humans rate as helpful
 - **Tool use** lets the model execute code, read files, and run commands
