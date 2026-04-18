@@ -1,6 +1,6 @@
-# Research: Zen, Karate, and the Way of Working
+# Research: Martial Arts, Zen, and the Way of Working
 
-Research workspace supporting a library of essays connecting Zen Buddhist philosophy and lifelong karate practice to productivity, teamwork, and finding happiness in life and work.
+Research workspace supporting a library of essays connecting martial arts philosophy and lifelong practice to productivity, teamwork, and finding happiness in life and work. Primary lens: karate (Hayashi-ha Shito-ryu, Okinawan tradition), with scope broadened to martial arts generally.
 
 ## Status
 

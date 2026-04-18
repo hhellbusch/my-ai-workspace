@@ -1,4 +1,4 @@
-# Voice and Style Guide — Zen, Karate, and the Way of Working
+# Voice and Style Guide — Martial Arts, Zen, and the Way of Working
 
 Reference document for maintaining consistent voice across the essay series. Every meta-prompt in the drafting pipeline should reference this file.
 
@@ -43,21 +43,26 @@ Match the existing `docs/` essay format:
 
 ---
 
-## Japanese Terminology
+## Terminology from Source Traditions
+
+The primary lens is karate (Hayashi-ha Shito-ryu, Okinawan tradition), but the series draws from martial arts broadly. Terminology follows the source tradition.
 
 ### When to Use Original Terms
-- Use the Japanese/Zen term when it carries meaning that the English translation loses (mushin is not just "no-mind")
+- Use the Japanese, Chinese, or other term when it carries meaning that the English translation loses (mushin is not just "no-mind")
 - Italicize on first use with a brief parenthetical: *mushin* (no-mind)
 - After first use in an essay, use the term without explanation
 - The [glossary](glossary.md) (once created) provides the canonical definitions; individual essays don't need to replicate them
+- When discussing Okinawan karate specifically, acknowledge the distinction from mainland Japanese karate where it matters
 
 ### When to Use English
-- For concepts where the English is sufficient and the Japanese would feel like unnecessary exoticization
+- For concepts where the English is sufficient and the original term would feel like unnecessary exoticization
 - For terms the reader needs to understand immediately in an applied context
+- When a concept is shared across traditions (e.g., "sparring" rather than insisting on *kumite* when the context isn't specifically karate)
 
 ### Avoid
 - Overloading paragraphs with untranslated terms (more than 2-3 per paragraph signals the writing needs to breathe)
-- Using Japanese terms as decoration or to signal authenticity — use them because they're precise
+- Using terms from any tradition as decoration or to signal authenticity — use them because they're precise
+- Treating "karate" as monolithic — the Okinawan roots and the modern sport are different things
 
 ---
 

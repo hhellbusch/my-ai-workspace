@@ -2,7 +2,9 @@
 
 Emerging themes from the material gathered so far. These are starting points, not outlines — food for thought to revisit when the essay work begins. Some map onto planned essays; others may stand alone or merge.
 
-> Source material: Shi Heng Yi transcript (Mulligan Brothers, 2026), Deshimaru's *The Zen Way to Martial Arts*, existing `docs/` essays (*The Shift*, *AI-Assisted Development Workflows*), personal practice experience (TBD via `personal-notes.md`).
+> **Scope:** Martial arts broadly, with karate (Hayashi-ha Shito-ryu, Okinawan tradition) as the primary lens. The philosophical threads run across traditions.
+>
+> **Source material:** Shi Heng Yi transcript (Mulligan Brothers, 2026), Deshimaru's *The Zen Way to Martial Arts*, existing `docs/` essays (*The Shift*, *AI-Assisted Development Workflows*), personal practice experience (via `personal-notes.md`).
 
 ---
 
@@ -86,6 +88,16 @@ This isn't just a health problem — it's a philosophical one.
 
 ---
 
+## 13. The Karate of Old — What Got Lost in Translation
+
+Karate did not start as a sport. The *te* (hand) and *tode* (Chinese hand) traditions of Okinawa were practical, personal, and transmitted teacher-to-student in private. When Gichin Funakoshi brought karate to mainland Japan in the 1920s, he adapted it — simplifying stances, renaming kata, aligning it with the Japanese educational and military systems. What emerged was effective at scaling karate to mass audiences but lost something in the process: the close teacher-student transmission, the Chinese martial arts influences, the rougher and more pragmatic Okinawan character.
+
+This matters for the essays because "karate" is not monolithic. The Okinawan roots (preserved more closely in styles like Hayashi-ha Shito-ryu) carry a different philosophy than modern sport karate (WKF/Olympic). The dojo culture, the kata, the relationship to Zen — these vary depending on which karate you're talking about. The essays should be honest about this rather than romanticizing a single tradition.
+
+This thread also opens a wider lens: the philosophical principles aren't confined to karate or even to Japanese martial arts. The same threads — discipline, presence, teacher-student dynamics, embodied learning — run through martial traditions globally. The author's expanding study beyond Okinawa/Japan is itself an expression of beginner's mind.
+
+---
+
 ## Mapping to Planned Essays
 
 | Thread | Planned essay(s) | Notes |
@@ -102,3 +114,4 @@ This isn't just a health problem — it's a philosophical one.
 | 10. Breaking the Cycle | The Dojo and the Team | Could be standalone |
 | 11. Dojo/Open Source/Agile | Dojo/Open Source/Ways of Working | **Priority — first essay** |
 | 12. The Forgotten Body | Dojo/Open Source/Ways of Working | Feeds into dojo culture, breaks, collaboration |
+| 13. Karate of Old | The Way Is in Training | Okinawan vs. modern, what got lost, broadening beyond one tradition |
