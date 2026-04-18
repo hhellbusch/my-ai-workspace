@@ -2,7 +2,7 @@
 
 A working example of using large language models for real engineering work — not chatbot Q&A, but structured workflows for research, technical writing, project planning, troubleshooting guides, and the meta-development patterns that emerge when you build with AI over time.
 
-Started around Oct 2024 exploring how to get better results on customer work. Evolved into a set of reusable patterns worth sharing. The workspace itself is the example — everything here was built or refined with AI assistance.
+Started around Oct 2025 exploring how to get better results on customer work. Evolved into a set of reusable patterns worth sharing. The workspace itself is the example — everything here was built or refined with AI assistance.
 
 ## What's Here
 
