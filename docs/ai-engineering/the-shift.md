@@ -3,6 +3,7 @@ review:
   status: reviewed
   read: 2026-04-17
   voice-approved: 2026-04-17
+  at: 3e34f12
 ---
 
 # The Shift — Engineering Skills in the Age of AI

@@ -152,6 +152,8 @@ Find markdown files committed in the last 14 days that have no `review:` frontma
 
 Find files where the most recent validation date is older than the file's last git modification date. This means the file was changed after the last review — the review may no longer be current.
 
+If the file has an `at:` SHA in its review frontmatter, include the diff command so the author can see exactly what changed since their last review.
+
 Present as:
 
 ```
@@ -167,6 +169,7 @@ Present as:
 
 ### Stale Reviews (modified after last review)
 - docs/ai-engineering/the-shift.md — reviewed 2026-04-10, modified 2026-04-15
+  → `git diff abc1234..HEAD -- docs/ai-engineering/the-shift.md`
 ```
 
 ## Report

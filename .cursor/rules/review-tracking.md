@@ -16,6 +16,7 @@ review:
   status: reviewed
   read: 2026-04-18
   tested: 2026-04-18
+  at: abc1234
   notes: "Verified on OCP 4.14"
 ---
 ```
@@ -23,6 +24,7 @@ review:
 Fields:
 - `status` — one of: `reviewed`, `direction-reviewed`, `unreviewed`
 - Validation type fields — date values (YYYY-MM-DD) for each validation performed
+- `at` — short git SHA of HEAD at validation time, auto-recorded by `/validate`. Enables `git diff <sha>..HEAD -- <file>` to see exactly what changed since the last review.
 - `notes` — optional free-text context
 
 For files that already have frontmatter (commands, skills, rules), add `review:` to the existing block. For files without frontmatter, add a new `---` block at the top of the file.
@@ -63,3 +65,4 @@ Files without a `review:` block are assumed to be **direction-reviewed** — the
 - When the `/validate` command updates a file to `status: reviewed`, offer to update the AI disclosure footer if one exists (change "has not been fully reviewed" to "has been reviewed by the author").
 - **Minimize unsolicited biographical content.** When generating essays or documentation, avoid fabricating biographical claims about the author (professional titles, experience claims, training history, personal opinions). If personal voice is needed and the author hasn't provided the specific detail, use general framing ("a practitioner might notice...") rather than inventing first-person claims. When biographical content is necessary, flag it explicitly so the author can review it.
 - **Flag biographical content at generation time.** When new content contains first-person biographical claims, note this in your response: "This draft contains biographical statements on lines N-M that need your `voice-approved` review."
+- **Flag when editing a reviewed file.** Before editing any file that has a `review:` block with `status: reviewed`, note to the user: "This file has been reviewed (read: DATE). This edit will make the review stale — you'll need to re-read the changes." This is not a blocker — proceed with the edit — but make the staleness visible so the author knows re-review is needed. Collect all edits to reviewed files and summarize at commit time: "N reviewed files were modified in this session and need re-review."

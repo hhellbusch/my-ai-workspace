@@ -59,21 +59,30 @@ This command is read-only. It reports findings and asks for confirmation before 
 
    Present flagged lines with their file and line number under a **"Biographical Content — Needs `voice-approved`"** section. This is the highest-priority review item — readers will attribute these statements to the author. This is NOT a blocker, but it must be visible.
 
-7. **Review status note** — For new files in `docs/`, `research/`, or product directories (`ansible/`, `ocp/`, `argo/`, etc.):
+7. **Review staleness check** — For each **modified** file (not new), read its frontmatter. If it contains `review: status: reviewed`, flag it prominently:
+   - "**Stale review**: `file.md` was reviewed on DATE but is being modified in this commit. The author needs to re-read the changes."
+   - If the frontmatter includes an `at:` SHA, include the diff command: "Run `git diff SHA..HEAD -- file.md` to see what changed since last review."
+   - This is the **highest-priority informational item** — it's the easiest thing to miss and the hardest to recover from. Present it above other findings.
+
+8. **Review status note** — For new files in `docs/`, `research/`, or product directories (`ansible/`, `ocp/`, `argo/`, etc.):
    - Note that these files will start as **direction-reviewed** (no `review:` frontmatter)
    - Remind: "Run `/validate <path> read` after you've reviewed these files"
    - If biographical content was flagged in step 6, remind: "Run `/validate <path> voice-approved` after reviewing the biographical content"
    - This is informational, not a blocker — new files are expected to lack review metadata
 
-7. **Backlog alignment** — Read `BACKLOG.md` and check if the work being committed relates to a tracked item. If not, note it (not a blocker, just a reminder).
+9. **Backlog alignment** — Read `BACKLOG.md` and check if the work being committed relates to a tracked item. If not, note it (not a blocker, just a reminder).
 
-8. **Present findings** as a structured report:
+10. **Present findings** as a structured report:
 
 ```
 ## Pre-Commit Review
 
 ### Changes Summary
 - N new files, M modified, D deleted
+
+### Stale Reviews (re-read needed)
+- [ ] `file.md` — reviewed DATE, modified in this commit → `git diff SHA..HEAD -- file.md`
+(or: No reviewed files modified.)
 
 ### Biographical Content — Needs `voice-approved`
 - [ ] `file.md` line N: "quote of biographical claim"
@@ -90,11 +99,12 @@ This command is read-only. It reports findings and asks for confirmation before 
 - Content quality: OK / issues
 - Secrets scan: OK / issues
 - Biographical scan: N lines flagged / clean
+- Stale reviews: N reviewed files modified (re-read needed) / none
 - Review status: N new files start as direction-reviewed (run `/validate` after reading)
 - Backlog alignment: tracked / untracked
 ```
 
-9. **Assumptions to challenge** (for documentation and essay commits) — If the changes include `docs/`, `research/`, or essay-type content, add 1-3 brief adversarial observations. These are not blockers — they surface things the author should have considered:
+11. **Assumptions to challenge** (for documentation and essay commits) — If the changes include `docs/`, `research/`, or essay-type content, add 1-3 brief adversarial observations. These are not blockers — they surface things the author should have considered:
 
 ```
 ### Assumptions to Challenge
@@ -105,7 +115,7 @@ This command is read-only. It reports findings and asks for confirmation before 
 
 Skip this section entirely for purely mechanical changes (config files, tooling, scaffolding). This is only useful for content that makes claims.
 
-9.5. **Brief alignment check (shoshin)** — If the changes include files in `docs/` or `.planning/`, check for framing drift:
+12. **Brief alignment check (shoshin)** — If the changes include files in `docs/` or `.planning/`, check for framing drift:
 
 - Read the relevant project brief (`.planning/*/BRIEF.md`) for any planning project connected to the changed files
 - Compare the content being committed against the brief's stated scope and purpose
@@ -127,9 +137,9 @@ Skip for changes that don't touch docs or planning files. If no `.planning/` pro
 [READY TO COMMIT / FIX ISSUES FIRST]
 ```
 
-10. If issues are found, ask: "Want me to fix these before committing? Reply with numbers or 'all'."
+13. If issues are found, ask: "Want me to fix these before committing? Reply with numbers or 'all'."
 
-11. If clean, ask: "Ready to commit. Want me to proceed?"
+14. If clean, ask: "Ready to commit. Want me to proceed?"
 </process>
 
 <success_criteria>
@@ -137,6 +147,8 @@ Skip for changes that don't touch docs or planning files. If no `.planning/` pro
 - Every new directory checked for README
 - Cross-references verified for docs, research, and prompts
 - No secrets or credentials in staged content
+- Modified files with `review:` frontmatter flagged as stale reviews
+- External URLs verified (fetched, not just eyeballed)
 - Clear recommendation: commit or fix first
 - User confirms before any commit happens
 </success_criteria>

@@ -58,6 +58,8 @@ Show the user what will be updated:
 ```
 ## Validation Preview
 
+Recording at: abc1234 (current HEAD)
+
 ### file-path.md
 - Current status: [no metadata / direction-reviewed / reviewed]
 - Adding: read (2026-04-18), commands-verified (2026-04-18)
@@ -65,8 +67,9 @@ Show the user what will be updated:
 - Notes: "Verified on OCP 4.14"
 
 ### another-file.md
-- Current status: reviewed (read: 2026-04-15)
+- Current status: reviewed (read: 2026-04-15, at: def5678)
 - Adding: fact-checked (2026-04-18)
+- Updating at: def5678 → abc1234
 - Notes: none
 
 Proceed? [y/n]
@@ -76,6 +79,8 @@ Proceed? [y/n]
 
 For each confirmed file:
 
+First, capture the current short SHA: `git rev-parse --short HEAD`
+
 **If file has no frontmatter** — add a new frontmatter block at the top:
 
 ```yaml
@@ -83,12 +88,13 @@ For each confirmed file:
 review:
   status: reviewed
   read: 2026-04-18
+  at: abc1234
 ---
 ```
 
 **If file has frontmatter but no `review:` block** — add `review:` to the existing frontmatter block.
 
-**If file already has a `review:` block** — merge new validation types with existing ones. Do not overwrite existing dates; only add new types or update types explicitly being re-validated.
+**If file already has a `review:` block** — merge new validation types with existing ones. Do not overwrite existing dates; only add new types or update types explicitly being re-validated. Always update `at` to the current SHA — it marks the point-in-time of the most recent validation.
 
 Set `status: reviewed` whenever any validation type is present.
 
@@ -125,6 +131,7 @@ Disclosure footers updated: M files
 - Frontmatter correctly added or updated in all target files
 - Existing frontmatter preserved (no data loss from merge)
 - Validation dates use today's date (YYYY-MM-DD)
+- `at` field set to current short SHA (`git rev-parse --short HEAD`)
 - User confirms before any writes
 - Disclosure footer update offered for docs/ files
 </success_criteria>
