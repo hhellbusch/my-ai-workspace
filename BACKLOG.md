@@ -166,11 +166,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `ocp/troubleshooting/`
 - **Added:** 2026-04-17
 
-### Case study: the thread development pass — landscape assessment before depth
-- **Product:** docs
-- **Context:** Documents how a full-pass landscape assessment of 16 essay threads — with integrated sparring, gap categorization, and honest ratio assessment — produced better triage than sequential deep dives would have. Reveals the ~20/80 practitioner-vs-research ratio, surfaces thread contradictions only visible at landscape scale, and demonstrates sparring-during-development as distinct from sparring-after-review. Connects to meta-development loop and adversarial review patterns.
-- **Links:** `.planning/zen-karate/workflow-notes.md`, `.planning/zen-karate/thread-development.md`, `docs/case-studies/adversarial-review-meta-development.md`, `docs/ai-engineering/the-meta-development-loop.md`
-- **Added:** 2026-04-17
 
 ### CoreOS troubleshooting section
 - **Product:** coreos
@@ -188,6 +183,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ## Done
 
 Rolling cap: at most **15** items stay here (newest first). Older completions live in `BACKLOG-ARCHIVE.md` (see `/backlog` command — **Done retention**). Git history remains authoritative.
+
+### Case study: landscape pass and corpus-level spar
+- **Product:** docs
+- **Context:** Two new case studies. (14) The thread development landscape pass: assessing all 16 essay threads before drafting any, revealing thread contradictions, the 20/80 ratio, and merge candidates invisible from inside any single thread. (15) The corpus-level spar: running `/spar` across all essays simultaneously, catching scope overclaims, conditional universals, and framing drift that per-document review missed.
+- **Links:** `docs/case-studies/landscape-before-depth.md`, `docs/case-studies/corpus-level-spar.md`
+- **Completed:** 2026-04-18
 
 ### Workflows essay: spar follow-up and author validation
 - **Product:** docs

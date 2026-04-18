@@ -43,3 +43,5 @@ For someone reading everything **in this collection**, this order follows a deli
 19. [When AI Ignores Changes Made by Other Sessions](case-studies/stale-context-in-long-sessions.md) *(stale context in multi-agent environments — shoshin applied within sessions)*
 20. [When the Safety Net Is Too Heavy to Use](case-studies/heavy-safety-nets.md) *(disproportionate review processes get bypassed — scale the check to the risk)*
 21. [When the Source Says the Opposite of the Claim](case-studies/context-stripped-citations.md) *(selective citation — the number is real but the framing is reversed)*
+22. [The Landscape Pass — Assess All Threads Before Drafting Any](case-studies/landscape-before-depth.md) *(aerial view before deep dive — contradictions and ratios only visible at scale)*
+23. [What the Corpus Sees That the Document Can't](case-studies/corpus-level-spar.md) *(corpus-level spar catches scope overclaims no per-document review would find)*
