@@ -111,6 +111,30 @@
 - **Links:** `docs/ego-ai-and-the-zen-antidote.md`, `.planning/zen-karate/threads.md`, `research/zen-karate-philosophy/sparring-notes.md`, `docs/ai-assisted-development-workflows.md`
 - **Added:** 2026-04-18
 
+### Case study: building a personal knowledge management system with AI
+- **Product:** docs
+- **Context:** In a single extended session, the repo gained: project tracking (BACKLOG.md + /backlog), a personal reference library (library/ + /reference), session orientation (/start + session-awareness rule), pre-commit review (/review + /audit), proactive backlog capture, and cross-linking conventions. This is AI building the infrastructure for its own productivity — the meta-development system section of ai-assisted-development-workflows.md in action. The interesting angle: the human identifies the organizational need, the AI builds the tooling, and then both immediately use it. What does it look like when you let AI build the system that organizes AI-assisted work?
+- **Links:** `BACKLOG.md`, `library/`, `.cursor/commands/`, `.cursor/rules/`, `docs/ai-assisted-development-workflows.md`
+- **Added:** 2026-04-18
+
+### Case study: debugging your AI assistant's judgment
+- **Product:** docs
+- **Context:** The user noticed AI was anchoring on prior priorities during re-prioritization — a systematic behavioral flaw, not a one-off error. That observation led to naming the problem precisely ("AI sycophancy toward its own prior outputs"), building a structural guard (zero-base de-biasing), and connecting it to the ego/AI essay's thesis. This is The Shift's "skepticism as a habit" practiced against the tool itself. The deeper story: how do you notice, name, and fix systematic AI judgment failures? Connects to the-shift.md (section 6-7), ego-ai-and-the-zen-antidote.md (the essay it produced), and the sparring integration.
+- **Links:** `.cursor/commands/backlog.md`, `docs/the-shift.md`, `docs/ego-ai-and-the-zen-antidote.md`
+- **Added:** 2026-04-18
+
+### Case study: how AI handles evolving creative scope across sessions
+- **Product:** docs
+- **Context:** The zen-karate project started as "Zen and Karate," broadened to "Martial Arts, Zen, and the Way of Working" when the user's learning expanded beyond Japan/Okinawa, then self-corrected with "Funakoshi's karate is still karate" to prevent the broadening from being dismissive. Multiple planning documents updated across sessions to reflect evolving nuance. This is shoshin (beginner's mind) practiced at the project level — the scope itself is learning. The case study angle: how does AI maintain coherence across documents when the human's understanding is evolving mid-project? What conventions help vs. hinder?
+- **Links:** `.planning/zen-karate/BRIEF.md`, `.planning/zen-karate/STYLE.md`, `research/zen-karate-philosophy/personal-notes.md`, `.planning/zen-karate/threads.md`
+- **Added:** 2026-04-18
+
+### Case study: choosing scripts over services — the YouTube transcript decision
+- **Product:** docs
+- **Context:** The transcript tooling went through an architectural decision: MCP server vs. Python script. The script won because it caches to disk (persistent across sessions), works in batch mode, and integrates with the existing research skill's file-based workflow. The MCP server was deferred to Ideas. Small decision, but demonstrates the problem decomposition principle from The Shift — choosing the simpler tool that fits the actual workflow rather than the architecturally elegant one. Also an example of AI presenting options and the human making the judgment call.
+- **Links:** `.cursor/skills/research-and-analyze/scripts/fetch-transcript.py`, `docs/the-shift.md`
+- **Added:** 2026-04-18
+
 ### Zen-karate concept glossary
 - **Product:** docs
 - **Context:** Shared glossary of Japanese/Zen terms (mushin, zanshin, fudoshin, shoshin, kata, kihon, kumite, senpai/kohai, dojo kun, etc.) extracted after Essay 1 is drafted. Keeps definitions consistent across the series so later essays don't re-explain foundational vocabulary.
