@@ -131,6 +131,10 @@ The project brief handles this with: "The scope is deliberately wider than one s
 | [threads.md](../../.planning/zen-karate/threads.md) | Ideation threads — scope note added, 14 threads spanning the broadened scope |
 | [cross-linking rule](../../.cursor/rules/cross-linking.md) | Convention that caught the cascade of scope changes |
 
+## What Happened Next
+
+The gaps identified in "What Conventions Are Missing" above led directly to the [shoshin meta-system integration](../../.cursor/rules/shoshin.md) — a new always-applied rule, fresh-eyes checks in `/start`, assumptions tracking in `/whats-next`, brief-alignment drift detection in `/review`, and the [CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md) convention for planning projects. The full story of how this case study produced the system improvements it was documenting the absence of is in [When Case Studies Generate System Improvements](case-studies-as-discovery.md).
+
 ---
 
 *This document was written with AI assistance (Cursor). See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.*

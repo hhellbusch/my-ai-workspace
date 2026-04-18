@@ -138,6 +138,12 @@
 
 ## Done
 
+### Case study: when case studies generate system improvements
+- **Product:** docs
+- **Context:** Published case study documenting how writing the evolving-scope case study surfaced three concrete gaps, how the user's shoshin observation became a design principle with five integration points, and how the case study format itself functions as a discovery mechanism.
+- **Links:** `docs/case-studies/case-studies-as-discovery.md`, `docs/case-studies/evolving-creative-scope.md`, `.cursor/rules/shoshin.md`
+- **Completed:** 2026-04-17
+
 ### Case study: adversarial review as a meta-development pattern
 - **Product:** docs
 - **Context:** Published case study documenting how the absence of pushback in the essay workflow led to building `/spar`, spar pipeline stage, and zero-base de-biasing — then immediately applying it to the ego/AI essay, producing 7 counterarguments that feed back into the essay's Open Review section.

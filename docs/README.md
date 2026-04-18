@@ -34,3 +34,4 @@ For someone reading everything, this order follows the natural arc — AI engine
 12. [Choosing Scripts Over Services](case-studies/choosing-scripts-over-services.md) *(problem decomposition applied to tooling decisions)*
 13. [Building a Personal Knowledge Management System with AI](case-studies/building-knowledge-management-with-ai.md) *(AI builds the infrastructure for AI-assisted work)*
 14. [How AI Handles Evolving Creative Scope](case-studies/evolving-creative-scope.md) *(shoshin at the project level — scope that learns)*
+15. [When Case Studies Generate System Improvements](case-studies/case-studies-as-discovery.md) *(structured reflection as a discovery mechanism)*

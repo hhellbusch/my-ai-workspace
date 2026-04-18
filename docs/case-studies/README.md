@@ -17,3 +17,5 @@ Documented examples of meta-development patterns, workflow decisions, and AI-ass
 6. **[Building a Personal Knowledge Management System with AI](building-knowledge-management-with-ai.md)** — How one extended session produced six interlocking organizational tools (backlog, library, session orientation, pre-commit review, content audit, cross-linking) and what it reveals about AI building the infrastructure for its own productivity.
 
 7. **[How AI Handles Evolving Creative Scope Across Sessions](evolving-creative-scope.md)** — A project broadened from "Zen and Karate" to "Martial Arts, Zen, and the Way of Working" as the user's learning expanded mid-project. Documents how scope changes cascade through planning documents, what conventions help maintain coherence, and what's still missing.
+
+8. **[When Case Studies Generate System Improvements](case-studies-as-discovery.md)** — Writing the evolving-scope case study surfaced three concrete gaps. The user noticed the philosophical connection (shoshin) was a design principle, not just an observation. That led to five system enhancements. The case study format itself became a discovery mechanism.
