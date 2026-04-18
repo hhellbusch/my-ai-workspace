@@ -30,3 +30,5 @@ For someone reading everything, this order follows the natural arc — AI engine
 8. [Building a Research and Verification Skill](case-studies/building-a-research-skill.md)
 9. [Adversarial Review as a Meta-Development Pattern](case-studies/adversarial-review-meta-development.md) *(builds the sparring system, applies it immediately)*
 10. [Debugging Your AI Assistant's Judgment](case-studies/debugging-ai-judgment.md) *(catches AI anchoring bias, builds structural fix)*
+11. [From Conversation to Essay in One Session](case-studies/conversation-to-essay.md) *(full pipeline: observation → thread → draft → provenance → challenge)*
+12. [Choosing Scripts Over Services](case-studies/choosing-scripts-over-services.md) *(problem decomposition applied to tooling decisions)*

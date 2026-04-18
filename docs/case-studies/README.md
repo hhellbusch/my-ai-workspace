@@ -10,11 +10,13 @@ Documented examples of meta-development patterns, workflow decisions, and AI-ass
 
 3. **[Debugging Your AI Assistant's Judgment](debugging-ai-judgment.md)** — A user noticed the AI was anchoring on prior priorities during re-prioritization — a systematic behavioral flaw, not a one-off error. Naming the mechanism led to a structural fix (zero-base evaluation) and a deeper connection to the project's philosophical thesis on ego and non-attachment.
 
+4. **[From Conversation to Essay in One Session](conversation-to-essay.md)** — Traces how a single conversational observation ("what if Zen concepts help with the AI sycophancy problem?") turned into a published essay with source provenance and adversarial review in one session. Demonstrates the full write-challenge-revise cycle and how project infrastructure compounds.
+
+5. **[Choosing Scripts Over Services](choosing-scripts-over-services.md)** — A small architectural decision — MCP server vs. Python script for YouTube transcripts — that demonstrates problem decomposition and workflow-fit thinking. The simpler tool won because it fit the file-based research workflow without adaptation.
+
 ## Planned
 
 See `BACKLOG.md` for case study seeds (items with `Case study:` title prefix). Current candidates:
 
-- From conversation to essay in one session
 - Building a personal knowledge management system with AI
 - How AI handles evolving creative scope across sessions
-- Choosing scripts over services — the YouTube transcript decision

@@ -315,6 +315,8 @@ The Day 2 concerns in that article — rate limiting, auth governance, observabi
 | External project clones for upstream contribution | `git-projects/` |
 | Cursor commands | `.cursor/commands/` |
 | Cursor skills | `.cursor/skills/` |
+| From Conversation to Essay in One Session — case study | `docs/case-studies/conversation-to-essay.md` |
+| Adversarial Review as a Meta-Development Pattern — case study | `docs/case-studies/adversarial-review-meta-development.md` |
 
 ---
 

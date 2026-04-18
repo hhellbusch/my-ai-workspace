@@ -99,12 +99,6 @@
 - **Links:** `.cursor/commands/start.md`, `.cursor/commands/whats-next.md`, `.cursor/rules/session-awareness.md`
 - **Added:** 2026-04-17
 
-### Case study: from conversation to essay in one session
-- **Product:** docs
-- **Context:** The ego/AI/zen essay went from thread ideation to published essay with source provenance and adversarial review in a single session. The process: (1) user noticed a connection between existing content (The Shift's sycophancy section) and the zen research, (2) thread 14 crystallized the idea, (3) essay drafted drawing from cached sources, (4) adversarial review challenged it immediately, (5) sparring notes created for user response. This is a concrete example of the essay pipeline working end-to-end — and of the provenance convention (Sources/References, Open Review sections) keeping things connected. Connects to the workflows essay and could demonstrate the full write-challenge-revise cycle.
-- **Links:** `docs/philosophy/ego-ai-and-the-zen-antidote.md`, `.planning/zen-karate/threads.md`, `research/zen-karate-philosophy/sparring-notes.md`, `docs/ai-engineering/ai-assisted-development-workflows.md`
-- **Added:** 2026-04-18
-
 ### Case study: building a personal knowledge management system with AI
 - **Product:** docs
 - **Context:** In a single extended session, the repo gained: project tracking (BACKLOG.md + /backlog), a personal reference library (library/ + /reference), session orientation (/start + session-awareness rule), pre-commit review (/review + /audit), proactive backlog capture, and cross-linking conventions. This is AI building the infrastructure for its own productivity — the meta-development system section of ai-assisted-development-workflows.md in action. The interesting angle: the human identifies the organizational need, the AI builds the tooling, and then both immediately use it. What does it look like when you let AI build the system that organizes AI-assisted work?
@@ -115,12 +109,6 @@
 - **Product:** docs
 - **Context:** The zen-karate project started as "Zen and Karate," broadened to "Martial Arts, Zen, and the Way of Working" when the user's learning expanded beyond Japan/Okinawa, then self-corrected with "Funakoshi's karate is still karate" to prevent the broadening from being dismissive. Multiple planning documents updated across sessions to reflect evolving nuance. This is shoshin (beginner's mind) practiced at the project level — the scope itself is learning. The case study angle: how does AI maintain coherence across documents when the human's understanding is evolving mid-project? What conventions help vs. hinder?
 - **Links:** `.planning/zen-karate/BRIEF.md`, `.planning/zen-karate/STYLE.md`, `research/zen-karate-philosophy/personal-notes.md`, `.planning/zen-karate/threads.md`
-- **Added:** 2026-04-18
-
-### Case study: choosing scripts over services — the YouTube transcript decision
-- **Product:** docs
-- **Context:** The transcript tooling went through an architectural decision: MCP server vs. Python script. The script won because it caches to disk (persistent across sessions), works in batch mode, and integrates with the existing research skill's file-based workflow. The MCP server was deferred to Ideas. Small decision, but demonstrates the problem decomposition principle from The Shift — choosing the simpler tool that fits the actual workflow rather than the architecturally elegant one. Also an example of AI presenting options and the human making the judgment call.
-- **Links:** `.cursor/skills/research-and-analyze/scripts/fetch-transcript.py`, `docs/ai-engineering/the-shift.md`
 - **Added:** 2026-04-18
 
 ### Zen-karate concept glossary
@@ -172,6 +160,18 @@
 - **Product:** docs
 - **Context:** Published case study documenting how noticing AI anchoring on prior priorities led to naming the mechanism (sycophancy toward own outputs), building a structural fix (zero-base evaluation in `/backlog prioritize`), and connecting it to the philosophical thesis on ego and non-attachment.
 - **Links:** `docs/case-studies/debugging-ai-judgment.md`, `.cursor/commands/backlog.md`, `docs/ai-engineering/the-shift.md`
+- **Completed:** 2026-04-17
+
+### Case study: from conversation to essay in one session
+- **Product:** docs
+- **Context:** Published case study tracing how the ego/AI/zen essay went from a conversational observation to a published essay with source provenance and adversarial review in one session. Demonstrates the full write-challenge-revise cycle and how project infrastructure (cached sources, style guide, cross-linking rules, sparring system) compounds.
+- **Links:** `docs/case-studies/conversation-to-essay.md`, `docs/philosophy/ego-ai-and-the-zen-antidote.md`, `.planning/zen-karate/threads.md`
+- **Completed:** 2026-04-17
+
+### Case study: choosing scripts over services — the YouTube transcript decision
+- **Product:** docs
+- **Context:** Published case study documenting the architectural decision between MCP server, Gemini API, and Python script for YouTube transcript fetching. The script won because it fit the file-based research workflow — persistent output, batch mode, same conventions as `fetch-sources.py`. Demonstrates problem decomposition and workflow-fit thinking.
+- **Links:** `docs/case-studies/choosing-scripts-over-services.md`, `.cursor/skills/research-and-analyze/scripts/fetch-transcript.py`
 - **Completed:** 2026-04-17
 
 ### Session-start context loading
