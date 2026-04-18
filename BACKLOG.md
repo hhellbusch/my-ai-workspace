@@ -118,6 +118,12 @@
 - **Links:** `ocp/troubleshooting/`
 - **Added:** 2026-04-17
 
+### Case study: the thread development pass — landscape assessment before depth
+- **Product:** docs
+- **Context:** Documents how a full-pass landscape assessment of 16 essay threads — with integrated sparring, gap categorization, and honest ratio assessment — produced better triage than sequential deep dives would have. Reveals the ~20/80 practitioner-vs-research ratio, surfaces thread contradictions only visible at landscape scale, and demonstrates sparring-during-development as distinct from sparring-after-review. Connects to meta-development loop and adversarial review patterns.
+- **Links:** `.planning/zen-karate/workflow-notes.md`, `.planning/zen-karate/thread-development.md`, `docs/case-studies/adversarial-review-meta-development.md`, `docs/ai-engineering/the-meta-development-loop.md`
+- **Added:** 2026-04-17
+
 ### CoreOS troubleshooting section
 - **Product:** coreos
 - **Context:** Currently only have `coreos/examples/` with Butane configurations. No troubleshooting guides yet. Could document common ignition/butane issues encountered during deployments.
