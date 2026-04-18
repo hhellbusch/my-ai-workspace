@@ -30,24 +30,6 @@
 - **Links:** `.planning/zen-karate/STYLE.md`, `.planning/zen-karate/`
 - **Added:** 2026-04-17
 
-### Session-start context loading
-- **Product:** meta
-- **Context:** When starting a new session, the agent has no memory of what was in progress. Need a combination of a Cursor rule (passive awareness of backlog/planning state) and a `/start` or `/resume` command (active orientation — reads backlog, checks for .continue-here.md handoffs in .planning/, presents "here's where things stand"). The backlog and /whats-next already exist but neither runs automatically.
-- **Links:** `.cursor/commands/`, `.cursor/rules/`, `BACKLOG.md`, `.planning/`
-- **Added:** 2026-04-17
-
-### Personal reference library
-- **Product:** meta
-- **Context:** A workspace-level system for logging books, videos, trainings, readings, websites, essays, and other personal references. Goes beyond project-specific curated-reading.md files — this is a persistent collection that any project can draw from. Should include AI-assisted enrichment: when a reference is added, search for summaries/reviews/key themes and cache them in the filesystem. Needs a `/reference` command and a storage convention. First reference to process: Taisen Deshimaru's "The Zen Way to Martial Arts."
-- **Links:** `research/`, `.cursor/commands/`
-- **Added:** 2026-04-17
-
-### Proactive backlog capture rule
-- **Product:** meta
-- **Context:** Cursor rule reminding the agent to capture ideas, work items, and deferred tasks as backlog entries during conversation — not after. When the user mentions wanting to do something later, or when a natural follow-up task emerges from current work, it should become a backlog item immediately. Prevents ideas from falling through the cracks across sessions.
-- **Links:** `.cursor/rules/`, `BACKLOG.md`
-- **Added:** 2026-04-17
-
 ### Headless browser fallback for research fetcher
 - **Product:** meta
 - **Context:** The research skill's `fetch-sources.py` gets blocked by some sites (HTTP 403/429). A headless browser fallback was designed during the skill validation run but not implemented. Would improve source capture rate beyond the current ~85%.
@@ -117,6 +99,36 @@
 - **Added:** 2026-04-17
 
 ## Done
+
+### Session-start context loading
+- **Product:** meta
+- **Context:** Built `/start` command for session orientation (loads backlog, checks handoffs, shows planning state, suggests focus) and `session-awareness` cursor rule for passive context. Complements `/whats-next` (session end) with a session-begin workflow.
+- **Links:** `.cursor/commands/start.md`, `.cursor/rules/session-awareness.md`
+- **Completed:** 2026-04-17
+
+### Personal reference library
+- **Product:** meta
+- **Context:** Built `library/` directory with README, entry template, `/reference` command (add, search, enrich, link), and first enriched entry (Deshimaru's "The Zen Way to Martial Arts"). Integrated with repo-structure rule, cross-linking rule, and project curated-reading lists.
+- **Links:** `library/`, `.cursor/commands/reference.md`
+- **Completed:** 2026-04-17
+
+### Proactive backlog capture rule
+- **Product:** meta
+- **Context:** Created `backlog-capture` cursor rule that reminds agent to capture ideas and deferred tasks as backlog entries during conversation, not after.
+- **Links:** `.cursor/rules/backlog-capture.md`
+- **Completed:** 2026-04-17
+
+### Pre-commit review and content audit tooling
+- **Product:** meta
+- **Context:** Built `/review` (pre-commit quality gate), `/audit` (content health check), `pre-commit-review` rule (enforcement), and `cross-linking` rule (cross-reference maintenance). First audit run caught 6 registry drift issues.
+- **Links:** `.cursor/commands/review.md`, `.cursor/commands/audit.md`, `.cursor/rules/pre-commit-review.md`, `.cursor/rules/cross-linking.md`
+- **Completed:** 2026-04-17
+
+### Zen-karate essay library scaffolding
+- **Product:** docs
+- **Context:** Created planning artifacts (BRIEF, ROADMAP, STYLE guide), research workspace (personal-notes.md, curated-reading.md templates), and backlog items for the zen-karate essay series.
+- **Links:** `.planning/zen-karate/`, `research/zen-karate-philosophy/`
+- **Completed:** 2026-04-17
 
 ### Project tracking system
 - **Product:** meta

@@ -1,0 +1,102 @@
+---
+description: Orient a new session — load project context, check handoffs, and suggest what to work on
+allowed-tools:
+  - Read
+  - Shell
+  - Glob
+  - Grep
+---
+
+# Start — Session Orientation
+
+<objective>
+Load persistent project state and present a clear picture of where things stand so the user can decide what to work on. This is the complement to `/whats-next` (which creates the handoff at session end).
+
+Run this at the beginning of a new session, or whenever you need to re-orient.
+</objective>
+
+<context>
+- Backlog: @BACKLOG.md
+- Recent commits: !`git log --oneline -10`
+- Handoff file: !`ls whats-next.md 2>/dev/null || echo "No handoff file"`
+- Planning projects: !`ls -d .planning/*/ 2>/dev/null || echo "No planning projects"`
+- Continue-here files: !`find .planning -name ".continue-here*.md" 2>/dev/null || echo "No continue-here files"`
+</context>
+
+<process>
+
+### Step 1: Check for handoff
+
+If `whats-next.md` exists in the repo root:
+1. Read it in full
+2. Present a summary: what was being worked on, what remains, any blockers or decisions pending
+3. Ask: "There's a handoff from a previous session. Want to pick up where you left off?"
+
+If a `.continue-here*.md` file exists in any `.planning/` subdirectory:
+1. Read it
+2. Present: which project, which phase, what was in progress
+3. Ask: "There's a planning handoff for [project]. Want to resume?"
+
+### Step 2: Backlog snapshot
+
+Read `BACKLOG.md` and present:
+
+```
+## Where Things Stand
+
+**In Progress:**
+- [title] — [first line of context] (started [date])
+
+**Up Next:**
+- [title] — [first line of context]
+- [title] — [first line of context]
+
+**Ideas:** [N] items queued
+
+**Recently Completed:** [last 2-3 Done items with dates]
+```
+
+### Step 3: Recent activity
+
+From the git log, identify:
+- What was committed in the last session (cluster of recent commits)
+- Any uncommitted changes (`git status`)
+- Present as: "Last session you worked on: [summary of recent commits]"
+
+### Step 4: Planning project status
+
+For each directory in `.planning/`:
+1. Read `ROADMAP.md` if it exists
+2. Find the current phase (first phase with status "Not started" or "In progress")
+3. Present: "[project]: Phase N — [name] ([status])"
+
+### Step 5: Suggest focus
+
+Based on all the above, suggest 2-3 options for what to work on, prioritized by:
+1. Handoff continuations (if any exist)
+2. In-progress backlog items
+3. Up Next items that have been waiting longest
+4. Quick wins (small effort, high value)
+
+Present as a numbered list:
+
+```
+## Suggested Focus
+
+1. **[Continue: title]** — Pick up from handoff / in-progress item
+2. **[Next: title]** — Highest priority Up Next item
+3. **[Quick win: title]** — Small item that could be knocked out quickly
+
+What would you like to work on? Pick a number or tell me something else.
+```
+
+</process>
+
+<success_criteria>
+- Handoff files detected and summarized if they exist
+- Backlog state presented clearly
+- Recent activity summarized from git log
+- Planning project status checked
+- 2-3 actionable suggestions presented
+- User chooses direction, not the agent
+</success_criteria>

@@ -161,8 +161,10 @@ Cursor auto-discovers commands in `.cursor/commands/`. Use them like built-in co
 
 **Context Management:**
 ```
+/start - Orient a new session (load backlog, handoffs, planning state, suggest focus)
 /whats-next - Create handoff document (includes backlog snapshot)
 /backlog - View, add, pick, complete, review, or prioritize project backlog items
+/reference - Add, search, or enrich personal reference library entries
 ```
 
 ### Skills (Reference with @)
@@ -177,11 +179,11 @@ Load skills for deep methodologies:
 
 ### Available Resources
 
-**Slash Commands (21 commands):**
+**Slash Commands (23 commands):**
 - Project: `/create-plan`, `/create-prompt`, `/run-prompt`, `/run-plan`
 - Meta: `/create-agent-skill`, `/create-slash-command`, `/create-subagent`, `/create-meta-prompt`, `/create-hook`
 - Debug: `/debug`
-- Context: `/whats-next`, `/backlog`
+- Context: `/start` (session orientation), `/whats-next` (session handoff), `/backlog`, `/reference`
 - Quality: `/review` (pre-commit), `/audit` (content health), `/organize` (repo structure)
 - Audit: `/audit-skill`, `/audit-slash-command`, `/audit-subagent`
 - Frameworks: `/consider:first-principles`, `/consider:5-whys`, etc.

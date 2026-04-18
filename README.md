@@ -68,7 +68,7 @@ This repository also includes a sophisticated AI-assisted development system (Sk
 
 This workspace includes a sophisticated meta-development system with **Skills**, **Commands**, and **Agents** that provide AI-assisted development capabilities:
 
-- **21 Commands** - Slash commands for planning, debugging, quality gates, backlog management, and thinking frameworks
+- **23 Commands** - Slash commands for planning, debugging, quality gates, session management, and thinking frameworks
 - **10 Skills** (+2 expertise) - Autonomous workflows for planning, research, debugging, and more
 - **3 Agents** - Specialized auditors for quality assurance
 
