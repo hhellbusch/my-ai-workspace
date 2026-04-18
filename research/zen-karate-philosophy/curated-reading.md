@@ -74,6 +74,30 @@ People whose teachings inform your understanding, even if they haven't written b
 - **How they connect to your practice:** Direct Hayashi-ha Shito-ryu lineage. Inoue studied under the same teacher (Hayashi) that defines the user's style. His teaching philosophy — questioning, feeling, working with the body's natural mechanics — connects to the project's themes of embodied knowledge, depth over surface, and the teacher-student relationship.
 - **Cached sources:** [`karatebyjesse-wisdom-of-inoue-yoshimi.md`](sources/karatebyjesse-wisdom-of-inoue-yoshimi.md), [`karatebyjesse-42-secrets-inoue-yoshimi.md`](sources/karatebyjesse-42-secrets-inoue-yoshimi.md)
 
+### Teruo Hayashi (1924–2004)
+- **Role / tradition:** Founder, Hayashi-Ha Shito-Ryu-Kai. Soke Hanshi 10th Dan Okinawa Kobudo Kenshin-Ryu. JKF Hanshi 9th Dan.
+- **Key teaching or contribution:** "I have not invented any katas, what I have done is give them back the sense of force that they should have." Studied under Kuniba (Shito-ryu), Higa (Goju-ryu), Chibana (Shorin-ryu), Nakaima (Ryuei-ryu), and multiple kobudo masters. Practiced dojo yaburi — challenging dojos and studying under whoever could beat him. Technical Chairman of WUKO/WKF for 10+ years.
+- **How they connect to your practice:** Defines the style. His approach of seeking knowledge across traditions — walking into dojos and challenging the top students, asking to study wherever he was beaten — is shoshin as a lifestyle. His breadth of study (Nahate, Shurite, Chinese arts, kobudo) is why Hayashi-ha is what it is.
+- **Cached sources:** [`hayashi-teruo-biography.md`](sources/hayashi-teruo-biography.md)
+
+### Greer Golden (1937–2019)
+- **Role / tradition:** ISKF 6th Dan. One of the first non-Japanese Shotokan instructors in the US. Founded the Athens Karate Club at Ohio University in 1970.
+- **Key teaching or contribution:** Learned Shotokan in Okinawa while in the Air Force (under Noboru Kobayashi). One of the first Americans promoted by the JKA (1961). Trained under Nishiyama and Yaguchi, first graduate of the Instructor Trainee Program (1969). Led ISKF Mid-America region. "Best Fighting Spirit" award at JKA championships.
+- **How they connect to your practice:** Founded the Athens club where you currently train. His lineage runs through Nishiyama, Yaguchi, and Okazaki — all direct connections to Funakoshi and Nakayama. The club he built is 50+ years old.
+- **Cached sources:** [`athens-shotokan-lineage.md`](sources/athens-shotokan-lineage.md)
+
+### Hirokazu Kanazawa (1931–2019)
+- **Role / tradition:** SKIF founder. 10th Dan. Considered by many the greatest Shotokan master. One of the last to study directly under Funakoshi.
+- **Key teaching or contribution:** Won first JKA championship kumite with a broken wrist ("Haven't you got other limbs you could use?" — his mother). First-ever JKA Grand Champion (1958). Teaching philosophy centers on breathing: "If the breathing is wrong, your body will go wrong — your mind will be wrong also." Practiced Tai Chi since 1957 for longevity. Studied Okinawan kobudo and kata history.
+- **How they connect to your practice:** Athens club lineage runs through Kanazawa via Stephen Krauss. His emphasis on breathing, his Tai Chi practice for longevity, and his willingness to learn from other traditions (visited Okinawan dojos of other styles) connect to the project's themes.
+- **Cached sources:** [`athens-shotokan-lineage.md`](sources/athens-shotokan-lineage.md)
+
+### Teruyuki Okazaki (1931–2020)
+- **Role / tradition:** ISKF founder. 10th Dan. Trained under Funakoshi and Nakayama at Takushoku University. Head of JKA Instructor Training Program.
+- **Key teaching or contribution:** Sent to the US by Nakayama in 1961 to spread Shotokan globally. Built ISKF to ~50,000 members across 60+ countries. Faculty member at Temple University for 50 years.
+- **How they connect to your practice:** The Athens club is ISKF-affiliated. Golden traveled to Philadelphia regularly to train with Okazaki. Okazaki's instructor program produced the generation that includes the Athens club's lineage.
+- **Cached sources:** [`athens-shotokan-lineage.md`](sources/athens-shotokan-lineage.md)
+
 ### [Name]
 - **Role / tradition:**
 - **Key teaching or contribution:**

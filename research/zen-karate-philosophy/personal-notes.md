@@ -28,9 +28,17 @@ Researching what is publicly available now — books, content online, video. Bac
 
 ### Athens Club Context
 
-The local group's lineage: Gichin Funakoshi → Hirokazu Kanazawa → Stephen Krauss. Also connected to ISKF through Greer Golden (learned in Okinawa while in the Air Force) and Okazaki (learned from Funakoshi and Masatoshi Nakayama).
+The Athens Karate Club is one of the oldest karate clubs in the nation, founded in 1970 at Ohio University by **Greer Golden** (1937–2019). Golden learned Shotokan while stationed in Okinawa with the US Air Force, training under Noboru Kobayashi. He was one of the first Americans promoted by the JKA (1st Dan, 1961). After returning to the US, he trained under Hidetaka Nishiyama and Yutaka Yaguchi in Los Angeles, graduating from the first Instructor Trainee Program in 1969. Nishiyama recommended him for Ohio University in 1970.
+
+Golden developed a relationship with **Teruyuki Okazaki** (1931–2020) in Philadelphia, traveling from Athens regularly to train. When Okazaki founded the ISKF in 1977, Golden joined and led the Mid-American Region. Okazaki had trained under both Gichin Funakoshi and Masatoshi Nakayama at Takushoku University, and was sent to the US by Nakayama in 1961 to spread Shotokan globally.
+
+The club also connects through **Hirokazu Kanazawa** (1931–2019) via Stephen Krauss. Kanazawa was one of the last living practitioners to study directly under Funakoshi. He won the first JKA All Japan Championship kumite title in 1957 — with a broken wrist, after his mother asked "Haven't you got other limbs you could use?" He became the first-ever JKA Grand Champion in 1958. After leaving the JKA over political disputes, he founded SKIF, which grew to 130+ countries. His teaching philosophy: "The most important points of my teaching are breathing, movement and timing. But breathing is first... If the breathing is wrong, your body will go wrong — your mind will be wrong also."
+
+The Athens club sits at a historically significant node — direct connections to Funakoshi through both the ISKF (Okazaki) and SKIF (Kanazawa) lines, with one of the first American JKA-promoted instructors as its founder.
 
 Training across lineages is interesting and productive. Agree with Inoue's words: "Your Karate style doesn't matter. As long as you have one head, two legs and two arms, human body mechanics and universal principles of efficient movement are the same across all styles."
+
+See [Athens Shotokan Lineage](sources/athens-shotokan-lineage.md) for full research with timeline and thread connections.
 
 ### Okinawan vs. Modern Karate
 
