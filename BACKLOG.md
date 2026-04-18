@@ -12,12 +12,6 @@
 
 ## Up Next
 
-### Update existing essay footers to new disclosure standard
-- **Product:** docs
-- **Context:** 14 essays in `docs/` have the old footer (*"written with AI assistance"*). New standard says *"created with AI assistance and has not been fully reviewed by the author"*. Bulk find-and-replace across `docs/ai-engineering/`, `docs/case-studies/`, and `docs/philosophy/`. The `building-a-research-skill.md` has a custom disclosure section — evaluate whether to normalize or leave.
-- **Links:** `AI-DISCLOSURE.md`, `.planning/zen-karate/STYLE.md` (footer template)
-- **Added:** 2026-04-18
-
 ### Add AI disclosure check to pre-commit review
 - **Product:** meta
 - **Context:** The pre-commit review rule (`.cursor/rules/pre-commit-review.md`) checks file placement, READMEs, cross-references, content quality, secrets, and backlog alignment — but doesn't verify that new `docs/` files include the standard AI disclosure footer. Adding a step would catch missing footers before commit.
@@ -339,3 +333,21 @@
 - **Context:** Created six interconnected essays covering AI-assisted development, working outside expertise, legacy system improvement, LLM deployment analysis, and the research skill meta case study.
 - **Links:** `docs/README.md`
 - **Completed:** 2026-04
+
+### Update essay footers to new disclosure standard
+- **Product:** docs
+- **Context:** Updated all 16 essay footers from "written with AI assistance" to "created with AI assistance and has not been fully reviewed by the author." Preserved per-file context notes (GitHub Copilot attribution, source verification, real session note). Normalized `building-a-research-skill.md` custom section to include the standard link.
+- **Links:** `AI-DISCLOSURE.md`, `.planning/zen-karate/STYLE.md`
+- **Completed:** 2026-04-18
+
+### Review validation tracking system
+- **Product:** meta
+- **Context:** Built per-file review tracking via YAML frontmatter. New `/validate` command, `review-tracking` rule, Layer 5 in `/audit` for coverage reporting, coverage one-liner in `/start`, direction-reviewed note in `/review`. Validation types by content category: read, tested, fact-checked, commands-verified, used-in-practice, sources-checked.
+- **Links:** `.cursor/commands/validate.md`, `.cursor/rules/review-tracking.md`, `AI-DISCLOSURE.md`
+- **Completed:** 2026-04-18
+
+### AI disclosure rewrite — honest review status
+- **Product:** docs
+- **Context:** Rewrote AI-DISCLOSURE.md from 270-line checklist to honest 50-line disclosure with three review tiers and validation types. Updated README notice, STYLE.md footer template, .cursorrules.
+- **Links:** `AI-DISCLOSURE.md`, `README.md`
+- **Completed:** 2026-04-18
