@@ -95,24 +95,29 @@ These threads form the philosophical anchor essay — what lifelong practice tea
 
 5. **Simple Lucas's wall staring progression.** A software developer discovers that staring at a wall for 10-20 minutes produces deep flow states. He describes going from "just me and a wall" to a half-conscious state where "thoughts dulled almost to the point of being dreams" and he was "almost perfectly fused with the wall." He doesn't have the vocabulary, but he's describing entry into no-mind states. His discovery that flow follows emptying rather than filling is the thread's thesis in secular language. (Source: [`youtube-NZD5IFpyDcE-transcript.md`](../../research/zen-karate-philosophy/sources/youtube-NZD5IFpyDcE-transcript.md))
 
+6. **Rian Doris's DMN/TPN framework as neural correlate of mushin.** Doris (CEO of FlowState, neuroscience background) describes the default mode network → task positive network transition as the mechanism of flow entry. "Letting the snow globe of my attention settle" is no-mind in neuroscience language. Critically, his foundational experience was a **9-day silent Zen meditation retreat** (16 hours/day). He then reverse-engineered the mechanism: dopamine resensitization makes boring work feel rewarding, DMN→TPN shifting accelerates with practice, and the result is what he calls "a monk-like quality of mind." The Zen retreat produced the insight; neuroscience explained it. (Source: [`youtube-8GUNhGRlQDU-transcript.md`](../../research/zen-karate-philosophy/sources/youtube-8GUNhGRlQDU-transcript.md))
+
 **Available evidence:**
 - Shi Heng Yi transcript (strong)
 - Inoue on "99% feeling" and mental focus (strong)
+- Rian Doris on DMN/TPN switching as flow mechanism, grounded in Zen retreat experience (strong — neuroscience framework with direct contemplative practice origin)
 - Simple Lucas wall staring progression (moderate — n=1 personal experiment, but vivid first-person account of no-mind entry without traditional context)
 - Agile/sprint velocity critique (common knowledge, not sourced)
 - Deshimaru on bunbu ryodo (moderate)
 
 **Gaps:**
 - *Personal experience:* When have you experienced the difference between going through the motions and truly practicing? A specific training session where you were "in kata" vs. just performing it? This distinction is visceral for practitioners and abstract for everyone else.
-- *Logical:* This thread risks circular reasoning — "the real work is mental, but you need the physical practice to develop the mental capacity, but the mental is what matters." The essay needs to untangle this into something a non-practitioner can follow. Lucas's account helps here — he found the state through stillness (wall staring), not movement, which challenges the "you need physical practice" part of the loop.
+- *Logical:* This thread risks circular reasoning — "the real work is mental, but you need the physical practice to develop the mental capacity, but the mental is what matters." Doris's framework actually helps resolve this: the mechanism is dopamine resensitization through reduced stimulation. Physical practice works because it's a structured form of single-tasking with embodied feedback (Inoue's "99% feeling"). Wall staring works for the same reason (reduced stimulation). Karate adds the body as a feedback loop that pure stillness doesn't — which is the bunbu ryodo argument.
 
 **Spar:**
 
 > **Type: Structural | Strength: Moderate**
 > **The argument:** "Movement without mind is empty, but you need movement to develop the mind" is not a thesis — it's a paradox restated. The thread doesn't resolve the tension; it just presents both sides approvingly. A reader looking for actionable insight gets "be mindful" — which is the same advice every meditation app already gives, just in Japanese terminology.
-> **Why it matters:** Without resolution or a concrete mechanism for how physical practice develops mental capacity differently from, say, meditation or therapy, this thread is philosophy that sounds deep but doesn't add anything beyond what mindfulness culture already offers. Lucas's wall staring shows that a non-practitioner can access similar states, which either strengthens the spar (karate isn't necessary) or reframes the thesis (the mechanism is emptying, and karate is one path to it).
+> **Why it matters:** Without resolution or a concrete mechanism for how physical practice develops mental capacity differently from, say, meditation or therapy, this thread is philosophy that sounds deep but doesn't add anything beyond what mindfulness culture already offers. Lucas's wall staring and Doris's protocol show that non-practitioners can access similar states, which either strengthens the spar (karate isn't necessary) or reframes the thesis (the mechanism is emptying/resensitization, and karate is one path to it — one that adds embodied feedback).
 
-**Verdict:** **Needs your voice + logical development.** The personal experience of "dead practice" vs. "alive practice" is the mechanism the thread is missing. Without that, it's a restatement of mindfulness truisms. Lucas's account provides a secular control case — someone who found the state without any martial arts background — which the essay should address honestly.
+> **Counter (from Doris):** Doris himself did 9 days of Zen meditation to get the insight. His secular protocol is a *translation* of what the tradition taught him. The question isn't whether you need karate specifically, but whether the depth of the traditional path produces something the shortcut doesn't. Doris got the mechanism in 9 days of intensive retreat. Lucas got a taste in 5 days of wall staring. What does 20 years of karate produce that a 10-minute wall stare doesn't? That's the question your voice needs to answer.
+
+**Verdict:** **Needs your voice + logical development.** The Doris framework resolves the circular reasoning problem by providing a mechanism (dopamine resensitization, DMN→TPN shifting). But it also sharpens the challenge: if the mechanism is understood, what does traditional practice add beyond the mechanism? The personal experience of "dead practice" vs. "alive practice" — and of return after a 20-year gap — is the answer the essay needs.
 
 ---
 
@@ -166,16 +171,19 @@ These threads form the philosophical anchor essay — what lifelong practice tea
 
 5. **Simple Lucas's core insight: emptiness as default, not special state.** "The more of this extra space you have, the more available and present you can be." His week-long experiment reveals that presence isn't something you achieve — it's the default state when you stop filling mental space. The empty mind creates possibility not through effort but through removal. He's describing shoshin without the word. (Source: [`youtube-NZD5IFpyDcE-transcript.md`](../../research/zen-karate-philosophy/sources/youtube-NZD5IFpyDcE-transcript.md))
 
+6. **Rian Doris on "monk-like quality of mind."** After his Zen retreat, Doris describes cultivating emptiness as a deliberate practice: "inhabit the in-between," stop filling idle moments with stimulation, let the baseline for what's boring shift downward. The result is what he calls "a monk-like quality of mind which is highly conducive to profound levels of focus and flow." This is shoshin/emptiness translated into a prescriptive protocol: empty the cup, and the cup becomes useful. (Source: [`youtube-8GUNhGRlQDU-transcript.md`](../../research/zen-karate-philosophy/sources/youtube-8GUNhGRlQDU-transcript.md))
+
 **Available evidence:**
 - Inoue "no style" quotes and multi-style student roster (strong)
 - Hayashi dojo yaburi accounts (strong — multiple sources)
+- Rian Doris on cultivating emptiness through boring breaks / inhabiting the in-between (strong — neuroscience-grounded, with direct Zen retreat origin)
 - Simple Lucas's mental bandwidth / emptiness-as-foundation discovery (moderate — secular independent rediscovery of the principle, directly from a tech worker)
 - Shoshin concept (established, no unique sourcing needed)
 - Engineering tribal dynamics (common knowledge)
 
 **Gaps:**
 - *Personal experience:* You're currently training across lineages (Hayashi-ha with a Shotokan club). What does this feel like? Where do you notice style attachment in yourself? When does "no style" feel liberating and when does it feel like losing something?
-- *Logical:* The thread needs to acknowledge that "no style" doesn't mean "no foundation." Both Inoue and Hayashi had deep roots before they transcended style boundaries. The emptiness comes after mastery, not before it. Without this caveat, the thread could be read as "don't commit to anything" — which is the opposite of the message. Lucas's case is interesting here: he had no foundation in contemplative practice and still found the state — which complicates the "mastery first, then emptiness" narrative. Or does it? His wall staring is a form of practice, however informal.
+- *Logical:* The thread needs to acknowledge that "no style" doesn't mean "no foundation." Both Inoue and Hayashi had deep roots before they transcended style boundaries. The emptiness comes after mastery, not before it. Without this caveat, the thread could be read as "don't commit to anything" — which is the opposite of the message. Lucas and Doris complicate this: Lucas had no foundation and still found the state; Doris had a Zen retreat (deep but brief). The question is whether the accessible version produces the same depth as the traditional path — or just a taste of it.
 
 **Spar:**
 
@@ -203,10 +211,13 @@ These threads form the philosophical anchor essay — what lifelong practice tea
 
 5. **Hayashi's synthesis as model.** Hayashi didn't just preserve — he actively sought out and integrated multiple traditions (Shito-ryu, Goju-ryu, Shorin-ryu, Ryuei-ryu, kobudo). His approach: collect deeply from many sources, then synthesize. "I have not invented any katas, what I have done is give them back the sense of force that they should have." (Source: `hayashi-teruo-biography.md`)
 
+6. **Rian Doris as a case study in translation.** Doris did a 9-day silent Zen retreat, then stripped out the Zen vocabulary and kept the mechanism (dopamine resensitization, DMN/TPN switching). His protocol is "Zen for knowledge workers" — the contemplative essence translated into a 10-minute wall stare. Is this the same "scaling strips the essence" pattern as karate's history? Or is it a *successful* translation that preserved what matters? The thread should honestly examine both possibilities: maybe some translations lose the essence (sport karate), and some preserve it in a new form (Doris's protocol). The variable isn't translation itself — it's whether the translator understood deeply before simplifying. (Source: [`youtube-8GUNhGRlQDU-transcript.md`](../../research/zen-karate-philosophy/sources/youtube-8GUNhGRlQDU-transcript.md))
+
 **Available evidence:**
 - Jesse Enkamp articles on Okinawan vs. Japanese karate (strong — detailed, practitioner-level)
 - Mabuni Kenwa quotes (strong — direct attribution)
 - Hayashi biography and synthesis approach (strong)
+- Rian Doris as modern translation case (moderate — illustrates successful essence-preservation from Zen to productivity; complicates the "translation always strips essence" narrative)
 - Agile parallel (common observation, not uniquely sourced)
 - Personal notes on Okinawan vs. modern karate distinction (moderate — framing present, personal examples thin)
 
@@ -278,16 +289,19 @@ These threads form the applied essay — connecting dojo philosophy to engineeri
 
 4. **Simple Lucas's mental bandwidth model as informal Five Hindrances.** His framework — every input consumes finite mental bandwidth, fragmenting focus and reducing presence — maps to the Five Hindrances without using the vocabulary. "Once you open a door, it's open. You can't close it again" is restlessness/desire in plain language. His discovery that "never enough" inputs produce worse outputs, not better, is the thread's thesis applied to attention rather than identity. (Source: [`youtube-NZD5IFpyDcE-transcript.md`](../../research/zen-karate-philosophy/sources/youtube-NZD5IFpyDcE-transcript.md))
 
+5. **Rian Doris on dopamine desensitization as the "never enough" mechanism.** "Through over-stimulation we can become desensitized to dopamine... Low sensitivity to reward means you need lots of stimulation to capture your attention." This is the neurological basis of the "never enough" pattern: the more you stimulate, the more you need. Doris frames the cycle explicitly — constant novelty seeking → desensitization → need for more novelty — and names the exit: resensitize through deliberate under-stimulation. (Source: [`youtube-8GUNhGRlQDU-transcript.md`](../../research/zen-karate-philosophy/sources/youtube-8GUNhGRlQDU-transcript.md))
+
 **Available evidence:**
 - Shi Heng Yi transcript (strong on naming the pattern)
-- Simple Lucas's mental bandwidth model (moderate — informal mapping to Five Hindrances, modern tech-worker framing, but unrigorous)
+- Rian Doris on dopamine desensitization cycle (strong — neuroscience mechanism for the "never enough" pattern, with practical exit strategy)
+- Simple Lucas's mental bandwidth model (moderate — informal mapping to Five Hindrances, modern tech-worker framing)
 - Engineering culture (common knowledge, not uniquely sourced)
 - Belt/rank progression philosophy (general, not sourced from specific texts)
 
 **Gaps:**
 - *Personal experience:* Have you experienced the "never enough" pattern in tech work? How does it compare to the drive in karate training — where did they feel different?
-- *Research:* Burnout literature, psychological research on perfectionism and drive. Currently no specific sources cached. Lucas's account gestures at dopamine/neuroscience (via Ryan Doris) but without depth.
-- *Logical:* The distinction between "the art is deep" and "you are not enough" is the thread's insight, but it needs concrete development. How does a good sensei communicate this differently from a bad manager?
+- *Research:* Doris provides the neuroscience mechanism; Shi Heng Yi provides the philosophical naming. What's still missing is the organizational/cultural dimension — how do companies and teams create environments that amplify the desensitization cycle? (Open offices, Slack, always-on expectations.)
+- *Logical:* The distinction between "the art is deep" and "you are not enough" is the thread's insight, but it needs concrete development. How does a good sensei communicate this differently from a bad manager? Doris's framework suggests the answer: the dojo structures practice to resensitize (single focus, deliberate rest), while the corporate environment structures work to desensitize (constant context-switching, always-on, more inputs).
 
 **Spar:**
 
@@ -387,16 +401,19 @@ These threads form the applied essay — connecting dojo philosophy to engineeri
 
 5. **Simple Lucas's Thursday stumble.** He checked email "for a second" mid-workday — saw a brand deal, YouTube comments, analytics — and couldn't stop thinking about it for hours. "They don't go away. They stay there. Even if you stop focusing on them, they're in the back of your mind all day." A concrete, modern illustration of how unprocessed inputs become persistent mental load. The pattern carries forward whether you want it to or not. (Source: [`youtube-NZD5IFpyDcE-transcript.md`](../../research/zen-karate-philosophy/sources/youtube-NZD5IFpyDcE-transcript.md))
 
+6. **Rian Doris on the self-reinforcing desensitization cycle.** "Through over-stimulation we can become desensitized to dopamine... it makes us want more of whatever we've done to produce dopamine in the first place." The pattern is neurologically self-reinforcing: more stimulation → desensitization → need for more stimulation. This is karma at the biochemical level — the pattern replays until consciously interrupted. Doris's protocol (boring breaks, inhabit the in-between) is a deliberate intervention to break the cycle, analogous to the dojo's "return to kihon." (Source: [`youtube-8GUNhGRlQDU-transcript.md`](../../research/zen-karate-philosophy/sources/youtube-8GUNhGRlQDU-transcript.md))
+
 **Available evidence:**
 - Shi Heng Yi on karma/patterns (strong)
 - Deshimaru on gyodo (moderate)
+- Rian Doris on dopamine desensitization as self-reinforcing cycle (strong — gives the thread a neurological mechanism for how patterns perpetuate)
 - Simple Lucas's email stumble as micro-scale karma illustration (moderate — vivid, relatable, but micro rather than organizational)
 - Organizational pattern examples (common knowledge)
 - Lineage transmission (well-developed in thread 15)
 
 **Gaps:**
 - *Personal experience:* Any concrete examples of organizational karma from your engineering career? A team pattern that persisted long after its origin was forgotten?
-- *Logical:* "Organizational karma" is a metaphor, not an analysis framework. The thread needs a mechanism for HOW teams examine and release inherited patterns. The dojo offers "return to fundamentals" (kihon); what's the engineering equivalent? Lucas's account illustrates the personal-scale mechanism clearly ("once you open a door, it's open") but doesn't address the organizational scale.
+- *Logical:* "Organizational karma" is a metaphor, not an analysis framework. Doris provides the personal-scale mechanism (dopamine desensitization cycle + deliberate intervention to break it). The thread still needs to bridge from personal to organizational: how do *teams* develop collective desensitization patterns, and what's the organizational equivalent of boring breaks? The dojo offers "return to fundamentals" (kihon) — is there an engineering equivalent?
 
 **Spar:**
 
@@ -489,10 +506,13 @@ These threads form the applied essay — connecting dojo philosophy to engineeri
 
 7. **Simple Lucas's embodied discovery.** A software developer who'd "gotten used to letting myself get distracted at work" discovers that wall staring produces physical sensations — head throbbing, body going numb — before unlocking deep focus. His wife notices the household vibe has changed: "it feels like a little bit nicer, more relaxed." The body's state radiates beyond the individual. His whole experiment is framed around the desk-bound knowledge worker's reality. (Source: [`youtube-NZD5IFpyDcE-transcript.md`](../../research/zen-karate-philosophy/sources/youtube-NZD5IFpyDcE-transcript.md))
 
+8. **Rian Doris's boring-break alternatives are physical.** His recommended break activities — napping, walking, stretching, foam rolling, light exercise — are body-centered recovery. The boring break protocol isn't just mental; it's about returning to physical baseline. His observation that wall staring is postural ("I'll stop working and I'll start staring at a wall... letting the snow globe of my attention just settle") implies that the body's stillness is the mechanism, not just the mind's emptiness. (Source: [`youtube-8GUNhGRlQDU-transcript.md`](../../research/zen-karate-philosophy/sources/youtube-8GUNhGRlQDU-transcript.md))
+
 **Available evidence:**
 - Deshimaru on bunbu ryodo (moderate — referenced but book not cached)
 - Shi Heng Yi on five hindrances including restlessness (strong)
 - Jesse Enkamp on Okinawan dojo culture (strong for atmosphere/friendship)
+- Rian Doris's physical boring-break alternatives as body-centered recovery (moderate — listed but not deeply argued)
 - Simple Lucas on physical experience of focus practice and its interpersonal effects (moderate — n=1 but vivid first-person, directly from tech worker context)
 - Personal experience of muscle atrophy, return to practice (partial — referenced in notes)
 
@@ -554,23 +574,26 @@ These threads form the applied essay — connecting dojo philosophy to engineeri
 
 4. **Synthesis, not choice.** Inoue measured AND felt. Usami analyzed AND performed. The error is choosing one over the other. The synthesis is "measure, but don't let the measurement replace the practice."
 
+5. **Rian Doris as embodied synthesis of science and tradition.** Doris IS the thread's thesis in a person. He did a 9-day silent Zen retreat (tradition), then used neuroscience (DMN/TPN switching, dopamine receptor sensitivity, cognitive load theory from John Sweller) to explain what the retreat did. He didn't choose science or tradition — he practiced the tradition, then measured what happened with science. His work with FlowState has involved research partnerships with Imperial College London, USC, University of Zurich. The result: protocols that are both scientifically grounded and experientially derived. This is the synthesis Inoue demonstrates (measure weight distribution AND "99% feeling") scaled to a research organization. (Source: [`youtube-8GUNhGRlQDU-transcript.md`](../../research/zen-karate-philosophy/sources/youtube-8GUNhGRlQDU-transcript.md), [riandoris.com](https://www.riandoris.com/about))
+
 **Available evidence:**
 - Usami's biomechanical approach at JKF (moderate — Mainichi article, not deeply sourced)
 - Inoue's quantitative + qualitative teaching (strong)
+- Rian Doris as living synthesis of Zen practice and neuroscience research (strong — documented background in both, research partnerships, Zen retreat as origin story)
 - Goodhart's Law / metrics critique (well-established, not uniquely sourced)
 
 **Gaps:**
 - *Personal experience:* Any experience with measurement vs. feeling in your practice? Have you tried to quantify something that resisted quantification? Has an analysis tool shown you something your body already knew?
 - *Research:* The Usami biomechanics approach could be richer — the Mainichi article is thin. More detail on what the cameras actually revealed and how it changed coaching would strengthen the thread.
-- *Logical:* The engineering parallel needs a specific example. "Metrics bad" is generic. A case where measurement genuinely helped AND a case where it obscured would make the synthesis concrete.
+- *Logical:* The engineering parallel needs a specific example. "Metrics bad" is generic. A case where measurement genuinely helped AND a case where it obscured would make the synthesis concrete. Doris's work provides a better example: the neuroscience doesn't replace the Zen practice (he still recommends wall staring, not reading about DMN/TPN switching). The science explains the practice; it doesn't substitute for it.
 
 **Spar:**
 
 > **Type: Evidence | Strength: Moderate**
 > **The argument:** The thread presents Usami's cameras as "science meets tradition" but we don't actually know what the cameras changed. Did biomechanical analysis produce different coaching decisions than Inoue's eye? If so, what? If not, the cameras are expensive confirmation of what the master already knew — which would actually support "tradition is sufficient" rather than "synthesis is best."
-> **Why it matters:** Without evidence that measurement added something tradition lacked, the thread's thesis (synthesis beats either alone) isn't demonstrated. It's asserted.
+> **Why it matters:** Without evidence that measurement added something tradition lacked, the thread's thesis (synthesis beats either alone) isn't demonstrated. It's asserted. Doris's case is more promising — he explicitly says the neuroscience let him compress 9 days of retreat into minutes of boring breaks — but the claim that the compressed version produces equivalent results is unverified.
 
-**Verdict:** **Needs research.** The concept is strong but the evidence is thin. We know Usami uses cameras. We don't know what they changed. This thread could be powerful as a bridge essay to the AI-engineering track but needs more substance to go beyond "metrics and feeling should both exist."
+**Verdict:** **Needs research, strengthened by Doris.** The Doris material significantly strengthens this thread by providing a living example of science-tradition synthesis with documented methodology. The Usami cameras remain thin. This thread could now anchor a bridge essay connecting the zen-karate track to the AI-engineering track — Doris's work is the connective tissue.
 
 ---
 

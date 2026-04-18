@@ -123,6 +123,14 @@ Documentaries, podcasts, films, or other sources that informed your perspective.
 - **Cached:** [`youtube-NZD5IFpyDcE-transcript.md`](sources/youtube-NZD5IFpyDcE-transcript.md)
 - **Library entry:** [`simple-lucas.md`](../../library/simple-lucas.md)
 
+### How To Reprogram Your Dopamine To Crave Hard Work — Rian Doris
+- **Type:** YouTube video
+- **Priority:** Influential
+- **Why it matters:** CEO of FlowState provides the neuroscience framework behind the focus principles that Simple Lucas tested. Critically, his origin story is a **9-day silent Zen meditation retreat** — he reverse-engineered what the retreat did using neuroscience vocabulary (dopamine resensitization, DMN/TPN switching). This makes him a direct bridge between contemplative practice and modern productivity science. His DMN→TPN framework gives neurological grounding to mushin. His "monk-like quality of mind" language maps to shoshin/emptiness. His three principles (boring breaks, inhabit the in-between, single-task) are a secular encoding of practices the tradition has taught for centuries. Connects to threads 1, 5, 8, 9, 12, 13, 16.
+- **URL:** https://www.youtube.com/watch?v=8GUNhGRlQDU
+- **Cached:** [`youtube-8GUNhGRlQDU-transcript.md`](sources/youtube-8GUNhGRlQDU-transcript.md)
+- **Library entry:** [`rian-doris.md`](../../library/rian-doris.md)
+
 ### [Title]
 - **Type:** Documentary / Podcast / Film / Other
 - **Priority:** Core / Influential / Background
