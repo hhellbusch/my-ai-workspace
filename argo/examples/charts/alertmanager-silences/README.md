@@ -169,8 +169,4 @@ No manual API cleanup, no tracking expiry times.
 
 ---
 
-## AI Disclosure
-
-This chart was created with AI assistance (Cursor / Claude Sonnet 4.6).
-All configuration has been reviewed for correctness against the
-`monitoring.coreos.com/v1alpha1` AlertmanagerConfig CRD specification.
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

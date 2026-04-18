@@ -126,4 +126,4 @@ This approach is less reliable than using a token created via the Gateway/UI.
 
 ---
 
-*Summary prepared for sharing with teams using AAP 2.5.x and the ansible.controller collection. AI-assisted; verify against your AAP and collection versions.*
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

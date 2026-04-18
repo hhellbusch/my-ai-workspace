@@ -126,3 +126,6 @@ Found an issue or have an improvement? Please:
 - [Argo CD Examples](../../argo/examples/) - GitOps application delivery
 - [CoreOS Examples](../../coreos/examples/) - CoreOS-specific configurations
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -451,4 +451,6 @@ Then add to your playbook:
 **Last Updated**: February 18, 2026  
 **Tested With**: OpenShift 4.14+, RHACM 2.5+
 
-**AI Disclosure**: This example was created with AI assistance as part of DevOps automation research and documentation efforts.
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

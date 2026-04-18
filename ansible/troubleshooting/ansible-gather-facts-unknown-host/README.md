@@ -1,7 +1,5 @@
 # Troubleshooting: Ansible gather_facts Fails with "Connection to UNKNOWN port 65535"
 
-> **AI Disclosure:** This documentation was created with AI assistance (Claude via Cursor) on 2026-03-25.
-
 ## Overview
 
 When an Ansible playbook fails during `gather_facts` with the following error, both the hostname and port values are clearly wrong — this pattern points to a **variable resolution failure**, not a network or firewall problem:
@@ -366,3 +364,7 @@ ansible-playbook -i <inventory> your-playbook.yml --list-hosts
 ---
 
 **Last Updated:** 2026-03-25
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

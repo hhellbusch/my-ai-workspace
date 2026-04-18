@@ -70,9 +70,16 @@ This command is read-only. It reports findings and asks for confirmation before 
    - If biographical content was flagged in step 6, remind: "Run `/validate <path> voice-approved` after reviewing the biographical content"
    - This is informational, not a blocker — new files are expected to lack review metadata
 
-9. **Backlog alignment** — Read `BACKLOG.md` and check if the work being committed relates to a tracked item. If not, note it (not a blocker, just a reminder).
+9. **AI disclosure footer check** — For each **new** markdown file under `docs/` (excluding README.md files), check that it includes the standard AI disclosure footer:
+   - The footer should be an italic line at the end of the file linking to `AI-DISCLOSURE.md`
+   - Standard text: *This document was created with AI assistance (Cursor) and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
+   - The relative path to `AI-DISCLOSURE.md` depends on file depth (e.g., `../../` for files two levels below repo root)
+   - Flag missing footers: "**Missing AI disclosure**: `file.md` — new docs file without standard footer"
+   - This is a quick fix (add the footer) but easy to forget when creating new essays or case studies
 
-10. **Present findings** as a structured report:
+10. **Backlog alignment** — Read `BACKLOG.md` and check if the work being committed relates to a tracked item. If not, note it (not a blocker, just a reminder).
+
+11. **Present findings** as a structured report:
 
 ```
 ## Pre-Commit Review
@@ -101,10 +108,11 @@ This command is read-only. It reports findings and asks for confirmation before 
 - Biographical scan: N lines flagged / clean
 - Stale reviews: N reviewed files modified (re-read needed) / none
 - Review status: N new files start as direction-reviewed (run `/validate` after reading)
+- AI disclosure footer: OK / N new docs files missing footer
 - Backlog alignment: tracked / untracked
 ```
 
-11. **Assumptions to challenge** (for documentation and essay commits) — If the changes include `docs/`, `research/`, or essay-type content, add 1-3 brief adversarial observations. These are not blockers — they surface things the author should have considered:
+12. **Assumptions to challenge** (for documentation and essay commits) — If the changes include `docs/`, `research/`, or essay-type content, add 1-3 brief adversarial observations. These are not blockers — they surface things the author should have considered:
 
 ```
 ### Assumptions to Challenge
@@ -115,7 +123,7 @@ This command is read-only. It reports findings and asks for confirmation before 
 
 Skip this section entirely for purely mechanical changes (config files, tooling, scaffolding). This is only useful for content that makes claims.
 
-12. **Brief alignment check (shoshin)** — If the changes include files in `docs/` or `.planning/`, check for framing drift:
+13. **Brief alignment check (shoshin)** — If the changes include files in `docs/` or `.planning/`, check for framing drift:
 
 - Read the relevant project brief (`.planning/*/BRIEF.md`) for any planning project connected to the changed files
 - Compare the content being committed against the brief's stated scope and purpose
@@ -137,9 +145,9 @@ Skip for changes that don't touch docs or planning files. If no `.planning/` pro
 [READY TO COMMIT / FIX ISSUES FIRST]
 ```
 
-13. If issues are found, ask: "Want me to fix these before committing? Reply with numbers or 'all'."
+14. If issues are found, ask: "Want me to fix these before committing? Reply with numbers or 'all'."
 
-14. If clean, ask: "Ready to commit. Want me to proceed?"
+15. If clean, ask: "Ready to commit. Want me to proceed?"
 </process>
 
 <success_criteria>
@@ -149,6 +157,7 @@ Skip for changes that don't touch docs or planning files. If no `.planning/` pro
 - No secrets or credentials in staged content
 - Modified files with `review:` frontmatter flagged as stale reviews
 - External URLs verified (fetched, not just eyeballed)
+- New `docs/` files checked for AI disclosure footer
 - Clear recommendation: commit or fix first
 - User confirms before any commit happens
 </success_criteria>

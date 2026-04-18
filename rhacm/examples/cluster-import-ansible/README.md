@@ -455,4 +455,6 @@ Found an issue or have an improvement?
 **Tested With**: RHACM 2.5+, Ansible Core 2.15+, kubernetes.core 2.4+  
 **Last Updated**: February 13, 2026
 
-**AI Disclosure**: This example was created with AI assistance as part of DevOps automation research and documentation efforts.
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

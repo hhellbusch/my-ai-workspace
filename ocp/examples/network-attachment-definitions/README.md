@@ -736,4 +736,4 @@ See [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) for copy-paste ready commands.
 
 ---
 
-**AI Disclosure:** This documentation was created with AI assistance to provide comprehensive guidance for OpenShift NetworkAttachmentDefinition configuration.
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

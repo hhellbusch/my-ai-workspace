@@ -330,6 +330,4 @@ ocm login --token="$(cat ~/rh-offline-token.txt)"
 
 ---
 
-## AI Disclosure
-
-This documentation and associated scripts were created with AI assistance as part of DevOps automation research and documentation efforts.
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

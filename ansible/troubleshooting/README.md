@@ -30,3 +30,7 @@ Each guide follows this structure:
 
 - **[OCP Troubleshooting](../../ocp/troubleshooting/README.md)** - OpenShift-specific issues, including [AAP SSH MTU Issues](../../ocp/troubleshooting/aap-ssh-mtu-issues/README.md)
 - **[Ansible Examples](../examples/README.md)** - Patterns and best practices for playbook authoring
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

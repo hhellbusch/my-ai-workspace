@@ -6,25 +6,6 @@
 
 ---
 
-## 🤖 AI Disclosure
-
-This document was created with substantial assistance from Claude (Anthropic's AI assistant). While comprehensive effort has been made to ensure accuracy and best practices, this content should be:
-
-- **Validated** against official HashiCorp Vault and Red Hat OpenShift documentation
-- **Tested** in non-production environments before implementation
-- **Adapted** to your specific security requirements and infrastructure
-- **Reviewed** by your security and operations teams
-
-See [AI-DISCLOSURE.md](../AI-DISCLOSURE.md) for detailed guidance on using AI-generated content safely.
-
-**Key validation points:**
-- Verify Vault API compatibility with your Vault version
-- Check OpenShift/Kubernetes API versions match your clusters
-- Validate security policies against your compliance requirements
-- Test all examples in isolated environments first
-
----
-
 ## Overview
 
 This document provides security architecture designs for managing secrets across 100+ OpenShift clusters using HashiCorp Vault. It covers patterns for securely storing and distributing:
@@ -4468,5 +4449,4 @@ Always validate recommendations against your specific environment and requiremen
 
 ---
 
-**Document prepared with Claude AI assistance**  
-**Review, validation, and testing remain user responsibility**
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

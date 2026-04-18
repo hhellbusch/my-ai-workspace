@@ -126,3 +126,6 @@ When adding new examples:
 5. Include troubleshooting section
 6. Test in both FCOS and RHCOS if applicable
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -238,6 +238,4 @@ smb: \> ls
 
 ---
 
-## AI Disclosure
-
-This example was developed with AI assistance (Claude by Anthropic) and reviewed for correctness.
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -241,3 +241,6 @@ Planned troubleshooting guides:
 - [x] KubeVirt VM provisioning issues - See [KubeVirt VM Stuck in Provisioning](kubevirt-vm-stuck-provisioning/README.md)
 - [x] Namespace stuck in Terminating state - See [Namespace Stuck in Terminating State](namespace-stuck-terminating/README.md)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -4,9 +4,6 @@ Practical examples and a production-ready framework for deploying and managing
 applications on OpenShift with ArgoCD. Content ranges from standalone reference
 examples to a comprehensive fleet management system.
 
-> **AI Disclosure:** Parts of this repository were designed and implemented with
-> AI assistance.
-
 ## What Is In This Directory
 
 This directory contains three categories of content:
@@ -259,3 +256,7 @@ See [`docs/README.md`](docs/README.md) for the full reading order.
 - [App of Apps Pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/)
 - [Helm Documentation](https://helm.sh/docs/)
 - [RHACM Documentation](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/)
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

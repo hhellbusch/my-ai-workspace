@@ -10,8 +10,6 @@ and they serve two purposes:
    the ApplicationSet `clusters` generator, determining which apps deploy to
    which clusters.
 
-> **AI Disclosure:** This document was created with AI assistance.
-
 ---
 
 ## Table of Contents
@@ -469,3 +467,7 @@ For arrays that need accumulation across cascade layers:
 See `apps/cluster-monitoring/templates/_helpers.tpl` for the full
 implementation. Run `scripts/lint-array-safety.sh` to check that all arrays
 are properly guarded.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

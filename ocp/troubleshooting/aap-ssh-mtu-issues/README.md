@@ -1,7 +1,5 @@
 # Troubleshooting: SSH Connection Issues from AAP on OpenShift
 
-> **AI Disclosure:** This documentation was created with AI assistance (Claude 3.5 Sonnet via Cursor) on 2026-02-04.
-
 ## Overview
 
 When running Ansible Automation Platform (AAP) on OpenShift, SSH connections to target hosts may fail or hang due to Maximum Transmission Unit (MTU) mismatches between the cluster network and external networks. This guide provides systematic diagnostics and resolution steps.
@@ -728,3 +726,7 @@ See [TECHNICAL-ACCURACY-REVIEW.md](TECHNICAL-ACCURACY-REVIEW.md) for details.
 
 **Last Updated:** 2026-02-04  
 **Tested Versions:** OpenShift 4.12-4.16, AAP 2.4-2.5
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

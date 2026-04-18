@@ -4,8 +4,6 @@ A hub-and-spoke GitOps framework for managing a fleet of OpenShift clusters usin
 ArgoCD, RHACM, and Ansible. Everything is driven from Git — group memberships,
 app opt-in/out, value cascading, change promotion, and cluster onboarding.
 
-> **AI Disclosure:** This framework was designed and implemented with AI assistance.
-
 ## Architecture Overview
 
 ```
@@ -333,3 +331,7 @@ manually via workflow dispatch to compare any two refs on-demand.
   release branch
 - ArgoCD namespace is `openshift-gitops` (OpenShift GitOps operator default)
 - RHACM policy namespace is `open-cluster-management-global-set`
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -516,6 +516,6 @@ Create a registry requirements document:
 - [containers-policy.json man page](https://github.com/containers/image/blob/main/docs/containers-policy.json.5.md)
 - [Red Hat GPG Keys](https://access.redhat.com/security/team/key/)
 
-## AI Disclosure
+---
 
-This troubleshooting guide was created with AI assistance and reviewed for technical accuracy. Last updated: 2026-02-10.
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
