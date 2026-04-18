@@ -66,14 +66,27 @@ This command is read-only. It reports findings and asks for confirmation before 
 - Content quality: OK / issues
 - Secrets scan: OK / issues
 - Backlog alignment: tracked / untracked
+```
 
+8. **Assumptions to challenge** (for documentation and essay commits) — If the changes include `docs/`, `research/`, or essay-type content, add 1-3 brief adversarial observations. These are not blockers — they surface things the author should have considered:
+
+```
+### Assumptions to Challenge
+- [observation] — e.g., "The central claim in section 3 is asserted without evidence"
+- [observation] — e.g., "This contradicts the framing in docs/the-shift.md section 6"
+- [observation] — e.g., "The example assumes a single-region deployment"
+```
+
+Skip this section entirely for purely mechanical changes (config files, tooling, scaffolding). This is only useful for content that makes claims.
+
+```
 ### Recommendation
 [READY TO COMMIT / FIX ISSUES FIRST]
 ```
 
-8. If issues are found, ask: "Want me to fix these before committing? Reply with numbers or 'all'."
+9. If issues are found, ask: "Want me to fix these before committing? Reply with numbers or 'all'."
 
-9. If clean, ask: "Ready to commit. Want me to proceed?"
+10. If clean, ask: "Ready to commit. Want me to proceed?"
 </process>
 
 <success_criteria>

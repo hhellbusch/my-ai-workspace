@@ -130,7 +130,7 @@ A deliberate analysis and reordering of the backlog. Unlike `review` (which chec
 2. Read recent git history: `git log --oneline -15`
 3. Scan the conversation context for topics the user has been discussing
 
-4. **Analyze each non-Done item** across these dimensions:
+4. **Zero-base evaluation** — Before analyzing items by their current section placement, evaluate every non-Done item *as if it had no current priority*. Strip the section labels (In Progress, Up Next, Ideas) and score each item purely on its merits:
 
 | Dimension | Question | Weight |
 |---|---|---|
@@ -139,19 +139,28 @@ A deliberate analysis and reordering of the backlog. Unlike `review` (which chec
 | **Dependency** | Does anything else depend on this being done first? | Medium |
 | **Effort** | How much work is this (small/medium/large)? | Medium |
 | **Staleness risk** | Will this get harder or less relevant if delayed? | Low |
+| **Anchoring risk** | Am I ranking this here because it was already here? | Check |
 
-5. **Present the analysis** as a ranked table:
+The **Anchoring risk** dimension is not weighted — it is a bias check. For each item, ask: "If this were in Ideas instead of Up Next, would I still rank it this high?" If the answer is "only because it was already prioritized," the item needs fresh justification.
+
+This produces a **zero-base ranking** — what the priority order would be if starting from scratch.
+
+5. **Compare zero-base vs. current** — Present both rankings side by side:
 
 ```
 Backlog Priority Analysis:
 
-## Recommended Order
+## Zero-Base vs. Current Ranking
 
-| # | Item | Section | Rationale |
-|---|------|---------|-----------|
-| 1 | <title> | Up Next | <1-sentence reason> |
-| 2 | <title> | Ideas → Up Next | <1-sentence reason, recommend promotion> |
-| 3 | <title> | Ideas | <1-sentence reason> |
+| # | Zero-Base Ranking | Current Section | Delta | Note |
+|---|-------------------|-----------------|-------|------|
+| 1 | <title> | Up Next (#1) | — | Confirmed |
+| 2 | <title> | Ideas | +3 | Zero-base promotes this; was buried in Ideas |
+| 3 | <title> | Up Next (#2) | -1 | Slight drop; current ranking may be momentum-driven |
+| 4 | <title> | In Progress | ↓ | Active but zero-base ranks it lower — sunk cost? |
+
+## Anchoring Flags
+- <title>: Ranked high in current ordering but zero-base analysis suggests [momentum bias / sunk cost / genuine priority]. [Fresh justification or recommendation to deprioritize.]
 
 ## In Progress Check
 - <title>: <assessment — still active? blocked? should it be deprioritized?>
@@ -165,7 +174,11 @@ Backlog Priority Analysis:
 
 6. **Ask the user** what to act on:
 
-"Based on this analysis, I'd recommend:
+"Zero-base analysis suggests a different ordering than the current backlog in these areas:
+- <title> ranks higher than its current section suggests (currently in Ideas, zero-base puts it at #N)
+- <title> may be anchored by momentum rather than current value
+
+Recommended changes:
 - Promote <title> from Ideas to Up Next
 - Reorder Up Next to: 1. <x>, 2. <y>
 - <other suggestions>

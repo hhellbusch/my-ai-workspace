@@ -1,6 +1,6 @@
 ---
 name: create-meta-prompts
-description: Create optimized prompts for Claude-to-Claude pipelines with research, planning, and execution stages. Use when building prompts that produce outputs for other prompts to consume, or when running multi-stage workflows (research -> plan -> implement).
+description: Create optimized prompts for Claude-to-Claude pipelines with research, sparring, planning, and execution stages. Use when building prompts that produce outputs for other prompts to consume, or when running multi-stage workflows (research -> spar -> plan -> implement).
 ---
 
 <objective>
@@ -13,7 +13,7 @@ Each prompt gets its own folder in `.prompts/` with its output artifacts, enabli
 
 <quick_start>
 <workflow>
-1. **Intake**: Determine purpose (Do/Plan/Research/Refine), gather requirements
+1. **Intake**: Determine purpose (Do/Plan/Research/Spar/Refine), gather requirements
 2. **Chain detection**: Check for existing research/plan files to reference
 3. **Generate**: Create prompt using purpose-specific patterns
 4. **Save**: Create folder in `.prompts/{number}-{topic}-{purpose}/`
@@ -72,6 +72,7 @@ IF no context provided (skill invoked without description):
   - "Do" - Execute a task, produce an artifact
   - "Plan" - Create an approach, roadmap, or strategy
   - "Research" - Gather information or understand something
+  - "Spar" - Adversarial review of existing research, plan, or content
   - "Refine" - Improve an existing research or plan output
 
 After selection, ask: "Describe what you want to accomplish" (they select "Other" to provide free text).
@@ -81,6 +82,7 @@ IF context was provided:
   - `implement`, `build`, `create`, `fix`, `add`, `refactor` → Do
   - `plan`, `roadmap`, `approach`, `strategy`, `decide`, `phases` → Plan
   - `research`, `understand`, `learn`, `gather`, `analyze`, `explore` → Research
+  - `spar`, `challenge`, `argue`, `pushback`, `critique`, `devil's advocate`, `adversarial` → Spar
   - `refine`, `improve`, `deepen`, `expand`, `iterate`, `update` → Refine
 
 → If unclear, ask the Purpose question above as first contextual question
@@ -94,7 +96,7 @@ Extract and infer:
 - **Topic identifier**: Kebab-case identifier for file naming (e.g., `auth`, `stripe-payments`)
 - **Complexity**: Simple vs complex (affects prompt depth)
 - **Prompt structure**: Single vs multiple prompts
-- **Target** (Refine only): Which existing output to improve
+- **Target** (Refine/Spar): Which existing output to improve or challenge
 
 If topic identifier not obvious, ask:
 - header: "Topic"
@@ -103,20 +105,23 @@ If topic identifier not obvious, ask:
 - Enforce kebab-case (convert spaces/underscores to hyphens)
 
 For Refine purpose, also identify target output from `.prompts/*/` to improve.
+For Spar purpose, identify target output from `.prompts/*/` or any file in the repo to challenge.
 </adaptive_analysis>
 
 <chain_detection>
-Scan `.prompts/*/` for existing `*-research.md` and `*-plan.md` files.
+Scan `.prompts/*/` for existing `*-research.md`, `*-spar.md`, and `*-plan.md` files.
 
 If found:
-1. List them: "Found existing files: auth-research.md (in 001-auth-research/), stripe-plan.md (in 005-stripe-plan/)"
+1. List them: "Found existing files: auth-research.md (in 001-auth-research/), auth-spar.md (in 002-auth-spar/), stripe-plan.md (in 005-stripe-plan/)"
 2. Use AskUserQuestion:
    - header: "Reference"
-   - question: "Should this prompt reference any existing research or plans?"
+   - question: "Should this prompt reference any existing research, spar reviews, or plans?"
    - options: List found files + "None"
    - multiSelect: true
 
-Match by topic keyword when possible (e.g., "auth plan" → suggest auth-research.md).
+Match by topic keyword when possible (e.g., "auth plan" → suggest auth-research.md and auth-spar.md).
+
+**Spar auto-inclusion:** When creating a Plan prompt and a same-topic `*-spar.md` exists, automatically include it as a reference and add this instruction to the generated plan prompt: "This plan must address the counterarguments raised in the spar output. For each strong counterargument, either: (1) modify the plan to account for it, (2) explicitly justify why the plan proceeds despite it, or (3) flag it as a known risk with mitigation."
 </chain_detection>
 
 <contextual_questioning>
@@ -128,6 +133,7 @@ Route by purpose:
 - Do → artifact type, scope, approach
 - Plan → plan purpose, format, constraints
 - Research → depth, sources, output format
+- Spar → target selection, attack surface focus, audience perspective
 - Refine → target selection, feedback, preservation
 </contextual_questioning>
 
@@ -162,6 +168,7 @@ Load purpose-specific patterns:
 - Do: [references/do-patterns.md](references/do-patterns.md)
 - Plan: [references/plan-patterns.md](references/plan-patterns.md)
 - Research: [references/research-patterns.md](references/research-patterns.md)
+- Spar: [references/spar-patterns.md](references/spar-patterns.md)
 - Refine: [references/refine-patterns.md](references/refine-patterns.md)
 
 Load intelligence rules: [references/intelligence-rules.md](references/intelligence-rules.md)
@@ -320,8 +327,9 @@ For complex DAGs (e.g., two parallel research → one plan).
 <example>
 ```
 Layer 1 (parallel): 001-api-research, 002-db-research
-Layer 2 (after layer 1): 003-architecture-plan
-Layer 3 (after layer 2): 004-implement
+Layer 2 (after layer 1): 003-api-spar (challenges research before planning)
+Layer 3 (after layer 2): 004-architecture-plan (consumes research + spar)
+Layer 4 (after layer 3): 005-implement
 ```
 </example>
 </mixed_dependencies>
@@ -339,7 +347,8 @@ Scan prompt contents for @ references to determine dependencies:
 <inference_rules>
 If no explicit @ references found, infer from purpose:
 - Research prompts: No dependencies (can parallel)
-- Plan prompts: Depend on same-topic research
+- Spar prompts: Depend on same-topic research (or target file)
+- Plan prompts: Depend on same-topic research and same-topic spar (if exists)
 - Do prompts: Depend on same-topic plan
 
 Override with explicit references when present.
@@ -363,11 +372,12 @@ After each prompt completes, verify success:
 
 1. **File exists**: Check output file was created
 2. **Not empty**: File has content (> 100 chars)
-3. **Metadata present** (for research/plan): Check for required XML tags
+3. **Metadata present** (for research/plan/spar): Check for required XML tags
    - `<confidence>`
    - `<dependencies>`
    - `<open_questions>`
    - `<assumptions>`
+   - (spar only): `<counterarguments>`, `<what_survives>`, `<self_audit>`
 4. **SUMMARY.md exists**: Check SUMMARY.md was created
 5. **SUMMARY.md complete**: Has required sections (Key Findings, Decisions Needed, Blockers, Next Step)
 6. **One-liner is substantive**: Not generic like "Research completed"

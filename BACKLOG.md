@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-17
+> Last updated: 2026-04-18
 
 ## In Progress
 
@@ -93,11 +93,6 @@
 - **Links:** `library/`
 - **Added:** 2026-04-17
 
-### AI prioritization bias — meta-system guard
-- **Product:** meta
-- **Context:** Observed behavior: when AI re-prioritizes the backlog, it tends to weight pre-existing priorities into the next revision rather than evaluating from first principles. This is a form of AI sycophancy toward its own prior outputs — the same ego reinforcement problem described in The Shift, applied to project management. Explore meta-prompting or systematic guards (e.g., a rule that forces fresh evaluation, a "devil's advocate" step in the `/backlog prioritize` workflow, or a prompt structure that explicitly separates "what was previously prioritized" from "what should be prioritized now"). Could also be essay material — it's a concrete example of the ego/AI problem.
-- **Links:** `.cursor/commands/backlog.md`, `docs/the-shift.md`, `.planning/zen-karate/threads.md` (thread 14)
-- **Added:** 2026-04-17
 
 ### Zen-karate concept glossary
 - **Product:** docs
@@ -109,6 +104,12 @@
 - **Product:** meta
 - **Context:** Dedicated slash command encoding the proven essay pipeline after 2-3 essays have been written manually. Pulls from shared research library and personal-notes.md, applies voice/style guide, enforces docs/ conventions, prompts for personal content at the right points.
 - **Links:** `.cursor/commands/`
+- **Added:** 2026-04-17
+
+### Explore Paude for containerized agent workflows
+- **Product:** meta
+- **Context:** [Paude](https://github.com/bbrowning/paude) runs AI coding agents (Claude Code, Cursor CLI, Gemini CLI, OpenClaw) in secure containers with git-based sync. Could strengthen the meta-prompting system by enabling isolated, parallelizable agent sessions — e.g., running research, drafting, and review agents concurrently in containers with `--yolo` safely enabled, or orchestrating fire-and-forget agent tasks against this workspace. Worth exploring whether its orchestration model (harvest, PRs, multi-session) maps to the multi-stage meta-prompt pipelines already in use here.
+- **Links:** https://github.com/bbrowning/paude
 - **Added:** 2026-04-17
 
 ### Expand OCP troubleshooting guides
@@ -153,6 +154,18 @@
 - **Product:** meta
 - **Context:** Built `fetch-transcript.py` script using `youtube-transcript-api` — fetches YouTube transcripts as timestamped markdown with metadata. Supports single video and batch mode. Integrated into the research skill's scripts index and the `/reference` command's video enrichment workflow. Tested successfully with Shi Heng Yi interview (2142 segments, 1:37:35 duration). MCP server option deferred to Ideas as the script-based approach covers the immediate need.
 - **Links:** `.cursor/skills/research-and-analyze/scripts/fetch-transcript.py`, `.cursor/commands/reference.md`
+- **Completed:** 2026-04-17
+
+### Adversarial review (sparring) meta-system integration
+- **Product:** meta
+- **Context:** Integrated adversarial review into the workflow system at four points: (1) `/spar` slash command for on-demand adversarial review, (2) Spar as a fifth purpose in the `create-meta-prompts` skill with `spar-patterns.md` reference and chain integration (research → spar → plan → do), (3) zero-base de-biasing in `/backlog prioritize` to counter AI anchoring on prior priorities, (4) "Assumptions to challenge" subsection in `/review` for documentation commits.
+- **Links:** `.cursor/commands/spar.md`, `.cursor/skills/create-meta-prompts/references/spar-patterns.md`, `.cursor/commands/backlog.md`, `.cursor/commands/review.md`
+- **Completed:** 2026-04-17
+
+### AI prioritization bias — meta-system guard
+- **Product:** meta
+- **Context:** Implemented zero-base evaluation in `/backlog prioritize`: strips current section labels, scores items on merits, compares zero-base ranking against current ranking, and flags anchoring bias. Addresses the observed behavior where AI weights prior priorities into re-prioritization.
+- **Links:** `.cursor/commands/backlog.md`
 - **Completed:** 2026-04-17
 
 ### Essay: Ego, AI, and the Zen Antidote
