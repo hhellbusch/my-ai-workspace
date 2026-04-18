@@ -112,8 +112,10 @@ Project briefs, roadmaps, style guides, and phase plans for multi-session work:
 - Keep commits focused on single changes
 - Update documentation with code changes
 
-## AI Disclosure
-Per project standards, all AI-assisted work includes disclosure notices in relevant files.
+## AI Disclosure and Review Tracking
+Per project standards, all AI-assisted work includes disclosure notices in relevant files. The standard footer acknowledges that content was created with AI assistance and has not been fully reviewed by the author unless explicitly stated otherwise. See `AI-DISCLOSURE.md` for the full disclosure policy, review status definitions (reviewed, direction-reviewed, unreviewed), and validation types by content category (read, tested, fact-checked, commands-verified, used-in-practice, sources-checked).
+
+Review status is tracked per-file via YAML frontmatter (`review:` block). Files without frontmatter default to direction-reviewed. See `.cursor/rules/review-tracking.md` for the convention. Use `/validate` to mark files as reviewed. Do NOT add `review:` frontmatter when generating new files — that is the author's responsibility.
 
 ## Quick Reference
 

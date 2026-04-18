@@ -46,13 +46,9 @@ Includes slash commands for planning, debugging, research, quality gates, and se
 
 ## AI-Generated Content Notice
 
-**The majority of content in this workspace was created with AI assistance.** This is the point — it's a working demonstration of the patterns described in the essays.
+**The majority of content in this workspace was created with AI assistance, and the author has not personally reviewed most of it in detail.** The direction, intent, and key decisions are human; the prose, synthesis, and code are largely AI-generated. Some pieces have been read and validated, many have not.
 
-What this means in practice:
-- Treat examples as **starting points**, not authoritative references
-- **Test before production** — validate for your environment and tool versions
-- **Understand before copying** — the essays explain the reasoning; the examples show the implementation
-- Cross-reference with official documentation for your specific use case
+This is an honest accounting, not a caveat — the project is partly an exploration of how far structured AI-assisted workflows can go. See [AI-DISCLOSURE.md](AI-DISCLOSURE.md) for the full picture, including how to interpret review status.
 
 ## Getting Started
 

@@ -12,6 +12,24 @@
 
 ## Up Next
 
+### Update existing essay footers to new disclosure standard
+- **Product:** docs
+- **Context:** 14 essays in `docs/` have the old footer (*"written with AI assistance"*). New standard says *"created with AI assistance and has not been fully reviewed by the author"*. Bulk find-and-replace across `docs/ai-engineering/`, `docs/case-studies/`, and `docs/philosophy/`. The `building-a-research-skill.md` has a custom disclosure section — evaluate whether to normalize or leave.
+- **Links:** `AI-DISCLOSURE.md`, `.planning/zen-karate/STYLE.md` (footer template)
+- **Added:** 2026-04-18
+
+### Add AI disclosure check to pre-commit review
+- **Product:** meta
+- **Context:** The pre-commit review rule (`.cursor/rules/pre-commit-review.md`) checks file placement, READMEs, cross-references, content quality, secrets, and backlog alignment — but doesn't verify that new `docs/` files include the standard AI disclosure footer. Adding a step would catch missing footers before commit.
+- **Links:** `.cursor/rules/pre-commit-review.md`, `.planning/zen-karate/STYLE.md` (footer template), `AI-DISCLOSURE.md`
+- **Added:** 2026-04-18
+
+### Harmonize DevOps README disclosure notices
+- **Product:** docs
+- **Context:** DevOps READMEs (ansible, ocp, argo, coreos, rhacm, vault) have various disclosure notices — some link to `AI-DISCLOSURE.md`, some have inline notices, some have nothing. Predates the current standard. Evaluate whether to normalize to the new footer or leave as-is (they serve a different audience than the essays).
+- **Links:** `AI-DISCLOSURE.md`
+- **Added:** 2026-04-18
+
 ### Zen-karate personal knowledge base — experiential content (CRITICAL PATH)
 - **Product:** docs
 - **Context:** Template and structural scaffolding complete. AI-enriched content in place: training history, lineage maps, teachers/influences (Shihan, Sensei, Inoue, Rika Usami), Athens club context, notes/fragments. **What remains is the experiential core that only the user can provide:** formative moments, philosophical anchors (what concepts mean through practice), life application examples, Shi Heng Yi connection, "what's hard to convey," and the crystallizing moments for Shihan and Sensei. This is the critical path to essay readiness — without it, drafting leans on research rather than practitioner voice.

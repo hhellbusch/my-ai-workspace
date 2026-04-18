@@ -41,7 +41,7 @@ Match the existing essay format (see `docs/ai-engineering/` and `docs/philosophy
 - **Sources and References**: Table linking to the specific research material, cached sources, threads, and library entries that informed the essay. Every claim that draws from a source should be traceable through this section. Use relative paths so links work from the essay's track directory (e.g., `docs/philosophy/`).
 - **Open Review**: If the essay has been through adversarial review (`/spar` or manual sparring), link to the sparring notes and summarize the key unresolved counterarguments in 1-2 sentences. This signals to future sessions (and human readers) that the essay has known open threads.
 - **Related Reading**: Table at the end linking to other essays in the series and to the existing AI-focused docs where natural
-- **AI Disclosure**: Standard italic footer: *This document was written with AI assistance (Cursor). See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for full context on AI-generated content in this workspace.* (path is `../../` because essays live two levels below repo root)
+- **AI Disclosure**: Standard italic footer: *This document was created with AI assistance (Cursor) and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.* (path is `../../` because essays live two levels below repo root). If the author has personally reviewed and validated the content, the footer should say so explicitly: *"...and has been reviewed by the author."*
 
 ---
 
