@@ -65,6 +65,18 @@ Adapt the level of detail to the task type (coding, research, analysis, writing,
 
 Write to `whats-next.md` in the current working directory using the format below.
 
+### Step 1.5: Case study reflection
+
+Before writing the handoff, briefly review the session's work and ask:
+
+- Did this session produce a process or pattern that connects to an existing essay in `docs/`?
+- Could anything from this session become its own case study?
+- Did the work validate or challenge a claim in an existing doc?
+
+If yes to any, include a **Case Study Opportunities** section in the handoff document (see output format below). These are brief observations, not full proposals — just enough for the next session to decide whether to pursue them.
+
+If nothing stands out, skip this section entirely. Not every session produces essay-worthy material.
+
 ### Step 2: Update the backlog if needed
 
 If work completed in this session resolved a backlog item, move it to Done in `BACKLOG.md`. If new ideas or follow-up work emerged, add them to Ideas. Update the `Last updated` date.
@@ -128,4 +140,11 @@ If work completed in this session resolved a backlog item, move it to Done in `B
 - Current position in workflow or process
 - Any open questions or pending decisions]
 </current_state>
+
+<case_study_opportunities>
+[Optional — only include if something from this session could connect to existing docs or become its own case study.
+- What happened and what pattern it demonstrates
+- Which existing essay(s) it connects to
+- Whether it was already added to the backlog as a seed]
+</case_study_opportunities>
 ```

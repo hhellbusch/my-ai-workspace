@@ -206,6 +206,10 @@ Every item follows this structure:
 - **Completed:** <YYYY-MM-DD or YYYY-MM> (Done)
 ```
 
+### Title Conventions
+
+- **`Case study:`** prefix — Seeds for potential case study essays. These are observations that current work demonstrates a pattern worth documenting, connects to an existing essay, or could become its own piece. Always set **Product** to `docs`. Example: `### Case study: sparring integration as meta-development pattern`. Added by the `case-study-reflection` rule during work or by `/whats-next` during session handoff.
+
 ## File Structure
 
 `BACKLOG.md` has four sections in this order:

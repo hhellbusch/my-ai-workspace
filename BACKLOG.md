@@ -99,6 +99,18 @@
 - **Links:** `.cursor/commands/start.md`, `.cursor/commands/whats-next.md`, `.cursor/rules/session-awareness.md`
 - **Added:** 2026-04-17
 
+### Case study: adversarial review as a meta-development pattern
+- **Product:** docs
+- **Context:** Building the `/spar` command, `spar-patterns.md`, and zero-base de-biasing in a single session demonstrated the same meta-development loop documented in `building-a-research-skill.md` — gap identified (AI prioritization bias, lack of pushback), tool built (`/spar`, spar pipeline stage), immediately applied (adversarial review of the ego/AI essay, which produced 7 counterarguments and a sparring notes document). The sparring itself then became material for the essay it was critiquing. Could extend the AI-Assisted Development Workflows essay or become a standalone piece on adversarial review as a development practice.
+- **Links:** `.cursor/commands/spar.md`, `.cursor/skills/create-meta-prompts/references/spar-patterns.md`, `docs/building-a-research-skill.md`, `docs/ai-assisted-development-workflows.md`, `research/zen-karate-philosophy/sparring-notes.md`
+- **Added:** 2026-04-18
+
+### Case study: from conversation to essay in one session
+- **Product:** docs
+- **Context:** The ego/AI/zen essay went from thread ideation to published essay with source provenance and adversarial review in a single session. The process: (1) user noticed a connection between existing content (The Shift's sycophancy section) and the zen research, (2) thread 14 crystallized the idea, (3) essay drafted drawing from cached sources, (4) adversarial review challenged it immediately, (5) sparring notes created for user response. This is a concrete example of the essay pipeline working end-to-end — and of the provenance convention (Sources/References, Open Review sections) keeping things connected. Connects to the workflows essay and could demonstrate the full write-challenge-revise cycle.
+- **Links:** `docs/ego-ai-and-the-zen-antidote.md`, `.planning/zen-karate/threads.md`, `research/zen-karate-philosophy/sparring-notes.md`, `docs/ai-assisted-development-workflows.md`
+- **Added:** 2026-04-18
+
 ### Zen-karate concept glossary
 - **Product:** docs
 - **Context:** Shared glossary of Japanese/Zen terms (mushin, zanshin, fudoshin, shoshin, kata, kihon, kumite, senpai/kohai, dojo kun, etc.) extracted after Essay 1 is drafted. Keeps definitions consistent across the series so later essays don't re-explain foundational vocabulary.
