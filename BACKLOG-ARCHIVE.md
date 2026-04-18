@@ -6,7 +6,25 @@ New archival batches are prepended below (newest batch first).
 
 ---
 
-## Archived 2026-04-18 (16 items) — initial Done cap migration
+## Archived 2026-04-18 (17 items) — rolling Done cap restored
+
+### ArgoCD diff preview upstream contribution
+- **Product:** argo
+- **Context:** Explored feasibility improvement in `git-projects/argocd-diff-preview/`. Resulted in [upstream issue #381](https://github.com/dag-andersen/argocd-diff-preview/issues/381).
+- **Links:** `git-projects/argocd-diff-preview/`
+- **Completed:** 2026-03
+
+### Research and verification skill
+- **Product:** meta
+- **Context:** Built a reusable research automation skill that fetches sources, runs parallel analysis, and produces structured assessments. Validated against 53 of 62 cited sources from an enterprise LLM deployment article.
+- **Links:** `.cursor/skills/research-and-analyze/`, `docs/case-studies/building-a-research-skill.md`
+- **Completed:** 2026-04
+
+### Documentation suite
+- **Product:** meta
+- **Context:** Created six interconnected essays covering AI-assisted development, working outside expertise, legacy system improvement, LLM deployment analysis, and the research skill meta case study.
+- **Links:** `docs/README.md`
+- **Completed:** 2026-04
 
 ### Zen-karate essay voice/style guide
 - **Product:** docs
@@ -86,20 +104,8 @@ New archival batches are prepended below (newest batch first).
 - **Links:** `.cursor/rules/backlog-capture.md`
 - **Completed:** 2026-04-17
 
-### ArgoCD diff preview upstream contribution
-- **Product:** argo
-- **Context:** Explored feasibility improvement in `git-projects/argocd-diff-preview/`. Resulted in [upstream issue #381](https://github.com/dag-andersen/argocd-diff-preview/issues/381).
-- **Links:** `git-projects/argocd-diff-preview/`
-- **Completed:** 2026-03
-
-### Research and verification skill
+### Pre-commit review and content audit tooling
 - **Product:** meta
-- **Context:** Built a reusable research automation skill that fetches sources, runs parallel analysis, and produces structured assessments. Validated against 53 of 62 cited sources from an enterprise LLM deployment article.
-- **Links:** `.cursor/skills/research-and-analyze/`, `docs/case-studies/building-a-research-skill.md`
-- **Completed:** 2026-04
-
-### Documentation suite
-- **Product:** meta
-- **Context:** Created six interconnected essays covering AI-assisted development, working outside expertise, legacy system improvement, LLM deployment analysis, and the research skill meta case study.
-- **Links:** `docs/README.md`
-- **Completed:** 2026-04
+- **Context:** Built `/review` (pre-commit quality gate), `/audit` (content health check), `pre-commit-review` rule (enforcement), and `cross-linking` rule (cross-reference maintenance). First audit run caught 6 registry drift issues.
+- **Links:** `.cursor/commands/review.md`, `.cursor/commands/audit.md`, `.cursor/rules/pre-commit-review.md`, `.cursor/rules/cross-linking.md`
+- **Completed:** 2026-04-17

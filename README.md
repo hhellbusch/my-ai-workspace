@@ -52,7 +52,7 @@ This is an honest accounting, not a caveat — the project is partly an explorat
 
 ## Getting Started
 
-Browse the [essays](docs/) to understand the patterns. Explore the [examples](ansible/examples/) and [troubleshooting guides](ocp/troubleshooting/) for practical implementations. The [backlog](BACKLOG.md) shows what's in progress.
+Browse the [essays](docs/) to understand the patterns. Explore the [examples](ansible/examples/) and [troubleshooting guides](ocp/troubleshooting/) for practical implementations. The [backlog](BACKLOG.md) shows what's in progress (rolling **Done** list; older completions in [BACKLOG-ARCHIVE.md](BACKLOG-ARCHIVE.md)).
 
 ```bash
 git clone <repo-url>
