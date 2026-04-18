@@ -1,7 +1,7 @@
 # AI-Assisted Development Workflows — A Practical Guide
 
 > **Audience:** Anyone from leadership to hands-on engineers.
-> **Purpose:** Practical, tool-agnostic patterns for using AI coding assistants effectively in infrastructure and platform engineering work.
+> **Purpose:** Practical, tool-agnostic patterns for using AI coding assistants effectively in engineering work — from daily editor workflows to multi-session project management and meta-development systems.
 
 ---
 
@@ -10,11 +10,7 @@
 Modern AI coding assistants are no longer just autocomplete tools.
 When used deliberately, they change *how* you approach engineering work — from how you plan features to how you debug failures, review diffs, and carry context across sessions.
 
-This guide documents patterns that have proven useful in real infrastructure work across:
-- Ansible automation and playbook development
-- GitOps fleet management (ArgoCD + Helm + GitHub Actions)
-- Kubernetes / OpenShift configuration
-- CI/CD pipeline authoring
+This guide documents patterns that have proven useful in real work. The examples are drawn from infrastructure and platform engineering — Ansible, ArgoCD, Helm, Kubernetes, OpenShift — but the underlying patterns (context sharing, verification discipline, meta-development systems) apply to any engineering domain.
 
 ---
 
@@ -58,13 +54,13 @@ The AI generates a candidate. You review it, tweak it, and move on.
 | State constraints explicitly | "This must be idempotent", "Do not add error handling I haven't asked for" |
 | Ask for one thing at a time | Large multi-part requests produce mediocre results |
 | Name the pattern, not just the task | "Convert this Helm pre-install hook to an ArgoCD sync-wave" beats a vague description |
-| Verify before committing | AI can produce plausible-but-wrong Jinja2, wrong indent levels, stale API syntax, and entirely fabricated APIs or capabilities that never existed |
+| Verify before committing | AI can produce plausible-but-wrong Jinja2, wrong indent levels, stale API syntax, and [entirely fabricated APIs or capabilities](../case-studies/fabricated-references.md) that never existed |
 
 ### What works especially well
 
 - **YAML scaffolding** — Helm templates, values files, Ansible tasks, ArgoCD Applications
 - **Explaining code you didn't write** — paste it and ask
-- **First-draft documentation** — README files, runbook steps, PR descriptions
+- **First-draft documentation** — README files, runbook steps, PR descriptions (but [watch for content that speaks in your voice](../case-studies/who-is-speaking.md) — biographical claims need explicit review)
 - **Mechanical refactors** — converting serial loops to parallel, adding idempotency guards
 - **CI/CD boilerplate** — GitHub Actions jobs, shell scripts with proper exit handling
 
@@ -116,11 +112,13 @@ Keep a separate repo (like this one) as a curated collection of solved patterns,
 
 ### Beyond context sharing: multi-session project management
 
+*This section grew from direct experience managing a multi-session project in this repository. The patterns below were each built in response to a specific failure — the linked case studies trace what happened and what was built.*
+
 Solutions A through C solve the *context loading* problem — getting a new session up to speed on what exists. But multi-session projects create a harder problem: **accumulated context shapes the AI's judgment, not just its knowledge.**
 
 When a project runs across many sessions, the AI isn't just reading context — it's inheriting framing. A backlog written in session 1 tells session 5 what matters. A handoff from session 3 tells session 4 where to start. A roadmap from the project's first week tells month-two sessions what the plan is. Each of these artifacts carries implicit authority that may not be deserved.
 
-This is [The Shift](the-shift.md)'s sycophancy problem (section 6) expressed as a project management concern. The AI doesn't just agree with your code — it agrees with your priorities, your scope, your framing, because all of those are in the context window and all of them look authoritative.
+This is [The Shift](the-shift.md)'s sycophancy problem (section 6) expressed as a project management concern. The AI doesn't just agree with your code — it agrees with your priorities, your scope, your framing, because all of those are in the context window and all of them look authoritative. When multiple sessions modify the same files, the problem compounds — an agent may [operate on stale assumptions](../case-studies/stale-context-in-long-sessions.md) from its own session while the repository has moved on.
 
 **Patterns that help:**
 
@@ -260,7 +258,7 @@ A Skill file is just a Markdown document with instructions. For automation log a
 3. **Contextualize step** — Look at the task's inputs earlier in the run to find root cause
 4. **Report step** — Produce a concise summary: what failed, why, suggested fix
 
-Once written, a single `/analyze-pipeline-log <job-id>` invocation runs the full workflow.
+Once written, a single `/analyze-pipeline-log <job-id>` invocation runs the full workflow. For a real worked example of building a Skill from scratch — including the design decisions, failure handling, and iteration — see [Building a Research and Verification Skill](../case-studies/building-a-research-skill.md).
 
 ---
 
@@ -285,9 +283,9 @@ These aren't just guardrails — they're the skills that matter *more* in an AI-
 
 ### Practical safeguards
 
-- Review every diff before committing — treat AI output like a PR from a new team member
+- Review every diff before committing — treat AI output like a PR from a new team member. But keep the review [proportionate to the change](../case-studies/heavy-safety-nets.md) — a 10-step review for a one-line fix will get skipped entirely.
 - Don't put real credentials, internal hostnames, or sensitive config in prompts
-- When an AI answer seems confident but wrong, it probably is — verify against official docs
+- When an AI answer seems confident but wrong, it probably is — [verify against official docs](../case-studies/fabricated-references.md), not just the AI's confidence
 - Use non-production environments for any playbook or automation the AI helped write
 
 ---
@@ -304,7 +302,7 @@ Start with low-stakes work (docs, linting, scaffolding) before using it on produ
 
 ---
 
-## 8. Where AI Assists but Doesn't Replace Engineering Judgment
+## 7. Where AI Assists but Doesn't Replace Engineering Judgment
 
 The patterns in this guide cover tasks where AI can meaningfully accelerate your work. But some of the most consequential engineering work involves decisions where AI can inform but cannot substitute for human judgment — particularly in complex architecture selection.
 
@@ -343,6 +341,10 @@ The Day 2 concerns in that article — rate limiting, auth governance, observabi
 | Debugging Your AI Assistant's Judgment — case study | [docs/case-studies/debugging-ai-judgment.md](../case-studies/debugging-ai-judgment.md) |
 | How AI Handles Evolving Creative Scope — case study | [docs/case-studies/evolving-creative-scope.md](../case-studies/evolving-creative-scope.md) |
 | Building Knowledge Management with AI — case study | [docs/case-studies/building-knowledge-management-with-ai.md](../case-studies/building-knowledge-management-with-ai.md) |
+| When AI Fabricates the Evidence — case study | [docs/case-studies/fabricated-references.md](../case-studies/fabricated-references.md) |
+| Who Is Speaking? When AI Writes in Your Voice — case study | [docs/case-studies/who-is-speaking.md](../case-studies/who-is-speaking.md) |
+| When AI Ignores Changes Made by Other Sessions — case study | [docs/case-studies/stale-context-in-long-sessions.md](../case-studies/stale-context-in-long-sessions.md) |
+| When the Safety Net Is Too Heavy to Use — case study | [docs/case-studies/heavy-safety-nets.md](../case-studies/heavy-safety-nets.md) |
 
 ---
 
