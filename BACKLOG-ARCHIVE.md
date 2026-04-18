@@ -6,6 +6,21 @@ New archival batches are prepended below (newest batch first).
 
 ---
 
+## Archived 2026-04-18 (2 items — batch 5)
+
+### Product-based directory nesting
+- **Product:** meta
+- **Context:** Reorganized all technology-specific content under product directories (`ansible/`, `argo/`, `coreos/`, `ocp/`, `rhacm/`, `vault/`) with content-type subdirectories. Updated all internal references.
+- **Links:** `.cursor/rules/repo-structure.md`
+- **Completed:** 2026-04-17
+
+### Remove non-functional iso-server tool
+- **Product:** ocp
+- **Context:** Removed `tools/iso-server.py` — HTTPS ISO server didn't work against Dell iDRAC virtual media for several reasons.
+- **Completed:** 2026-04-17
+
+---
+
 ## Archived 2026-04-18 (1 item — batch 4)
 
 ### Move labs into product directories

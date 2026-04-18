@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-18
+> Last updated: 2026-04-18 (Full Cup essay drafted)
 
 ## In Progress
 
@@ -106,10 +106,10 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/zen-karate-philosophy/mobility-and-recovery.md`, `.planning/zen-karate/thread-development.md` (Thread 12)
 - **Added:** 2026-04-18
 
-### Essay: The Full Cup — organizational bandwidth as the barrier to learning
+### Essay: The Full Cup — organizational bandwidth as the barrier to learning (DRAFTED — needs author review)
 - **Product:** docs (bridge: philosophy ↔ AI-engineering)
-- **Context:** Thread 19. Shi Heng Yi's "empty the cup" reframed as an organizational engineering problem, not a personal mindfulness exercise. The shoshin × capacity matrix (4 quadrants: open/closed × empty/full) structures the diagnosis. The practitioner's intervention: cutting off the tap by fixing compounding systemic issues. AI angle (north star): AI as either the flood that fills the cup further or the tool that empties it. The dojo's bow at the door as a structural answer vs. professional "rituals" that fill the cup instead of emptying it. **Has thesis, matrix, and AI framing — needs the author's concrete examples and personal experience prompts are captured in thread.**
-- **Links:** `.planning/zen-karate/threads.md` (thread 19), `research/zen-karate-philosophy/sources/youtube-WZPDGVIN0qA-transcript.md`
+- **Context:** Thread 19. Drafted as `docs/philosophy/the-full-cup.md`. Needs author to add: specific stories, which Goal/Phoenix Project strategies map most directly, a real "right words" instance (bottom-right quadrant), and whether the "bow at the door" section needs a real professional example. Voice-approved validation required for any experiential content added.
+- **Links:** `docs/philosophy/the-full-cup.md`, `.planning/zen-karate/threads.md` (thread 19)
 - **Added:** 2026-04-18
 
 ### Essay: Five Hindrances
@@ -280,14 +280,9 @@ Rolling cap: at most **15** items stay here (newest first). Older completions li
 - **Links:** `.cursor/rules/repo-structure.md`, `.cursor/commands/organize.md`
 - **Completed:** 2026-04-17
 
-### Product-based directory nesting
-- **Product:** meta
-- **Context:** Reorganized all technology-specific content under product directories (`ansible/`, `argo/`, `coreos/`, `ocp/`, `rhacm/`, `vault/`) with content-type subdirectories. Updated all internal references.
-- **Links:** `.cursor/rules/repo-structure.md`
-- **Completed:** 2026-04-17
-
-### Remove non-functional iso-server tool
-- **Product:** ocp
-- **Context:** Removed `tools/iso-server.py` — HTTPS ISO server didn't work against Dell iDRAC virtual media for several reasons.
-- **Completed:** 2026-04-17
+### Essay draft: The Full Cup — organizational bandwidth as barrier to learning
+- **Product:** docs
+- **Context:** Drafted `docs/philosophy/the-full-cup.md` — Thread 19. Reframes "empty the cup" as organizational engineering. Includes shoshin × capacity matrix, "cutting off the tap" via theory of constraints, dojo's bow at the door, AI as overload source or capacity creator. Updated philosophy README, docs README cross-track reading order. Draft uses "a practitioner might" framing where author hasn't provided specific stories — ready for voice input and revision.
+- **Links:** `docs/philosophy/the-full-cup.md`, `.planning/zen-karate/threads.md` (thread 19), `docs/philosophy/README.md`, `docs/README.md`
+- **Completed:** 2026-04-18
 
