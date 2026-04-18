@@ -61,5 +61,8 @@ Three articles fetched and saved in `research/zen-karate-philosophy/sources/`:
 - [The Birth of Today's Karate](https://www.karatebyjesse.com/the-birth-of-todays-karate/)
 - [10 Japanese Words Everyone Misunderstands in Karate](https://www.karatebyjesse.com/10-important-karate-words-japanese/)
 - [The 9 Lost Throws of Funakoshi Gichin](https://www.karatebyjesse.com/funakoshi-9-throws-shotokan-karate/)
-- [Rika Usami interview](https://www.karatebyjesse.com/rika-usami-karate-kata-queen-interview/) — Inoue's most famous student
 - [Antonio Diaz interview](https://www.karatebyjesse.com/exclusive-interview-antonio-diaz-world-karate-champion-pt-1/) — Inoue's top international student
+
+## Related Sources (fetched separately)
+
+The Rika Usami interview from Jesse's site was fetched as part of a broader Rika Usami research pass and incorporated into `research/zen-karate-philosophy/sources/rika-usami-biography.md` alongside Finding Karate, Karate Philosophy, and other sources.

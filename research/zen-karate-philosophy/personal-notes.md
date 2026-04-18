@@ -12,7 +12,7 @@ Fill in what resonates. Leave sections blank if they don't apply yet — this is
 - **Orientation:** More Okinawan than Japanese in character. Funakoshi's Shotokan is a legitimate and influential tradition, but it adapted karate for the mainland Japanese context. Hayashi-ha Shito-ryu preserves closer ties to the Okinawan roots — different flavor, not better or worse.
 - **Years of practice:** Started at age 6 (1st grade). Trained continuously through 2007.
 - **Rank:** Shodan and nidan-ho in karate. Shodan(-ho?) in bo-jitsu, kama, sai, and nunchaku.
-- **Lineage / organization:** Trained under two sensei in Hayashi-ha Shito-ryu. The primary sensei may have studied under Teruo Hayashi directly in Japan (to be confirmed). This would place the lineage at: Mabuni Kenwa → Kosei Kuniba → Teruo Hayashi → sensei → author.
+- **Lineage / organization:** Trained under Shihan (primary teacher) and Sensei (his direct disciple) in Hayashi-ha Shito-ryu. Shihan may have studied under Teruo Hayashi directly in Japan (to be confirmed). This would place the lineage at: Mabuni Kenwa → Kosei Kuniba → Teruo Hayashi → Shihan → author.
 - **Current training:** Returned to active practice after a gap of many years. Surprised at how quickly conditioning returns and how deeply muscle memory persists. Some struggle with muscles doing what the mind knows they should — the knowledge is there, the body needs to catch up. Currently practicing with a local group in Athens, Ohio — primarily Shotokan, with black belts from Goju-ryu and mixed backgrounds. Their lineage traces through Hirokazu Kanazawa to Gichin Funakoshi.
 - **Expanding beyond karate:** Recently broadening study beyond Japan/Okinawa into martial arts more broadly. Karate remains the primary expertise and personal anchor, but the philosophical threads (Zen, discipline, ways of training) run through martial traditions worldwide.
 
@@ -24,7 +24,7 @@ In retrospect, I wish I had kept karate with me into my 20s and 30s. Paying the 
 
 ### Current Research and Reconnection
 
-Researching what is publicly available now — books, content online, video. Back in the day, information was not shared so widely; knowledge was intended to be passed on in the dojo only. Watching Rika Usami's performances and content — they remind greatly of what my sensei taught. Can see the Hayashi lineage flowing through: Hayashi → Inoue → Rika. Whether my sensei and Inoue ever interacted directly is unknown — but watching Inoue teach, the shared Hayashi influence is unmistakable. They clearly learned from the same source; the same principles, the same movement quality. It makes sense — both studied under Hayashi. Rika seems like the closest thing to a successor to the Hayashi lineage.
+Researching what is publicly available now — books, content online, video. Back in the day, information was not shared so widely; knowledge was intended to be passed on in the dojo only. Watching Rika Usami's performances and content — they remind greatly of what Shihan taught. The observation isn't that Shihan influenced Rika; it's that watching all three (Shihan, Inoue, Rika), the shared Hayashi root is unmistakable. Shihan and Inoue both studied under Hayashi — the same principles, the same movement quality show through independently. Rika's development appears primarily shaped by Inoue's coaching, and through Inoue, by Hayashi's teaching. The lineage chain for Rika runs: Hayashi → Inoue → Rika. Whether Shihan and Inoue ever interacted directly is unknown, but they clearly drank from the same well. Rika seems like the closest thing to a successor carrying the Hayashi lineage forward publicly.
 
 ### Athens Club Context
 
@@ -71,20 +71,25 @@ Training across lineages (Shotokan, Goju-ryu, mixed backgrounds alongside Hayash
 
 For each teacher or influence that shaped your understanding, note *what they taught that stuck* — not just their credentials.
 
-### Primary Sensei
+### Shihan (primary teacher)
 - **Who:** Trained under since age 6. Karate was his livelihood before he turned to farming. The dojo has been more or less disbanded for 10-15 years. May have studied under Teruo Hayashi directly in Japan (to be confirmed).
-- **What they taught that stuck:** Everything foundational. Think of him as most karate masters write about their first sensei. Can see his influence when watching Inoue's students perform — the lineage is visible in the movement.
+- **What they taught that stuck:** Everything foundational. Think of him as most karate masters write about their first teacher. Watching Inoue teach and watching Rika perform, the Hayashi influence that Shihan passed down is recognizable — not because Shihan influenced them, but because they all share the same source.
 - **A moment or phrase that crystallized it:** *(To be filled in)*
 
-### Second Sensei
-- **Who:** Direct disciple of the primary sensei.
+### Sensei (secondary teacher)
+- **Who:** Direct disciple of Shihan.
 - **What they taught that stuck:** *(To be filled in)*
 - **A moment or phrase that crystallized it:** *(To be filled in)*
 
-### Inoue Yoshimi (through research, not direct training)
-- **Who:** Soke, Inoue-ha Shito-ryu. Uchi-deshi of Teruo Hayashi for 4 years. Produced Japan's national kata team for decades.
-- **What they taught that stuck:** "Karate is 99% feeling." Kata is not A, B, C, D — it's how you get from A to B to C to D. Train less, improve more. Work with nature, not against it. Always ask how and why. Depth over breadth.
-- **A moment or phrase that crystallized it:** "You cannot fight gravity! Make gravity your friend!" — and the progression of mastery: beginners punch with the hand, experts punch with shoulder blade, masters punch with the core.
+### Inoue Yoshimi (1946–2015, through research, not direct training)
+- **Who:** Soke, Inoue-ha Shito-ryu Keishin-kai. 8th Dan JKF (youngest in JKF history). Hayashi's only uchi-deshi (1964–1968). Produced 20+ world champions across multiple styles — Nakayama, Wakai, Abe, Hasegawa Brothers, Yokoyama, Diaz, Usami, Kokumai. Made history in 2012: both male and female world kata champions from his school. Died of cancer May 2015; continued teaching until his final days.
+- **What they taught that stuck:** "If kihon can do, any kata can do." Kata is not A, B, C, D — it's how you get from A to B to C to D. Power comes from the ground up, not the hips. Three principles: balance, speed, timing. Natural breathing — don't overthink what the body knows. Kime as transfer not stop ("car crash analogy"). Body mechanics as universal principles across all styles. "Karate is 99% feeling." Three levels of bunkai: literal → creative → transcendent. "A good kata is pretty... but a GREAT kata is EFFECTIVE."
+- **A moment or phrase that crystallized it:** "You cannot fight gravity! Make gravity your friend!" — and the uchi-deshi attitude: "if I'm going to get hit, I might as well get hit moving forward rather than pulling back."
+
+### Rika Usami (born 1986, through research, not direct training)
+- **Who:** WKF World Kata Champion (2012). 5x All Japan Champion. Now JKF coaching director. Started Goju-ryu at age 10, met Inoue at Kokushikan University, trained under him in Tottori (5-hour train ride). Her 2012 World Championship Chatanyara Kushanku — standing ovation from 12,000, 19M+ YouTube views — is considered one of the greatest kata performances in history. Retired at 27. Now promotes Inoue-ha Shito-ryu and coaches at Kokushikan.
+- **What they taught that stuck:** Shin-Gi-Tai (mind-technique-body). "Traditional and contemporary karate are not separate — focus on where they converge." Strength as foundation for technique. "Act as normal as possible" = mushin under pressure. "Stay strong until you win against yourself."
+- **A moment or phrase that crystallized it:** Watching her perform is like seeing what Shihan taught expressed at the highest level. The Hayashi root is visible — not because Shihan influenced her, but because Shihan and Inoue learned from the same source. She is the closest thing to a public successor carrying the Hayashi lineage forward.
 
 (Add more as needed)
 
@@ -156,7 +161,7 @@ What specifically resonates about Shi Heng Yi's teachings? Which talks or interv
 
 Anything else — half-formed thoughts, quotes you return to, connections you've noticed but can't quite articulate yet. Raw material is valuable here.
 
-- Watching Rika Usami perform is like watching my sensei's teaching expressed at the highest level. The shared Hayashi influence is visible in the movement — my sensei, Inoue, Rika all learned from the same root. Whether my sensei and Inoue ever crossed paths is unknown, but the common source is unmistakable. This is what "the Way is in training" looks like across generations.
+- Watching Rika Usami perform is like seeing what Shihan taught me expressed at the highest competitive level. The observation: Shihan and Inoue both studied under Hayashi, and the shared influence is visible independently in how they move and teach. Rika's development comes through Inoue's coaching — so the chain is Hayashi → Inoue → Rika. Shihan had no role in Rika's development; the recognition is of a common root, not a shared branch. This is what "the Way is in training" looks like — the same principles surfacing across independent lineage paths.
 - Inoue: "Kata is not A, B, C, D — it's how you get from A to B to C to D." This maps directly to process vs. ceremony in agile — it's not the standup, it's what happens between standups.
 - Hayashi's dojo yaburi practice — walking into dojos and challenging whoever could beat him, then asking to study there — is the opposite of ego. He went looking for people who were better than him. That's shoshin as a lifestyle.
 - The gap in training (2007 to now) is itself material. What survives when you stop practicing? The muscle memory is there. The knowledge is there. What atrophied was the body and the discipline of regular practice. The return is its own lesson.
