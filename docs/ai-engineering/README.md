@@ -8,7 +8,7 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 2. **[AI-Assisted Development Workflows](ai-assisted-development-workflows.md)** — Practical, tool-agnostic patterns for using AI coding assistants effectively in infrastructure and platform engineering work. Covers daily editor workflows, context sharing across sessions, GitOps and Ansible patterns, and the meta-development system (Skills, Commands, Agents).
 
-3. **[Using AI to Work Outside Your Expertise](ai-for-unfamiliar-domains.md)** — A real, step-by-step case study demonstrating the skills from *The Shift* in action. An infrastructure engineer uses AI to solve an image processing problem (recoloring animated GIFs) with zero prior domain knowledge, through iterative conversation.
+3. **[Using AI to Work Outside Your Expertise](ai-for-unfamiliar-domains.md)** — A real, step-by-step case study demonstrating the skills from *The Shift* in action. Someone uses AI to solve an image processing problem (recoloring animated GIFs) with zero prior domain knowledge, through iterative conversation. The implementation is trivial — the interesting part is the debugging and verification process.
 
 4. **[AI-Driven Continuous Improvement for Legacy Systems](ai-legacy-improvement.md)** — When AI compresses implementation cost, the economics of improvement change. Explores how conversational AI and exploratory "vibe coding" can unlock previously deprioritized work on legacy systems — frozen backlogs, undocumented processes, configuration drift, missing test coverage, and incremental modernization.
 

@@ -152,7 +152,7 @@ Color tuning is available via the `COLOR_CONFIGS` dictionary at the top of the s
 
 ### 1. AI lowers the barrier to adjacent domains
 
-The person running this session is an infrastructure engineer, not an image processing specialist. The AI bridged that gap in 15 minutes. This isn't about replacing specialists — it's about unblocking yourself when the task is outside your primary expertise but still needs to get done.
+The AI bridged the domain knowledge gap in 15 minutes. This isn't about replacing specialists — it's about unblocking yourself when the task is outside your primary expertise but still needs to get done.
 
 ### 2. Describing symptoms is the key skill
 

@@ -9,7 +9,7 @@
 
 For most of software engineering's history, the hard part was implementation. You had an idea, and the expensive step was turning it into working code — learning the language, the library, the API, the edge cases. Speed and skill at implementation were how engineers were measured, hired, and promoted.
 
-AI coding assistants compress the implementation step. Not eliminate — compress. A task that took hours of reading documentation and writing code now takes minutes of describing intent and reviewing output. The siren GIF recoloring in [this case study](ai-for-unfamiliar-domains.md) is a small example: an infrastructure engineer with no image processing background produced a working, validated solution in 15 minutes of conversation.
+AI coding assistants compress the implementation step. Not eliminate — compress. A task that took hours of reading documentation and writing code now takes minutes of describing intent and reviewing output. The siren GIF recoloring in [this case study](ai-for-unfamiliar-domains.md) is a small example: someone with no image processing background produced a working solution in 15 minutes of conversation. Anyone with the idea could have done the same — the implementation itself isn't the interesting part. What matters is what happened next: the debugging, the verification, the problem decomposition that turned a broken first draft into something correct.
 
 When implementation is cheap, the bottleneck shifts to everything around it:
 
