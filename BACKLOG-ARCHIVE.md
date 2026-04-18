@@ -6,6 +6,15 @@ New archival batches are prepended below (newest batch first).
 
 ---
 
+## Archived 2026-04-18 (1 item — batch 4)
+
+### Move labs into product directories
+- **Product:** argo
+- **Context:** Moved `labs/lab-argocd-sync/` and `labs/lab-gitops/` into `argo/labs/` for consistency with product-based nesting.
+- **Completed:** 2026-04-17
+
+---
+
 ## Archived 2026-04-18 (1 item — batch 3)
 
 ### Consolidate .prompts/ into prompts/

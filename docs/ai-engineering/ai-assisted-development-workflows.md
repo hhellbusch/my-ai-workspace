@@ -1,7 +1,16 @@
+---
+review:
+  status: reviewed
+  read: 2026-04-18
+  fact-checked: 2026-04-18
+  at: 1f2f9d8
+  notes: "Author pass after spar: scope/Purpose, epistemic fixes (§6–§7), product-doc caveat, iteration note, triage table disclaimer, Argo CD naming."
+---
+
 # AI-Assisted Development Workflows — A Practical Guide
 
 > **Audience:** Anyone from leadership to hands-on engineers.
-> **Purpose:** Practical, tool-agnostic patterns for using AI coding assistants effectively in engineering work — from daily editor workflows to multi-session project management and meta-development systems.
+> **Purpose:** Transferable patterns for using AI coding assistants effectively — from daily editor workflows to multi-session discipline and meta-development habits. Tool-specific paths (Copilot, Cursor, Claude Code) appear where they help you get started; **from _Beyond context sharing: multi-session project management_ onward**, concrete examples include this repository’s commands and files as a **reference implementation** of those habits — patterns you can re-create with your own conventions, not a universal stack requirement.
 
 ---
 
@@ -10,7 +19,7 @@
 Modern AI coding assistants are no longer just autocomplete tools.
 When used deliberately, they change *how* you approach engineering work — from how you plan features to how you debug failures, review diffs, and carry context across sessions.
 
-This guide documents patterns that have proven useful in real work. The examples are drawn from infrastructure and platform engineering — Ansible, ArgoCD, Helm, Kubernetes, OpenShift — but the underlying patterns (context sharing, verification discipline, meta-development systems) apply to any engineering domain.
+This guide documents patterns that have proven useful in real work. The examples are drawn from infrastructure and platform engineering — Ansible, Argo CD, Helm, Kubernetes, OpenShift — but the underlying patterns (context sharing, verification discipline, meta-development systems) apply to any engineering domain. Where the text points at specific filenames or slash commands, read it as “one way this can look in git,” not as mandatory tooling.
 
 ---
 
@@ -26,7 +35,7 @@ AI-assisted development loop:
 Describe intent → Review AI output → Guide + Correct → Commit → Describe next intent
 ```
 
-You are the architect and the reviewer. Think of the AI as the world's fastest junior engineer — broad knowledge, tireless output, but no judgment about your specific codebase unless you show it, and no instinct for when it's wrong.
+You are the architect and the reviewer. Think of the AI as a **very fast collaborator**: strong on idioms, cross-file synthesis, and draft structure — but **blind to your runtime reality** unless you put it in context, and prone to **confidently rationalizing** whichever direction your prompt implies (including a bad one). For **how hard to verify** each change, the “junior engineer” shorthand still helps: assume you are merging work from someone who does not yet know your invariants.
 
 **The most important skill is learning to give AI the right context.**
 
@@ -53,12 +62,14 @@ The AI generates a candidate. You review it, tweak it, and move on.
 | Give the AI access to the relevant code | AI has no ambient context — use workspace indexing, `@file` references, or a CLI pointed at your repo so the agent can traverse and analyze the actual source, not just a pasted snippet |
 | State constraints explicitly | "This must be idempotent", "Do not add error handling I haven't asked for" |
 | Ask for one thing at a time | Large multi-part requests produce mediocre results |
-| Name the pattern, not just the task | "Convert this Helm pre-install hook to an ArgoCD sync-wave" beats a vague description |
+| Name the pattern, not just the task | "Convert this Helm pre-install hook to an Argo CD sync-wave" beats a vague description |
 | Verify before committing | AI can produce plausible-but-wrong Jinja2, wrong indent levels, stale API syntax, and [entirely fabricated APIs or capabilities](../case-studies/fabricated-references.md) that never existed |
+
+Infra work is often irreducibly multi-constraint (for example, a GitHub Actions job with `yq`, failure aggregation, and chart-specific flags). The “one thing at a time” rule still applies **across iterations**: scaffold the workflow, then tighten failure behavior, then broaden coverage — instead of demanding the whole matrix in a single prompt.
 
 ### What works especially well
 
-- **YAML scaffolding** — Helm templates, values files, Ansible tasks, ArgoCD Applications
+- **YAML scaffolding** — Helm templates, values files, Ansible tasks, Argo CD Applications
 - **Explaining code you didn't write** — paste it and ask
 - **First-draft documentation** — README files, runbook steps, PR descriptions (but [watch for content that speaks in your voice](../case-studies/who-is-speaking.md) — biographical claims need explicit review)
 - **Mechanical refactors** — converting serial loops to parallel, adding idempotency guards
@@ -83,6 +94,8 @@ Each AI tool has a way to inject standing context into every conversation automa
 | **GitHub Copilot (VS Code)** | `.github/copilot-instructions.md` | Loaded for every chat session in that workspace |
 | **Cursor** | `.cursorrules` | Loaded automatically from workspace root |
 | **Claude Code** | `AGENTS.md` | Loaded at session start |
+
+Names, default paths, and what loads automatically **change by product and version** — confirm behavior in your vendor’s documentation before relying on a path.
 
 **What to put in these files:**
 - Architecture overview (what each directory does, what the layers are)
@@ -156,7 +169,7 @@ The AI runs the git commands. This reduces the chance of accidentally staging un
 
 ### Sync-wave dependency design
 
-When ordering ArgoCD sync-waves for a new component, describe the dependency chain and ask the AI to assign wave numbers:
+When ordering Argo CD sync-waves for a new component, describe the dependency chain and ask the AI to assign wave numbers:
 
 > _"I need: Namespace first, then a Secret from an external secrets manager, then RBAC ServiceAccount/Role/RoleBinding, then a Job that consumes the secret, then main app workloads. Assign sync-wave numbers and explain the ordering."_
 
@@ -193,6 +206,8 @@ The AI can produce a triage report:
 | `feature/old-migration` | 2024-11-03 | jsmith | All changes present in main | Safe to delete |
 | `experiment/new-sync-policy` | 2025-01-15 | jdoe | 3 files with unique changes | Review before deleting |
 | `hotfix/csr-renewal` | 2025-03-20 | jsmith | Cherry-picked to main, branch has extra debug logging | Safe to delete |
+
+*Illustrative shape of a triage report — verify branch state locally (merge bases, cherry-picks, release branches) before deleting anything.*
 
 This turns a tedious manual audit into a 5-minute conversation. For repositories with dozens of stale branches, the time savings are significant — and more importantly, it actually gets done instead of being perpetually deferred.
 
@@ -266,8 +281,8 @@ Once written, a single `/analyze-pipeline-log <job-id>` invocation runs the full
 
 ### What AI does well
 
-- First drafts, fast (typically 80%+ of the way there)
-- Recognizing and applying established patterns (Helm, Ansible, ArgoCD idioms)
+- **First drafts, fast** — often strong for structure, boilerplate, and docs; for correctness-critical config and anything security-adjacent, assume **distance-to-done is unknown** until you have verified it in *your* environment. Calibrate review depth to risk, not to a comfortable percentage.
+- Recognizing and applying established patterns (Helm, Ansible, Argo CD idioms)
 - Explaining code written by someone else
 - Generating structured documentation
 - Mechanical refactors with clear rules
@@ -306,13 +321,13 @@ Start with low-stakes work (docs, linting, scaffolding) before using it on produ
 
 The patterns in this guide cover tasks where AI can meaningfully accelerate your work. But some of the most consequential engineering work involves decisions where AI can inform but cannot substitute for human judgment — particularly in complex architecture selection.
 
-A concrete example: [Enterprise Generative AI: Architecting and Self-Hosting Large Language Models on Red Hat OpenShift](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) walks through the full decision space for deploying LLMs on enterprise infrastructure. The decisions involved are exactly the kind AI will *help you implement* but cannot *make for you*:
+A concrete example: [Enterprise Generative AI: Architecting and Self-Hosting Large Language Models on Red Hat OpenShift](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) walks through the full decision space for deploying LLMs on enterprise infrastructure. The decisions involved are exactly the kind AI will *help you implement* but cannot *make for you*. The bullets below are **dimensions to model**, not answers — especially economics, where list prices, utilization, and contract tier move conclusions quickly.
 
 - **RHEL AI vs. OpenShift AI** — single-node prototyping vs. distributed Kubernetes-native orchestration, depending on your scale requirements and operational maturity
 - **vLLM vs. TGIS runtimes** — PagedAttention throughput vs. tensor parallelism, OpenAI API compatibility vs. gRPC interfaces
 - **S3 storage vs. ModelCar** — maintaining separate object storage infrastructure vs. packaging model weights as OCI images that fit your existing DevSecOps pipeline
 - **On-premise vs. hyperscaler (ROSA/ARO)** — CapEx hardware ownership vs. OpEx elasticity, air-gapped compliance requirements vs. managed SRE
-- **The 11B token/month breakeven** — below this threshold API consumption is cheaper; above it, self-hosting becomes viable. *(Note: the [original source](https://www.braincuber.com/blog/self-hosted-llms-vs-api-based-llms-cost-performance-analysis) — a consulting firm's analysis — actually argues API wins for 87% of use cases. The separately cited "18x cost advantage" compares on-prem hardware against a budget API tier, not premium APIs. See the [verification assessment](../../research/openshift-ai-llm-deployment/assessment.md#finding-2-economics-built-on-vendor-marketing) for the full analysis.)*
+- **API vs. self-host economics** — articles and talks often repeat a headline **token breakeven** (for example an “~11B tokens/month” rule of thumb). Treat any scalar as **one spreadsheet snapshot**, easy to **cargo-cult** into slide decks. The [Braincuber analysis](https://www.braincuber.com/blog/self-hosted-llms-vs-api-based-llms-cost-performance-analysis) behind some of those numbers **still argues API consumption wins for most cases** (~87% in their framing); a separately cited “18x” style comparison may pit on-prem hardware against a **budget** API tier, not the tier you actually buy. Build **your own** cost model against your contracts and utilization; see [Finding 2 — economics and vendor marketing](../../research/openshift-ai-llm-deployment/assessment.md#finding-2-economics-built-on-vendor-marketing) for a worked deconstruction.
 
 Each of these is a high-stakes tradeoff with real financial and operational consequences. AI will confidently recommend whichever option you lean toward in your prompt — which is precisely why the sycophancy awareness described in [The Shift](the-shift.md) matters most for architecture decisions.
 
@@ -329,7 +344,7 @@ The Day 2 concerns in that article — rate limiting, auth governance, observabi
 | AI-assisted upstream contributions — responsible open source workflow | `docs/ai-engineering/ai-assisted-upstream-contributions.md` |
 | Enterprise LLM deployment on OpenShift AI | [jaredburck.me](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) |
 | Ansible playbook examples | `ansible/examples/` |
-| ArgoCD / GitOps patterns | `argo/examples/` |
+| Argo CD / GitOps patterns | `argo/examples/` |
 | OpenShift troubleshooting guides | `ocp/troubleshooting/` |
 | AAP 2.5 token 404 root cause write-up | `ansible/troubleshooting/aap-controller-token-404/` |
 | External project clones for upstream contribution | `git-projects/` |
@@ -349,4 +364,4 @@ The Day 2 concerns in that article — rate limiting, auth governance, observabi
 
 ---
 
-*This guide was created with AI assistance (GitHub Copilot) and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
+*This guide was created with AI assistance (GitHub Copilot) and has been reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

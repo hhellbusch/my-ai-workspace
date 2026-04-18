@@ -189,6 +189,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 Rolling cap: at most **15** items stay here (newest first). Older completions live in `BACKLOG-ARCHIVE.md` (see `/backlog` command — **Done retention**). Git history remains authoritative.
 
+### Workflows essay: spar follow-up and author validation
+- **Product:** docs
+- **Context:** Adversarial review follow-through on `ai-assisted-development-workflows.md`: clarified Purpose (transferable patterns vs. this repo as reference implementation), scope line for slash commands and files, collaborator metaphor + verification framing, removed unmeasured “80%” claim, product-version caveat on instruction paths, iteration sequencing for multi-constraint infra prompts, economics section reframed against cargo-cult breakeven numbers (Braincuber / assessment cross-check), illustrative branch-triage disclaimer, Argo CD naming. Recorded `read` + `fact-checked` review metadata and updated disclosure footer.
+- **Links:** `docs/ai-engineering/ai-assisted-development-workflows.md`
+- **Completed:** 2026-04-18
+
 ### AI disclosure footer check and DevOps notice harmonization
 - **Product:** meta / docs
 - **Context:** Added AI disclosure footer check to pre-commit review (always-applied rule step 4, /review command step 9). Normalized 16 DevOps READMEs with inconsistent disclosure patterns to the standard italic footer linking to AI-DISCLOSURE.md. Added the footer to 6 top-level product READMEs that had none. Individual example READMEs without existing disclosure left as-is — top-level coverage is sufficient.
@@ -271,10 +277,4 @@ Rolling cap: at most **15** items stay here (newest first). Older completions li
 - **Product:** ocp
 - **Context:** Removed `tools/iso-server.py` — HTTPS ISO server didn't work against Dell iDRAC virtual media for several reasons.
 - **Completed:** 2026-04-17
-
-### Move labs into product directories
-- **Product:** argo
-- **Context:** Moved `labs/lab-argocd-sync/` and `labs/lab-gitops/` into `argo/labs/` for consistency with product-based nesting.
-- **Completed:** 2026-04-17
-
 
