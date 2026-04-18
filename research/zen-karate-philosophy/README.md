@@ -13,8 +13,9 @@ zen-karate-philosophy/
 ├── README.md               # This file
 ├── personal-notes.md       # Training history, formative moments, philosophical anchors (user-populated)
 ├── curated-reading.md      # Annotated bibliography from lifelong practice (user-populated)
+├── threads.md              # Emerging essay ideas with zen connections (12 threads and counting)
 ├── manifest.md             # Reference tracking (created after curated sources populated)
-├── sources/                # Fetched source content
+├── sources/                # Fetched source content (Shi Heng Yi transcript, etc.)
 ├── findings/               # Per-batch analysis results
 ├── assessment.md           # Synthesized themes (created after analysis)
 └── glossary.md             # Shared term definitions (extracted after Essay 1)
@@ -26,6 +27,10 @@ The two most important files in this directory are **user-populated**, not AI-ge
 
 - **[personal-notes.md](personal-notes.md)** — Training history, key teachers, formative moments, philosophical anchors, and real examples of how martial arts philosophy has guided life and work decisions
 - **[curated-reading.md](curated-reading.md)** — Annotated bibliography of books, talks, teachers, and media that shaped a lifelong practice, with notes on *why* each source matters
+
+A third key file captures emerging ideas from the material gathered so far:
+
+- **[threads.md](threads.md)** — 12 essay threads with zen connections, mapping table showing how they feed into planned essays
 
 These feed directly into the research manifest and every downstream drafting step.
 

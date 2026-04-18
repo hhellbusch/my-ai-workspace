@@ -69,10 +69,10 @@
 - **Links:** `.planning/zen-karate/`
 - **Added:** 2026-04-17
 
-### Essay: The Dojo and the Team
+### Essay: The Dojo and the Team (merged into priority essay)
 - **Product:** docs
-- **Context:** Bridge essay connecting martial arts philosophy to engineering team culture. How dojo culture (mutual respect, senpai/kohai, cleaning the floor, showing up) translates to ways of working and leadership. Presence over performance. Non-attachment to outcomes in collaborative work.
-- **Links:** `.planning/zen-karate/`
+- **Context:** Originally a standalone bridge essay. Core themes (mutual respect, senpai/kohai, cleaning the floor, presence over performance) are now absorbed into the priority essay "The Dojo, Open Source, and Ways of Working" at the top of Up Next. May re-emerge as a separate essay if the priority essay can't cover the team dynamics depth, but for now treat as merged.
+- **Links:** `.planning/zen-karate/`, `research/zen-karate-philosophy/threads.md`
 - **Added:** 2026-04-17
 
 ### Essay: Beginner's Mind in the Age of AI
