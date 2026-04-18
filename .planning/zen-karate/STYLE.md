@@ -80,6 +80,24 @@ These guardrails prevent common failure modes:
 
 ---
 
+## Project Framing — Open, Not Promised
+
+The essays distill meaningful principles — they don't just tell a personal story. The roadmap and threads are explorations, not commitments.
+
+### How to Reference Upcoming Work
+- **This, not that:** "More essays are being explored — see the [roadmap](ROADMAP.md) and [threads](threads.md) for what's in progress" — NOT "here's what's coming next in the series"
+- Threads are ideas being developed, not announcements. They may merge, evolve, or get killed. This is the nature of the work.
+- Language should signal openness: "being explored," "in progress," "under development" — not "planned," "upcoming," or "next in the series"
+- The project itself practices non-attachment to outcomes. A thread that gets killed after honest sparring is a success, not a failure.
+
+### Purpose of the Essays
+- Distill principles from practice that are meaningful beyond the personal story
+- The personal experience serves the ideas, not the other way around (this echoes "Not memoir" above, but extends to the project level)
+- Readers should take away something they can use, not just something they found interesting about someone else's life
+- The Zen/martial arts lens is valuable because it reveals something true, not because it's exotic
+
+---
+
 ## Tone Benchmarks
 
 For calibration, the target tone sits between:
