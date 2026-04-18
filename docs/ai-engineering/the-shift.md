@@ -353,6 +353,8 @@ AI doesn't create your engineering culture. It amplifies it. A team with strong 
 | [Using AI Outside Your Expertise](ai-for-unfamiliar-domains.md) | A case study demonstrating these skills in action (the siren GIF example) |
 | [Enterprise LLM Deployment on OpenShift AI](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) | Architecture decisions at enterprise scale where engineering judgment matters most |
 | [debug-like-expert skill](../../.cursor/skills/debug-like-expert/SKILL.md) | A codified version of systematic debugging methodology |
+| [Debugging Your AI Assistant's Judgment](../case-studies/debugging-ai-judgment.md) | Case study: catching and fixing AI anchoring bias in prioritization — sections 6-7 in practice |
+| [Adversarial Review as a Meta-Development Pattern](../case-studies/adversarial-review-meta-development.md) | Case study: building structural pushback into the workflow — the "ask AI to argue against you" mitigation, automated |
 
 ---
 

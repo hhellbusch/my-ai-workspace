@@ -28,3 +28,5 @@ For someone reading everything, this order follows the natural arc — AI engine
 6. [AI-Assisted Open Source Contributions](ai-engineering/ai-assisted-upstream-contributions.md)
 7. [Ego, AI, and the Zen Antidote](philosophy/ego-ai-and-the-zen-antidote.md) *(companion to The Shift sections 6-7)*
 8. [Building a Research and Verification Skill](case-studies/building-a-research-skill.md)
+9. [Adversarial Review as a Meta-Development Pattern](case-studies/adversarial-review-meta-development.md) *(builds the sparring system, applies it immediately)*
+10. [Debugging Your AI Assistant's Judgment](case-studies/debugging-ai-judgment.md) *(catches AI anchoring bias, builds structural fix)*

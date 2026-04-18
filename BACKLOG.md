@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-18
+> Last updated: 2026-04-17
 
 ## In Progress
 
@@ -99,12 +99,6 @@
 - **Links:** `.cursor/commands/start.md`, `.cursor/commands/whats-next.md`, `.cursor/rules/session-awareness.md`
 - **Added:** 2026-04-17
 
-### Case study: adversarial review as a meta-development pattern
-- **Product:** docs
-- **Context:** Building the `/spar` command, `spar-patterns.md`, and zero-base de-biasing in a single session demonstrated the same meta-development loop documented in `building-a-research-skill.md` — gap identified (AI prioritization bias, lack of pushback), tool built (`/spar`, spar pipeline stage), immediately applied (adversarial review of the ego/AI essay, which produced 7 counterarguments and a sparring notes document). The sparring itself then became material for the essay it was critiquing. Could extend the AI-Assisted Development Workflows essay or become a standalone piece on adversarial review as a development practice.
-- **Links:** `.cursor/commands/spar.md`, `.cursor/skills/create-meta-prompts/references/spar-patterns.md`, `docs/case-studies/building-a-research-skill.md`, `docs/ai-engineering/ai-assisted-development-workflows.md`, `research/zen-karate-philosophy/sparring-notes.md`
-- **Added:** 2026-04-18
-
 ### Case study: from conversation to essay in one session
 - **Product:** docs
 - **Context:** The ego/AI/zen essay went from thread ideation to published essay with source provenance and adversarial review in a single session. The process: (1) user noticed a connection between existing content (The Shift's sycophancy section) and the zen research, (2) thread 14 crystallized the idea, (3) essay drafted drawing from cached sources, (4) adversarial review challenged it immediately, (5) sparring notes created for user response. This is a concrete example of the essay pipeline working end-to-end — and of the provenance convention (Sources/References, Open Review sections) keeping things connected. Connects to the workflows essay and could demonstrate the full write-challenge-revise cycle.
@@ -115,12 +109,6 @@
 - **Product:** docs
 - **Context:** In a single extended session, the repo gained: project tracking (BACKLOG.md + /backlog), a personal reference library (library/ + /reference), session orientation (/start + session-awareness rule), pre-commit review (/review + /audit), proactive backlog capture, and cross-linking conventions. This is AI building the infrastructure for its own productivity — the meta-development system section of ai-assisted-development-workflows.md in action. The interesting angle: the human identifies the organizational need, the AI builds the tooling, and then both immediately use it. What does it look like when you let AI build the system that organizes AI-assisted work?
 - **Links:** `BACKLOG.md`, `library/`, `.cursor/commands/`, `.cursor/rules/`, `docs/ai-engineering/ai-assisted-development-workflows.md`
-- **Added:** 2026-04-18
-
-### Case study: debugging your AI assistant's judgment
-- **Product:** docs
-- **Context:** The user noticed AI was anchoring on prior priorities during re-prioritization — a systematic behavioral flaw, not a one-off error. That observation led to naming the problem precisely ("AI sycophancy toward its own prior outputs"), building a structural guard (zero-base de-biasing), and connecting it to the ego/AI essay's thesis. This is The Shift's "skepticism as a habit" practiced against the tool itself. The deeper story: how do you notice, name, and fix systematic AI judgment failures? Connects to the-shift.md (section 6-7), ego-ai-and-the-zen-antidote.md (the essay it produced), and the sparring integration.
-- **Links:** `.cursor/commands/backlog.md`, `docs/ai-engineering/the-shift.md`, `docs/philosophy/ego-ai-and-the-zen-antidote.md`
 - **Added:** 2026-04-18
 
 ### Case study: how AI handles evolving creative scope across sessions
@@ -173,6 +161,18 @@
 - **Added:** 2026-04-17
 
 ## Done
+
+### Case study: adversarial review as a meta-development pattern
+- **Product:** docs
+- **Context:** Published case study documenting how the absence of pushback in the essay workflow led to building `/spar`, spar pipeline stage, and zero-base de-biasing — then immediately applying it to the ego/AI essay, producing 7 counterarguments that feed back into the essay's Open Review section.
+- **Links:** `docs/case-studies/adversarial-review-meta-development.md`, `.cursor/commands/spar.md`, `research/zen-karate-philosophy/sparring-notes.md`
+- **Completed:** 2026-04-17
+
+### Case study: debugging your AI assistant's judgment
+- **Product:** docs
+- **Context:** Published case study documenting how noticing AI anchoring on prior priorities led to naming the mechanism (sycophancy toward own outputs), building a structural fix (zero-base evaluation in `/backlog prioritize`), and connecting it to the philosophical thesis on ego and non-attachment.
+- **Links:** `docs/case-studies/debugging-ai-judgment.md`, `.cursor/commands/backlog.md`, `docs/ai-engineering/the-shift.md`
+- **Completed:** 2026-04-17
 
 ### Session-start context loading
 - **Product:** meta
