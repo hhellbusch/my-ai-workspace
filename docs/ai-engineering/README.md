@@ -18,6 +18,8 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 7. **[The Meta-Development Loop](the-meta-development-loop.md)** — Names and teaches the engineering pattern behind building AI tools that improve AI workflows: notice a gap, build a tool, apply it immediately, let the output reshape the work. Synthesizes the pattern from 8 case studies, documents when it compounds productively and when it becomes infrastructure theater.
 
+8. **[Drop a YouTube Link, Get a Structured Analysis](youtube-video-analysis.md)** — A non-technical explainer for the YouTube transcript analysis workflow: how it works, what the output looks like (with a real example), and how it differs from asking an AI to "just summarize" a video. Includes a note on Copilot compatibility for colleagues on different tools.
+
 ## Primary narratives (public)
 
 - **Dan Walsh — *Lessons learned with a career in software?*** (DevConf.US 2025) — [YouTube](https://www.youtube.com/watch?v=YKDi-ePTmRA). Full transcript and theme index: [`research/ai-engineering-public/sources/youtube-YKDi-ePTmRA-transcript.md`](../../research/ai-engineering-public/sources/youtube-YKDi-ePTmRA-transcript.md), [`library/dan-walsh-devconf-2025-career-lessons.md`](../../library/dan-walsh-devconf-2025-career-lessons.md). Useful as a **public** anchor for security-through-containers history, mentorship/succession, and late-career AI tooling (e.g. RamaLama) without relying on private correspondence.
