@@ -1,3 +1,11 @@
+---
+review:
+  status: read
+  read: 2026-04-18
+  at: f49a566
+  notes: "Author read during drafting session. Voice inputs #5-16 drove the thesis. Structural reorder after first read (Trained Mind folded into What the Dojo Produces, Co-Development Loop moved before Lip-Service). IC definition, Lattice expansion, Federation/Borg parallel added during review."
+---
+
 # The Dojo After the Automation — What Are We Building People For?
 
 > **Audience:** Engineers, leaders, and anyone thinking about what "developing people" means when the work itself is about to change.
