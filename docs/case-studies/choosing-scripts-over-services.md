@@ -1,13 +1,15 @@
 # Choosing Scripts Over Services — The YouTube Transcript Decision
 
 > **Audience:** Engineers making build-vs-integrate decisions in AI-assisted workflows, where the architecturally elegant option isn't always the right one.
-> **Purpose:** Documents a small but instructive architectural decision — MCP server vs. Python script for fetching YouTube transcripts — that demonstrates problem decomposition and workflow-fit thinking from [The Shift](../ai-engineering/the-shift.md).
+> **Purpose:** Documents a small but instructive architectural decision — MCP server vs. Python script for fetching YouTube transcripts — that demonstrates problem decomposition and workflow-fit thinking from [The Shift](../ai-engineering/the-shift.md) (the foundational essay in this collection on engineering skills in the AI age).
+>
+> *Context: This workspace uses AI coding assistants (Cursor with Claude) for DevOps work and an essay series connecting martial arts philosophy to AI-assisted engineering. The research workflow is file-based: sources are fetched to disk as markdown and read from the filesystem in subsequent AI sessions.*
 
 ---
 
 ## The Need
 
-The project needed YouTube transcripts. The research track had a [Shi Heng Yi interview](../../research/zen-karate-philosophy/sources/they-betrayed-me---master-shi-heng-yi-explains-the-true-cost-of-success-shaolin-.md) (1 hour 37 minutes) that was a primary source for the essay series. The personal reference library needed to enrich video entries with transcript content. Doing this manually — watching, pausing, copying — was impractical.
+The project needed YouTube transcripts. The research track had a [Shi Heng Yi interview](../../research/zen-karate-philosophy/sources/they-betrayed-me---master-shi-heng-yi-explains-the-true-cost-of-success-shaolin-.md) — Shi Heng Yi is a Shaolin master whose teachings on ego and discipline are primary sources for the essay series — (1 hour 37 minutes) that was a primary source. The personal reference library needed to enrich video entries with transcript content. Doing this manually — watching, pausing, copying — was impractical.
 
 The question was how to automate it.
 
@@ -91,7 +93,7 @@ The [`fetch-transcript.py`](../../.cursor/skills/research-and-analyze/scripts/fe
 - Supports batch mode via a text file of URLs
 - Lives in [`.cursor/skills/research-and-analyze/scripts/`](../../.cursor/skills/research-and-analyze/scripts/) alongside [`fetch-sources.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-sources.py)
 
-The first test run fetched the Shi Heng Yi interview: 2,142 segments, 1 hour 37 minutes, saved as a markdown file that the research skill could immediately process. The [`/reference`](../../.cursor/commands/reference.md) command's video enrichment workflow was updated to call the script automatically.
+The first test run fetched the Shi Heng Yi interview: 2,142 segments, 1 hour 37 minutes, saved as a markdown file that the research skill could immediately process. The [`/reference`](../../.cursor/commands/reference.md) command (which manages a personal library of books, courses, and videos) was updated in its video enrichment workflow to call the script automatically.
 
 Total development time: one conversation exchange for the script, one for testing, one for integration.
 

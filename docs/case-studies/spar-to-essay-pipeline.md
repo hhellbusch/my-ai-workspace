@@ -2,6 +2,7 @@
 
 > **Audience:** Engineers and writers using adversarial review in AI-assisted workflows who want to understand when pushback produces refinement and when it produces something new.
 > **Purpose:** Documents how a single adversarial argument (#9 from the Full Cup spar) escalated from "you haven't acknowledged this counter-position" through the author's voice inputs to a new thesis (D), a new thread (20), and a fully drafted essay — all in one extended session. The spar-to-essay pipeline as a generative pattern, not just a quality gate.
+> *Context:* This workspace includes an essay series connecting martial arts philosophy to AI-assisted engineering. [The Full Cup](../philosophy/the-full-cup.md) argues that organizations should create bandwidth for learning. Daniel Miessler (security researcher, author of 'AI WILL Replace Knowledge Workers') challenged the essay's thesis with an economic argument about AI automation. This case study documents how that challenge produced an entirely new essay.
 
 ---
 
@@ -49,7 +50,7 @@ The spar had forced three possible positions:
 - **(B)** AI changes the equation but learning orgs still win
 - **(C)** Learning is a moral position regardless of economics
 
-All three resonated. None was sufficient alone. The synthesis — Thesis D — came through voice input: **AI will change the economics of work regardless. Learning investment determines whether the transition is liberation or disposal.** The dojo isn't competing with AI for the execution layer. It's building the humans who can thrive in whatever comes after.
+All three resonated. None was sufficient alone. The synthesis — Thesis D (a synthesized thesis label in the planning system) — came through voice input: **AI will change the economics of work regardless. Learning investment determines whether the transition is liberation or disposal.** The dojo isn't competing with AI for the execution layer. It's building the humans who can thrive in whatever comes after.
 
 ### Phase 4: The response outgrew the essay
 
@@ -63,19 +64,19 @@ In the same session:
 
 1. **The Full Cup got a surgical update.** A counter-argument paragraph was added to "For the Practitioner" and a third unresolved thread was added to Open Review, both pointing at the economic tension. The essay acknowledges the challenge without trying to contain the response.
 
-2. **Thread 20 was created** in the planning system — "The Dojo After the Automation: What Are We Building People For?" — with Thesis D, the lip-service problem, connections to five other threads, and the evidence gaps that need to be filled.
+2. **Thread 20** (a planning-system thread entry for this new essay's work) **was created** in the planning system — "The Dojo After the Automation: What Are We Building People For?" — with Thesis D, the lip-service problem, connections to five other threads, and the evidence gaps that need to be filled.
 
-3. **A full essay was drafted.** Six sections: the shared diagnosis with Miessler, two futures (Lattice without the dojo vs. dojo with the Lattice), what the dojo produces, the co-development loop, the lip-service problem, and the closing question. The essay includes a Star Trek parallel (Federation vs. Borg) that crystallized the "two futures" framing, an expanded description of Miessler's Lattice architecture, and explicit engagement with the PAI system's articulation-gap thesis.
+3. **A full essay was drafted.** Six sections: the shared diagnosis with Miessler, two futures (Lattice (Miessler's architecture for organizational transparency and AI integration) without the dojo vs. dojo with the Lattice), what the dojo produces, the co-development loop, the lip-service problem, and the closing question. The essay includes a Star Trek parallel (Federation vs. Borg) that crystallized the "two futures" framing, an expanded description of Miessler's Lattice architecture, and explicit engagement with the PAI (Personal AI Infrastructure — Miessler's open-source blueprint for a personal AI system) system's articulation-gap thesis.
 
-4. **Voice inputs #13-16 were captured** — four substantial author observations that emerged during the spar response and fed directly into the new essay's arguments. Voice input #16 ("the co-development loop — person and system grow together") became a central section of the essay.
+4. **Voice inputs #13-16** (the author's spoken observations captured and transcribed during AI sessions) were captured — four substantial author observations that emerged during the spar response and fed directly into the new essay's arguments. Voice input #16 ("the co-development loop — person and system grow together") became a central section of the essay.
 
-5. **Cross-links were established.** The new essay was registered in the docs README, the philosophy track README, the library catalog, and the thread development system.
+5. **Cross-links were established.** The new essay was registered in the docs README, the philosophy track README, the library catalog (index of curated sources under `docs/library/`), and the thread development system.
 
 ---
 
 ## What This Pattern Is
 
-The adversarial review case study ([Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md)) documented the spar system as a quality gate — structural pushback that catches weaknesses and forces revision. That's the expected use: spar → revise → stronger essay.
+The adversarial review case study ([Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md) — building `/spar` and applying it to the ego/AI essay in one session) documented the spar system as a quality gate — structural pushback that catches weaknesses and forces revision. That's the expected use: spar → revise → stronger essay.
 
 This case documents a different mode: **spar as generative pressure.** The argument didn't reveal a fixable weakness. It revealed that the essay's scope was too small for the question being asked. The response didn't revise the essay — it *spawned a new one*.
 
@@ -85,7 +86,7 @@ The pipeline:
 spar argument → author voice input → thesis synthesis → thread creation → essay draft
 ```
 
-This is the meta-development loop (gap → tool → application → feedback), but the "gap" was surfaced by the tool itself. The `/spar` command wasn't applied to find a known problem. It was applied as a routine quality check. The problem it found was bigger than expected, and the system was flexible enough to let the response become a new artifact rather than forcing it back into the original essay.
+This is the meta-development loop (notice a gap → build a tool → apply it immediately → let the output reshape the work), but the "gap" was surfaced by the tool itself. The `/spar` command wasn't applied to find a known problem. It was applied as a routine quality check. The problem it found was bigger than expected, and the system was flexible enough to let the response become a new artifact rather than forcing it back into the original essay.
 
 ---
 

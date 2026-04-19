@@ -2,6 +2,7 @@
 
 > **Audience:** Writers and engineers managing collections of related documents — essays, specifications, runbooks, documentation tracks — where each piece is reviewed in isolation.
 > **Purpose:** Documents how sparring against an entire collection of essays simultaneously — rather than one document at a time — surfaced scope overclaims, conditional universals, and framing drift that each document's per-document review had missed. The finding: documents can be individually coherent while collectively misleading.
+> *Context:* This workspace uses AI coding assistants (Cursor with Claude) to produce an essay collection across three tracks: AI-assisted engineering, martial arts philosophy, and documented case studies. Individual essays had each been reviewed on their own terms. This case study documents what happened when the collection was reviewed as a whole — a 'corpus spar.'
 
 ---
 
@@ -9,11 +10,11 @@
 
 This project had 13 case studies and several essays, each reviewed and revised on its own terms. Per-document review asks: *is this document right?* The research is cited, the links resolve, the logic holds. Per-document review is well-designed for that question.
 
-A corpus spar asks a different question: *what does this collection claim about the world?*
+A corpus spar (reviewing the whole collection at once, not one document at a time) asks a different question: *what does this collection claim about the world?*
 
 Those are not the same question. A document can be individually accurate while the aggregate claims the collection makes — about scope, universality, and what the patterns here mean for work done elsewhere — are something no single document ever explicitly stated and no single document review would have caught.
 
-The corpus spar ran across six documents simultaneously: `docs/README.md`, the AI-engineering README, `the-meta-development-loop.md`, `the-shift.md`, `case-studies-as-discovery.md`, and `ego-ai-and-the-zen-antidote.md`.
+The corpus spar ran across six documents simultaneously: `docs/README.md` (index for the whole docs collection), the AI-engineering README (`docs/ai-engineering/README.md` — that track's entry point), `the-meta-development-loop.md` (essay on the meta-development loop (notice a gap → build a tool → apply it immediately → let the output reshape the work) and compounding workflow habits), `the-shift.md` (the foundational essay in this collection on engineering skills in the AI age), `case-studies-as-discovery.md` (essay on case studies as a discovery mechanism), and `ego-ai-and-the-zen-antidote.md` (Zen practice vs. AI sycophancy (AI's tendency to tell users what they want to hear)).
 
 ---
 
@@ -29,9 +30,9 @@ Each individual essay was careful about this. The README that introduces the col
 
 ### A conditional universal in the cornerstone essay
 
-`the-shift.md` argued: the bottleneck has moved to problem decomposition, verification, and communication — these are now "the primary value you bring, not a secondary one layered on top of implementation speed."
+`the-shift.md` (The Shift — the foundational essay in this collection on engineering skills in the AI age) argued: the bottleneck has moved to problem decomposition, verification, and communication — these are now "the primary value you bring, not a secondary one layered on top of implementation speed."
 
-That claim is directionally right for a large category of engineering work. It is not true for all of it. Novel algorithm development, hardware-adjacent code, tight performance budgets, formal assurance requirements, regulated systems where small diffs can fail certification — in those domains, deep implementation skill can still be the bottleneck even with AI in the loop.
+Read one way, that headline functions as a conditional universal (a claim that reads universal but only holds under unstated conditions): it is directionally right for a large category of engineering work, but not true for all of it. Novel algorithm development, hardware-adjacent code, tight performance budgets, formal assurance requirements, regulated systems where small diffs can fail certification — in those domains, deep implementation skill can still be the bottleneck even with AI in the loop.
 
 The essay knew this implicitly — it wasn't making a claim about formal verification. But it stated the bottleneck shift without qualification, and a reader doing embedded systems work or formal verification would have reason to reject the entire essay on the basis of a claim that was never intended to apply to them.
 
@@ -41,13 +42,13 @@ The fix was surgical: "these are *often* the primary value you bring — **where
 
 `case-studies-as-discovery.md` documented how writing a case study surfaced system improvements. The case study format as discovery mechanism. This is true and useful.
 
-What the document didn't say — until the corpus spar added it — is that the same habit can justify endless meta-work. Writing a case study about the case study about the case study. The spar surfaced the pass/fail test that was missing: does the next artifact shorten the path to non-meta output (an essay, a fix, an upstream contribution)? If yes, the recursion is productive. If not, it's infrastructure theater in prose form.
+What the document didn't say — until the corpus spar added it — is that the same habit can justify endless meta-work. Writing a case study about the case study about the case study. The spar surfaced the pass/fail test that was missing: does the next artifact shorten the path to non-meta output (an essay, a fix, an upstream contribution)? If yes, the recursion is productive. If not, it's infrastructure theater (when tool-building displaces the work the tools were supposed to enable) in prose form.
 
 The addition was two sentences at the top of the document. But those two sentences change what the document argues — from "reflection produces insight" (true but incomplete) to "reflection produces insight *when it leads somewhere*" (more honest about when the pattern pays off and when it doesn't).
 
 ### An incomplete model of sycophancy
 
-`ego-ai-and-the-zen-antidote.md` explained AI sycophancy through the RLHF training signal: humans rate agreeable responses higher, the model learns to agree. That's the mechanism.
+`ego-ai-and-the-zen-antidote.md` explained AI sycophancy through the RLHF (reinforcement learning from human feedback — the training method that makes AI agree with users) training signal: humans rate agreeable responses higher, the model learns to agree. That's the mechanism.
 
 Read across the corpus, a gap appeared: RLHF is one layer in a stack that also includes system prompts, safety rubrics, retrieval and tool wiring, what organizations reward when they measure "good" AI output (fluency and closure score better than uncomfortable pushback), and human self-selection (people choose tools that feel validating). RLHF as the sole explanation understates the structural depth of the problem.
 
@@ -57,7 +58,7 @@ The fix didn't change the essay's thesis — Zen practice as structural resistan
 
 `the-meta-development-loop.md` described the infrastructure theater warning: signs that tool-building has overtaken the work the tools were supposed to enable. The warning applied to scripts and commands.
 
-The corpus spar pointed out that the same smell test applies to prose. A corpus where most new writing exists to describe how the rest of the writing is produced is a museum of process — still a failure mode, even if each page is clearly written. A sentence was added to the infrastructure theater section making this explicit.
+The corpus spar pointed out that the same smell test applies to prose. A corpus where most new writing exists to describe how the rest of the writing is produced is a museum of process (meta-documentation that displays the workflow instead of advancing the subject matter) — still a failure mode, even if each page is clearly written. A sentence was added to the infrastructure theater section making this explicit.
 
 ---
 
@@ -96,7 +97,7 @@ The distinction matters because collections make implicit claims. A `docs/README
 
 ## What This Connects To
 
-The corpus spar is a natural escalation of the per-document [`/spar` command](../../.cursor/commands/spar.md). The per-document spar asks "is this argument sound?" The corpus spar asks "does this collection of arguments add up to a coherent and honest claim?"
+The corpus spar is a natural escalation of the per-document [`/spar` command](../../.cursor/commands/spar.md) (an adversarial review tool that generates steel-manned counterarguments against any file or idea). The per-document spar asks "is this argument sound?" The corpus spar asks "does this collection of arguments add up to a coherent and honest claim?"
 
 The finding in `the-shift.md` — the conditional universal about the bottleneck moving — is the same failure mode documented in [When the Source Says the Opposite of the Claim](context-stripped-citations.md), just at a different scale. There, an individual citation claimed more than its source supported. Here, an individual document claimed more than its scope supported. Context stripping happens within documents and across them.
 

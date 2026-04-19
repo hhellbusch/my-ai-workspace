@@ -1,7 +1,8 @@
 # When Case Studies Generate System Improvements
 
 > **Audience:** Engineers and teams using structured documentation practices who suspect that writing things down does more than record what happened.
-> **Purpose:** Documents how writing a case study about evolving project scope surfaced three concrete gaps in the meta-system, and how the user's observation about the philosophical concept in the case study led directly to a system-wide enhancement. The case study format itself became a discovery mechanism.
+> **Purpose:** Documents how writing a case study about evolving project scope surfaced three concrete gaps in the meta-system (the workspace's rules, commands, and conventions), and how the user's observation about the philosophical concept in the case study led directly to a system-wide enhancement. The case study format itself became a discovery mechanism.
+> *Context:* This workspace uses AI coding assistants (Cursor with Claude) for DevOps work and an essay series connecting martial arts philosophy to AI-assisted engineering. The workspace includes custom slash commands, rules, and review processes — and the process of building and refining those tools is itself documented in case studies like this one.
 
 Structured reflection can surface real gaps; the same habit can justify **endless meta-work**. The pass/fail test is whether the next artifact **shortens the path** to non-meta output (essay, fix, upstream contribution) — not whether the recursion reads elegantly on its own.
 
@@ -11,7 +12,7 @@ Structured reflection can surface real gaps; the same habit can justify **endles
 
 ### 1. The case study was written
 
-The project had six case study seeds in the backlog. During a session focused on writing them, the [Evolving Creative Scope](evolving-creative-scope.md) case study was drafted. It traced how the zen-karate project broadened from "Zen and Karate" to "Martial Arts, Zen, and the Way of Working" as the user's learning expanded.
+The project had six case study seeds in the backlog. During a session focused on writing them, the [Evolving Creative Scope](evolving-creative-scope.md) case study — on how the essay project's creative scope evolved — was drafted. It traced how the zen-karate project broadened from "Zen and Karate" to "Martial Arts, Zen, and the Way of Working" as the user's learning expanded.
 
 ### 2. Writing forced precision about the gaps
 
@@ -20,14 +21,14 @@ The act of documenting what happened — not just summarizing it, but tracing th
 | Gap | What it means |
 |---|---|
 | No "project evolution" log | Git history captures diffs but not *why* the scope shifted |
-| No cross-session scope-drift detection | The [`/audit`](../../.cursor/commands/audit.md) command checks links and registries but not tonal consistency |
+| No cross-session scope-drift detection | The [`/audit`](../../.cursor/commands/audit.md) (periodic content health check) command checks links and registries but not tonal consistency |
 | No mechanism for propagating subtle nuance | Structural changes cascade through cross-linking; tonal shifts don't |
 
 These gaps weren't visible before the case study was written. They were implicit in the project's history but had never been articulated. The case study format — which requires a "What Conventions Are Missing" section — forced the articulation.
 
 ### 3. The user noticed the philosophical connection
 
-The case study included a section called "The Shoshin Connection" observing that the project's scope evolution was itself an example of beginner's mind — the scope was learning. The user read this and made the leap: shoshin wasn't just an observation about the case study. It was a *design principle* that could be integrated into the meta-system as a structural counter to AI framing drift.
+The case study included a section called "The Shoshin Connection" observing that the project's scope evolution was itself an example of beginner's mind — the scope was learning. The user read this and made the leap: shoshin (beginner's mind — approaching a familiar subject as if seeing it for the first time) wasn't just an observation about the case study. It was a *design principle* that could be integrated into the meta-system as a structural counter to AI framing drift.
 
 The user's words: "the shoshin connection is an interesting one. how could we use that call out to help the meta system?"
 
@@ -36,10 +37,10 @@ The user's words: "the shoshin connection is an interesting one. how could we us
 That question led to a plan with five integration points:
 
 - **[`shoshin.md` rule](../../.cursor/rules/shoshin.md)** — Always-applied. Verify project claims against source documents (brief, roadmap, style guide) rather than relying on conversation summaries. Detect scope-shift language and trigger set-based document updates.
-- **[`/start`](../../.cursor/commands/start.md) step 2.5** — Fresh-eyes check comparing brief goals against current backlog work.
-- **[`/whats-next`](../../.cursor/commands/whats-next.md) assumptions section** — Capture framing decisions the next session should question.
-- **[`/review`](../../.cursor/commands/review.md) step 8.5** — Brief-alignment drift check for docs/planning commits.
-- **[CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md) convention** — Evolution log for `.planning/` projects capturing *why* scope changed.
+- **[`/start`](../../.cursor/commands/start.md) (session orientation command) step 2.5** — Fresh-eyes check comparing brief goals against current backlog work.
+- **[`/whats-next`](../../.cursor/commands/whats-next.md) (session handoff command) assumptions section** — Capture framing decisions the next session should question.
+- **[`/review`](../../.cursor/commands/review.md) (pre-commit quality gate) step 8.5** — Brief-alignment drift check for docs/planning commits.
+- **[CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md) (evolution log for planning projects) convention** — Evolution log for `.planning/` projects capturing *why* scope changed.
 
 All five were implemented in one pass. The zen-karate project got a backfilled changelog with five retroactive entries.
 
@@ -53,7 +54,7 @@ The case study *produced* the system improvements it was documenting the need fo
 
 ## What This Pattern Is
 
-The meta-development loop documented in [AI-Assisted Development Workflows](../ai-engineering/ai-assisted-development-workflows.md) has a shape: notice a gap → build a tool → apply the tool → let the output reshape the work. Every case study in this track follows that loop.
+The meta-development loop (notice a gap → build a tool → apply it immediately → let the output reshape the work) documented in [AI-Assisted Development Workflows](../ai-engineering/ai-assisted-development-workflows.md) runs through every case study in this track.
 
 But this instance adds a layer. The gap wasn't noticed during the original work (the scope evolution happened across sessions without anyone articulating what was missing). The gap wasn't noticed during conversation (nobody said "we need an evolution log" until it was written down). The gap was noticed *during the act of writing the case study* — because the format requires structured reflection on what worked, what didn't, and what's missing.
 
@@ -69,7 +70,7 @@ This makes the case study format a **discovery mechanism**, not just a documenta
 | [Adversarial Review](adversarial-review-meta-development.md) | The user noticed the essay had no pushback — the gap was observed in conversation |
 | [Debugging AI Judgment](debugging-ai-judgment.md) | The user noticed re-prioritization always confirmed existing priorities — the gap was observed over time |
 | [Choosing Scripts Over Services](choosing-scripts-over-services.md) | Three options were evaluated during a design conversation — the gap was the decision itself |
-| [Evolving Creative Scope](evolving-creative-scope.md) → **this case study** | The gaps were invisible until the case study was written — the format surfaced them |
+| [Evolving Creative Scope](evolving-creative-scope.md) (the martial-arts essay project's scope evolution) → **this case study** | The gaps were invisible until the case study was written — the format surfaced them |
 
 The other case studies document gaps that were noticed during work. This one documents a gap that was noticed during *reflection on work*. The reflection format is the tool.
 

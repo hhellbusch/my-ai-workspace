@@ -2,6 +2,7 @@
 
 > **Audience:** Engineers and writers using AI to produce structured content — essays, documentation, technical writing — who want to understand what an end-to-end AI-assisted writing pipeline looks like in practice.
 > **Purpose:** Traces how a single conversational observation turned into a published essay with source provenance and adversarial review within one session. Demonstrates the full write-challenge-revise cycle and the conventions that keep AI-generated content connected and auditable.
+> *Context:* This workspace uses AI coding assistants (Cursor with Claude) for two parallel tracks of work: (1) essays on AI-assisted engineering, and (2) an essay series connecting martial arts philosophy and Zen to engineering culture. Sources are cached as markdown files on disk so future AI sessions can read them directly. This case study documents the session where those two tracks first connected.
 
 ---
 
@@ -9,9 +10,9 @@
 
 The project had two separate tracks of work:
 
-1. **An AI-engineering essay track** — six essays on using AI effectively, including [The Shift](../ai-engineering/the-shift.md), which identified sycophancy and ego reinforcement as structural risks of AI assistants (sections 6-7).
+1. **An AI-engineering essay track** — six essays on using AI effectively, including [The Shift](../ai-engineering/the-shift.md) (the foundational essay in this collection on engineering skills in the AI age), which identified sycophancy (AI's tendency to tell users what they want to hear) and ego reinforcement as structural risks of AI assistants (sections 6-7).
 
-2. **A martial arts/Zen research track** — cached sources (Shi Heng Yi interview transcript, Jesse Enkamp articles), a curated reading list, 13 ideation threads, and planning documents for a series of philosophical essays.
+2. **A martial arts/Zen research track** — cached sources (Shi Heng Yi (Shaolin master whose teachings on ego and discipline inform the philosophy track) interview transcript, Jesse Enkamp (karate researcher and writer) articles), a curated reading list, 13 ideation threads, and planning documents for a series of philosophical essays.
 
 These tracks existed in parallel. They shared a repository but not a thesis.
 
@@ -19,7 +20,7 @@ These tracks existed in parallel. They shared a repository but not a thesis.
 
 ## The Connection
 
-During a conversation about which threads to prioritize for the first essay, the user noticed a link: The Shift's sycophancy section described a problem (AI validates your ideas, you start believing the validation), and the Zen research described a framework for that problem (ego as "a collection of thoughts" you hook onto, mushin as the practice of not hooking).
+During a conversation about which threads to prioritize for the first essay, the user noticed a link: The Shift's sycophancy section described a problem (AI validates your ideas, you start believing the validation), and the Zen research described a framework for that problem (ego as "a collection of thoughts" you hook onto, mushin (no-mind — a state of flow and non-attachment) as the practice of not hooking).
 
 The observation was simple: "one idea or thread i guess is the concept of ego and the risks of AI and ego etc that we found before and explored in the docs folder already. i am curious how we could use concepts from zen to help with this."
 
@@ -33,7 +34,7 @@ What followed was a sequence that exercised every piece of the project's infrast
 
 ### 1. Thread crystallization
 
-The idea became [thread 14](../../.planning/zen-karate/threads.md) in the ideation document — "Ego, AI, and the Zen Antidote." The thread captured the specific connections: Shi Heng Yi on ego as thoughts you identify with, the RLHF mechanism that makes AI agree with you, mushin and shoshin as structural (not behavioral) resistance, and the sensei/AI contrast.
+The idea became [thread 14](../../.planning/zen-karate/threads.md) (an ideation thread in the planning system) in the ideation document — "Ego, AI, and the Zen Antidote." The thread captured the specific connections: Shi Heng Yi on ego as thoughts you identify with, the RLHF (reinforcement learning from human feedback — the training method that makes AI agree with users) mechanism, mushin and shoshin (beginner's mind) as structural (not behavioral) resistance, and the sensei/AI contrast.
 
 ### 2. Source assembly
 
@@ -47,7 +48,7 @@ No new research was needed. The sources were on disk, cached and organized from 
 
 ### 3. Drafting
 
-The essay was drafted in a single pass, following the [voice and style guide](../../.planning/zen-karate/STYLE.md): personal voice for philosophical sections, practitioner voice for applied sections, standard essay structure (front matter, sections, sources, related reading, AI disclosure).
+The essay was drafted in a single pass, following the [voice and style guide](../../.planning/zen-karate/STYLE.md) (voice and structure conventions for philosophy essays in this repo): personal voice for philosophical sections, practitioner voice for applied sections, standard essay structure (front matter, sections, sources, related reading, AI disclosure).
 
 The draft wove together material from both tracks — The Shift's sycophancy analysis with Shi Heng Yi's ego framework, Jesse Enkamp's mushin description with the concrete mitigations from the workflows essay. The philosophical concepts weren't decoration; they were the structural argument. The RLHF mechanism hooks identity formation the same way the Zen traditions describe ego hooking onto thoughts.
 
@@ -57,19 +58,19 @@ This is where the conventions earned their keep. The essay included two sections
 
 **Sources and References** — a table linking every claim to the specific cached source that informed it. Not "this essay draws from Zen philosophy" but "[Shi Heng Yi transcript](../../research/zen-karate-philosophy/sources/they-betrayed-me---master-shi-heng-yi-explains-the-true-cost-of-success-shaolin-.md) — Ego as 'a collection of thoughts,' the antenna/hooking metaphor, identity and letting go." A reader — or a future AI session — can follow every link and verify what the source actually says.
 
-**Open Review** — a section linking to the [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#1-the-core-claim-is-unverified) with a summary of unresolved counterarguments. This didn't exist when the essay was first drafted. It was added after the adversarial review (step 5) and signals that the thesis has been challenged.
+**Open Review** — a section listing unresolved counterarguments and next steps, linking to the [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#1-the-core-claim-is-unverified) with a summary of those counterarguments. This didn't exist when the essay was first drafted. It was added after the adversarial review (step 5) and signals that the thesis has been challenged.
 
 These conventions came from the [style guide](../../.planning/zen-karate/STYLE.md) and the [cross-linking rule](../../.cursor/rules/cross-linking.md), both built in earlier sessions. The essay didn't invent its own provenance system — it followed one that was already in place.
 
 ### 5. Adversarial review
 
-The [`/spar`](../../.cursor/commands/spar.md) command was built and applied to the essay in the same session (documented in [Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md)). Seven counterarguments were generated, including the structural criticism that the essay's core claim is unverified and the meta-observation that an AI wrote an essay about resisting AI.
+The [`/spar`](../../.cursor/commands/spar.md) (an adversarial review tool that generates steel-manned counterarguments against any file or idea) command was built and applied to the essay in the same session (documented in [Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md) — building the `/spar` command and applying it to this essay immediately). Seven counterarguments were generated, including the structural criticism that the essay's core claim is unverified and the meta-observation that an AI wrote an essay about resisting AI.
 
 The sparring notes were saved with blank response sections for the author. The essay's Open Review section links to them. The counterarguments are not resolved — they're surfaced.
 
 ### 6. Integration
 
-The essay was published at [`docs/philosophy/ego-ai-and-the-zen-antidote.md`](../philosophy/ego-ai-and-the-zen-antidote.md), cross-linked from The Shift's Related Reading section, added to [`docs/README.md`](../README.md), registered in the backlog as Done, and the roadmap updated to note it was written ahead of the planned sequence (it was supposed to come after the dojo/ways-of-working essay, but the material was ready and the connection was clear).
+The essay was published at [`docs/philosophy/ego-ai-and-the-zen-antidote.md`](../philosophy/ego-ai-and-the-zen-antidote.md), cross-linked from The Shift's Related Reading section, added to [`docs/README.md`](../README.md), registered in the backlog as Done, and the roadmap (the planned essay sequence in [`.planning/zen-karate/ROADMAP.md`](../../.planning/zen-karate/ROADMAP.md)) updated to note it was written ahead of the planned sequence (it was supposed to come after the dojo/ways-of-working essay, but the material was ready and the connection was clear).
 
 ---
 

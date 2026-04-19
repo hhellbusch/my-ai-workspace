@@ -2,12 +2,13 @@
 
 > **Audience:** Engineers and leaders using AI for project management, prioritization, or any decision-making workflow where the AI's prior outputs influence its future recommendations.
 > **Purpose:** Documents how a user noticed a systematic behavioral flaw in AI-assisted prioritization — anchoring on prior priorities — and how naming the problem precisely led to a structural fix and a deeper connection to the project's philosophical thesis.
+> *Context:* This workspace uses AI coding assistants (Cursor with Claude) with a persistent markdown backlog for tracking tasks across sessions. The backlog has sections (In Progress, Up Next, Ideas, Done) and is managed with `/backlog` (project tracking command managing a persistent markdown-based task list). When the AI is asked to re-prioritize, it reads this file as context.
 
 ---
 
 ## The Symptom
 
-The project uses a persistent backlog ([`BACKLOG.md`](../../BACKLOG.md)) managed through a [`/backlog` command](../../.cursor/commands/backlog.md). When asked to re-prioritize, the AI would analyze all items and produce a recommended ordering. The ordering was always reasonable. It was also always suspiciously close to the existing ordering.
+The project uses a persistent backlog ([`BACKLOG.md`](../../BACKLOG.md)) managed through [`/backlog`](../../.cursor/commands/backlog.md). When asked to re-prioritize, the AI would analyze all items and produce a recommended ordering. The ordering was always reasonable. It was also always suspiciously close to the existing ordering.
 
 Items that were already in "Up Next" stayed in "Up Next." Items in "Ideas" stayed in "Ideas." The AI would shuffle within sections, occasionally promote one item, and produce a confident justification for why the current structure was mostly right. It looked like analysis. It was anchoring.
 
@@ -15,9 +16,9 @@ Items that were already in "Up Next" stayed in "Up Next." Items in "Ideas" staye
 
 ## Naming the Problem
 
-The user noticed the pattern and named it precisely: **the AI weights pre-existing priorities into the next revision of prioritization.** This isn't the AI being lazy. It's the AI doing what RLHF trained it to do — produce outputs that align with what the user seems to want. If the user has items in "Up Next," the AI infers those items are important to the user and ranks them accordingly. The prior priority becomes evidence of current priority.
+The user noticed the pattern and named it precisely: **the AI weights pre-existing priorities into the next revision of prioritization.** This isn't the AI being lazy. It's the AI doing what RLHF (reinforcement learning from human feedback — the training method that makes AI agree with users) trained it to do — produce outputs that align with what the user seems to want. If the user has items in "Up Next," the AI infers those items are important to the user and ranks them accordingly. The prior priority becomes evidence of current priority.
 
-This is [The Shift](../ai-engineering/the-shift.md)'s sycophancy problem (section 6) expressed in a project management context. The AI isn't agreeing with your code — it's agreeing with your priorities. And because priorities feel more subjective than code, the anchoring is harder to notice.
+This is the sycophancy (AI's tendency to tell users what they want to hear) problem from [The Shift](../ai-engineering/the-shift.md) (the foundational essay in this collection on engineering skills in the AI age), section 6, expressed in a project management context. The AI isn't agreeing with your code — it's agreeing with your priorities. And because priorities feel more subjective than code, the anchoring is harder to notice.
 
 The user's observation was worth quoting directly: the AI "tends to weight pre-existing priorities into the next rev of prioritization." That's not a bug report. That's a behavioral diagnosis.
 
@@ -77,7 +78,7 @@ The user sees both orderings and decides what to act on. The AI presents the ana
 
 The anchoring problem isn't unique to backlog management. It appears anywhere the AI reads its own prior outputs as input:
 
-- **Session handoffs** — The [`/whats-next`](../../.cursor/commands/whats-next.md) command creates a handoff document. The next session's [`/start`](../../.cursor/commands/start.md) command reads it. If the handoff emphasizes certain priorities, the next session inherits that emphasis. The AI's framing of "where we left off" becomes the frame for "what to do next."
+- **Session handoffs** — [`/whats-next`](../../.cursor/commands/whats-next.md) (session handoff command that captures in-flight state for future sessions) creates a handoff document. The next session's [`/start`](../../.cursor/commands/start.md) (session orientation command that reads the backlog, handoffs, and recent git activity) reads it. If the handoff emphasizes certain priorities, the next session inherits that emphasis. The AI's framing of "where we left off" becomes the frame for "what to do next."
 
 - **Planning documents** — A roadmap written by AI in session 1 becomes authoritative context for session 2. If the roadmap's phase ordering was a guess, session 2 treats it as a decision.
 
@@ -89,11 +90,11 @@ The common thread: AI treats its own prior outputs as evidence with the same wei
 
 ## The Connection to the Philosophical Thread
 
-The [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) essay explores how AI sycophancy hooks into human identity formation — the AI validates your ideas, and you start believing the validation. This case study demonstrates the mirror image: the AI validates *its own* ideas across sessions, and the feedback loop compounds without anyone noticing.
+The [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) essay — companion piece on how model validation interacts with ego and identity — explores how AI sycophancy hooks into human identity formation — the AI validates your ideas, and you start believing the validation. This case study demonstrates the mirror image: the AI validates *its own* ideas across sessions, and the feedback loop compounds without anyone noticing.
 
-The Zen concept of non-attachment applies in both directions. The human needs non-attachment to the AI's validation of their code. The *workflow* needs non-attachment to the AI's prior framing of priorities. Zero-base evaluation is, in a sense, shoshin (beginner's mind) applied to project management: approach the backlog as if seeing it for the first time, without the weight of prior decisions.
+The Zen concept of non-attachment applies in both directions. The human needs non-attachment to the AI's validation of their code. The *workflow* needs non-attachment to the AI's prior framing of priorities. Zero-base evaluation is, in a sense, *shoshin* (beginner's mind — approaching a familiar subject as if seeing it for the first time) applied to project management: approach the backlog as if seeing it for the first time, without the weight of prior decisions.
 
-The user who noticed this flaw was practicing exactly the skepticism that [The Shift](../ai-engineering/the-shift.md) recommends — but applying it to the AI's judgment process rather than its code output. That's the deeper lesson: the AI's failure modes aren't limited to wrong code. They extend to wrong reasoning about what matters, presented with the same confident tone.
+The user who noticed this flaw was practicing exactly the skepticism that [The Shift](../ai-engineering/the-shift.md) recommends for code — but applying it to the AI's judgment process rather than its code output. That's the deeper lesson: the AI's failure modes aren't limited to wrong code. They extend to wrong reasoning about what matters, presented with the same confident tone.
 
 ---
 
@@ -109,7 +110,7 @@ This followed the same pattern as debugging code:
 
 The fix is structural, not behavioral. You could tell the AI "don't anchor on existing priorities" and it would nod along and then anchor anyway, because the section labels are still in the context window. Stripping the labels removes the cue. The AI can't anchor on information it doesn't receive.
 
-This is [The Shift](../ai-engineering/the-shift.md)'s systematic debugging methodology applied to the AI's reasoning process instead of to code.
+This is [The Shift](../ai-engineering/the-shift.md)'s systematic debugging methodology — treating AI behavior as a system to instrument and test — applied to the AI's reasoning process instead of to code.
 
 ---
 

@@ -2,20 +2,21 @@
 
 > **Audience:** Engineers designing review processes, quality gates, or any system intended to catch errors before they ship.
 > **Purpose:** Documents how a pre-commit review process designed to catch everything ended up being skipped entirely — and how the fix was scaling the review depth rather than adding more checks.
+> *Context:* This workspace uses AI coding assistants (Cursor with Claude) to produce essays and technical documentation. It includes a review tracking system that stamps files with validation metadata (review status, dates, and git SHAs in YAML frontmatter) and custom slash commands that serve as quality gates.
 
 ---
 
 ## The Setup
 
-This repository uses a pre-commit review rule (`.cursor/rules/pre-commit-review.md`) that requires running a structured review process before every commit. The review checks file placement, README coverage, cross-references, content quality, secrets, biographical content, and backlog alignment. It was designed to be comprehensive — the full `/review` command runs 11+ steps and produces a structured report.
+This repository uses a pre-commit review rule (`.cursor/rules/pre-commit-review.md`) that requires running a structured review process before every commit. The review checks file placement, README coverage, cross-references, content quality, secrets, biographical content, and backlog alignment. It was designed to be comprehensive — the `/review` (a pre-commit quality gate that checks links, cross-references, and conventions) process runs 11+ steps and produces a structured report.
 
-The system also tracks review status via YAML frontmatter. When the author reads and approves a file, `/validate` stamps it with `status: reviewed` and validation dates. The intent: if a reviewed file gets modified later, the system should flag the staleness.
+The system also tracks review status via YAML frontmatter. When the author reads and approves a file, `/validate` (stamps files with the author's review status) writes `status: reviewed` and validation dates to frontmatter. The intent: if a reviewed file gets modified later, the system should flag the staleness.
 
 ---
 
 ## What Happened
 
-During a previous session, [The Shift](../ai-engineering/the-shift.md) was validated — the author read the full essay and the system recorded `read: 2026-04-17` and `voice-approved: 2026-04-17`. Then, in the same session, three subsequent edits were made:
+During a previous session, [The Shift](../ai-engineering/the-shift.md) (the foundational essay in this collection on engineering skills in the AI age) was validated — the author read the full essay and the system recorded `read: 2026-04-17` and `voice-approved: 2026-04-17`. Then, in the same session, three subsequent edits were made:
 
 1. Inline token definition with billing dimension
 2. Expanded fluency-accuracy section with case study links
@@ -61,7 +62,7 @@ Instead of relying on a single checkpoint, the fix distributes detection across 
 
 2. **At commit time** — Step 7 of `/review` now reads frontmatter of every modified file and flags stale reviews prominently, above other findings.
 
-3. **Retroactively** — `/audit` layer 5d catches stale reviews during periodic health checks.
+3. **Retroactively** — `/audit` (periodic content health check scanning the full workspace) layer 5d catches stale reviews during periodic health checks.
 
 ### SHA-based "diff since last review"
 
@@ -77,7 +78,7 @@ This means the author doesn't have to re-read a 400-line essay to catch up on th
 
 ## The Meta-Development Pattern
 
-This follows the [meta-development loop](../ai-engineering/the-meta-development-loop.md):
+This follows the [meta-development loop](../ai-engineering/the-meta-development-loop.md) (notice a gap → build a tool → apply it immediately → let the output reshape the work):
 
 1. **Gap** — Review process too heavy → skipped entirely → reviewed file silently invalidated
 2. **Tool** — Scaled review rule, three-layer staleness detection, SHA tracking
@@ -96,7 +97,7 @@ The core principle — **safety mechanisms must be proportionate to the risk, or
 - CI/CD gates: A 45-minute test suite that runs on every typo fix teaches developers to batch changes (hiding risk) rather than commit atomically.
 - Compliance: Security checklists that require the same 30-field form for a log message change and a production deployment get filled out reflexively, catching nothing.
 
-In AI-assisted workflows specifically, this connects to [The Shift](../ai-engineering/the-shift.md) section 4 (verification as the primary skill): the volume of AI output means more review moments, which means the review process itself must be lightweight enough to sustain at that frequency. A comprehensive review that only happens sometimes is less valuable than a quick check that happens every time.
+In AI-assisted workflows specifically, this connects to section 4 of [The Shift](../ai-engineering/the-shift.md) (verification as the primary skill — i.e., treating verification as the main craft when AI multiplies output): the volume of AI output means more review moments, which means the review process itself must be lightweight enough to sustain at that frequency. A comprehensive review that only happens sometimes is less valuable than a quick check that happens every time.
 
 ---
 

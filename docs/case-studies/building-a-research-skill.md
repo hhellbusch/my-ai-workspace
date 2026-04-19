@@ -2,6 +2,7 @@
 
 > **Audience:** Engineers and leaders interested in how AI-assisted development works at the meta level — building tools that make AI more effective at complex, multi-step tasks.
 > **Purpose:** Documents the end-to-end process of identifying a gap in AI-assisted workflows, designing a reusable skill to fill it, and validating the skill against a real-world research exercise.
+> *Context:* This workspace uses AI coding assistants (Cursor with Claude) to produce essays and technical documentation. A "skill" here is a structured markdown instruction set that the AI agent follows for specific tasks — like a reusable playbook. This case study documents building a skill for systematic source verification.
 
 ---
 
@@ -9,11 +10,11 @@
 
 This document traces a single thread of work across two extended AI-assisted sessions. It started with a simple request — summarize a technical blog post — and evolved through progressive discovery into a reusable research automation system.
 
-The work demonstrates several themes from [The Shift](../ai-engineering/the-shift.md):
+The work demonstrates several themes from [The Shift](../ai-engineering/the-shift.md) (the foundational essay in this collection on engineering skills in the AI age):
 - Problem decomposition applied to a process, not just code
 - Systematic debugging applied to workflow failures, not just bugs
 - Building tools that compensate for known AI limitations
-- The meta-development pattern: using AI to build systems that make AI more effective
+- The meta-development pattern (notice a gap → build a tool → apply it immediately → let the output reshape the work): using AI to build systems that make AI more effective
 
 ---
 
@@ -87,7 +88,7 @@ The key architectural decisions:
 
 ### Phase 4: Validation Run
 
-We re-ran the entire pipeline against the same Jared Burck article to validate the skill end-to-end.
+We re-ran the entire pipeline against the same Jared Burck article (the OpenShift AI LLM deployment article with 62 references, introduced above) to validate the skill end-to-end.
 
 **Gather results:**
 
@@ -134,7 +135,7 @@ The skill's design directly addresses known AI limitations:
 
 ### The sycophancy problem in practice
 
-The article verification exercise is a concrete example of what [The Shift](../ai-engineering/the-shift.md) calls the sycophancy risk. The Jared Burck article is well-written and confident. An AI asked to summarize it will faithfully reproduce its claims, including the ones that strip qualifiers ("99% accuracy" becomes "strictly maintaining 99% accuracy") or present roadmap features as shipping capabilities. The skill forces a comparison between what the article says and what the cited sources actually say — creating the adversarial pressure that summarization alone doesn't provide.
+The article verification exercise is a concrete example of what [The Shift](../ai-engineering/the-shift.md) calls sycophancy (AI's tendency to tell users what they want to hear). The Jared Burck article is well-written and confident. An AI asked to summarize it will faithfully reproduce its claims, including the ones that strip qualifiers ("99% accuracy" becomes "strictly maintaining 99% accuracy") or present roadmap features as shipping capabilities. The skill forces a comparison between what the article says and what the cited sources actually say — creating the adversarial pressure that summarization alone doesn't provide.
 
 ### What still requires a human
 

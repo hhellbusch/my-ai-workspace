@@ -2,6 +2,7 @@
 
 > **Audience:** Engineers and teams using AI assistants who want to build in structural pushback rather than relying on discipline alone.
 > **Purpose:** Documents how a single observation — that AI assistants don't argue back — led to building a reusable adversarial review system, immediately applying it, and watching the output feed back into the content it was critiquing. Demonstrates the meta-development loop: gap → tool → application → feedback.
+> *Context:* This workspace uses AI coding assistants (Cursor with Claude) to produce essays and technical documentation. [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) is one of those essays — it argues that Zen practices like mushin (no-mind) and shoshin (beginner's mind) provide structural resistance to AI sycophancy (AI's tendency to agree with users). This case study documents building the adversarial review system that challenged that essay.
 
 ---
 
@@ -27,15 +28,15 @@ An [on-demand adversarial review command](../../.cursor/commands/spar.md) that c
 
 1. **Identify the target** — a file path, a topic keyword, or whatever the user was just discussing
 2. **Gather full context** — read the target, follow its internal links, check planning docs and research sources
-3. **Generate 3-7 steel-manned counterarguments** — each typed (structural, presentation, scope, evidence, consistency) and rated for strength
+3. **Generate 3-7 steel-manned counterarguments** (steel-man: arguing the strongest possible version of the opposing position) — each typed (structural, presentation, scope, evidence, consistency) and rated for strength
 4. **Self-audit** — rate which arguments are genuine weaknesses and which are contrarian pattern-matching
 5. **Optionally capture** — save as sparring notes for later revision
 
-The key design constraint: steel-man, not strawman. Attack the strongest claims, not the weakest. The success criteria explicitly say "no sycophantic softening" — no "these are minor points" or "overall this is great, but..."
+The key design constraint: steel-man, not strawman (attacking a weakened version of the opposing position). Attack the strongest claims, not the weakest. The success criteria explicitly say "no sycophantic softening" — no "these are minor points" or "overall this is great, but..."
 
 ### 2. A spar stage in the meta-prompting pipeline
 
-The existing [create-meta-prompts skill](../../.cursor/skills/create-meta-prompts/SKILL.md) chains prompts in a `research → plan → do` sequence. The spar stage slots between research and plan:
+The existing [create-meta-prompts skill](../../.cursor/skills/create-meta-prompts/SKILL.md) chains prompts in a `research → plan → do` sequence — the meta-prompting pipeline for multi-stage Claude-to-Claude workflows. The spar stage slots between research and plan:
 
 ```
 research → spar → plan → do
@@ -47,7 +48,7 @@ The plan can't ignore the spar. It has to respond.
 
 ### 3. Zero-base de-biasing in backlog prioritization
 
-This one came from a related observation (covered in [Debugging Your AI Assistant's Judgment](debugging-ai-judgment.md)): the AI was anchoring on prior priorities when asked to re-prioritize. The fix was a [zero-base evaluation step](../../.cursor/commands/backlog.md) in the `/backlog prioritize` command that strips section labels, scores every item on merits, and compares the fresh ranking against the current one. An "Anchoring risk" column forces the question: "Am I ranking this here because it was already here?"
+This one came from a related observation (covered in [Debugging Your AI Assistant's Judgment](debugging-ai-judgment.md)): the AI was anchoring on prior priorities when asked to re-prioritize. The fix was a [zero-base evaluation step](../../.cursor/commands/backlog.md) (re-scoring backlog items from scratch without anchoring on their previous section or order) in the [`/backlog prioritize`](../../.cursor/commands/backlog.md) command (project tracking) that strips section labels, scores every item on merits, and compares the fresh ranking against the current one. An "Anchoring risk" column forces the question: "Am I ranking this here because it was already here?"
 
 ---
 
@@ -79,7 +80,7 @@ The adversarial review produced argument #5: "An AI wrote an essay about resisti
 
 This is what the pipeline was designed to surface. Without the spar stage, the essay would exist in a self-affirming bubble. With it, the essay acknowledges its own limitations — and those limitations become material for future revision.
 
-The sparring output also validated the parts of the essay that held up under scrutiny. The spar-patterns template includes a `<what_survives>` section specifically because adversarial review that tears everything down is as useless as review that affirms everything. In this case: the RLHF mechanism description, the concrete mitigations, and the specific observation about how AI validation hooks identity formation all survived.
+The sparring output also validated the parts of the essay that held up under scrutiny. The spar-patterns template includes a `<what_survives>` section specifically because adversarial review that tears everything down is as useless as review that affirms everything. In this case: the RLHF (reinforcement learning from human feedback — the training method that makes AI agree with users) mechanism description, the concrete mitigations, and the specific observation about how AI validation hooks identity formation all survived.
 
 ---
 
@@ -96,7 +97,7 @@ The research skill case study ([Building a Research and Verification Skill](buil
 
 **The adversarial review pattern works because it's structural, not behavioral.** You can tell an AI to "be critical" and it will produce criticism. But that criticism isn't anchored to anything — it's a persona shift, not a process change. The [`/spar` command](../../.cursor/commands/spar.md) is a process. It reads the full context, follows internal links, generates typed arguments, self-audits, and produces a persistent document that future sessions can find and build on. The [spar stage](../../.cursor/skills/create-meta-prompts/references/spar-patterns.md) in the meta-prompting pipeline is even more structural: the plan *cannot proceed* without addressing the counterarguments.
 
-**The self-referential nature is a feature, not a bug.** An AI building tools to challenge its own output is the "asking the AI to argue against your approach" mitigation from [The Shift](../ai-engineering/the-shift.md) section 7, automated and made persistent. It doesn't replace human judgment — the sparring notes have blank response sections because the author's voice is what makes the essay real. But it ensures the human has something substantive to respond to.
+**The self-referential nature is a feature, not a bug.** An AI building tools to challenge its own output is the "asking the AI to argue against your approach" mitigation from [The Shift](../ai-engineering/the-shift.md) (the foundational essay in this collection on engineering skills in the AI age) section 7, automated and made persistent. It doesn't replace human judgment — the sparring notes have blank response sections because the author's voice is what makes the essay real. But it ensures the human has something substantive to respond to.
 
 ---
 

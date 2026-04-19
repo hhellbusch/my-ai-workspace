@@ -2,14 +2,16 @@
 
 > **Audience:** Engineers using AI to research, summarize, or build on external sources — especially technical articles that cite other work.
 > **Purpose:** Documents an incident where a cited source was real and the number was accurate, but the source's conclusion was the *opposite* of how the article used it. Traces the verification chain that caught it and what it reveals about how distortions propagate through AI-assisted summarization.
+>
+> *Context: This workspace uses AI coding assistants (Cursor with Claude) to produce essays and technical documentation. One essay — [AI-Assisted Development Workflows](../ai-engineering/ai-assisted-development-workflows.md) — covers patterns for using AI effectively in infrastructure work, including a section on enterprise LLM self-hosting economics. That section triggered this case study.*
 
 ---
 
 ## The Setup
 
-The essay [AI-Assisted Development Workflows](../ai-engineering/ai-assisted-development-workflows.md) references a Jared Burck article on enterprise LLM deployment, including a section on self-hosting economics. One of the headline claims: a breakeven threshold of approximately 11 billion tokens per month, below which API consumption is cheaper, above which "self-hosting delivers up to 18x cost advantage per million tokens."
+The workflows essay references a Jared Burck article on enterprise LLM deployment, including a section on self-hosting economics. One of the headline claims: a breakeven threshold of approximately 11 billion tokens per month, below which API consumption is cheaper, above which "self-hosting delivers up to 18x cost advantage per million tokens."
 
-This claim was traced to ref-61, a Braincuber.com analysis. During the original [research and verification pass](building-a-research-skill.md), the source was unreachable — the site returned HTTP 429 and later blocked automated fetching behind a Vercel Security Checkpoint. The claim was marked as **unverifiable** in the [verification notes](../../research/openshift-ai-llm-deployment/verification-notes-v1.md).
+This claim was traced to ref-61, a Braincuber.com analysis. During the original [research and verification pass](building-a-research-skill.md) (a systematic AI-driven process that fetched and analyzed 53 of 62 cited sources), the source was unreachable — the site returned HTTP 429 and later blocked automated fetching behind a Vercel Security Checkpoint. The claim was marked as **unverifiable** in the [verification notes](../../research/openshift-ai-llm-deployment/verification-notes-v1.md).
 
 Months later, the author asked: "did we actually validate this claim? I remember some waffling on it."
 
@@ -79,7 +81,7 @@ The [workflows essay](../ai-engineering/ai-assisted-development-workflows.md) an
 
 ### Systemic: what this suggests
 
-There's no simple rule that prevents context stripping. Unlike fabricated URLs (which can be caught by fetching), reversed framing requires reading and understanding the cited source. The existing [research and verification skill](../../.cursor/skills/research-and-analyze/) already fetches sources and analyzes claims against them — but it can only do that when the sources are reachable.
+There's no simple rule that prevents context stripping. Unlike fabricated URLs (which can be caught by fetching), reversed framing requires reading and understanding the cited source. The existing [research and verification skill](../../.cursor/skills/research-and-analyze/) (a reusable AI instruction set that automates source fetching and claim comparison) already fetches sources and analyzes claims against them — but it can only do that when the sources are reachable.
 
 The practical takeaway: when a source can't be fetched, mark the claim as unverifiable and *keep it marked*. Don't let the claim age into implicit trust. The "unverifiable" label is what prompted the author to revisit this months later.
 
@@ -89,7 +91,7 @@ The practical takeaway: when a source can't be fetched, mark the claim as unveri
 
 The [research skill case study](building-a-research-skill.md) describes building the verification infrastructure that caught this gap in the first place. The skill's design — fetch every source, compare claims against source text — is exactly the workflow that would have caught the context reversal *if the source had been reachable*.
 
-The Braincuber article itself is also worth noting as a source type: it's a **consulting firm's marketing content** (complete with a CTA to "Book our free 15-Minute Cloud AI Audit"). The data may be sound, but the framing serves a sales purpose. Recognizing source types — independent research, vendor whitepaper, consulting sales piece, blog post — is part of the verification skill that [The Shift](../ai-engineering/the-shift.md) describes as the engineer's primary value in AI-assisted work.
+The Braincuber article itself is also worth noting as a source type: it's a **consulting firm's marketing content** (complete with a CTA to "Book our free 15-Minute Cloud AI Audit"). The data may be sound, but the framing serves a sales purpose. Recognizing source types — independent research, vendor whitepaper, consulting sales piece, blog post — is part of the verification skill that [The Shift](../ai-engineering/the-shift.md) — the foundational essay in this collection on engineering skills in the AI age — describes as the engineer's primary value in AI-assisted work.
 
 ---
 

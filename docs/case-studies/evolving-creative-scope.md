@@ -2,6 +2,7 @@
 
 > **Audience:** Anyone using AI for multi-session creative or intellectual projects where the human's understanding evolves during the work — not just the output, but the framing itself.
 > **Purpose:** Documents how a project's scope broadened, narrowed, and self-corrected across multiple sessions as the user's thinking evolved, and what conventions helped or hindered the AI's ability to maintain coherence across documents.
+> *Context:* This workspace includes an essay series connecting martial arts philosophy to AI-assisted engineering. The author trained in Hayashi-ha Shito-ryu karate (an Okinawan tradition) and the essay project initially focused on Zen and karate before broadening to martial arts more generally. This case study documents that scope evolution.
 
 ---
 
@@ -52,7 +53,7 @@ This matters because AI sessions read documents independently. If the brief said
 
 ### The cross-linking convention caught the cascade
 
-The [cross-linking rule](../../.cursor/rules/cross-linking.md) includes a trigger: "Scope change to a directory — Check if its parent README description is still accurate." When the zen-karate project's scope broadened, this trigger prompted updates to the research README and the roadmap's descriptions.
+The [cross-linking rule](../../.cursor/rules/cross-linking.md) (workspace convention: when a directory's scope changes, update its parent README and related descriptions) includes a trigger: "Scope change to a directory — Check if its parent README description is still accurate." When the zen-karate project's scope broadened, this trigger prompted updates to the research README and the roadmap's descriptions.
 
 Without the convention, the scope change might have been captured in one or two files while other documents drifted.
 
@@ -92,7 +93,7 @@ The planning directory is still called `zen-karate/`. The research directory is 
 
 ## The Shoshin Connection
 
-The project's scope evolution is itself an example of *shoshin* (beginner's mind) — one of the Zen concepts the essays explore. The user approached their own expertise with openness: "I've trained in karate for decades, but I'm expanding beyond that now." The project's framing had to match that openness rather than crystallizing around the initial scope.
+The project's scope evolution is itself an example of *shoshin* (beginner's mind — approaching a familiar subject as if seeing it for the first time) — one of the Zen concepts the essays explore. The user approached their own expertise with openness: "I've trained in karate for decades, but I'm expanding beyond that now." The project's framing had to match that openness rather than crystallizing around the initial scope.
 
 This is harder than it sounds. Planning documents want to be definitive. Roadmaps want to be stable. Style guides want to be authoritative. Having all of them say "this is our scope, and our scope is still learning" requires a kind of institutional humility that planning documents aren't designed for.
 
@@ -116,7 +117,7 @@ The project brief handles this with: "The scope is deliberately wider than one s
 | Gap | Why it matters |
 |---|---|
 | No "project evolution" log | Git history captures changes but not *why* the scope shifted |
-| No cross-session scope-drift detection | The [`/audit`](../../.cursor/commands/audit.md) command checks links and registries but not tonal consistency |
+| No cross-session scope-drift detection | The [`/audit`](../../.cursor/commands/audit.md) (periodic content health check) command checks links and registries but not tonal consistency |
 | No mechanism for propagating subtle nuance | Structural changes cascade; tonal shifts don't |
 
 ---
@@ -149,7 +150,7 @@ Every scope change in this case study originated from the user: the broadening f
 
 ## What Happened Next
 
-The gaps identified in "What Conventions Are Missing" above led directly to the [shoshin meta-system integration](../../.cursor/rules/shoshin.md) — a new always-applied rule, fresh-eyes checks in [`/start`](../../.cursor/commands/start.md), assumptions tracking in [`/whats-next`](../../.cursor/commands/whats-next.md), brief-alignment drift detection in [`/review`](../../.cursor/commands/review.md), and the [CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md) convention for planning projects. The full story of how this case study produced the system improvements it was documenting the absence of is in [When Case Studies Generate System Improvements](case-studies-as-discovery.md).
+The gaps identified in "What Conventions Are Missing" above led directly to the [shoshin meta-system integration](../../.cursor/rules/shoshin.md) — a new always-applied rule, fresh-eyes checks in [`/start`](../../.cursor/commands/start.md) (session orientation command), assumptions tracking in [`/whats-next`](../../.cursor/commands/whats-next.md) (session handoff command), brief-alignment drift detection in [`/review`](../../.cursor/commands/review.md) (pre-commit quality gate), and the [CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md) convention for planning projects. The full story of how this case study produced the system improvements it was documenting the absence of is in [When Case Studies Generate System Improvements](case-studies-as-discovery.md) (the companion case study on how writing this scope-evolution piece surfaced gaps and drove workspace rule changes).
 
 ---
 

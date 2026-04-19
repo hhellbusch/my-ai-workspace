@@ -2,12 +2,14 @@
 
 > **Audience:** Engineers using AI to produce documentation, research references, or any content with external citations.
 > **Purpose:** Documents a specific incident where AI fabricated a plausible URL while defining a concept about AI's tendency to fabricate — and how the fix addressed both the immediate error and the systemic gap.
+>
+> *Context: This workspace uses AI coding assistants (Cursor with Claude) to produce essays and technical documentation. [The Shift](../ai-engineering/the-shift.md) is a foundational essay in this collection arguing that when AI handles implementation, verification becomes the engineer's primary skill.*
 
 ---
 
 ## The Setup
 
-The essay [The Shift](../ai-engineering/the-shift.md) introduces sycophancy — the tendency of AI models to tell users what they want to hear — in its "Design thinking at scale" section. During a review pass, the author noticed the term was used without definition. The request was straightforward: define sycophancy inline on first use and link to supporting research.
+The Shift essay introduces sycophancy — AI's tendency to tell users what they want to hear rather than what's accurate — in its "Design thinking at scale" section. During a review pass, the author noticed the term was used without definition. The request was straightforward: define sycophancy inline on first use and link to supporting research.
 
 ---
 
@@ -45,11 +47,11 @@ A web search found the correct paper — Anthropic's ["Towards Understanding Syc
 
 ### Systemic: external URL verification rule
 
-The project already had a [`cross-linking.md`](../../.cursor/rules/cross-linking.md) rule for maintaining internal references. External links had no equivalent protection. Two changes:
+The project already had a [`cross-linking.md`](../../.cursor/rules/cross-linking.md) rule (an always-applied AI instruction file that maintains internal references between documents). External links had no equivalent protection. Two changes:
 
 1. **Always-applied rule** — Added an "External Links — Verify Before Committing" section to the cross-linking rule. The rule states plainly: AI models fabricate plausible-looking URLs. Every new external URL must be fetched before inclusion.
 
-2. **Pre-commit check** — Added external URL verification to the [`/review`](../../.cursor/commands/review.md) command's cross-reference step. The report template now includes an "External URLs: N verified / M broken" line.
+2. **Pre-commit check** — Added external URL verification to the [`/review`](../../.cursor/commands/review.md) command (a pre-commit quality gate that checks links, cross-references, and conventions). The report template now includes an "External URLs: N verified / M broken" line.
 
 The systemic fix follows the same pattern as [debugging AI judgment](debugging-ai-judgment.md): remove the opportunity for the failure rather than relying on vigilance. A rule that says "check URLs" is less reliable than a workflow step that makes checking visible in the review output.
 
@@ -57,7 +59,7 @@ The systemic fix follows the same pattern as [debugging AI judgment](debugging-a
 
 ## The Meta-Development Pattern
 
-This is the [meta-development loop](../ai-engineering/the-meta-development-loop.md) at its most compact:
+This is the [meta-development loop](../ai-engineering/the-meta-development-loop.md) — notice a gap, build a tool, apply it immediately, let the output reshape the work — at its most compact:
 
 1. **Gap** — AI fabricated a URL; no system caught it
 2. **Tool** — Rule update (cross-linking.md) + workflow update (/review)

@@ -2,6 +2,8 @@
 
 > **Audience:** Engineers, writers, and anyone publishing AI-assisted content where readers will attribute the words to a human author.
 > **Purpose:** Documents how a concern about AI-generated biographical content — professional titles, experience claims, personal opinions — led to a new validation type (`voice-approved`) integrated at every checkpoint in the project's workflow.
+>
+> *Context: This workspace uses AI coding assistants (Cursor with Claude) to produce essays, case studies, and technical documentation. It includes a review tracking system that stamps files with validation types (`read`, `fact-checked`, `tested`, etc.) and custom slash commands that serve as quality gates at different points in the workflow.*
 
 ---
 
@@ -46,7 +48,7 @@ This doesn't prevent biographical content — some essays require it. It shifts 
 
 ### At commit time
 
-The [`/review`](../../.cursor/commands/review.md) pre-commit command now includes a biographical/voice check (step 6) that scans changed `docs/` files for:
+The [`/review`](../../.cursor/commands/review.md) pre-commit command (a quality gate that checks links, cross-references, and conventions before each commit) now includes a biographical/voice check (step 6) that scans changed `docs/` files for:
 
 - Professional titles or role descriptions applied to the author
 - First-person claims about experience, training, or career
@@ -57,11 +59,11 @@ Flagged lines appear in a dedicated "Biographical Content — Needs `voice-appro
 
 ### At audit time
 
-The [`/audit`](../../.cursor/commands/audit.md) content health check (Layer 5b) scans all `docs/` essays for biographical patterns and cross-references against `voice-approved` frontmatter. Files with biographical content but no `voice-approved` validation are the highest-priority review items.
+The [`/audit`](../../.cursor/commands/audit.md) command (a periodic content health check that scans the full workspace) in its Layer 5b scans all `docs/` essays for biographical patterns and cross-references against `voice-approved` frontmatter. Files with biographical content but no `voice-approved` validation are the highest-priority review items.
 
 ### At validation time
 
-The [`/validate`](../../.cursor/commands/validate.md) command recognizes `voice-approved` as a type. If an author validates a `docs/` file with `read` but the file contains biographical content, the command prompts: "This file contains biographical content. Consider also running `/validate <path> voice-approved` after reviewing those sections."
+The [`/validate`](../../.cursor/commands/validate.md) command (which stamps files with the author's review status) recognizes `voice-approved` as a type. If an author validates a `docs/` file with `read` but the file contains biographical content, the command prompts: "This file contains biographical content. Consider also running `/validate <path> voice-approved` after reviewing those sections."
 
 ---
 
@@ -77,12 +79,12 @@ The `voice-approved` system doesn't require reviewing everything immediately. It
 
 ## The Pattern
 
-This follows the same [meta-development loop](../ai-engineering/the-meta-development-loop.md) as other case studies in this series:
+This follows the same [meta-development loop](../ai-engineering/the-meta-development-loop.md) — notice a gap, build a tool, apply it immediately, let the output reshape the work — as other case studies in this series:
 
 1. **Gap** — AI writes biographical content freely; no system distinguishes it from technical content
 2. **Tool** — New validation type (`voice-approved`) with detection patterns and workflow integration
 3. **Application** — Applied immediately: the essay edits that triggered the concern were the first content reviewed under the new standard
-4. **Feedback** — The system revealed that the broader concern (biographical fabrication) was a specific instance of the trust problem documented in [The Shift](../ai-engineering/the-shift.md): AI output carries uniform confidence regardless of whether it's accurate, and the only way to tell is to check
+4. **Feedback** — The system revealed that the broader concern (biographical fabrication) was a specific instance of the trust problem documented in [The Shift](../ai-engineering/the-shift.md) (the foundational essay in this collection on engineering skills in the AI age): AI output carries uniform confidence regardless of whether it's accurate, and the only way to tell is to check
 
 The novel element is that this gap isn't about *correctness* — it's about *identity*. The AI can fabricate a biographical claim that's technically true (the author does work in infrastructure) but still misrepresents the author's intent by making a claim they didn't choose to make. This is a trust problem that `fact-checked` can't catch.
 

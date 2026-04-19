@@ -2,12 +2,13 @@
 
 > **Audience:** Engineers running AI-assisted workflows across multiple sessions, agents, or parallel contexts where shared files can change between actions.
 > **Purpose:** Documents how an AI agent operated on stale assumptions from its own earlier edit, ignoring that another session had overridden the change — and what the incident reveals about context management in multi-agent environments.
+> *Context:* This workspace uses AI coding assistants (Cursor with Claude) for multi-session project work. It includes a persistent markdown backlog for tracking tasks across sessions, with a rolling cap (15 items in Done, older items archived) managed by custom slash commands.
 
 ---
 
 ## The Setup
 
-The project uses a persistent backlog ([`BACKLOG.md`](../../BACKLOG.md)) with a rolling cap: at most 15 completed items stay in the Done section, with older items archived to [`BACKLOG-ARCHIVE.md`](../../BACKLOG-ARCHIVE.md). This convention is documented in the [`/backlog` command](../../.cursor/commands/backlog.md) and referenced by several always-applied rules.
+The project uses a persistent backlog ([`BACKLOG.md`](../../BACKLOG.md)) with a rolling cap: at most 15 completed items stay in the Done section, with older items archived to [`BACKLOG-ARCHIVE.md`](../../BACKLOG-ARCHIVE.md) (rolling archive of older Done items). This convention is documented in [`/backlog`](../../.cursor/commands/backlog.md) (project tracking command managing a persistent markdown-based task list) and referenced by several always-applied rules.
 
 In an earlier part of the session, the AI decided to simplify the backlog system by removing the archive mechanism entirely. It committed the removal across 5 files — the backlog command, session start command, repo-structure rule, session-awareness rule, and README.
 
@@ -37,7 +38,7 @@ The AI was internally consistent with its own earlier actions but inconsistent w
 
 ## Why This Happened
 
-This is the [anchoring-on-prior-outputs](debugging-ai-judgment.md) problem applied to the AI's own session context rather than to persisted artifacts.
+This is the same [anchoring-on-prior-outputs](debugging-ai-judgment.md) pattern as in *Debugging Your AI Assistant's Judgment* (there: backlog labels and persisted artifacts), but applied here to the AI's own session context rather than to persisted artifacts alone.
 
 Within a single session, the AI builds an internal model of the repository state. That model is correct at the time of reading. But the model doesn't update when external changes land — other agents, user edits, parallel sessions, or even git operations that happen between tool calls.
 
@@ -70,11 +71,11 @@ The git log told the story: commit `fe01773` (removal) followed by commit `7b0a1
 
 ### Systemic: the shoshin rule already existed
 
-The project already has a [`shoshin.md`](../../.cursor/rules/shoshin.md) rule — "approach project context as if encountering it for the first time." The rule says: don't trust handoffs alone, read the brief, check whether framing aligns with source documents before inheriting assumptions.
+The project already has a [`shoshin.md`](../../.cursor/rules/shoshin.md) rule — *shoshin* (beginner's mind — approaching a familiar subject as if seeing it for the first time): "approach project context as if encountering it for the first time." The rule says: don't trust handoffs alone, read the brief, check whether framing aligns with source documents before inheriting assumptions.
 
 The rule was designed for *cross-session* context loading — reading handoff documents and planning files at session start. But the principle applies *within* a session too: when you're about to edit a file governed by a convention, re-read the convention. Your memory of what the convention says may be stale.
 
-The incident didn't require a new rule. It required applying an existing rule more broadly. The shoshin principle doesn't just apply at session boundaries — it applies before any edit to a file whose governing convention could have changed.
+The incident didn't require a new rule. It required applying an existing rule more broadly. The *shoshin* principle doesn't just apply at session boundaries — it applies before any edit to a file whose governing convention could have changed.
 
 ---
 
@@ -83,7 +84,7 @@ The incident didn't require a new rule. It required applying an existing rule mo
 As AI-assisted workflows scale to parallel agents, shared workspaces, and multi-session projects, the "stale context" problem gets worse:
 
 - **Single session, single agent** — Context is usually fresh. This is the simplest case and still failed here because an external change landed mid-session.
-- **Multiple sessions, same agent** — Each session starts with a fresh context load (if `/start` or similar is used), but inherits handoff framing that may be outdated.
+- **Multiple sessions, same agent** — Each session starts with a fresh context load (if `/start` (session orientation command that reads the backlog, handoffs, and recent git activity) or similar is used), but inherits handoff framing that may be outdated.
 - **Parallel agents, shared workspace** — The worst case. Agents operating concurrently on the same files will routinely encounter changes from other agents. Git helps with conflict detection but doesn't help with *convention drift* — when the rules change but the agent doesn't re-read them.
 
 The mitigation is structural, not behavioral: re-read before editing. Don't trust your internal model of a file you read 20 minutes ago. The cost of a redundant read is negligible; the cost of editing based on stale context is the kind of subtle drift that erodes trust in AI-assisted workflows.

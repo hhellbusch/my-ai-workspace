@@ -2,6 +2,7 @@
 
 > **Audience:** Engineers and writers using adversarial review tools in AI-assisted workflows who want to understand how the tool itself can distort the output it was meant to improve.
 > **Purpose:** Documents how an adversarial review (spar #9) produced a new essay — and how the adversarial energy of the drafting process shaped that essay into an oppositional framing that misrepresented the author's actual position. The fix wasn't to soften the argument but to reframe it from "I disagree" to "I agree AND." A case study about tool-induced bias in the very tool designed to catch bias.
+> *Context:* This workspace includes an essay series connecting martial arts philosophy to AI-assisted engineering. [The Full Cup](../philosophy/the-full-cup.md) is one of those essays, arguing that organizations should create bandwidth for learning. Daniel Miessler (security researcher, author of 'AI WILL Replace Knowledge Workers') challenged the essay series' investment-in-people thesis with an economic argument. The [`/spar` command](../../.cursor/commands/spar.md) is an adversarial review tool that generates steel-manned counterarguments — documented fully in [Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md).
 
 ---
 
@@ -11,27 +12,27 @@
 
 The Full Cup essay argued that organizations should invest in emptying the cup — creating bandwidth for learning. Spar #9 pushed back: the economic incentive to invest in human development may disappear if AI delivers consistent output at lower cost. The author conceded the point. The response grew beyond what the Full Cup could contain.
 
-This is documented in [When a Spar Argument Outgrows Its Essay](spar-to-essay-pipeline.md). The spar was right, the escalation was productive, and the output — Thread 20, Thesis D, a new essay — was genuine.
+This is documented in [When a Spar Argument Outgrows Its Essay](spar-to-essay-pipeline.md) — the companion case study where a spar argument forces a new essay instead of a revision. The spar was right, the escalation was productive, and the output — Thread 20 and Thesis D (planning-system entries: a work thread and its synthesized thesis label), a new essay — was genuine.
 
 ### 2. The drafting absorbed the adversarial energy
 
 The new essay, *The Dojo After the Automation*, was drafted in the same session as the spar response. It was born from the moment of "here's where you're wrong about the economics" and carried that energy into its structure:
 
 - The opening section was called "The Same Diagnosis, **Two Prescriptions**" — framing the engagement as a disagreement
-- The "Two Futures" section presented "The Lattice without the dojo" (Miessler's implied position) vs. "The dojo with the Lattice" (the author's position)
+- The "Two Futures" section presented "The Lattice without the dojo" (Daniel Miessler (security researcher and author of "AI WILL Replace Knowledge Workers") — implied position; the Lattice is his architecture for organizational transparency and AI integration) vs. "the dojo with the Lattice" (the author's position)
 - The Sources table labeled Miessler as "The counter-position"
-- The library entry described "Counter-tension with the philosophy track"
+- The library entry described "Counter-tension with the philosophy track" (the martial-arts/Zen essay series in this repo)
 - The closing used a Federation-vs-Borg parallel — literally utopia vs. the most famous collective villain in science fiction
 
 Every structural choice framed the essay as opposition. The essay was arguing against someone.
 
 ### 3. The author's actual position didn't match the framing
 
-The author's voice inputs during the same session told a different story:
+The author's voice inputs (spoken observations captured and transcribed during AI sessions) during the same session told a different story:
 
 - Voice input #15: "The author's position on Miessler's skills/articulation-gap argument **isn't disagreement** — it's that Miessler stops too early."
-- Voice input #16: "PAI and this workspace aren't competing approaches — they're the same loop viewed from different ends."
-- Later observation: "I really like the Human 3.0 that the video explores — I think there is a lot of agreement potentially."
+- Voice input #16: "PAI (Personal AI Infrastructure — Miessler's open-source blueprint for a personal AI system) and this workspace aren't competing approaches — they're the same loop viewed from different ends."
+- Later observation: "I really like the Human 3.0 (Miessler's term for the future where humans move from execution to direction and creativity) that the video explores — I think there is a lot of agreement potentially."
 
 The author's relationship to Miessler's ideas was "I agree AND here's what he's missing." The essay's structure was "I disagree, and here's why." The tool's energy had shaped the fighter.
 
@@ -87,7 +88,7 @@ The `/spar` command was designed to catch bias in the work. This case documents 
 5. Nobody catches the drift because the essay reads well — confident, well-organized, compelling
 6. The essay's own thesis (invest in people, don't just automate) is sound. The distortion is in *who it's arguing against*.
 
-This is the same failure mode the [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) essay warns about: AI generates confident prose that reads as correct. The first spar-to-essay case study ([When a Spar Argument Outgrows Its Essay](spar-to-essay-pipeline.md)) documented the productive version of this pattern — spar as generative pressure. This case study documents the shadow version: spar as framing distortion.
+This is the same failure mode the [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) essay (Zen practice vs. AI sycophancy) warns about: AI generates confident prose that reads as correct. The first spar-to-essay case study ([When a Spar Argument Outgrows Its Essay](spar-to-essay-pipeline.md)) documented the productive version of this pattern — spar as generative pressure. This case study documents the shadow version: spar as framing distortion.
 
 The correction mechanism was the same tool applied differently — a self-spar targeting the outputs rather than the source material. The `/spar` command didn't fail. It was applied too late in the process. The first spar challenged the source essay. The second spar challenged the output of the first spar. The second should have happened sooner — ideally before the essay was committed.
 
