@@ -15,7 +15,9 @@ He's right. Anyone who has worked inside a large enterprise — or consulted for
 
 Where practitioners diverge is in the prescription.
 
-Miessler's answer is structural: automate the execution layer. Build a Lattice — a tiered transparency system where every level of the organization broadcasts its SOPs, metrics, goals, and work via APIs. Turn opacity into real-time visibility. If the humans can't follow the processes consistently, build systems that can. The bar AI needs to clear isn't excellence — it's the average knowledge worker in the average company. And the bar, he argues, is on the floor.
+Miessler's answer is structural: automate the execution layer. Build what he calls the Lattice — a tiered transparency architecture where every level of the organization publishes the same categories of information upward and downward. Company level: mission, strategy, budget, quality standards. Department level: how it serves the company mission, its SOPs, its metrics. Team level: current projects, how work maps to department goals, capacity. Individual level: what you're working on, how it connects to team goals, your skills and growth areas. Each tier broadcasts via APIs — queryable, real-time, machine-readable. The org chart becomes a living system instead of a diagram nobody updates.
+
+It's compelling because it solves a real problem. Most organizational dysfunction comes from opacity — nobody knows what anyone else is doing, priorities conflict silently, knowledge is trapped in individual heads. The Lattice makes all of that visible. If the humans can't follow the processes consistently, build systems that can. The bar AI needs to clear isn't excellence — it's the average knowledge worker in the average company. And the bar, he argues, is on the floor.
 
 There is another answer, and this essay is written from inside it: fix the loop so humans can be human in it. Not because the diagnosis is wrong — the organizational chaos is real, the inconsistent output is real, the trapped knowledge is real. But because the prescription determines what happens to the people when the automation arrives.
 
