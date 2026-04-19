@@ -180,6 +180,7 @@ The table below covers eight case studies that most directly trace the full loop
 | [The Shift](the-shift.md) | The engineering skills the meta-development loop applies — decomposition, debugging, QA thinking, adversarial reasoning |
 | [AI-Assisted Development Workflows](ai-assisted-development-workflows.md) | The practical workflow patterns that the loop produces and improves, including multi-session project management |
 | [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) | The philosophical frame — non-attachment applied to tools, not just ideas |
+| [The Dojo After the Automation](../philosophy/the-dojo-after-the-automation.md) | The co-development loop named explicitly — person and system grow together, and neither side works alone |
 
 ---
 

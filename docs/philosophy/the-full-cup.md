@@ -163,6 +163,7 @@ This essay was developed through adversarial sparring during drafting. Key unres
 | [The Meta-Development Loop](../ai-engineering/the-meta-development-loop.md) | AI as the tool that empties the cup — building systems that reduce human load |
 | [AI-Assisted Development Workflows](../ai-engineering/ai-assisted-development-workflows.md) | Practical patterns for using AI to reduce toil, not increase it |
 | [When the Source Says the Opposite of the Claim](../case-studies/context-stripped-citations.md) | What happens when a full cup can't verify AI output — verification requires bandwidth |
+| [The Dojo After the Automation](the-dojo-after-the-automation.md) | The successor question: what happens when "now" changes — when we stop needing people to learn *this* and need them to learn something else entirely |
 
 ---
 

@@ -395,6 +395,7 @@ AI doesn't create your engineering culture. It amplifies it. A team with strong 
 | Resource | What it covers |
 |---|---|
 | [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) | Companion essay: why the sycophancy and ego risks run deeper than habits, and how zen practices build structural resistance |
+| [The Dojo After the Automation](../philosophy/the-dojo-after-the-automation.md) | Reframes the new skills here as survival, not career advice — what happens to humans when the execution layer automates |
 | [The Meta-Development Loop](the-meta-development-loop.md) | The engineering pattern behind building AI tools that reshape AI workflows — gap → tool → application → feedback |
 | [AI-Assisted Development Workflows](ai-assisted-development-workflows.md) | Practical patterns for using AI effectively in daily engineering work |
 | [Using AI Outside Your Expertise](ai-for-unfamiliar-domains.md) | A case study demonstrating these skills in action (the siren GIF example) |

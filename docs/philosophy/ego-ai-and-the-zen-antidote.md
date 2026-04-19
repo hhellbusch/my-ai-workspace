@@ -198,6 +198,7 @@ These are open threads, not resolved objections. The essay will evolve as the au
 | [Using AI Outside Your Expertise](../ai-engineering/ai-for-unfamiliar-domains.md) | Case study of working in unfamiliar domains, where shoshin is forced rather than chosen |
 | [Adversarial Review as a Meta-Development Pattern](../case-studies/adversarial-review-meta-development.md) | Case study: how this essay catalyzed the sparring system — and became its first target |
 | [Debugging Your AI Assistant's Judgment](../case-studies/debugging-ai-judgment.md) | Case study: non-attachment applied to workflow design — zero-base evaluation as shoshin for project management |
+| [The Dojo After the Automation](the-dojo-after-the-automation.md) | AI reinforces the posture you bring — if that posture is "execute without thinking," AI accelerates it into obsolescence |
 
 ---
 
