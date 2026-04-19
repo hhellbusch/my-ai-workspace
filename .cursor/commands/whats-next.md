@@ -15,7 +15,22 @@ Create a comprehensive, detailed handoff document that captures all context from
 
 **PRIORITY: Comprehensive detail and precision over brevity.** The goal is to enable someone (or a fresh Claude instance) to pick up exactly where you left off with zero information loss.
 
-### Step 0: Read the project backlog
+### Step 0: Evaluate whether a handoff is needed
+
+Before creating anything, check whether the session's work is already fully persisted:
+
+1. Read `BACKLOG.md` — are all completed items logged in Done? Are new ideas captured?
+2. Check `git status` and `git log --oneline -5` — is the working tree clean? Are all changes committed?
+3. Review any `.planning/` files touched this session — are they up to date?
+
+**If all work is committed, the backlog is current, and there's no in-flight state** (no half-finished task, no pending decision, no context the next session needs that isn't in a committed file), then:
+- Tell the user: "This session's work is fully persisted in committed artifacts. No handoff needed — `/start` will pick up everything from the backlog and git log."
+- If a stale `whats-next.md` exists from a previous session, ask: "There's an old handoff file. Want me to delete it since it's outdated?"
+- **Stop here.** Don't create a handoff for handoff's sake.
+
+**If there is genuine in-flight state** — an unfinished task, a decision that needs to be made, context that only exists in the conversation — proceed to Step 0.5.
+
+### Step 0.5: Read the project backlog
 
 Read `BACKLOG.md` from the repo root. Include a **Project Backlog Snapshot** section in the handoff that captures:
 - All **In Progress** items (title + context)

@@ -26,21 +26,9 @@ Run this at the beginning of a new session, or whenever you need to re-orient.
 
 <process>
 
-### Step 1: Check for handoff
+### Step 1: Backlog snapshot
 
-If `whats-next.md` exists in the repo root:
-1. Read it in full
-2. Present a summary: what was being worked on, what remains, any blockers or decisions pending
-3. Ask: "There's a handoff from a previous session. Want to pick up where you left off?"
-
-If a `.continue-here*.md` file exists in any `.planning/` subdirectory:
-1. Read it
-2. Present: which project, which phase, what was in progress
-3. Ask: "There's a planning handoff for [project]. Want to resume?"
-
-### Step 2: Backlog snapshot
-
-Read `BACKLOG.md` and present:
+Read `BACKLOG.md` and present the project-level context first — this is the ground truth that any handoff or continuity suggestion should be evaluated against.
 
 ```
 ## Where Things Stand
@@ -60,6 +48,21 @@ Read `BACKLOG.md` and present:
 ```
 
 For the review coverage line, do a quick count: `rg -l "^  status: reviewed" --glob "*.md"` for reviewed files vs. total markdown files (excluding `.git/`). One line is enough — `/audit` has the detailed breakdown.
+
+### Step 2: Check for handoff
+
+If `whats-next.md` exists in the repo root:
+1. Check staleness: run `stat -c %Y whats-next.md` and compare against the timestamp of the most recent commit (`git log -1 --format=%ct`). If the handoff is older than the most recent commit, flag it:
+   - "There's a handoff from a previous session, but commits have been made since it was written. The handoff may be stale — read it with that in mind."
+2. Read it in full
+3. Present a summary: what was being worked on, what remains, any blockers or decisions pending
+4. Cross-reference against the backlog snapshot from Step 1. If the handoff references work that's now in Done, or if the backlog has changed significantly, note the discrepancy.
+5. Ask: "There's a handoff from a previous session. Want to pick up where you left off, or start fresh from the backlog?"
+
+If a `.continue-here*.md` file exists in any `.planning/` subdirectory:
+1. Read it
+2. Present: which project, which phase, what was in progress
+3. Ask: "There's a planning handoff for [project]. Want to resume?"
 
 ### Step 2.5: Fresh-eyes check (shoshin)
 
@@ -119,8 +122,8 @@ What would you like to work on? Pick a number or tell me something else.
 </process>
 
 <success_criteria>
-- Handoff files detected and summarized if they exist
-- Backlog state presented clearly
+- Backlog state presented first — project-level context before session-level handoffs
+- Handoff files detected, staleness-checked, and cross-referenced against backlog
 - Brief alignment checked — drift surfaced if present
 - Recent activity summarized from git log
 - Planning project status checked
