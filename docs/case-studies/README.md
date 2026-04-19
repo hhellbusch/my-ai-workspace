@@ -34,18 +34,20 @@ Documented examples of meta-development patterns, workflow decisions, and AI-ass
 
 10. `failure` **[When the Sparring Partner Shapes the Fighter](spar-distortion.md)** — The spar that generated the essay also distorted its framing — oppositional structure when the author's position was extension. The same tool that catches bias created it. Self-spar caught the mismatch; the fix was reframing from "I disagree" to "I agree AND."
 
+11. `failure` **[When How-To Instructions Outlive the Interface](decayed-how-to.md)** — AI described a YouTube UI step confidently from training data; the author couldn't find the button. Distinct from fabricated references (invented vs. decayed); same root — AI asserting time-sensitive information without flagging it can't verify currency. Fix: route around the UI dependency entirely using the transcript API.
+
 ## Workflow and Process Decisions
 
-11. `workflow` **[From Conversation to Essay in One Session](conversation-to-essay.md)** — A single conversational observation turned into a published essay with source provenance and adversarial review in one session. Demonstrates the full write-challenge-revise cycle and how project infrastructure compounds.
+12. `workflow` **[From Conversation to Essay in One Session](conversation-to-essay.md)** — A single conversational observation turned into a published essay with source provenance and adversarial review in one session. Demonstrates the full write-challenge-revise cycle and how project infrastructure compounds.
 
-12. `workflow` **[Choosing Scripts Over Services](choosing-scripts-over-services.md)** — MCP server vs. Python script for YouTube transcripts. The simpler tool won because it fit the file-based research workflow without adaptation. Demonstrates problem decomposition and workflow-fit thinking.
+13. `workflow` **[Choosing Scripts Over Services](choosing-scripts-over-services.md)** — MCP server vs. Python script for YouTube transcripts. The simpler tool won because it fit the file-based research workflow without adaptation. Demonstrates problem decomposition and workflow-fit thinking.
 
-13. `workflow` **[How AI Handles Evolving Creative Scope Across Sessions](evolving-creative-scope.md)** — A project broadened mid-session as the user's research expanded. Documents how scope changes cascade through planning documents, what conventions help maintain coherence, and what's still missing.
+14. `workflow` **[How AI Handles Evolving Creative Scope Across Sessions](evolving-creative-scope.md)** — A project broadened mid-session as the user's research expanded. Documents how scope changes cascade through planning documents, what conventions help maintain coherence, and what's still missing.
 
-14. `workflow` **[When the Safety Net Is Too Heavy to Use](heavy-safety-nets.md)** — A pre-commit review requiring 11 steps for every commit got skipped for small changes, silently invalidating a reviewed file. Fix: scaled review depth, three-layer staleness detection, SHA-based "diff since last review."
+15. `workflow` **[When the Safety Net Is Too Heavy to Use](heavy-safety-nets.md)** — A pre-commit review requiring 11 steps for every commit got skipped for small changes, silently invalidating a reviewed file. Fix: scaled review depth, three-layer staleness detection, SHA-based "diff since last review."
 
-15. `workflow` **[The Landscape Pass — Assess All Threads Before Drafting Any](landscape-before-depth.md)** — A 16-thread creative project had research ready and a drafting urge. Assessing all threads first revealed a structural contradiction between two threads, a 20/80 practitioner-to-research ratio, and merge candidates invisible from inside any single thread.
+16. `workflow` **[The Landscape Pass — Assess All Threads Before Drafting Any](landscape-before-depth.md)** — A 16-thread creative project had research ready and a drafting urge. Assessing all threads first revealed a structural contradiction between two threads, a 20/80 practitioner-to-research ratio, and merge candidates invisible from inside any single thread.
 
-16. `workflow` **[What the Corpus Sees That the Document Can't](corpus-level-spar.md)** — Sparring the full essay collection simultaneously caught scope overclaims, conditional universals, and framing drift that per-document review had missed. Documents can be individually coherent while collectively misleading.
+17. `workflow` **[What the Corpus Sees That the Document Can't](corpus-level-spar.md)** — Sparring the full essay collection simultaneously caught scope overclaims, conditional universals, and framing drift that per-document review had missed. Documents can be individually coherent while collectively misleading.
 
-17. `workflow` **[When a Spar Argument Outgrows Its Essay](spar-to-essay-pipeline.md)** — A single adversarial argument (#9) escalated from counter-position through voice inputs to a new thesis, a new thread, and a fully drafted essay in one session. Spar as generative pressure, not just quality gate.
+18. `workflow` **[When a Spar Argument Outgrows Its Essay](spar-to-essay-pipeline.md)** — A single adversarial argument (#9) escalated from counter-position through voice inputs to a new thesis, a new thread, and a fully drafted essay in one session. Spar as generative pressure, not just quality gate.
