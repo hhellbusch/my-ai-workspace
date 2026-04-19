@@ -256,3 +256,9 @@ New archival batches are prepended below (newest batch first).
 - **Context:** Built `/review` (pre-commit quality gate), `/audit` (content health check), `pre-commit-review` rule (enforcement), and `cross-linking` rule (cross-reference maintenance). First audit run caught 6 registry drift issues.
 - **Links:** `.cursor/commands/review.md`, `.cursor/commands/audit.md`, `.cursor/rules/pre-commit-review.md`, `.cursor/rules/cross-linking.md`
 - **Completed:** 2026-04-17
+
+### Case study: fabricated URL in the sycophancy section
+- **Product:** docs
+- **Context:** AI fabricated a plausible Anthropic URL while defining sycophancy, demonstrating a related failure mode in the same paragraph. Documented as a case study tracing the immediate fix (corrected URL) and systemic fix (external URL verification rule and /review check).
+- **Links:** `docs/case-studies/fabricated-references.md`, `.cursor/rules/cross-linking.md`, `.cursor/commands/review.md`
+- **Completed:** 2026-04-17

@@ -292,6 +292,47 @@ Most organizations pretend to invest in learning. Protected time exists on paper
 
 ---
 
+## 21. The Amplification Line — When Does the DA Help You Grow and When Does It Stop You?
+
+Miessler's DA thesis is compelling. But it sidesteps a question the dojo tradition takes seriously: some forms of growth require the practitioner to do the hard thing, not have it done for them. The kata trains you *through* execution — delegation doesn't just move the task, it forecloses the developmental path that task represented. Where is the line between amplification (doing more of what you already know how to do) and substitution (bypassing the thing that would have developed you)?
+
+**Three specific tensions from the DA model:**
+
+**1. Optimization vs. earned capability**
+The DA's prime directive is to close the gap between current state and ideal state as efficiently as possible. But the dojo tradition holds that efficiency is often the enemy of development. Inoue's "if kihon can do, any kata can do" — the foundation built through thousands of repetitions — cannot be delegated. Rika's 7-year journey was not an obstacle to mastery; it *was* mastery. If the DA had optimized her training schedule, would the result have been the same? The question isn't rhetorical: there's a real line between tasks that develop you through doing and tasks you can delegate without developmental cost. Where is it?
+
+**2. Instrumented vs. trained awareness**
+Miessler describes a DA that monitors heartbeat, tone of voice, workout frequency, relationship health — an external awareness layer that aggregates and surfaces patterns about your own life. Zanshin (remaining awareness) and mushin (no-mind) in the martial arts tradition are *internal* — developed through practice, not measurement. The practitioner learns to notice more by training their perception, not by instrumenting themselves. Are these two models of awareness complementary or competing? Can external instrumentation develop internal perception, or does it substitute for the practice of developing that perception?
+
+**3. Data richness vs. relational knowing**
+Miessler claims the DA will "know you better than your significant others." This conflates two different kinds of knowing: data-rich information about a person (behavioral patterns, preferences, health metrics, stated goals) and the kind of knowing built through shared practice — showing up imperfectly together, the relationship forged through difficulty, mutual presence over years. The dojo tradition is explicit: the relationship between teacher and student isn't built through observation; it's built through shared training. What the DA knows is extensive; what a training partner who has faced you across a hundred sparring sessions knows is different in kind.
+
+### Why This Isn't a Refutation
+
+This thread isn't arguing against the DA thesis. Miessler *is* a practitioner who grows through building his system. The pi upgrade skill, shown running in the video, is the meta-development loop in production — the system learns alongside him. The thread's question is more specific: are there categories of task where delegation forecloses development, and if so, can you identify them in advance? This is the line the practitioner needs to be able to draw.
+
+### Connections
+
+- **Thread 20 (The Dojo After the Automation):** That thread asks who builds the humans ready for Human 3.0. This thread asks: can the DA inadvertently reduce the number of humans who are ready, if it substitutes for the developmental friction that produced them?
+- **Miessler's Single DA Thesis** (source): The video that generated this thread. Assessment and full transcript in `research/miessler-single-da-thesis/`.
+- **PAI library entry:** The Algorithm's outer loop (current → ideal state) as the DA's operating principle.
+- **The Meta-Development Loop:** The pi upgrade skill as a case study — is that particular delegation one that develops Miessler, or substitutes for development he would have otherwise done?
+
+### Open Questions
+
+- Is there a principled way to distinguish "delegate this, it doesn't develop you" from "do this yourself, the doing is the point"?
+- Does the answer depend on whether you've already built the foundational capacity? (e.g., delegate once you've mastered; practice when you haven't)
+- What would the dojo tradition say about a student who used a DA to prepare for grading? Is there a difference between studying with a training partner and having the DA generate practice scenarios?
+- Is Miessler himself an example of the good case — practitioner who grows through building — or a cautionary tale of optimization that feels like growth?
+
+### Voice Prompts (for the Author)
+
+- Have you delegated something to an AI tool and later noticed you couldn't do it yourself anymore? What was it?
+- Is there a category of work you deliberately *don't* delegate — because the doing is the development? What makes that category different?
+- In karate: what can a student delegate and still develop? What can they never delegate?
+
+---
+
 ## Mapping to Planned Essays
 
 | Thread | Planned essay(s) | Notes |
@@ -316,3 +357,4 @@ Most organizations pretend to invest in learning. Protected time exists on paper
 | 18. Shoshin's Shadow | Dojo/Ways of Working, Ego/AI essay | Confidence calibration: too much humility, too much ego, AI sycophancy as failure mode 3 |
 | 19. The Full Cup | Bridge: Philosophy ↔ AI-Engineering | Organizational bandwidth as the real barrier to learning; the shoshin × capacity matrix; AI as flood or drain |
 | 20. The Dojo After the Automation | Bridge: Philosophy ↔ AI-Engineering | AI will replace execution; the question is whether humans are prepared for what comes after. The dojo as the thing that determines liberation vs. disposal |
+| 21. The Amplification Line | Bridge: Philosophy ↔ AI-Engineering | When does the DA amplify growth and when does it foreclose it? Delegation, instrumented vs. trained awareness, data-rich vs. relationally-known. |

@@ -8,6 +8,8 @@
 - **Published:** July 2025, updated April 2026
 - **Implementation:** Kai (Miessler's personal instance)
 
+**Context:** This entry describes the Pi/Kai architecture. For the philosophical and strategic rationale behind it — the 2016 DA thesis, the maturity model, the prime directive framing — see [We're All Building a Single Digital Assistant](daniel-miessler-single-da-thesis.md). Read that first if you want to understand *why* this architecture exists.
+
 ## About the Project
 
 PAI is an open-source blueprint for building a unified personal AI system. It emerged from Miessler's [Fabric](https://github.com/danielmiessler/fabric) project (40k+ stars, 200+ prompt patterns) and his broader mission to "upgrade humans and organizations using AI." Kai is his personal implementation — built primarily on Claude Code with TypeScript (76%), Python, and Go.

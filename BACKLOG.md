@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-18 (Dojo essay revision, spar-distortion case study)
+> Last updated: 2026-04-18 (Miessler DA thesis research pipeline, Thread 21, library entry)
 
 ## In Progress
 
@@ -197,6 +197,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 Rolling cap: at most **15** items stay here (newest first). Older completions live in `BACKLOG-ARCHIVE.md` (see `/backlog` command — **Done retention**). Git history remains authoritative.
 
+### Research: Miessler Single DA Thesis — transcript, full pipeline, Thread 21
+- **Product:** library / research / docs
+- **Context:** Fetched and fully analyzed Miessler's "We're All Building a Single Digital Assistant" (32 min, Unsupervised Learning). Ran complete research-and-analyze pipeline: proper directory structure (`research/miessler-single-da-thesis/`), manifest, transcript in `sources/`, batch findings (core thesis + workspace connections), assessment. Created library entry with confidence table and upstream cross-reference into PAI entry. Cross-linked into Dojo After the Automation essay (Sources + Related Reading). Added Thread 21 (The Amplification Line) to zen-karate threads — the question of when DA delegation amplifies vs. forecloses development. Also documented and remediated systematic skill compliance failures from the initial fetch session.
+- **Links:** `research/miessler-single-da-thesis/`, `library/daniel-miessler-single-da-thesis.md`, `library/catalog.md`, `docs/philosophy/the-dojo-after-the-automation.md`, `.planning/zen-karate/threads.md`
+- **Completed:** 2026-04-18
+
 ### Case study: spar-distortion — when the sparring partner shapes the fighter
 - **Product:** docs
 - **Context:** Self-spar (#13-18) caught that the Dojo After the Automation essay's oppositional framing was a distortion created by the spar-driven drafting process. Essay revised from "I disagree" to "I agree AND." Case study documents tool-induced bias: the same tool that catches bias created it. Labeled `failure` — adversarial energy absorbed into structure. Registered as case study #17 (failure) in case studies README and #19 in docs reading order.
@@ -279,12 +285,6 @@ Rolling cap: at most **15** items stay here (newest first). Older completions li
 - **Product:** docs
 - **Context:** AI agent removed the backlog archive system, another session restored it, and the first agent continued editing based on stale assumptions — overwriting the rolling cap and exceeding the item limit. Documented as a case study exploring anchoring on session memory vs. repository state.
 - **Links:** `docs/case-studies/stale-context-in-long-sessions.md`, `.cursor/rules/shoshin.md`, `BACKLOG.md`
-- **Completed:** 2026-04-17
-
-### Case study: fabricated URL in the sycophancy section
-- **Product:** docs
-- **Context:** AI fabricated a plausible Anthropic URL while defining sycophancy, demonstrating a related failure mode in the same paragraph. Documented as a case study tracing the immediate fix (corrected URL) and systemic fix (external URL verification rule and /review check).
-- **Links:** `docs/case-studies/fabricated-references.md`, `.cursor/rules/cross-linking.md`, `.cursor/commands/review.md`
 - **Completed:** 2026-04-17
 
 

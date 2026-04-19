@@ -138,6 +138,7 @@ These gaps are named, not concealed. The evidence base will build over time. The
 |---|---|
 | [Daniel Miessler — AI WILL Replace Knowledge Workers](https://www.youtube.com/watch?v=g3SrYIUv-OE) ([library entry](../../library/daniel-miessler-ai-replace-knowledge-workers.md)) | The shared diagnosis and Human 3.0 vision: organizational chaos, expertise as articulation gap, the Lattice, capability stack |
 | [Daniel Miessler — Personal AI Infrastructure (PAI)](https://danielmiessler.com/blog/personal-ai-infrastructure) | The co-development loop in practice: seven components, The Algorithm, three-tier memory — Miessler as practitioner |
+| [Daniel Miessler — We're All Building a Single Digital Assistant](https://www.youtube.com/watch?v=uUForkn00mk) ([library entry](../../library/daniel-miessler-single-da-thesis.md)) | "The tech is not the point. The human is the point." — Miessler's own statement of the Human 3.0 direction; the DA thesis that motivates the Pi/Kai architecture; the prime directive framing (current state → ideal state) |
 | [The Full Cup — Why Nobody Can Learn When the Tap Is Always On](the-full-cup.md) | Organizational bandwidth as learning barrier — the predecessor diagnosis |
 | [The Full Cup — Practitioner's Guide](the-full-cup-practitioners-guide.md) | The intervention playbook, including "build yourself out of the job" |
 | [Ego, AI, and the Zen Antidote](ego-ai-and-the-zen-antidote.md) | AI reinforces the posture you bring — the no-shoshin column |
@@ -154,6 +155,7 @@ These gaps are named, not concealed. The evidence base will build over time. The
 | [AI-Assisted Development Workflows](../ai-engineering/ai-assisted-development-workflows.md) | Practical patterns where human and system develop together |
 | [Sparring Notes — Full Cup + Miessler (#8-12)](../../research/zen-karate-philosophy/sparring-notes.md#8-the-essay-diagnoses-a-systems-problem-but-prescribes-a-heroic-individual) | The adversarial review that generated this essay's thesis |
 | [When a Spar Argument Outgrows Its Essay](../case-studies/spar-to-essay-pipeline.md) | Case study documenting this essay's origin — spar #9 → Thesis D → Thread 20 → draft |
+| [Daniel Miessler — Single DA Thesis](../../library/daniel-miessler-single-da-thesis.md) | Assessed library entry: core claims, confidence levels, tensions with the philosophy track |
 
 ---
 
