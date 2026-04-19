@@ -149,12 +149,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `library/`
 - **Added:** 2026-04-17
 
-### Session boundary anchoring — /start and /whats-next improvements
-- **Product:** meta
-- **Context:** `/start` checks for `whats-next.md` as Step 1 — before the backlog, before planning status — and asks "Want to pick up where you left off?" This gives the previous session's framing structural primacy, anchoring the next session on continuity rather than first-principles priority assessment. Same mechanism as the prioritization bias problem: AI writes the handoff, AI reads the handoff, AI weights it highly. Three identified fixes: (1) reorder `/start` to show backlog first, handoff second (context before continuity); (2) make `/whats-next` conditional — only create handoffs when there's genuinely in-flight state not captured in committed artifacts; (3) add a staleness/decay check for old handoffs. Related concern: reflexive handoff creation adds noise when a session's work is fully persisted in `.planning/` and `BACKLOG.md`.
-- **Links:** `.cursor/commands/start.md`, `.cursor/commands/whats-next.md`, `.cursor/rules/session-awareness.md`
-- **Added:** 2026-04-17
-
 ### Zen-karate concept glossary
 - **Product:** docs
 - **Context:** Shared glossary of Japanese/Zen terms (mushin, zanshin, fudoshin, shoshin, kata, kihon, kumite, senpai/kohai, dojo kun, etc.) extracted after Essay 1 is drafted. Keeps definitions consistent across the series so later essays don't re-explain foundational vocabulary.
@@ -213,6 +207,12 @@ Rolling cap: at most **15** items stay here (newest first). Older completions li
 - **Product:** library
 - **Context:** Full seven-component architecture breakdown, The Algorithm's two-loop structure, convergent patterns with this workspace (skills, hooks, memory, review), key divergences (rating/signal capture, personality, formalized algorithm), mutual learning opportunities. Catalog updated with enriched link.
 - **Links:** `library/daniel-miessler-pai.md`, `library/catalog.md`
+- **Completed:** 2026-04-18
+
+### Session boundary anchoring — /start and /whats-next improvements
+- **Product:** meta
+- **Context:** Three fixes implemented: (1) `/start` reordered — backlog snapshot is now Step 1 before handoff check (Step 2), giving project-level context structural primacy over session-level continuity; (2) `/whats-next` now has a Step 0 gate that evaluates whether a handoff is genuinely needed — if work is fully committed and backlog is current, it skips handoff creation and offers to clean up stale files; (3) handoff staleness check — `/start` compares `whats-next.md` mtime against latest commit and cross-references against the backlog. Session-awareness rule updated with staleness warning.
+- **Links:** `.cursor/commands/start.md`, `.cursor/commands/whats-next.md`, `.cursor/rules/session-awareness.md`
 - **Completed:** 2026-04-18
 
 ### Cross-link Dojo After the Automation into four essays
@@ -285,12 +285,6 @@ Rolling cap: at most **15** items stay here (newest first). Older completions li
 - **Product:** docs
 - **Context:** Rewrote AI-DISCLOSURE.md from 270-line checklist to honest 50-line disclosure with three review tiers and validation types. Updated README notice, STYLE.md footer template, .cursorrules.
 - **Links:** `AI-DISCLOSURE.md`, `README.md`
-- **Completed:** 2026-04-18
-
-### Biographical content tracking — `voice-approved` validation type
-- **Product:** meta
-- **Context:** Added `voice-approved` as an elevated-priority validation type for content that speaks in the author's voice. Integrated across the full workflow: generation guidance (review-tracking rule, STYLE.md), pre-commit detection (`/review` biographical scan), content audit (`/audit` Layer 5b), validation command (`/validate` prompts for voice-approved), and disclosure policy (`AI-DISCLOSURE.md`). AI is now instructed to minimize unsolicited biographical content and flag it when generated.
-- **Links:** `.cursor/rules/review-tracking.md`, `.cursor/commands/review.md`, `.cursor/commands/audit.md`, `.cursor/commands/validate.md`, `AI-DISCLOSURE.md`, `.planning/zen-karate/STYLE.md`
 - **Completed:** 2026-04-18
 
 

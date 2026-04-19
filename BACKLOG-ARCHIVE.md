@@ -6,6 +6,16 @@ New archival batches are prepended below (newest batch first).
 
 ---
 
+## Archived 2026-04-18 (1 item — batch 9)
+
+### Biographical content tracking — `voice-approved` validation type
+- **Product:** meta
+- **Context:** Added `voice-approved` as an elevated-priority validation type for content that speaks in the author's voice. Integrated across the full workflow: generation guidance (review-tracking rule, STYLE.md), pre-commit detection (`/review` biographical scan), content audit (`/audit` Layer 5b), validation command (`/validate` prompts for voice-approved), and disclosure policy (`AI-DISCLOSURE.md`). AI is now instructed to minimize unsolicited biographical content and flag it when generated.
+- **Links:** `.cursor/rules/review-tracking.md`, `.cursor/commands/review.md`, `.cursor/commands/audit.md`, `.cursor/commands/validate.md`, `AI-DISCLOSURE.md`, `.planning/zen-karate/STYLE.md`
+- **Completed:** 2026-04-18
+
+---
+
 ## Archived 2026-04-18 (3 items — batch 8)
 
 ### Review validation tracking system
