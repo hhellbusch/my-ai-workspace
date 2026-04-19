@@ -17,13 +17,11 @@ It doesn't replace the research process. It follows it — just without the manu
 
 ## Just Want to Try It Now?
 
-No setup required. YouTube provides transcripts for most videos — you just need to know where to find them:
-
-1. **YouTube's built-in transcript** — On any video page, click the `...` (more options) menu below the video and select "Show transcript." A panel opens on the right with timestamped text you can copy. Works in any browser, no account required.
-
-2. **youtubetranscript.com** — Paste the YouTube URL into the site and get the full transcript as plain text. Nothing to install.
+The fastest no-setup path is **youtubetranscript.com** — paste a YouTube URL into the site and get the full transcript as plain text. Nothing to install, no account required.
 
 Once you have the text, paste it into whichever AI chat tool you use and ask for a summary, key themes, or specific questions. For a one-off video, this is the fastest path.
+
+For a more integrated or repeatable approach, YouTube provides a public API for transcripts. The `fetch-transcript.py` script in this workflow uses the [`youtube-transcript-api`](https://github.com/jdepoix/youtube-transcript-api) Python library, which calls that API directly — no browser, no UI, just a URL in and a text file out. This is what makes bulk processing possible: hand it a list of URLs and it fetches all of them automatically.
 
 ### What if the podcast or talk isn't on YouTube?
 
