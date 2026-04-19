@@ -56,11 +56,35 @@ Files with biographical content that have only `read` validation (not `voice-app
 
 ## Default Assumption
 
-Files without a `review:` block are assumed to be **direction-reviewed** — the author guided creation but has not read the full output. See `AI-DISCLOSURE.md` for the full policy.
+**New generated files** carry an explicit `status: unreviewed` frontmatter block (added by the agent at creation time — see Agent Behavior below).
+
+**Legacy files without a `review:` block** (created before this convention was adopted) are assumed to be **direction-reviewed** — the author guided creation but has not read the full output. See `AI-DISCLOSURE.md` for the full policy.
 
 ## Agent Behavior
 
-- **Do NOT add `review:` frontmatter when generating new files.** Review status is the author's responsibility, applied via `/validate` or manually.
+- **Add `status: unreviewed` frontmatter when generating new content files.** Every new `.md` file in `docs/`, `library/`, `research/`, or product directories (`{product}/examples/`, `{product}/troubleshooting/`) should open with a `review:` block. Do not add it to meta-system files (`.cursor/commands/`, `.cursor/skills/`, `.cursor/rules/`) that manage their own frontmatter schema.
+
+  Use a `notes` field that names the specific verifications the file needs, matched to its content category:
+
+  ```yaml
+  ---
+  review:
+    status: unreviewed
+    notes: "AI-generated draft. Needs read and fact-checked before sharing."
+  ---
+  ```
+
+  Content-category defaults for the `notes` field:
+
+  | Category | Default notes text |
+  |---|---|
+  | Essays / case studies (`docs/**`) | `"AI-generated draft. Needs read and fact-checked before sharing."` |
+  | DevOps examples (`{product}/examples/**`) | `"AI-generated. Needs read and tested before use."` |
+  | Troubleshooting guides (`{product}/troubleshooting/**`) | `"AI-generated. Needs read and commands-verified before use."` |
+  | Research / library (`research/**`, `library/**`) | `"AI-generated summary. Needs read and sources-checked before citing."` |
+
+  Add specifics when known: e.g., `"Power draw figures and LiteLLM setup steps need hands-on verification."` is more useful than the category default.
+
 - **Do NOT modify existing `review:` blocks** unless the user explicitly asks.
 - When the `/validate` command updates a file to `status: reviewed`, offer to update the AI disclosure footer if one exists (change "has not been fully reviewed" to "has been reviewed by the author").
 - **Minimize unsolicited biographical content.** When generating essays or documentation, avoid fabricating biographical claims about the author (professional titles, experience claims, training history, personal opinions). If personal voice is needed and the author hasn't provided the specific detail, use general framing ("a practitioner might notice...") rather than inventing first-person claims. When biographical content is necessary, flag it explicitly so the author can review it.

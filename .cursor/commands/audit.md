@@ -116,9 +116,13 @@ Reference: `.cursor/rules/review-tracking.md` for the frontmatter convention and
 ### 5a. Coverage by Category
 
 For each content category, count:
-- Files with `review:` frontmatter (reviewed)
-- Files without `review:` frontmatter (assumed direction-reviewed)
+- Files with `status: reviewed`
+- Files with `status: unreviewed` (explicit — new files generated after the convention change)
+- Files with `status: direction-reviewed`
+- Files without `review:` frontmatter (legacy — assumed direction-reviewed; created before unreviewed-by-default was adopted)
 - Validation types present (how many `read`, `tested`, `fact-checked`, etc.)
+
+Surface `status: unreviewed` files prominently — these are the active review queue, distinct from legacy files that may never have been intended for deep review.
 
 Categories:
 - **Essays**: `docs/**/*.md` (excluding README.md files)

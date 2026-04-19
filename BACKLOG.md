@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-19 (Enkamp × Shi Heng Yi mastery interview — transcript, analysis, library entry)
+> Last updated: 2026-04-19 (local LLM guide expanded: complexity analysis, PAI/Kai section, guide scope split; agentic AI guide added to Up Next)
 
 ## In Progress
 
@@ -35,6 +35,18 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 **Definition of done:** PR opened against `redhat-cop/helm-charts`, checks green, reviewer feedback incorporated; optional follow-up — bump example comments in this workspace that pin “requires operators-installer >= 3.5.0” once upstream chart is released.
 
 ## Up Next
+
+### Guide: agentic personal AI infrastructure (PAI/Kai pattern)
+- **Product:** docs
+- **Context:** Companion guide to `local-llm-setup.md` for the power-user audience: model and hardware selection for PAI/Kai-style autonomous agent architectures, memory systems (three-tier: session/work/learning), scaffolding design for The Algorithm's two-loop structure. Explicitly scoped to local or hybrid execution (not just API). Draws from [`research/pai-kai-paude/`](research/pai-kai-paude/), [`library/daniel-miessler-pai.md`](library/daniel-miessler-pai.md), and the Kai GitHub. Blocked on the Explore PAI/Kai backlog item making more progress — don't draft until there's hands-on familiarity with the architecture.
+- **Links:** `docs/ai-engineering/local-llm-setup.md`, `library/daniel-miessler-pai.md`, `research/pai-kai-paude/`
+- **Added:** 2026-04-19
+
+### Local LLM: electricity measurement and case studies (ACTIVE TRACK)
+- **Product:** docs / meta / research
+- **Context:** Initial setup guide drafted at `docs/ai-engineering/local-llm-setup.md` covering Cursor (Ollama/LM Studio via OpenAI-compatible endpoint) and Claude Code (LiteLLM proxy layer). **What remains:** (1) author documents their actual monitoring hardware and data export setup; (2) run defined workloads against a local model, capture the circuit delta vs. baseline, compare against equivalent API token cost; (3) write case studies as data accumulates — first candidate is a 7B–8B coding model on consumer GPU for a defined task benchmark. Feeds the economics essay idea (real kWh data vs. the Braincuber 87%/API-wins analysis). The existing 12+ months of circuit-level data is a unique anchor — most "self-hosting cost" analyses use estimated TDP rather than measured draw.
+- **Links:** `docs/ai-engineering/local-llm-setup.md`, `research/openshift-ai-llm-deployment/sources/ref-61.md`, `docs/ai-engineering/openshift-ai-llm-deployment-summary.md`
+- **Added:** 2026-04-19
 
 ### Zen-karate personal knowledge base — experiential content (CRITICAL PATH)
 - **Product:** docs
@@ -75,6 +87,13 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Added:** 2026-04-10
 
 ## Ideas
+
+### Formalize draft status in review-tracking frontmatter
+- **Product:** meta
+- **Status:** not sure if wanted yet
+- **Context:** Review frontmatter currently tracks verification status (`unreviewed`, `direction-reviewed`, `reviewed`) but has no boolean for document completeness. "Working draft" only appears as freetext in the `notes` field — readable by humans, invisible to `/audit` and the agent. Adding `draft: true` would make it queryable: `/audit` could separate "actively in progress" from "stable but unverified." Change is small: one field added to the frontmatter format in `.cursor/rules/review-tracking.md`, one category added to `/audit` Layer 5 scan. Evaluate when several working drafts are in flight simultaneously and the current notes-based approach becomes insufficient.
+- **Links:** `.cursor/rules/review-tracking.md`, `.cursor/commands/audit.md`
+- **Added:** 2026-04-19
 
 ### Case study: the frozen clock — LLM defaults to stale current-year
 - **Product:** docs
@@ -190,6 +209,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Context:** [Paude](https://github.com/bbrowning/paude) runs AI coding agents (Claude Code, Cursor CLI, Gemini CLI, OpenClaw) in secure containers with git-based sync. Could strengthen the meta-prompting system by enabling isolated, parallelizable agent sessions — e.g., running research, drafting, and review agents concurrently in containers with `--yolo` safely enabled, or orchestrating fire-and-forget agent tasks against this workspace. Worth exploring whether its orchestration model (harvest, PRs, multi-session) maps to the multi-stage meta-prompt pipelines already in use here. Also explore intersection with PAI/Kai — Paude provides the containerized execution environment; PAI provides the scaffolding architecture. Could Paude containers run PAI-style agents with structured memory and learning loops?
 - **Links:** https://github.com/bbrowning/paude, `.planning/paude-integration/`
 - **Added:** 2026-04-17
+
+### Repo reorganization: move DevOps technical samples into a subfolder
+- **Product:** meta
+- **Context:** As the audience for this repo widens (peers, non-technical collaborators, general readers), the current flat top-level structure mixes operational DevOps reference material (argo, ansible, ocp, rhacm, vault, coreos) with general-audience content (docs/, library/, research/). Moving the technical samples under a single folder (e.g., `devops/` or `technical/`) would make the repo navigable for non-technical visitors without breaking the value for technical peers. Considerations: (1) all internal cross-links in docs and README would need updating; (2) git history is preserved with `git mv`; (3) `.cursorrules` references would need auditing. Evaluate whether the README becomes the landing page for all audiences or splits into audience-specific entry points.
+- **Links:** `README.md`, `.cursorrules`, `docs/`
+- **Added:** 2026-04-19
 
 ### Expand OCP troubleshooting guides
 - **Product:** ocp

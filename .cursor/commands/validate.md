@@ -13,7 +13,7 @@ allowed-tools:
 # Validate — Mark Content as Human-Reviewed
 
 <objective>
-Record that the author has reviewed and validated specific files, tracking what kind of validation was performed and when. Updates YAML frontmatter in the target files. This is how review status grows organically — files start as direction-reviewed (no metadata) and gain validation records as the author works through them.
+Record that the author has reviewed and validated specific files, tracking what kind of validation was performed and when. Updates YAML frontmatter in the target files. This is how review status grows organically — new files start as explicit `unreviewed`; legacy files without frontmatter are treated as direction-reviewed. Both paths converge here: the author works through them, validation types are recorded, and status advances to `reviewed`.
 </objective>
 
 <context>
@@ -61,7 +61,7 @@ Show the user what will be updated:
 Recording at: abc1234 (current HEAD)
 
 ### file-path.md
-- Current status: [no metadata / direction-reviewed / reviewed]
+- Current status: [unreviewed / no metadata (legacy direction-reviewed) / direction-reviewed / reviewed]
 - Adding: read (2026-04-18), commands-verified (2026-04-18)
 - New status: reviewed
 - Notes: "Verified on OCP 4.14"
