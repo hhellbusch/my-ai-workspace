@@ -50,6 +50,14 @@ Miessler's framing is explicitly automation-first and replacement-oriented ("the
 
 Around 20:56, Miessler uses meditation and thought-observation to argue that humans are more like LLMs than we think — thoughts emerge unpredictably, memory is unreliable, identity is discontinuous across sleep. This is the same territory as Shi Heng Yi's teachings on ego and thought-attachment, but drawn to the opposite conclusion: Shi Heng Yi says observe thoughts to gain freedom from them; Miessler says observe thoughts to realize you're not as different from AI as you think.
 
+**Author's response:** "For an untrained mind, often yes." Miessler treats the untrained mind as the fixed state of humanity. But the dojo, meditation, disciplined practice — these are technologies for training the mind to be less chaotic. The gap between untrained and trained is exactly where the practitioner works. Miessler is right about the default state. He's wrong that it's the permanent state.
+
+### The author's counter-position (from sparring)
+
+The same organizational dysfunction that Miessler diagnoses, the author also sees — and confirms from direct experience (including "minimum effort" workers and poor quality output). But the response is fundamentally different: where Miessler says "replace the execution layer," the author says "fix the loop so humans can be human in it." The dystopian concern: automation adopted without culture work discards the people the organization failed to develop. The thesis: AI deployed into a system that cares about its people becomes the most powerful tool for human development we've ever had.
+
+This counter-position was sparred adversarially — see [sparring notes](../research/zen-karate-philosophy/sparring-notes.md) arguments #8-12. Key unresolved challenge: the author's preferred future may require organizations to act against their economic self-interest (argument #9).
+
 ---
 
 *This content was created with AI assistance. See [AI-DISCLOSURE.md](../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

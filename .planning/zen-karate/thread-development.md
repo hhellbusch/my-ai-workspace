@@ -788,9 +788,24 @@ Improving from 20/80 toward 25/75. The user's recent inputs — single-tasking a
 
 4. **Bow at the door:** Likes the concept. Applying the dojo mindset — everything outside the room is left behind when you enter. The question remains: what's the professional ritual that actually achieves this?
 
+**Author's voice (from Miessler reaction, same session):**
+
+5. **AI makes automation dramatically easier — experienced firsthand.** Developing Ansible playbooks with AI assistance is a concrete example of the meta-development loop: AI didn't replace the practitioner writing playbooks — it made the practitioner dramatically more effective at building the automations that cut the tap for others.
+
+6. **Has seen the "minimum effort" workers and "shit for work" Miessler describes.** Confirms the organizational dysfunction is real. But the response to the same diagnosis is fundamentally different from Miessler's: "I want to try to find ways to get people to want to do better and continuously improve, learn, and have fun and be happy." The practitioner's goal isn't replacement — it's development.
+
+7. **The "can't learn to fish" honest limit.** Acknowledges some people can't or won't get there, for reasons not always within anyone's control. This is the bottom-right quadrant's hardest truth.
+
+8. **The dystopian concern — automation without culture.** If AI is adopted as Miessler suggests — replace the execution layer — without also fixing the culture, attitudes, and investment in people, "things will go even more dystopian." The Lattice without the dojo. Automation deployed as cost-cutting disguised as transformation. Organizations using AI to replace the humans they failed to develop.
+
+9. **The practitioner's counter-thesis to Miessler:** The answer to organizational dysfunction isn't to remove humans from the loop. It's to fix the loop so humans can be human in it. AI deployed into a system that doesn't care about its people will produce a system that discards its people faster. AI deployed into a system that does care becomes the most powerful tool for human development we've ever had.
+
+10. **"For an untrained mind, often yes."** Miessler's argument that human cognition is chaotic and unreliable treats the untrained mind as the fixed state. But that's the entire point of contemplative practice and the dojo — these are technologies for training the mind to be less chaotic. Miessler is right about the default state. He's wrong that it's the permanent state. The gap between the untrained and trained mind is exactly where the practitioner works.
+
 **Gaps (remaining):**
 - *Personal experience:* Core voice captured. Still needs: specific stories that make these patterns concrete (not just the pattern, but a moment). The Goal/Phoenix Project references need to be explicit about which strategies map — theory of constraints? WIP limits? The three ways?
 - *Logical:* The matrix needs testing against real cases. Is the shoshin axis really binary (open/closed), or is it a spectrum? Does "cutting off the tap" actually work, or does the organization just turn it back on? What happens when you're the one with the full cup?
+- *Miessler tension:* The essay needs to explicitly address the automation-first worldview and articulate why fixing the system for the people is a different (and the author believes better) answer to the same diagnosis.
 
 **Spar (from this session):**
 
