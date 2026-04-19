@@ -130,7 +130,7 @@ These gaps are named, not concealed. The evidence base will build over time. The
 
 | Source | What it provides |
 |---|---|
-| [Daniel Miessler — AI WILL Replace Knowledge Workers](../../library/daniel-miessler-ai-replace-knowledge-workers.md) | The counter-position: organizational chaos, expertise as articulation gap, the Lattice, Human 3.0 |
+| [Daniel Miessler — AI WILL Replace Knowledge Workers](https://www.youtube.com/watch?v=g3SrYIUv-OE) ([library entry](../../library/daniel-miessler-ai-replace-knowledge-workers.md)) | The counter-position: organizational chaos, expertise as articulation gap, the Lattice, Human 3.0 |
 | [Daniel Miessler — Personal AI Infrastructure (PAI)](https://danielmiessler.com/blog/personal-ai-infrastructure) | The system-side implementation: seven components, The Algorithm, three-tier memory, co-development in practice |
 | [The Full Cup — Why Nobody Can Learn When the Tap Is Always On](the-full-cup.md) | Organizational bandwidth as learning barrier — the predecessor diagnosis |
 | [The Full Cup — Practitioner's Guide](the-full-cup-practitioners-guide.md) | The intervention playbook, including "build yourself out of the job" |
