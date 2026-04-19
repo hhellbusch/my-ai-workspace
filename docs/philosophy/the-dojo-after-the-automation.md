@@ -47,33 +47,11 @@ The organizational consequence: the team that builds skills together develops th
 
 What the dojo produces is people who can create the next kata — not just perform the current one.
 
----
+There is a deeper layer. Miessler uses meditation to argue that humans are more like LLMs than we admit: sit down, watch your thoughts, and discover that the mind is noisy, reactive, and unreliable — pattern-matching engines producing outputs we retroactively claim as intentional. He's right about the untrained mind. The default state *is* chaotic and reactive. But that's the entire reason contemplative traditions and the dojo exist. The untrained state is the starting point, not the ceiling. The gap between the untrained and trained mind is exactly where the practitioner works.
 
-## The Trained Mind
-
-Peers have asked: "How are you always so calm?" They see the output of decades of practice without understanding the input. It looks like personality to them. It's not. It's the product of a specific upbringing and specific training — martial arts, meditation, disciplined practice of attention and composure. The practices were so internalized they didn't register as practices anymore. The fish doesn't know it's in water.
-
-Miessler uses meditation to make a different point: sit down, watch your thoughts, and discover that the mind is noisy, reactive, and unreliable. From that observation, he concludes that humans are more like LLMs than we admit — pattern-matching engines producing outputs we retroactively claim as intentional.
-
-He's right about the untrained mind. The default state *is* chaotic and reactive. That's not a rebuttal — that's the entire reason contemplative traditions and the dojo exist. The untrained state is the starting point, not the ceiling. The gap between the untrained and trained mind is exactly where the practitioner works. And that capacity — calmness under pressure, clarity in ambiguity, the ability to notice what the system is doing wrong before the metrics catch it — can't be articulated into a process for AI to follow. It's not a method. It's a capacity, built through years of practice, invisible to those who haven't done it, and irreducible to a skill file.
+The capacity that training produces — calmness under pressure, clarity in ambiguity, the ability to notice what the system is doing wrong before the metrics catch it — can't be articulated into a process for AI to follow. It's not a method. It's a capacity, built through years of practice, invisible to those who haven't done it, and irreducible to a skill file. People who have trained for decades carry it so naturally that others mistake it for personality. It isn't. It's the product of specific, sustained practice — the same kind of practice the dojo provides.
 
 This is what the dojo produces that the Lattice alone cannot: not procedures, but practitioners.
-
----
-
-## The Lip-Service Problem
-
-Here is the honest difficulty: most organizations will not build the dojo.
-
-They will say they value learning. Protected time will appear on the calendar. Learning goals will show up in quarterly reviews. And the first real deadline will override all of it. The learning budget will be the first thing cut when revenue dips. The "innovation day" will be quietly cancelled when the sprint is behind. This is lip service, and it is the norm.
-
-The outstanding organizations — the ones that genuinely allocate time, judge quarterly on continuous learning, create structural space for development — stand out precisely because they are rare. They produce disproportionate results. They retain people who could work anywhere. And they do this not because they're wealthy enough to afford the luxury of development, but because the development is what made them outstanding.
-
-But the essay's argument can't rest on "the good orgs do this." The question is what happens to the majority — the organizations that won't invest, that treat their people as execution capacity, and that will adopt AI as a way to reduce headcount rather than develop capability.
-
-The answer, honestly, is that some organizations will choose Future A. They will extract the knowledge, automate the execution, and reduce the workforce. The math will work in the short term. The people who were never developed will have nothing to offer when their execution value disappears. This is not hypothetical — it is the trajectory visible now in every industry where "AI transformation" is code for "cost reduction."
-
-The practitioner can't prevent this. What the practitioner can do is build the dojo wherever they have influence — one team, one organization, one practice at a time. And the people who trained in that dojo will be the ones ready for whatever comes after.
 
 ---
 
@@ -92,6 +70,22 @@ These aren't competing. They're the same loop viewed from different ends. Miessl
 An optimized system without a growing practitioner stagnates. It can only be as good as the judgment that last configured it. A growing practitioner without system capture loses compounding. Both sides of the loop are necessary. Neither is sufficient alone.
 
 The strongest version of the argument isn't "invest in people instead of AI." It's: **the most powerful AI systems are the ones that co-evolve with their operators.** The human trains the system. The system amplifies the human. The loop only works if both sides are developing. Cut the human development, and you cut the loop that makes the system better.
+
+---
+
+## The Lip-Service Problem
+
+Here is the honest difficulty: most organizations will not build the dojo.
+
+They will say they value learning. Protected time will appear on the calendar. Learning goals will show up in quarterly reviews. And the first real deadline will override all of it. The learning budget will be the first thing cut when revenue dips. The "innovation day" will be quietly cancelled when the sprint is behind. This is lip service, and it is the norm.
+
+The outstanding organizations — the ones that genuinely allocate time, judge quarterly on continuous learning, create structural space for development — stand out precisely because they are rare. They produce disproportionate results. They retain people who could work anywhere. And they do this not because they're wealthy enough to afford the luxury of development, but because the development is what made them outstanding.
+
+But the essay's argument can't rest on "the good orgs do this." The question is what happens to the majority — the organizations that won't invest, that treat their people as execution capacity, and that will adopt AI as a way to reduce headcount rather than develop capability.
+
+The answer, honestly, is that some organizations will choose Future A. They will extract the knowledge, automate the execution, and reduce the workforce. The math will work in the short term. The people who were never developed will have nothing to offer when their execution value disappears. This is not hypothetical — it is the trajectory visible now in every industry where "AI transformation" is code for "cost reduction."
+
+The practitioner can't prevent this. What the practitioner can do is build the dojo wherever they have influence — one team, one organization, one practice at a time. And the people who trained in that dojo will be the ones ready for whatever comes after.
 
 ---
 
