@@ -6,6 +6,16 @@ New archival batches are prepended below (newest batch first).
 
 ---
 
+## Archived 2026-04-18 (1 item — batch 7)
+
+### Essay draft: The Full Cup — organizational bandwidth as barrier to learning
+- **Product:** docs
+- **Context:** Drafted `docs/philosophy/the-full-cup.md` — Thread 19. Reframes "empty the cup" as organizational engineering. Includes shoshin × capacity matrix, "cutting off the tap" via theory of constraints, dojo's bow at the door, AI as overload source or capacity creator. Updated philosophy README, docs README cross-track reading order. Draft uses "a practitioner might" framing where author hasn't provided specific stories — ready for voice input and revision.
+- **Links:** `docs/philosophy/the-full-cup.md`, `.planning/zen-karate/threads.md` (thread 19), `docs/philosophy/README.md`, `docs/README.md`
+- **Completed:** 2026-04-18
+
+---
+
 ## Archived 2026-04-18 (1 item — batch 6)
 
 ### Repository organization tooling

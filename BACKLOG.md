@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-18 (Full Cup essay drafted)
+> Last updated: 2026-04-18 (Dojo After the Automation drafted)
 
 ## In Progress
 
@@ -82,11 +82,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `docs/case-studies/README.md`, `docs/README.md`
 - **Added:** 2026-04-18
 
-### Essay: The Dojo After the Automation — what are we building people for? (Thread 20)
-- **Product:** docs (bridge: philosophy ↔ AI-engineering)
-- **Context:** AI will change the economics of knowledge work. Execution automates. The question isn't whether — it's what happens to the humans. Thesis (D): learning investment determines whether the transition is liberation or disposal. The dojo isn't competing with AI for the execution layer — it's building the humans who can thrive in whatever comes after. Counter-position to Miessler's "AI WILL Replace Knowledge Workers": both diagnose the same dysfunction; Miessler automates the execution layer, the author fixes the loop so humans can be human in it. Starts as philosophical position paper; evidence base (*Accelerate*, economic displacement data) builds over time. Connects The Shift (new skills as survival, not career advice), The Full Cup (why people can't learn now), Ego/AI (tools reinforce posture), and the hero trap / invisible practice voice inputs.
-- **Links:** `.planning/zen-karate/threads.md` (thread 20), `library/daniel-miessler-ai-replace-knowledge-workers.md`, `research/zen-karate-philosophy/sparring-notes.md` (#8-12), `docs/philosophy/the-full-cup.md`
-- **Added:** 2026-04-18
 
 ### Essay: The economics of AI — tokens, context windows, and what it actually costs
 - **Product:** docs
@@ -208,6 +203,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 Rolling cap: at most **15** items stay here (newest first). Older completions live in `BACKLOG-ARCHIVE.md` (see `/backlog` command — **Done retention**). Git history remains authoritative.
 
+### Essay draft: The Dojo After the Automation — what are we building people for? (Thread 20)
+- **Product:** docs (bridge: philosophy ↔ AI-engineering)
+- **Context:** Drafted `docs/philosophy/the-dojo-after-the-automation.md`. Philosophical position paper: AI will automate execution; learning investment determines liberation vs. disposal. The co-development loop as the strongest argument. Draws from voice inputs #5-16, spar #9 response, Miessler's PAI architecture, and the Full Cup predecessor. Evidence base (*Accelerate*, displacement data) builds over time. Updated philosophy README, docs README (renumbered 10→25), archived oldest Done item.
+- **Links:** `docs/philosophy/the-dojo-after-the-automation.md`, `.planning/zen-karate/threads.md` (thread 20)
+- **Completed:** 2026-04-18
+
 ### Case study: landscape pass and corpus-level spar
 - **Product:** docs
 - **Context:** Two new case studies. (14) The thread development landscape pass: assessing all 16 essay threads before drafting any, revealing thread contradictions, the 20/80 ratio, and merge candidates invisible from inside any single thread. (15) The corpus-level spar: running `/spar` across all essays simultaneously, catching scope overclaims, conditional universals, and framing drift that per-document review missed.
@@ -292,9 +293,4 @@ Rolling cap: at most **15** items stay here (newest first). Older completions li
 - **Links:** `docs/philosophy/the-full-cup-practitioners-guide.md`, `docs/philosophy/the-full-cup.md`
 - **Completed:** 2026-04-18
 
-### Essay draft: The Full Cup — organizational bandwidth as barrier to learning
-- **Product:** docs
-- **Context:** Drafted `docs/philosophy/the-full-cup.md` — Thread 19. Reframes "empty the cup" as organizational engineering. Includes shoshin × capacity matrix, "cutting off the tap" via theory of constraints, dojo's bow at the door, AI as overload source or capacity creator. Updated philosophy README, docs README cross-track reading order. Draft uses "a practitioner might" framing where author hasn't provided specific stories — ready for voice input and revision.
-- **Links:** `docs/philosophy/the-full-cup.md`, `.planning/zen-karate/threads.md` (thread 19), `docs/philosophy/README.md`, `docs/README.md`
-- **Completed:** 2026-04-18
 
