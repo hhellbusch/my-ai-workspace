@@ -112,7 +112,7 @@ This essay is a philosophical position paper. It names the stakes and articulate
 - **The empirical evidence.** *Accelerate* (Forsgren, Humble, Kim) provides the strongest measurement data connecting culture investment to business outcomes. Does that evidence survive the AI transition argument, or is it rooted in a pre-automation economy? This needs deep engagement, not citation.
 - **The displacement data.** What actually happened to workers in previous automation waves? The Luddite frame ("jobs disappeared forever") vs. the transition frame ("new jobs emerged") — which applies to knowledge work? The historical record is more nuanced than either camp admits.
 - **The organizational examples.** Companies that invested in people through technological transitions vs. those that didn't. The evidence exists in scattered case studies. It has not been collected and evaluated against this essay's thesis.
-- **The IC without leverage.** This essay is written for people who can build dojos. It says nothing useful to the individual contributor trapped in an organization that won't invest. That person's honest paths — influence upward, protect your own cup, or leave — deserve their own treatment.
+- **The individual contributor without leverage.** This essay is written for people who can build dojos. It says nothing useful to the IC — the individual contributor who does the work but doesn't set the direction — trapped in an organization that won't invest. That person's honest paths — influence upward, protect your own cup, or leave — deserve their own treatment.
 
 These gaps are named, not concealed. The evidence base will build over time. The position comes first.
 
