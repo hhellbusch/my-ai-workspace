@@ -9,9 +9,9 @@
 
 Good research has always involved the same steps: find a source, take notes on it, record the key claims, file it somewhere you can find it again, and connect it to what you already know. That process works. The problem is that video and audio make it slow — you can't skim a talk the way you can skim an article, and there's no margin to annotate.
 
-This workflow handles the mechanical parts of that process automatically. Give the AI a YouTube link. Walk away. Come back to a properly structured source document: the primary source preserved in full, key themes extracted with direct quotes, claims categorized, and the new source connected to your existing body of research.
+This workflow handles the mechanical parts of that process automatically. Give the AI a YouTube link. Walk away. Come back to a structured source document: the primary source preserved in full, key themes extracted with direct quotes, claims categorized, and the new source connected to your existing body of research.
 
-It doesn't replace the research process. It follows it — just without the manual note-taking.
+It doesn't replace the research process — the intellectual work of evaluation, judgment, and interpretation still belongs to you. What it eliminates is the manual scaffolding: capturing the source, formatting the notes, filing them consistently. The researcher decides what matters. The workflow ensures it's all there when you come back to it.
 
 ---
 
@@ -21,7 +21,7 @@ The fastest no-setup path is **youtubetranscript.com** — paste a YouTube URL i
 
 Once you have the text, paste it into whichever AI chat tool you use and ask for a summary, key themes, or specific questions. For a one-off video, this is the fastest path.
 
-For a more integrated or repeatable approach, YouTube provides a public API for transcripts. The `fetch-transcript.py` script in this workflow uses the [`youtube-transcript-api`](https://github.com/jdepoix/youtube-transcript-api) Python library, which calls that API directly — no browser, no UI, just a URL in and a text file out. This is what makes bulk processing possible: hand it a list of URLs and it fetches all of them automatically.
+**For developers or technical users:** YouTube provides a public API for transcripts. The `fetch-transcript.py` script in this workflow uses the [`youtube-transcript-api`](https://github.com/jdepoix/youtube-transcript-api) Python library, which calls that API directly — no browser, no UI, just a URL in and a text file out. This is what makes bulk processing possible: hand it a list of URLs and it fetches all of them automatically.
 
 ### What if the podcast or talk isn't on YouTube?
 
@@ -68,7 +68,7 @@ The workflow follows traditional research methodology in three steps:
 
 ## A Real Example
 
-The library entry for a Jesse Enkamp and Shi Heng Yi conversation ([`library/enkamp-shi-heng-yi-mastery.md`](../../library/enkamp-shi-heng-yi-mastery.md)) was produced this way. The video is a 20-minute interview about mastery, ego, and martial arts philosophy.
+The library entry for a Jesse Enkamp and Shi Heng Yi conversation ([`library/enkamp-shi-heng-yi-mastery.md`](../../library/enkamp-shi-heng-yi-mastery.md)) was produced this way. The video is a 20-minute interview about mastery, ego, and martial arts philosophy. The output format is domain-agnostic — the same workflow applied to a policy speech, an academic lecture, or a conference panel would produce the same structure with the relevant domain's content.
 
 The entry captures things like this:
 
@@ -77,7 +77,7 @@ The entry captures things like this:
 
 That's not a paraphrase of hand-taken notes. The AI read the transcript, identified that passage as structurally significant, and connected it to related ideas already tracked across other sources — in this case, comparable themes in the teaching philosophies of Inoue Yoshimi and Taisen Deshimaru.
 
-The entry includes nine direct quotes, each tagged to specific threads in the essay series this research is building toward. That cross-linking happened automatically because the AI already knew the broader research context.
+The entry includes nine direct quotes, each tagged to specific threads in the essay series this research is building toward. That cross-linking happened because the AI had access to a research corpus built up over many prior sessions — it's the compound return on prior investment, not something available on day one. A first session produces a good standalone library entry. The connections accumulate as the body of work grows.
 
 ---
 
@@ -87,7 +87,7 @@ The entry includes nine direct quotes, each tagged to specific threads in the es
 
 **It connects.** A standalone AI summary is an island. This workflow ties the source into a web of related material — noting where this video agrees, contradicts, or extends other sources already in the library. That cross-linking only happens because there's a body of existing work to connect it to.
 
-**It separates opinion from verifiable claims.** The AI distinguishes between things a speaker asserts as fact (which can be checked against other sources) and things that are a personal model or framework (which can only be evaluated on its own terms). That's a useful distinction for deciding how much weight to give a source.
+**It separates opinion from verifiable claims — as a starting point.** The AI flags things a speaker asserts as fact (which can be checked against other sources) separately from things that are a personal model or framework (which can only be evaluated on their own terms). This classification is imperfect — the AI can miss hedged claims or misread disciplinary conventions — but it provides a useful first pass that surfaces the distinction rather than leaving it to the reader to untangle on a first read.
 
 **The transcript is there when you need it.** The library entry links to the full timestamped transcript. If a quote matters enough to cite, you can verify the exact wording and context in seconds.
 
