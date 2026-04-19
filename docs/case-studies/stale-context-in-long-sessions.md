@@ -90,6 +90,10 @@ The mitigation is structural, not behavioral: re-read before editing. Don't trus
 
 ---
 
+## What the Human Brought
+
+The user prompted the AI to re-read the system rules, noting that "they could get modified in other contexts or agent sessions." The AI was internally consistent with its own earlier actions — it had no reason to doubt its model of the repository. The human recognized that external changes could invalidate that model and directed the re-read that exposed the conflict.
+
 ## Artifacts
 
 | Artifact | What it is |

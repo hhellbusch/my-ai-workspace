@@ -155,7 +155,7 @@ The article verification exercise is a concrete example of what [The Shift](../a
 
 ---
 
-## File Index
+## Artifacts
 
 ### Documentation Suite
 
@@ -193,6 +193,4 @@ The article verification exercise is a concrete example of what [The Shift](../a
 
 ---
 
-## AI Disclosure
-
-This document, the research skill, and all analysis artifacts were produced with AI assistance across two extended development sessions and have not been fully reviewed by the author. The AI performed code generation, source fetching, claim comparison, and document drafting. Human direction guided the problem identification, skill design decisions, and quality standards throughout. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.
+*This document was created with AI assistance (Cursor) and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

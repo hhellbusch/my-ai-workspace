@@ -51,7 +51,7 @@ Each link in the chain was locally reasonable. The AI's summarization was accura
 
 ## Why This Is Different from Fabrication
 
-[Case study #9](fabricated-references.md) documents AI inventing a URL that didn't exist. The evidence was fictional.
+[When AI Fabricates the Evidence for Its Own Argument](fabricated-references.md) documents AI inventing a URL that didn't exist. The evidence was fictional.
 
 This case is structurally different:
 - The source is real
@@ -92,6 +92,10 @@ The [research skill case study](building-a-research-skill.md) describes building
 The Braincuber article itself is also worth noting as a source type: it's a **consulting firm's marketing content** (complete with a CTA to "Book our free 15-Minute Cloud AI Audit"). The data may be sound, but the framing serves a sales purpose. Recognizing source types — independent research, vendor whitepaper, consulting sales piece, blog post — is part of the verification skill that [The Shift](../ai-engineering/the-shift.md) describes as the engineer's primary value in AI-assisted work.
 
 ---
+
+## What the Human Brought
+
+The author remembered "some waffling" from the original verification pass and asked: "did we actually validate this claim?" That memory — months after the original research — was the only thing that caught the context reversal. The AI had faithfully reproduced the article's framing and had no mechanism to flag that its own summary might carry a distortion from the source. Human suspicion, not automated checking, reopened the case.
 
 ## Artifacts
 

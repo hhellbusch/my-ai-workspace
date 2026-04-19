@@ -121,6 +121,22 @@ The project brief handles this with: "The scope is deliberately wider than one s
 
 ---
 
+## What the Human Brought
+
+Every scope change in this case study originated from the user: the broadening from karate to martial arts, the Okinawan-vs-Japanese distinction, and the self-correction that "Funakoshi's japanesed karate is still karate." The AI updated documents; the user's evolving understanding drove what they said. The nuanced framing — "different flavor, not better or worse" — came from the author's decades of training and their willingness to revise their own instincts in real time.
+
+## When This Applies — and When It Doesn't
+
+**Good fit:**
+- Multi-session creative or intellectual projects where the human's understanding is still developing — the scope evolves because the person does
+- Projects with directory-based organization where scope changes cascade through naming, framing, and cross-references
+- Work where multiple documents share an implicit scope definition that could drift silently if one document updates and others don't
+
+**Not needed for:**
+- Technical projects with fixed requirements where scope is established before work begins
+- Short projects where scope evolution isn't a risk — the overhead of "update documents as a set" isn't justified for a single-session task
+- Projects where the AI's role is implementation rather than framing — scope evolution matters most when the AI is writing prose that carries implicit claims about what the project covers
+
 ## Artifacts
 
 | Artifact | What it is |

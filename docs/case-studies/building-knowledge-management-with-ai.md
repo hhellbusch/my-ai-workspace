@@ -92,7 +92,7 @@ The counterargument: every essay written after this session benefits from the in
 
 ---
 
-## The Tooling Inventory
+## Artifacts
 
 | Tool | Purpose | How it fits |
 |---|---|---|

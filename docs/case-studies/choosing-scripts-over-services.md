@@ -115,6 +115,22 @@ The Gemini API video understanding is a different capability entirely. When the 
 
 ---
 
+## What the Human Brought
+
+The AI presented three options with honest trade-offs. The human made the judgment call based on workflow knowledge the AI didn't have: that every downstream consumer expects files on disk, that sessions end and context is lost, that operational simplicity matters for a solo developer's side project. The decision to choose the "less sophisticated" tool because it fit the actual workflow was a judgment about use context, not about technical capability.
+
+## When This Applies — and When It Doesn't
+
+**Good fit:**
+- Small automation decisions where workflow fit matters more than architectural elegance — especially when the output format (file on disk vs. conversation context vs. API response) determines which tool design wins
+- Solo or small-team projects where operational simplicity (no new dependency category, no configuration overhead) outweighs integration sophistication
+- When the existing workflow has an established pattern (e.g., file-based research cache) and the new tool either fits that pattern or forces the workflow to adapt
+
+**Not needed for:**
+- Large integration decisions with multiple consumers where the architecturally elegant option IS the workflow-fit option
+- Teams with dedicated infrastructure support where the operational cost of a new service is amortized
+- Tools that need to evolve beyond their initial use case — the "deferred" option may be the right starting point precisely because it leaves room to grow
+
 ## Artifacts
 
 | Artifact | What it is |

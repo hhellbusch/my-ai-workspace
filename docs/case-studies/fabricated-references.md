@@ -76,6 +76,10 @@ The essay's section 6 discusses how AI output carries uniform confidence regardl
 
 ---
 
+## What the Human Brought
+
+The author clicked the link. No automated system, linter, or review process would have caught a well-formed URL returning 404. The AI presented the fabricated reference with the same confidence as the correct definition, and the only thing that distinguished fabrication from fact was a human following the link and seeing a 404 page.
+
 ## Artifacts
 
 | Artifact | What it is |

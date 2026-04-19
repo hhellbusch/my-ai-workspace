@@ -100,6 +100,18 @@ In AI-assisted workflows specifically, this connects to [The Shift](../ai-engine
 
 ---
 
+## When This Applies — and When It Doesn't
+
+**Good fit:**
+- Any review process, quality gate, or compliance check that applies the same depth regardless of change size — the disproportionality is the signal
+- Workflows where small changes are committed without review while large changes get the full process, creating a gap that silently invalidates tracked state
+- Environments where the cost of a missed review compounds over time (e.g., reviewed files modified post-review, security posture silently degraded)
+
+**Not needed for:**
+- Quality gates where comprehensive checking is always proportionate — high-stakes domains like safety-critical systems, regulated environments, or production deployments where every change genuinely deserves the full process
+- Workflows that already scale review depth to change risk
+- Processes where "skip the review" is visible and tracked rather than silent
+
 ## What the Human Brought
 
 The retrospective question — "did our review mechanisms kick in appropriately?" — was the author's. It is a different question from "is this file correct?" or "does this commit look right?": it asks whether the workflow itself performed as designed, after the fact. That accountability question is what surfaced the three silent failures. The AI detects stale reviews when prompted; it does not proactively ask whether its own process safeguards failed without anyone noticing.

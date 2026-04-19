@@ -115,6 +115,22 @@ The roadmap was updated rather than followed rigidly. The plan is a tool, not a 
 
 ---
 
+## What the Human Brought
+
+The seed observation — "one idea or thread i guess is the concept of ego and the risks of AI and ego etc that we found before and explored in the docs folder already. i am curious how we could use concepts from zen to help with this" — connected two tracks of work that existed in parallel but hadn't been linked. The AI had access to both sets of sources. It didn't notice the connection between The Shift's sycophancy analysis and the Zen research on ego and non-attachment. The human saw the bridge; the AI built the road.
+
+## When This Applies — and When It Doesn't
+
+**Good fit:**
+- Single-session writing where research is already cached on disk and the connection between sources is clear
+- Projects with infrastructure in place (style guide, cross-linking rules, adversarial review) — the pipeline only works this fast because it delegates to existing conventions
+- Work where the full cycle (draft → challenge → publish with open threads) can complete without waiting for external input
+
+**Not needed for:**
+- Multi-session writing where research is still being gathered — the pipeline presupposes a source cache
+- Projects without cached source material, where the AI would need to search the web and synthesize in real time
+- Work where the adversarial review requires domain expertise beyond what the AI and cached sources can provide
+
 ## Artifacts
 
 | Artifact | What it is |
