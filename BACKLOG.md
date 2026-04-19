@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-18 (Dojo After the Automation drafted)
+> Last updated: 2026-04-18 (cross-links, PAI library entry, spar-to-essay case study)
 
 ## In Progress
 
@@ -203,6 +203,24 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 Rolling cap: at most **15** items stay here (newest first). Older completions live in `BACKLOG-ARCHIVE.md` (see `/backlog` command — **Done retention**). Git history remains authoritative.
 
+### Case study: spar-to-essay pipeline (spar #9 → Thread 20 → drafted essay)
+- **Product:** docs
+- **Context:** Published case study documenting how adversarial argument #9 escalated from counter-position through voice inputs to Thesis D, Thread 20, and a fully drafted essay in one session. Spar as generative pressure, not just quality gate. Registered as case study #16 in both READMEs.
+- **Links:** `docs/case-studies/spar-to-essay-pipeline.md`, `docs/philosophy/the-dojo-after-the-automation.md`, `research/zen-karate-philosophy/sparring-notes.md`
+- **Completed:** 2026-04-18
+
+### Enriched library entry for PAI (Personal AI Infrastructure)
+- **Product:** library
+- **Context:** Full seven-component architecture breakdown, The Algorithm's two-loop structure, convergent patterns with this workspace (skills, hooks, memory, review), key divergences (rating/signal capture, personality, formalized algorithm), mutual learning opportunities. Catalog updated with enriched link.
+- **Links:** `library/daniel-miessler-pai.md`, `library/catalog.md`
+- **Completed:** 2026-04-18
+
+### Cross-link Dojo After the Automation into four essays
+- **Product:** docs
+- **Context:** Added the new essay to Related Reading in The Shift, The Full Cup, Ego/AI/Zen, and The Meta-Development Loop with tailored descriptions for each connection.
+- **Links:** `docs/ai-engineering/the-shift.md`, `docs/philosophy/the-full-cup.md`, `docs/philosophy/ego-ai-and-the-zen-antidote.md`, `docs/ai-engineering/the-meta-development-loop.md`
+- **Completed:** 2026-04-18
+
 ### Essay draft: The Dojo After the Automation — what are we building people for? (Thread 20)
 - **Product:** docs (bridge: philosophy ↔ AI-engineering)
 - **Context:** Drafted `docs/philosophy/the-dojo-after-the-automation.md`. Philosophical position paper: AI will automate execution; learning investment determines liberation vs. disposal. The co-development loop as the strongest argument. Draws from voice inputs #5-16, spar #9 response, Miessler's PAI architecture, and the Full Cup predecessor. Evidence base (*Accelerate*, displacement data) builds over time. Updated philosophy README, docs README (renumbered 10→25), archived oldest Done item.
@@ -273,24 +291,6 @@ Rolling cap: at most **15** items stay here (newest first). Older completions li
 - **Product:** meta
 - **Context:** Added `voice-approved` as an elevated-priority validation type for content that speaks in the author's voice. Integrated across the full workflow: generation guidance (review-tracking rule, STYLE.md), pre-commit detection (`/review` biographical scan), content audit (`/audit` Layer 5b), validation command (`/validate` prompts for voice-approved), and disclosure policy (`AI-DISCLOSURE.md`). AI is now instructed to minimize unsolicited biographical content and flag it when generated.
 - **Links:** `.cursor/rules/review-tracking.md`, `.cursor/commands/review.md`, `.cursor/commands/audit.md`, `.cursor/commands/validate.md`, `AI-DISCLOSURE.md`, `.planning/zen-karate/STYLE.md`
-- **Completed:** 2026-04-18
-
-### Review validation tracking system
-- **Product:** meta
-- **Context:** Built per-file review tracking via YAML frontmatter. New `/validate` command, `review-tracking` rule, Layer 5 in `/audit` for coverage reporting, coverage one-liner in `/start`, direction-reviewed note in `/review`. Validation types by content category: read, tested, fact-checked, commands-verified, used-in-practice, sources-checked.
-- **Links:** `.cursor/commands/validate.md`, `.cursor/rules/review-tracking.md`, `AI-DISCLOSURE.md`
-- **Completed:** 2026-04-18
-
-### Update essay footers to new disclosure standard
-- **Product:** docs
-- **Context:** Updated all 16 essay footers from "written with AI assistance" to "created with AI assistance and has not been fully reviewed by the author." Preserved per-file context notes (GitHub Copilot attribution, source verification, real session note). Normalized `building-a-research-skill.md` custom section to include the standard link.
-- **Links:** `AI-DISCLOSURE.md`, `.planning/zen-karate/STYLE.md`
-- **Completed:** 2026-04-18
-
-### Practitioner's guide: The Full Cup — transformation arc for remote teams
-- **Product:** docs
-- **Context:** Companion to the Full Cup essay. Four-phase transformation arc: diagnose the quadrant (observable signals for each, remote diagnostic), intervene (tap controls at kickoff vs. mid-flight), facilitate (structural bows for cameras-off remote sessions), sustain (keeping the tap off through organizational entropy). Remote-first framing throughout. Added bridge section to the essay and updated reading orders.
-- **Links:** `docs/philosophy/the-full-cup-practitioners-guide.md`, `docs/philosophy/the-full-cup.md`
 - **Completed:** 2026-04-18
 
 

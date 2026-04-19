@@ -106,6 +106,7 @@ The observation that the essay "read too well" was the human's. An AI reviewing 
 | [Sparring notes](../../research/zen-karate-philosophy/sparring-notes.md) | 7 counterarguments against the ego/AI essay, with blank response sections |
 | [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) | The essay that was both the catalyst and the first target |
 | [/backlog prioritize](../../.cursor/commands/backlog.md) | Zero-base de-biasing in priority ranking (related pattern) |
+| [When a Spar Argument Outgrows Its Essay](spar-to-essay-pipeline.md) | Sequel: what happens when a spar argument produces a new essay instead of a revision |
 
 ---
 

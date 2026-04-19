@@ -147,6 +147,7 @@ These gaps are named, not concealed. The evidence base will build over time. The
 | [The Meta-Development Loop](../ai-engineering/the-meta-development-loop.md) | The co-development loop in practice — AI building the infrastructure for AI-assisted work |
 | [AI-Assisted Development Workflows](../ai-engineering/ai-assisted-development-workflows.md) | Practical patterns where human and system develop together |
 | [Sparring Notes — Full Cup + Miessler](../../research/zen-karate-philosophy/sparring-notes.md) | The adversarial review that generated this essay's thesis |
+| [When a Spar Argument Outgrows Its Essay](../case-studies/spar-to-essay-pipeline.md) | Case study documenting this essay's origin — spar #9 → Thesis D → Thread 20 → draft |
 
 ---
 

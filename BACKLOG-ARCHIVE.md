@@ -6,6 +6,28 @@ New archival batches are prepended below (newest batch first).
 
 ---
 
+## Archived 2026-04-18 (3 items — batch 8)
+
+### Review validation tracking system
+- **Product:** meta
+- **Context:** Built per-file review tracking via YAML frontmatter. New `/validate` command, `review-tracking` rule, Layer 5 in `/audit` for coverage reporting, coverage one-liner in `/start`, direction-reviewed note in `/review`. Validation types by content category: read, tested, fact-checked, commands-verified, used-in-practice, sources-checked.
+- **Links:** `.cursor/commands/validate.md`, `.cursor/rules/review-tracking.md`, `AI-DISCLOSURE.md`
+- **Completed:** 2026-04-18
+
+### Update essay footers to new disclosure standard
+- **Product:** docs
+- **Context:** Updated all 16 essay footers from "written with AI assistance" to "created with AI assistance and has not been fully reviewed by the author." Preserved per-file context notes (GitHub Copilot attribution, source verification, real session note). Normalized `building-a-research-skill.md` custom section to include the standard link.
+- **Links:** `AI-DISCLOSURE.md`, `.planning/zen-karate/STYLE.md`
+- **Completed:** 2026-04-18
+
+### Practitioner's guide: The Full Cup — transformation arc for remote teams
+- **Product:** docs
+- **Context:** Companion to the Full Cup essay. Four-phase transformation arc: diagnose the quadrant (observable signals for each, remote diagnostic), intervene (tap controls at kickoff vs. mid-flight), facilitate (structural bows for cameras-off remote sessions), sustain (keeping the tap off through organizational entropy). Remote-first framing throughout. Added bridge section to the essay and updated reading orders.
+- **Links:** `docs/philosophy/the-full-cup-practitioners-guide.md`, `docs/philosophy/the-full-cup.md`
+- **Completed:** 2026-04-18
+
+---
+
 ## Archived 2026-04-18 (1 item — batch 7)
 
 ### Essay draft: The Full Cup — organizational bandwidth as barrier to learning

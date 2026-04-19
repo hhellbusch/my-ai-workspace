@@ -164,6 +164,7 @@ This essay was developed through adversarial sparring during drafting. Key unres
 | [AI-Assisted Development Workflows](../ai-engineering/ai-assisted-development-workflows.md) | Practical patterns for using AI to reduce toil, not increase it |
 | [When the Source Says the Opposite of the Claim](../case-studies/context-stripped-citations.md) | What happens when a full cup can't verify AI output — verification requires bandwidth |
 | [The Dojo After the Automation](the-dojo-after-the-automation.md) | The successor question: what happens when "now" changes — when we stop needing people to learn *this* and need them to learn something else entirely |
+| [When a Spar Argument Outgrows Its Essay](../case-studies/spar-to-essay-pipeline.md) | How spar #9 against this essay produced Thesis D and spawned The Dojo After the Automation |
 
 ---
 
