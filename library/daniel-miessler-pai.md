@@ -65,11 +65,12 @@ PAI and this workspace arrived at similar patterns independently:
 - **Structured memory** — PAI uses Work Memory directories; this workspace uses `.planning/`, `research/`, and `BACKLOG.md`
 - **Review/verification** — PAI uses ISC with binary criteria; this workspace uses review tracking with validation types (`read`, `fact-checked`, `voice-approved`)
 
-### Key divergences
+### Key differences in emphasis
 
-- **Rating/signal capture:** PAI has an explicit feedback loop (3,540+ signals, failure captures, monthly synthesis). This workspace has no equivalent — review tracking captures state but not real-time quality signals.
+- **Rating/signal capture:** PAI has an explicit feedback loop (3,540+ signals, failure captures, monthly synthesis). This workspace has no equivalent — review tracking captures state but not real-time quality signals. This is a system-side strength worth learning from.
 - **Personality/voice:** PAI quantifies personality traits and uses voice synthesis. This workspace has no personality layer.
 - **The Algorithm:** PAI's seven-phase loop is formalized and versioned. This workspace's equivalent is informal — the research-to-essay pipeline, the meta-development loop, and ad-hoc process.
+- **Framing:** PAI frames the work as system optimization (close the gap faster). This workspace frames the same work as practitioner development (the person grows through closing the gap). Both descriptions are true simultaneously — Miessler *is* a practitioner who grows through building his system, even though his public framing emphasizes the system side.
 
 ### The co-development loop (voice input #16)
 

@@ -176,4 +176,81 @@ This doesn't refute the LLM comparison for the untrained mind. It reframes the q
 
 **What might be missing:** The essay might not need to defeat Miessler to be valuable. It might be sufficient to articulate a different worldview for practitioners who already care. Not every essay has to win the economic argument. But Thread 20 exists because the author *does* want to engage the economic argument — just on solid ground, with evidence, not assertion.
 
+---
+
+## Spar Round 2: Self-Spar Against Our Own Outputs (Dojo After the Automation + Library Entries)
+
+**Target:** `docs/philosophy/the-dojo-after-the-automation.md`, `library/daniel-miessler-ai-replace-knowledge-workers.md`, `library/daniel-miessler-pai.md`
+
+**Context:** Author noted "there is a lot of agreement potentially" with Miessler and wanted the outputs evaluated critically. The spar found that the drafting process — driven by adversarial energy from spar #9 — had drifted the essay's framing toward opposition when the author's actual position was extension.
+
+### 13. The essay constructs a disagreement that may not exist
+
+**Type:** Structural | **Strength:** Strong
+
+**The argument:** The essay was framed as "two prescriptions" — Miessler wants automation, the author wants human development. But Miessler's Human 3.0 vision *is* a human development argument. He explicitly says humans move from execution to direction. He's not arguing against developing people — he's arguing the execution layer is the wrong place to develop them. The essay even acknowledges this but still frames the structure as disagreement. Miessler would likely agree with 80% of the essay.
+
+**Why it matters:** If the essay responds to a position Miessler doesn't hold, the entire structure collapses into a straw man.
+
+**Author's response:** Accepted. Essay revised — "Two Prescriptions" became "The Same Direction." The essay now frames Miessler's Human 3.0 as a shared destination and asks the follow-up question his vision assumes: who builds the humans?
+
+### 14. "The ideal number of human employees is zero" is a thought experiment, not his thesis
+
+**Type:** Evidence | **Strength:** Strong
+
+**The argument:** The library entry took Miessler's provocative line as his core position when it's a thought experiment exposing economic logic. His actual thesis is Human 3.0 — optimistic and human-centered. Using the provocative line as the thesis and the optimistic vision as a throwaway is uncharitable reading.
+
+**Why it matters:** The entire "counter-tension" framing rested on this characterization.
+
+**Author's response:** Accepted. Library entry revised — "Counter-tension with the philosophy track" became "Shared direction with the philosophy track." The provocative framing is now correctly identified as a thought experiment.
+
+### 15. "The pure-automation argument" is a phantom opponent
+
+**Type:** Scope | **Strength:** Strong
+
+**The argument:** The essay argues against "the Lattice without the dojo" — but Miessler himself is a practitioner who spends hours daily developing alongside his system. He *is* the co-development loop. The real target is the CFO who hears only cost-reduction.
+
+**Why it matters:** If the essay engages Miessler directly (and it does — he's named in every section), it needs his actual position.
+
+**Author's response:** Accepted. "Two Futures" revised — Future A is now explicitly "the organization that hears cost-reduction" with the note "This isn't Miessler's prescription." The Co-Development Loop section now acknowledges Miessler as a practitioner of the loop.
+
+### 16. The "trained mind" argument doesn't engage the capability stack
+
+**Type:** Evidence | **Strength:** Moderate
+
+**The argument:** Miessler's capability stack (Knowledge → Understanding → Intelligence → Creativity) directly addresses the trained-mind territory. He concedes creativity is the open question and that most knowledge work requires only the first three levels. The essay should engage this distinction rather than asserting irreducibility.
+
+**Why it matters:** The honest scope of the dojo argument might be narrower than the essay suggests — building people who operate at level 4, not a universal prescription.
+
+**Author's response:** Accepted. "What the Dojo Produces" now directly engages the capability stack and frames the dojo as the mechanism that moves level-3 workers to level-4 directors.
+
+### 17. The Federation/Borg parallel undermines the essay's own honesty
+
+**Type:** Presentation | **Strength:** Moderate
+
+**The argument:** The analogy frames two futures as utopia vs. the most famous collective villain in sci-fi. Shuts down nuance. A reader thinking "some jobs should be automated and those people retrained" is now defending the Borg. The essay's Open Questions section is admirably honest; the Federation/Borg paragraph undoes that by substituting narrative certainty for analytical uncertainty.
+
+**Why it matters:** Picks a side with pop-culture flourish where the essay admits it doesn't have the evidence to pick a side.
+
+**Author's response:** Accepted. Federation/Borg removed and replaced with honest middle-ground acknowledgment: "Most organizations will land somewhere in the middle."
+
+### 18. The library entries and essay present Miessler as a counter-position rather than a fellow practitioner
+
+**Type:** Consistency | **Strength:** Strong
+
+**The argument:** The author's own voice inputs say "I agree AND" (voice #15) and the relationship is "agreement with nitpicks." The outputs framed it as "counter-position requiring a new essay." The adversarial review process escalated a reasonable tension into an oppositional essay.
+
+**Why it matters:** The essay's structure screamed disagreement while the author's actual position was extension.
+
+**Author's response:** Accepted. All outputs revised. Sources table changed from "The counter-position" to "The shared diagnosis and Human 3.0 vision." Library entry's "author's counter-position" section became "author's extension." The essay's purpose line now explicitly states agreement with Miessler's direction.
+
+### Self-Audit (Round 2)
+
+**All six arguments accepted and acted on.** The core finding: the spar-driven drafting process generated adversarial energy that the essay absorbed into its structure. Spar #9 ("the economic argument is stronger than the essay acknowledges") was a legitimate challenge, but the response oversteered — the new essay framed the entire engagement as opposition when the author's actual relationship was agreement-plus-extension.
+
+**Strongest argument:** #13 and #18 together — the essay constructed a disagreement its own author doesn't hold.
+
+**Weakest argument:** #17 (Federation/Borg) — partly a taste call, and the analogy had value as a memorable closer even if it oversimplified.
+
+**Meta-observation:** This is a case study in how adversarial review tools can create adversarial framing. Spar #9 was the right challenge. But the energy of "here's where you're wrong" carried through into the essay's structure, producing an oppositional framing that misrepresented the author's position. The fix wasn't to soften the argument — it was to reframe from "I disagree with Miessler" to "I agree with Miessler AND here's the question his vision doesn't answer." The "AND" framing is stronger because it builds on a shared foundation rather than attacking a phantom.
 

@@ -42,9 +42,9 @@ Miessler's core claim — that the expertise gap is really an articulation gap, 
 
 The Lattice architecture's transparency (everyone can see what everyone else is doing) is a structural answer to the information asymmetry that fills cups. If the team can query "what are we working on?" in seconds instead of multi-month audits, that's capacity freed — tap turned off.
 
-### Counter-tension with the philosophy track
+### Shared direction with the philosophy track
 
-Miessler's framing is explicitly automation-first and replacement-oriented ("the ideal number of human employees is zero"). The philosophy track's framing values human presence, practice, and the irreducible quality of embodied experience. These aren't necessarily contradictory — the Full Cup essay already positions AI as "either the tap or the tool that cuts it" — but they pull in different directions on *what human work should look like*.
+Miessler's Human 3.0 vision — humans freed from execution to focus on direction, creativity, meaning — aligns with this workspace's thesis more than it diverges. The provocative framing ("the ideal number of human employees is zero") is a thought experiment exposing economic logic, not his prescription. His actual thesis is optimistic: automate execution so humans can do the meaningful work. The philosophy track agrees with this direction and asks the follow-up question Miessler's vision assumes: who builds the humans capable of directing, judging, and creating when the execution constraint lifts? The gap between the two isn't prescription — it's emphasis. Miessler emphasizes the system side (build the Lattice, structure the skills). This workspace emphasizes the human side (build the dojo that develops the practitioners). Both are necessary.
 
 ### The meditation/thought-observation section
 
@@ -52,11 +52,11 @@ Around 20:56, Miessler uses meditation and thought-observation to argue that hum
 
 **Author's response:** "For an untrained mind, often yes." Miessler treats the untrained mind as the fixed state of humanity. But the dojo, meditation, disciplined practice — these are technologies for training the mind to be less chaotic. The gap between untrained and trained is exactly where the practitioner works. Miessler is right about the default state. He's wrong that it's the permanent state.
 
-### The author's counter-position (from sparring)
+### The author's extension (from sparring)
 
-The same organizational dysfunction that Miessler diagnoses, the author also sees — and confirms from direct experience (including "minimum effort" workers and poor quality output). But the response is fundamentally different: where Miessler says "replace the execution layer," the author says "fix the loop so humans can be human in it." The dystopian concern: automation adopted without culture work discards the people the organization failed to develop. The thesis: AI deployed into a system that cares about its people becomes the most powerful tool for human development we've ever had.
+The same organizational dysfunction that Miessler diagnoses, the author also sees — and confirms from direct experience (including "minimum effort" workers and poor quality output). The response isn't opposition but extension: Miessler is right about the direction, AND the transition requires developmental work that his vision assumes but doesn't address. The concern: automation adopted without culture work discards the people the organization failed to develop — not because Miessler wants that outcome, but because the CFO who hears only "the bar is on the floor" will pursue cost reduction without the Human 3.0 investment. The thesis: AI deployed into a system that cares about its people becomes the most powerful tool for human development we've ever had.
 
-This counter-position was sparred adversarially — see [sparring notes](../research/zen-karate-philosophy/sparring-notes.md) arguments #8-12. Key unresolved challenge: the author's preferred future may require organizations to act against their economic self-interest (argument #9).
+This position was sparred adversarially — see [sparring notes](../research/zen-karate-philosophy/sparring-notes.md) arguments #8-12. A second spar (arguments #13-18) caught that the original essay overstated the disagreement with Miessler, framing an "agree AND" position as an oppositional one. The essay was revised to reflect the actual relationship: shared direction, different emphasis.
 
 ---
 
