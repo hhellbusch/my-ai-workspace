@@ -79,13 +79,13 @@ Microsoft has released AI under the "Copilot" name across many products:
 
 | Product | What it does | Transcript capability |
 |---|---|---|
-| **GitHub Copilot** (in VS Code / JetBrains / etc.) | Code completion and chat in the IDE | Possibly, with agent mode — can run Python scripts, but the workflow would need to be set up manually |
+| **GitHub Copilot** (in VS Code / JetBrains / etc.) | Code completion and chat in the IDE | Yes — the same workflow can be configured here; Copilot agent mode can run the fetch script and do the analysis |
 | **Microsoft 365 Copilot** (in Word, Teams, Outlook) | Document drafting, meeting summaries, email | No — can summarize Teams meeting transcripts, but not YouTube |
 | **Copilot** (the consumer product at copilot.microsoft.com) | General-purpose chat | Can summarize if given text, but can't fetch a YouTube transcript automatically |
 
-The workflow described in this document was built for Cursor with Claude. The underlying transcript fetch script is tool-agnostic — it's just Python. If your colleague has GitHub Copilot with agent mode enabled (available in VS Code as of early 2026), they could potentially run the same script and get the transcript, then ask Copilot to analyze it. The structured library entry and cross-referencing would require more setup.
+The workflow described in this document was built for Cursor with Claude, but it is not Cursor-specific. The transcript fetch script is plain Python, and the analysis workflow is a structured set of instructions any capable AI agent can follow. GitHub Copilot in VS Code with agent mode enabled can do the same grunt work: run the script, read the output, and produce a structured analysis. The setup requires configuring the workflow instructions once, but the underlying capability is there.
 
-The honest summary: the fetch is easy to replicate anywhere. The analysis workflow that connects new sources to an existing body of work is where the setup investment pays off.
+The honest summary: the fetch and analysis are replicable in any tool with agent mode. The part that compounds over time is the cross-referencing — new sources connecting to an existing body of work — and that requires having built up that body of work first, regardless of which tool you use.
 
 ### Getting the transcript without any setup
 
