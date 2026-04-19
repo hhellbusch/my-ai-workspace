@@ -53,12 +53,26 @@ Review the assessment against the original article one more time:
 - Did we miss any major claim areas?
 - Are there claims we initially flagged that actually hold up when considering the full picture?
 
-## Step 6: Deliver
+## Step 6: Deliver — Final Checkpoint
 
-Present the assessment to the user with:
-- A brief verbal summary of the key findings
-- The file path to the full assessment
-- Any recommended follow-up actions (e.g., "the economic claims need independent verification before sharing with leadership")
+Write the assessment to disk first (`research/{subject}/assessment.md`), then present to the user:
+
+- Confirm the file is written: show the path
+- Brief verbal summary of key findings (3-5 sentences max — the file has the detail)
+- Confidence table highlights: what scored high, what scored low, what's unverifiable
+- Any recommended follow-up actions
+
+Then explicitly close the pipeline:
+
+> **Pipeline complete.** Full assessment is at `research/{subject}/assessment.md`.
+>
+> Suggested next steps (pick any):
+> - Add a library entry (`/reference add`)
+> - Cross-link into related essays
+> - Add a new thread or backlog item based on the findings
+> - No action needed — work is on disk for future reference
+
+**Do not automatically proceed to any next step. Wait for the user to decide.**
 
 </process>
 
@@ -66,8 +80,8 @@ Present the assessment to the user with:
 This workflow is complete when:
 - [ ] All batch findings have been read and synthesized
 - [ ] Confidence table covers every major topic area
-- [ ] Key findings are supported by specific evidence
-- [ ] Assessment file is written to disk
+- [ ] Key findings are supported by specific evidence from batch files
+- [ ] Assessment file is written to disk and path confirmed to user
 - [ ] Patterns and systemic issues are documented
-- [ ] User has received the assessment and knows what to trust
+- [ ] User has been offered suggested next steps and given the choice
 </success_criteria>

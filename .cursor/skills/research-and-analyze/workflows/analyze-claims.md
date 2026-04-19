@@ -14,17 +14,29 @@
 Read the manifest to determine:
 - How many sources were fetched successfully
 - Which topic areas they cover
-- What claims from the original article map to which sources
+- Whether this is a standard article (claims map to external citations) or a transcript/single-source (claims are assertions within the source itself)
 
-If the original article is on disk (`sources/original-article.md`), read it to extract the key claims to verify.
+**For transcript/single-source analysis:** The manifest will list extracted claims (`C1`, `C2`, ...) rather than cited references. Each claim is evaluated for:
+- Internal coherence and self-consistency
+- Verifiability against external sources (for factual/architectural claims)
+- Directional plausibility (for predictive claims)
+- Workspace connections and tensions (for talks that relate to existing research)
+
+If the original article is on disk (`sources/original-article.md`) or the transcript is at `sources/ref-01-transcript.md`, read it to confirm the claims list is complete before batching.
 
 ## Step 2: Plan Batches
 
-Group sources into batches of 3-5 files by topic area. Prioritize:
+**Standard path (article with citations):** Group sources into batches of 3-5 files by topic area. Prioritize:
 1. **Economic/quantitative claims** — these are most likely to be misleading
 2. **Architecture claims** — verifiable against official documentation
 3. **Feature maturity claims** — check for GA vs. preview vs. alpha status
 4. **Strategic/qualitative claims** — hardest to falsify, check last
+
+**Transcript/single-source path:** Group the extracted claims into thematic batches of 5-8 claims. Suggested groupings:
+1. **Factual/verifiable claims** — specific numbers, product states, dates
+2. **Architectural claims** — how systems work (check against public repos/docs if available)
+3. **Predictive/framework claims** — evaluate coherence and supporting evidence
+4. **Workspace connections** — how claims connect to or tension with existing research, essays, library entries
 
 Create a batch plan:
 ```
@@ -95,20 +107,31 @@ After each batch:
 
 If the conversation needs to reset, all progress is on disk and the next session can pick up where this one left off.
 
-## Step 6: Checkpoint
+## Step 6: Phase-Boundary Checkpoint — HARD STOP
 
-When all batches are done, tell the user:
-- Number of claims verified / problematic / unverifiable
-- Which topic areas had issues
-- Recommended next step (synthesize findings)
+**Do not proceed to synthesis. Stop here and report to the user.**
+
+Tell the user:
+- Total claims analyzed: verified / verified-with-caveats / misleading / unsupported / unverifiable
+- Which topic areas had the most issues
+- Key pattern emerging across the batches (1-2 sentences)
+- Confirm all findings files are on disk: list `research/{subject}/findings/` contents
+
+Then ask:
+
+> **Analysis phase complete.** Findings are at `research/{subject}/findings/`. Ready to synthesize into a final assessment?
+> - Yes — proceed to `synthesize-findings.md`
+> - No — describe what to revisit
+
+**Wait for explicit confirmation before starting synthesis.**
 
 </process>
 
 <success_criteria>
 This workflow is complete when:
-- [ ] All fetched sources have been read and compared to article claims
-- [ ] Findings for each batch are written to disk
-- [ ] Each finding includes: what the article claims, what the source says, verdict
+- [ ] All sources/claims have been read and evaluated
+- [ ] Findings for each batch are written to disk (verified by listing the files)
+- [ ] Each finding includes: what is claimed, what the source says, verdict, impact
 - [ ] Unverifiable claims are documented with explanation
-- [ ] User knows the status and patterns emerging
+- [ ] User has explicitly confirmed readiness to proceed to synthesis
 </success_criteria>

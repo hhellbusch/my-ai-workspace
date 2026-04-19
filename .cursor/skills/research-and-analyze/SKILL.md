@@ -1,6 +1,6 @@
 ---
 name: research-and-analyze
-description: Systematic research and source verification for articles, blog posts, and technical documentation. Use when verifying claims against cited sources, analyzing accuracy of external content, or building evidence-based assessments from multiple references.
+description: Systematic research and source verification for articles, blog posts, technical documentation, and video transcripts. Use when verifying claims against cited sources, analyzing accuracy of external content, evaluating talks and videos, or building evidence-based assessments from any source material.
 ---
 
 <essential_principles>
@@ -56,27 +56,44 @@ research/
 </essential_principles>
 
 <intake>
+**HARD STOP — present these options and wait. Do not proceed until the user responds.**
+
+Even if the user has already provided a URL, article, or YouTube link, you do not know:
+- Whether they want the full pipeline or a specific phase
+- Whether they want the transcript-only path or citation verification
+- What subject slug to use for the research directory
+
+Present this menu and wait:
+
+---
+
 What would you like to do?
 
-1. **Start new research** — I have an article/document to verify
-2. **Continue gathering** — I have a manifest with unfetched sources
-3. **Analyze sources** — Sources are on disk, ready for claim verification
-4. **Synthesize findings** — Analysis is done, compile the assessment
-5. **Full pipeline** — Do everything: gather → analyze → synthesize
+1. **Start new research** — article or document with citations to verify
+2. **YouTube / single-source transcript** — evaluate a talk, video, or single source with no citations
+3. **Continue gathering** — I have a manifest with unfetched sources
+4. **Analyze sources** — sources are on disk, ready for claim verification
+5. **Synthesize findings** — analysis is done, compile the assessment
+6. **Full pipeline** — do everything: gather → analyze → synthesize
 
-**Wait for response before proceeding.**
+Also tell me: **what subject slug should I use for the research directory?** (e.g., `miessler-single-da-thesis`, `openai-gpt5-launch`) — this becomes `research/{slug}/`.
+
+---
+
+**Do not take any action until the user responds to the above.**
 </intake>
 
 <routing>
 | Response | Workflow |
 |----------|----------|
-| 1, "new", "start", "verify", "research" | `workflows/gather-sources.md` |
-| 2, "continue", "fetch", "retry" | `workflows/gather-sources.md` (resume mode) |
-| 3, "analyze", "check", "verify claims" | `workflows/analyze-claims.md` |
-| 4, "synthesize", "compile", "summarize", "assessment" | `workflows/synthesize-findings.md` |
-| 5, "full", "everything", "pipeline", "all" | Run all three workflows in sequence |
+| 1, "new", "start", "verify", "article" | `workflows/gather-sources.md` |
+| 2, "youtube", "transcript", "video", "talk", "single source" | `workflows/gather-sources.md` — transcript variant (Step 2T) |
+| 3, "continue", "fetch", "retry" | `workflows/gather-sources.md` (resume mode) |
+| 4, "analyze", "check", "verify claims" | `workflows/analyze-claims.md` |
+| 5, "synthesize", "compile", "summarize", "assessment" | `workflows/synthesize-findings.md` |
+| 6, "full", "everything", "pipeline", "all" | Run all three workflows in sequence, stopping at each phase-boundary checkpoint |
 
-**After reading the workflow, follow it exactly.**
+**After reading the workflow, follow it exactly. Each workflow has a phase-boundary checkpoint at the end — stop there and wait for explicit user confirmation before starting the next phase.**
 </routing>
 
 <reference_index>
