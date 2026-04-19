@@ -20,6 +20,7 @@ This workspace contains practical DevOps examples, configurations, and troublesh
 #### OpenShift (`ocp/`)
 - **`examples/`** — OVN-Kubernetes networking, install config templates, SNO KVM lab
 - **`troubleshooting/`** — API slowness, bare metal inspection timeouts, kubeconfig recovery, CoreOS networking, CSR management, kube-controller-manager crashloops, KubeVirt VM provisioning, namespace termination, Portworx CSI, worker TLS cert failures, image registry auth, API server cert deadlock
+- **`notes/`** — Informal quick references: useful OpenShift and kubectl commands
 - **`install/`** *(gitignored)* — Local install working directory with pull secrets and kubeconfigs
 
 #### RHACM (`rhacm/`)
@@ -44,9 +45,6 @@ Standalone scripts and artifacts referenced by documentation:
 External git repositories cloned for exploration and upstream contributions:
 - argocd-diff-preview — explored feasibility improvement, resulted in upstream issue
 - helm-charts — Helm chart improvement in progress
-
-#### Notes (`notes/`)
-Informal notes and quick references: OpenShift useful commands, idea captures
 
 #### Prompts (`prompts/`)
 Structured AI prompt templates for repeatable tasks (run with `/run-prompt`):
