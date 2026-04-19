@@ -185,7 +185,7 @@ This essay draws from the following research and reference material cached in th
 
 This essay has been through adversarial review. The sparring notes contain unresolved counterarguments that may lead to revision:
 
-- **[Sparring notes](../../research/zen-karate-philosophy/sparring-notes.md)** — 7 counterarguments including: the core claim is unverified, the mushin/engineering parallel is strained, the sensei model is romanticized, and the essay was written by an AI about resisting AI.
+- **[Sparring notes (#1-7)](../../research/zen-karate-philosophy/sparring-notes.md#1-the-core-claim-is-unverified)** — 7 counterarguments including: the core claim is unverified, the mushin/engineering parallel is strained, the sensei model is romanticized, and the essay was written by an AI about resisting AI.
 
 These are open threads, not resolved objections. The essay will evolve as the author responds.
 

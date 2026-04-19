@@ -86,7 +86,7 @@ This self-reinforcement is also a risk. The [debugging AI judgment](debugging-ai
 
 ### The infrastructure-to-output ratio is worth watching
 
-The [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md) argument #4 — "Meta-infrastructure outweighs output: 14 threads, a roadmap, style guide, curated reading list, planning documents, library system, glossary placeholder, dedicated slash commands — and one essay" — applies here too. Building the organizational system is satisfying and feels productive. Whether it produces better output than writing essays directly is an open question.
+The [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#4-meta-infrastructure-outweighs-output) argument #4 — "Meta-infrastructure outweighs output: 14 threads, a roadmap, style guide, curated reading list, planning documents, library system, glossary placeholder, dedicated slash commands — and one essay" — applies here too. Building the organizational system is satisfying and feels productive. Whether it produces better output than writing essays directly is an open question.
 
 The counterargument: every essay written after this session benefits from the infrastructure. The first essay (ego/AI/zen) drew from cached sources, followed the style guide, was cross-linked automatically, got adversarial review through the sparring system, and was tracked in the backlog. Without the infrastructure, each of those steps would have been manual and ad hoc.
 

@@ -53,12 +53,19 @@ This one came from a related observation (covered in [Debugging Your AI Assistan
 
 ## Immediate Application
 
-The `/spar` command was applied to the ego/AI essay the same session it was built. The result: [7 counterarguments](../../research/zen-karate-philosophy/sparring-notes.md), including:
+The `/spar` command was applied to the ego/AI essay the same session it was built. The result: [7 counterarguments](../../research/zen-karate-philosophy/sparring-notes.md#1-the-core-claim-is-unverified) — each typed (structural, evidence, scope, presentation, consistency) and rated for strength. Four of the strongest:
 
-- **The core claim is unverified.** The essay asserts Zen practices provide "structural resistance" to AI sycophancy but presents no evidence beyond appealing analogy — the same failure mode the essay warns about.
-- **The mushin/engineering parallel is strained.** Mushin developed in physical combat with immediate bodily feedback. Software engineering has no equivalent correction mechanism.
-- **An AI wrote an essay about resisting AI.** The philosophical framework was pattern-matched by a language model, not arrived at through contemplative practice. A reader can't tell the difference — which is the essay's own warning.
-- **The project risks being what it warns against.** "Zen masters discovered the solution to a modern problem centuries ago" is the same move as motivational LinkedIn content, just with better vocabulary.
+> **#1. The core claim is unverified** — *Structural | Strong*
+> The essay asserts Zen practices provide "structural resistance" to AI sycophancy but presents no evidence beyond appealing analogy — the same failure mode the essay warns about.
+
+> **#2. The mushin/engineering parallel is strained** — *Structural | Moderate*
+> Mushin developed in physical combat with immediate bodily feedback. Software engineering has no equivalent correction mechanism.
+
+> **#5. An AI wrote an essay about resisting AI** — *Consistency | Strong*
+> The philosophical framework was pattern-matched by a language model, not arrived at through contemplative practice. A reader can't tell the difference — which is the essay's own warning.
+
+> **#7. The project risks being what it warns against** — *Scope | Moderate*
+> "Zen masters discovered the solution to a modern problem centuries ago" is the same move as motivational LinkedIn content, just with better vocabulary.
 
 Several of these are genuine structural weaknesses. The sparring notes were saved with blank response sections for the author to fill in — they're designed as a working document, not a verdict. The essay itself now links to the sparring notes in its [Open Review section](../philosophy/ego-ai-and-the-zen-antidote.md), signaling to any future reader or AI session that the thesis has been challenged and the challenges are unresolved.
 
@@ -103,7 +110,7 @@ The observation that the essay "read too well" was the human's. An AI reviewing 
 |---|---|
 | [/spar command](../../.cursor/commands/spar.md) | On-demand adversarial review — point at any file, topic, or idea |
 | [spar-patterns.md](../../.cursor/skills/create-meta-prompts/references/spar-patterns.md) | Prompt template for spar stage in meta-prompting chains |
-| [Sparring notes](../../research/zen-karate-philosophy/sparring-notes.md) | 7 counterarguments against the ego/AI essay, with blank response sections |
+| [Sparring notes (#1-7)](../../research/zen-karate-philosophy/sparring-notes.md#1-the-core-claim-is-unverified) | 7 counterarguments against the ego/AI essay, with blank response sections |
 | [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) | The essay that was both the catalyst and the first target |
 | [/backlog prioritize](../../.cursor/commands/backlog.md) | Zero-base de-biasing in priority ranking (related pattern) |
 | [When a Spar Argument Outgrows Its Essay](spar-to-essay-pipeline.md) | Sequel: what happens when a spar argument produces a new essay instead of a revision |

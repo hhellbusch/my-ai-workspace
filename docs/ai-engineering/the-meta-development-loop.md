@@ -53,7 +53,7 @@ This is the step most people skip, and it's the step that matters most. If you b
 2. **Output** — the work that was blocked is now unblocked
 3. **Refinement signal** — the tool's behavior against real input shows what to adjust
 
-The [`/spar` command](../../.cursor/commands/spar.md) was applied to the essay it was built to challenge *in the same session*. It produced [7 counterarguments](../../research/zen-karate-philosophy/sparring-notes.md), several of which identified genuine structural weaknesses. The [research skill](../../.cursor/skills/research-and-analyze/SKILL.md) was validated against the same article whose manual verification had failed. The [zero-base evaluation](../../.cursor/commands/backlog.md) was used to re-prioritize the backlog that had exposed the anchoring problem.
+The [`/spar` command](../../.cursor/commands/spar.md) was applied to the essay it was built to challenge *in the same session*. It produced [7 counterarguments](../../research/zen-karate-philosophy/sparring-notes.md#1-the-core-claim-is-unverified), several of which identified genuine structural weaknesses. The [research skill](../../.cursor/skills/research-and-analyze/SKILL.md) was validated against the same article whose manual verification had failed. The [zero-base evaluation](../../.cursor/commands/backlog.md) was used to re-prioritize the backlog that had exposed the anchoring problem.
 
 In each case, the tool's first real use was against the problem that created it.
 
@@ -92,7 +92,7 @@ A note on what "compounding" means here — and what it doesn't. This is an expe
 
 The loop has a failure mode, and it's important to name it honestly: **you can spend all your time building tools and produce nothing the tools were supposed to enable.**
 
-The [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md) for this project include counterargument #4: "Meta-infrastructure outweighs output: 14 threads, a roadmap, style guide, curated reading list, planning documents, library system, glossary placeholder, dedicated slash commands — and one essay."
+The [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#4-meta-infrastructure-outweighs-output) for this project include counterargument #4: "Meta-infrastructure outweighs output: 14 threads, a roadmap, style guide, curated reading list, planning documents, library system, glossary placeholder, dedicated slash commands — and one essay."
 
 That's a fair criticism. The meta-development loop feels productive because building tools *is* satisfying work. The AI makes it fast. The tools are real and they work. But the purpose of the tools is to produce output — essays, code, systems, contributions — not to produce more tools.
 

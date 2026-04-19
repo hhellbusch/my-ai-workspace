@@ -37,11 +37,28 @@ The author's relationship to Miessler's ideas was "I agree AND here's what he's 
 
 ### 4. A self-spar caught the distortion
 
-A second adversarial review — this time targeting the essay and library entries themselves — produced six arguments (#13-18). The strongest:
+A second adversarial review — this time targeting the essay and library entries themselves — produced six arguments (#13-18). The three strongest:
 
-- **The essay constructs a disagreement that may not exist.** Miessler's Human 3.0 vision *is* a human development argument. He's not arguing against developing people.
-- **"The pure-automation argument" is a phantom opponent.** Miessler himself is a practitioner who spends hours daily developing alongside his system. He is the co-development loop.
-- **The library entries present Miessler as a counter-position rather than a fellow practitioner.** The author's voice inputs say "agree AND"; the outputs say "counter-position."
+> **#13. The essay constructs a disagreement that may not exist**
+> *Type: Structural | Strength: Strong*
+>
+> The essay was framed as "two prescriptions" — Miessler wants automation, the author wants human development. But Miessler's Human 3.0 vision *is* a human development argument. He explicitly says humans move from execution to direction. He's not arguing against developing people — he's arguing the execution layer is the wrong place to develop them. Miessler would likely agree with 80% of the essay. If the essay responds to a position Miessler doesn't hold, the entire structure collapses into a straw man.
+>
+> *— from [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#13-the-essay-constructs-a-disagreement-that-may-not-exist)*
+
+> **#15. "The pure-automation argument" is a phantom opponent**
+> *Type: Scope | Strength: Strong*
+>
+> The essay argues against "the Lattice without the dojo" — but Miessler himself is a practitioner who spends hours daily developing alongside his system. He *is* the co-development loop. The real target isn't Miessler — it's the CFO who hears only cost-reduction. If the essay engages Miessler directly (and it does — he's named in every section), it needs his actual position, not the position a cost-cutting executive might extract from it.
+>
+> *— from [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#15-the-pure-automation-argument-is-a-phantom-opponent)*
+
+> **#18. The library entries and essay present Miessler as a counter-position rather than a fellow practitioner**
+> *Type: Consistency | Strength: Strong*
+>
+> The author's own voice inputs say "I agree AND" (voice #15) and the relationship is "agreement with nitpicks." The outputs framed it as "counter-position requiring a new essay." The adversarial review process escalated a reasonable tension into an oppositional essay. The essay's structure screamed disagreement while the author's actual position was extension.
+>
+> *— from [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#18-the-library-entries-and-essay-present-miessler-as-a-counter-position-rather-than-a-fellow-practitioner)*
 
 All six arguments were accepted. The essay was revised.
 
@@ -102,7 +119,7 @@ The author's observation — "I really like the Human 3.0 that the video explore
 | Artifact | What it is |
 |---|---|
 | [The Dojo After the Automation — revised](../philosophy/the-dojo-after-the-automation.md) | The essay after reframing from opposition to extension |
-| [Sparring notes — round 2 (#13-18)](../../research/zen-karate-philosophy/sparring-notes.md) | The self-spar that caught the distortion |
+| [Sparring notes — round 2 (#13-18)](../../research/zen-karate-philosophy/sparring-notes.md#13-the-essay-constructs-a-disagreement-that-may-not-exist) | The self-spar that caught the distortion |
 | [When a Spar Argument Outgrows Its Essay](spar-to-essay-pipeline.md) | The predecessor case study documenting the productive pattern |
 | [Library entry — Miessler talk](../../library/daniel-miessler-ai-replace-knowledge-workers.md) | Updated: "counter-tension" → "shared direction" |
 | [Thread development — voice inputs #15-16](../../.planning/zen-karate/thread-development.md) | The author's actual position: agree AND, co-development loop |

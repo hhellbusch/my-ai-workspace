@@ -79,7 +79,7 @@ The other case studies document gaps that were noticed during work. This one doc
 
 This case study is itself an example of the pattern it describes. Writing the evolving-scope case study surfaced the shoshin integration opportunity. Now writing *this* case study surfaces the observation that structured reflection is a discovery mechanism. If the pattern holds, this observation should eventually produce something too — perhaps a convention for "reflection prompts" in the case study template, or a step in the [`/whats-next`](../../.cursor/commands/whats-next.md) command that asks "what would a case study about this session reveal?"
 
-Whether that's genuinely useful or just recursive navel-gazing is an open question. The [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md) argument #4 — "meta-infrastructure outweighs output" — applies here. At some point the system for reflecting on the system should produce essays, not more system.
+Whether that's genuinely useful or just recursive navel-gazing is an open question. The [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#4-meta-infrastructure-outweighs-output) argument #4 — "meta-infrastructure outweighs output" — applies here. At some point the system for reflecting on the system should produce essays, not more system.
 
 ---
 

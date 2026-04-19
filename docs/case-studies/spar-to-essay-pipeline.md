@@ -15,9 +15,16 @@ Spar #9 didn't follow that pattern.
 
 ## The Argument That Wouldn't Fit
 
-Spar #9: **The Miessler counter-position is stronger than the essay acknowledges.**
+The [`/spar` command](../../.cursor/commands/spar.md) generates steel-manned counterarguments against any essay or idea, each typed and rated for strength. Spar #9 from the Full Cup review:
 
-The argument: if organizations can get more consistent output at lower cost through AI automation, the economic incentive to invest in human development disappears. The essay assumes organizations *want* to invest in their people. Most don't. They want output. The practitioner's guide works for the subset that already cares. It has nothing to say to the ones that don't.
+> **#9. The Miessler counter-position is stronger than the essay acknowledges**
+> *Type: Structural | Strength: Strong*
+>
+> The author's position assumes organizations want to invest in their people. Most don't. They want output. If AI delivers more consistent output at lower cost with full transparency, the economic incentive to invest in human development disappears — regardless of what a thoughtful practitioner believes they should do. The essay needs to reckon with the possibility that its preferred future requires organizations to act against their economic self-interest.
+>
+> *Why it matters:* If the thesis depends on organizations choosing human development over cost reduction, it's describing an aspiration, not an analysis. The practitioner's guide works for the subset of organizations that already care. It has nothing to say to the ones that don't.
+>
+> *— from [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#9-the-miessler-counter-position-is-stronger-than-the-essay-acknowledges)*
 
 This wasn't a presentation critique or a scoping issue. It was a structural challenge to the essay's foundational assumption — that organizations would choose human development if shown the right framework.
 
@@ -109,7 +116,7 @@ Thesis D didn't emerge from the adversarial review alone. The spar generated the
 |---|---|
 | [The Dojo After the Automation](../philosophy/the-dojo-after-the-automation.md) | The essay that spar #9 produced |
 | [The Full Cup — Open Review](../philosophy/the-full-cup.md) | Updated with counter-argument and third unresolved thread |
-| [Sparring notes — #9](../../research/zen-karate-philosophy/sparring-notes.md) | The argument and the author's response that outgrew the essay |
+| [Sparring notes — #9](../../research/zen-karate-philosophy/sparring-notes.md#9-the-miessler-counter-position-is-stronger-than-the-essay-acknowledges) | The argument and the author's response that outgrew the essay |
 | [Thread 20](../../.planning/zen-karate/threads.md) | Planning entry with thesis, connections, evidence gaps |
 | [Thread development — voice inputs #13-16](../../.planning/zen-karate/thread-development.md) | Author observations captured during the escalation |
 | [/spar command](../../.cursor/commands/spar.md) | The adversarial review tool that started the pipeline |
