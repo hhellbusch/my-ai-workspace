@@ -87,6 +87,18 @@ The workflow described in this document was built for Cursor with Claude. The un
 
 The honest summary: the fetch is easy to replicate anywhere. The analysis workflow that connects new sources to an existing body of work is where the setup investment pays off.
 
+### Getting the transcript without any setup
+
+If you just want the text of a video to paste into an AI, you don't need Python or a code editor:
+
+1. **YouTube's built-in transcript** — On any video page, click the `...` (more options) menu below the video → "Show transcript." A panel opens on the right with timestamped text you can copy. Works in any browser, no account required.
+
+2. **`youtubetranscript.com`** — Paste the YouTube URL into the site and get the full transcript as plain text. Nothing to install.
+
+3. **Browser extension** — Tools like [Glasp](https://glasp.co/) or "YouTube Summary with ChatGPT & Claude" add a transcript button directly to the YouTube page. One-time install, then it's a single click per video.
+
+Once you have the text, paste it into whichever AI chat tool you use (including any of the Copilots above) and ask for a summary, key themes, or specific questions. You lose the automation and the persistent cross-referencing, but for a one-off video it's fast and requires nothing.
+
 ---
 
 ## Related Reading
