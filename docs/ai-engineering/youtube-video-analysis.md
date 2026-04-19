@@ -1,3 +1,10 @@
+---
+review:
+  status: reviewed
+  read: 2026-04-19
+  at: 0c8e8dd
+---
+
 # Drop a YouTube Link, Get a Structured Analysis
 
 > **Audience:** Anyone curious about what AI tools can do with video content.
@@ -127,4 +134,4 @@ The honest summary: the fetch and analysis are replicable in any tool with an au
 
 ---
 
-*This document was created with AI assistance (Cursor) and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
+*This document was created with AI assistance (Cursor) and has been reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
