@@ -66,6 +66,16 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Object-Oriented Design Using Java | Dale Skrien | 2011 | 978-0072974164 | java, oop | — |
 | The Art & Science of Java | Eric Roberts | 2010 | 978-0321486127 | java, cs-fundamentals | — |
 
+## Articles / Web Sources
+
+| Title | Author(s) | Year | URL | Tags | Entry |
+|---|---|---|---|---|---|
+| CodeKata: How It Started | Dave Thomas | 2003 | http://codekata.com/kata/codekata-how-it-started/ | code-kata, practice, martial-arts, software-craft | — |
+| Enter the Dojo — Target's Agile Training Ground | Scrum Alliance | 2017 | https://resources.scrumalliance.org/Article/enter-the-dojo | agile-dojo, devops, immersive-training, organizational-transformation | — |
+| Architectural Katas | Ted Neward | 2010 | http://blogs.newardassociates.com/blog/2010/architectural-katas.html | architecture, kata, practice, design | — |
+| Contributor Covenant | Coraline Ada Ehmke | 2014 | https://www.contributor-covenant.org/ | open-source, code-of-conduct, community-governance | — |
+| Rethinking Open Source Mentorship in the AI Era | GitHub Blog | 2025 | https://github.blog/open-source/maintainers/rethinking-open-source-mentorship-in-the-ai-era/ | open-source, mentorship, ai, pr-review, maintainer-burnout | — |
+
 ## Online Courses
 
 | Title | Provider | Year | URL | Tags | Entry |
