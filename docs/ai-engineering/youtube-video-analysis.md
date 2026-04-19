@@ -86,6 +86,10 @@ That's not a paraphrase of hand-taken notes. The AI read the transcript, identif
 
 The entry includes nine direct quotes, each tagged to specific threads in the essay series this research is building toward. That cross-linking happened because the AI had access to a research corpus built up over many prior sessions — it's the compound return on prior investment, not something available on day one. A first session produces a good standalone library entry. The connections accumulate as the body of work grows.
 
+The actual files this produced are browsable on GitHub:
+- **Transcript** — [`research/enkamp-shi-heng-yi-mastery/sources/ref-01-transcript.md`](../../research/enkamp-shi-heng-yi-mastery/sources/ref-01-transcript.md) — 20 minutes of conversation, timestamped and searchable
+- **Library entry** — [`library/enkamp-shi-heng-yi-mastery.md`](../../library/enkamp-shi-heng-yi-mastery.md) — the annotated reference document produced from it
+
 ---
 
 ## What Makes This Different From Just Asking an AI to Summarize a Video
