@@ -113,6 +113,8 @@ Everything above is diagnosis and theory. If you're the person standing in front
 
 The answer depends on which quadrant you're facing, whether you're at a kickoff or mid-flight, and how much organizational authority you carry. The [Practitioner's Guide](the-full-cup-practitioners-guide.md) walks through the full transformation arc: reading the room, setting tap controls, creating structural bows in a cameras-off world, and sustaining the change once you've started. It's designed for the remote-first context where most of this work happens now — where the full cup announces itself as a silent avatar and the bow at the door has to be engineered into the format rather than felt in the room.
 
+There is a counter-argument worth confronting. If the organizational dysfunction described above is as pervasive as it is — and it is — why not skip the human development and automate the execution layer entirely? AI can follow processes consistently, doesn't need bandwidth management, and never has a full cup. The economic case for replacement is real. But automation deployed into a system that never invested in its people doesn't liberate them. It discards them. The Lattice without the dojo. The practitioner's position is that fixing the loop *for the humans* — not removing them from it — produces something automation alone cannot: people who grow, improve, and bring the creativity and judgment that no process can encode.
+
 ---
 
 ## The Cup Grows by Doing So
@@ -141,6 +143,7 @@ The cup is always filling. The question is whether anyone is tending the tap.
 | [Thread 9: Emptiness/Possibility](../../.planning/zen-karate/threads.md) | Philosophical foundation — shoshin, Inoue's "no style," Lucas and Doris |
 | *The Goal* (Goldratt, 2011) | Theory of constraints — system throughput limited by tightest constraint |
 | *The Phoenix Project* (Kim et al., 2017) | WIP limits, the three ways, DevOps as systems thinking |
+| [Daniel Miessler — AI WILL Replace Knowledge Workers](../../library/daniel-miessler-ai-replace-knowledge-workers.md) | The automation-first counter-position: lattice architecture, expertise as articulation gap |
 
 ## Open Review
 
@@ -148,6 +151,7 @@ This essay was developed through adversarial sparring during drafting. Key unres
 
 - **The "empty the cup" teaching traditionally addresses assumptions, not operational noise.** This essay reframes it toward bandwidth — which is a different claim than the source material makes. The reframe may be the essay's contribution, or it may be stretching the metaphor beyond what it can hold.
 - **"Cutting off the tap" assumes someone has the organizational authority to do it.** Individual contributors in full-cup organizations often can't reduce their own load. The essay's intervention may only apply to people with positional power.
+- **The automation-first counter-position may be economically stronger.** If organizations can get more consistent output at lower cost through AI automation ([Miessler's argument](../../library/daniel-miessler-ai-replace-knowledge-workers.md)), the economic incentive to invest in human development may disappear for most organizations — regardless of what the practitioner believes they *should* do. This essay's preferred future may require organizations to act against their economic self-interest, or it needs the evidence (from lean/DevOps research) that human development actually produces better business outcomes.
 
 ## Related Reading
 

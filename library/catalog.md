@@ -18,6 +18,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | The Phoenix Project | Gene Kim et al. | 2017 | 978-0988262508 | devops, systems-thinking, lean | — |
 | The Unicorn Project | Gene Kim | 2020 | 978-1942788768 | devops, systems-thinking, developer-experience | — |
 | DevOps Handbook | Gene Kim et al. | 2017 | 978-1942788003 | devops, lean, automation | — |
+| Accelerate | Nicole Forsgren, Jez Humble, Gene Kim | 2018 | 978-1942788331 | devops, lean, measurement, organizational-performance | — |
 | Site Reliability Engineering | Betsy Beyer et al. | 2017 | 978-1491929124 | sre, reliability, operations | — |
 | Clean Code | Robert C. Martin | 2013 | 978-0132350884 | software-craft, code-quality | — |
 | Clean Architecture | Robert C. Martin | 2017 | 978-0134494166 | architecture, design-principles | — |

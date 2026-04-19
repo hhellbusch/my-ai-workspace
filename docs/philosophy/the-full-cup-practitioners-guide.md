@@ -141,6 +141,16 @@ You've diagnosed the quadrant, set tap controls, and facilitated with structural
 
 **Protect the register.** The compounding-issue register only works if it's actively maintained and visibly acted on. If items sit on it for months without being addressed, it becomes a monument to futility — evidence that the team identifies problems but can't fix them. Commit to a cadence: one item per sprint, resolved or explicitly deprioritized with a reason. The register is the team's immune system against entropy. It dies when it's neglected.
 
+### Build Yourself Out of the Job
+
+This is the hardest discipline in the guide and the one most practitioners skip.
+
+If the tap controls only work because you're maintaining them — if the retro only diagnoses quadrants because you facilitate it, if the register only gets acted on because you champion it, if the focus blocks only survive because you defend them — then you haven't fixed the system. You've become the system. That's the hero trap: the organization rewards you for absorbing the load, you feel indispensable, and the moment you leave or burn out, every tap control you built collapses because it depended on you, not on the team.
+
+The sensei doesn't make the dojo run by doing everything. The sensei creates the conditions — the rituals, the structure, the culture of accountability — that hold the space whether the sensei is in the room or not. The bow at the door works because it's a shared practice, not because one person enforces it.
+
+Your success metric as a practitioner isn't "the team is doing well." It's "the team is doing well and I haven't touched anything in two sprints." Every sustaining mechanism above should be evaluated against this question: does this survive without me? If it doesn't, it's dependency, not capacity. Keep building until you can step back and the system holds.
+
 ---
 
 ## Honest Limits
