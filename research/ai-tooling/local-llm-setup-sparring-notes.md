@@ -23,12 +23,10 @@ review:
 
 **Author response:**
 
-> _[Fill in: Is this a valid critique? Does the framing need qualifying? Or is the "coming measurement" framing intentional — setting up the track rather than claiming results?]_
+> Agreed — it's just an intention at this point. The electricity section should clearly signal "research plan, not finding."
 
 **Resolution:**
-- [ ] Revise framing to make the "planned, not yet measured" status clearer in the electricity section
-- [ ] Leave as-is — direction-reviewed status covers this
-- [ ] Add explicit "this is the research plan, not the finding" language
+- [x] Add explicit "this is the research plan, not the finding" language — revised opening of electricity section
 
 ---
 
@@ -43,12 +41,10 @@ review:
 
 **Author response:**
 
-> _[Fill in: Should a caveat be added to the table — e.g., "estimated thresholds, not benchmarked"? Or are you comfortable with the expert-judgment framing?]_
+> Agreed with this concern. The table should be clearly flagged as estimated, not benchmarked.
 
 **Resolution:**
-- [ ] Add a table caption: "Estimated thresholds based on task analysis — not benchmarked"
-- [ ] Leave as-is — consistent with the direction-reviewed status
-- [ ] Add inline note after table explaining these are judgment-based estimates
+- [x] Added note after table: "estimated thresholds based on task analysis, not benchmarked — test a smaller model first"
 
 ---
 
@@ -63,12 +59,10 @@ review:
 
 **Author response:**
 
-> _[Fill in: Has any 7B/13B experimentation been done here? Is the 32B claim a floor or a recommendation? Should the language be softened to "32B is where we expect quality to become consistent" rather than "minimum"?]_
+> This guide is intended to answer this question — it's the starting point for figuring out what to try first. No 7B/13B experimentation has been done yet. 32B should be framed as a hypothesis to test, not a minimum.
 
 **Resolution:**
-- [ ] Soften "realistic minimum" to "where quality becomes consistent"
-- [ ] Add: "Testing a smaller model first is a reasonable starting point — the degradation is gradual, not a cliff"
-- [ ] Leave as-is — the workspace complexity survey is honest and the judgment is defensible
+- [x] Reframed: "32B is the threshold where we expect quality to become consistent — but that's a hypothesis, not a finding." Explicitly frames the guide as the vehicle for answering the question through experimentation.
 
 ---
 
@@ -83,12 +77,12 @@ review:
 
 **Author response:**
 
-> _[Fill in: Does the existing direction-reviewed callout in the header adequately cover this? Or does the body text's confident tone create a misleading signal?]_
+> Honesty is a primary driver. Interesting that the attempt to signal honesty is itself a rhetorical pattern the spar flagged. Worth capturing as a case study — and possibly improving the system to catch this behavior proactively.
 
 **Resolution:**
-- [ ] Rename "Honest Assessment" section to something less self-congratulatory — e.g., "What to Expect"
-- [ ] Already done — section is called "What to Expect (Honest Assessment)" which is fine
-- [ ] Add a qualifier to the electricity section's opening line
+- [ ] Backlog: case study candidate — "performed honesty" pattern (AI self-labels as honest while making unverified claims)
+- [ ] Backlog: explore system-level check — pre-commit or spar rule that flags self-referential honesty claims in new docs
+- Note: section is already "What to Expect (Honest Assessment)" — no rename needed. The deeper issue is structural, captured in the case study candidate.
 
 ---
 
@@ -103,12 +97,10 @@ review:
 
 **Author response:**
 
-> _[Fill in: Is the actual target audience "technical practitioner unfamiliar with local LLMs"? Should the audience statement be updated? Or is the wide-audience framing intentional given the repo's stated goal of reaching non-technical peers?]_
+> The audience will likely be more technical in practice — the VRAM/RAM requirements self-select. Most non-technical readers won't be able to run this anyway.
 
 **Resolution:**
-- [ ] Narrow the audience statement: "Technical practitioners curious about running AI locally"
-- [ ] Add brief explanations of CLI flags for non-technical readers (e.g., explain `-s pcut`)
-- [ ] Leave as-is — direction-reviewed status and the ⚠️ callout manage expectations
+- [x] Narrowed audience statement to "Technical practitioners curious about running AI locally" with explicit note about hardware requirements as the natural filter.
 
 ---
 
@@ -123,12 +115,10 @@ review:
 
 **Author response:**
 
-> _[Fill in: Does privacy matter for your actual use case? Should it stay as the lead argument with a note that its force depends on what you're working with? Or reorder so privacy isn't first?]_
+> This workspace is public, but there are other audiences and contexts where privacy does matter (some work does care about it — just not this repo). The privacy argument is valid for the general audience even if it doesn't apply here specifically.
 
 **Resolution:**
-- [ ] Add qualifier: "Privacy matters most when your codebase contains proprietary IP or regulated data"
-- [ ] Reorder: lead with "Offline work" or "Experimentation" instead
-- [ ] Leave as-is — the document addresses a general audience and privacy is legitimately important for many of them
+- [x] Added qualifier inline: "Privacy matters most when your work involves proprietary code, customer data, or regulated information. For public or open-source work the argument is weaker, but it's relevant to anyone who uses the same tools across contexts."
 
 ---
 

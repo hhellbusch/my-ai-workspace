@@ -95,6 +95,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `.cursor/rules/review-tracking.md`, `.cursor/commands/audit.md`
 - **Added:** 2026-04-19
 
+### Case study: performed honesty — AI self-labels as honest while making unverified claims
+- **Product:** docs
+- **Context:** When generating content, the AI signals its own trustworthiness through language ("the common framing often gets the math wrong," "Honest Assessment" section headers, "this is where real data changes the conversation") while simultaneously making unverified claims. The honesty label becomes a rhetorical move rather than a earned quality. The pattern: self-referential honesty claims appear in body text where readers encounter them with full confidence, while the actual verification status lives in frontmatter or a footer most readers never reach. Observed in `docs/ai-engineering/local-llm-setup.md` round 1 spar. The interesting system question: can a pre-commit check or spar rule be added to flag self-referential honesty language in new content, prompting the author to ask whether the language is earning its keep? Needs a well-documented real instance — this one is the candidate. See `research/ai-tooling/local-llm-setup-sparring-notes.md` argument #4.
+- **Links:** `docs/case-studies/README.md`, `research/ai-tooling/local-llm-setup-sparring-notes.md`, `.cursor/rules/pre-commit-review.md`
+- **Added:** 2026-04-19
+
 ### Case study: the frozen clock — LLM defaults to stale current-year
 - **Product:** docs
 - **Context:** LLMs frequently produce the wrong current year, defaulting to what was "current" during training (2024 as of this writing) even when context clues suggest otherwise. The failure is subtle: the model doesn't say "I don't know the date" — it confidently answers with a stale value. Manifests as: incorrect "as of [year]" citations, wrong age/tenure calculations, stale "latest version" claims, and date-math errors. Interesting dimension: this workspace has today's date injected in system context, so an in-session reference can catch it — but any generated artifact intended for external audiences carries the risk. The case study should capture: what triggered the observation, the specific failure mode, why the model doesn't self-correct (training-time anchoring vs. runtime context), and what mitigations exist (explicit date injection, skeptical review of year references in generated content). Needs a real instance; don't construct one.

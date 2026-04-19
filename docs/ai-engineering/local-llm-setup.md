@@ -6,8 +6,8 @@ review:
 
 # Running a Local LLM: Setup, Tradeoffs, and Real Electricity Cost
 
-> **Audience:** Anyone curious about running an AI model on their own hardware rather than using a cloud service.
-> **Purpose:** Covers why you might want to, what it takes to set it up with Cursor and Claude Code, and how to actually measure what it costs in electricity — not estimates, but readings from a real circuit monitor.
+> **Audience:** Technical practitioners curious about running AI locally. The hardware requirements (8 GB VRAM minimum for useful GPU inference) mean this is most relevant to those already comfortable with system administration.
+> **Purpose:** Covers why you might want to, what it takes to set it up with Cursor and Claude Code, and how to design an electricity measurement approach using circuit-level monitoring. Setup steps are a starting point for experimentation, not a verified how-to.
 >
 > ⚠️ **Direction-reviewed.** The direction and content have been read and guided by the author, but the setup steps, model recommendations, and power figures have not been tested on this hardware. Treat as a research starting point, not a verified how-to.
 
@@ -19,7 +19,7 @@ Cloud AI tools (Cursor, Claude, Copilot) work by sending your text to a remote s
 
 But there are legitimate reasons to want the model running locally, on your own hardware:
 
-- **Privacy.** Your code, your prompts, your context never leave your network.
+- **Privacy.** Your code, your prompts, your context never leave your network. This matters most when your work involves proprietary code, customer data, or regulated information — for public or open-source work the argument is weaker, but it's relevant to anyone who uses the same tools across contexts.
 - **Offline work.** No internet connection required once the model is downloaded.
 - **Cost at scale.** At high enough usage, the electricity cost of a local GPU can undercut API fees — but the crossover point is higher than most people expect.
 - **Experimentation.** You can run models that aren't available via any API, or run them in ways APIs don't permit.
@@ -242,6 +242,8 @@ VRAM determines what you *can* run. Task complexity determines what you *should*
 
 Quality doesn't fall off a cliff — it degrades gradually. A 7B model will attempt any of these; it just produces noticeably weaker results as complexity increases, and becomes unreliable for agentic workflows (it loses track of what it was doing mid-task).
 
+*These are estimated thresholds based on task analysis, not benchmarked results. Actual degradation depends on the specific model, quantization level, and prompt quality. Testing a smaller model first is the right approach — your own observations are more reliable than this table.*
+
 ### Where this workspace sits
 
 This workspace is not a simple coding assistant use case. An honest survey:
@@ -251,7 +253,7 @@ This workspace is not a simple coding assistant use case. An honest survey:
 - **Agentic workflows** (research-and-analyze skill, multi-stage meta-prompt pipelines, 27 slash commands) — these are multi-step autonomous tasks; a model that loses coherence mid-chain produces silently wrong output, which is worse than an error
 - **Essay writing with preserved voice** — the philosophy and AI-engineering essay tracks require consistency in stance and tone across sessions; a smaller model will drift toward generic prose
 
-The realistic minimum for meaningful work here is **32B**. For the agentic workflows and essay writing, **70B** is where reliability becomes consistent. Below 32B, expect to review and redo output more often — not because the model is wrong about syntax, but because it misses the *why* behind what's already in the codebase.
+**32B is the threshold where we expect quality to become consistent** for this workspace — but that's a hypothesis, not a finding. The purpose of the electricity measurement work and this guide is to answer that question through experimentation. Start with whatever model fits your hardware, observe where it degrades, and use that as your actual calibration point. A 7B or 13B model may handle more than the complexity table suggests for your specific tasks; a 32B may still struggle with the agentic workflows. There's no substitute for running it.
 
 ### Recommended models by use case (2026)
 
@@ -315,7 +317,7 @@ The questions sound similar — "how do I run a model locally?" — but the hard
 
 ## The Electricity Picture
 
-This is where having real circuit-level data changes the conversation.
+This is where having real circuit-level data *will* change the conversation — once the measurements are taken. The monitoring setup is in place and has been capturing whole-home circuit data for over a year. What follows is the research plan: the methodology for isolating LLM inference cost from baseline draw. No LLM workloads have been measured yet; the case studies come later.
 
 Published estimates for system-level power draw under AI inference load:
 
