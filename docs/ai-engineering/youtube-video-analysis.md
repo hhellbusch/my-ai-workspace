@@ -25,11 +25,13 @@ For a more integrated or repeatable approach, YouTube provides a public API for 
 
 ### What if the podcast or talk isn't on YouTube?
 
-Check the platform first. Spotify and Apple Podcasts both auto-generate transcripts for many shows — look for a transcript tab on the episode page. The podcast's own website is also worth checking, since many shows publish transcripts as blog posts or show notes.
+Check the platform first. Both Spotify and Apple Podcasts (iOS 17.4 and later) generate transcripts for many shows, viewable on the episode page. Worth checking — but be aware that neither makes it easy to export the full text. Both are designed as read-along features rather than research tools, so you may be limited to reading along or sharing short excerpts rather than pulling the full transcript into an AI.
 
-If no transcript exists anywhere, [OpenAI Whisper](https://github.com/openai/whisper) is a free open-source tool that transcribes any audio file locally with very good accuracy. Running it directly requires some technical setup (Python, command line). On a Mac, [MacWhisper](https://goodsnooze.gumroad.com/l/macwhisper) is a free drag-and-drop interface built on top of Whisper — no command line required. On other platforms, [Whisper.cpp](https://github.com/ggerganov/whisper.cpp) is a lightweight open-source port that also avoids the Python dependency.
+The podcast's own website is also worth checking, since many shows publish transcripts as blog posts or show notes — and those are easy to copy.
 
-The practical path for most people: check Spotify or Apple Podcasts first, then MacWhisper if the transcript isn't there.
+If no transcript is available anywhere, [OpenAI Whisper](https://github.com/openai/whisper) is a free open-source tool that transcribes any audio file locally with very good accuracy. Running it directly requires some technical setup (Python, command line). On a Mac, [MacWhisper](https://goodsnooze.gumroad.com/l/macwhisper) is a free drag-and-drop interface built on top of Whisper — no command line required. On other platforms, [Whisper.cpp](https://github.com/ggerganov/whisper.cpp) is a lightweight open-source port that also avoids the Python dependency.
+
+The practical path: check the podcast website first for a published transcript, then MacWhisper or Whisper.cpp if you need to generate one from the audio.
 
 The rest of this document explains what a more integrated setup adds on top of that.
 
