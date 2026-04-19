@@ -1,15 +1,17 @@
 # Drop a YouTube Link, Get a Structured Analysis
 
 > **Audience:** Anyone curious about what AI tools can do with video content.
-> **Purpose:** Explains a specific AI-assisted workflow: giving an AI a YouTube link and getting back a rich, permanent reference document.
+> **Purpose:** Explains a specific AI-assisted workflow: giving an AI a YouTube link and getting back research notes that follow traditional source documentation methodology.
 
 ---
 
 ## The Problem It Solves
 
-You find a talk, interview, or lecture that looks relevant to something you're working on. It's 45 minutes long. You don't have 45 minutes. Even if you watch it, you'll only retain a fraction — and if you want to reference a specific quote three weeks later, you're scrubbing through the video again.
+Good research has always involved the same steps: find a source, take notes on it, record the key claims, file it somewhere you can find it again, and connect it to what you already know. That process works. The problem is that video and audio make it slow — you can't skim a talk the way you can skim an article, and there's no margin to annotate.
 
-This workflow solves that. Give the AI a YouTube link. Walk away. Come back to a structured document with timestamped key themes, notable quotes, and connections to related material you've already read.
+This workflow handles the mechanical parts of that process automatically. Give the AI a YouTube link. Walk away. Come back to a properly structured source document: the primary source preserved in full, key themes extracted with direct quotes, claims categorized, and the new source connected to your existing body of research.
+
+It doesn't replace the research process. It follows it — just without the manual note-taking.
 
 ---
 
@@ -50,17 +52,17 @@ The manual approach works well for a single video. The integrated workflow becom
 
 ## What Actually Happens
 
-The workflow runs in three steps:
+The workflow follows traditional research methodology in three steps:
 
-**1. Fetch the transcript.** A small program pulls the transcript automatically — no manual copying — and saves it as a text file with timestamps every minute or so. A 20-minute video typically produces 300 to 400 transcript segments.
+**1. Secure the primary source.** A small program pulls the transcript automatically and saves it as a permanent text file with timestamps — the equivalent of getting a source on file before you start taking notes. A 20-minute video typically produces 300 to 400 transcript segments.
 
-**2. Analyze against your context.** The AI reads the transcript and extracts:
+**2. Analyze and annotate.** The AI reads the transcript and produces structured notes:
 - The speaker's central claims and how they're supported
 - Key themes with direct quotes
-- How the ideas connect to other material you've already referenced
-- What's opinion or framework versus what's a factual claim that could be checked
+- How the ideas connect to other material already in the research library
+- What's opinion or framework versus what's a verifiable factual claim
 
-**3. Save a library entry.** The result is a permanent reference document: the source details, AI-enriched key themes, a notable quotes table, and connections to related sources. Any future session can draw from it without re-reading or re-watching anything.
+**3. File the library entry.** The result is an annotated bibliography entry: source details, key themes, a notable quotes table, and cross-references to related sources. The kind of notes you'd take anyway — produced consistently, filed immediately, and available to every future session without re-reading or re-watching.
 
 ---
 
