@@ -52,6 +52,15 @@ Mark sources with a priority to help focus the research phase:
 - **Key moments or quotes:**
 - **URL:** https://www.youtube.com/watch?v=lPYnh357tLg
 
+### Jesse Enkamp × Shi Heng Yi — If I Started Martial Arts From Scratch In 2026
+- **Speakers:** Jesse Enkamp, Shi Heng Yi
+- **Priority:** Core
+- **Why it resonates:** *(To be filled — the first source where both primary philosophical voices appear together. The ego arc and "invisible masters" material is unique to this conversation.)*
+- **Key moments or quotes:** "You cannot perfect the martial art. You use martial arts to perfect yourself." "The real masters at some point are simply invisible. They don't leave a trace." "No more master. All done. — Always a student. — Yes." Shi Heng Yi's admission of going through both stages of the ego trap: enjoying the role and transcending it.
+- **URL:** https://www.youtube.com/watch?v=aq92sWWU4FM
+- **Cached:** [`if-i-started-martial-arts-from-scratch-in-2026-id-do-this.md`](sources/if-i-started-martial-arts-from-scratch-in-2026-id-do-this.md)
+- **Library entry:** [`library/enkamp-shi-heng-yi-mastery.md`](../../library/enkamp-shi-heng-yi-mastery.md)
+
 ### Shi Heng Yi — 5 Hindrances to Self-Mastery (TEDxVitosha)
 - **Speaker:** Shi Heng Yi
 - **Priority:** Core

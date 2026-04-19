@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-18 (Miessler DA thesis research pipeline, Thread 21, library entry)
+> Last updated: 2026-04-19 (Enkamp × Shi Heng Yi mastery interview — transcript, analysis, library entry)
 
 ## In Progress
 
@@ -45,14 +45,14 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### Essay: The Way Is in Training (PRIORITY — first essay)
 - **Product:** docs
 - **Context:** First essay in the zen-karate series (swapped from second position). The philosophical anchor: what lifelong practice teaches that cannot be learned from books. Inoue's "if kihon can do, any kata can do" as the spine. The Hayashi → Inoue → Usami lineage as visible proof that the Way transmits through training. Rika's 7-year journey, 5-hour train rides, retirement at 27 as non-attachment. The uchi-deshi experience in Inoue's own words. Deshimaru's "every moment of life is kata." The personal return to practice after the gap — what survived, what atrophied, what the body remembers. Draws from threads 2, 4, 5, 7, 12, 13, 15. Source material is deep (3 Inoue sources, Rika bio, Hayashi bio, Jesse Enkamp articles, Deshimaru). **Blocked on personal experiential content in Phase 1.**
-- **Source material available:** Inoue comprehensive bio + teaching philosophy, Rika Usami biography, Hayashi biography, Jesse Enkamp articles (5), Deshimaru, personal practice notes (partial — needs formative moments, philosophical anchors).
+- **Source material available:** Inoue comprehensive bio + teaching philosophy, Rika Usami biography, Hayashi biography, Jesse Enkamp articles (5), Enkamp × Shi Heng Yi mastery conversation (ego arc, invisible masters, stages of mastery), Deshimaru, personal practice notes (partial — needs formative moments, philosophical anchors).
 - **Links:** `.planning/zen-karate/threads.md`, `.planning/zen-karate/`, `research/zen-karate-philosophy/sources/`
 - **Added:** 2026-04-17
 
 ### Essay: The Dojo, Open Source, and Ways of Working (second essay)
 - **Product:** docs
 - **Context:** Second essay in the zen-karate series (moved from first position). Takes the philosophical vocabulary from Essay 1 and applies it: the dojo as "a place of the Way" adopted — sometimes deeply, often superficially — in agile transformation (engineering dojos), open source culture (contributor etiquette, senpai/kohai in PR review), and DevOps practice (code kata, architectural kata). What's lost when teams borrow the vocabulary without the philosophy. Draws from threads 3, 6, 7, 10, 11, 12. Connects to `docs/ai-engineering/ai-assisted-upstream-contributions.md` as a worked example. **Needs targeted research on agile dojo movement (Target, Ford, Pivotal Labs), open source etiquette formalization, code kata origins (Dave Thomas).**
-- **Source material available:** Deshimaru, Shi Heng Yi transcript, upstream contributions essay, Inoue "no style" philosophy, Jesse Enkamp articles. Agile dojo research still needed.
+- **Source material available:** Deshimaru, Shi Heng Yi transcripts (3 — Betrayal, Isolation, Enkamp mastery conversation), upstream contributions essay, Inoue "no style" philosophy, Jesse Enkamp articles. Agile dojo research still needed.
 - **Links:** `.planning/zen-karate/threads.md`, `.planning/zen-karate/`, `docs/ai-engineering/ai-assisted-upstream-contributions.md`
 - **Added:** 2026-04-17
 
@@ -75,6 +75,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Added:** 2026-04-10
 
 ## Ideas
+
+### Case study: the frozen clock — LLM defaults to stale current-year
+- **Product:** docs
+- **Context:** LLMs frequently produce the wrong current year, defaulting to what was "current" during training (2024 as of this writing) even when context clues suggest otherwise. The failure is subtle: the model doesn't say "I don't know the date" — it confidently answers with a stale value. Manifests as: incorrect "as of [year]" citations, wrong age/tenure calculations, stale "latest version" claims, and date-math errors. Interesting dimension: this workspace has today's date injected in system context, so an in-session reference can catch it — but any generated artifact intended for external audiences carries the risk. The case study should capture: what triggered the observation, the specific failure mode, why the model doesn't self-correct (training-time anchoring vs. runtime context), and what mitigations exist (explicit date injection, skeptical review of year references in generated content). Needs a real instance; don't construct one.
+- **Links:** `docs/case-studies/README.md`
+- **Added:** 2026-04-19
 
 ### Case study: the implicit "yes" — context without agreement treated as consent
 - **Product:** docs
