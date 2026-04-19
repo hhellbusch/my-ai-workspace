@@ -61,6 +61,15 @@ Mark sources with a priority to help focus the research phase:
 - **Cached:** [`if-i-started-martial-arts-from-scratch-in-2026-id-do-this.md`](sources/if-i-started-martial-arts-from-scratch-in-2026-id-do-this.md)
 - **Library entry:** [`library/enkamp-shi-heng-yi-mastery.md`](../../library/enkamp-shi-heng-yi-mastery.md)
 
+### André Bertel — Adaptive Reliability (Seminar Clip)
+- **Speaker:** André Bertel (student of Asai Tetsuhiko, IJKA Shotokan)
+- **Priority:** Influential
+- **Why it resonates:** *(To be filled — how "adaptive reliability" maps to returning to practice after a long gap, and whether the concept of personalizing technique resonates with the author's experience of a changed body remembering old forms.)*
+- **Key moments or quotes:** "Being able to do movements is by no means mastery. Just being able to make movements is a little more than dance." "Adaptive reliability is when you can do a technique in a freestyle context at any moment." "Masters seem to have different styles because they've developed each technique according to their own body type."
+- **URL:** https://www.youtube.com/watch?v=MX-ZulxpwCs
+- **Cached:** [`andré-bertel-karate-adaptive-reliability.md`](sources/andré-bertel-karate-adaptive-reliability.md)
+- **Library entry:** [`library/andre-bertel-adaptive-reliability.md`](../../library/andre-bertel-adaptive-reliability.md)
+
 ### Shi Heng Yi — 5 Hindrances to Self-Mastery (TEDxVitosha)
 - **Speaker:** Shi Heng Yi
 - **Priority:** Core
