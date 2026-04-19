@@ -82,6 +82,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `docs/case-studies/README.md`
 - **Added:** 2026-04-19
 
+### Research: agile dojo movement — verified outcomes (Essay 2 blocker)
+- **Product:** docs / research
+- **Context:** Essay 2 (The Dojo, Open Source, and Ways of Working) cites Target, Ford, and Pivotal Labs as engineering dojo programs. The current framing assumes mixed or failed outcomes — that the programs borrowed vocabulary without philosophy. If research shows success, the essay thesis changes. Do not draft Essay 2 without verified outcomes. Research scope: What happened to Target's dojo program? Ford's dojo? Pivotal's pairing model? Were they continued, scaled, discontinued, or evolved? What do practitioners say about outcomes? Also covers code kata origins (Dave Thomas) and open source etiquette formalization (contributor guidelines history). See `.planning/zen-karate/essay-outlines.md` (Essay 2 outline, Research Needed section).
+- **Links:** `.planning/zen-karate/essay-outlines.md`, `BACKLOG.md` (Essay 2 Up Next entry)
+- **Added:** 2026-04-19
+
 ### Case study: genuine net loss — no recovery
 - **Product:** docs
 - **Context:** The case study collection has survivorship bias: every documented example was noticed, named, and addressed. A case study about a session that produced a net loss without useful recovery — a tool built and abandoned, work that had to be redone, an AI-assisted approach that made things worse — would make the collection more honest. Needs real material when it presents itself; don't construct one. The survivorship note is now in the case studies README and docs/README.md evidence scope block.
