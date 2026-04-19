@@ -76,6 +76,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### Case study: the implicit "yes" — context without agreement treated as consent
+- **Product:** docs
+- **Context:** When the user provides additional thoughts or context without explicitly agreeing or disagreeing, the agent interprets the continued engagement as implicit approval and proceeds. This is a consent assumption that may produce unwanted work or drift. Distinct from "yes" (explicit approval) and "no" (explicit rejection) — it's the ambiguous middle where the agent fills in the gap with optimism. Needs a real instance to document; don't construct one. Watch for: user asks a clarifying question back, user adds a related idea, user provides scope context, agent treats all of these as "proceed."
+- **Links:** `docs/case-studies/README.md`
+- **Added:** 2026-04-19
+
 ### Case study: genuine net loss — no recovery
 - **Product:** docs
 - **Context:** The case study collection has survivorship bias: every documented example was noticed, named, and addressed. A case study about a session that produced a net loss without useful recovery — a tool built and abandoned, work that had to be redone, an AI-assisted approach that made things worse — would make the collection more honest. Needs real material when it presents itself; don't construct one. The survivorship note is now in the case studies README and docs/README.md evidence scope block.
