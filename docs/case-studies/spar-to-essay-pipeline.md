@@ -113,6 +113,7 @@ Thesis D didn't emerge from the adversarial review alone. The spar generated the
 | [Thread 20](../../.planning/zen-karate/threads.md) | Planning entry with thesis, connections, evidence gaps |
 | [Thread development — voice inputs #13-16](../../.planning/zen-karate/thread-development.md) | Author observations captured during the escalation |
 | [/spar command](../../.cursor/commands/spar.md) | The adversarial review tool that started the pipeline |
+| [When the Sparring Partner Shapes the Fighter](spar-distortion.md) | Sequel: the essay this case study documents was subsequently revised because the spar process distorted its framing |
 
 ---
 

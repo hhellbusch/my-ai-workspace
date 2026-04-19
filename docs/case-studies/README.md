@@ -47,3 +47,5 @@ Documented examples of meta-development patterns, workflow decisions, and AI-ass
 15. `workflow` **[What the Corpus Sees That the Document Can't](corpus-level-spar.md)** — Sparring the full essay collection simultaneously caught scope overclaims, conditional universals, and framing drift that per-document review had missed. Documents can be individually coherent while collectively misleading.
 
 16. `workflow` **[When a Spar Argument Outgrows Its Essay](spar-to-essay-pipeline.md)** — A single adversarial argument (#9) escalated from counter-position through voice inputs to a new thesis, a new thread, and a fully drafted essay in one session. Spar as generative pressure, not just quality gate.
+
+17. `failure` **[When the Sparring Partner Shapes the Fighter](spar-distortion.md)** — The spar that generated the essay also distorted its framing — oppositional structure when the author's position was extension. The same tool that catches bias created it. Self-spar caught the mismatch; the fix was reframing from "I disagree" to "I agree AND."

@@ -6,6 +6,22 @@ New archival batches are prepended below (newest batch first).
 
 ---
 
+## Archived 2026-04-18 (2 items — batch 10)
+
+### Case study: biographical content concern → voice-approved system
+- **Product:** docs
+- **Context:** Concern about AI-generated biographical claims (professional titles, experience statements, personal opinions) led to the voice-approved validation type. Documented as a case study exploring why "read" validation isn't sufficient for identity claims and how the distinction was integrated at every workflow checkpoint.
+- **Links:** `docs/case-studies/who-is-speaking.md`, `.cursor/rules/review-tracking.md`, `AI-DISCLOSURE.md`
+- **Completed:** 2026-04-17
+
+### AI disclosure rewrite — honest review status
+- **Product:** docs
+- **Context:** Rewrote AI-DISCLOSURE.md from 270-line checklist to honest 50-line disclosure with three review tiers and validation types. Updated README notice, STYLE.md footer template, .cursorrules.
+- **Links:** `AI-DISCLOSURE.md`, `README.md`
+- **Completed:** 2026-04-18
+
+---
+
 ## Archived 2026-04-18 (1 item — batch 9)
 
 ### Biographical content tracking — `voice-approved` validation type

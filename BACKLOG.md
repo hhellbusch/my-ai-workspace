@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-18 (cross-links, PAI library entry, spar-to-essay case study)
+> Last updated: 2026-04-18 (Dojo essay revision, spar-distortion case study)
 
 ## In Progress
 
@@ -197,6 +197,18 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 Rolling cap: at most **15** items stay here (newest first). Older completions live in `BACKLOG-ARCHIVE.md` (see `/backlog` command — **Done retention**). Git history remains authoritative.
 
+### Case study: spar-distortion — when the sparring partner shapes the fighter
+- **Product:** docs
+- **Context:** Self-spar (#13-18) caught that the Dojo After the Automation essay's oppositional framing was a distortion created by the spar-driven drafting process. Essay revised from "I disagree" to "I agree AND." Case study documents tool-induced bias: the same tool that catches bias created it. Labeled `failure` — adversarial energy absorbed into structure. Registered as case study #17 (failure) in case studies README and #19 in docs reading order.
+- **Links:** `docs/case-studies/spar-distortion.md`, `docs/philosophy/the-dojo-after-the-automation.md`, `research/zen-karate-philosophy/sparring-notes.md`
+- **Completed:** 2026-04-18
+
+### Dojo After the Automation — revised from opposition to extension
+- **Product:** docs
+- **Context:** Major reframe after self-spar: "Two Prescriptions" → "The Same Direction." Human 3.0 as shared destination; essay asks who builds the humans. Future A reattributed to cost-reduction CFO, not Miessler. Capability stack engaged directly. Federation/Borg replaced with middle-ground acknowledgment. Library entries updated: "counter-tension" → "shared direction." Sparring notes round 2 (#13-18) logged.
+- **Links:** `docs/philosophy/the-dojo-after-the-automation.md`, `library/daniel-miessler-ai-replace-knowledge-workers.md`, `library/daniel-miessler-pai.md`
+- **Completed:** 2026-04-18
+
 ### Case study: spar-to-essay pipeline (spar #9 → Thread 20 → drafted essay)
 - **Product:** docs
 - **Context:** Published case study documenting how adversarial argument #9 escalated from counter-position through voice inputs to Thesis D, Thread 20, and a fully drafted essay in one session. Spar as generative pressure, not just quality gate. Registered as case study #16 in both READMEs.
@@ -274,17 +286,5 @@ Rolling cap: at most **15** items stay here (newest first). Older completions li
 - **Context:** AI fabricated a plausible Anthropic URL while defining sycophancy, demonstrating a related failure mode in the same paragraph. Documented as a case study tracing the immediate fix (corrected URL) and systemic fix (external URL verification rule and /review check).
 - **Links:** `docs/case-studies/fabricated-references.md`, `.cursor/rules/cross-linking.md`, `.cursor/commands/review.md`
 - **Completed:** 2026-04-17
-
-### Case study: biographical content concern → voice-approved system
-- **Product:** docs
-- **Context:** Concern about AI-generated biographical claims (professional titles, experience statements, personal opinions) led to the voice-approved validation type. Documented as a case study exploring why "read" validation isn't sufficient for identity claims and how the distinction was integrated at every workflow checkpoint.
-- **Links:** `docs/case-studies/who-is-speaking.md`, `.cursor/rules/review-tracking.md`, `AI-DISCLOSURE.md`
-- **Completed:** 2026-04-17
-
-### AI disclosure rewrite — honest review status
-- **Product:** docs
-- **Context:** Rewrote AI-DISCLOSURE.md from 270-line checklist to honest 50-line disclosure with three review tiers and validation types. Updated README notice, STYLE.md footer template, .cursorrules.
-- **Links:** `AI-DISCLOSURE.md`, `README.md`
-- **Completed:** 2026-04-18
 
 

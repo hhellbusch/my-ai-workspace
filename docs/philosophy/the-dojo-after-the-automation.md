@@ -2,8 +2,8 @@
 review:
   status: read
   read: 2026-04-18
-  at: f49a566
-  notes: "Author read during drafting session. Voice inputs #5-16 drove the thesis. Structural reorder after first read. Major revision after self-spar: shifted from oppositional framing (counter-position) to 'agree AND' framing — Miessler's Human 3.0 as shared destination, essay adds the question of who builds the humans. Federation/Borg parallel replaced with honest middle-ground acknowledgment. Capability stack engaged directly. Miessler acknowledged as co-development loop practitioner."
+  at: ff30f0e
+  notes: "Author read post-revision. Major reframe after self-spar (#13-18): oppositional framing → 'agree AND.' Human 3.0 as shared destination; essay asks who builds the humans. Federation/Borg replaced with middle-ground acknowledgment. Capability stack engaged. Miessler acknowledged as co-development loop practitioner. Previous read at f49a566 was pre-revision."
 ---
 
 # The Dojo After the Automation — What Are We Building People For?
