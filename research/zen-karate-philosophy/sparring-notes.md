@@ -101,7 +101,7 @@ Ideas, revisions, or new threads that emerge from this sparring:
 
 **Why it matters:** If the practitioner burns out, who fixes their system? A true systems answer would describe how the system maintains itself — not how one person maintains it.
 
-**Author's response:**
+**Author's response:** Valid — and personal. Has built themselves into the hero/rockstar role before, recognized it as a trap, and now actively avoids it. Connects to Shi Heng Yi's mastery teaching: the sensei doesn't make the dojo run by doing everything — they create the conditions that sustain themselves without the sensei present. The practitioner's goal isn't to be the fix — it's to build the rituals, habits, and agreements the team maintains on their own. If the practitioner must be present for it to work, they've built dependency, not capacity. The hero pattern is itself a full-cup problem: the hero's cup fills because they absorb the load, the org rewards it until burnout, the system becomes dependent instead of self-sustaining. **The essay and guide need revision to make this explicit — the practitioner builds themselves out of the job, not into it.**
 
 
 ### 9. The Miessler counter-position is stronger than the essay acknowledges
