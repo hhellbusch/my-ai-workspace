@@ -82,10 +82,10 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `docs/case-studies/README.md`, `docs/README.md`
 - **Added:** 2026-04-18
 
-### Essay: The Lattice Without the Dojo — what happens when automation replaces culture
+### Essay: The Dojo After the Automation — what are we building people for? (Thread 20)
 - **Product:** docs (bridge: philosophy ↔ AI-engineering)
-- **Context:** Counter-position to Daniel Miessler's "AI WILL Replace Knowledge Workers." Both diagnose the same organizational dysfunction; Miessler's answer is automate the execution layer, the author's is fix the loop so humans can be human in it. The dystopian version: AI adopted as cost-cutting without culture work discards the people the organization failed to develop. The essay series already builds this thesis across The Shift (AI amplifies culture), The Full Cup (organizational engineering), and Ego/AI (tools reinforce posture). This essay would make the argument explicit and address the economic incentive challenge (spar #9: the preferred future may require organizations to act against self-interest). Needs the lean/DevOps evidence (Accelerate, etc.) that human development produces better business outcomes.
-- **Links:** `library/daniel-miessler-ai-replace-knowledge-workers.md`, `research/zen-karate-philosophy/sparring-notes.md` (#8-12), `docs/philosophy/the-full-cup.md`
+- **Context:** AI will change the economics of knowledge work. Execution automates. The question isn't whether — it's what happens to the humans. Thesis (D): learning investment determines whether the transition is liberation or disposal. The dojo isn't competing with AI for the execution layer — it's building the humans who can thrive in whatever comes after. Counter-position to Miessler's "AI WILL Replace Knowledge Workers": both diagnose the same dysfunction; Miessler automates the execution layer, the author fixes the loop so humans can be human in it. Starts as philosophical position paper; evidence base (*Accelerate*, economic displacement data) builds over time. Connects The Shift (new skills as survival, not career advice), The Full Cup (why people can't learn now), Ego/AI (tools reinforce posture), and the hero trap / invisible practice voice inputs.
+- **Links:** `.planning/zen-karate/threads.md` (thread 20), `library/daniel-miessler-ai-replace-knowledge-workers.md`, `research/zen-karate-philosophy/sparring-notes.md` (#8-12), `docs/philosophy/the-full-cup.md`
 - **Added:** 2026-04-18
 
 ### Essay: The economics of AI — tokens, context windows, and what it actually costs

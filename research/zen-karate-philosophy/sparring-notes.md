@@ -112,8 +112,13 @@ Ideas, revisions, or new threads that emerge from this sparring:
 
 **Why it matters:** If the thesis depends on organizations choosing human development over cost reduction, it's describing an aspiration, not an analysis. The practitioner's guide works for the subset of organizations that already care. It has nothing to say to the ones that don't.
 
-**Author's response:**
+**Author's response:** Concedes the empirical reality: most organizations offer lip service. Protected time exists on paper; the first deadline overrides it. The outstanding orgs that genuinely invest — allocating time, judging quarterly on continuous learning, creating structural space — stand out because they're rare. But the spar forced a deeper question than "should orgs invest?": **what are we building people for?**
 
+The economic argument assumes the current frame: organizations invest in learning to improve output. If AI handles output, the investment loses justification. But this misframes the stakes. AI will change the economics regardless. The question is whether humans are prepared for what comes after execution automates. The organization that used people for execution and then automated the execution hasn't liberated anyone — it's discarded them. Not because they couldn't have grown into directors, judges, creators — but because nobody built the dojo that would have prepared them.
+
+The author's position isn't A (learning causes better outcomes and AI doesn't change that), B (AI changes things but learning orgs still win), or C (learning is moral regardless of economics). It's **D: learning investment determines whether the AI transition is liberation or disposal.** The dojo isn't competing with AI for the execution layer. It's building the humans who can thrive in whatever comes after.
+
+This response outgrew The Full Cup — it became **Thread 20: The Dojo After the Automation**, a new bridge essay. The Full Cup essay now includes the counter-argument in the practitioner bridge and a third unresolved thread in Open Review pointing at this economic tension. The deeper treatment belongs in the new essay, which starts as a philosophical position paper with the evidence base (*Accelerate*, displacement data) building over time.
 
 ### 10. "Continuously improve, learn, have fun, and be happy" is asserted, not argued
 

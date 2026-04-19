@@ -245,6 +245,53 @@ The dojo doesn't tell you to "clear your mind." The bow at the door does it. It'
 
 ---
 
+## 20. The Dojo After the Automation — What Are We Building People For?
+
+AI will change the economics of knowledge work. The execution layer — writing code, following processes, producing documents — will automate. This isn't speculation; the trajectory is visible now. The question isn't whether it happens. The question is what happens to the humans.
+
+**The optimistic version (Miessler's Human 3.0):** Humans move from execution to direction. Freed from implementation, they focus on desire, creativity, meaning — deciding what's worth building. Beautiful. But it assumes the humans *can* direct. That they have the judgment, the clarity, the trained capacity to decide what's worth building when the execution constraint disappears.
+
+**The dystopian version:** Most people won't be ready. Not because they're incapable, but because no one invested in developing those capacities. The organization used them for execution, AI replaced the execution, and now they're discarded — not because they couldn't have grown, but because nobody built the dojo that would have prepared them.
+
+**Thesis (D):** AI will change the economics of work regardless. Learning investment is what determines whether that transition is liberation or disposal. The dojo isn't competing with AI for the execution layer — it's building the humans who can thrive in whatever comes after.
+
+### Why This Isn't A, B, or C
+
+The spar against The Full Cup (#9) forced three possible positions:
+- **(A)** Learning investment causes better outcomes, and AI doesn't change that equation
+- **(B)** AI changes the equation, but orgs that keep investing still outperform
+- **(C)** Learning investment is a moral position regardless of economics
+
+All three resonate. None is sufficient alone. A needs evidence (*Accelerate*) that may not survive the AI transition. B needs a theory of what humans do that AI can't. C is honest but gives up the argument. D synthesizes: the investment isn't about maintaining current performance — it's about preparing humans for a fundamentally different kind of work. The dojo doesn't justify itself by producing better quarterly output. It justifies itself by producing people who can direct, judge, and create when the execution they used to do is handled for them.
+
+### The Lip-Service Problem
+
+Most organizations pretend to invest in learning. Protected time exists on paper. Learning goals appear in quarterly reviews. In practice, the first deadline overrides all of it. The outstanding organizations — the ones that genuinely allocate time, judge on continuous learning, create structural space — stand out precisely because they're rare. The essay must acknowledge this reality without retreating to "well, only good orgs will do this." The argument has to address what happens to the majority.
+
+### Connections
+
+- **The Full Cup (Thread 19):** Diagnoses why people can't learn now — this thread asks what happens when we stop needing them to learn *this* and need them to learn *something else entirely*.
+- **The Shift:** Identifies the new skills (decomposition, verification, communication) but frames them as career advice. This thread raises the stakes: these aren't career optimizations, they're the difference between relevance and disposal.
+- **Ego, AI, and the Zen Antidote:** AI reinforces the posture you bring. If the posture is "execute without thinking," AI accelerates that into obsolescence.
+- **Miessler's Lattice:** The organizational transparency architecture. The Lattice without the dojo is surveillance. The Lattice with the dojo is shared awareness.
+- **The hero/rockstar trap (voice input #11):** The hero who absorbs the load instead of building capacity — the micro-version of the org that uses people for execution instead of developing them.
+- **The trained mind as invisible practice (voice input #12):** The author's peers see calmness and assume personality; it's decades of training. This is what the dojo produces that can't be articulated into a process for AI to follow.
+
+### Evidence Gaps (Build Over Time)
+
+- **Accelerate (Forsgren, Humble, Kim):** The strongest empirical case that culture investment produces measurable business outcomes. Needs deep engagement — does it survive the AI transition argument?
+- **Economic data on automation displacement:** What actually happened to workers in previous automation waves? The Luddite frame vs. the "new jobs emerged" frame — which applies to knowledge work?
+- **Organizational examples:** Companies that invested in people through technological transitions vs. those that didn't. What does the outcome data look like?
+
+### Voice Prompts (for the Author)
+
+- Have you seen the lip-service version up close? What does it look like when an org says "we value learning" but the first deadline kills it?
+- The outstanding orgs that do it right — what specifically do they do? Quarterly learning reviews? Protected time? Something structural?
+- The dystopian scenario — is it hypothetical for you, or have you watched it happen? AI adopted as cost-cutting without culture investment?
+- If someone asked you "what are you building people for?" — what's the answer? What capacity do humans need that AI genuinely can't provide?
+
+---
+
 ## Mapping to Planned Essays
 
 | Thread | Planned essay(s) | Notes |
@@ -268,3 +315,4 @@ The dojo doesn't tell you to "clear your mind." The bow at the door does it. It'
 | 17. The Quarterly Dojo | Dojo/Ways of Working, Five Hindrances | Short-termism, DAVE/neurodivergence, "work smart," structural contradictions |
 | 18. Shoshin's Shadow | Dojo/Ways of Working, Ego/AI essay | Confidence calibration: too much humility, too much ego, AI sycophancy as failure mode 3 |
 | 19. The Full Cup | Bridge: Philosophy ↔ AI-Engineering | Organizational bandwidth as the real barrier to learning; the shoshin × capacity matrix; AI as flood or drain |
+| 20. The Dojo After the Automation | Bridge: Philosophy ↔ AI-Engineering | AI will replace execution; the question is whether humans are prepared for what comes after. The dojo as the thing that determines liberation vs. disposal |
