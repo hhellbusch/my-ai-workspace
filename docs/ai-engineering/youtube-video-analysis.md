@@ -27,14 +27,9 @@ Once you have the text, paste it into whichever AI chat tool you use and ask for
 
 Check the platform first. Spotify and Apple Podcasts both auto-generate transcripts for many shows — look for a transcript tab on the episode page. The podcast's own website is also worth checking, since many shows publish transcripts as blog posts or show notes.
 
-If no transcript exists anywhere, the practical options are:
+If no transcript exists anywhere, [OpenAI Whisper](https://github.com/openai/whisper) is a free open-source tool that transcribes any audio file locally with very good accuracy. Running it directly requires some technical setup (Python, command line). On a Mac, [MacWhisper](https://goodsnooze.gumroad.com/l/macwhisper) is a free drag-and-drop interface built on top of Whisper — no command line required. On other platforms, [Whisper.cpp](https://github.com/ggerganov/whisper.cpp) is a lightweight open-source port that also avoids the Python dependency.
 
-- **Otter.ai** — upload an audio file or paste a link and it produces a transcript through a web interface. Free tier available, no technical setup required.
-- **Rev.com** — similar, charges per minute, higher accuracy for complex audio.
-
-For a fully integrated setup, [OpenAI Whisper](https://github.com/openai/whisper) is a free open-source tool that transcribes any audio file locally with very good accuracy — but it requires technical setup to run.
-
-The practical path for most people: check Spotify or Apple Podcasts first, then Otter.ai if the transcript isn't already there.
+The practical path for most people: check Spotify or Apple Podcasts first, then MacWhisper if the transcript isn't there.
 
 The rest of this document explains what a more integrated setup adds on top of that.
 

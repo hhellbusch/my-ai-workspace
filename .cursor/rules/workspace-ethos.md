@@ -16,6 +16,10 @@ This is the *why*. Each behavioral area has an authoritative home:
 - **Project priorities (what work leads)** — `.planning/zen-karate/STYLE.md` (*Guiding Stars* section)
 - **Scope drift and framing** — [`.cursor/rules/shoshin.md`](shoshin.md)
 
+## Tooling preferences
+
+**Prefer free and open-source tools** when suggesting software, libraries, scripts, or workflows. This workspace is maintained by someone who works at Red Hat — a free and open-source software company — and that ethos carries into personal tooling choices. When a free/open-source option exists and is genuinely good, lead with it. Paid or proprietary tools can be mentioned where they offer a meaningfully lower barrier to entry, but flag them as such.
+
 ## Privacy and motivation
 
 Do **not** paste confidential or internal-only messages into repo artifacts. Personal motivation belongs in private notes or in public-link-only references.
