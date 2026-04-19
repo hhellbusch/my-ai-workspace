@@ -26,6 +26,7 @@ Plans:
 - How fast is session creation after images are cached?
 - What does the git remote workflow feel like (push in, pull out)?
 - How does `--yolo` behave inside the container?
+- Does container isolation map to "principal protection" in practice, or does it shift review burden without reducing it? (PAI signal: principal-at-center framing)
 
 ### Phase 2: Real Task
 **Goal**: A real bounded task completed autonomously against this workspace, output quality assessed
@@ -34,11 +35,13 @@ Plans:
 
 Plans:
 - [ ] 02-01: Push this workspace to a Paude session with `--git`, assign a bounded task via `-a` (e.g., expand an OCP troubleshooting guide or create a CoreOS troubleshooting README), let it run, harvest to a branch, review diff
+- [ ] 02-02: Assign a "Pi upgrade–shaped" task — ecosystem survey (scan a topic, diff against an existing workspace resource, propose specific changes) — to test whether `.cursorrules` suffices for high-autonomy, broad-scope, bounded-output work without interactive steering
 
 **Key questions to answer:**
 - Does `.cursorrules` give the agent enough context without interactive steering?
 - How does output quality compare to an interactive session?
 - What's the overhead of the harvest-review-merge cycle vs direct editing?
+- Does harvesting a Paude session feel like "talking to Kai" (single interface to results) or "managing contractors" (army overhead recreated at harvest)? (PAI signal: single conversation locus as UX criterion)
 
 ### Phase 3: Orchestration
 **Goal**: Full fire-and-forget workflow tested, including the reset -> reassign cycle
@@ -52,6 +55,8 @@ Plans:
 - Is the orchestration overhead worth it for solo dev?
 - How smooth is the reset -> reassign cycle for sequential tasks?
 - Does `paude status` provide enough visibility into agent progress?
+- What level of task specification is required to match interactive session quality — how much "Kai world model" must be written into the brief? (PAI signal: task brief as surrogate DA context)
+- When disconnected, does the task brief + `.cursorrules` give the agent enough "ideal state" context to make good prioritization calls, or does it drift without steering?
 
 ### Phase 4: Multi-Agent
 **Goal**: Same task run with different agents, outputs compared
@@ -65,6 +70,7 @@ Plans:
 - Do different agents produce meaningfully different outputs for documentation/content tasks?
 - Is multi-agent comparison practical or just interesting?
 - Does this inform the "AI prioritization bias" backlog item?
+- Run two Claude sessions on two different tasks concurrently: does aggregate throughput justify parallelism at a two-session scale? (PAI signal: "army of agents" value at realistic scope — not just different models, but concurrent same-model instances)
 
 ### Phase 5: Assessment
 **Goal**: Written findings document, backlog items updated, clear keep/skip/integrate decision
@@ -79,13 +85,14 @@ Plans:
 - **Skip**: Which workflows are better served by the current in-session approach?
 - **Integrate**: If keeping, what specific integration points (slash command, config, orchestration patterns)?
 - **Artifacts**: If keeping, add `paude.json` to workspace, `~/.config/paude/defaults.json` setup, possibly `ocp/examples/paude-agent-sessions/` guide
+- **PAI/Kai lens**: Does the full evaluation support Paude as "the fire-and-forget leaf executor layer" in a Kai-like system, or is it better described as "isolated Claude for specific bounded tasks"? Does the harvest workflow recreate army-of-agents overhead or genuinely consolidate it behind a single review point? (See `research/pai-kai-paude/assessment.md` for the evaluation framework.)
 
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Mechanics | 0/1 | Not started | - |
-| 2. Real Task | 0/1 | Not started | - |
+| 2. Real Task | 0/2 | Not started | - |
 | 3. Orchestration | 0/1 | Not started | - |
 | 4. Multi-Agent | 0/1 | Not started | - |
 | 5. Assessment | 0/1 | Not started | - |

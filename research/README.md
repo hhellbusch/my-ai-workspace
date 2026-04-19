@@ -11,6 +11,8 @@ Research workspaces containing fetched sources, analysis findings, and assessmen
 | `zen-karate-philosophy/` | Zen Buddhism, karate, and applied philosophy for life and work | In progress | [personal-notes.md](zen-karate-philosophy/personal-notes.md), [curated-reading.md](zen-karate-philosophy/curated-reading.md) |
 | `3blue1brown/` | Deep Learning series transcripts (neural networks, transformers, attention, LLMs) | 5 videos fetched | [README.md](3blue1brown/README.md) |
 | `ai-engineering-public/` | Public talks supporting the AI-engineering essay track | Transcript(s) on disk | [README.md](ai-engineering-public/README.md) |
+| `miessler-single-da-thesis/` | Daniel Miessler's "We're All Building a Single Digital Assistant" — DA thesis verification | 1 transcript | [assessment.md](miessler-single-da-thesis/assessment.md) |
+| `pai-kai-paude/` | PAI/Kai architecture + Paude integration signals + essay groundwork | 1 transcript, 3 findings batches | [assessment.md](pai-kai-paude/assessment.md) |
 
 ## Structure Convention
 

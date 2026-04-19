@@ -31,7 +31,11 @@ How we know it worked:
 - Container image pull on first run takes several minutes
 - Evaluation is learning-oriented, not building production tooling
 
-## Out of Scope
+## PAI/Kai Context
+
+The "army of agents" problem is the coordination gap Paude addresses: you can't talk to an army of agents, so you need a single interface — and Paude is a candidate implementation at the leaf-executor layer. Daniel Miessler's PAI/Kai architecture names this problem explicitly: Pi provides back-end infrastructure for a named DA (Kai); the DA handles one conversational thread while agents do parallel work. Paude plays a similar structural role but stops short of the named DA abstraction — it provides isolated, fire-and-forget execution without the persistent identity and world-model that Kai supplies.
+
+The evaluation should therefore test whether Paude's create-assign-harvest cycle functions as a "single review point" (analogous to asking Kai what happened) or recreates the army-overhead problem at harvest time. See `research/pai-kai-paude/assessment.md` for the full evaluation framework derived from the PAI transcript analysis.
 
 - OpenShift backend exploration (deferred unless local evaluation succeeds)
 - Building integration tooling (`/paude` slash command, external executor pattern) — separate backlog item, blocked on this evaluation
