@@ -33,9 +33,9 @@ This workspace contains practical DevOps examples, configurations, and troublesh
 
 #### Documentation (`docs/`)
 Essays and case studies organized by track, each with its own README and reading order:
-- **`ai-engineering/`** — The Shift, AI-assisted development workflows, working outside expertise, legacy improvement, LLM deployment summary, upstream contributions, the meta-development loop
-- **`philosophy/`** — Martial arts, Zen, and applied practice (Ego, AI, and the Zen Antidote; future essays)
-- **`case-studies/`** — Fifteen documented meta-development patterns: research skill, adversarial review, debugging AI judgment, conversation-to-essay pipeline, scripts vs. services, knowledge management, evolving scope, case studies as discovery, fabricated references, biographical voice, stale context, heavy safety nets, context-stripped citations, landscape pass, corpus-level spar
+- **`ai-engineering/`** — The Shift, AI-assisted development workflows, working outside expertise, legacy improvement, LLM deployment summary, upstream contributions, the meta-development loop, context window mechanics, local LLM setup and sysadmin, sparring and shoshin guide
+- **`philosophy/`** — Martial arts, Zen, and applied practice (Ego, AI, and the Zen Antidote; The Full Cup; The Dojo After the Automation; future essays in progress)
+- **`case-studies/`** — 25 documented meta-development patterns across three categories (build, failure, workflow). See [`docs/case-studies/README.md`](docs/case-studies/README.md) for the full list.
 
 #### Examples (`examples/`)
 Standalone scripts and artifacts referenced by documentation:
