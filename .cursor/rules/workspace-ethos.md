@@ -32,6 +32,14 @@ Practical implications:
 
 The goal is open-source craft: patterns and practices documented well enough that someone encountering them for the first time can understand, evaluate, and adapt them.
 
+## Opt-in over automatic
+
+New capabilities added to the framework default to opt-in. A feature that requires the user to ask for it is preferable to one that runs on every session start.
+
+Before wiring anything into always-running commands or rules (`/start`, `/checkpoint`, `session-awareness.md`), ask: does the user need this on every session, or only when they ask? If the answer is "only when they ask," keep it opt-in. The `private/` workspace layer is the canonical example: the framework never peeks into it unless you ask to work privately.
+
+This keeps `/start` and other orientation commands light as the workspace grows. Context loaded at session start that isn't needed for most sessions is a cost paid on every session.
+
 ## Privacy and motivation
 
 Do **not** paste confidential or internal-only messages into repo artifacts. Personal motivation belongs in private notes or in public-link-only references.

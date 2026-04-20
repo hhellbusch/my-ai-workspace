@@ -88,6 +88,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### Framework: /start simplification audit — what can become opt-in?
+- **Product:** meta
+- **Context:** `/start` currently loads ABOUT.md, BACKLOG.md (500+ lines), a session handoff, git log, and BRIEFs and ROADMAPs for every planning project on every session start. That load grows proportionally as the workspace grows. The opt-in principle (encoded in `workspace-ethos.md` 2026-04-20) asks: which of these are genuinely needed on every session, and which are only needed when you're actively working on that context? Planning project BRIEFs and ROADMAPs may only be needed when resuming that project — `/start` could note their existence and load them on request rather than speculatively. A lightweight audit: for each thing `/start` loads, ask "does the user need this on every session?" If no, make it opt-in.
+- **Links:** `.cursor/commands/start.md`, `.cursor/rules/workspace-ethos.md`, `.cursor/rules/session-awareness.md`
+- **Added:** 2026-04-20
+
 ### Essay / guide: crafting a public identity for an AI workspace — the ABOUT.md pattern
 - **Product:** docs (meta / AI-engineering)
 - **Context:** This session produced a real workflow: resume → collaborative ABOUT.md → person-first public context that the AI reads and humans can share. The process involved sparring on labels ("systems engineer" vs. "engineer" vs. "omni-competent"), shoshin on what an external reader actually needs, and two rounds of cuts (too wordy, too much lifted input). The output — a short, honest about page that describes the person rather than the current corpus — is a generalizable pattern for any AI workspace intended as a public record. Worth documenting: what makes a good ABOUT.md, why it's different from a resume, how it affects AI behavior, and the specific failure mode it prevents (corpus-to-identity conflation). Companion to the "When the Repository Becomes the Resume" case study.

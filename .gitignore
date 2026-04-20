@@ -74,6 +74,9 @@ devops/ocp/install/
 # External git project clones — not part of this repo
 git-projects/
 
+# Private workspace layer — local git repo, not tracked by parent
+private/
+
 # ===== Planning Artifacts =====
 # Project briefs, roadmaps, and style guides are tracked.
 # Phase execution files (PLAN.md, SUMMARY.md) are also tracked
