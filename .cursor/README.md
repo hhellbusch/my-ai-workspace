@@ -77,7 +77,7 @@ Agent guides provide evaluation checklists:
 ├── commands/              # ✅ Auto-discovered as slash commands!
 │   ├── create-plan.md
 │   ├── debug.md
-│   ├── whats-next.md
+│   ├── .planning/whats-next.md
 │   ├── create-agent-skill.md
 │   ├── add-to-todos.md
 │   ├── check-todos.md

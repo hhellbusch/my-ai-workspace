@@ -25,7 +25,7 @@ Before creating anything, check whether the session's work is already fully pers
 
 **If all work is committed, the backlog is current, and there's no in-flight state** (no half-finished task, no pending decision, no context the next session needs that isn't in a committed file), then:
 - Tell the user: "This session's work is fully persisted in committed artifacts. No handoff needed — `/start` will pick up everything from the backlog and git log."
-- If a stale `whats-next.md` exists from a previous session, ask: "There's an old handoff file. Want me to delete it since it's outdated?"
+- If a stale `.planning/whats-next.md` exists from a previous session, ask: "There's an old handoff file. Want me to delete it since it's outdated?"
 - **Stop here.** Don't create a handoff for handoff's sake.
 
 **If there is genuine in-flight state** — an unfinished task, a decision that needs to be made, context that only exists in the conversation — proceed to Step 0.5.
@@ -78,7 +78,7 @@ Adapt the level of detail to the task type (coding, research, analysis, writing,
    - Any temporary changes, workarounds, or open questions
    - Current position in the workflow or process
 
-Write to `whats-next.md` in the current working directory using the format below.
+Write to `.planning/whats-next.md` using the format below.
 
 ### Step 1.5: Case study reflection
 

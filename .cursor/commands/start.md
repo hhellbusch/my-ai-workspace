@@ -19,7 +19,7 @@ Run this at the beginning of a new session, or whenever you need to re-orient.
 - Backlog: @BACKLOG.md
 - Older completed items: `BACKLOG-ARCHIVE.md` (when **`## Done`** in the backlog is trimmed to the rolling cap)
 - Recent commits: !`git log --oneline -10`
-- Handoff file: !`ls whats-next.md 2>/dev/null || echo "No handoff file"`
+- Handoff file: !`ls .planning/whats-next.md 2>/dev/null || echo "No handoff file"`
 - Planning projects: !`ls -d .planning/*/ 2>/dev/null || echo "No planning projects"`
 - Continue-here files: !`find .planning -name ".continue-here*.md" 2>/dev/null || echo "No continue-here files"`
 </context>
@@ -51,8 +51,8 @@ For the review coverage line, do a quick count: `rg -l "^  status: reviewed" --g
 
 ### Step 2: Check for handoff
 
-If `whats-next.md` exists in the repo root:
-1. Check staleness: run `stat -c %Y whats-next.md` and compare against the timestamp of the most recent commit (`git log -1 --format=%ct`). If the handoff is older than the most recent commit, flag it:
+If `.planning/whats-next.md` exists:
+1. Check staleness: run `stat -c %Y .planning/whats-next.md` and compare against the timestamp of the most recent commit (`git log -1 --format=%ct`). If the handoff is older than the most recent commit, flag it:
    - "There's a handoff from a previous session, but commits have been made since it was written. The handoff may be stale — read it with that in mind."
 2. Read it in full
 3. Present a summary: what was being worked on, what remains, any blockers or decisions pending

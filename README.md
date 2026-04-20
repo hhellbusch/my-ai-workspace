@@ -68,3 +68,9 @@ Practical, runnable examples and troubleshooting guides for enterprise infrastru
 **Use as a template** — the `.cursor/` directory (slash commands, skills, rules) is designed to be portable. Clone the repo and add it as a reference folder in Copilot, VS Code, Cursor, or similar tools to load the workflow patterns into your own context.
 
 Details and structure in [.cursor/README.md](.cursor/README.md). The [backlog](BACKLOG.md) shows what's actively in progress.
+
+---
+
+## Library
+
+The [`library/`](library/) directory is a personal reading collection — books, talks, articles, and videos with AI-enriched summaries and annotations. Entries are linked from essays and case studies where they're cited. The [catalog](library/catalog.md) is the full index.

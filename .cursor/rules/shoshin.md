@@ -14,7 +14,7 @@ Before making claims about what a project is, what its priorities are, or what i
 
 - **Read the brief** (`.planning/*/BRIEF.md`), not just the backlog or handoff. The brief is the authoritative statement of scope and purpose. If the backlog says one thing and the brief says another, surface the conflict.
 - **Check the style guide** (`.planning/*/STYLE.md`) if the work involves writing. Don't rely on memory of what the conventions are — read them.
-- **Don't trust the handoff alone.** A `whats-next.md` captures one session's framing. It may carry assumptions that have drifted from the brief. If a handoff exists, check whether its framing aligns with the brief before inheriting it.
+- **Don't trust the handoff alone.** `.planning/whats-next.md` captures one session's framing. It may carry assumptions that have drifted from the brief. If a handoff exists, check whether its framing aligns with the brief before inheriting it.
 
 ## When Scope Language Appears
 
