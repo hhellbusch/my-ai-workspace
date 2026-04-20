@@ -1,10 +1,12 @@
-# AI-Assisted Engineering Workspace
+# Field Notes
 
-A public collection of essays, case studies, and practical examples documenting what AI-assisted work actually looks like over time — the patterns that work, the failure modes, the philosophical questions it raises, and the technical reference material built in the process.
+*by [Henry Hellbusch](ABOUT.md) — engineering, philosophy, and practice in the age of AI.*
 
-Started in late 2025 capturing what was actually being learned while using AI tools on real work. Intended for a wide audience: engineers and practitioners using AI tools every day, managers and leaders thinking about how AI changes team skills and ways of working, and anyone thinking through what it means when AI becomes infrastructure — not just a faster tool, but a technology that reshapes how we think, learn, and define capability, as the internet did before it and every transformative technology before that.
+A practitioner's record of AI-assisted work: what it actually looks like over time, from inside the work rather than in retrospect. Essays, case studies, practical examples, and technical reference — built with the same tools and practices it documents.
 
-**This collection is itself built with the practices it documents.** Essays are AI-assisted, workflows are real, and where things haven't been personally validated, that's noted. [AI-DISCLOSURE.md](AI-DISCLOSURE.md) explains how to read the review status on individual pieces.
+Intended for a wide audience: engineers and practitioners using AI tools every day, managers and leaders thinking through what AI means for their teams and organizations, and anyone asking what it means when AI becomes infrastructure — not just a faster tool, but a technology that reshapes how we think, learn, and define capability, as the internet did before it.
+
+**This collection is built with the practices it documents.** Essays are AI-assisted, workflows are real, and where things haven't been personally validated, that's noted. [AI-DISCLOSURE.md](AI-DISCLOSURE.md) explains how to read the review status on individual pieces.
 
 ---
 
