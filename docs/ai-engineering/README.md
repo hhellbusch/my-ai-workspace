@@ -20,7 +20,9 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 8. **[Drop a YouTube Link, Get a Structured Analysis](youtube-video-analysis.md)** — A non-technical explainer for the YouTube transcript analysis workflow: how it works, what the output looks like (with a real example), and how it differs from asking an AI to "just summarize" a video. Includes a note on Copilot compatibility for colleagues on different tools.
 
-9. **[Running a Local LLM: Setup, Tradeoffs, and Real Electricity Cost](local-llm-setup.md)** — How to point Cursor and Claude Code at a locally-running model (Ollama, LM Studio, vLLM on NVIDIA or AMD ROCm, LiteLLM proxy), with **Qwen3** as the default family for DevOps/coding in this workspace. Covers hardware, electricity measurement, and when local wins vs. cloud.
+9. **[Running a Local LLM: Setup, Tradeoffs, and Real Electricity Cost](local-llm-setup.md)** — How to point Cursor and Claude Code at a locally-running model (Ollama, RamaLama, LM Studio, LiteLLM proxy), with **Qwen3** as the default family for DevOps/coding in this workspace. Covers hardware requirements, model selection (with measured tok/s on RX 7900 XT), electricity measurement methodology, and when local wins vs. cloud.
+
+9a. **[vLLM Reference: Server-Grade Local Inference](local-llm-vllm.md)** — Full vLLM install (NVIDIA CUDA + AMD ROCm), serve commands, Docker/Podman container setup, context window limits, the AMD FP8 MoE gap, `cursor agent` CLI limitation, and cluster topology. Companion to the main setup guide for engineers who need maximum serving throughput.
 
 10. **[What a Context Window Actually Is](what-a-context-window-actually-is.md)** — Three different figures appeared during a local LLM session: 32,768 (model self-report), 262,144 (training metadata), 14,592 (actual runtime allocation). Explains what each figure means, how KV cache allocation works, why MoE changes the picture, and why 14k and 1M context are qualitatively different rather than quantitatively comparable.
 
