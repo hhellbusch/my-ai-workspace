@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "AI-generated essay from prior session. Argument and framing need author read. Practical commands (du, find, df) are standard; privacy framing is editorial and should be verified as representative of author's actual view."
+---
+
 # The Case for Local: Disk Management as a Privacy-First AI Task
 
 > **Audience:** Engineers, sysadmins, and technical managers curious about where local AI tools make more sense than cloud ones.

@@ -17,6 +17,7 @@ Hands-on log: what was tried, what worked, and what failed. Complements the gene
 - **RAG index** — `ramalama rag add research/zen-karate-philosophy/ library/` → query Inoue/Rika content → compare against Sonnet on same sources. See backlog: *RAG index for local LLM*.
 - **qwen2.5:32b full-GPU** — **pull in progress** (2026-04-20, RamaLama, `ollama://qwen2.5:32b`). Log VRAM usage, layer split, tok/s when loaded. Compare vs qwen3:30b-a3b (~90 tok/s).
 - **Non-thinking qwen3 variant** — test latency difference on short prompts (routine completions) vs thinking variant.
+- **Electricity baseline** — deferred until a stable, usable model is confirmed running. Plan: once a model is in daily use (candidate: qwen2.5:32b if it fits), capture circuit-level draw at idle vs. inference across representative task types (coding, essay, research queries). Data source: whole-home circuit monitoring (>1 year of history available). Compare against GPU idle (38W confirmed from prior session) and published TDP estimates.
 
 ---
 

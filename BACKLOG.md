@@ -170,6 +170,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`, `.cursorrules`, `.cursor/rules/`
 - **Added:** 2026-04-20
 
+### Case study: graph splits — why hybrid CPU+GPU inference fails at scale
+- **Product:** docs
+- **Context:** qwen2.5:72b on RX 7900 XT (20 GB VRAM): 36% GPU / 64% CPU split, 718 graph switches per prefill batch, >6 minutes to first token on a short prompt. The bottleneck isn't compute — it's PCIe bus saturation from the activation hand-offs between the 29 GPU layers and 52 CPU layers. Counterintuitive finding: 62 GB system RAM provides no meaningful help when the bus is the constraint. Contrast with bs=1 (generation phase) which has only 3 graph splits — the asymmetry explains why prefill is brutal and generation *might* be tolerable if you ever reached it. Good explainer material for engineers who assume "more RAM = can run bigger models." Also documents the contrast with full-GPU inference (qwen3:30b-a3b: ~90 tok/s, 3–5 splits). Source: experiment journal 2026-04-20.
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`
+- **Added:** 2026-04-20
+
 ### Local LLM / vLLM track — derivative artifacts
 - **Product:** docs / meta / research
 - **TL;DR (logged only, no drafting now):** From the journal + guide, later consider: (1) **case study** — Radeon vLLM (FP8 MoE gap, eager/KV limits, Ollama vs vLLM vs RamaLama); (2) **meta case study** — guide vs experiment journal; (3) **short essay** — stack choice under real VRAM/kernel constraints; (4) **electricity** backlog + **spar** notes if drafting; (5) **meta essay** — "a customer could have this conversation" (see dedicated backlog item); (6) **Red Hat ecosystem comparison** — RamaLama / Podman AI Lab / InstructLab / RHEL AI as a landscape piece.
