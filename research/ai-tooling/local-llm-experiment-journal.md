@@ -103,7 +103,19 @@ ROCm0 (RX 7900 XT) | 20464 = 382 + (19839 = 18508 + 1024 + 307) + 242
 
 **Corrected conclusion:** qwen2.5:32b Q4_K_M **does work** on RX 7900 XT with 382 MiB to spare. Earlier OOM failures were likely due to VRAM fragmentation from repeated failed loads in the same session, not a fundamental hardware incompatibility. Margin is tight — a fresh boot is required; don't attempt after other GPU workloads have run and failed.
 
-**⚠️ tok/s not yet measured** — server was killed with Ctrl+C before benchmarking. Next session: restart and benchmark against qwen3:30b-a3b (~90 tok/s). Port: **8098**.
+**Benchmark results (2+2 prompt, 8 completion tokens):**
+```
+prompt_per_second:    125.5 tok/s  (prefill)
+predicted_per_second:  19.4 tok/s  (generation)
+prompt_tokens: 36 | completion_tokens: 8
+```
+
+| Model | Generation tok/s | Notes |
+|---|---|---|
+| qwen3:30b-a3b (MoE) | ~90 | 3B active params per token |
+| **qwen2.5:32b (dense)** | **19.4** | All 32B params active per token |
+
+**4.7× slower generation than qwen3:30b-a3b.** The speed cost of dense vs MoE is significant for interactive use. Whether the quality gain justifies it depends on the task — dense models tend to be more consistent on complex reasoning; MoE can be faster but less reliable on unusual inputs. Port observed: 8080 (ramalama serve may vary port by instance).
 
 **Note on registry:** `quay.io/ramalama/qwen2.5:32b` does not exist — used `ollama://qwen2.5:32b` instead.
 
