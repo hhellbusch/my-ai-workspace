@@ -6,7 +6,7 @@ from Rochester Institute of Technology is in Microelectronics Engineering:
 electrical engineering and semiconductor science — unusual as a bachelor's degree,
 as the specialization typically follows at the graduate level. Computer Science
 minor; humanities elective in philosophy. From there: full-stack
-application development, platform engineering, and over a decade consulting
+application development, platform engineering, and nearly a decade consulting
 organizations through technical transformation at Red Hat.
 
 The `devops/` section of this workspace reflects that consulting work.
