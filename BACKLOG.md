@@ -217,6 +217,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`, `research/ai-tooling/local-llm-setup-sparring-notes.md`, `docs/case-studies/README.md`, `BACKLOG.md` (electricity track), `.cursor/rules/workspace-ethos.md`
 - **Added:** 2026-04-20
 
+### /audit: detect orphaned docs not referenced in master index
+- **Product:** meta
+- **Context:** Files can be added to `docs/` track subdirectories in one session and never registered in `docs/README.md` — the cross-linking rule says to do it, but there's no automated check that catches previous-session gaps. Observed this session: three case studies (`decayed-how-to`, `frictionless-entity`, `spar-lifecycle-boundary`) were on disk but missing from the master index. The `/review` pre-commit command catches this for new files in the current session, but has no visibility into pre-existing gaps. Adding an orphan check to `/audit` would surface these: compare files in `docs/ai-engineering/`, `docs/philosophy/`, and `docs/case-studies/` against links present in `docs/README.md` and flag any files not referenced. Low implementation cost; catches a real recurring pattern.
+- **Links:** `.cursor/commands/audit.md`, `docs/README.md`, `.cursor/rules/cross-linking.md`
+- **Added:** 2026-04-20
+
 ### Index: surface review status as a trust signal (undecided)
 - **Product:** meta
 - **Status:** idea — undecided whether to pursue
