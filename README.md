@@ -48,10 +48,12 @@ Documented examples from real sessions: tools built, failure modes caught, workf
 
 ## Technical Reference
 
-Practical, runnable examples and troubleshooting guides for enterprise infrastructure environments. *Skip this section if you're here for the essays — it's independent.*
+Practical, runnable examples and troubleshooting guides for infrastructure and platform tooling. *Skip this section if you're here for the essays — it's independent.*
+
+[Browse the full reference index →](devops/README.md)
 
 - **[Ansible](devops/ansible/)** — Playbooks, retry patterns, parallel execution, BMC operations, AAP 2.5+ troubleshooting
-- **[OpenShift](devops/ocp/)** — 13+ troubleshooting guides: API slowness, bare metal, CSR management, namespace termination, OVN-Kubernetes. SNO lab setup.
+- **[OpenShift](devops/ocp/)** — 20+ troubleshooting guides: API slowness, bare metal, CSR management, namespace termination, OVN-Kubernetes. SNO lab setup.
 - **[ArgoCD](devops/argo/)** — App-of-apps patterns, Helm charts, multi-environment GitOps, GitHub Actions workflows
 - **[CoreOS](devops/coreos/)** — Ignition/Butane configurations
 - **[RHACM](devops/rhacm/)** — Multi-cluster management, policy and governance
