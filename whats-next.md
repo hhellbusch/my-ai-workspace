@@ -62,16 +62,10 @@ Pick up the Ollama hybrid CPU+GPU experiment (qwen2.5:72b), log findings, then w
 
 <work_remaining>
 
-**Immediate (hardware experiments):**
-1. Benchmark qwen2.5:32b — it works but tok/s was never measured. On clean boot: `ramalama serve ollama://qwen2.5:32b` (port **8098**), then:
-   ```bash
-   curl http://localhost:8098/v1/chat/completions \
-     -H "Content-Type: application/json" \
-     -d '{"model":"qwen2.5:32b","messages":[{"role":"user","content":"What is 2+2?"}],"stream":false}' \
-     | python3 -m json.tool
-   ```
-2. Compare output quality on a real task vs qwen3:30b-a3b
-3. Decide which model to use for the electricity measurement baseline
+**Hardware experiments — COMPLETE for this session.**
+- qwen2.5:32b benchmarked: **19.4 tok/s generation, 125.5 tok/s prefill**
+- qwen3:30b-a3b: ~90 tok/s generation
+- Decision pending: which model becomes the electricity measurement baseline. qwen3:30b-a3b is the practical daily driver (4.7× faster); qwen2.5:32b may be worth it for quality-critical long-form tasks.
 
 **Experiment journal — still open:**
 - qwen2.5:32b serve post-reboot entry needs `tok/s: not measured — system lockup` note (added context to OOM section but no explicit tok/s line)

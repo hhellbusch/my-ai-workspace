@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-20 (backlog: derivative artifacts from local LLM / vLLM track; experiment-journal meta encoding)
+> Last updated: 2026-04-20 (session complete: qwen2.5:72b hybrid unusable, qwen2.5:32b confirmed working at 19.4 tok/s, qwen3:30b-a3b ~90 tok/s; quality comparison pending)
 
 ## In Progress
 
@@ -177,9 +177,9 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`
 - **Added:** 2026-04-20
 
-### Benchmark: qwen2.5:32b vs qwen3:30b-a3b — tok/s and quality comparison
+### Quality comparison: qwen2.5:32b vs qwen3:30b-a3b on real tasks
 - **Product:** research / docs
-- **Context:** qwen2.5:32b confirmed loading on RX 7900 XT (382 MiB free, 2 graph splits, clean boot required). tok/s not yet measured. Compare: generation speed vs qwen3:30b-a3b (~90 tok/s MoE), output quality on multi-file reasoning and essay tasks, context window behavior (both cap at 4096 on this hardware). Run: `ramalama serve ollama://qwen2.5:32b` (port 8098), then curl benchmark. Also feeds electricity measurement baseline decision.
+- **Context:** Speed benchmarked (2026-04-20): qwen2.5:32b = 19.4 tok/s generation; qwen3:30b-a3b = ~90 tok/s. qwen2.5:32b is 4.7× slower but dense — may outperform MoE on complex multi-step reasoning. Both cap at n_ctx=4096 on this hardware. **What remains:** run a real representative task (multi-file reasoning, essay drafting) on both models; assess output quality difference; decide which becomes the electricity measurement baseline.
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`
 - **Added:** 2026-04-20
 
