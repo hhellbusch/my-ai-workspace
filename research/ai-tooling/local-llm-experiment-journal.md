@@ -36,17 +36,26 @@ Keep **Environment (baseline)** updated when the machine or driver stack changes
 
 ## Entries (newest first)
 
-### 2026-04-20 — RamaLama, qwen3:72b, hybrid CPU+GPU offload (**pending**)
+### 2026-04-20 — RamaLama, qwen2.5:72b, hybrid CPU+GPU offload (**pending**)
 
 - **Tool:** `ramalama`
-- **Command:** `ramalama run ollama://qwen3:72b`
-- **Why qwen3:72b over llama3.3:70b:** Same ~43 GB Q4 size and hybrid offload profile, but Qwen3 is stronger on coding/technical reasoning and has thinking mode — consistent with the rest of the workspace's model choices. Llama 3.3 is a general-purpose Western-corpus model; Qwen3 is better suited to DevOps/coding workloads.
+- **Command:** `ramalama serve ollama://qwen2.5:72b`
+- **Why qwen2.5:72b:** `qwen3:72b` does not exist in the Ollama registry — Qwen3 dense tops out at 32B, then jumps to 235B MoE. `qwen2.5:72b` is the closest Qwen-family equivalent: same ~43 GB Q4 size, stronger on coding than Llama 3.3 70B, no thinking mode (Qwen3-only feature).
 - **Goal:** Characterize 70B hybrid offload on current hardware — 20 GB VRAM (7900 XT) + ~62 GB system RAM. llama.cpp auto-fits layers: ~36 of 80 transformer layers on GPU, remainder on CPU RAM.
 - **Expected:** Model loads (~43 GB Q4_K_M); generation speed ~15–25 tok/s (DDR5 bandwidth bottleneck on CPU layers vs GPU's 896 GB/s). Usable for non-interactive tasks; slower for back-and-forth.
 - **Outcome:** *(to be filled)*
 - **Notes:** *(to be filled — actual tok/s, layer split reported by llama.cpp, VRAM + RAM usage, subjective quality)*
 
-### 2026-04-20 — RamaLama, qwen3:30b-a3b (**in progress**)
+### 2026-04-20 — RamaLama, qwen3:32b dense (**failed — OOM**)
+
+- **Tool:** `ramalama`
+- **Command:** `ramalama serve ollama://qwen3:32b`
+- **Outcome:** **Failed.** KV cache allocation OOM: `cudaMalloc failed: out of memory`.
+- **Root cause:** Dense 32B weights consume **18,842 MiB** on ROCm0, leaving only ~1,410 MiB free. Auto-fit reduced context to 4096 (needing 1,024 MiB KV cache) but ramalama forces `n_gpu_layers=999` which blocked the fit algorithm from offloading layers to free VRAM — no fallback. 1,024 MiB needed, ~1,410 MiB available in theory, but not enough contiguous.
+- **Key finding:** Dense 32B is right at the 20 GB ceiling — **weights alone (18.8 GB) leave insufficient headroom for KV cache**. Compare: MoE 30B-A3B weights = 17.5 GB → 2.7 GB headroom → works. Dense 32B needs a GPU with 24 GB+ to serve with meaningful context.
+- **Lesson:** MoE architecture is more VRAM-efficient for serving on consumer hardware — fewer active parameters per token means smaller weight footprint. For 20 GB cards, **MoE 30B-A3B is the practical quality ceiling**; dense 32B requires 24 GB+ (e.g. RTX 4090/5090).
+
+### 2026-04-20 — RamaLama, qwen3:30b-a3b (**worked**)
 
 - **Tool:** `ramalama` (from Fedora dnf repos)
 - **Install:** `sudo dnf install ramalama`

@@ -411,7 +411,7 @@ For coding and DevOps work specifically, **this workspace targets the Qwen3 line
 | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (vLLM / HF) | 32B AWQ | ~20 GB | **Primary on AMD vLLM:** same workload intent as above when FP8 Qwen3 cannot load. **On 20 GB cards (e.g. 7900 XT), weights consume ~18.3 GB, leaving ~1k tokens of KV cache** — server boots and answers short prompts, but this is effectively a proof-of-concept, not a production interactive workflow. For longer context on the same GPU, Ollama `qwen3:30b-a3b` is the practical alternative. |
 | `qwen3:30b-a3b` (Ollama / RamaLama) | 30B-class MoE | ~19.5 GB | **Primary on AMD (recommended default):** ~14k context on 20 GB VRAM (llama.cpp auto-fits from 262k training context to available VRAM), 1-command setup via RamaLama (`ramalama run ollama://qwen3:30b-a3b`). Thinking variant (chain-of-thought enabled). Verified on RX 7900 XT / gfx1100. |
 | `qwen2.5-coder:7b` | 7B | 6–8 GB | Quick lookups, simple edits, learning the workflow |
-| `qwen2.5-coder:32b` | 32B | 20–24 GB | Solid Qwen2.5-era dense coder if Qwen3 MoE is unavailable |
+| `qwen2.5-coder:32b` / `qwen3:32b` | 32B dense | **24 GB+** | Dense 32B needs 24 GB+ VRAM — weights alone (~18.8 GB) leave insufficient KV cache headroom on 20 GB cards (verified: fails on RX 7900 XT). RTX 4090/5090 class required. |
 | `llama3.3:70b` | 70B | 48 GB+ | Agentic tasks, research synthesis, essay writing |
 | `deepseek-r1:32b` | 32B | 20–24 GB | Reasoning-heavy tasks; slower but stronger on multi-step logic |
 
