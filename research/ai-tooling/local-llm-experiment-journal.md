@@ -12,6 +12,15 @@ Hands-on log: what was tried, what worked, and what failed. Complements the gene
 
 ---
 
+## Planned experiments (next up)
+
+- **RAG index** — `ramalama rag add research/zen-karate-philosophy/ library/` → query Inoue/Rika content → compare against Sonnet on same sources. See backlog: *RAG index for local LLM*.
+- **qwen2.5:72b hybrid** — in progress (downloading). Log layer split, tok/s, n_ctx.
+- **Native Ollama container vs RamaLama** — `podman run ollama/ollama:rocm` + `qwen3:30b-a3b`, compare n_ctx, tok/s, setup friction. Gap in current experiment record.
+- **Non-thinking qwen3 variant** — test latency difference on short prompts (routine completions) vs thinking variant.
+
+---
+
 ## How to add an entry
 
 - Append under **Entries** with **newest first** (add a new `### YYYY-MM-DD — short label` block at the top of that section).

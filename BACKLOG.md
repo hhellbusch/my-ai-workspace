@@ -101,8 +101,28 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
   4. **Essay section drafting locally** — STYLE.md + 2-3 exemplar paragraphs + current section target ≈ 8-10k tokens. Fits in 14k. Voice within a section is maintainable locally; cross-essay consistency needs cloud or human review pass.
   5. **RAG index** — `ramalama rag add docs/` builds embedding retrieval; model gets top 5-10 relevant chunks per query rather than full files. Cleanest architectural answer for large-repo + small-context.
 - **Quality estimate:** ~70% of current workflow coverage with redesigned skills; human review fills the gap on the 30% that genuinely needs large context (cross-source synthesis, corpus-level spar, voice consistency across all essays).
-- **First experiment:** Build a local-model variant of the research skill (stripped prompt, sequential steps, explicit findings handoff). Run it against a single source. Compare output quality against the Sonnet version on the same source.
+- **First experiment (skill variant):** Build a local-model variant of the research skill (stripped prompt, sequential steps, explicit findings handoff). Run it against a single source. Compare output quality against the Sonnet version on the same source.
+- **Second experiment (RAG — see dedicated item below):** Index `research/zen-karate-philosophy/` + `library/` → draft Essay 1 paragraph on Inoue's teaching philosophy. Compare quality against Sonnet drafting from same sources loaded manually.
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `.cursor/skills/research-and-analyze/`, `.cursor/skills/create-plans/`, `BACKLOG.md` (workspace architecture item below)
+- **Added:** 2026-04-20
+
+### RAG index for local LLM — corpus retrieval exploration
+- **Product:** meta / docs
+- **Context:** RamaLama ships a ROCm-enabled RAG image (`quay.io/ramalama/rocm-rag:latest`, confirmed in `ramalama info`). Instead of loading files manually into context, an embedding index lets the local model retrieve the 3–5 most relevant chunks per query automatically. Fits the hybrid local/cloud architecture: local model handles content retrieval + bounded drafting; cloud handles synthesis that needs simultaneous access to many sources.
+- **What to index and what not to:**
+  - **Index:** `docs/`, `research/`, `library/`, `BACKLOG.md` — factual content corpus
+  - **System prompt only (slim variant):** `.cursor/rules/` — procedural instructions, not factual content; RAG retrieval of a rules file gives text, not behavior
+  - **Don't index:** `.cursor/skills/`, `.cursor/commands/` — too procedural; raw YAML configs — semantically thin
+- **Known limitations for this repo:** (1) Cross-links invisible to retrieval — RAG gets the chunk that *references* another file but not the linked content; (2) Frontmatter YAML noise — review blocks get indexed as chunks; consider stripping before indexing; (3) Index freshness — needs rebuilding as content grows; (4) Doesn't solve synthesis (holding source 3 + source 11 simultaneously to notice a tension) or voice consistency (needs more than retrieved examples).
+- **First experiment:** Index `research/zen-karate-philosophy/` + `library/` only. Ask: "Summarise Inoue's teaching philosophy and how Rika Usami's practice exemplifies it." Compare output against Sonnet drafting from same sources loaded manually. If quality is acceptable → expand index. If not → identify what the retrieval missed and whether the gap is chunking, embedding model quality, or fundamentally a synthesis problem RAG can't solve.
+  ```bash
+  ramalama rag add research/zen-karate-philosophy/
+  ramalama rag add library/
+  ramalama rag serve ollama://qwen3:30b-a3b
+  ```
+- **Second experiment (if first passes):** Full corpus index (`docs/`, `research/`, `library/`). Try: cross-case-study query, backlog synthesis, essay section drafting with style guide as system prompt.
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `research/zen-karate-philosophy/`, `library/`, `BACKLOG.md` (hybrid workflow item above)
+- **Blocked on:** qwen3:30b-a3b serve working (confirmed ✓) and ramalama rag command availability (check `ramalama rag --help`)
 - **Added:** 2026-04-20
 
 ### Workspace architecture for local LLM efficiency — exploration track
