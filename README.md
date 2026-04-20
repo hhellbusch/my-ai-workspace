@@ -2,7 +2,7 @@
 
 *by [Henry Hellbusch](ABOUT.md) — engineering, philosophy, and practice in the age of AI.*
 
-A practitioner's record of AI-assisted work: what it actually looks like over time, from inside the work rather than in retrospect. Essays, case studies, practical examples, and technical reference — built with the same tools and practices it documents.
+A practitioner's record of AI-assisted work: what it actually looks like over time, from inside the work rather than in retrospect. Essays, case studies, practical examples, and technical reference — built with the same tools and practices it documents. Meant to be shared, discussed, and argued with.
 
 Intended for a wide audience: engineers and practitioners using AI tools every day, managers and leaders thinking through what AI means for their teams and organizations, and anyone asking what it means when AI becomes infrastructure — not just a faster tool, but a technology that reshapes how we think, learn, and define capability, as the internet did before it.
 
