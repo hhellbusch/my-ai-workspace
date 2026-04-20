@@ -36,10 +36,11 @@ Keep **Environment (baseline)** updated when the machine or driver stack changes
 
 ## Entries (newest first)
 
-### 2026-04-20 — RamaLama, llama3.3:70b, hybrid CPU+GPU offload (**pending**)
+### 2026-04-20 — RamaLama, qwen3:72b, hybrid CPU+GPU offload (**pending**)
 
 - **Tool:** `ramalama`
-- **Command:** `ramalama run ollama://llama3.3:70b`
+- **Command:** `ramalama run ollama://qwen3:72b`
+- **Why qwen3:72b over llama3.3:70b:** Same ~43 GB Q4 size and hybrid offload profile, but Qwen3 is stronger on coding/technical reasoning and has thinking mode — consistent with the rest of the workspace's model choices. Llama 3.3 is a general-purpose Western-corpus model; Qwen3 is better suited to DevOps/coding workloads.
 - **Goal:** Characterize 70B hybrid offload on current hardware — 20 GB VRAM (7900 XT) + ~62 GB system RAM. llama.cpp auto-fits layers: ~36 of 80 transformer layers on GPU, remainder on CPU RAM.
 - **Expected:** Model loads (~43 GB Q4_K_M); generation speed ~15–25 tok/s (DDR5 bandwidth bottleneck on CPU layers vs GPU's 896 GB/s). Usable for non-interactive tasks; slower for back-and-forth.
 - **Outcome:** *(to be filled)*
