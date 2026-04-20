@@ -8,8 +8,8 @@
 - **Product:** argo (OpenShift / OLM GitOps)
 - **Context:** Contribution to [redhat-cop/helm-charts](https://github.com/redhat-cop/helm-charts) adding strict, list-position-based operator upgrade sequencing for non-semver CSV names and staged GitOps hops. Implementation lives on fork **`hhellbusch/redhat-cop-helm-charts`** (`main`); open the PR when ready (compare view sometimes times out on GitHub — use local `git diff upstream/main...HEAD` if needed).
 - **Compare / PR base:** [redhat-cop/helm-charts `main` ← fork `main`](https://github.com/redhat-cop/helm-charts/compare/main...hhellbusch:redhat-cop-helm-charts:main?expand=1)
-- **Long-form PR draft (problem, solution, files, validation narrative):** `argo/examples/examples/operators-installer/docs/upstream-pr-description.md`
-- **Related examples in this repo:** `argo/examples/examples/operators-installer/` (catalog values, README chain guidance)
+- **Long-form PR draft (problem, solution, files, validation narrative):** `devops/argo/examples/examples/operators-installer/docs/upstream-pr-description.md`
+- **Related examples in this repo:** `devops/argo/examples/examples/operators-installer/` (catalog values, README chain guidance)
 - **Started:** 2026-03
 
 **Commit / scope summary (already on fork):**
@@ -374,23 +374,20 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** https://github.com/bbrowning/paude, `.planning/paude-integration/`
 - **Added:** 2026-04-17
 
-### Repo reorganization: move DevOps technical samples into a subfolder
-- **Product:** meta
-- **Context:** As the audience for this repo widens (peers, non-technical collaborators, general readers), the current flat top-level structure mixes operational DevOps reference material (argo, ansible, ocp, rhacm, vault, coreos) with general-audience content (docs/, library/, research/). Moving the technical samples under a single folder (e.g., `devops/` or `technical/`) would make the repo navigable for non-technical visitors without breaking the value for technical peers. Considerations: (1) all internal cross-links in docs and README would need updating; (2) git history is preserved with `git mv`; (3) `.cursorrules` references would need auditing. Evaluate whether the README becomes the landing page for all audiences or splits into audience-specific entry points.
-- **Links:** `README.md`, `.cursorrules`, `docs/`
-- **Added:** 2026-04-19
+### ~~Repo reorganization: move DevOps technical samples into a subfolder~~ ✓ Done 2026-04-20
+- Moved `ansible/`, `argo/`, `coreos/`, `ocp/`, `rhacm/`, `vault/` → `devops/{name}/`. Updated all cross-references in README, docs, .cursor/ commands/rules, .cursorrules, BACKLOG. Root directory now: `devops/ docs/ examples/ library/ research/`. Also produced a case study on the gitignore drift failure mode that emerged from the move.
 
 ### Expand OCP troubleshooting guides
 - **Product:** ocp
 - **Context:** Several existing troubleshooting guides could be expanded with additional detail or new guides added for common issues encountered in the field. The troubleshooting section is one of the most practical parts of the repo for peers.
-- **Links:** `ocp/troubleshooting/`
+- **Links:** `devops/ocp/troubleshooting/`
 - **Added:** 2026-04-17
 
 
 ### CoreOS troubleshooting section
 - **Product:** coreos
-- **Context:** Currently only have `coreos/examples/` with Butane configurations. No troubleshooting guides yet. Could document common ignition/butane issues encountered during deployments.
-- **Links:** `coreos/examples/`
+- **Context:** Currently only have `devops/coreos/examples/` with Butane configurations. No troubleshooting guides yet. Could document common ignition/butane issues encountered during deployments.
+- **Links:** `devops/coreos/examples/`
 - **Added:** 2026-04-17
 
 ### Paude as external executor for meta-prompting pipelines

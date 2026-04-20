@@ -16,6 +16,8 @@ Every commit should be reviewed, but the depth of review scales with the change.
 
 Run the full `/review` command process: file placement, README coverage, cross-references, external URLs, content quality, secrets scan, biographical check, review status, backlog alignment.
 
+**For directory moves specifically (`git mv`):** Before staging the commit, run `git status` and scan for any newly-tracked files that shouldn't be committed — particularly in directories that were previously gitignored. Path-based `.gitignore` rules break silently on moves. Look for: large binaries, credential files (kubeconfig, pull-secret, vault files, private keys), install directories. If unexpected files appear, fix the `.gitignore` before committing. See `docs/case-studies/directory-move-gitignore-drift.md`.
+
 ## Quick review — sufficient for:
 - Small edits to existing files (1-3 files, focused changes)
 - Backlog updates
