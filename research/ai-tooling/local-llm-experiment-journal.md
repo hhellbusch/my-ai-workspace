@@ -61,7 +61,17 @@ Keep **Environment (baseline)** updated when the machine or driver stack changes
   podman exec -it ollama ollama pull qwen2.5:72b
   podman exec -it ollama ollama run qwen2.5:72b
   ```
-- **Pending:** Run via native Ollama container. Log actual layer split, tok/s, VRAM + RAM usage.
+- **Setup note — SELinux volume label required:** First attempt failed: `Error: open /root/.ollama/id_ed25519: permission denied`. Fix: add `:Z` to volume mount for SELinux relabeling. Also requires `~/.ollama` directory to exist before running. Working command:
+  ```bash
+  mkdir -p ~/.ollama
+  podman run -d --name ollama \
+    --group-add=video --device /dev/kfd --device /dev/dri \
+    -p 11434:11434 -v "${HOME}/.ollama:/root/.ollama:Z" \
+    docker.io/ollama/ollama:rocm
+  podman exec -it ollama ollama pull qwen2.5:72b
+  ```
+  RamaLama abstracts all of this — no `:Z`, no mkdir, no manual device flags. This is the setup friction RamaLama eliminates.
+- **Pending:** Log actual layer split, tok/s, VRAM + RAM usage once pull completes.
 
 ### 2026-04-20 — RamaLama, qwen3:32b dense (**failed — OOM**)
 
