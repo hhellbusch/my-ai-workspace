@@ -177,6 +177,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`
 - **Added:** 2026-04-20
 
+### Benchmark: qwen2.5:32b vs qwen3:30b-a3b — tok/s and quality comparison
+- **Product:** research / docs
+- **Context:** qwen2.5:32b confirmed loading on RX 7900 XT (382 MiB free, 2 graph splits, clean boot required). tok/s not yet measured. Compare: generation speed vs qwen3:30b-a3b (~90 tok/s MoE), output quality on multi-file reasoning and essay tasks, context window behavior (both cap at 4096 on this hardware). Run: `ramalama serve ollama://qwen2.5:32b` (port 8098), then curl benchmark. Also feeds electricity measurement baseline decision.
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`
+- **Added:** 2026-04-20
+
 ### Case study: graph splits — why hybrid CPU+GPU inference fails at scale
 - **Product:** docs
 - **Context:** qwen2.5:72b on RX 7900 XT (20 GB VRAM): 36% GPU / 64% CPU split, 718 graph switches per prefill batch, >6 minutes to first token on a short prompt. The bottleneck isn't compute — it's PCIe bus saturation from the activation hand-offs between the 29 GPU layers and 52 CPU layers. Counterintuitive finding: 62 GB system RAM provides no meaningful help when the bus is the constraint. Contrast with bs=1 (generation phase) which has only 3 graph splits — the asymmetry explains why prefill is brutal and generation *might* be tolerable if you ever reached it. Good explainer material for engineers who assume "more RAM = can run bigger models." Also documents the contrast with full-GPU inference (qwen3:30b-a3b: ~90 tok/s, 3–5 splits). Source: experiment journal 2026-04-20.

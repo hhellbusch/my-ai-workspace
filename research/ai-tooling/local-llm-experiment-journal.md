@@ -81,10 +81,29 @@ ROCm error: out of memory
 
 **Why `-fit` couldn't save it:** llama.cpp's `-fit` algorithm tried to negotiate — it correctly identified it needed to reduce 7,863 MiB and tried reducing context from 32768→4096 (saving 7,252 MiB). But RamaLama hard-sets `n_gpu_layers=999`, which blocked the fit algorithm from making further adjustments. Fit aborted, load continued, crashed on the compute graph stream allocation.
 
-**Follow-up attempt — `ramalama serve` post-reboot (2026-04-20, same session):**
-After reboot (~600 MiB VRAM in use, ~19,864 MiB free), retried with `ramalama serve`. Server appeared to start loading but port 8080 was unreachable and the system began locking up under memory pressure. Killed before completion. **Conclusion: margin too thin even when it technically loads — system becomes unusable.** Not a viable model for this hardware regardless of whether it technically fits.
+**Follow-up attempt 1 — `ramalama serve` post-reboot (early, same session):**
+After first reboot (~600 MiB VRAM in use), retried with `ramalama serve`. Server appeared to start loading but port 8080 was unreachable and system locked up. Killed. Suspected cause: VRAM fragmentation from the series of failed loads earlier in the session (Ollama container, first RamaLama attempt) rather than a fundamental hardware limit.
 
-**Confirmed:** The setup guide's claim "Dense 32B needs 24 GB+ VRAM — verified fails on RX 7900 XT" holds. Even at the borderline where weights fit, system headroom is insufficient for responsive interactive use.
+**Follow-up attempt 2 — `ramalama serve` post-reboot (clean state, confirmed working):**
+After a full clean reboot with no prior failed loads, `ramalama serve ollama://qwen2.5:32b` loaded successfully and served on **port 8098**.
+
+**Actual memory breakdown (from Ctrl+C cleanup output):**
+```
+ROCm0 (RX 7900 XT) | 20464 = 382 + (19839 = 18508 + 1024 + 307) + 242
+```
+| Component | MiB |
+|---|---|
+| Model weights | 18,508 |
+| KV cache (n_parallel=4, n_ctx=4096) | 1,024 |
+| Compute buffer | **307** (much lower than 750+ MiB estimated) |
+| Unaccounted | 242 |
+| **Free after load** | **382** |
+
+**Graph splits: 2** — almost entirely GPU, negligible PCIe overhead. Compare to 72B hybrid: 718 splits.
+
+**Corrected conclusion:** qwen2.5:32b Q4_K_M **does work** on RX 7900 XT with 382 MiB to spare. Earlier OOM failures were likely due to VRAM fragmentation from repeated failed loads in the same session, not a fundamental hardware incompatibility. Margin is tight — a fresh boot is required; don't attempt after other GPU workloads have run and failed.
+
+**⚠️ tok/s not yet measured** — server was killed with Ctrl+C before benchmarking. Next session: restart and benchmark against qwen3:30b-a3b (~90 tok/s). Port: **8098**.
 
 **Note on registry:** `quay.io/ramalama/qwen2.5:32b` does not exist — used `ollama://qwen2.5:32b` instead.
 

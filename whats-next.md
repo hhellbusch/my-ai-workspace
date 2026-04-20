@@ -63,10 +63,15 @@ Pick up the Ollama hybrid CPU+GPU experiment (qwen2.5:72b), log findings, then w
 <work_remaining>
 
 **Immediate (hardware experiments):**
-1. Kill the current qwen2.5:32b serve process (`pkill -f llama-server`) — it was locking up the system
-2. Restart qwen3:30b-a3b (the confirmed working model): `ramalama serve quay.io/ramalama/qwen3:30b-a3b`
-3. Run benchmark prompts to get fresh tok/s numbers for the session log (prior confirmed result: ~90 tok/s)
-4. Optional: try `ramalama run ollama://qwen2.5:32b` (n_parallel=1) — might squeeze through with ~1,100 MiB headroom for compute graph vs ~750 MiB needed. Low confidence, not worth thrashing the system over.
+1. Benchmark qwen2.5:32b — it works but tok/s was never measured. On clean boot: `ramalama serve ollama://qwen2.5:32b` (port **8098**), then:
+   ```bash
+   curl http://localhost:8098/v1/chat/completions \
+     -H "Content-Type: application/json" \
+     -d '{"model":"qwen2.5:32b","messages":[{"role":"user","content":"What is 2+2?"}],"stream":false}' \
+     | python3 -m json.tool
+   ```
+2. Compare output quality on a real task vs qwen3:30b-a3b
+3. Decide which model to use for the electricity measurement baseline
 
 **Experiment journal — still open:**
 - qwen2.5:32b serve post-reboot entry needs `tok/s: not measured — system lockup` note (added context to OOM section but no explicit tok/s line)
@@ -120,10 +125,10 @@ podman run -d --name ollama \
 ```
 Security note: `--security-opt label=disable` removes SELinux container_t device enforcement. Acceptable for local dev, not for multi-user/production.
 
-**Model ceiling on this hardware:**
-- Dense 32B (Q4_K_M): 18.5 GB weights fit, but KV + compute graph overflows remaining ~1.7 GB. System unstable even when technically loads.
+**Model status on this hardware:**
+- **qwen2.5:32b Q4_K_M: CONFIRMED WORKING** — loads on fresh boot with 382 MiB free (18,508 + 1,024 KV + 307 compute = 19,839 MiB). 2 graph splits. Port 8098. **Requires clean boot** — VRAM fragmentation from prior failed loads causes OOM. tok/s not yet measured.
 - 72B hybrid: 718 graph splits per batch → unusable for interactive work
-- **Practical ceiling: qwen3:30b-a3b MoE (30B params, 3B active, ~19.5 GB VRAM, ~90 tok/s)**
+- qwen3:30b-a3b MoE: ~90 tok/s, confirmed working, more headroom, no clean-boot requirement
 
 **FP8 MoE on gfx1100:** Hardware supports FP8 (RDNA3 matrix ops), software doesn't (vLLM fused_moe kernels tuned for MI300X/gfx942 only). Passive watch item in backlog.
 
