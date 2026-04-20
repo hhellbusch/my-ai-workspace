@@ -84,7 +84,9 @@ The anchoring problem isn't unique to backlog management. It appears anywhere th
 
 - **Essay revision** — An AI-drafted essay, when read back by the same or another AI session, gets treated as a source of truth rather than a draft to challenge.
 
-The common thread: AI treats its own prior outputs as evidence with the same weight as external sources. It doesn't discount for "I wrote this" the way a human writer discounts their first draft. Every AI output that persists into a future context carries implicit authority it may not deserve.
+- **Verification tooling** — A check written to catch bugs can itself have bugs. When the `/audit` command's Layer 1 link-checker was first run, it reported hundreds of broken internal links across the repository. All were false positives. The grep pattern (`([^)]*\.md)`) was matching the markdown link *text* followed by the path — capturing `[Debugging Your AI Assistant's Judgment]../case-studies/debugging-ai-judgment.md` as the "path" rather than just `../case-studies/debugging-ai-judgment.md`. The output looked authoritative (specific filenames, realistic-sounding paths); the command was silently wrong. The fix was a PCRE lookbehind pattern (`\]\(\K`) that captures only the path inside the parens. The lesson: a plausible-looking shell command producing output in the right format is not the same as a correct check. Audit outputs require the same skeptical verification as AI-drafted prose.
+
+The common thread: outputs that look authoritative carry implicit weight. The AI treats its prior outputs as evidence with the same weight as external sources; plausible-looking tool outputs carry the same implicit authority as correct ones. In both cases, the fix is the same skeptical instinct: *what would it look like if this were wrong?*
 
 ---
 

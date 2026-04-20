@@ -71,6 +71,7 @@ This makes the case study format a **discovery mechanism**, not just a documenta
 | [Debugging AI Judgment](debugging-ai-judgment.md) | The user noticed re-prioritization always confirmed existing priorities — the gap was observed over time |
 | [Choosing Scripts Over Services](choosing-scripts-over-services.md) | Three options were evaluated during a design conversation — the gap was the decision itself |
 | [Evolving Creative Scope](evolving-creative-scope.md) (the martial-arts essay project's scope evolution) → **this case study** | The gaps were invisible until the case study was written — the format surfaced them |
+| [When the Meta-Document Tries to Be the Catalog](meta-document-drift.md) | The gap (`.cursorrules` serving as stale inventory) was invisible until a structured meta-system review session asked "why does the AI describe stale data?" — the question surfaced the mechanism |
 
 The other case studies document gaps that were noticed during work. This one documents a gap that was noticed during *reflection on work*. The reflection format is the tool.
 
@@ -81,6 +82,8 @@ The other case studies document gaps that were noticed during work. This one doc
 This case study is itself an example of the pattern it describes. Writing the evolving-scope case study surfaced the shoshin integration opportunity. Now writing *this* case study surfaces the observation that structured reflection is a discovery mechanism. If the pattern holds, this observation should eventually produce something too — perhaps a convention for "reflection prompts" in the case study template, or a step in the [`/whats-next`](../../.cursor/commands/whats-next.md) command that asks "what would a case study about this session reveal?"
 
 Whether that's genuinely useful or just recursive navel-gazing is an open question. The [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#4-meta-infrastructure-outweighs-output) argument #4 — "meta-infrastructure outweighs output" — applies here. At some point the system for reflecting on the system should produce essays, not more system.
+
+A later session added another data point: during work to build an orphaned-docs check for `/audit`, three case studies were discovered on disk but missing from the master index — files added in prior sessions that had slipped past the cross-linking rule. The gaps weren't found by reading the index carefully. They were found because a structured audit check was run and compared disk contents against the index programmatically. The reflection tooling produced the discovery; no amount of careful manual reading had. This also surfaced a second layer: the audit tool's own first run produced two categories of false positives (a regex bug in the link-checker; a design mismatch between "not in master index" and "truly orphaned"). Verifying the audit tool required running it and reading the output critically — the tool needed auditing before it could be trusted. A verification system that produces noisy output erodes its own usefulness before it catches anything real.
 
 ---
 

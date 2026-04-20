@@ -95,6 +95,7 @@ Start with [Building a Personal Knowledge Management System with AI](case-studie
 - `failure` [When the Survivor Becomes the Recommendation](case-studies/survivorship-bias-recommendations.md) — After testing until something worked, the survivor got labeled "recommended default." The AI was accurate about what worked; the framing was wrong about what that means. Elimination testing dressed as quality selection.
 - `failure` [When How-To Instructions Outlive the Interface](case-studies/decayed-how-to.md) — AI described interface steps confidently from training data; the steps didn't match the current UI. Distinct from fabricated references (decayed vs. invented) — same root cause: asserting time-sensitive information without flagging it can't verify currency.
 - `failure` [The Frictionless Entity — What Sparring and Shoshin Are Actually Defending Against](case-studies/frictionless-entity.md) — AI is structurally optimized to be frictionless: no pushback, no accountability, no vulnerability required. Names the failure mode directly, traces the atrophy mechanism, and connects to why sparring and shoshin exist as structural countermeasures.
+- `failure` [When the Meta-Document Tries to Be the Catalog](case-studies/meta-document-drift.md) — The AI orientation file had inline title lists and hardcoded document counts, duplicating what the track READMEs already tracked authoritatively. Every doc added without updating it made the AI's model of the corpus staler. Fix: orientation files describe purpose and point to sources; they don't enumerate contents.
 
 ---
 
