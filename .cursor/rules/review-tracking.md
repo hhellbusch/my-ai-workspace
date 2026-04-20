@@ -82,6 +82,7 @@ Files with biographical content that have only `read` validation (not `voice-app
   | DevOps examples (`{product}/examples/**`) | `"AI-generated. Needs read and tested before use."` |
   | Troubleshooting guides (`{product}/troubleshooting/**`) | `"AI-generated. Needs read and commands-verified before use."` |
   | Research / library (`research/**`, `library/**`) | `"AI-generated summary. Needs read and sources-checked before citing."` |
+  | Experiment journals (`research/**/*journal*`) | `"Experiment log. Commands verified by author at runtime; outcomes may change with new software versions."` |
 
   Add specifics when known: e.g., `"Power draw figures and LiteLLM setup steps need hands-on verification."` is more useful than the category default.
 

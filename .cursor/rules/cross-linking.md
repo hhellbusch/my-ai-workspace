@@ -12,6 +12,7 @@ When creating or modifying content, check whether cross-references need updating
 
 - **New file in `docs/`** — Place in the correct track subdirectory (`ai-engineering/`, `philosophy/`, or `case-studies/`). Add to that track's `README.md` reading list and to the master `docs/README.md` cross-track reading order. Add to the Related Reading section of related essays. For essays in the zen-karate series: include a **Sources and References** section linking to specific research sources, threads, and library entries that informed the essay, and an **Open Review** section linking to any sparring notes with a summary of unresolved counterarguments.
 - **New directory in `research/`** — Add to `research/README.md` contents table. If it relates to a docs/ essay, mention it there.
+- **New experiment journal in `research/`** — An experiment journal (e.g. `research/ai-tooling/local-llm-experiment-journal.md`) is a dated, append-only log of hands-on tries separate from the stable guide. When creating one: (1) add it to `research/README.md`; (2) link it from the related stable guide (e.g. `docs/ai-engineering/local-llm-setup.md`) with a one-line pointer; (3) add `review: status: unreviewed` frontmatter with notes `"Experiment log. Commands verified by author at runtime; outcomes may change with new software versions."` When promoting a journal finding into a stable guide, update the guide and note the promotion in the journal entry.
 - **New command in `.cursor/commands/`** — Consider whether `.cursorrules` TACHES section needs updating.
 - **New skill in `.cursor/skills/`** — Consider whether `.cursorrules` TACHES section needs updating.
 - **New rule in `.cursor/rules/`** — No registry to update, but verify the rule doesn't conflict with existing rules.
@@ -60,6 +61,7 @@ These registries MUST be updated when their content changes. This is the most co
 | New essay in `docs/` | Track `README.md`, `docs/README.md` cross-track list |
 | New file in `library/` | `library/README.md` enriched entries table, `library/catalog.md` |
 | New directory in `research/` | `research/README.md` contents table |
+| New experiment journal in `research/` | `research/README.md`, linked stable guide in `docs/` |
 | New command in `.cursor/commands/` | `.cursorrules` command count and list |
 | New project in `.planning/` | `.cursorrules` planning section, `BACKLOG.md` |
 | New prompt in `prompts/` | `.cursorrules` prompts description |

@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-19 (local LLM guide expanded: complexity analysis, PAI/Kai section, guide scope split; agentic AI guide added to Up Next)
+> Last updated: 2026-04-20 (backlog: derivative artifacts from local LLM / vLLM track; experiment-journal meta encoding)
 
 ## In Progress
 
@@ -88,12 +88,35 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### ~~Encode experiment journals in the meta framework~~ ✓ Done 2026-04-20
+- Added trigger + registry row to [`cross-linking.md`](.cursor/rules/cross-linking.md); bullet to [`session-awareness.md`](.cursor/rules/session-awareness.md); category row + notes default to [`review-tracking.md`](.cursor/rules/review-tracking.md); `review:` frontmatter to pilot journal.
+
+### Local LLM / vLLM track — derivative artifacts
+- **Product:** docs / meta / research
+- **TL;DR (logged only, no drafting now):** From the journal + guide, later consider: (1) **case study** — Radeon vLLM (FP8 MoE gap, eager/KV limits, Ollama vs vLLM vs RamaLama); (2) **meta case study** — guide vs experiment journal; (3) **short essay** — stack choice under real VRAM/kernel constraints; (4) **electricity** backlog + **spar** notes if drafting; (5) **meta essay** — "a customer could have this conversation": the local LLM evaluation loop (what fits, what doesn't, where the enterprise ceiling begins) as an example of what the tooling now enables — no pricing claims, just the pattern; (6) **Red Hat ecosystem comparison** — RamaLama / Podman AI Lab / InstructLab / RHEL AI as a landscape piece: what each tool is actually for, where the seams are, and what a practitioner needs to know to pick the right one. First-hand data from this track (RamaLama GPU detection on gfx1100, Fedora) is a useful anchor.
+- **Detail — candidate artifacts:** The ROCm + Radeon + vLLM work is producing **raw material** in [`research/ai-tooling/local-llm-experiment-journal.md`](research/ai-tooling/local-llm-experiment-journal.md) and [`docs/ai-engineering/local-llm-setup.md`](docs/ai-engineering/local-llm-setup.md). When the track settles, decide what to publish — not everything belongs in the long-form guide.
+  - **Case study (`docs/case-studies/`):** Consumer **AMD + vLLM** — FP8 MoE backend gap vs **AWQ** path; **Inductor/HIP OOM** vs **`--enforce-eager`**; **KV cache** when weights ~**18.26 GiB** on **20 GB**; **Ollama vs vLLM** by constraint (context, kernels, ops). Cite the journal as timeline; keep claims **commands-verified** before publishing.
+  - **Case study (meta):** **Stable guide vs experiment journal** — why the split, cross-linking, when to promote journal findings into the guide (avoid orphan logs).
+  - **Essay / short (`docs/ai-engineering/`):** **Choosing a local inference stack** under real hardware limits: throughput vs comfort, “loads” vs “fits your prompt,” FOSS-first bias in [`workspace-ethos.md`](.cursor/rules/workspace-ethos.md).
+  - **Spar / audit:** [`research/ai-tooling/local-llm-setup-sparring-notes.md`](research/ai-tooling/local-llm-setup-sparring-notes.md) (e.g. performed-honesty language) may merge with the **performed honesty** case-study idea already in this backlog when drafting.
+  - **Electricity / economics:** *Local LLM: electricity measurement and case studies* (Up Next) — measured workload write-up can use the same hardware; journal records the **software** stack for that run.
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`, `research/ai-tooling/local-llm-setup-sparring-notes.md`, `docs/case-studies/README.md`, `BACKLOG.md` (electricity track), `.cursor/rules/workspace-ethos.md`
+- **Added:** 2026-04-20
+
 ### Formalize draft status in review-tracking frontmatter
 - **Product:** meta
 - **Status:** not sure if wanted yet
 - **Context:** Review frontmatter currently tracks verification status (`unreviewed`, `direction-reviewed`, `reviewed`) but has no boolean for document completeness. "Working draft" only appears as freetext in the `notes` field — readable by humans, invisible to `/audit` and the agent. Adding `draft: true` would make it queryable: `/audit` could separate "actively in progress" from "stable but unverified." Change is small: one field added to the frontmatter format in `.cursor/rules/review-tracking.md`, one category added to `/audit` Layer 5 scan. Evaluate when several working drafts are in flight simultaneously and the current notes-based approach becomes insufficient.
 - **Links:** `.cursor/rules/review-tracking.md`, `.cursor/commands/audit.md`
 - **Added:** 2026-04-19
+
+### Case study: curated corpus bias — invisible orientation from what was never included
+- **Product:** docs
+- **Context:** When an AI assistant synthesizes from a pre-selected corpus (e.g. NotebookLM fed Red Hat docs + Lenovo whitepapers), the output is fluent and internally consistent but structurally oriented by what the curator chose to include. The bias isn't in what the model does with the sources — it's in what sources were *never* in the room. The model can't notice an absence. The Jared Burck article is the triggering instance: architecturally accurate (the corpus had good architecture docs), economically optimistic (the corpus had vendor marketing but not the Braincuber counter-argument), maturity-blind (the corpus mixed GA and Tech Preview docs without that distinction). **Distinct from** [case study 9](docs/case-studies/context-stripped-citations.md) (*When the Source Says the Opposite of the Claim*) — that case has the source present but the conclusion stripped; this case has the counter-evidence absent from the start. See also: `research/openshift-ai-llm-deployment/assessment.md` (Finding 2, Finding 3 as exemplars).
+  - **Self-referential concern:** This workspace is also a curated corpus. The library is hand-selected. Research workspaces fetch sources from articles that already have a POV. AI enriches what's present. If the initial selection is advocacy-skewed, enrichment amplifies it invisibly. The [`shoshin.md`](.cursor/rules/shoshin.md) rule and [`/spar`](.cursor/commands/spar.md) command are partial mitigations — but they operate *within* the corpus, not on its composition. The honest question for any research or essay here: **what did we not include, and why?** The case study should surface that question as a named practice, not just a risk.
+  - **Mitigation angle to document:** Adversarial corpus selection — deliberately sourcing opposing views before synthesis, not after; the "what is the strongest case against this?" prompt *before* drafting; the `/spar` command as post-hoc recovery vs. a pre-inclusion question as prevention.
+- **Links:** `docs/case-studies/context-stripped-citations.md`, `research/openshift-ai-llm-deployment/assessment.md`, `.cursor/rules/shoshin.md`, `.cursor/commands/spar.md`
+- **Added:** 2026-04-20
 
 ### Case study: performed honesty — AI self-labels as honest while making unverified claims
 - **Product:** docs
