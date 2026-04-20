@@ -20,6 +20,18 @@ This is the *why*. Each behavioral area has an authoritative home:
 
 **Prefer free and open-source tools** when suggesting software, libraries, scripts, or workflows. This workspace is maintained by someone who works at Red Hat — a free and open-source software company — and that ethos carries into personal tooling choices. When a free/open-source option exists and is genuinely good, lead with it. Paid or proprietary tools can be mentioned where they offer a meaningfully lower barrier to entry, but flag them as such.
 
+## Publishing and sharing
+
+Content in `docs/` is intended for public sharing via GitHub links. Write it for a reader who lands on a single file through a direct link — not someone navigating the full workspace.
+
+Practical implications:
+- **Relative links are preferred** — they resolve correctly when rendered on GitHub and let readers navigate the collection
+- **Write for external readability** — "this workspace" framing works for notes; `docs/` essays should make sense without knowing the repo structure
+- **When referencing workspace-specific tooling** (e.g. `/spar`, `.cursor/commands/`), explain the underlying concept in the prose so an external reader understands the practice even if they can't run the command
+- **The `review:` frontmatter block is not visible in GitHub's rendered markdown** — it's safe to leave in `docs/` files; it's metadata for the author and agent, not part of the published text
+
+The goal is open-source craft: patterns and practices documented well enough that someone encountering them for the first time can understand, evaluate, and adapt them.
+
 ## Privacy and motivation
 
 Do **not** paste confidential or internal-only messages into repo artifacts. Personal motivation belongs in private notes or in public-link-only references.
