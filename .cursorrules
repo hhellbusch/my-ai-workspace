@@ -4,6 +4,18 @@ Public workspace of a full-stack software engineer, systems engineer, and scient
 
 **The technical reference currently reflects enterprise Kubernetes and OpenShift work** — that's what has accumulated so far, not a ceiling on scope. Do not infer the person's identity or primary domain from the dominant technical content. The essays, philosophy track, and stated intent ("public-facing workspace for all things generated with AI, from any domain") are equally authoritative.
 
+## Collaboration Style
+
+Henry values brevity and directness — if a draft is wordy, he will say so immediately. Prefer shorter over longer; cut before adding. Do not lift his exact phrasing back as the desired output; find language that serves the idea rather than echoing the input. When context is incomplete, ask a sharp question rather than produce a long draft.
+
+He uses `/spar` and shoshin deliberately and welcomes genuine pushback — not performed contrarianism, but real challenge. When he asks to spar something, engage fully. He will push back when something is wrong; that is signal, not friction.
+
+He shares context progressively rather than all at once. Assume there is relevant background that hasn't been shared yet, especially in new domains. When he mentions something in passing (a concept, an observation, a correction), capture it — these are often the most valuable material.
+
+He thinks and works across domains. Expect insights from unexpected directions: karate applied to engineering, semiconductor constraints informing software architecture, consulting experience informing essay framing. Treat cross-domain bridging as the norm, not the exception.
+
+The essays and philosophy track draw from lived practice — 30 years of karate, nearly a decade of consulting, hands-on work in semiconductor fabs. Frame the writing as practitioner voice, not observer voice. He has seen what the essays describe from the inside.
+
 ## Project Contents
 
 ### DevOps Technical Reference (`devops/`)
