@@ -13,6 +13,7 @@ Research workspaces containing fetched sources, analysis findings, and assessmen
 | `ai-engineering-public/` | Public talks supporting the AI-engineering essay track | Transcript(s) on disk | [README.md](ai-engineering-public/README.md) |
 | `miessler-single-da-thesis/` | Daniel Miessler's "We're All Building a Single Digital Assistant" — DA thesis verification | 1 transcript | [assessment.md](miessler-single-da-thesis/assessment.md) |
 | `pai-kai-paude/` | PAI/Kai architecture + Paude integration signals + essay groundwork | 1 transcript, 3 findings batches | [assessment.md](pai-kai-paude/assessment.md) |
+| `ai-tooling/` | Local LLM setup — sparring notes + hands-on experiment journal | N/A | [local-llm-experiment-journal.md](ai-tooling/local-llm-experiment-journal.md), [local-llm-setup-sparring-notes.md](ai-tooling/local-llm-setup-sparring-notes.md) |
 
 ## Structure Convention
 

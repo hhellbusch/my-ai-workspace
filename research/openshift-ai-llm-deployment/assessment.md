@@ -117,3 +117,10 @@ The article attributes its PagedAttention description to ref-08 (Red Hat serving
 ## AI Disclosure
 
 This assessment was produced using AI-assisted research and analysis. Source fetching was automated via Python script. Claim verification was performed by parallel AI agents reading fetched content from disk. Human review is recommended before citing these findings externally.
+
+---
+
+## Related patterns
+
+- **[When the Source Says the Opposite of the Claim](../../docs/case-studies/context-stripped-citations.md)** — The Braincuber reversal (Finding 2) is the primary documented instance of context-stripped citation from this corpus.
+- **Curated corpus bias** (backlog candidate) — The Burck article's economic and maturity failures are consistent with synthesis from a pre-filtered advocacy corpus (Red Hat docs + Lenovo whitepapers, without counter-evidence like Braincuber's conclusion). The bias wasn't in what the model did with the sources — it was in what sources were never included. Distinct from context-stripping: the counter-evidence was structurally absent, not present-but-stripped. See `BACKLOG.md` — *Case study: curated corpus bias*.

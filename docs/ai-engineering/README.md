@@ -20,7 +20,7 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 8. **[Drop a YouTube Link, Get a Structured Analysis](youtube-video-analysis.md)** — A non-technical explainer for the YouTube transcript analysis workflow: how it works, what the output looks like (with a real example), and how it differs from asking an AI to "just summarize" a video. Includes a note on Copilot compatibility for colleagues on different tools.
 
-9. **[Running a Local LLM: Setup, Tradeoffs, and Real Electricity Cost](local-llm-setup.md)** — How to point Cursor and Claude Code at a locally-running model (Ollama, LM Studio, LiteLLM proxy), what hardware you actually need, and how to measure the real electricity cost — not estimates, but readings from a circuit monitor. Includes honest tradeoff assessment: when local wins, when it doesn't.
+9. **[Running a Local LLM: Setup, Tradeoffs, and Real Electricity Cost](local-llm-setup.md)** — How to point Cursor and Claude Code at a locally-running model (Ollama, LM Studio, vLLM on NVIDIA or AMD ROCm, LiteLLM proxy), with **Qwen3** as the default family for DevOps/coding in this workspace. Covers hardware, electricity measurement, and when local wins vs. cloud.
 
 ## Primary narratives (public)
 
