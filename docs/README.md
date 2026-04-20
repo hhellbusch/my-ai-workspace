@@ -30,6 +30,9 @@ Start with [The Shift — Engineering Skills in the Age of AI](ai-engineering/th
 **Interested in the psychological dimension — ego, sycophancy, how AI shapes how we think:**
 Start with [Ego, AI, and the Zen Antidote](philosophy/ego-ai-and-the-zen-antidote.md). It bridges the engineering and philosophy tracks — the sycophancy problem *The Shift* names, grounded in why it runs deeper than a checklist can fix, and what Zen practice offers as a structural (not just behavioral) response.
 
+**Thinking about AI's impact on ways of working, skill development, and what we're building people for:**
+Start with [The Dojo After the Automation](philosophy/the-dojo-after-the-automation.md). A position paper for leaders, managers, and non-technical readers: what learning investment determines when AI automates execution, and what the co-development loop means for organizations.
+
 **Came here via sparring, adversarial review, or the shoshin idea:**
 Start with [Adversarial Review as a Meta-Development Pattern](case-studies/adversarial-review-meta-development.md). The case study behind how the `/spar` practice was built and immediately applied — including the self-referential complication that came out of it.
 

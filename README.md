@@ -1,64 +1,70 @@
 # AI-Assisted Engineering Workspace
 
-A working example of using large language models for real engineering work — not chatbot Q&A, but structured workflows for research, technical writing, project planning, troubleshooting guides, and the meta-development patterns that emerge when you build with AI over time.
+A public collection of essays, case studies, and practical examples documenting what AI-assisted work actually looks like over time — the patterns that work, the failure modes, the philosophical questions it raises, and the technical reference material built in the process.
 
-Started around Oct 2025 exploring how to get better results on customer work. Evolved into a set of reusable patterns worth sharing. The workspace itself is the example — everything here was built or refined with AI assistance.
+Started in late 2025 capturing what was actually being learned while using AI tools on real work. Intended for a wide audience: engineers and practitioners using AI tools every day, managers and leaders thinking about how AI changes team skills and ways of working, and anyone curious about what shifts — professionally, culturally, and personally — when AI handles more of the first draft.
 
-## What's Here
+**This collection is itself built with the practices it documents.** Essays are AI-assisted, workflows are real, and where things haven't been personally validated, that's noted. [AI-DISCLOSURE.md](AI-DISCLOSURE.md) explains how to read the review status on individual pieces.
 
-### [Essays and Case Studies](docs/)
+---
 
-Practical insights on AI-assisted development, traced from real work in this repository.
+## Where to Start
 
-**Start here:**
-- [The Shift — Engineering Skills in the Age of AI](docs/ai-engineering/the-shift.md) — what changes when AI writes most of the first draft
-- [AI-Assisted Development Workflows](docs/ai-engineering/ai-assisted-development-workflows.md) — daily patterns that work
-- [The Meta-Development Loop](docs/ai-engineering/the-meta-development-loop.md) — the engineering pattern: gap → tool → apply → reshape
+Four entry points. Each works standalone.
 
-**Case studies** document specific decisions and patterns as they happened:
-- [Debugging Your AI Assistant's Judgment](docs/case-studies/debugging-ai-judgment.md) — catching AI anchoring bias, building a structural fix
-- [Choosing Scripts Over Services](docs/case-studies/choosing-scripts-over-services.md) — problem decomposition applied to tooling decisions
-- [Building a Knowledge Management System with AI](docs/case-studies/building-knowledge-management-with-ai.md) — AI building the infrastructure for AI-assisted work
+**New to AI-assisted work with coding tools:**
+[The Shift — Engineering Skills in the Age of AI](docs/ai-engineering/the-shift.md) — what changes when AI handles most of the implementation, and why the bottleneck moves rather than disappears.
 
-[Full reading order →](docs/README.md)
+**Curious about how AI shapes how we think — ego, agreement, sycophancy:**
+[Ego, AI, and the Zen Antidote](docs/philosophy/ego-ai-and-the-zen-antidote.md) — what Zen practice offers as a structural (not just behavioral) response to AI's trained tendency to agree with you.
 
-**Applied philosophy** — connecting principles from martial arts and Zen practice to engineering culture and ways of working. Primary lens is karate (Hayashi-ha Shito-ryu), drawing broadly from any source that applies. This track is in active development.
-- [Ego, AI, and the Zen Antidote](docs/philosophy/ego-ai-and-the-zen-antidote.md) — how contemplative practice intersects with AI's impact on how we think and work
+**Thinking about AI's impact on ways of working, skill development, and what we're building people for:**
+[The Dojo After the Automation](docs/philosophy/the-dojo-after-the-automation.md) — a position paper on learning investment, organizational culture, and what happens to people when AI automates execution. Starting point for non-technical readers and leaders.
 
-### DevOps Examples
+**Want a practical introduction to adversarial review and beginner's mind:**
+[Sparring and Shoshin — Two Practices for AI-Assisted Work](docs/ai-engineering/sparring-and-shoshin.md) — two complementary practices for catching the most common ways AI-assisted work goes wrong. No prior reading required.
 
-Practical, runnable examples and troubleshooting guides for enterprise environments:
+---
 
-- **[Ansible](ansible/)** — 13 playbooks: retry patterns, error handling, parallel execution, BMC operations, Dell memory validation. [Troubleshooting](ansible/troubleshooting/) for AAP 2.5+.
-- **[OpenShift](ocp/)** — 13+ [troubleshooting guides](ocp/troubleshooting/): API slowness, bare metal inspection, CSR management, kube-controller-manager crashes, namespace termination. [Examples](ocp/examples/) for OVN-Kubernetes, SNO KVM lab.
-- **[ArgoCD](argo/)** — App-of-apps patterns, multi-environment configs, Helm charts, GitHub Actions workflows. [Labs](argo/labs/) for hands-on exercises.
-- **[CoreOS](coreos/)** — Ignition/Butane configurations including [ISO auto-eject](coreos/examples/iso-eject-after-install/).
-- **[RHACM](rhacm/)** — Secret management, multi-cluster management, policy and governance patterns.
-- **[Vault](vault/)** — HashiCorp Vault integration patterns.
+## Essays and Case Studies
 
-### Meta-Development System
+Practical insights on AI-assisted development, philosophy, and ways of working — traced from real work in this repository. Three tracks.
 
-The AI-assisted workflow system used to build this workspace. Optional — the examples and essays work independently.
+### [AI-Assisted Engineering](docs/ai-engineering/)
 
-Includes slash commands for planning, debugging, research, quality gates, and session management. Built on [TÂCHES CC Resources](https://github.com/glittercowboy/taches-cc-resources).
+Skills, workflows, and practical patterns — from the foundational shift in what engineering means, through daily working habits, to specific domains like legacy systems, open source contributions, local LLM deployment, and context window mechanics.
 
-Details in [.cursor/README.md](.cursor/README.md).
+### [Philosophy and Practice](docs/philosophy/)
 
-## AI-Generated Content Notice
+Connecting principles from martial arts and Zen practice to engineering culture, learning, and ways of working. Primary lens: karate. The questions are universal.
 
-**The majority of content in this workspace was created with AI assistance, and the author has not personally reviewed most of it in detail.** The direction, intent, and key decisions are human; the prose, synthesis, and code are largely AI-generated. Some pieces have been read and validated, many have not.
+### [Case Studies](docs/case-studies/)
 
-This is an honest accounting, not a caveat — the project is partly an exploration of how far structured AI-assisted workflows can go. See [AI-DISCLOSURE.md](AI-DISCLOSURE.md) for the full picture, including how to interpret review status.
+Documented examples from real sessions: tools built, failure modes caught, workflow decisions made and analyzed. Each traces what happened, what it demonstrates, and what's transferable — including a survivorship note about what doesn't get documented.
 
-## Getting Started
+[Browse the full catalogue →](docs/README.md)
 
-Browse the [essays](docs/) to understand the patterns. Explore the [examples](ansible/examples/) and [troubleshooting guides](ocp/troubleshooting/) for practical implementations. The [backlog](BACKLOG.md) shows what's in progress (rolling **Done** list; older completions in [BACKLOG-ARCHIVE.md](BACKLOG-ARCHIVE.md)).
+---
 
-```bash
-git clone <repo-url>
-# Start with the essays
-cat docs/README.md
-# Or jump to a specific tool
-ls ansible/examples/
-ls ocp/troubleshooting/
-```
+## Technical Reference
+
+Practical, runnable examples and troubleshooting guides for enterprise infrastructure environments. *Skip this section if you're here for the essays — it's independent.*
+
+- **[Ansible](ansible/)** — Playbooks, retry patterns, parallel execution, BMC operations, AAP 2.5+ troubleshooting
+- **[OpenShift](ocp/)** — 13+ troubleshooting guides: API slowness, bare metal, CSR management, namespace termination, OVN-Kubernetes. SNO lab setup.
+- **[ArgoCD](argo/)** — App-of-apps patterns, Helm charts, multi-environment GitOps, GitHub Actions workflows
+- **[CoreOS](coreos/)** — Ignition/Butane configurations
+- **[RHACM](rhacm/)** — Multi-cluster management, policy and governance
+- **[Vault](vault/)** — HashiCorp Vault integration patterns
+
+---
+
+## Using This
+
+**Read directly on GitHub** — essays and case studies are written for external readers. Any file link works standalone; relative links let you navigate the collection naturally from any starting point.
+
+**Share specific pieces** — individual `docs/` files are the primary sharing unit. Sharing a direct GitHub link to an essay or case study is the intended workflow.
+
+**Use as a template** — the `.cursor/` directory (slash commands, skills, rules) is designed to be portable. Clone the repo and add it as a reference folder in Copilot, VS Code, Cursor, or similar tools to load the workflow patterns into your own context.
+
+Details and structure in [.cursor/README.md](.cursor/README.md). The [backlog](BACKLOG.md) shows what's actively in progress.
