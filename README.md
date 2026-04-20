@@ -12,7 +12,7 @@ Intended for a wide audience: engineers and practitioners using AI tools every d
 
 ## Where to Start
 
-Four entry points. Each works standalone — pick the one that fits where you are, or share one with a colleague.
+Four entry points. Each works standalone.
 
 **For anyone using AI tools today — the most shareable starting point:**
 [Sparring and Shoshin — Two Practices for AI-Assisted Work](docs/ai-engineering/sparring-and-shoshin.md) — two complementary practices for catching the most common ways AI-assisted work goes wrong: adversarial review (get the AI to argue against itself) and beginner's mind (question what's been assumed). No prior reading required. Works in any AI tool, any workflow.
