@@ -16,7 +16,7 @@ Hands-on log: what was tried, what worked, and what failed. Complements the gene
 
 - **RAG index** — `ramalama rag add research/zen-karate-philosophy/ library/` → query Inoue/Rika content → compare against Sonnet on same sources. See backlog: *RAG index for local LLM*.
 - **qwen2.5:72b hybrid** — in progress (downloading). Log layer split, tok/s, n_ctx.
-- **Native Ollama container vs RamaLama** — `podman run ollama/ollama:rocm` + `qwen3:30b-a3b`, compare n_ctx, tok/s, setup friction. Gap in current experiment record.
+- **Native Ollama container — hybrid offload + RamaLama comparison** — `podman run ollama/ollama:rocm` + `qwen2.5:72b` for hybrid offload (RamaLama cannot do this — GPU-only by design). Also compare against `qwen3:30b-a3b` for n_ctx, tok/s, setup friction gap.
 - **Non-thinking qwen3 variant** — test latency difference on short prompts (routine completions) vs thinking variant.
 
 ---
@@ -45,15 +45,23 @@ Keep **Environment (baseline)** updated when the machine or driver stack changes
 
 ## Entries (newest first)
 
-### 2026-04-20 — RamaLama, qwen2.5:72b, hybrid CPU+GPU offload (**pending**)
+### 2026-04-20 — RamaLama, qwen2.5:72b, hybrid CPU+GPU offload (**failed — wrong tool**)
 
 - **Tool:** `ramalama`
 - **Command:** `ramalama serve ollama://qwen2.5:72b`
-- **Why qwen2.5:72b:** `qwen3:72b` does not exist in the Ollama registry — Qwen3 dense tops out at 32B, then jumps to 235B MoE. `qwen2.5:72b` is the closest Qwen-family equivalent: same ~43 GB Q4 size, stronger on coding than Llama 3.3 70B, no thinking mode (Qwen3-only feature).
-- **Goal:** Characterize 70B hybrid offload on current hardware — 20 GB VRAM (7900 XT) + ~62 GB system RAM. llama.cpp auto-fits layers: ~36 of 80 transformer layers on GPU, remainder on CPU RAM.
-- **Expected:** Model loads (~43 GB Q4_K_M); generation speed ~15–25 tok/s (DDR5 bandwidth bottleneck on CPU layers vs GPU's 896 GB/s). Usable for non-interactive tasks; slower for back-and-forth.
-- **Outcome:** *(to be filled)*
-- **Notes:** *(to be filled — actual tok/s, layer split reported by llama.cpp, VRAM + RAM usage, subjective quality)*
+- **Outcome:** **Failed.** `cudaMalloc failed: out of memory` — tried to allocate 44,545 MiB on a 20 GB card.
+- **Root cause:** **RamaLama forces `n_gpu_layers=999` — GPU-only by design.** The `-fit` algorithm can reduce context window but cannot offload layers to CPU RAM. With 44 GB weights and 20 GB VRAM, there is no fit. Same mechanism as dense 32B failure but more extreme (projected 55,194 MiB needed vs 20,252 MiB free).
+- **Key finding: RamaLama cannot do hybrid CPU+GPU offload.** It is a GPU-only serving tool. The hybrid offload premise was wrong for this tool.
+- **Corrected path:** **Native Ollama container** (`docker.io/ollama/ollama:rocm`) handles CPU layer offload automatically — when a model exceeds VRAM, Ollama splits layers between GPU and CPU RAM without user intervention. This is the correct tool for the hybrid offload experiment. Also closes the "RamaLama vs native Ollama" comparison gap from sparring notes.
+  ```bash
+  podman run -d --name ollama \
+    --group-add=video --device /dev/kfd --device /dev/dri \
+    -p 11434:11434 -v "${HOME}/.ollama:/root/.ollama" \
+    docker.io/ollama/ollama:rocm
+  podman exec -it ollama ollama pull qwen2.5:72b
+  podman exec -it ollama ollama run qwen2.5:72b
+  ```
+- **Pending:** Run via native Ollama container. Log actual layer split, tok/s, VRAM + RAM usage.
 
 ### 2026-04-20 — RamaLama, qwen3:32b dense (**failed — OOM**)
 
