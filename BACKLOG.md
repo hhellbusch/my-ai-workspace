@@ -110,7 +110,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Added:** 2026-04-20
 
 ### ~~Case study: model self-report of runtime state~~ ✓ Done 2026-04-20
-- Published as `docs/case-studies/model-self-report-runtime-state.md` (case study #19). Cross-linked from `local-llm-setup.md`. Source: experiment journal 2026-04-20 RamaLama entry.
+- Published as `docs/case-studies/model-self-report-runtime-state.md`. Cross-linked from `local-llm-setup.md`. Source: experiment journal 2026-04-20 RamaLama entry.
 
 ### ~~Case study: model self-report of runtime state — context window edition~~
 - **Product:** docs
@@ -205,11 +205,8 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`, `research/ai-tooling/local-llm-setup-sparring-notes.md`, `docs/case-studies/README.md`, `BACKLOG.md` (electricity track), `.cursor/rules/workspace-ethos.md`
 - **Added:** 2026-04-20
 
-### docs/README.md — consider unordered lists for case study categories
-- **Product:** meta
-- **Context:** Case study entries in `docs/README.md` are numbered (currently 16–28) but within each category (Build / Failure / Workflow) the numbers carry no meaningful reading order — they're reference material looked up by topic. Unordered lists within categories would scan better and eliminate the renumbering pain when inserting new entries mid-list. Essays (1–11) should stay numbered — reading order matters there. **Prerequisite:** audit all cross-references by case study number across the repo (other docs, essays, research notes reference "case study #9" etc.) and update them to use titles or slugs before switching. Don't do mid-session — cosmetic change with non-trivial audit cost.
-- **Links:** `docs/README.md`, `docs/case-studies/README.md`
-- **Added:** 2026-04-20
+### ~~docs/README.md — consider unordered lists for case study categories~~ ✓ Done 2026-04-20
+- Converted all three case study categories (Build / Failure / Workflow) to unordered lists. Essays (1–11 across AI-engineering and philosophy tracks) remain numbered — reading order matters there. The cross-ref audit found numeric references only in `BACKLOG.md` internal notes; those have been updated to use titles. Sparring-and-shoshin guide moved from awkward sub-bullet to a "Companion guides" unordered section after the AI-Engineering essays.
 
 ### Formalize draft status in review-tracking frontmatter
 - **Product:** meta
@@ -385,7 +382,7 @@ Rolling cap: at most **15** items stay here (newest first). Older completions li
 
 ### Case study: spar-distortion — when the sparring partner shapes the fighter
 - **Product:** docs
-- **Context:** Self-spar (#13-18) caught that the Dojo After the Automation essay's oppositional framing was a distortion created by the spar-driven drafting process. Essay revised from "I disagree" to "I agree AND." Case study documents tool-induced bias: the same tool that catches bias created it. Labeled `failure` — adversarial energy absorbed into structure. Registered as case study #17 (failure) in case studies README and #19 in docs reading order.
+- **Context:** Self-spar (#13-18) caught that the Dojo After the Automation essay's oppositional framing was a distortion created by the spar-driven drafting process. Essay revised from "I disagree" to "I agree AND." Case study documents tool-induced bias: the same tool that catches bias created it. Labeled `failure` — adversarial energy absorbed into structure. Registered in case studies README (failure category) and docs reading order.
 - **Links:** `docs/case-studies/spar-distortion.md`, `docs/philosophy/the-dojo-after-the-automation.md`, `research/zen-karate-philosophy/sparring-notes.md`
 - **Completed:** 2026-04-18
 
@@ -397,7 +394,7 @@ Rolling cap: at most **15** items stay here (newest first). Older completions li
 
 ### Case study: spar-to-essay pipeline (spar #9 → Thread 20 → drafted essay)
 - **Product:** docs
-- **Context:** Published case study documenting how adversarial argument #9 escalated from counter-position through voice inputs to Thesis D, Thread 20, and a fully drafted essay in one session. Spar as generative pressure, not just quality gate. Registered as case study #16 in both READMEs.
+- **Context:** Published case study documenting how adversarial argument #9 escalated from counter-position through voice inputs to Thesis D, Thread 20, and a fully drafted essay in one session. Spar as generative pressure, not just quality gate. Registered in both READMEs.
 - **Links:** `docs/case-studies/spar-to-essay-pipeline.md`, `docs/philosophy/the-dojo-after-the-automation.md`, `research/zen-karate-philosophy/sparring-notes.md`
 - **Completed:** 2026-04-18
 
