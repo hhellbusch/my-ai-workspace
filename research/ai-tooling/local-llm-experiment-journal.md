@@ -15,7 +15,8 @@ Hands-on log: what was tried, what worked, and what failed. Complements the gene
 ## Planned experiments (next up)
 
 - **RAG index** — `ramalama rag add research/zen-karate-philosophy/ library/` → query Inoue/Rika content → compare against Sonnet on same sources. See backlog: *RAG index for local LLM*.
-- **qwen2.5:32b full-GPU** — **pull in progress** (2026-04-20, RamaLama, `ollama://qwen2.5:32b`). Log VRAM usage, layer split, tok/s when loaded. Compare vs qwen3:30b-a3b (~90 tok/s).
+- **qwen2.5:32b `ramalama run` (interactive/n_parallel=1)** — serve mode failed (n_parallel=4 × KV cache exceeded headroom). Run mode may use n_parallel=1, freeing 768 MiB and potentially clearing the compute graph allocation. Try: `ramalama run ollama://qwen2.5:32b`.
+- **qwen2.5:32b Q3_K_M** — lower quant (~13–14 GiB weights) would leave ~6 GiB for KV + compute — should fit cleanly. Trade-off: reduced output quality vs Q4_K_M.
 - **Non-thinking qwen3 variant** — test latency difference on short prompts (routine completions) vs thinking variant.
 - **Electricity baseline** — deferred until a stable, usable model is confirmed running. Plan: once a model is in daily use (candidate: qwen2.5:32b if it fits), capture circuit-level draw at idle vs. inference across representative task types (coding, essay, research queries). Data source: whole-home circuit monitoring (>1 year of history available). Compare against GPU idle (38W confirmed from prior session) and published TDP estimates.
 
@@ -45,20 +46,47 @@ Keep **Environment (baseline)** updated when the machine or driver stack changes
 
 ## Entries (newest first)
 
-### 2026-04-20 — RamaLama, qwen2.5:32b full-GPU (**pull in progress**)
+### 2026-04-20 — RamaLama, qwen2.5:32b full-GPU (**OOM at KV cache — confirmed fails**)
 
-- **Tool:** RamaLama (native, no container — handles `HSA_OVERRIDE_GFX_VERSION` and ROCm detection automatically)
-- **Model:** `ollama://qwen2.5:32b` — Q4_K_M, expected ~18–19 GiB
-- **Goal:** Full-GPU inference on 20 GB VRAM; compare tok/s and output quality against qwen3:30b-a3b (~90 tok/s)
-- **Status:** Pulling. Log layer split, VRAM usage, tok/s, and n_ctx when loaded.
+- **Tool:** RamaLama (native), `ramalama serve ollama://qwen2.5:32b`
+- **Model:** `qwen2.5:32b` — Q4_K_M, 18.48 GiB, 32.76B params, 64 layers
+- **Goal:** Full-GPU inference on 20 GB VRAM
+- **Status:** Failed. OOM during KV cache + compute graph reservation.
 
-**Why RamaLama over Ollama container for this run:**
-- Model fits fully in VRAM — Ollama's hybrid offload capability not needed
-- RamaLama confirmed working on this hardware (gfx1100) from prior session
-- Avoids `--security-opt label=disable` SELinux tradeoff
-- Cleaner apples-to-apples comparison with prior qwen3:30b-a3b result (same tool, same hardware)
+**What succeeded:**
+```
+load_tensors: offloaded 65/65 layers to GPU   ← all layers fit
+load_tensors: ROCm0 model buffer size = 18,508.35 MiB
+```
+The 18.5 GB of weights loaded fully onto the GPU. That part worked.
 
-**Note on registry:** `quay.io/ramalama/qwen2.5:32b` does not exist — RamaLama's quay.io mirror only covers select models. Used `ollama://qwen2.5:32b` prefix to pull from Ollama hub directly.
+**What failed:**
+```
+llama_params_fit_impl: projected to use 27091 MiB vs 20252 MiB free
+llama_params_fit_impl: context size reduced from 32768 to 4096 → need 7252 MiB less
+llama_params_fit: failed: n_gpu_layers already set by user to 999, abort
+...
+ROCm error: out of memory
+  hipStreamCreateWithFlags  ← crash at compute graph reservation
+```
+
+**Root cause — the math:**
+| Component | Memory |
+|---|---|
+| GPU free at load time | 20,252 MiB |
+| Model weights | 18,508 MiB |
+| Remaining | **1,744 MiB** |
+| KV cache (4096 ctx × 4 parallel seqs) | 1,024 MiB |
+| Compute graph (streams, buffers) | >720 MiB needed |
+| **Shortfall** | **~300–500 MiB over limit** |
+
+**Why `-fit` couldn't save it:** llama.cpp's `-fit` algorithm tried to negotiate — it correctly identified it needed to reduce 7,863 MiB and tried reducing context from 32768→4096 (saving 7,252 MiB). But RamaLama hard-sets `n_gpu_layers=999`, which blocked the fit algorithm from making further adjustments. Fit aborted, load continued, crashed on the compute graph stream allocation.
+
+**Interesting nuance:** RamaLama `serve` auto-set `n_parallel=4` (4 concurrent sequences), multiplying KV cache by 4×. `ramalama run` (interactive only) might use n_parallel=1 (256 MiB KV instead of 1,024 MiB), which could free enough headroom for the compute graph. **Untested — worth trying.**
+
+**Confirmed:** The setup guide's claim "Dense 32B needs 24 GB+ VRAM — verified fails on RX 7900 XT" holds. Precision added: weights load fine, failure is at KV + compute reservation stage.
+
+**Note on registry:** `quay.io/ramalama/qwen2.5:32b` does not exist — used `ollama://qwen2.5:32b` instead.
 
 ---
 
