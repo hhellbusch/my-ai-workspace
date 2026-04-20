@@ -15,8 +15,7 @@ Hands-on log: what was tried, what worked, and what failed. Complements the gene
 ## Planned experiments (next up)
 
 - **RAG index** — `ramalama rag add research/zen-karate-philosophy/ library/` → query Inoue/Rika content → compare against Sonnet on same sources. See backlog: *RAG index for local LLM*.
-- **qwen2.5:72b hybrid** — in progress (downloading). Log layer split, tok/s, n_ctx.
-- **Native Ollama container — hybrid offload + RamaLama comparison** — `podman run ollama/ollama:rocm` + `qwen2.5:72b` for hybrid offload (RamaLama cannot do this — GPU-only by design). Also compare against `qwen3:30b-a3b` for n_ctx, tok/s, setup friction gap.
+- **qwen2.5:72b hybrid** — **pull in progress** (2026-04-20, Ollama ROCm container confirmed GPU). Log layer split, tok/s, n_ctx when complete.
 - **Non-thinking qwen3 variant** — test latency difference on short prompts (routine completions) vs thinking variant.
 
 ---
@@ -44,6 +43,64 @@ Keep **Environment (baseline)** updated when the machine or driver stack changes
 ---
 
 ## Entries (newest first)
+
+### 2026-04-20 — Ollama ROCm container, qwen2.5:72b hybrid offload (**pull in progress**)
+
+- **Tool:** Native Ollama container (`docker.io/ollama/ollama:rocm`, version **0.21.0**)
+- **Goal:** Hybrid CPU+GPU offload for qwen2.5:72b — RamaLama can't do this (GPU-only), Ollama handles layer split automatically
+- **Status:** GPU confirmed, pull running. Log layer split and tok/s when complete.
+
+**Working command:**
+```bash
+mkdir -p ~/.ollama
+podman run -d --name ollama \
+  --group-add=video \
+  --device /dev/kfd \
+  --device /dev/dri \
+  --security-opt label=disable \
+  -e HSA_OVERRIDE_GFX_VERSION=11.0.0 \
+  -p 11434:11434 \
+  -v "${HOME}/.ollama:/root/.ollama:Z" \
+  docker.io/ollama/ollama:rocm
+podman exec -it ollama ollama pull qwen2.5:72b
+```
+
+**GPU detection confirmed:**
+```
+inference compute id=GPU-9687a20323f09899 library=ROCm compute=gfx1100
+name=ROCm0 description="AMD Radeon RX 7900 XT" total="20.0 GiB" available="18.5 GiB"
+```
+
+**Two required flags for AMD ROCm on Fedora (SELinux) — both needed:**
+
+| Flag | Why |
+|------|-----|
+| `-e HSA_OVERRIDE_GFX_VERSION=11.0.0` | RDNA3 (`gfx1100`) requires explicit version hint; without it Ollama's ROCm runtime falls back to CPU. RamaLama handles this automatically. |
+| `--security-opt label=disable` | SELinux blocks container access to `/dev/kfd` and `/dev/dri` device nodes even when passed via `--device`. The `:Z` volume flag handles *file* SELinux labels but not device nodes. |
+
+**⚠️ Security note — `--security-opt label=disable`:**
+This flag disables SELinux process labeling for the container. Normally, Podman containers run with the `container_t` SELinux type, which enforces device access restrictions. Disabling this removes that defense-in-depth layer.
+
+*What this means in practice:*
+- The container process can access any device that Unix permissions allow — not just the ones explicitly passed via `--device`
+- If the Ollama container image were compromised or malicious, SELinux would not contain its device access
+- Seccomp profile and Unix permissions still apply — this isn't `--privileged` — but the SELinux boundary is gone
+
+*Acceptable for this use case because:*
+- Running a known, pinned image from a trusted source
+- Single-user local development machine
+- Ollama is a network-exposed service regardless (port 11434)
+
+*Better long-term alternative:*
+Write or install a targeted SELinux policy module that grants `container_t` access to `kfd_t` and `dri_t` device types specifically, rather than disabling labels entirely. The `container-selinux` package on Fedora may have a GPU policy; worth checking. This is the right fix for any multi-user or production deployment.
+
+**Disk/memory state at experiment start:**
+- Disk: 283 GB free on `/home` (after freeing space pre-session)
+- RAM: 62 GB total, 47 GB available
+- Swap: 8 GB, nearly full from prior session — watch for pressure during hybrid offload
+- Prior incomplete pull (40 GB orphaned blobs, no manifests) cleared before restart
+
+---
 
 ### 2026-04-20 — RamaLama, qwen2.5:72b, hybrid CPU+GPU offload (**failed — wrong tool**)
 
