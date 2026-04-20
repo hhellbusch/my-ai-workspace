@@ -1,9 +1,9 @@
 ---
 review:
-  status: unreviewed
-  read: false
+  status: direction-reviewed
+  read: 2026-04-20
   fact-checked: false
-  notes: "author draft — new doc"
+  notes: "author read-through complete, no changes"
 ---
 
 # Sparring and Shoshin — Two Practices for AI-Assisted Work
