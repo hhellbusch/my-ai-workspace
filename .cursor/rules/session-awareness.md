@@ -18,3 +18,33 @@ This workspace has persistent project state that survives across sessions. When 
 - **Experiment journals** — Dated, append-only logs of hands-on tries live in `research/*/` alongside research workspaces (e.g. [`research/ai-tooling/local-llm-experiment-journal.md`](../../research/ai-tooling/local-llm-experiment-journal.md)). They record what was tried, what worked, and what failed — separate from the stable guides in `docs/`. Check them when resuming hardware/tooling experiments.
 
 If the user starts a session with a vague request like "let's continue" or "what should I work on," check these sources before asking clarifying questions. The `/start` command automates this orientation.
+
+---
+
+## Progressive Bookkeeping — Keep State Current During the Session
+
+Bookkeeping at session end is not enough. Crashes, context loss, and abrupt endings happen mid-session. The goal is: at any point in the session, the repository state + `.planning/whats-next.md` should be accurate enough that a new session can recover without re-litigating decisions.
+
+**BACKLOG.md — update in real time, not in batch:**
+- When starting a backlog item: immediately move it to `## In Progress` — don't wait until end-of-session
+- When completing a backlog item: immediately mark it Done in `## Done` — don't batch completions
+
+**Commit frequently — small and logical:**
+- Each logical unit of work gets its own commit
+- Do not accumulate multiple completed units before committing
+- A clean working tree is the cheapest form of crash recovery — uncommitted work is unrecoverable
+
+**Checkpoint before risky operations:**
+Before any operation that could fail mid-way or produce unintended side effects, run `/checkpoint` to save current state first:
+- `git mv` or directory reorganization
+- Multi-file refactors that change many cross-references
+- Any operation involving gitignored paths or credential-adjacent files
+- Starting a long context-heavy task (sparring, research pipeline, essay draft)
+
+**Checkpoint at milestones:**
+After completing a significant deliverable — a published doc, a working system, a complete backlog item — run `/checkpoint` to capture the current state before moving on. This prevents a crash between "finished X" and "started Y" from losing the fact that X was finished.
+
+**Checkpoint frequency signal:**
+If 3–5 commits have accumulated since the last time `.planning/whats-next.md` was updated, surface this to the user: "It's been [N] commits since the last checkpoint — want me to run `/checkpoint` now?" This is a soft nudge, not a blocker.
+
+**The `/checkpoint` command is the tool for all of the above.** It is faster than `/whats-next` (no full retrospective), designed to be run mid-session, and overwrites `whats-next.md` with a minimal but accurate save point. `/whats-next` is still the right end-of-session command for a full handoff.
