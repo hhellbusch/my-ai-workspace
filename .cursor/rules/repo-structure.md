@@ -66,3 +66,15 @@ Before writing a new file, ask:
 2. Does the content type (troubleshooting, example, essay, research) match the subdirectory's purpose?
 3. Will the file be discoverable — is it linked from the appropriate README?
 4. Is it in the repo root? If so, it probably shouldn't be.
+
+## When Moving Directories (`git mv`)
+
+Path-based `.gitignore` rules break silently on directory moves. After any `git mv`:
+
+1. **Check `git status` before committing** — look for newly-tracked files in directories that should be ignored. Unexpected files appearing are a signal that a `.gitignore` rule stopped matching.
+2. **Update the root `.gitignore`** if it has path-based rules for the moved directory.
+3. **Prefer local `.gitignore` files** for sensitive or large-file directories — a `.gitignore` inside a directory travels with it on `git mv`, so the rule survives future moves regardless of the parent path.
+
+Any directory containing credentials, kubeconfigs, pull secrets, ISOs, or other sensitive/large files should have a local `.gitignore` as the primary protection. The root `.gitignore` is a secondary layer.
+
+See: [`docs/case-studies/directory-move-gitignore-drift.md`](../../docs/case-studies/directory-move-gitignore-drift.md)

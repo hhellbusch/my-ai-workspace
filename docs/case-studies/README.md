@@ -46,6 +46,8 @@ Documented examples of meta-development patterns, workflow decisions, and AI-ass
 
 - `failure` **[The Frictionless Entity — What Sparring and Shoshin Are Actually Defending Against](frictionless-entity.md)** — AI is structurally optimized to be frictionless: no pushback, no accountability, no vulnerability required. Names the failure mode directly, traces the atrophy mechanism across professional and personal contexts, and connects to why sparring and shoshin exist as structural countermeasures.
 
+- `failure` **[When the Refactor Updates What It Sees — Not What It Brings Along](directory-move-gitignore-drift.md)** — A `git mv` reorganization broke a `.gitignore` path rule, briefly committing credentials and a 1.3 GB ISO to local history before the push was rejected. Documents the distinction between AI reasoning failures and AI execution failures — and why sparring and shoshin don't catch side effects of mechanical operations.
+
 - `failure` **[When the Meta-Document Tries to Be the Catalog](meta-document-drift.md)** — The AI orientation file (`.cursorrules`) had inline title lists and hardcoded document counts — duplicating what the track READMEs authoritatively tracked. Every document added without updating `.cursorrules` made the AI's model of the corpus staler. Fix: remove inventory from orientation files; let them describe purpose and point to authoritative sources.
 
 ---

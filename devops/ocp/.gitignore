@@ -1,0 +1,4 @@
+# This file travels with the directory on git mv — keeps install/ protected
+# regardless of what path this directory lives at in the repo.
+# Root .gitignore has a companion rule as a second layer.
+install/
