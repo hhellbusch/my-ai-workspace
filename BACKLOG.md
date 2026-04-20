@@ -48,13 +48,13 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `docs/ai-engineering/local-llm-setup.md`, `research/openshift-ai-llm-deployment/sources/ref-61.md`, `docs/ai-engineering/openshift-ai-llm-deployment-summary.md`
 - **Added:** 2026-04-19
 
-### Zen-karate personal knowledge base — experiential content (CRITICAL PATH)
+### Zen-karate personal knowledge base — experiential content
 - **Product:** docs
 - **Context:** Template and structural scaffolding complete. AI-enriched content in place: training history, lineage maps, teachers/influences (Shihan, Sensei, Inoue, Rika Usami), Athens club context, notes/fragments. **What remains is the experiential core that only the user can provide:** formative moments, philosophical anchors (what concepts mean through practice), life application examples, Shi Heng Yi connection, "what's hard to convey," and the crystallizing moments for Shihan and Sensei. This is the critical path to essay readiness — without it, drafting leans on research rather than practitioner voice.
 - **Links:** `research/zen-karate-philosophy/personal-notes.md`, `.planning/zen-karate/`
 - **Added:** 2026-04-17
 
-### Essay: The Way Is in Training (PRIORITY — first essay)
+### Essay: The Way Is in Training (first essay)
 - **Product:** docs
 - **Context:** First essay in the zen-karate series (swapped from second position). The philosophical anchor: what lifelong practice teaches that cannot be learned from books. Inoue's "if kihon can do, any kata can do" as the spine. The Hayashi → Inoue → Usami lineage as visible proof that the Way transmits through training. Rika's 7-year journey, 5-hour train rides, retirement at 27 as non-attachment. The uchi-deshi experience in Inoue's own words. Deshimaru's "every moment of life is kata." The personal return to practice after the gap — what survived, what atrophied, what the body remembers. Draws from threads 2, 4, 5, 7, 12, 13, 15. Source material is deep (3 Inoue sources, Rika bio, Hayashi bio, Jesse Enkamp articles, Deshimaru). **Blocked on personal experiential content in Phase 1.**
 - **Source material available:** Inoue comprehensive bio + teaching philosophy, Rika Usami biography, Hayashi biography, Jesse Enkamp articles (5), Enkamp × Shi Heng Yi mastery conversation (ego arc, invisible masters, stages of mastery), Deshimaru, personal practice notes (partial — needs formative moments, philosophical anchors).
@@ -106,6 +106,36 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `.cursor/skills/research-and-analyze/`, `.cursor/skills/create-plans/`, `BACKLOG.md` (workspace architecture item below)
 - **Added:** 2026-04-20
 
+### Case study: model self-report of runtime state — context window edition
+- **Product:** docs
+- **Context:** During the RamaLama qwen3:30b-a3b experiment (2026-04-20), the model self-reported a context window of 32,768 tokens when asked directly. Actual runtime `n_ctx` confirmed via llama.cpp startup logs: 14,592. The model wasn't fabricating — 32k is a real figure from its training data about its typical configuration. The failure is category confusion: answering "what is your context window?" from training knowledge about the model's usual configuration rather than from actual runtime state. Distinct from the frozen-clock idea (wrong year from training cutoff) — same root mechanism (training knowledge ≠ runtime state), different domain (configuration vs. time). Fix: always verify `n_ctx` from startup logs or `ramalama serve` output; never trust self-report for runtime values.
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md` (2026-04-20 RamaLama entry), `docs/case-studies/` (frozen-clock idea for comparison)
+- **Added:** 2026-04-20
+
+### Case study: survivorship bias in recommendations
+- **Product:** docs
+- **Context:** After a sequence of failures (vLLM FP8 MoE failed, AWQ 32B boots at 1k context, dense 32B OOM), the one model that worked (qwen3:30b-a3b MoE) was initially framed as "the recommended default" — implying deliberate quality selection. The spar caught it: the recommendation was reached by elimination, not evaluation. The AI wasn't lying — it accurately described what worked — but positive framing obscured the selection process. Fix: explicit survivorship language ("best available option on this GPU" vs "recommended"). The pattern transfers: any AI recommendation reached by testing-until-something-works carries this risk, especially in hardware/software compatibility work where failure is the norm and success is convergence on what fits.
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `research/ai-tooling/local-llm-setup-sparring-notes.md` (round 2, argument 1)
+- **Added:** 2026-04-20
+
+### Case study: the experiment that can't use its own findings
+- **Product:** docs
+- **Context:** A full session was spent building infrastructure to run local LLMs and documenting findings. The conclusion: the local models (14k context, 3B active parameters) can't do the work that produced the infrastructure. The journal, guide, sparring notes, and backlog items were all generated using Sonnet 4.6 with large context — the capability the local setup cannot replicate. Worth documenting: using advanced tools to characterize the limits of less-capable tools, then trying to route work to the less-capable tools, while acknowledging the characterization work itself required the advanced tools. Connects to honest accounting of AI-assisted workflows: the meta-level requires better tooling than the object level being analyzed.
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`
+- **Added:** 2026-04-20
+
+### Essay: What a context window actually is (AI-engineering)
+- **Product:** docs
+- **Context:** "Context window" is used loosely in most AI writing. This session produced concrete observations: 14k runtime vs 32k self-report vs 1M cloud; KV cache as the real constraint (not a fuel tank, not just a limit — an active memory allocation); how MoE vs dense affects what fits; how `-fit` negotiates between model size and context; why 14k and 1M produce qualitatively different work, not just quantitatively different. A practical essay grounding the term in real observations for engineers who use it loosely. Could be standalone or a companion to `local-llm-setup.md`. Strong anchor: the contrast between the self-reported 32k and actual 14k as the opening hook.
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`
+- **Added:** 2026-04-20
+
+### Essay: The infrastructure trap (philosophy / bridge)
+- **Product:** docs
+- **Context:** Building the tools for the work can become more engaging than doing the work. AI makes infrastructure fast, satisfying, and legible — which amplifies the trap. This session is a clean instance: multiple hours on local LLM infrastructure while other work waited. Not a failure — the findings are real and the work was worth doing. But worth naming the pattern: the dojo (the tool, the environment) vs. the practice (the purpose). Connects to "The Full Cup" (organizational bandwidth as barrier to learning), potentially to zen-karate themes (the student who polishes their gi instead of training, or the dojo that becomes an end in itself). Bridge essay between AI-engineering and philosophy tracks. Needs a clear frame: this isn't "infrastructure is bad" — it's "the pull toward infrastructure is worth being conscious of."
+- **Links:** `docs/philosophy/the-full-cup.md`, `docs/ai-engineering/local-llm-setup.md`, `.planning/zen-karate/`
+- **Added:** 2026-04-20
+
 ### RAG index for local LLM — corpus retrieval exploration
 - **Product:** meta / docs
 - **Context:** RamaLama ships a ROCm-enabled RAG image (`quay.io/ramalama/rocm-rag:latest`, confirmed in `ramalama info`). Instead of loading files manually into context, an embedding index lets the local model retrieve the 3–5 most relevant chunks per query automatically. Fits the hybrid local/cloud architecture: local model handles content retrieval + bounded drafting; cloud handles synthesis that needs simultaneous access to many sources.
@@ -139,7 +169,8 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ### Local LLM / vLLM track — derivative artifacts
 - **Product:** docs / meta / research
-- **TL;DR (logged only, no drafting now):** From the journal + guide, later consider: (1) **case study** — Radeon vLLM (FP8 MoE gap, eager/KV limits, Ollama vs vLLM vs RamaLama); (2) **meta case study** — guide vs experiment journal; (3) **short essay** — stack choice under real VRAM/kernel constraints; (4) **electricity** backlog + **spar** notes if drafting; (5) **meta essay** — "a customer could have this conversation": the local LLM evaluation loop (what fits, what doesn't, where the enterprise ceiling begins) as an example of what the tooling now enables — no pricing claims, just the pattern; (6) **Red Hat ecosystem comparison** — RamaLama / Podman AI Lab / InstructLab / RHEL AI as a landscape piece: what each tool is actually for, where the seams are, and what a practitioner needs to know to pick the right one. First-hand data from this track (RamaLama GPU detection on gfx1100, Fedora) is a useful anchor.
+- **TL;DR (logged only, no drafting now):** From the journal + guide, later consider: (1) **case study** — Radeon vLLM (FP8 MoE gap, eager/KV limits, Ollama vs vLLM vs RamaLama); (2) **meta case study** — guide vs experiment journal; (3) **short essay** — stack choice under real VRAM/kernel constraints; (4) **electricity** backlog + **spar** notes if drafting; (5) **meta essay** — "a customer could have this conversation" (see dedicated backlog item); (6) **Red Hat ecosystem comparison** — RamaLama / Podman AI Lab / InstructLab / RHEL AI as a landscape piece.
+- **"A customer could have this conversation" — session material now rich enough to draft:** The full arc from this track: try vLLM → hit FP8 MoE gap → find AWQ barely works at 1k context → discover RamaLama → auto-detects ROCm → realize context ceiling (14k vs 1M cloud) → understand hybrid architecture path → model enterprise vs consumer hardware gap. That's exactly the evaluation journey an enterprise customer runs — compressed into one session. No pricing claims needed; the pattern is the point. The experiment journal is the primary source. See also: enterprise cost caveat in journal (⚠️ non-authoritative); Red Hat employment disclosure consideration.
 - **Detail — candidate artifacts:** The ROCm + Radeon + vLLM work is producing **raw material** in [`research/ai-tooling/local-llm-experiment-journal.md`](research/ai-tooling/local-llm-experiment-journal.md) and [`docs/ai-engineering/local-llm-setup.md`](docs/ai-engineering/local-llm-setup.md). When the track settles, decide what to publish — not everything belongs in the long-form guide.
   - **Case study (`docs/case-studies/`):** Consumer **AMD + vLLM** — FP8 MoE backend gap vs **AWQ** path; **Inductor/HIP OOM** vs **`--enforce-eager`**; **KV cache** when weights ~**18.26 GiB** on **20 GB**; **Ollama vs vLLM** by constraint (context, kernels, ops). Cite the journal as timeline; keep claims **commands-verified** before publishing.
   - **Case study (meta):** **Stable guide vs experiment journal** — why the split, cross-linking, when to promote journal findings into the guide (avoid orphan logs).
