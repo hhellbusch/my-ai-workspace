@@ -66,6 +66,19 @@ These registries MUST be updated when their content changes. This is the most co
 | New project in `.planning/` | `.cursorrules` planning section, `BACKLOG.md` |
 | New prompt in `prompts/` | `.cursorrules` prompts description |
 
+## `.cursorrules` is orientation, not inventory
+
+`.cursorrules` describes **what each directory is for** — purpose, audience, content type. It does not enumerate individual files, titles, or counts. Those belong in the README files.
+
+**Do not add to `.cursorrules`:**
+- Lists of essay or case study titles
+- File counts ("fifteen case studies")
+- Specific filenames within a directory
+
+**Instead:** point to the README. The description for `docs/case-studies/` should say what kind of content lives there and link to `docs/case-studies/README.md` — not list all 25 case studies inline.
+
+This prevents a recurring pattern where content is added and `.cursorrules` goes stale because the inline list wasn't updated. The README is the registry; `.cursorrules` is the map legend.
+
 ## Don't Over-Link
 
 Not every file needs to be linked from everywhere. The key registries are:
@@ -73,6 +86,6 @@ Not every file needs to be linked from everywhere. The key registries are:
 - `research/README.md` — Every research directory
 - `library/README.md` and `library/catalog.md` — Every personal reference entry
 - `BACKLOG.md` — Every tracked work item
-- `.cursorrules` — High-level project description (not every file, but every major content area and accurate counts)
+- `.cursorrules` — Purpose and shape of each content area (not individual files or counts)
 
 When in doubt, run `/audit` to check.
