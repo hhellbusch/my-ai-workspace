@@ -22,6 +22,8 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 9. **[Running a Local LLM: Setup, Tradeoffs, and Real Electricity Cost](local-llm-setup.md)** — How to point Cursor and Claude Code at a locally-running model (Ollama, LM Studio, vLLM on NVIDIA or AMD ROCm, LiteLLM proxy), with **Qwen3** as the default family for DevOps/coding in this workspace. Covers hardware, electricity measurement, and when local wins vs. cloud.
 
+10. **[What a Context Window Actually Is](what-a-context-window-actually-is.md)** — Three different figures appeared during a local LLM session: 32,768 (model self-report), 262,144 (training metadata), 14,592 (actual runtime allocation). Explains what each figure means, how KV cache allocation works, why MoE changes the picture, and why 14k and 1M context are qualitatively different rather than quantitatively comparable.
+
 ## Primary narratives (public)
 
 - **Dan Walsh — *Lessons learned with a career in software?*** (DevConf.US 2025) — [YouTube](https://www.youtube.com/watch?v=YKDi-ePTmRA). Full transcript and theme index: [`research/ai-engineering-public/sources/youtube-YKDi-ePTmRA-transcript.md`](../../research/ai-engineering-public/sources/youtube-YKDi-ePTmRA-transcript.md), [`library/dan-walsh-devconf-2025-career-lessons.md`](../../library/dan-walsh-devconf-2025-career-lessons.md). Useful as a **public** anchor for security-through-containers history, mentorship/succession, and late-career AI tooling (e.g. RamaLama) without relying on private correspondence.
