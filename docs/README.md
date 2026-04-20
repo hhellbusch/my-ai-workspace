@@ -34,7 +34,7 @@ Start with [Ego, AI, and the Zen Antidote](philosophy/ego-ai-and-the-zen-antidot
 Start with [The Dojo After the Automation](philosophy/the-dojo-after-the-automation.md). A position paper for leaders, managers, and non-technical readers: what learning investment determines when AI automates execution, and what the co-development loop means for organizations.
 
 **Came here via sparring, adversarial review, or the shoshin idea:**
-Start with [Adversarial Review as a Meta-Development Pattern](case-studies/adversarial-review-meta-development.md). The case study behind how the `/spar` practice was built and immediately applied — including the self-referential complication that came out of it.
+Start with [Sparring and Shoshin — Two Practices for AI-Assisted Work](ai-engineering/sparring-and-shoshin.md) — the practical introduction: what these two practices are, how to run them without any tooling, and where they fit in a workflow. Then [Adversarial Review as a Meta-Development Pattern](case-studies/adversarial-review-meta-development.md) for how the `/spar` practice was built and applied — including the self-referential complication that came out of it.
 
 **Want to understand how a workspace like this gets built:**
 Start with [Building a Personal Knowledge Management System with AI](case-studies/building-knowledge-management-with-ai.md). One extended session produced six interlocking tools. The meta-development loop made concrete.

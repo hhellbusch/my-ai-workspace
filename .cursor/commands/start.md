@@ -71,6 +71,15 @@ If `.planning/whats-next.md` does **not** exist (crash, abrupt end, or `/whats-n
 **Likely in-flight:** [any backlog items that connect to recent commits but aren't yet Done]
 **Possible next step:** [what the commit sequence suggests was coming next]
 
+---
+⚠️ **What this reconstruction cannot recover:**
+- Decisions made in conversation that weren't committed to any file (e.g., "we discussed doing X but held off")
+- Pending intent — what the agent was about to do next
+- Scope calls, trade-offs, or approach choices discussed but not yet written down
+- Anything agreed to verbally that didn't produce a file change
+
+Git log shows *what landed*, not what was in flight or decided-but-deferred. If anything feels ambiguous or you're unsure whether a decision was made, ask rather than assume. Re-litigating a decision is lower cost than undoing a wrong assumption.
+
 *(Reconstructed from git log — treat as approximate. The backlog above is ground truth.)*
 ```
 

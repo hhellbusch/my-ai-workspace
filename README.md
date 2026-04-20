@@ -10,19 +10,19 @@ Started in late 2025 capturing what was actually being learned while using AI to
 
 ## Where to Start
 
-Four entry points. Each works standalone.
+Four entry points. Each works standalone — pick the one that fits where you are, or share one with a colleague.
 
-**New to AI-assisted work with coding tools:**
-[The Shift — Engineering Skills in the Age of AI](docs/ai-engineering/the-shift.md) — what changes when AI handles most of the implementation, and why the bottleneck moves rather than disappears.
+**For anyone using AI tools today — the most shareable starting point:**
+[Sparring and Shoshin — Two Practices for AI-Assisted Work](docs/ai-engineering/sparring-and-shoshin.md) — two complementary practices for catching the most common ways AI-assisted work goes wrong: adversarial review (get the AI to argue against itself) and beginner's mind (question what's been assumed). No prior reading required. Works in any AI tool, any workflow.
+
+**For engineers and practitioners — the foundational framework:**
+[The Shift — Engineering Skills in the Age of AI](docs/ai-engineering/the-shift.md) — what changes when AI handles most of the implementation, and why the bottleneck moves rather than disappears. Where the new skill priorities are, and where the risks concentrate.
+
+**For managers, leaders, and non-technical readers — what AI means for organizations and teams:**
+[The Full Cup — Why Nobody Can Learn When the Tap Is Always On](docs/philosophy/the-full-cup.md) — reframes the "empty your cup" idea from personal practice to organizational challenge. When AI compresses execution, does it create capacity for learning — or does it just fill the time with more output? A practical lens for thinking about what teams need to build. *(Companion playbook: [The Full Cup — Practitioner's Guide](docs/philosophy/the-full-cup-practitioners-guide.md).)*
 
 **Curious about how AI shapes how we think — ego, agreement, sycophancy:**
-[Ego, AI, and the Zen Antidote](docs/philosophy/ego-ai-and-the-zen-antidote.md) — what Zen practice offers as a structural (not just behavioral) response to AI's trained tendency to agree with you.
-
-**Thinking about AI's impact on ways of working, skill development, and what we're building people for:**
-[The Dojo After the Automation](docs/philosophy/the-dojo-after-the-automation.md) — a position paper on learning investment, organizational culture, and what happens to people when AI automates execution. Starting point for non-technical readers and leaders.
-
-**Want a practical introduction to adversarial review and beginner's mind:**
-[Sparring and Shoshin — Two Practices for AI-Assisted Work](docs/ai-engineering/sparring-and-shoshin.md) — two complementary practices for catching the most common ways AI-assisted work goes wrong. No prior reading required.
+[Ego, AI, and the Zen Antidote](docs/philosophy/ego-ai-and-the-zen-antidote.md) — AI assistants are trained to agree with you. This essay traces why that's a structural problem (not just a behavior to watch for), and what Zen practices offer as a structural — not just behavioral — response.
 
 ---
 

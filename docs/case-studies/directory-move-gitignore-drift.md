@@ -73,11 +73,21 @@ Candidate pattern: for any directory that is gitignored by path, add a local `.g
 
 ---
 
-## What This Session Did Right
+## How Close It Was — and Why Most Cases Are Closer
 
-The push rejection was the catch. GitHub's pre-receive hook blocked the 1.3 GB file before it landed on the remote. The sensitive files (credentials, kubeconfig) were collateral — they would have pushed silently if the ISO hadn't triggered the size limit.
+The push rejection was the catch — but only because a 1.3 GB ISO happened to be sitting in the ignored directory. GitHub's size limit blocked the push; without it, the kubeconfig, kubeadmin password, and pull secrets would have reached the remote silently and undetected.
 
-If the ISO hadn't been present, the credentials alone (small text files) would have pushed without error. The large binary was accidental protection. That's worth naming: **the obvious problem (large binary) may mask the serious problem (credentials)**. A repository that doesn't have ISO files in its ignored directories might push the credentials without any size-limit rejection.
+**This is the common case for most repositories.** An OCP install directory with only credential files — no ISO, no large binary — would have pushed cleanly. No warning, no rejection, no obvious indicator in the diff that sensitive files were included. The large binary here was accidental protection. Most affected repos won't have it.
+
+**Broader scenarios where this pattern leaks credentials without any safety net:**
+- Any project with `.env` files, API keys, or service account credentials in a gitignored directory that gets moved
+- Ansible vault-adjacent directories with `vault-password.txt` or similar, protected only by a path rule
+- SSH key directories, TLS certificate directories, or secret stores organized under a product folder
+- Any `.gitignore` rule of the form `path/to/sensitive/` — all of these break silently on `git mv`
+
+In each case: the move succeeds, `git add .` stages everything, the commit looks normal, `git push` succeeds. The only evidence is the unexpected files in `git diff` before the commit — which is exactly the check that was skipped.
+
+**The recovery here worked because the failure was loud.** Credentials-only failures are quiet. The conventions added as a result of this incident (`devops/ocp/.gitignore`, `git status` check after `git mv`) matter most precisely in the cases where no large binary would have caught it first.
 
 ---
 
