@@ -60,6 +60,16 @@ ramalama run ollama://qwen3:30b-a3b
 
 It supports Ollama and Hugging Face model registries, and multiple inference backends (llama.cpp and vLLM). Useful on Fedora / RHEL systems where it's packaged natively. The tradeoff vs. manual `podman run`: less direct control over fine-grained inference flags (`--enforce-eager`, `--max-model-len`, `--gpu-memory-utilization`), which matter when you're at the edge of available VRAM. For routine model runs where defaults work, it significantly reduces friction.
 
+To serve an OpenAI-compatible API endpoint (for Cursor or LiteLLM):
+
+```bash
+ramalama serve ollama://qwen3:30b-a3b
+# API at http://127.0.0.1:8080/v1  (use 127.0.0.1, not localhost — IPv4 only)
+# Model ID: library/qwen3
+```
+
+llama.cpp auto-fits context to available VRAM — on a 20 GB card with `qwen3:30b-a3b`, runtime `n_ctx` is ~14,592 tokens (reduced from 262k training context). Check actual `n_ctx` in startup logs, not `GET /v1/models` (that returns `n_ctx_train`, not the runtime value).
+
 **[LM Studio](https://lmstudio.ai/)** takes the same approach with a graphical interface — useful if you prefer not to use the command line. Its local server runs at `http://localhost:1234/v1`.
 
 **[vLLM](https://docs.vllm.ai/)** targets **Linux** machines with a **discrete GPU** — **NVIDIA (CUDA)** or **AMD (ROCm)** — not CPU-only setups. It pulls models from the **Hugging Face Hub** by ID, serves an **OpenAI-compatible** HTTP API (default `http://localhost:8000/v1`), and is built for **serving throughput** (continuous batching, PagedAttention). Tradeoffs versus Ollama: more moving parts (Python environment and **GPU stack matched to the exact vLLM build** — CUDA *or* ROCm wheels, occasional `hf` CLI login for gated models). Upstream does **not** ship native Windows builds; see the [GPU install guide](https://docs.vllm.ai/en/latest/getting_started/installation/gpu.html) (WSL note there).
@@ -122,7 +132,7 @@ vllm serve Qwen/Qwen2.5-Coder-32B-Instruct-AWQ \
   --max-model-len 8192
 ```
 
-Other practical paths on AMD: **Ollama** (`qwen3:30b-a3b`, etc.) or a smaller instruct model if VRAM is tight. On **Fedora / RHEL**, **[RamaLama](https://github.com/containers/ramalama)** (`sudo dnf install ramalama`) can automate the container image selection and device pass-through — `ramalama run ollama://qwen3:30b-a3b` — rather than constructing the `podman run` command manually. See [experiment journal](../../research/ai-tooling/local-llm-experiment-journal.md) for results on gfx1100.
+Other practical paths on AMD: **RamaLama** or **Ollama** with `qwen3:30b-a3b`. On **Fedora / RHEL**, **[RamaLama](https://github.com/containers/ramalama)** (`sudo dnf install ramalama`) is the recommended default — it auto-detects ROCm, pulls `quay.io/ramalama/rocm:latest`, and provides **32k context** on a 20 GB card with a single command (`ramalama run ollama://qwen3:30b-a3b`). Verified on RX 7900 XT / gfx1100. See [experiment journal](../../research/ai-tooling/local-llm-experiment-journal.md) for the vLLM vs RamaLama comparison.
 
 Smaller HF sanity check: `Qwen/Qwen2.5-Coder-7B-Instruct` (no tool-parser flags required).
 
@@ -399,7 +409,7 @@ For coding and DevOps work specifically, **this workspace targets the Qwen3 line
 |-------|------|------------|---------|
 | `Qwen/Qwen3-Coder-Next-FP8` (vLLM / HF) | ~80B total, small active MoE | ~20 GB (tune `--max-model-len`; may OOM on marginal cards) | **Primary on NVIDIA vLLM:** repo-scale edits, tool use — [model card](https://huggingface.co/Qwen/Qwen3-Coder-Next-FP8). **Not for vLLM + ROCm Radeon** today (no FP8 MoE backend; nightly does not fix on 7900-class). |
 | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (vLLM / HF) | 32B AWQ | ~20 GB | **Primary on AMD vLLM:** same workload intent as above when FP8 Qwen3 cannot load. **On 20 GB cards (e.g. 7900 XT), weights consume ~18.3 GB, leaving ~1k tokens of KV cache** — server boots and answers short prompts, but this is effectively a proof-of-concept, not a production interactive workflow. For longer context on the same GPU, Ollama `qwen3:30b-a3b` is the practical alternative. |
-| `qwen3:30b-a3b` (Ollama) | 30B-class MoE | ~20 GB | **Primary (easy path on AMD):** Qwen3-class via Ollama |
+| `qwen3:30b-a3b` (Ollama / RamaLama) | 30B-class MoE | ~19.5 GB | **Primary on AMD (recommended default):** ~14k context on 20 GB VRAM (llama.cpp auto-fits from 262k training context to available VRAM), 1-command setup via RamaLama (`ramalama run ollama://qwen3:30b-a3b`). Thinking variant (chain-of-thought enabled). Verified on RX 7900 XT / gfx1100. |
 | `qwen2.5-coder:7b` | 7B | 6–8 GB | Quick lookups, simple edits, learning the workflow |
 | `qwen2.5-coder:32b` | 32B | 20–24 GB | Solid Qwen2.5-era dense coder if Qwen3 MoE is unavailable |
 | `llama3.3:70b` | 70B | 48 GB+ | Agentic tasks, research synthesis, essay writing |

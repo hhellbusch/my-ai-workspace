@@ -42,9 +42,27 @@ Keep **Environment (baseline)** updated when the machine or driver stack changes
 - **Install:** `sudo dnf install ramalama`
 - **Command:** `ramalama run ollama://qwen3:30b-a3b`
 - **Goal:** Compare against the vLLM AWQ 32B baseline — easier path, llama.cpp backend, Qwen3 MoE model.
-- **GPU detection:** *(to be filled — check `ramalama info` output; confirm ROCm / gfx1100 detected, not CPU fallback)*
-- **Outcome:** *(to be filled)*
-- **Notes:** *(to be filled — context window available, tokens/sec, any device flags needed)*
+- **GPU detection:** **ROCm confirmed.** `ramalama info` reports `"Accelerator": "hip"` (HIP = AMD ROCm API). Auto-pulled `quay.io/ramalama/rocm:latest` — no manual `--device` flags needed. `rocm-smi` shows **VRAM 98%** (~19.5 GB of 20 GB used); GPU% 1% at idle. Temperature 44°C, power 38W idle. RamaLama version: **0.17.1**.
+- **Outcome:** **Working.** Model responds at chat prompt (`🦭 >`). Single command: `ramalama run ollama://qwen3:30b-a3b` — no `podman run` flags, no image tag hunting, no device pass-through.
+- **Context window (verified):** Runtime `n_ctx = **14,592** tokens** — confirmed via `ramalama serve` startup logs. llama.cpp's `-fit` algorithm reduced the model's native training context (262,144 tokens) to fit available VRAM: projected 42,892 MiB needed vs 20,252 MiB free → context reduced by ~248k. Model self-reported **32,768** when asked directly — that was wrong, drawn from training knowledge not runtime config. **Lesson: never trust a model's self-reported context window; check `n_ctx` in llama.cpp startup logs or `GET /v1/models`.**
+- **GPU offload:** `offloaded 49/49 layers to GPU`. Weights on ROCm0: **17,524 MiB**. KV cache on ROCm0: **1,368 MiB** (f16). Flash Attention: **enabled** (auto). All compute on GPU.
+- **API endpoint:** `ramalama serve` exposes OpenAI-compatible server at `http://0.0.0.0:8080`. **Use `http://127.0.0.1:8080/v1` — not `http://localhost:8080/v1`** (server binds IPv4 only; `localhost` resolves to `::1` IPv6 → connection reset). Model ID for Cursor/LiteLLM: **`library/qwen3`**. Note: `GET /v1/models` returns `n_ctx_train: 262144` (training metadata), not the runtime `n_ctx` (14,592) — startup logs are the only source for the actual configured context.
+- **Thinking model:** `Qwen3 30B A3B Thinking 2507` — this is a **reasoning variant** with `<think>` scratchpad support (`thinking = 1` in chat template). Extended chain-of-thought available, unlike the standard instruct variant.
+- **Tokens/sec:** **~90 tok/s generation** (`predicted_per_second: 90.35`), **~153 tok/s prompt processing** — confirmed via `POST /v1/chat/completions` smoke test (21 prompt tokens, 274 completion tokens including thinking). Interactive use is fluid at this speed.
+- **Thinking model confirmed:** API response includes `reasoning_content` field with full `<think>` scratchpad. Model chain-of-thought is available and working. Reasoning is hidden from Cursor UI but influences response quality on complex prompts.
+- **Model download:** 17.28 GB at 71 MB/s. Quantization: Q4_K (Medium), 4.86 BPW.
+- **Lesson (RamaLama vs vLLM on 20 GB AMD):** For single-user interactive use on a 20 GB consumer Radeon, **RamaLama + llama.cpp is the practical winner**:
+
+  | | vLLM AWQ 32B | RamaLama qwen3:30b-a3b |
+  |---|---|---|
+  | Context | ~1,024 tokens | **~14,592 tokens** |
+  | Generation speed | not measured (server barely started) | **~90 tok/s** |
+  | Setup | 10-flag `podman run` + 3 failed attempts | **1 command** |
+  | Model generation | Qwen2.5 (older) | **Qwen3 Thinking 2507** |
+  | Thinking mode | No | **Yes** |
+  | API endpoint | `http://127.0.0.1:8000/v1` | `http://127.0.0.1:8080/v1` |
+
+  vLLM's value is serving throughput and batching for multi-user workloads — not relevant for a personal coding assistant. **RamaLama + `qwen3:30b-a3b` is the recommended default for this GPU** until FP8 MoE lands on ROCm Radeon and vLLM can serve Qwen3 Coder with meaningful context.
 
 ### 2026-04-20 — vLLM OpenAI ROCm container, Qwen2.5-Coder-32B-Instruct-AWQ (**worked**)
 
