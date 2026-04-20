@@ -132,4 +132,60 @@ review:
 
 ---
 
-*Sparring notes generated with AI assistance (Cursor). Response sections to be filled in by the author.*
+---
+
+## Round 2 — 2026-04-20 (post-experiment session spar)
+
+**Context:** After hands-on vLLM ROCm + RamaLama experiments. Sparring the guide + journal body of work.
+
+### 1. "Recommended default" is survivorship bias framing
+
+**Type:** Presentation / Evidence  
+**The argument:** `qwen3:30b-a3b` is described as "best available" throughout (fixed from "recommended default" during this spar). The selection was reached by eliminating everything that failed — not by evaluating quality. The positive framing risks implying deliberate selection.  
+**Strength:** Moderate — fixed in this round; framing now says "best available option...not a deliberate quality selection."  
+**Author response:**  
+**Resolution:** — fixed inline
+
+### 2. Guide has drifted from stated purpose and audience
+
+**Type:** Scope  
+**The argument:** The stated audience is "technical practitioners *curious* about running AI locally." The guide is now a specialist deep-dive on vLLM ROCm internals, KV cache mechanics, cluster topology, and MoE architecture. A practitioner who just wants to point Cursor at a local model faces 500+ lines before they get a working command. Machine-specific findings (OOM failures, gfx1100 verification notes) belong in the journal, not the guide.  
+**Strength:** Strong — not fixed in this round. The audience/purpose statement at the top is now outdated. **Unresolved.**  
+**Author response:**  
+**Resolution:** — deferred; consider splitting into "quick start" section at top and "deep reference" below
+
+### 3. GPT-4 as MoE was stated as fact
+
+**Type:** Evidence  
+**The argument:** The MoE explanation stated "This is also the architecture behind GPT-4" — unconfirmed by OpenAI.  
+**Strength:** Strong — fixed in this round; now reads "widely believed to underlie GPT-4 (unconfirmed by OpenAI)."  
+**Author response:**  
+**Resolution:** — fixed inline
+
+### 4. n_ctx = 14,592 presented as fixed, not runtime-variable
+
+**Type:** Evidence  
+**The argument:** The figure is specific to one launch under specific VRAM availability. Different system states yield different n_ctx values.  
+**Strength:** Moderate — fixed in this round; now reads "~10k–15k depending on system state."  
+**Author response:**  
+**Resolution:** — fixed inline
+
+### 5. Thinking mode latency cost not mentioned
+
+**Type:** Scope  
+**The argument:** 274 tokens generated to answer "What is 2+2?" — thinking mode adds significant overhead on short prompts. Presented as unambiguous win; latency cost on routine completions not mentioned.  
+**Strength:** Moderate — partially fixed (guide now notes "slower for routine completions"). Non-thinking instruct variant not explored.  
+**Author response:**  
+**Resolution:** — partially fixed
+
+### Shoshin flag: critical path work is waiting
+
+The backlog has "Zen-karate personal knowledge base (CRITICAL PATH)" and "Essay: The Way Is in Training (PRIORITY)" blocked on personal content only the author can provide. The local LLM infrastructure track has consumed multiple full sessions. The infrastructure is genuinely interesting but the guide itself notes that 14k context local models can't do the work this workspace primarily does. Risk: infrastructure work substituting for the harder creative work.
+
+### Gap logged: RamaLama vs native Ollama container not compared
+
+RamaLama recommended based on one successful session. Native `podman run ollama/ollama:rocm` path not benchmarked against it. Not a spar finding per se — just an honesty gap in the experiment record.
+
+---
+
+*Round 2 sparring notes generated with AI assistance (Cursor). Response sections to be filled in by the author.*

@@ -132,7 +132,7 @@ vllm serve Qwen/Qwen2.5-Coder-32B-Instruct-AWQ \
   --max-model-len 8192
 ```
 
-Other practical paths on AMD: **RamaLama** or **Ollama** with `qwen3:30b-a3b`. On **Fedora / RHEL**, **[RamaLama](https://github.com/containers/ramalama)** (`sudo dnf install ramalama`) is the recommended default — it auto-detects ROCm, pulls `quay.io/ramalama/rocm:latest`, and provides **32k context** on a 20 GB card with a single command (`ramalama run ollama://qwen3:30b-a3b`). Verified on RX 7900 XT / gfx1100. See [experiment journal](../../research/ai-tooling/local-llm-experiment-journal.md) for the vLLM vs RamaLama comparison.
+Other practical paths on AMD: **RamaLama** or **Ollama** with `qwen3:30b-a3b`. On **Fedora / RHEL**, **[RamaLama](https://github.com/containers/ramalama)** (`sudo dnf install ramalama`) is the best-tested single-command path — it auto-detects ROCm, pulls `quay.io/ramalama/rocm:latest`, and provides **~10k–15k context** on a 20 GB card (runtime variable; llama.cpp fits context to available VRAM at launch). Verified on RX 7900 XT / gfx1100. Note: native Ollama container path not directly compared in testing — RamaLama was adopted early and not benchmarked against the manual `podman run ollama/ollama:rocm` alternative. See [experiment journal](../../research/ai-tooling/local-llm-experiment-journal.md) for full results.
 
 Smaller HF sanity check: `Qwen/Qwen2.5-Coder-7B-Instruct` (no tool-parser flags required).
 
@@ -403,13 +403,15 @@ This workspace is not a simple coding assistant use case. An honest survey:
 
 ### Recommended models by use case (2026)
 
+**A note on MoE (Mixture of Experts):** Several models in this table use MoE architecture — `qwen3:30b-a3b`, `Qwen3-Coder-Next-FP8`. Instead of every token passing through all of the model's parameters, a MoE model has many small "expert" sub-networks and a router that activates only a few per token. For `qwen3:30b-a3b`: 30B total parameters across 128 experts, but only ~3B active per token (the `a3b` suffix). This matters for consumer hardware in two ways: (1) **speed** — compute per token is equivalent to a 3B dense model, so throughput is much higher than a true dense 30B; (2) **VRAM** — the full 30B still has to fit in VRAM (all experts stored), but active compute is small. The tradeoff is that MoE routing can be less consistent than dense models on unusual inputs; in practice for coding and technical tasks the difference is small. This is the architecture behind Mixtral, and is widely believed to underlie GPT-4 (unconfirmed by OpenAI), among other recent large models.
+
 For coding and DevOps work specifically, **this workspace targets the Qwen3 line** where the stack allows it; on **AMD + vLLM**, **`Qwen2.5-Coder-32B-Instruct-AWQ`** is the practical default until FP8 MoE works on Radeon.
 
 | Model | Size | VRAM needed | Good for |
 |-------|------|------------|---------|
 | `Qwen/Qwen3-Coder-Next-FP8` (vLLM / HF) | ~80B total, small active MoE | ~20 GB (tune `--max-model-len`; may OOM on marginal cards) | **Primary on NVIDIA vLLM:** repo-scale edits, tool use — [model card](https://huggingface.co/Qwen/Qwen3-Coder-Next-FP8). **Not for vLLM + ROCm Radeon** today (no FP8 MoE backend; nightly does not fix on 7900-class). |
 | `Qwen/Qwen2.5-Coder-32B-Instruct-AWQ` (vLLM / HF) | 32B AWQ | ~20 GB | **Primary on AMD vLLM:** same workload intent as above when FP8 Qwen3 cannot load. **On 20 GB cards (e.g. 7900 XT), weights consume ~18.3 GB, leaving ~1k tokens of KV cache** — server boots and answers short prompts, but this is effectively a proof-of-concept, not a production interactive workflow. For longer context on the same GPU, Ollama `qwen3:30b-a3b` is the practical alternative. |
-| `qwen3:30b-a3b` (Ollama / RamaLama) | 30B-class MoE | ~19.5 GB | **Primary on AMD (recommended default):** ~14k context on 20 GB VRAM (llama.cpp auto-fits from 262k training context to available VRAM), 1-command setup via RamaLama (`ramalama run ollama://qwen3:30b-a3b`). Thinking variant (chain-of-thought enabled). Verified on RX 7900 XT / gfx1100. |
+| `qwen3:30b-a3b` (Ollama / RamaLama) | 30B-class MoE | ~19.5 GB | **Best available on 20 GB AMD cards:** ~14k context (runtime variable — llama.cpp auto-fits from 262k training context based on free VRAM at launch; expect 10k–15k depending on system state). 1-command setup via RamaLama. Thinking variant. Verified on RX 7900 XT / gfx1100. Note: thinking mode adds latency on short prompts — faster for complex reasoning, slower for routine completions. |
 | `qwen2.5-coder:7b` | 7B | 6–8 GB | Quick lookups, simple edits, learning the workflow |
 | `qwen2.5-coder:32b` / `qwen3:32b` | 32B dense | **24 GB+** | Dense 32B needs 24 GB+ VRAM — weights alone (~18.8 GB) leave insufficient KV cache headroom on 20 GB cards (verified: fails on RX 7900 XT). RTX 4090/5090 class required. |
 | `llama3.3:70b` | 70B | 48 GB+ | Agentic tasks, research synthesis, essay writing |
