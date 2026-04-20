@@ -274,7 +274,11 @@ The implications are rich:
 - Shoshin (beginner's mind) — you don't leave beginner's mind behind at shodan; shodan *is* a beginning
 - The Full Cup — the Western black-belt framing is the full cup; shodan-as-beginning is the empty cup
 
-**Open question for the author:** What did earning shodan actually feel like? Was there a sense of completion, or something else? That lived experience is the essay's anchor — not the etymology.
+The parallel to coming-of-age ceremonies is exact. Bar mitzvah, confirmation, Eagle Scout, graduation — these are rites of passage that mark not completion but transition: you are now responsible enough, prepared enough, to begin in earnest. The ceremony is the threshold, not the destination. Many cultures have understood this. The Western framing of the black belt as "mastery achieved" is the corruption, not the norm — it strips the rite of its actual meaning.
+
+Henry holds both shodan and Eagle Scout. Both are rites of passage in the true sense. The question for the essay is whether he experienced them that way at the time, or whether the understanding of what they meant came later.
+
+**Open question for the author:** What did earning shodan actually feel like? Was there a sense of completion, or something else? Same question for Eagle Scout — did those ceremonies feel like endings or thresholds? That lived experience is the essay's anchor — not the etymology.
 
 ---
 
