@@ -170,6 +170,13 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`, `.cursorrules`, `.cursor/rules/`
 - **Added:** 2026-04-20
 
+### Watch: vLLM FP8 MoE support for gfx1100 (RDNA3)
+- **Product:** meta / research
+- **Context:** vLLM's fused MoE kernels (`fused_moe_fp8`) are tuned for MI300X (gfx942/CDNA3) and don't work on RX 7900 XT (gfx1100/RDNA3). The hardware has FP8 silicon capability (RDNA3 matrix accelerator includes FP8 dot products); the gap is Triton kernel autotuning configs for gfx1100. This blocks running Qwen3-Coder-Next-FP8 (and similar FP8 MoE models) via vLLM on consumer AMD hardware. Unlock: either vLLM ROCm team expands gfx1100 support, or someone contributes Triton kernel configs for gfx1100 to vLLM's fused_moe layer. Current workaround: llama.cpp/RamaLama (GGUF Q4 path — fully working, ~90 tok/s on qwen3:30b-a3b). **No action needed now — check periodically when evaluating vLLM upgrades.**
+- **How to check:** `pip install --upgrade vllm && vllm serve Qwen/Qwen3-Coder-Next-FP8 --dtype fp8` and watch for gfx1100 in the supported device list or working inference.
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`
+- **Added:** 2026-04-20
+
 ### Case study: graph splits — why hybrid CPU+GPU inference fails at scale
 - **Product:** docs
 - **Context:** qwen2.5:72b on RX 7900 XT (20 GB VRAM): 36% GPU / 64% CPU split, 718 graph switches per prefill batch, >6 minutes to first token on a short prompt. The bottleneck isn't compute — it's PCIe bus saturation from the activation hand-offs between the 29 GPU layers and 52 CPU layers. Counterintuitive finding: 62 GB system RAM provides no meaningful help when the bus is the constraint. Contrast with bs=1 (generation phase) which has only 3 graph splits — the asymmetry explains why prefill is brutal and generation *might* be tolerable if you ever reached it. Good explainer material for engineers who assume "more RAM = can run bigger models." Also documents the contrast with full-GPU inference (qwen3:30b-a3b: ~90 tok/s, 3–5 splits). Source: experiment journal 2026-04-20.
