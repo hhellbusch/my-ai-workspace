@@ -1,161 +1,102 @@
-# Handoff — Local LLM hardware experiments (2026-04-20)
+# Handoff — Spar response + framework quality (2026-04-20)
 
 <project_backlog>
 **In Progress:**
 - Upstream PR: `operators-installer` — `upgradeChain` (chart v3.5.0) — implementation on fork, self-review checklist pending before opening PR
 
 **Up Next:**
-- Guide: agentic personal AI infrastructure (PAI/Kai pattern)
+- Guide: agentic personal AI infrastructure (PAI/Kai pattern) — blocked on hands-on familiarity
 - Local LLM: electricity measurement and case studies (ACTIVE TRACK) — deferred until stable model confirmed
 - Zen-karate personal knowledge base — experiential content (CRITICAL PATH)
 - Essay: The Way Is in Training (first essay) — blocked on personal experiential content
-- Essay: The Dojo, Open Source, and Ways of Working — blocked on agile dojo research
-- Zen-karate curated reading list — user annotations
-- Headless browser fallback for research fetcher
-- Low-content capture improvements for research skill
+- Graph splits case study — source material complete in experiment journal, ready to draft
 
-**Ideas count:** ~30 items
+**Ideas count:** ~32 items (added: provenance markers on case studies)
 
-**Backlog items added this session:**
-- Watch: vLLM FP8 MoE support for gfx1100 (RDNA3) — passive watch, no action needed
-- Case study: graph splits — why hybrid CPU+GPU inference fails at scale
+**Review queue (author read-through candidates):**
+- `docs/ai-engineering/what-a-context-window-actually-is.md` — unreviewed draft, has current hardware data
+- `docs/philosophy/the-full-cup.md` — drafted, marked unreviewed
 </project_backlog>
 
 <original_task>
-Pick up the Ollama hybrid CPU+GPU experiment (qwen2.5:72b), log findings, then work on the context window essay while the model downloads. Evolved into a full hardware capability exploration across three models: qwen2.5:72b (hybrid), qwen2.5:32b (full GPU attempts), and the confirmed working baseline qwen3:30b-a3b.
+Respond to spar feedback on four arguments from the previous evaluation session. Then bookkeeping.
 </original_task>
 
 <work_completed>
 
-**Experiment 1 — qwen2.5:72b hybrid offload (Ollama ROCm container)**
-- Confirmed Ollama container GPU detection with two required flags: `-e HSA_OVERRIDE_GFX_VERSION=11.0.0` (RDNA3 gfx1100 hint) and `--security-opt label=disable` (SELinux device node bypass)
-- Model loaded: 29/81 layers on GPU (36%), 52 layers on CPU (64%), 15.6 GiB GPU / 27.9 GiB pinned host RAM
-- Context: auto-capped at 4096 (vs 32K trained) due to VRAM constraints
-- **Result: 718 graph splits per prefill batch → >6 minutes to first token → unusable**
-- Security implications of `--security-opt label=disable` documented in journal and committed
-- Proper long-term fix: targeted SELinux policy module for kfd_t + DRI device types
+**Spar response — four arguments addressed:**
 
-**Experiment 2 — qwen2.5:32b Q4_K_M (RamaLama, first attempt)**
-- `ramalama serve ollama://qwen2.5:32b` — quay.io/ramalama registry doesn't have this model; used ollama:// prefix
-- Weights loaded fully: 65/65 layers on GPU, 18,508 MiB
-- **OOM at KV cache + compute graph stage**: 1,744 MiB remaining after weights; n_parallel=4 KV cache = 1,024 MiB; compute graph needed ~750+ MiB; shortfall ~300–500 MiB
-- Root cause: RamaLama hard-sets n_gpu_layers=999 which blocked the -fit algorithm from negotiating context reduction
+1. **Infrastructure sessions are okay** — user affirmed explicitly. The meta-development loop producing framework quality improvements is valid work, not theater. Convention established: don't need to justify infrastructure sessions as long as the improvements are real.
 
-**Experiment 3 — qwen2.5:32b Q4_K_M (post-reboot, ramalama serve)**
-- Rebooted to clear ~1 GB leaked VRAM; post-reboot: ~600 MiB in use, ~19,864 MiB free
-- `ramalama serve` started loading but system began locking up under memory pressure; port 8080 unreachable before server came up
-- Killed — too close to the edge to be practically useful even if it loads
-- **Confirmed: dense 32B is not viable on RX 7900 XT regardless of whether it technically fits**
+2. **Gitignore case study — severity understated (strongest argument):**
+   - Renamed section from "What This Session Did Right" to "How Close It Was — and Why Most Cases Are Closer"
+   - Rewrote to lead with why credentials-only repos have no accidental safety net
+   - Added list of common scenarios: `.env`, vault passwords, SSH key dirs, TLS certs — any `path/to/sensitive/` rule breaks silently on `git mv`
+   - Closes with: *the recovery here worked because the failure was loud. Credentials-only failures are quiet.*
+   - File: `docs/case-studies/directory-move-gitignore-drift.md`
 
-**Documentation committed (all clean):**
-- `research/ai-tooling/local-llm-experiment-journal.md` — full entries for all three experiments, findings, and analysis
-- `docs/ai-engineering/local-llm-setup.md` — updated dense 32B row with precise failure mode (KV+compute stage, not weights)
-- `docs/ai-engineering/local-llm-sysadmin.md` — added missing review frontmatter (unreviewed)
-- `BACKLOG.md` — graph splits case study candidate, vLLM FP8 MoE watch item, electricity baseline methodology note
-- 6 commits this session (all clean, git status empty)
+3. **README "Where to Start" — routing reworked against full docs/ collection:**
+   - Sparring and Shoshin elevated to first entry — most broadly shareable, no prerequisites, user confirmed it's proving socially valuable with peers
+   - The Full Cup replaces The Dojo After the Automation as the cold-read entry for managers/non-technical readers — The Full Cup is self-contained; The Dojo requires prior context from The Shift
+   - The Shift stays prominent as the engineer/practitioner entry
+   - Ego, AI, and the Zen Antidote kept for the psychological/sycophancy dimension
+   - File: `README.md`
 
-**Meta housekeeping:**
-- Loaded meta rules fresh at session start
-- SELinux container security implications documented (--security-opt label=disable removes container_t device enforcement; acceptable for local dev, targeted policy module is the right long-term fix)
-- quay.io/ramalama registry gap documented: not all models are mirrored; use ollama:// prefix for non-mirrored models
+4. **docs/README.md sparring entry updated:**
+   - Now links to Sparring and Shoshin guide first (practical, for cold readers), then Adversarial Review case study (how it was built, for depth readers)
+   - File: `docs/README.md`
+
+5. **/start reconstruction caveat strengthened:**
+   - Added explicit warning block naming what git log structurally cannot recover: conversational decisions, pending intent, deferred scope calls, verbally-agreed changes without file commits
+   - Prompts to ask rather than assume on ambiguous items
+   - File: `.cursor/commands/start.md`
+
+**Bookkeeping:**
+- BACKLOG.md header updated to reflect this session
+- Added provenance markers idea to Ideas section
+- whats-next.md updated (this file)
+
+**Commit:** `9517ac0` — "Strengthen severity framing, README routing, and /start recovery caveat"
 </work_completed>
 
 <work_remaining>
 
-**Hardware experiments — COMPLETE for this session.**
-- qwen2.5:32b benchmarked: **19.4 tok/s generation, 125.5 tok/s prefill**
-- qwen3:30b-a3b: ~90 tok/s generation
-- Decision pending: which model becomes the electricity measurement baseline. qwen3:30b-a3b is the practical daily driver (4.7× faster); qwen2.5:32b may be worth it for quality-critical long-form tasks.
+**Immediate content candidates:**
+- Graph splits case study — source material complete in `research/ai-tooling/local-llm-experiment-journal.md`, backlog entry exists, ready to draft. Core finding: 718 PCIe bus crossings per prefill batch; RAM quantity doesn't rescue hybrid inference when the bus is the bottleneck.
+- Context window essay read-through — unreviewed, references this hardware's 4096 auto-cap pattern; author eyes needed.
 
-**Experiment journal — still open:**
-- qwen2.5:32b serve post-reboot entry needs `tok/s: not measured — system lockup` note (added context to OOM section but no explicit tok/s line)
-- Electricity baseline experiment: deferred — needs stable working model first. Plan documented in journal.
+**Decisions deferred:**
+- Provenance markers on case studies — logged as an Ideas item, not yet designed or implemented. Simple frontmatter field; low effort when ready.
+- Which local model becomes the electricity measurement baseline: qwen3:30b-a3b (90 tok/s, practical daily driver) vs qwen2.5:32b (19.4 tok/s, possibly better quality for long-form). Decide when electricity measurement session starts.
 
-**Context window essay:**
-- `docs/ai-engineering/what-a-context-window-actually-is.md` — status: `unreviewed`. Was written from the prior session's experiment data. Good candidate for author read-through. Now has additional data points: qwen2.5:72b auto-capped at 4096 (confirmed), qwen2.5:32b same behavior. Essay currently only references the qwen3:30b-a3b 14,592 token example — could add a note about 4096 cap pattern.
-
-**Case studies to draft (from backlog):**
-- Graph splits — why hybrid CPU+GPU inference fails at scale (backlog entry added, source material in journal)
-- Performed honesty (pre-existing backlog entry)
+**Still blocked:**
+- Zen-karate essays — need personal experiential content from user
+- PAI/Kai guide — needs hands-on familiarity with the architecture
+- Essay: The Dojo, Open Source, and Ways of Working — needs agile dojo research
 </work_remaining>
-
-<attempted_approaches>
-- **qwen2.5:72b hybrid via RamaLama** — failed before this session (RamaLama is GPU-only, n_gpu_layers=999 forces all layers to GPU, OOM). Documented in prior session journal entry. This is why Ollama container was used for 72B.
-- **Ollama container without HSA_OVERRIDE_GFX_VERSION** — GPU detected as 0 VRAM, fell back to CPU-only. Required the env var for gfx1100 RDNA3 detection.
-- **Ollama container without --security-opt label=disable** — SELinux blocked /dev/kfd and /dev/dri device node access even with --device flags. :Z volume flag only handles files, not devices.
-- **quay.io/ramalama/qwen2.5:32b** — image doesn't exist on quay.io mirror. Error: "Manifest for qwen2.5:32b was not found in the Ollama registry." Use `ollama://qwen2.5:32b` instead.
-- **ramalama serve qwen2.5:32b (pre-reboot)** — OOM at KV+compute stage, ~300-500 MiB short
-- **ramalama serve qwen2.5:32b (post-reboot)** — system lockup, server never came up
-</attempted_approaches>
 
 <critical_context>
 
-**Hardware baseline (tellurium):**
+**Hardware baseline (tellurium) — carried from prior session:**
 - GPU: AMD Radeon RX 7900 XT, 20 GB VRAM, gfx1100 (RDNA3)
-- CPU: Intel i5-13600K (13th Gen)
-- RAM: 62.6 GB
-- Host OS: Fedora 43, kernel 6.18.10-200.fc43.x86_64
-- ROCm: 6.4.2 (most packages) / 6.4.4 (rocm-core)
-- SELinux: enforcing (relevant for container GPU passthrough)
-- Display: Wayland/GNOME — uses ~600 MiB VRAM at idle after reboot
+- Confirmed working: `ramalama serve quay.io/ramalama/qwen3:30b-a3b` — ~90 tok/s, ~19.5 GB VRAM
+- qwen2.5:32b Q4_K_M: confirmed working at 19.4 tok/s but requires clean boot (VRAM fragmentation causes OOM otherwise)
+- qwen2.5:72b hybrid: unusable (718 graph splits per prefill → >6 min to first token)
 
-**Confirmed working stack:**
-```bash
-ramalama serve quay.io/ramalama/qwen3:30b-a3b
-# ~90 tok/s, ~19.5 GB VRAM, ~14,592 n_ctx, GPU-only, no SELinux issues
-```
+**Repository state:**
+- Git: clean — all work committed
+- devops/ contains technical reference (moved from root this session cycle)
+- .prompts/ is the hidden prompts directory (renamed from prompts/ this session cycle)
+- .planning/whats-next.md is the canonical handoff location
 
-**Ollama ROCm container (working command — needed for hybrid offload):**
-```bash
-podman run -d --name ollama \
-  --group-add=video \
-  --device /dev/kfd \
-  --device /dev/dri \
-  --security-opt label=disable \
-  -e HSA_OVERRIDE_GFX_VERSION=11.0.0 \
-  -p 11434:11434 \
-  -v "${HOME}/.ollama:/root/.ollama:Z" \
-  docker.io/ollama/ollama:rocm
-```
-Security note: `--security-opt label=disable` removes SELinux container_t device enforcement. Acceptable for local dev, not for multi-user/production.
-
-**Model status on this hardware:**
-- **qwen2.5:32b Q4_K_M: CONFIRMED WORKING** — loads on fresh boot with 382 MiB free (18,508 + 1,024 KV + 307 compute = 19,839 MiB). 2 graph splits. Port 8098. **Requires clean boot** — VRAM fragmentation from prior failed loads causes OOM. tok/s not yet measured.
-- 72B hybrid: 718 graph splits per batch → unusable for interactive work
-- qwen3:30b-a3b MoE: ~90 tok/s, confirmed working, more headroom, no clean-boot requirement
-
-**FP8 MoE on gfx1100:** Hardware supports FP8 (RDNA3 matrix ops), software doesn't (vLLM fused_moe kernels tuned for MI300X/gfx942 only). Passive watch item in backlog.
-
-**Key documents:**
+**Key documents for next session:**
 - Experiment journal: `research/ai-tooling/local-llm-experiment-journal.md`
+- Graph splits source material: 2026-04-20 qwen2.5:72b entry in experiment journal
 - Setup guide: `docs/ai-engineering/local-llm-setup.md`
-- Context window essay: `docs/ai-engineering/what-a-context-window-actually-is.md` (unreviewed)
-- Sysadmin doc: `docs/ai-engineering/local-llm-sysadmin.md` (unreviewed)
 </critical_context>
 
-<current_state>
-- **Git:** Clean — all work committed across 6 commits this session
-- **Running process:** qwen2.5:32b ramalama serve is likely still running/struggling — kill it: `pkill -f llama-server`
-- **qwen2.5:32b blobs:** Downloaded and cached at `~/.ramalama/` (or wherever RamaLama stores models). ~18.5 GB on disk. Can delete to reclaim space if not planning Q3_K_M experiment.
-- **Backlog:** Current — all this session's findings logged
-- **Context window essay:** Unreviewed draft, good for next session read-through
-- **Electricity measurement:** Deferred pending stable model. Plan documented in journal. Ready to execute once qwen3:30b-a3b is confirmed running again.
-</current_state>
-
-<case_study_opportunities>
-**Graph splits — why hybrid CPU+GPU inference fails at scale**
-- Already added to backlog as a case study candidate
-- Core finding: 718 PCIe bus hand-offs per prefill batch; RAM quantity is irrelevant when bus is the bottleneck; 6+ minutes to first token. Counterintuitive and well-documented with real numbers.
-- Source: experiment journal 2026-04-20 qwen2.5:72b entry
-
-**The hardware ceiling as a discovered constraint, not a planned finding**
-- The session started intending to test hybrid 72B, then pivoted to 32B after failure, then hit the 32B ceiling
-- Pattern: each "next best option" was reached by elimination, not selection — connects to the survivorship bias case study already in the collection
-- The 32B failure mode (fits in VRAM, fails on overhead) is a subtler version of the same pattern: something that "should work" by the headline spec that doesn't in practice
-</case_study_opportunities>
-
 <assumptions_carried>
-- **qwen3:30b-a3b as the ceiling:** Confirmed across two sessions. The ~90 tok/s figure is from a prior session; not re-measured this session. If the next session starts fresh with this model, take a fresh tok/s reading for the journal.
-- **Electricity measurement plan:** Assumed this model (qwen3:30b-a3b) will be the baseline for electricity measurement. If a better option emerges (e.g., Q3_K_M 32B works cleanly), revisit the baseline choice.
-- **Context window essay accuracy:** Essay references qwen3:30b-a3b 14,592 token runtime context. Both 72B and 32B models this session also auto-capped at 4096. This could either strengthen the essay (it's a consistent pattern across models) or need a nuance (4096 is the default, not a fixed cap — it depends on VRAM).
+- The Dojo After the Automation is now a follow-on read, not a cold entry point in either README. If someone lands on it cold via a direct link, it still works — it's just not the recommended starting point for non-technical readers.
+- Sparring and Shoshin guide is intended for peer sharing as a standalone. Keep it self-contained if it's updated.
+- Provenance markers idea: the spar identified this as structural, not urgent. Don't implement until there's a clear use case for querying the data.
 </assumptions_carried>

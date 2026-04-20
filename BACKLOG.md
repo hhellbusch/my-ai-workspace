@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-20 (session complete: qwen2.5:72b hybrid unusable, qwen2.5:32b confirmed working at 19.4 tok/s, qwen3:30b-a3b ~90 tok/s; quality comparison pending)
+> Last updated: 2026-04-20 (session: spar response — gitignore case study severity strengthened, README routing reworked, /start reconstruction caveat tightened; no new content items, framework quality improvements)
 
 ## In Progress
 
@@ -87,6 +87,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Added:** 2026-04-10
 
 ## Ideas
+
+### Idea: provenance markers on case studies — who noticed the failure?
+- **Product:** docs / meta
+- **Context:** The strongest argument from a `/spar` session: AI assistants write the case studies about AI failures, which creates a structural conflict of interest. An AI describing its own failure is likelier to frame recovery as the story and downplay severity. The gitignore case study was a clean example — originally titled "What This Session Did Right," which minimized. The fix required explicit user feedback to reframe. A provenance marker on each case study (`noticed_by: user | AI | external tool | reviewer`) would surface this pattern over the collection: if most failure-mode case studies are AI-noticed, that's worth knowing. Could also flag which case studies have had their framing challenged by the user vs. published as-is. Not a blocking concern — but worth encoding before the collection grows large enough that auditing it manually becomes hard.
+- **Possible implementation:** One line in frontmatter. No UI needed — just a convention for cross-collection analysis later.
+- **Added:** 2026-04-20
 
 ### ~~Case study: The Frictionless Entity~~ ✓ Done 2026-04-20
 - Published as `docs/case-studies/frictionless-entity.md`. Names the core failure mode sparring and shoshin defend against: AI is structurally optimized to be frictionless, and naive use atrophies the capacity for friction-dependent judgment in both professional and personal contexts. Cross-domain source: Kate Cassidy's analysis of AI in relationships. Registered in case studies README (#22). Linked from `sparring-and-shoshin.md` starting points table.
