@@ -88,6 +88,9 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### ~~Intro page: sparring and shoshin (shareable with peers)~~ ✓ Done 2026-04-20
+- Published as `docs/ai-engineering/sparring-and-shoshin.md`. Covers both practices, how they complement each other, and links to the deeper case studies and philosophy essays. Added to `docs/README.md` index as a companion guide to the engineering track.
+
 ### ~~Encode experiment journals in the meta framework~~ ✓ Done 2026-04-20
 - Added trigger + registry row to [`cross-linking.md`](.cursor/rules/cross-linking.md); bullet to [`session-awareness.md`](.cursor/rules/session-awareness.md); category row + notes default to [`review-tracking.md`](.cursor/rules/review-tracking.md); `review:` frontmatter to pilot journal.
 

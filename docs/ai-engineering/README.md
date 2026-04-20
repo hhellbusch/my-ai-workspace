@@ -26,7 +26,8 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 10. **[What a Context Window Actually Is](what-a-context-window-actually-is.md)** — Three different figures appeared during a local LLM session: 32,768 (model self-report), 262,144 (training metadata), 14,592 (actual runtime allocation). Explains what each figure means, how KV cache allocation works, why MoE changes the picture, and why 14k and 1M context are qualitatively different rather than quantitatively comparable.
 
-11. **[The Case for Local: Disk Management as a Privacy-First AI Task](local-llm-sysadmin.md)** — A case study of using a local LLM to diagnose and plan disk space cleanup. Covers why filesystem data is private by nature, the iterative `du → interpret → drill down → decide` loop, and what a recurring local disk agent would look like. Includes a table of when local beats cloud and the irony of AI experimentation being one of the fastest ways to fill a disk.
+11. **[The Case for Local: Disk Management as a Privacy-First AI Task](local-llm-sysadmin.md)**
+   - **[Sparring and Shoshin — Two Practices for AI-Assisted Work](sparring-and-shoshin.md)** — Introduction to the two structural practices for resisting AI's characteristic failure modes: sparring (adversarial review) challenges outputs after drafting; shoshin (beginner's mind) challenges starting frames before work begins. Self-contained entry point; links to the deeper case studies and philosophy essays for each. — A case study of using a local LLM to diagnose and plan disk space cleanup. Covers why filesystem data is private by nature, the iterative `du → interpret → drill down → decide` loop, and what a recurring local disk agent would look like. Includes a table of when local beats cloud and the irony of AI experimentation being one of the fastest ways to fill a disk.
 
 ## Primary narratives (public)
 
