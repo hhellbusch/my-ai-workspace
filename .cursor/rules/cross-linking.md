@@ -8,6 +8,17 @@ alwaysApply: true
 
 When creating or modifying content, check whether cross-references need updating:
 
+## Root Identity Document
+
+**`ABOUT.md`** is the workspace owner's self-description — the authoritative source on who this person is, their professional background, and what the workspace is for. It lives at the repo root and is:
+- Linked from the `README.md` byline
+- Referenced in `session-awareness.md` as the first thing to read
+- Read by `/start` before any corpus-based context is loaded
+
+If `ABOUT.md` does not exist in a workspace using this framework, create it before doing any work that depends on understanding the owner's context. It should describe the person's actual domains and background, not the current corpus — the corpus is a sample, `ABOUT.md` is the owner's own words.
+
+When `ABOUT.md` is updated, check: does `README.md` byline still link to it? Does `.cursorrules` identity framing still align?
+
 ## New Content Triggers
 
 - **New file in `docs/`** — Place in the correct track subdirectory (`ai-engineering/`, `philosophy/`, or `case-studies/`). Add to that track's `README.md` reading list and to the master `docs/README.md` cross-track reading order. Add to the Related Reading section of related essays. For essays in the zen-karate series: include a **Sources and References** section linking to specific research sources, threads, and library entries that informed the essay, and an **Open Review** section linking to any sparring notes with a summary of unresolved counterarguments.

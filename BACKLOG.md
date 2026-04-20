@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-20 (devops/README.md added; .cursorrules identity framing fixed; new case study: when-the-repository-becomes-the-resume.md)
+> Last updated: 2026-04-20 (Field Notes brand applied; ABOUT.md created; ABOUT.md wired into meta-system; public brand essay idea added)
 
 ## In Progress
 
@@ -87,6 +87,17 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Added:** 2026-04-10
 
 ## Ideas
+
+### Essay / guide: crafting a public identity for an AI workspace — the ABOUT.md pattern
+- **Product:** docs (meta / AI-engineering)
+- **Context:** This session produced a real workflow: resume → collaborative ABOUT.md → person-first public context that the AI reads and humans can share. The process involved sparring on labels ("systems engineer" vs. "engineer" vs. "omni-competent"), shoshin on what an external reader actually needs, and two rounds of cuts (too wordy, too much lifted input). The output — a short, honest about page that describes the person rather than the current corpus — is a generalizable pattern for any AI workspace intended as a public record. Worth documenting: what makes a good ABOUT.md, why it's different from a resume, how it affects AI behavior, and the specific failure mode it prevents (corpus-to-identity conflation). Companion to the "When the Repository Becomes the Resume" case study.
+- **Links:** `docs/case-studies/when-the-repository-becomes-the-resume.md`, `ABOUT.md`, `.cursor/rules/cross-linking.md`
+- **Added:** 2026-04-20
+
+### Essay: the public AI workspace as a professional record — questions of identity, authorship, and audience
+- **Product:** docs (philosophy / AI-engineering bridge)
+- **Context:** This session surfaced several interconnected questions: What does it mean to have a public AI-assisted workspace? Who is the audience? Is it a resume, a portfolio, a journal, a resource for others? How do you name yourself in a space where AI has contributed substantially to the content? The "Field Notes" branding conversation, the ABOUT.md drafting, and the corpus-to-identity case study all circle the same question: in a public AI workspace, how do you establish authorship and identity when the work is collaborative by design? Distinct from the "AI writes in your voice" case study — that's about a specific failure mode; this is about the broader philosophical question of what it means to have a public AI-assisted body of work.
+- **Added:** 2026-04-20
 
 ### Idea: provenance markers on case studies — who noticed the failure?
 - **Product:** docs / meta

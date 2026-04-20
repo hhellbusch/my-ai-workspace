@@ -26,6 +26,12 @@ Run this at the beginning of a new session, or whenever you need to re-orient.
 
 <process>
 
+### Step 0: Read ABOUT.md
+
+If `ABOUT.md` exists at the repo root, read it before anything else. It is the workspace owner's self-description and takes precedence over any identity inferences from the corpus or `.cursorrules`. Note the professional domains, background, and framing — then carry that understanding into all subsequent steps. Do not infer the owner's primary domain from the technical content you are about to load.
+
+If `ABOUT.md` does not exist, note it and proceed — but be especially cautious about identity inferences from the corpus alone.
+
 ### Step 1: Backlog snapshot
 
 Read `BACKLOG.md` and present the project-level context first — this is the ground truth that any handoff or continuity suggestion should be evaluated against.
