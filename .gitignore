@@ -69,7 +69,7 @@ node_modules/
 
 # ===== Sensitive / Local-only Directories =====
 # OCP install working directory contains pull secrets and kubeconfigs
-ocp/install/
+devops/ocp/install/
 
 # External git project clones — not part of this repo
 git-projects/

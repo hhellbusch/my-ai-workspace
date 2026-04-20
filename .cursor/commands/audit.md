@@ -148,7 +148,7 @@ Surface `status: unreviewed` files prominently — these are the active review q
 
 Categories:
 - **Essays**: `docs/**/*.md` (excluding README.md files)
-- **DevOps**: `ansible/**/*.md`, `ocp/**/*.md`, `argo/**/*.md`, `coreos/**/*.md`, `rhacm/**/*.md`, `vault/**/*.md`
+- **DevOps**: `devops/ansible/**/*.md`, `devops/ocp/**/*.md`, `devops/argo/**/*.md`, `devops/coreos/**/*.md`, `devops/rhacm/**/*.md`, `devops/vault/**/*.md`
 - **Meta-system**: `.cursor/commands/*.md`, `.cursor/skills/**/*.md`, `.cursor/rules/*.md`
 - **Research**: `research/**/*.md`, `library/**/*.md`
 

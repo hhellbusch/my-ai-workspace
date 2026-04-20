@@ -34,7 +34,7 @@ Parse `$ARGUMENTS` to extract:
 Examples:
 - `/validate docs/ai-engineering/the-shift.md read`
 - `/validate docs/philosophy/ego-ai-and-the-zen-antidote.md read voice-approved`
-- `/validate ocp/troubleshooting/api-slowness-web-console/ read commands-verified --notes "Verified on OCP 4.14"`
+- `/validate devops/ocp/troubleshooting/api-slowness-web-console/ read commands-verified --notes "Verified on OCP 4.14"`
 - `/validate .cursor/commands/backlog.md read used-in-practice`
 
 If no validation type is provided, ask: "What kind of validation? Options: `read`, `fact-checked`, `tested`, `commands-verified`, `used-in-practice`, `sources-checked`, `voice-approved`"

@@ -64,7 +64,7 @@ This command is read-only. It reports findings and asks for confirmation before 
    - If the frontmatter includes an `at:` SHA, include the diff command: "Run `git diff SHA..HEAD -- file.md` to see what changed since last review."
    - This is the **highest-priority informational item** — it's the easiest thing to miss and the hardest to recover from. Present it above other findings.
 
-8. **Review status note** — For new files in `docs/`, `research/`, or product directories (`ansible/`, `ocp/`, `argo/`, etc.):
+8. **Review status note** — For new files in `docs/`, `research/`, or product directories (`devops/ansible/`, `devops/ocp/`, `devops/argo/`, etc.):
    - Note that these files will start as **direction-reviewed** (no `review:` frontmatter)
    - Remind: "Run `/validate <path> read` after you've reviewed these files"
    - If biographical content was flagged in step 6, remind: "Run `/validate <path> voice-approved` after reviewing the biographical content"

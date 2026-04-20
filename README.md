@@ -50,12 +50,12 @@ Documented examples from real sessions: tools built, failure modes caught, workf
 
 Practical, runnable examples and troubleshooting guides for enterprise infrastructure environments. *Skip this section if you're here for the essays — it's independent.*
 
-- **[Ansible](ansible/)** — Playbooks, retry patterns, parallel execution, BMC operations, AAP 2.5+ troubleshooting
-- **[OpenShift](ocp/)** — 13+ troubleshooting guides: API slowness, bare metal, CSR management, namespace termination, OVN-Kubernetes. SNO lab setup.
-- **[ArgoCD](argo/)** — App-of-apps patterns, Helm charts, multi-environment GitOps, GitHub Actions workflows
-- **[CoreOS](coreos/)** — Ignition/Butane configurations
-- **[RHACM](rhacm/)** — Multi-cluster management, policy and governance
-- **[Vault](vault/)** — HashiCorp Vault integration patterns
+- **[Ansible](devops/ansible/)** — Playbooks, retry patterns, parallel execution, BMC operations, AAP 2.5+ troubleshooting
+- **[OpenShift](devops/ocp/)** — 13+ troubleshooting guides: API slowness, bare metal, CSR management, namespace termination, OVN-Kubernetes. SNO lab setup.
+- **[ArgoCD](devops/argo/)** — App-of-apps patterns, Helm charts, multi-environment GitOps, GitHub Actions workflows
+- **[CoreOS](devops/coreos/)** — Ignition/Butane configurations
+- **[RHACM](devops/rhacm/)** — Multi-cluster management, policy and governance
+- **[Vault](devops/vault/)** — HashiCorp Vault integration patterns
 
 ---
 

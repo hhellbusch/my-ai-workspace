@@ -4,29 +4,31 @@ This workspace contains practical DevOps examples, configurations, and troublesh
 
 ## Project Contents
 
-### Product Directories
+### DevOps Technical Reference (`devops/`)
 
-#### Ansible (`ansible/`)
+Practical, runnable examples and troubleshooting guides for enterprise infrastructure. All product directories live under `devops/` to keep the repo root clean.
+
+#### Ansible (`devops/ansible/`)
 - **`examples/`** — Runnable playbooks: retry patterns, error handling, parallel execution, BMC operations, Dell memory validation, REST API filtering
 - **`troubleshooting/`** — AAP Controller token 404 on AAP 2.5.x (Gateway API path change)
 
-#### ArgoCD (`argo/`)
+#### ArgoCD (`devops/argo/`)
 - **`examples/`** — Multi-hub GitOps pipelines, app-of-apps patterns, Helm charts, GitHub Actions workflows, test scripts, framework with devspaces and guidelines
 - **`labs/`** — Hands-on lab exercises: ArgoCD sync patterns, GitOps fundamentals
 
-#### CoreOS (`coreos/`)
+#### CoreOS (`devops/coreos/`)
 - **`examples/`** — Butane configurations: ISO ejection after installation, first-boot automation
 
-#### OpenShift (`ocp/`)
+#### OpenShift (`devops/ocp/`)
 - **`examples/`** — OVN-Kubernetes networking, install config templates, SNO KVM lab
 - **`troubleshooting/`** — API slowness, bare metal inspection timeouts, kubeconfig recovery, CoreOS networking, CSR management, kube-controller-manager crashloops, KubeVirt VM provisioning, namespace termination, Portworx CSI, worker TLS cert failures, image registry auth, API server cert deadlock
 - **`notes/`** — Informal quick references: useful OpenShift and kubectl commands
 - **`install/`** *(gitignored)* — Local install working directory with pull secrets and kubeconfigs
 
-#### RHACM (`rhacm/`)
+#### RHACM (`devops/rhacm/`)
 - **`examples/`** — Secret management patterns, multi-cluster management, policy and governance
 
-#### Vault (`vault/`)
+#### Vault (`devops/vault/`)
 - **`integration/`** — HashiCorp Vault integration patterns and configurations
 
 ### Cross-Cutting Directories
@@ -122,11 +124,11 @@ Review status is tracked per-file via YAML frontmatter (`review:` block). Files 
 ## Quick Reference
 
 ### Common Patterns
-- Ansible retry patterns: See `ansible/examples/001_retry_on_timeout/`
-- Error handling: See `ansible/examples/002_log_ignored_errors/`
-- Parallel execution: See `ansible/examples/006_parallel_execution_via_bastion/`
-- ArgoCD apps: See `argo/examples/apps/` and `argo/examples/charts/`
-- OCP troubleshooting: See individual guides in `ocp/troubleshooting/`
+- Ansible retry patterns: See `devops/ansible/examples/001_retry_on_timeout/`
+- Error handling: See `devops/ansible/examples/002_log_ignored_errors/`
+- Parallel execution: See `devops/ansible/examples/006_parallel_execution_via_bastion/`
+- ArgoCD apps: See `devops/argo/examples/apps/` and `devops/argo/examples/charts/`
+- OCP troubleshooting: See individual guides in `devops/ocp/troubleshooting/`
 
 ### Useful Commands
 - Ansible syntax check: `ansible-playbook --syntax-check playbook.yml`

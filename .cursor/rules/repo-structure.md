@@ -6,21 +6,23 @@ This rule defines where content belongs in this repository. Follow these convent
 
 Content is organized by **product/technology**, then by **content type** within each product directory.
 
-### Product directories
+### DevOps / technical reference (`devops/`)
+
+All product-specific technical reference material lives under `devops/`. This keeps the repo root clean for the content that serves the widest audience.
 
 | Directory | Content types | Convention |
 |---|---|---|
-| `ansible/examples/` | Runnable Ansible playbooks demonstrating patterns | Numbered dirs: `NNN_description/`, each with `README.md` and playbook |
-| `ansible/troubleshooting/` | Ansible/AAP troubleshooting guides | Named dirs: `topic-slug/README.md` following symptom → cause → fix structure |
-| `argo/examples/` | ArgoCD configurations, app-of-apps patterns, GitOps workflows | Subdirs: `apps/`, `charts/`, `scripts/`, `docs/`, `infrastructure/`, `examples/` |
-| `argo/labs/` | Hands-on ArgoCD/GitOps lab exercises | Named dirs: `lab-description/` with `LAB-GUIDE.md` or session files |
-| `coreos/examples/` | CoreOS/Ignition/Butane configurations | Named dirs with Butane configs and READMEs |
-| `ocp/examples/` | OpenShift configuration examples and templates | Named dirs with configs and READMEs |
-| `ocp/troubleshooting/` | OpenShift troubleshooting guides | Named dirs: `topic-slug/README.md`, same structure as ansible/troubleshooting |
-| `ocp/notes/` | Informal OpenShift quick references and command references | Markdown files, loosely organized |
-| `ocp/install/` | Local OCP install working directory (**gitignored**) | Not committed; local use only |
-| `rhacm/examples/` | Red Hat Advanced Cluster Management configurations | Named dirs with configs and READMEs |
-| `vault/integration/` | HashiCorp Vault integration patterns | Configs and playbooks |
+| `devops/ansible/examples/` | Runnable Ansible playbooks demonstrating patterns | Numbered dirs: `NNN_description/`, each with `README.md` and playbook |
+| `devops/ansible/troubleshooting/` | Ansible/AAP troubleshooting guides | Named dirs: `topic-slug/README.md` following symptom → cause → fix structure |
+| `devops/argo/examples/` | ArgoCD configurations, app-of-apps patterns, GitOps workflows | Subdirs: `apps/`, `charts/`, `scripts/`, `docs/`, `infrastructure/`, `examples/` |
+| `devops/argo/labs/` | Hands-on ArgoCD/GitOps lab exercises | Named dirs: `lab-description/` with `LAB-GUIDE.md` or session files |
+| `devops/coreos/examples/` | CoreOS/Ignition/Butane configurations | Named dirs with Butane configs and READMEs |
+| `devops/ocp/examples/` | OpenShift configuration examples and templates | Named dirs with configs and READMEs |
+| `devops/ocp/troubleshooting/` | OpenShift troubleshooting guides | Named dirs: `topic-slug/README.md`, same structure as ansible/troubleshooting |
+| `devops/ocp/notes/` | Informal OpenShift quick references and command references | Markdown files, loosely organized |
+| `devops/ocp/install/` | Local OCP install working directory (**gitignored**) | Not committed; local use only |
+| `devops/rhacm/examples/` | Red Hat Advanced Cluster Management configurations | Named dirs with configs and READMEs |
+| `devops/vault/integration/` | HashiCorp Vault integration patterns | Configs and playbooks |
 
 ### Cross-cutting directories
 
@@ -36,12 +38,12 @@ Content is organized by **product/technology**, then by **content type** within 
 
 ## Placement Rules
 
-1. **Troubleshooting guides** go in `{product}/troubleshooting/`, never in `docs/`. If a new product needs a troubleshooting section, create `{product}/troubleshooting/`.
-2. **Product-specific examples** go in `{product}/examples/`, not in the top-level `examples/` directory.
+1. **Troubleshooting guides** go in `devops/{product}/troubleshooting/`, never in `docs/`. If a new product needs a troubleshooting section, create `devops/{product}/troubleshooting/`.
+2. **Product-specific examples** go in `devops/{product}/examples/`, not in the top-level `examples/` directory.
 3. **Research and analysis output** goes in `research/{topic}/`, never in `docs/` or a standalone `analyses/` directory.
 4. **Scripts that support a doc or example** live alongside that doc or example, not in the repo root.
-5. **The repo root** should only contain repo-level files: `README.md`, `AI-DISCLOSURE.md`, `BACKLOG.md`, `BACKLOG-ARCHIVE.md`, `.gitignore`, `.cursorrules`, `.actrc`, `.actrc.example`, `.secrets`. Note: `git-projects/` and `ocp/install/` exist locally but are gitignored.
-6. **New top-level directories** need a clear reason. For new products/technologies, create a `{product}/` directory with appropriate content type subdirectories. For cross-cutting content, prefer fitting into the existing structure.
+5. **The repo root** should only contain repo-level files and the top-level content directories: `README.md`, `AI-DISCLOSURE.md`, `BACKLOG.md`, `BACKLOG-ARCHIVE.md`, `.gitignore`, `.cursorrules`, `.actrc`, `.actrc.example`, `.secrets`, plus `docs/`, `research/`, `library/`, `devops/`, `examples/`, `.cursor/`, `.planning/`. Note: `git-projects/` and `devops/ocp/install/` exist locally but are gitignored.
+6. **New products/technologies** go under `devops/{product}/` with appropriate content type subdirectories. For cross-cutting content, prefer fitting into the existing structure.
 7. **The `docs/` folder** contains curated essay tracks organized into subdirectories: `ai-engineering/` (skills, workflows, risks), `philosophy/` (martial arts, Zen, applied practice), and `case-studies/` (documented meta-development patterns). Each track has its own `README.md` with a reading order. `docs/README.md` is the master index linking into all tracks. New essays go in their track directory, not in `docs/` root.
 8. **The top-level `examples/` folder** is for doc-supporting artifacts (e.g., scripts referenced by essays in `docs/`), not for product-specific examples.
 9. **Planning projects** (`.planning/{project}/`) should include a `CHANGELOG.md` that captures *why* scope or framing changed — not just what changed. Git history records the diffs; the changelog captures the user's reasoning and which documents were updated as a set. Format: `## YYYY-MM-DD — [Change title]` with `What changed`, `Why`, and `Documents updated` fields.
@@ -52,7 +54,7 @@ Content is organized by **product/technology**, then by **content type** within 
 - **Content type directories:** lowercase, descriptive (`examples`, `troubleshooting`, `integration`)
 - **Leaf directories:** lowercase, hyphen-separated (`aap-controller-token-404`, not `AAP_Controller_Token_404`)
 - **Every non-trivial directory** gets a `README.md`
-- **Ansible examples** use a numeric prefix: `NNN_description/` (e.g., `013_smb_to_vault/`)
+- **Ansible examples** use a numeric prefix: `NNN_description/` (e.g., `devops/ansible/examples/013_smb_to_vault/`)
 - **Troubleshooting dirs** use descriptive slugs: `bare-metal-node-inspection-timeout/`, not `issue-47/`
 - **Research dirs** use descriptive topic names: `openshift-ai-llm-deployment/`, not `research-1/`
 
