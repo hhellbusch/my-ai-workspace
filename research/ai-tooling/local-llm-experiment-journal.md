@@ -15,7 +15,7 @@ Hands-on log: what was tried, what worked, and what failed. Complements the gene
 ## Planned experiments (next up)
 
 - **RAG index** — `ramalama rag add research/zen-karate-philosophy/ library/` → query Inoue/Rika content → compare against Sonnet on same sources. See backlog: *RAG index for local LLM*.
-- **qwen2.5:72b hybrid** — **pull in progress** (2026-04-20, Ollama ROCm container confirmed GPU). Log layer split, tok/s, n_ctx when complete.
+- **qwen2.5:32b full-GPU** — **pull in progress** (2026-04-20, RamaLama, `ollama://qwen2.5:32b`). Log VRAM usage, layer split, tok/s when loaded. Compare vs qwen3:30b-a3b (~90 tok/s).
 - **Non-thinking qwen3 variant** — test latency difference on short prompts (routine completions) vs thinking variant.
 
 ---
@@ -44,11 +44,77 @@ Keep **Environment (baseline)** updated when the machine or driver stack changes
 
 ## Entries (newest first)
 
-### 2026-04-20 — Ollama ROCm container, qwen2.5:72b hybrid offload (**pull in progress**)
+### 2026-04-20 — RamaLama, qwen2.5:32b full-GPU (**pull in progress**)
+
+- **Tool:** RamaLama (native, no container — handles `HSA_OVERRIDE_GFX_VERSION` and ROCm detection automatically)
+- **Model:** `ollama://qwen2.5:32b` — Q4_K_M, expected ~18–19 GiB
+- **Goal:** Full-GPU inference on 20 GB VRAM; compare tok/s and output quality against qwen3:30b-a3b (~90 tok/s)
+- **Status:** Pulling. Log layer split, VRAM usage, tok/s, and n_ctx when loaded.
+
+**Why RamaLama over Ollama container for this run:**
+- Model fits fully in VRAM — Ollama's hybrid offload capability not needed
+- RamaLama confirmed working on this hardware (gfx1100) from prior session
+- Avoids `--security-opt label=disable` SELinux tradeoff
+- Cleaner apples-to-apples comparison with prior qwen3:30b-a3b result (same tool, same hardware)
+
+**Note on registry:** `quay.io/ramalama/qwen2.5:32b` does not exist — RamaLama's quay.io mirror only covers select models. Used `ollama://qwen2.5:32b` prefix to pull from Ollama hub directly.
+
+---
+
+### 2026-04-20 — Ollama ROCm container, qwen2.5:72b hybrid offload (**loaded, slow**)
 
 - **Tool:** Native Ollama container (`docker.io/ollama/ollama:rocm`, version **0.21.0**)
+- **Model:** `qwen2.5:72b` — Q4_K_M quantization, 44.15 GiB, 72.71B parameters
 - **Goal:** Hybrid CPU+GPU offload for qwen2.5:72b — RamaLama can't do this (GPU-only), Ollama handles layer split automatically
-- **Status:** GPU confirmed, pull running. Log layer split and tok/s when complete.
+- **Status:** Model loaded and responding. Measurably slow. See analysis below.
+
+**Layer split (actual):**
+```
+load_tensors: offloading 29 repeating layers to GPU
+load_tensors: offloaded 29/81 layers to GPU
+load_tensors:          CPU model buffer size =   668.25 MiB
+load_tensors:        ROCm0 model buffer size = 16,013.58 MiB  (~15.6 GiB on GPU)
+load_tensors:    ROCm_Host model buffer size = 28,531.62 MiB  (~27.9 GiB in pinned host RAM)
+```
+**36% GPU / 64% CPU (29 of 81 layers on GPU)**
+
+**Context window (actual vs. max):**
+```
+llama_context: n_ctx = 4096
+n_ctx_seq (4096) < n_ctx_train (32768) -- the full capacity of the model will not be utilized
+```
+Ollama defaulted to 4096 based on available VRAM. Model supports 32K — but expanding context requires more KV cache memory, which would need either more VRAM or more RAM allocation.
+
+**KV cache split:**
+- CPU: 816 MiB
+- ROCm0: 464 MiB
+- Total: 1,280 MiB for 4096-token context
+
+**Why it's slow — graph splits:**
+```
+llama_context: graph splits = 718 (with bs=512), 3 (with bs=1)
+```
+718 graph splits means the compute graph switches between GPU and CPU **718 times per prefill batch**. Each switch is a PCIe bus transfer of activations. This is the fundamental bottleneck of hybrid inference on a single PCIe bus — not compute speed, but bus bandwidth between the 29 GPU layers and the 52 CPU layers. Generation (bs=1) only has 3 splits and will be comparatively faster, but prompt ingestion will be very slow.
+
+**Flash Attention:** auto-enabled — good, this helps KV cache efficiency.
+
+**Observed performance:**
+- Time to first token: **>6 minutes on a short prompt — effectively hung**
+- Generation tok/s: not measured; experiment abandoned as unusable for interactive work
+
+**Conclusion:** 36% GPU / 64% CPU hybrid with 718 graph splits is not viable for interactive use on this hardware. The PCIe bus cannot sustain the activation transfers fast enough for the model to produce output in a usable timeframe. This is not a configuration problem — it is a fundamental constraint of the 72B model size vs. 20 GB VRAM.
+
+**What actually fits in 20 GB VRAM (for full-GPU, interactive performance):**
+
+| Model | Size (Q4_K_M) | VRAM needed | Expected tok/s |
+|-------|--------------|-------------|---------------|
+| `qwen3:30b-a3b` (MoE) | ~20 GB | 20 GB | ~90 tok/s (confirmed) |
+| `qwen2.5:32b` | ~18–20 GB | 20 GB | ~40–60 tok/s (untested) |
+| `qwen2.5:72b` | 44 GB | 44 GB | **unusable hybrid** |
+
+**Next experiment:** `qwen2.5:32b` — should fit fully on GPU and be meaningfully better quality than the 30B MoE for multi-file reasoning tasks.
+
+**Recommendation for anyone with 20 GB VRAM:** Do not attempt hybrid 70B+ models for interactive use. The graph split overhead makes it impractical regardless of how much system RAM you have. Use the largest model that fits fully on GPU.
 
 **Working command:**
 ```bash
