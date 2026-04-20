@@ -88,6 +88,18 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### ~~Case study: The Frictionless Entity~~ ✓ Done 2026-04-20
+- Published as `docs/case-studies/frictionless-entity.md`. Names the core failure mode sparring and shoshin defend against: AI is structurally optimized to be frictionless, and naive use atrophies the capacity for friction-dependent judgment in both professional and personal contexts. Cross-domain source: Kate Cassidy's analysis of AI in relationships. Registered in case studies README (#22). Linked from `sparring-and-shoshin.md` starting points table.
+
+### ~~Case study: When the System Boundary Is the Argument~~ ✓ Done 2026-04-20
+- Published as `docs/case-studies/spar-lifecycle-boundary.md`. Documents the lifecycle boundary question as a named sparring move: where you draw the system boundary determines what the number says, and the boundary choice is where the actual argument is often happening. Illustrated by Hank Green's AI water use analysis. Registered in case studies README (#23).
+
+### ~~Library entry: Hank Green — AI Water Use~~ ✓ Done 2026-04-20
+- Added `library/hank-green-ai-water-use.md` and catalog row. Models intellectual humility in technical discourse (shoshin applied publicly) and provides the worked example for the lifecycle boundary sparring methodology.
+
+### ~~Essay 2 planning: AI training attribution thread~~ ✓ Done 2026-04-20
+- Added sub-bullet to Thread 11 in `.planning/zen-karate/threads.md`. The attribution/compensation problem (AI companies building on expert communities without credit or payment) is a contemporary instantiation of the dojo's lineage obligation. Source: "The Mythos Situation" (TheStandup/PrimeTime, 2026).
+
 ### ~~Intro page: sparring and shoshin (shareable with peers)~~ ✓ Done 2026-04-20
 - Published as `docs/ai-engineering/sparring-and-shoshin.md`. Covers both practices, how they complement each other, and links to the deeper case studies and philosophy essays. Added to `docs/README.md` index as a companion guide to the engineering track.
 

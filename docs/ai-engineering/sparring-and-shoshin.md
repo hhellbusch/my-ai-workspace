@@ -104,6 +104,7 @@ If you're new to these ideas and want to go further:
 |---|---|
 | What shoshin means for AI ego and validation traps | [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) |
 | Shoshin applied to organizational learning and the "full cup" problem | [The Full Cup](../philosophy/the-full-cup.md) |
+| What sparring and shoshin are actually defending against | [The Frictionless Entity](../case-studies/frictionless-entity.md) |
 | The origin of the `/spar` command and what it surfaces | [Adversarial Review as a Meta-Development Pattern](../case-studies/adversarial-review-meta-development.md) |
 | Sparring a whole collection at once, not just one document | [What the Corpus Sees That the Document Can't](../case-studies/corpus-level-spar.md) |
 | When the spar argument becomes the new work | [When a Spar Argument Outgrows Its Essay](../case-studies/spar-to-essay-pipeline.md) |

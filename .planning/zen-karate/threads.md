@@ -72,6 +72,10 @@ The dojo is literally "a place of the Way" — a place of study and learning, no
 
 - **Uchi-deshi vs. corporate mentoring.** Inoue's uchi-deshi experience under Hayashi is what genuine apprenticeship looks like: living with the teacher, cleaning the dojo, training all day, getting knocked out in kumite and being told to get up. "Pretty much training all day." The modern corporate mentoring program — a monthly 30-minute meeting, an assigned senior who may not even want to be there — is the empty form of this. The dojo model says: learning happens through proximity, observation, and shared difficulty, not through scheduled conversations. What would engineering mentorship look like if it were designed with the uchi-deshi model in mind?
 
+- **AI training and the debt to expert communities.** The dojo tradition is explicit about lineage and attribution — you acknowledge your teachers, your style's founders, the chain of transmission. Open source culture formalizes this through contributor credits, CHANGELOG attribution, and maintainer acknowledgment. AI companies present a new version of the same problem: systems like Claude Mythos (Anthropic's security-specialized model) were built by training on the accumulated expertise of tens of thousands of security researchers — their public writeups, CVE analyses, conference talks, and open-source tooling. Those researchers get no compensation, no credit, and in some cases no access to the tool their work made possible. This is borrowing the kata without acknowledging the lineage. The dojo would not permit it: you bow to your teacher. What does that obligation look like when the "teacher" is a distributed community whose contribution was extracted rather than given?
+
+  *Source: "The Mythos Situation" — TheStandup/PrimeTime podcast, 2026. Direct quote from the discussion: "Anthropic is getting huge, everyone there is getting paid very well — but it's not the people who did most of the work."*
+
 ---
 
 ## 12. The Forgotten Body — What Tech Culture Gets Backwards
