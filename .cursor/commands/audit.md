@@ -58,11 +58,23 @@ Compare documented inventories against what actually exists on disk.
 - Compare against any documented counts in README.md or .cursorrules
 - Flag mismatches
 
-### 2d. docs/README.md
-- List all .md files in `docs/` (excluding README.md)
-- Compare against entries in docs/README.md
-- Flag: files not listed in the reading list
-- Flag: entries pointing to files that don't exist
+### 2d. docs/README.md — orphan and broken-reference check
+
+Run both directions:
+
+**Orphaned files (on disk, not in index):**
+```bash
+# Extract all .md paths referenced in docs/README.md
+grep -o '([^)]*\.md)' docs/README.md | tr -d '()' > /tmp/indexed.txt
+# List all .md files in docs/ subdirectories (not READMEs)
+find docs/ai-engineering docs/philosophy docs/case-studies -name "*.md" ! -name "README.md" | sed 's|^docs/||' | sort > /tmp/ondisk.txt
+# Files on disk not in index
+comm -23 <(sort /tmp/ondisk.txt) <(sort /tmp/indexed.txt)
+```
+Flag any file on disk that isn't referenced in `docs/README.md`. Also check the track READMEs (`docs/ai-engineering/README.md`, `docs/philosophy/README.md`, `docs/case-studies/README.md`) — a file should be in both its track README and the master index.
+
+**Stale references (in index, not on disk):**
+For each path extracted from docs/README.md, verify `docs/<path>` exists on disk. Flag missing files.
 
 ### 2e. research/README.md
 - List all directories in `research/` (excluding README.md)
@@ -80,11 +92,11 @@ Compare documented inventories against what actually exists on disk.
 Identify content that exists but isn't linked from its natural parent or peers.
 
 ### 3a. Orphaned Content
-- Files in `docs/` not linked from docs/README.md
-- Directories in `research/` not linked from research/README.md
-- Commands in `.cursor/commands/` not documented in .cursorrules
-- Skills in `.cursor/skills/` not documented in .cursorrules
-- Rules in `.cursor/rules/` (informational — list what rules exist)
+- **docs/ files**: covered by Layer 2d — any file not in docs/README.md is orphaned
+- **research/ directories**: directories in `research/` not linked from research/README.md
+- **Commands**: commands in `.cursor/commands/` not documented in .cursorrules
+- **Skills**: skills in `.cursor/skills/` not documented in .cursorrules
+- **Rules**: list what rules exist in `.cursor/rules/` (informational only)
 
 ### 3b. Missing Cross-Links
 - Check each docs/ essay's "Related Reading" section (if it has one) for links to other docs/ essays
