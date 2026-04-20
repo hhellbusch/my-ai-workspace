@@ -183,6 +183,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`, `research/ai-tooling/local-llm-setup-sparring-notes.md`, `docs/case-studies/README.md`, `BACKLOG.md` (electricity track), `.cursor/rules/workspace-ethos.md`
 - **Added:** 2026-04-20
 
+### docs/README.md — consider unordered lists for case study categories
+- **Product:** meta
+- **Context:** Case study entries in `docs/README.md` are numbered (currently 16–28) but within each category (Build / Failure / Workflow) the numbers carry no meaningful reading order — they're reference material looked up by topic. Unordered lists within categories would scan better and eliminate the renumbering pain when inserting new entries mid-list. Essays (1–11) should stay numbered — reading order matters there. **Prerequisite:** audit all cross-references by case study number across the repo (other docs, essays, research notes reference "case study #9" etc.) and update them to use titles or slugs before switching. Don't do mid-session — cosmetic change with non-trivial audit cost.
+- **Links:** `docs/README.md`, `docs/case-studies/README.md`
+- **Added:** 2026-04-20
+
 ### Formalize draft status in review-tracking frontmatter
 - **Product:** meta
 - **Status:** not sure if wanted yet
