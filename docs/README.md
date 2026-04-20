@@ -6,7 +6,7 @@ Essays and case studies across three tracks — AI-assisted engineering, philoso
 
 ### [AI-Assisted Engineering](ai-engineering/)
 
-Skills, workflows, risks, and practical patterns for using AI effectively in engineering work. Eight essays covering the foundational thesis, daily workflows, working outside expertise, legacy systems, enterprise LLM deployment, open source contributions, the meta-development loop, and what a context window actually is.
+Skills, workflows, risks, and practical patterns for using AI effectively in engineering work. Essays covering the foundational thesis, daily workflows, working outside expertise, legacy systems, enterprise LLM deployment, open source contributions, the meta-development loop, context window mechanics, and where local models beat cloud for privacy-first tasks.
 
 ### [Philosophy and Practice](philosophy/)
 
@@ -36,6 +36,7 @@ A suggested path through the collection. It is not a curriculum — each piece w
 6. `essay` [AI-Assisted Open Source Contributions](ai-engineering/ai-assisted-upstream-contributions.md) — Using AI to lower the barrier to upstream contribution while respecting maintainers. Includes a walkthrough of contributing to argocd-diff-preview and an in-progress Helm chart improvement.
 7. `essay` [The Meta-Development Loop](ai-engineering/the-meta-development-loop.md) — Names the pattern behind most case studies below: notice a gap → build a tool → apply immediately → let the output reshape the work. Also documents when the loop tips into infrastructure theater, and which case study types don’t fit the loop (failure modes, design decisions, process disciplines).
 8. `essay` [What a Context Window Actually Is](ai-engineering/what-a-context-window-actually-is.md) — Three figures appeared in one session: 32,768 (model self-report), 262,144 (training metadata), 14,592 (actual runtime allocation). Explains what each means, how KV cache allocation works, why MoE architecture changes the picture, and why 14k and 1M context are qualitatively — not just quantitatively — different.
+9. `essay` [The Case for Local: Disk Management as a Privacy-First AI Task](ai-engineering/local-llm-sysadmin.md) — A case study of using an AI assistant to diagnose and plan disk space cleanup. Covers why filesystem data is private by nature, the iterative analysis loop, and what a recurring local disk agent would look like. The session was conducted with a cloud model — which sharpens the argument rather than softening it.
 
 ---
 
