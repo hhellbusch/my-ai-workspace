@@ -29,13 +29,20 @@ This command is read-only. It reports findings organized by severity and asks wh
 
 ## Layer 1: Link Integrity
 
-Scan all committed markdown files for internal links (both `[text](path)` and `[text](../relative/path)` forms). For each link:
+Scan all committed markdown files for internal links. For each link:
 
 1. Resolve the path relative to the file containing it
 2. Check if the target file or directory exists
 3. Report broken links grouped by source file
 
 Skip external URLs (http/https) — those are not part of this audit.
+
+Use a correct extraction pattern that captures only the path inside `()`, not the surrounding link text:
+```bash
+# Extract link paths only (not link text) — uses PCRE lookbehind
+grep -oP '\]\(\K[^)]+(?=\))' "$file" | grep -v '^https\?://'
+```
+Resolve each extracted path relative to the containing file's directory before checking existence.
 
 ## Layer 2: Registry Alignment
 
@@ -62,19 +69,22 @@ Compare documented inventories against what actually exists on disk.
 
 Run both directions:
 
-**Orphaned files (on disk, not in index):**
+**Orphaned files — two tiers:**
 ```bash
-# Extract all .md paths referenced in docs/README.md
-grep -o '([^)]*\.md)' docs/README.md | tr -d '()' > /tmp/indexed.txt
-# List all .md files in docs/ subdirectories (not READMEs)
-find docs/ai-engineering docs/philosophy docs/case-studies -name "*.md" ! -name "README.md" | sed 's|^docs/||' | sort > /tmp/ondisk.txt
-# Files on disk not in index
-comm -23 <(sort /tmp/ondisk.txt) <(sort /tmp/indexed.txt)
+# Extract .md paths from docs/README.md (sort -u avoids false positives from files linked twice)
+grep -oP '\(\K[^)]+\.md(?=\))' docs/README.md | sort -u > /tmp/master_indexed.txt
+# Extract .md paths from each track README
+grep -oP '\(\K[^)]+\.md(?=\))' docs/ai-engineering/README.md | sed 's|^|ai-engineering/|' | sort -u > /tmp/track_indexed.txt
+grep -oP '\(\K[^)]+\.md(?=\))' docs/philosophy/README.md | sed 's|^|philosophy/|' | sort -u >> /tmp/track_indexed.txt
+grep -oP '\(\K[^)]+\.md(?=\))' docs/case-studies/README.md | sed 's|^|case-studies/|' | sort -u >> /tmp/track_indexed.txt
+sort -u /tmp/track_indexed.txt -o /tmp/track_indexed.txt
+# All .md files in doc tracks (not READMEs)
+find docs/ai-engineering docs/philosophy docs/case-studies -name "*.md" ! -name "README.md" | sed 's|^docs/||' | sort -u > /tmp/ondisk.txt
 ```
-Flag any file on disk that isn't referenced in `docs/README.md`. Also check the track READMEs (`docs/ai-engineering/README.md`, `docs/philosophy/README.md`, `docs/case-studies/README.md`) — a file should be in both its track README and the master index.
 
-**Stale references (in index, not on disk):**
-For each path extracted from docs/README.md, verify `docs/<path>` exists on disk. Flag missing files.
+- **True orphan** (not in any README): `comm -23 /tmp/ondisk.txt /tmp/track_indexed.txt` — fix these, they're invisible
+- **Curated omission** (in track README but not master index): files in track_indexed but not master_indexed — expected for specialist docs (e.g. vLLM reference, YouTube workflow explainer); note but don't flag as broken
+- **Stale master ref** (in master index, not on disk): `comm -13 /tmp/ondisk.txt <(sort -u /tmp/master_indexed.txt)` — fix these, they're broken links
 
 ### 2e. research/README.md
 - List all directories in `research/` (excluding README.md)
