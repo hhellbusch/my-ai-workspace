@@ -533,6 +533,7 @@ The cost argument requires honest accounting: hardware purchase, power draw, coo
 - [Enterprise LLM Deployment on OpenShift AI — Summary](openshift-ai-llm-deployment-summary.md) — the enterprise side of the same question: when does self-hosting at scale make sense?
 - [AI-Assisted Development Workflows](ai-assisted-development-workflows.md) — broader patterns for AI-assisted work, including tool comparison
 - [The Meta-Development Loop](the-meta-development-loop.md) — on using AI to build better AI workflows
+- [When the Model Describes a Configuration It Isn't Running](../case-studies/model-self-report-runtime-state.md) — case study on the self-reported context window failure mode discovered during the experiments documented here
 
 ---
 

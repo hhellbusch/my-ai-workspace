@@ -106,7 +106,10 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `.cursor/skills/research-and-analyze/`, `.cursor/skills/create-plans/`, `BACKLOG.md` (workspace architecture item below)
 - **Added:** 2026-04-20
 
-### Case study: model self-report of runtime state — context window edition
+### ~~Case study: model self-report of runtime state~~ ✓ Done 2026-04-20
+- Published as `docs/case-studies/model-self-report-runtime-state.md` (case study #19). Cross-linked from `local-llm-setup.md`. Source: experiment journal 2026-04-20 RamaLama entry.
+
+### ~~Case study: model self-report of runtime state — context window edition~~
 - **Product:** docs
 - **Context:** During the RamaLama qwen3:30b-a3b experiment (2026-04-20), the model self-reported a context window of 32,768 tokens when asked directly. Actual runtime `n_ctx` confirmed via llama.cpp startup logs: 14,592. The model wasn't fabricating — 32k is a real figure from its training data about its typical configuration. The failure is category confusion: answering "what is your context window?" from training knowledge about the model's usual configuration rather than from actual runtime state. Distinct from the frozen-clock idea (wrong year from training cutoff) — same root mechanism (training knowledge ≠ runtime state), different domain (configuration vs. time). Fix: always verify `n_ctx` from startup logs or `ramalama serve` output; never trust self-report for runtime values.
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md` (2026-04-20 RamaLama entry), `docs/case-studies/` (frozen-clock idea for comparison)
