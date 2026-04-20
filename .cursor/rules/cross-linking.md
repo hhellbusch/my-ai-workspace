@@ -64,7 +64,7 @@ These registries MUST be updated when their content changes. This is the most co
 | New experiment journal in `research/` | `research/README.md`, linked stable guide in `docs/` |
 | New command in `.cursor/commands/` | `.cursorrules` command count and list |
 | New project in `.planning/` | `.cursorrules` planning section, `BACKLOG.md` |
-| New prompt in `prompts/` | `.cursorrules` prompts description |
+| New prompt in `.prompts/` | `.cursorrules` prompts description |
 
 ## `.cursorrules` is orientation, not inventory
 

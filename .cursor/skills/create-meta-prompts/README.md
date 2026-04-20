@@ -1,6 +1,6 @@
 # Create Meta-Prompts
 
-The skill-based evolution of the [meta-prompting](../../prompts/meta-prompting/) system. Creates prompts optimized for Claude-to-Claude pipelines with improved dependency detection and structured outputs.
+The skill-based evolution of the [meta-prompting](../../.prompts/meta-prompting/) system. Creates prompts optimized for Claude-to-Claude pipelines with improved dependency detection and structured outputs.
 
 ## The Problem
 

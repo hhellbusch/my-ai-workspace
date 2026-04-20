@@ -41,7 +41,7 @@ This command is read-only. It reports findings and asks for confirmation before 
    - If new research directory: is it listed in `research/README.md`?
    - If new command in `.cursor/commands/`: is `.cursorrules` command count and list updated?
    - If new project in `.planning/`: is it in `.cursorrules` planning section?
-   - If new prompt: is it numbered correctly in `prompts/` and listed in `.cursorrules`?
+   - If new prompt: is it numbered correctly in `.prompts/` and listed in `.cursorrules`?
    - If new backlog items: are dates and product tags present?
    - **Quick link spot-check**: For each new or modified markdown file, verify any internal links (relative paths) resolve to files that exist. Flag broken links.
    - **External URL verification**: For each new or modified markdown file, identify any new external URLs (http/https). Fetch each URL to confirm it resolves (not 404, not redirect to unrelated page). AI models fabricate plausible-looking URLs — this is a known failure mode, not an edge case. Flag any unverified or broken external links.

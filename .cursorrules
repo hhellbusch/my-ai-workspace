@@ -48,7 +48,7 @@ External git repositories cloned for exploration and upstream contributions:
 - argocd-diff-preview — explored feasibility improvement, resulted in upstream issue
 - helm-charts — Helm chart improvement in progress
 
-#### Prompts (`prompts/`)
+#### Prompts (`.prompts/`)
 Structured AI prompt templates for repeatable tasks (run with `/run-prompt`):
 - AI disclosure notice, ArgoCD pipeline validation, Dell memory validation research, NVIDIA GPU analysis, RHACM validation
 

@@ -32,7 +32,7 @@ All product-specific technical reference material lives under `devops/`. This ke
 | `library/` | Personal reference library — books, talks, articles with AI-enriched summaries | One `.md` per reference, indexed in `library/README.md`; managed via `/reference` |
 | `examples/` | Standalone scripts and artifacts referenced by docs | Named dirs: `topic-slug/` (e.g., `gif-recoloring/`) |
 | `git-projects/` | External git repos cloned for exploration and upstream contributions (**gitignored**) | Clone repos directly; not committed to this repo |
-| `prompts/` | Structured AI prompt templates for repeatable tasks | Numbered files: `NNN-description.md`; completed outputs go in `completed/` |
+| `.prompts/` | Structured AI prompt templates for repeatable tasks | Numbered files: `NNN-description.md`; completed outputs go in `completed/` |
 | `research/` | Research workspaces — fetched sources, analysis findings, assessments | One dir per topic: `research/{topic}/` with `manifest.md`, `sources/`, `findings/`, `assessment.md` |
 | `.planning/` | Multi-session project planning — briefs, roadmaps, style guides, evolution logs | One dir per project: `.planning/{project}/` with `BRIEF.md`, `ROADMAP.md`, optional `STYLE.md`, `CHANGELOG.md` |
 
