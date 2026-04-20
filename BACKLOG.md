@@ -91,6 +91,20 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### ~~Encode experiment journals in the meta framework~~ ✓ Done 2026-04-20
 - Added trigger + registry row to [`cross-linking.md`](.cursor/rules/cross-linking.md); bullet to [`session-awareness.md`](.cursor/rules/session-awareness.md); category row + notes default to [`review-tracking.md`](.cursor/rules/review-tracking.md); `review:` frontmatter to pilot journal.
 
+### Hybrid local/cloud workflow — task routing and skill optimization
+- **Product:** meta
+- **Context:** Most workflow tasks fall into two categories: (1) bounded, atomic operations that fit in ~14k context (single-file edits, processing one source, drafting a section, targeted lookups) — these can run locally on `qwen3:30b-a3b` via RamaLama; (2) tasks requiring simultaneous access to many files or cross-corpus awareness (research synthesis across 10+ sources, corpus-level spar, cross-essay voice consistency, session planning) — these need Sonnet. The goal is an explicit routing convention and redesigned skills that work within local context constraints.
+- **Concrete work items:**
+  1. **Task routing convention** — tag backlog items and skill invocations as `[local]` or `[cloud]` based on context requirement. Define the threshold (single file vs multi-file, <8k tokens vs >8k tokens).
+  2. **Local-model skill variants** — stripped versions of key skills (`research-and-analyze`, `create-plans`) that: (a) operate sequentially rather than loading all sources at once, (b) write explicit intermediate state to disk at each step (findings files designed for the next step to read, not just archival), (c) have a compact "context budget aware" prompt (~500 tokens) rather than the full SKILL.md rationale.
+  3. **Sequential research pipeline** — redesign the research skill's synthesis step: load one source → extract claims → write to `findings/source-N.md` → repeat → load all findings → synthesize. Each step fits in 14k. Trade-off: loses serendipitous cross-source connections visible only when holding all sources simultaneously.
+  4. **Essay section drafting locally** — STYLE.md + 2-3 exemplar paragraphs + current section target ≈ 8-10k tokens. Fits in 14k. Voice within a section is maintainable locally; cross-essay consistency needs cloud or human review pass.
+  5. **RAG index** — `ramalama rag add docs/` builds embedding retrieval; model gets top 5-10 relevant chunks per query rather than full files. Cleanest architectural answer for large-repo + small-context.
+- **Quality estimate:** ~70% of current workflow coverage with redesigned skills; human review fills the gap on the 30% that genuinely needs large context (cross-source synthesis, corpus-level spar, voice consistency across all essays).
+- **First experiment:** Build a local-model variant of the research skill (stripped prompt, sequential steps, explicit findings handoff). Run it against a single source. Compare output quality against the Sonnet version on the same source.
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `.cursor/skills/research-and-analyze/`, `.cursor/skills/create-plans/`, `BACKLOG.md` (workspace architecture item below)
+- **Added:** 2026-04-20
+
 ### Workspace architecture for local LLM efficiency — exploration track
 - **Product:** meta
 - **Context:** This workspace was designed for large-context frontier models (Sonnet 4.6, 1M context beta). Running it against a local model (14k–32k context) exposes structural mismatches: `.cursorrules` is enormous, rules files load on every request, skills are thousands of tokens, cross-file reasoning requires loading multiple large files. Three complementary directions to explore:
