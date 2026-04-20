@@ -59,6 +59,23 @@ If `.planning/whats-next.md` exists:
 4. Cross-reference against the backlog snapshot from Step 1. If the handoff references work that's now in Done, or if the backlog has changed significantly, note the discrepancy.
 5. Ask: "There's a handoff from a previous session. Want to pick up where you left off, or start fresh from the backlog?"
 
+If `.planning/whats-next.md` does **not** exist (crash, abrupt end, or `/whats-next` was skipped):
+1. Use the git log as a synthetic handoff — it is the next best thing
+2. From `git log --oneline -10`, identify the cluster of commits from the last session (grouped by time proximity and subject)
+3. Synthesize and present:
+
+```
+## Reconstructed Session Context (no handoff file found)
+
+**Last session worked on:** [summary of recent commit cluster — what changed, what was built]
+**Likely in-flight:** [any backlog items that connect to recent commits but aren't yet Done]
+**Possible next step:** [what the commit sequence suggests was coming next]
+
+*(Reconstructed from git log — treat as approximate. The backlog above is ground truth.)*
+```
+
+4. Proceed with Step 3 as normal — the reconstruction replaces the handoff summary.
+
 If a `.continue-here*.md` file exists in any `.planning/` subdirectory:
 1. Read it
 2. Present: which project, which phase, what was in progress
