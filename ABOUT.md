@@ -12,7 +12,7 @@ organizations through technical transformation at Red Hat.
 The `devops/` section of this workspace reflects that consulting work.
 One area among many.
 
-Black belt in Shito-Ryu karate, earned in 2006 after starting in 1998. The
+Black belt in Hayashi-ha Shito-Ryu karate, earned in 2006 after starting in 1998. The
 philosophy and martial arts threads here draw from nearly 30 years of practice.
 Eagle Scout. Scuba diver, hiker, home brewer, coffee roaster, traveler.
 
