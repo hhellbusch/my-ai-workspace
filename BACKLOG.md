@@ -217,6 +217,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`, `research/ai-tooling/local-llm-setup-sparring-notes.md`, `docs/case-studies/README.md`, `BACKLOG.md` (electricity track), `.cursor/rules/workspace-ethos.md`
 - **Added:** 2026-04-20
 
+### Index: surface review status as a trust signal (undecided)
+- **Product:** meta
+- **Status:** idea — undecided whether to pursue
+- **Context:** Most docs are unreviewed or direction-reviewed; only 3 files have `status: reviewed` as of 2026-04-20. Surfacing review status in `docs/README.md` as a sorting key or trust signal was considered and deferred — too few reviewed files for it to be meaningful signal, and risks optimizing reviews for index position rather than quality. Revisit when reviewed coverage improves meaningfully (rough threshold: 30%+ of docs fully reviewed). Possible implementation: "(author reviewed)" parenthetical in descriptions of fully-reviewed pieces; not a sorting key.
+- **Added:** 2026-04-20
+
 ### ~~docs/README.md — consider unordered lists for case study categories~~ ✓ Done 2026-04-20
 - Converted all three case study categories (Build / Failure / Workflow) to unordered lists. Essays (1–11 across AI-engineering and philosophy tracks) remain numbered — reading order matters there. The cross-ref audit found numeric references only in `BACKLOG.md` internal notes; those have been updated to use titles. Sparring-and-shoshin guide moved from awkward sub-bullet to a "Companion guides" unordered section after the AI-Engineering essays.
 
