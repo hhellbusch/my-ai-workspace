@@ -50,6 +50,8 @@ Documented examples of meta-development patterns, workflow decisions, and AI-ass
 
 - `failure` **[When the Meta-Document Tries to Be the Catalog](meta-document-drift.md)** — The AI orientation file (`.cursorrules`) had inline title lists and hardcoded document counts — duplicating what the track READMEs authoritatively tracked. Every document added without updating `.cursorrules` made the AI's model of the corpus staler. Fix: remove inventory from orientation files; let them describe purpose and point to authoritative sources.
 
+- `failure` **[When the Repository Becomes the Resume](when-the-repository-becomes-the-resume.md)** — The AI consistently identified the workspace owner as an "infrastructure engineer" across multiple sessions, despite corrections. Two compounding causes: the `.cursorrules` opener set that frame, and the dominant technical corpus reinforced it. Names the mechanism (corpus-to-identity conflation) and the fix: identity-first meta-documents that explicitly name what the dominant content does *not* imply.
+
 ---
 
 ## Workflow and Process Decisions

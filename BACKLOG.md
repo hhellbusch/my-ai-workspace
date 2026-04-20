@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-20 (session: spar response — gitignore case study severity strengthened, README routing reworked, /start reconstruction caveat tightened; no new content items, framework quality improvements)
+> Last updated: 2026-04-20 (devops/README.md added; .cursorrules identity framing fixed; new case study: when-the-repository-becomes-the-resume.md)
 
 ## In Progress
 

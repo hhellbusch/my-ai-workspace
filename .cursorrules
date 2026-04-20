@@ -1,6 +1,8 @@
-# Gemini Workspace - DevOps Examples and Troubleshooting
+# Gemini Workspace
 
-This workspace contains practical DevOps examples, configurations, and troubleshooting guides for enterprise Kubernetes and OpenShift environments.
+Public workspace of a full-stack software engineer, systems engineer, and scientist working across multiple domains. Contains AI-assisted work spanning engineering practice, philosophy, and technical reference — essays, case studies, workflows, and runnable examples built from real work over time.
+
+**The technical reference currently reflects enterprise Kubernetes and OpenShift work** — that's what has accumulated so far, not a ceiling on scope. Do not infer the person's identity or primary domain from the dominant technical content. The essays, philosophy track, and stated intent ("public-facing workspace for all things generated with AI, from any domain") are equally authoritative.
 
 ## Project Contents
 
