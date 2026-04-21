@@ -120,8 +120,9 @@ Found an issue or have an improvement? Please:
 3. Include validation steps
 4. Follow the existing structure and naming conventions
 
-## Related Examples
+## Related
 
+- [Troubleshooting](../troubleshooting/) - Operational troubleshooting guides (managed cluster lease, upgrade issues)
 - [Ansible Examples](../../ansible/examples/) - Automation for cluster operations
 - [Argo CD Examples](../../argo/examples/) - GitOps application delivery
 - [CoreOS Examples](../../coreos/examples/) - CoreOS-specific configurations
