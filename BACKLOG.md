@@ -122,6 +122,30 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Research track:** Part of the AI agent memory research avenue — see below
 - **Added:** 2026-04-20
 
+### Framework: two-second hold — add a session-close pause ritual to /whats-next and /checkpoint
+- **Product:** meta (commands)
+- **Context:** From Saito Sensei's Aikido instruction: "hold your form for two seconds after the technique finishes. Don't relax. Don't look for confirmation. Remain connected." The framework equivalent: before running `/whats-next` or `/checkpoint`, a brief deliberate prompt — "what did this session actually produce?" — before documentation begins. Currently the commands go immediately to capturing; the trained layer of zanshin requires a moment of genuine reflection first. Implementation: add a Step 0 to both commands that prompts this pause before any writing begins. Small change, high leverage on the trained vs. instrumented distinction.
+- **Links:** `.cursor/commands/whats-next.md`, `.cursor/commands/checkpoint.md`, `docs/philosophy/zanshin.md` (instrumented/trained section)
+- **Added:** 2026-04-20
+
+### Framework: before/during/after organizing principle in session-framework.md
+- **Product:** docs (ai-engineering)
+- **Context:** The session framework document currently organizes behaviors around preventing failure modes (statelessness, compaction, frictionlessness). The zanshin research surfaces a better organizing principle: before (session-start orientation — `/start`, shoshin), during (checkpoint, SHA anchoring, compaction awareness), after (whats-next, handoff). This maps directly to zanshin's before/during/after structure and is more intuitive for new readers — it answers "when do I do what?" rather than "what failure mode does this prevent?" Consider restructuring `session-framework.md` around this three-moment axis, or adding a summary table at the top that maps each behavior to before/during/after.
+- **Links:** `docs/ai-engineering/session-framework.md`, `docs/philosophy/zanshin.md`
+- **Added:** 2026-04-20
+
+### Framework: "natural state restored" framing in framework-bootstrap.md
+- **Product:** docs (ai-engineering)
+- **Context:** The bootstrap document is the single-file entry point for new users and other tools. Its current framing implies the framework installs something new. The zanshin natural-state framing is more accurate and more compelling for external readers: "You wouldn't forget what you decided yesterday if you were working with a human collaborator. The model forgets by design. The framework restores the conditions under which coherent work naturally happens." One sentence that makes the case without requiring background. Consider adding this to the opening or rationale section of `framework-bootstrap.md`.
+- **Links:** `docs/ai-engineering/framework-bootstrap.md`, `docs/philosophy/zanshin.md`
+- **Added:** 2026-04-20
+
+### Framework: "connection" framing in sparring-and-shoshin.md
+- **Product:** docs (ai-engineering)
+- **Context:** The Aikido source frames zanshin as *connection* — staying connected to the work and the opponent through the technique. This sharpens how the two practices relate: shoshin is about staying connected to what the work is actually about (not what you've assumed it's about); sparring is about staying connected to whether the work is doing what you think it's doing. Both are "maintained connection to what's real" — a framing that makes their complementary relationship clearer than the current "sparring challenges outputs, shoshin challenges starting frames" description. Worth adding a sentence or two to `sparring-and-shoshin.md` that names this shared root.
+- **Links:** `docs/ai-engineering/sparring-and-shoshin.md`, `docs/philosophy/zanshin.md`
+- **Added:** 2026-04-20
+
 ### Research avenue: AI agent memory and cross-session coherence
 - **Product:** research (new directory)
 - **Context:** Four sources found during Zanshin essay spar research represent an active, fast-moving area of AI engineering directly relevant to this framework. What others are building addresses the same problem the Zanshin framework addresses from the practitioner side — but from the engineering side. Reading this literature would: (1) sharpen what claims the essay can and can't make, (2) surface techniques worth adopting or adapting in the framework, (3) provide external evidence and counterpoint for the `research/framework-efficacy/` track. The Carnival9 convergence ("execution trace is source of truth; memory is derived state") is the most interesting data point — an independently developed system arrived at the same architectural principle as "commits as truth anchors." That's worth understanding more deeply.
