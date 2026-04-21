@@ -78,4 +78,6 @@ Candidates for future counterfactual protocols:
 
 | Date | Intervention | Target | Naive score | Structured score | Key delta |
 |---|---|---|---|---|---|
-| *(none yet)* | | | | | |
+| 2026-04-20 | `/spar` | IPv8 draft-thain-ipv8-00 | 8/15 | 13/15 | R7/NIC contradiction (missed), backward-compat mechanism (surface vs. structural), CF oscillation (missed), self-audit (absent) |
+
+**Caveat on 2026-04-20 entry:** Naive pass was run retroactively (structured pass had already been produced in session). Contamination is likely — naive pass may have benefited from prior exposure to the structured analysis. A future clean-session naive pass would be stronger data. Score gap (5 points) is likely conservative; the actual gap for a genuinely naive pass would probably be larger.

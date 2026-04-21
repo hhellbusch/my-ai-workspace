@@ -74,5 +74,22 @@ Append-only. New entries go at the top. One entry per notable framework interven
 
 **Counterfactual:** A plain "what are the weaknesses of this draft?" prompt would likely have produced general concerns (transition complexity, adoption, RFC-only constraints). The specific internal contradiction (R7 vs. §17.5) and the RPKI precedent comparison required the methodology's explicit instruction to "attack the strongest claims, not the weakest" and to "check for the thesis being violated by the document itself."  
 **Severity:** Medium — no wrong output produced; the value was in the quality of adversarial arguments generated.  
-**Baseline comparison:** No — naive pass not run for this session. A retroactive comparison is possible: run "what are the weaknesses of IPv8 draft-thain-ipv8-00?" against the same document and compare against the structured output above.  
-**Evidence:** Conversation session 2026-04-20 (no commit — research conversation only)
+**Baseline comparison:** Yes — retroactive naive pass run in same session after structured pass (contaminated; see caveat in `counterfactual-protocol.md` entry 2026-04-20).
+
+**Naive pass score: 8/15**
+- Argument depth: 2 — specific claims with mechanisms on most points
+- Internal targeting: 1 — argued general weaknesses, did not find self-contradictions
+- Load-bearing awareness: 2 — identified backward-compat as suspect but treated it as surface doubt, not load-bearing structural claim
+- Evidence vs. assertion: 2 — noted RPKI/adoption concern but didn't name the specific 15-year/50% precedent
+- Self-awareness: 1 — no self-critique, no strength differentiation
+
+**Structured pass score: 13/15**
+- Argument depth: 3 — named what breaks if each criticism is valid
+- Internal targeting: 3 — found R7/§17.5 self-contradiction explicitly
+- Load-bearing awareness: 3 — named backward-compatibility as the load-bearing claim and argued why its mechanism (XLATE8) doesn't support the claim
+- Evidence vs. assertion: 3 — correctly named RPKI precedent with deployment rate; named WHOIS8 as assertion dressed as mechanism
+- Self-awareness: 3 — self-audit explicitly named strongest argument (1) and weakest (4) with reasoning
+
+**Score gap: +5 (8 → 13).** Likely conservative due to contamination. Key delta: the internal contradiction (R7/NIC) was entirely absent from naive pass; backward-compat concern appeared in both but at structurally different depths (doubt vs. named mechanism failure).
+
+**Evidence:** Conversation session 2026-04-20; counterfactual-protocol.md entry 2026-04-20
