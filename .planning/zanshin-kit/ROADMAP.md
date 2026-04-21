@@ -14,29 +14,33 @@
 
 **Findings from real use (Copilot Chat):**
 
-Spar mechanism loaded and produced typed, self-audited output — vocabulary and discipline transferred. Three structural gaps surfaced under real use:
+Spar mechanism loaded and produced typed, self-audited output — vocabulary and discipline transferred. Three structural gaps surfaced:
 
-1. **Handoff format over-engineered for quick capture.** Six required fields optimizes for rich recovery; doesn't serve "I have 30 seconds to close." Needs a lightweight quick-capture variant.
+1. **Handoff format over-engineered for quick capture.** Six required fields doesn't serve "I have 30 seconds to close."
+2. **Multi-context collision unaddressed.** (Later revised — see Phase 2 note.)
+3. **No close-out invocation path.** Document is written for load-at-start. When loaded at session end, practices are inapplicable.
 
-2. **Multi-context collision unaddressed.** One session, one file is the implicit assumption. Multiple windows writing to `.planning/whats-next.md` produced two rejected edits before "append with datestamp" emerged as the working solution. Needs explicit guidance.
-
-3. **No close-out invocation path.** Document is written for load-at-start. When loaded at session end, spar/shoshin/stack are inapplicable. Needs a trigger that skips practices and goes straight to state capture.
-
-**Meta-observation:** Copilot applied the working style's own discipline to produce the Phase 1 findings — honest, typed, no padding. That's a positive Phase 1 result.
+**Meta-observation:** Copilot applied the working style's own discipline to produce these findings — honest, typed, no padding. Positive signal for mechanism transfer.
 
 ---
 
-## Phase 2 — Iterate (current)
+## Phase 2 — Iterate
 
-**Status:** In progress
+**Status:** Complete — 2026-04-20
 
-**Goal:** Address Phase 1 gaps. Three defined improvements:
+**What was done:**
 
-1. **Quick capture variant** — two or three lines, no template, appends to `whats-next.md`
-2. **Multi-context guidance** — append-with-datestamp as documented convention, not emergent workaround
-3. **Close-out invocation** — trigger that activates bookkeeping only, skips practices
+Three changes applied to `WORKING-STYLE.md`:
 
-**Deliverable:** Updated `zanshin-kit/WORKING-STYLE.md` incorporating all three. Then re-test in a real session and note whether the gaps are closed.
+1. **Quick capture added** — two or three lines, no template, appends to `whats-next.md`. Marked as fallback not default (tension with progressive bookkeeping named explicitly).
+2. **Multi-context collision guidance added, then removed.** Initially added as "append with datestamp." Spar and user clarification revealed the reported symptom was context drift within a single session, not actual simultaneous sessions. The guidance was misdiagnosis-derived. Simplified: append-with-datestamp rule folded as a one-liner inside close-out mode, where it's actually needed.
+3. **Close-out mode added** — confirmed real use case (user loaded document at session end to close out a drifted session). Trigger: "close-out" / "write a handoff."
+
+**Secondary finding:** The kit's own discipline wasn't applied during Phase 2 iteration — shoshin should have been run on the Copilot feedback before implementing changes. This is a process observation, not a document flaw. Noted for Phase 3 practice.
+
+**Pending:** Re-test in a real Copilot session to confirm quick capture and close-out mode behave as specified. Close-out mode in particular — suppression instructions are harder to verify than activation instructions.
+
+---
 
 ---
 

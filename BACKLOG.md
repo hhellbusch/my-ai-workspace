@@ -4,9 +4,9 @@
 
 ## In Progress
 
-### Zanshin Kit — portable working style (Phase 1: write and test)
+### Zanshin Kit — portable working style (Phase 2: iterate)
 - **Product:** meta / tooling
-- **Context:** A single `WORKING-STYLE.md` that travels into any AI-assisted environment (currently targeting Copilot Chat in VS Code) and activates the core working disciplines — spar, shoshin, progressive bookkeeping, stack tracking, verification. Complete isolation from Field Notes: all artifacts stay in the foreign environment. Phase 1 is write + test: produce the document, load it in a real Copilot session, evaluate whether spar output matches the discipline. Iterate based on what breaks. See `.planning/zanshin-kit/` for brief, roadmap, and known risks.
+- **Context:** Phase 1 complete — `WORKING-STYLE.md` produced, loaded in real Copilot session, spar mechanism transferred. Phase 2 iteration applied: quick capture added, close-out mode added (confirmed real use case), multi-context collision guidance added then removed after root cause clarified as context drift. Pending: re-test close-out mode and quick capture in a real session to verify behavior. See `.planning/zanshin-kit/ROADMAP.md` for full findings.
 - **Links:** `zanshin-kit/WORKING-STYLE.md`, `.planning/zanshin-kit/BRIEF.md`, `.planning/zanshin-kit/ROADMAP.md`
 - **Started:** 2026-04-20
 
@@ -181,6 +181,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Product:** docs (meta / AI-engineering)
 - **Context:** This session produced a real workflow: resume → collaborative ABOUT.md → person-first public context that the AI reads and humans can share. The process involved sparring on labels ("systems engineer" vs. "engineer" vs. "omni-competent"), shoshin on what an external reader actually needs, and two rounds of cuts (too wordy, too much lifted input). The output — a short, honest about page that describes the person rather than the current corpus — is a generalizable pattern for any AI workspace intended as a public record. Worth documenting: what makes a good ABOUT.md, why it's different from a resume, how it affects AI behavior, and the specific failure mode it prevents (corpus-to-identity conflation). Companion to the "When the Repository Becomes the Resume" case study.
 - **Links:** `docs/case-studies/when-the-repository-becomes-the-resume.md`, `ABOUT.md`, `.cursor/rules/cross-linking.md`
+- **Added:** 2026-04-20
+
+### Case study: feedback from an AI is still a symptom report, not a diagnosis
+- **Product:** docs (case-studies)
+- **Context:** During Zanshin Kit Phase 2, Copilot produced structured, typed self-evaluation of the working style — honest, no padding, applied the kit's own discipline. On the surface, a clean Phase 1 success. But the feedback misidentified context drift (long session, diverged state) as multi-context collision (multiple windows writing to the same file). Three changes were implemented before the root cause was clarified. One of those changes (multi-context guidance) was derived directly from the misdiagnosis and was later removed after shoshin revealed the same logic that killed a proposed "context drift" addition also applied to the multi-context section. Secondary finding: the kit's own discipline wasn't applied during the iteration — shoshin should have been run on the Copilot feedback before implementing, not after. The meta-lesson: AI self-diagnosis of its own failure modes is structurally unreliable. A drifted or confused AI produces fluent, confident-sounding explanations of what went wrong — and those explanations are shaped by the same confusion that caused the problem. Treat AI feedback as a symptom report that requires the same verification discipline as any other AI output. The fix: apply shoshin to incoming feedback before acting on it.
+- **Links:** `zanshin-kit/WORKING-STYLE.md`, `.planning/zanshin-kit/ROADMAP.md`
 - **Added:** 2026-04-20
 
 ### Case study: language precision matters — how /spar sharpened a framework artifact
