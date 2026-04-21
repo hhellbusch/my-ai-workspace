@@ -483,6 +483,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `devops/ocp/troubleshooting/`
 - **Added:** 2026-04-17
 
+### Expand RHACM troubleshooting guides
+- **Product:** rhacm
+- **Context:** Two guides created 2026-04-21 from a live ACM 2.15 EUS upgrade session: managed cluster lease not updated (registration agent stopped updating its lease) and MCH stuck in Pending during upgrade (including the frozen `Progressing: False` condition scenario, stale ClusterRole conflict, and KB 7116241). The frozen-condition case is unresolved — open support case with Red Hat engineering citing KB 7116241 for a production-safe remediation path that does not require MCH delete/recreate. Update guides with outcome once resolved.
+- **Links:** `devops/rhacm/troubleshooting/`
+- **Added:** 2026-04-21
+
 
 ### CoreOS troubleshooting section
 - **Product:** coreos
