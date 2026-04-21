@@ -51,9 +51,17 @@ Three gaps surfaced:
 
 **Structural observation:** `whats-next.md` and tool-native session state (e.g., `.copilot/session-state/`) coexist and serve different scopes. Addressed in README.
 
-**Pending:** Close-out mode with real accumulated session context still untested. Quick capture untested under time pressure. Both require load-at-start → real work → trigger.
+**Architecture work (spar-driven, same session):**
 
----
+Spar on scalability identified four concerns:
+1. Document growth vs. context window — bottom-half practices showing weaker real-session activation. Watching; no structural fix yet.
+2. Activation model invisible at load time — fixed with compact table at top of Practices: spar/shoshin (invoke), bookkeeping (proactive), stack/verification (human-prompted).
+3. Case study seeds substituting for case studies — one converted: `docs/case-studies/ai-self-diagnosis-symptom-report.md`.
+4. Feedback loop is manual — structurally constrained by privacy; no fix beyond structured self-eval prompt.
+
+Concrete example checkpoint added to `WORKING-STYLE.md` — abstract templates produce generic handoffs.
+
+**Pending:** Close-out mode with real accumulated session context still untested. Quick capture untested under time pressure. Both require load-at-start → real work → trigger. Document growth concern needs a few more real sessions to determine whether restructuring is warranted.
 
 ---
 

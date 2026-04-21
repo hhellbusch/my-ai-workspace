@@ -4,9 +4,9 @@
 
 ## In Progress
 
-### Zanshin Kit — portable working style (Phase 2: iterate)
+### Zanshin Kit — portable working style (Phase 2: iterate + real session findings)
 - **Product:** meta / tooling
-- **Context:** Phase 1 complete — `WORKING-STYLE.md` produced, loaded in real Copilot session, spar mechanism transferred. Phase 2 iteration applied: quick capture added, close-out mode added (confirmed real use case), multi-context collision guidance added then removed after root cause clarified as context drift. Pending: re-test close-out mode and quick capture in a real session to verify behavior. See `.planning/zanshin-kit/ROADMAP.md` for full findings.
+- **Context:** Phase 1 complete. Phase 2 applied: quick capture, close-out mode, second real session findings (shoshin confirmed working; checkpoint-before-risky-op, verification, and stack tracking gaps addressed). Architecture spar: activation model table added, example checkpoint added, case study converted. Pending: close-out mode with real accumulated context still untested. See `.planning/zanshin-kit/ROADMAP.md` for full findings.
 - **Links:** `zanshin-kit/WORKING-STYLE.md`, `.planning/zanshin-kit/BRIEF.md`, `.planning/zanshin-kit/ROADMAP.md`
 - **Started:** 2026-04-20
 
