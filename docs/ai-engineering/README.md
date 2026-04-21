@@ -37,6 +37,8 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 - **[Interaction Patterns for AI Sessions](interaction-patterns.md)** — Two structured patterns for AI-assisted work (the meta-prompt pipeline and the session-start briefing), the default unstructured mode, and how to choose between them. Covers the briefing guardrail (scope vs. state), the privacy-filtered handoff, and practical guidance for choosing between patterns.
 
+- **[Zanshin — Portable Session Context (Bootstrap)](framework-bootstrap.md)** — Single-file entry point for loading the Zanshin framework into any AI tool. Clone this repository alongside a project, point your AI at this file, and operate with the framework's posture without Cursor-specific setup. Includes minimum viable load (four sentences), full behavioral dispositions, tool-specific loading instructions (Copilot, Claude Code, chat-based AI), and links to deeper reading.
+
 ## Primary Narratives (Public)
 
 - **Dan Walsh — *Lessons learned with a career in software?*** (DevConf.US 2025) — [YouTube](https://www.youtube.com/watch?v=YKDi-ePTmRA). Full transcript and theme index: [`research/ai-engineering-public/sources/youtube-YKDi-ePTmRA-transcript.md`](../../research/ai-engineering-public/sources/youtube-YKDi-ePTmRA-transcript.md), [`library/dan-walsh-devconf-2025-career-lessons.md`](../../library/dan-walsh-devconf-2025-career-lessons.md). Useful as a **public** anchor for security-through-containers history, mentorship/succession, and late-career AI tooling (e.g. RamaLama) without relying on private correspondence.

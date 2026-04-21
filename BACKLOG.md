@@ -90,6 +90,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 
 
+### Case study: when the framework became tool-portable
+- **Product:** docs (case-studies)
+- **Context:** The peer parallel problem session (Ansible playbook from a manual procedure) showed that the Zanshin framework can be loaded into GitHub Copilot by cloning the repo alongside a project on the filesystem. First evidence the framework is tool-agnostic. The `framework-bootstrap.md` doc was built as a direct result — a single-file entry point designed for exactly this load pattern. Case study would cover: the accidental discovery, the bootstrap design decisions, what "minimum viable load" means, and the open question of which framework components drove the generation quality difference. Connects to the cross-tool portability claim in the framework efficacy track.
+- **Links:** `docs/ai-engineering/framework-bootstrap.md`, `research/framework-efficacy/intervention-log.md`
+- **Added:** 2026-04-20
+
 ### Framework bootstrap: peer comparison follow-up
 - **Product:** research / meta
 - **Context:** In a parallel problem session, Henry loaded the framework into GitHub Copilot by cloning this repo alongside a private project and asking Copilot to read it. Peer used standard Copilot. Copilot compared both solutions; Henry's was preferred on first pass. First cross-practitioner, cross-tool comparative event — logged in `research/framework-efficacy/intervention-log.md`. **Follow-up needed:** (1) record what problem was being solved, (2) confirm exactly which files Copilot loaded, (3) repeat with the same or different peer, using `framework-bootstrap.md` as the explicit single-file load, (4) log the comparison in the counterfactual protocol. The bootstrap doc now exists — this is about repeating and instrumenting the experiment, not about building more infrastructure.
