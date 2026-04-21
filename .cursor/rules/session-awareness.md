@@ -24,6 +24,19 @@ If the user starts a session with a vague request like "let's continue" or "what
 
 ---
 
+## In-Session Context Compaction
+
+In long sessions, earlier context gets summarized as the context window fills. The session continues, but the model's internal representation of prior work is a compression — not the original. This is distinct from cross-session statelessness (where nothing carries over) and harder to notice: the session feels continuous, but specific file contents, decisions, and details may have been compressed into approximations.
+
+**What this means in practice:**
+
+- **Re-read before deciding.** If a decision depends on the contents of a specific file — a rule, a doc, a BACKLOG item — read the file before deciding, even if you read it earlier in the session. Don't rely on a summarized memory of what it said. Committed files are always accurate; in-context memory of them may not be after compaction.
+- **Commits are the truth anchor.** The committed state of the repo is reliable regardless of context state. When in doubt about what a file contains, read it. When in doubt about what decisions were made, check the git log.
+- **Surface compaction rather than guessing.** If a reference feels uncertain — "I think we decided X earlier" or "I believe the file said Y" — say so explicitly rather than proceeding on a compressed memory. Re-read the source. The cost of a file read is much lower than the cost of a decision made on a stale approximation.
+- **Checkpoint frequency reduces compaction risk.** Frequent small commits externalize state into the repo before it gets compressed. A checkpoint mid-session also provides a re-readable anchor — the `.planning/whats-next.md` written by a checkpoint is accurate at the time it was written, unlike in-context memory that may have been compressed since.
+
+---
+
 ## Session-Start Briefings — Guardrail Check
 
 When a session opens with a briefing document (user says "read X and go," or points to a file as a session brief), the briefing provides *scope* — what to work on, deliverables, constraints. It does **not** provide reliable *state* — the briefing is a snapshot, and the repo may have changed since it was written.

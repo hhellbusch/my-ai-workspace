@@ -9,7 +9,9 @@
 
 AI assistants have two structural characteristics that create predictable failure modes in multi-session work.
 
-**Statelessness.** Every session starts fresh. Context from prior sessions — decisions made, approaches tried, scope defined — doesn't carry over unless it was committed to a file. For single-session tasks this doesn't matter. For work that spans days or weeks, it compounds into drift: the session produces good output that doesn't connect to prior work, or re-litigates decisions that were already settled.
+**Cross-session statelessness.** Every session starts fresh. Context from prior sessions — decisions made, approaches tried, scope defined — doesn't carry over unless it was committed to a file. For single-session tasks this doesn't matter. For work that spans days or weeks, it compounds into drift: the session produces good output that doesn't connect to prior work, or re-litigates decisions that were already settled.
+
+**In-session context compaction.** Within a long session, earlier context gets summarized as the context window fills. The session continues, but the model's internal representation of prior work is a compression — not the original. This is harder to notice than cross-session loss: the session feels continuous, but specific file contents, decisions, and details may have been compressed into approximations. The model proceeds as if it remembers, but what it's working from is a summary. Decisions made on summarized memory of file contents are a common source of subtle errors in long sessions.
 
 **Frictionlessness.** AI assistants are trained to be agreeable. They validate your framing, inherit your assumptions, and produce fluent output that looks correct. This isn't a bug — it's what makes them fast to work with. It becomes a bug when the framing is wrong, the assumption is stale, or the output needs genuine challenge. A tool optimized to agree doesn't naturally provide adversarial pressure.
 
@@ -39,7 +41,9 @@ Two tools address this, designed for different scenarios:
 
 **`/whats-next`** is a full session handoff — comprehensive context capture for handing off to a new session or ending a long work block. It includes a backlog snapshot, work completed in detail, what remains, decisions made, and a case study reflection (did anything from this session demonstrate a pattern worth documenting?). Heavier than a checkpoint; worth running when the session produced substantial work that needs accurate context for continuation.
 
-**Why commit frequently:** A clean working tree is the cheapest form of crash recovery. Uncommitted work is unrecoverable; committed work is always there in the git log. The framework pushes toward small, logical commits after each unit of work rather than batching. The git log then serves as a synthetic handoff when nothing else exists.
+**Why commit frequently:** A clean working tree is the cheapest form of crash recovery, and committed files are the reliable truth anchor against in-session context compaction. Uncommitted work is unrecoverable after a crash; committed state is accurate and re-readable regardless of how compressed the in-context memory has become. The framework pushes toward small, logical commits after each unit of work rather than batching — each commit externalizes state before it can be compressed.
+
+**Re-read before deciding.** In long sessions, don't rely on in-context memory of what a file said. If a decision depends on the contents of a rule, a BACKLOG item, or a prior doc, read the file. The cost of a file read is much lower than the cost of a decision made on a compressed approximation. When something feels uncertain — "I believe we decided X" or "I think the file said Y" — surface the uncertainty and re-read rather than proceeding.
 
 ---
 
