@@ -146,13 +146,15 @@ AI output that sounds confident may still be wrong. Fluent prose covers both ass
 - If no `BACKLOG.md` exists: create one with `## In Progress`, `## Up Next`, `## Ideas` sections
 - Commits go to the local repository
 
-**Close-out mode** (loaded at session end, not session start): When this document is loaded to close out a session, skip spar — there's no approach to challenge. But run shoshin before writing the handoff:
+**Close-out mode** (window closing, work may or may not be done): Close-out means this context window is ending — not that the work is finished. A fresh session may need to continue from here.
 
-> "What's in this context window that won't survive the reboot? What have I assumed is captured that isn't? What would a fresh session need to ask for again?"
+Skip spar — there's no approach to challenge. Run shoshin before writing the handoff:
 
-Then check the stack for open threads — those belong in the handoff, not lost. Then write the checkpoint.
+> "What's in this context window that won't survive the reboot? What have I assumed is captured that isn't? What would a fresh session need to ask for again to pick this up without relitigating?"
 
-Trigger: "close-out" / "write a handoff" / "session is ending."
+Check the stack for open threads — those belong in the handoff. Then write a checkpoint or quick capture oriented toward continuation, not just summary.
+
+Trigger: "close-out" / "write a handoff" / "I'm closing this session."
 
 When the session state file already has content from a previous context, append with a datestamp — don't replace. The most recent entry is the active state.
 
