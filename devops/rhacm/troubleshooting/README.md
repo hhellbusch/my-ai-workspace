@@ -6,20 +6,23 @@ Practical diagnostic guides for Red Hat Advanced Cluster Management operational 
 
 | Guide | Symptom |
 |---|---|
+| [mch-stuck-pending-upgrade.md](./mch-stuck-pending-upgrade.md) | `MultiClusterHub` stuck in `Updating` / `Pending` / `Installing` beyond ~10–15 min during hub upgrade |
 | [managed-cluster-lease-not-updated.md](./managed-cluster-lease-not-updated.md) | `The cluster is not reachable. Registration agent stopped updating its lease.` — clusters showing Unknown, during or after hub upgrade |
 
 ## Common Scenarios
 
-**During a hub upgrade (MCH Pending/Updating):**
-- Managed clusters temporarily showing Unknown during upgrade is expected behavior
-- Hub upgrade can take up to 10 minutes per official ACM 2.15 docs
-- Clusters should self-recover after MCH returns to Running
-- See [managed-cluster-lease-not-updated.md](./managed-cluster-lease-not-updated.md) for upgrade-specific checks
+**MCH stuck during upgrade:**
+- OLM InstallPlan with Manual approval waiting to be approved
+- Missing `mce-subscription-spec` annotation in disconnected environments (upgrade starts but stalls)
+- Image pull failures if mirror catalog was not updated for the new version
+- A sub-component (MCE, webhook, etc.) not reaching Available state
+- See [mch-stuck-pending-upgrade.md](./mch-stuck-pending-upgrade.md) — includes a diagnostic decision tree
 
-**Disconnected environments:**
-- Mirror catalog and `mce-subscription-spec` annotation issues are a common upgrade blocker
-- Certificate and image pull issues more common without internet access
-- See the lease troubleshooting guide — Scenario E covers the disconnected upgrade stall
+**Managed clusters Unknown during or after hub upgrade:**
+- Expected behavior while MCH is still Updating (up to 10 minutes per ACM 2.15 docs)
+- Clusters should self-recover after MCH returns to Running
+- If still Unknown after hub is healthy, investigate klusterlet and connectivity
+- See [managed-cluster-lease-not-updated.md](./managed-cluster-lease-not-updated.md)
 
 ## Reference Documentation
 
