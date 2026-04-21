@@ -88,7 +88,17 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### Source review: Zanshin — Traditional Aikido of Colorado Springs
+- **URL:** https://cos-aikido.com/2023/05/11/zanshin-remaining-mind-cultivating-a-budo-mindset-part-2/
+- **Why:** Best philosophical treatment of zanshin found in research — Saito Sensei's "shooting a tiger" example, the natural-state framing ("it's about overcoming bad mental habits, not learning to do something new"), the relational "connection" quality, and the two-second hold practice. All of these have direct implications for the essay and potentially for how the framework is described. Read before finalizing `docs/philosophy/zanshin.md`.
+- **Possible library entry:** `library/aikido-colorado-springs-zanshin.md` — primary source for the philosophical tradition
+- **Added:** 2026-04-20
 
+### Source review: Context Window Management and Session Lifecycle — Zylos Research (2026)
+- **URL:** https://zylos.ai/research/2026-03-31-context-window-management-session-lifecycle-long-running-agents
+- **Why:** Directly challenges the "practice not engineering" framing in `docs/philosophy/zanshin.md`. Key finding: Anthropic found compaction alone sufficient for multi-session continuity with capable models. StatePlane adds "adaptive forgetting" and "goal-conditioned retrieval" — judgment operations. EngineersOfAI's architecture (Redis/Postgres/vector DB) is a mature engineering solution to exactly the problem the essay claims is unsolved. The Carnival9 pattern ("execution trace is source of truth; memory is derived state") independently converges on "commits as truth anchors." Useful context before claiming the gap is structural and permanent.
+- **Possible library entry:** `library/zylos-session-lifecycle-2026.md` — engineering counterpart to the philosophy essay
+- **Added:** 2026-04-20
 
 ### ~~Case study: link depth drift — when a folder move silently breaks navigation~~ ✓ Done 2026-04-20
 - Published as `docs/case-studies/link-depth-drift.md`. Companion to the gitignore drift case: same directory reorganization, different failure surface. 23 links off by exactly one `../`, none signaled at commit time, found by audit months later. Covers the mechanism (relative upward links encode depth), the silence signature (uniformity), and the pre-commit check now in `repo-structure.md`. Registered in case studies README.

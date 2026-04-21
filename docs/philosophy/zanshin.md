@@ -1,7 +1,7 @@
 ---
 review:
   status: unreviewed
-  notes: "First draft — needs voice-approval before sharing. Personal content placeholders marked."
+  notes: "Needs voice-approval before sharing. Placeholder removed — practitioner account to be woven in on review."
 ---
 
 # Zanshin — What Remains When the Session Ends
@@ -15,23 +15,11 @@ review:
 
 In karate, a technique isn't finished when it lands. The punch, the block, the throw — these are actions, not states. What follows the action is what separates practice from performance, a practitioner from a fighter.
 
-Zanshin (残心) — *remaining mind*. The sustained awareness that persists after the technique is delivered. Not relaxation. Not celebration. Not the next thing. The fighter who drops their guard after a punch has created an opening. The practitioner who scatters attention after a completed movement hasn't finished the technique — they've abandoned it.
+Zanshin (残心) — *remaining mind*. Not a state that begins after the technique: a state that persists *through* it, before, during, and after. The word breaks down: *zan* (残), "to remain, to linger," and *shin* (心), "mind, heart, spirit." Not the mind in action — the mind that remains when the action is done. Connected to the work. Present, watchful, ready to continue.
 
-The word breaks down: *zan* (残), "to remain, to linger," and *shin* (心), "mind, heart, spirit." Not the mind in action. The mind that remains when the action is done. Present, watchful, ready to continue.
+What makes zanshin harder to teach than most techniques: traditional practice holds that it is a *natural state*. The practice isn't about installing something new. It's about overcoming the bad mental habits that break what would otherwise persist on its own. Morihiro Saito Sensei's instruction was precise: hold your form for two seconds after the technique finishes. Don't relax. Don't look for confirmation. Remain connected. His example for why: one doesn't shoot a tiger and then turn one's back and absentmindedly walk away.
 
-This is harder than it sounds. The natural tendency after completion is dispersal — the relief of finishing, the pull toward the next thing, the permission to relax. Zanshin trains against that tendency. The technique is complete. The mind remains.
-
----
-
-## What Happens Without It
-
-The dojo makes the cost of absent zanshin visible and immediate. You complete a combination and relax — your opponent lands the counterpunch. You execute a throw, lose focus on landing control, and the follow-up never comes. You finish a kata sequence and let your face show it's over before the final position is held.
-
-The failure is always the same: treating completion as finality. The fight isn't over because your technique landed. The kata isn't done because you've performed the last movement. Zanshin is what you carry from the moment of action into whatever comes next.
-
-In the dojo, this is correctable in real time. A senior student or teacher sees the scattered attention and calls it. You feel the counterpunch. The feedback is immediate and physical. You learn not because someone explained zanshin but because its absence had consequences you could feel.
-
-*[Space for practitioner account of a moment where zanshin was absent — and what it cost.]*
+The natural tendency after completion is dispersal — the relief of finishing, the pull toward the next thing, the permission to relax. Zanshin trains against that tendency. Not by building a new capacity, but by restoring the attentive state that distraction interrupts.
 
 ---
 
@@ -47,7 +35,7 @@ The consequences compound slowly. Decisions get re-litigated. Framing drifts acr
 
 The structural version of this is literal: a directory reorganization commits cleanly. Twenty sessions later, there are twenty-three broken links — relative paths that pointed correctly before the directory moved and now resolve to nothing. No individual session was negligent. The failure was treating each reorganization as complete when the files committed. Each session ended with the work feeling done. Nobody lingered at the boundary to ask what the move had broken.
 
-Engineering approaches to cross-session state exist. Long-context models retain more of a single session. Agent frameworks offer persistent memory. Context versioning tools automatically reload what was committed. These address retrieval — making information that was available once available again. They don't address judgment about what should carry forward: which decisions should be inherited unchanged, which framing has drifted from the original intent, which context accumulated during a conversation that no longer exists has silently shaped the current direction. Adding memory to a tool doesn't resolve whether a decision that made sense six sessions ago still makes sense now. That's not a retrieval problem. It's a practice problem — one that belongs to the practitioner, not the model.
+Engineering approaches to cross-session state have advanced significantly. Long-context models, persistent agent memory, automated context versioning, structured decision logs — production systems are increasingly building judgment layers on top of retrieval: goal-conditioned forgetting, narrative handoffs, warm restarts that load what matters rather than everything. These are real advances. What they don't address is the practitioner's own relationship to the boundary — whether the inherited framing gets questioned rather than assumed, whether the session close prompts genuine examination or just triggers the appropriate commands. That part belongs to the practitioner, not the model.
 
 Most thinking about AI productivity focuses on the session: better prompts, better models, better integrations. These are real improvements. But they address quality within the unit of work, not coherence across units. The harder problem is the gap — not the technique, but the zanshin.
 
@@ -69,7 +57,7 @@ There's a distinction worth holding. The `/whats-next` command doesn't create za
 
 A related tension runs through this: the difference between instrumenting for awareness and developing it.
 
-The DA model Daniel Miessler describes in his "Single Digital Assistant" thesis monitors heartbeat, tone of voice, workout frequency, relationship patterns — an external layer that aggregates and surfaces what you might otherwise miss about your own life. There's a version of Zanshin-the-framework that operates the same way: automated checks, reminder hooks, registry sync commands that tell you what you forgot to update. Awareness measured and reported.
+There is a version of any awareness practice that runs through instrumentation: fitness trackers that report what you ate and how you slept, dashboards that surface what you would otherwise miss, automated checks that tell you what you forgot to update. Applied to this framework: registry sync commands, reminder hooks, link integrity checks. Awareness measured and reported from the outside.
 
 Zanshin in the dojo is different in kind. It isn't built through monitoring. It's built through the accumulated practice of keeping attention where attention is hard to keep — through the physical and mental discipline of not relaxing when relaxation feels earned. The practitioner who develops genuine zanshin doesn't need a system to remind them to hold awareness after the technique. The awareness persists because it has been trained to persist.
 
