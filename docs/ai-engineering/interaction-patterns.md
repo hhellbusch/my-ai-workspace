@@ -66,6 +66,8 @@ This file is an instance of that pattern — written in a private session to ori
 
 **The `/start` bypass:** Using a session-start briefing means intentionally skipping the normal orientation. That's a deliberate tradeoff: you lose the full picture (in-progress items you didn't brief on, planning project status, recent git activity beyond what the brief covers) in exchange for a pre-scoped entry point that's already made the "what should I work on?" decision. The tradeoff is appropriate when you know the answer to that question before the session starts.
 
+Specifically, what you give up: the session won't run the shoshin check (brief alignment against backlog), won't cross-reference the handoff against the current git state, and won't surface in-progress items outside the briefing's scope. The session is operating on trust — trust that the briefing is accurate. That trust is warranted when the briefing was created with rigor: drafted deliberately, ideally sparred before use, and committed at a point of confidence rather than expediency. A brief written quickly and without review transfers the brittleness of that process into the session that inherits it.
+
 **Maturity note:** This pattern has one documented instance — this file. The structural logic is sound and the design transfers (there's nothing workspace-specific about "write a scoped briefing for a fresh session"), but the claim that it's a proven, stable pattern would be premature. Treat it as a named, coherent approach rather than a documented practice with established pitfalls and mitigations.
 
 ---

@@ -96,22 +96,26 @@ If a `.continue-here*.md` file exists in any `.planning/` subdirectory:
 2. Present: which project, which phase, what was in progress
 3. Ask: "There's a planning handoff for [project]. Want to resume?"
 
-### Step 2.5: Planning projects — announce, don't load
+### Step 2.5: Planning projects — one-liners always, full reads on request
 
-List what's in `.planning/` without reading into every project:
+For each directory in `.planning/` that has a `BRIEF.md`:
+
+1. Read the brief's **one-liner only** — the first non-blank line after the title or the purpose statement in the opening section. Do not read the full brief.
+2. Compare the one-liner against the current In Progress and Up Next backlog items
+3. Surface gaps only — if everything aligns, one line suffices:
 
 ```
-ls -d .planning/*/ 2>/dev/null
+## Planning Projects
+- **zen-karate**: [one-liner from BRIEF.md] — aligns with Up Next essays
+- **paude-integration**: [one-liner from BRIEF.md] — nothing active in backlog ⚠
 ```
 
-Present as a single line: "Planning projects: [name], [name], ..." (or "No planning projects.")
+This preserves the shoshin function — catching drift you don't know about — at low cost. One-liners are fast to read; the check runs unconditionally so it catches what you're not looking for. Full BRIEF content and full ROADMAP status remain opt-in.
 
-**Do not read BRIEFs or ROADMAPs here.** If the user is resuming a specific project, they'll say so, and brief alignment should be checked then. Loading every BRIEF and ROADMAP on every session start scales poorly as the workspace grows — each project adds file reads even when the session has nothing to do with it.
-
-To run a brief alignment check (shoshin) for a specific project, ask the user: "Want me to check brief alignment for [project]?" or do it on request. When asked:
-1. Read the brief's **one-liner**, **problem** statement, and **success criteria**
+**To run a full brief alignment check** (when resuming a project or when the one-liner suggests drift):
+1. Read the brief's **problem** statement and **success criteria** in full
 2. Compare against In Progress and Up Next backlog items
-3. Surface gaps only — if everything aligns, one line suffices
+3. Surface gaps:
 
 ```
 ## Brief Alignment — [project]
