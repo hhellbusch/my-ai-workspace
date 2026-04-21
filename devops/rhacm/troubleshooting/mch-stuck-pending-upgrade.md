@@ -123,22 +123,60 @@ If `Upgradeable=False`, the operator is blocking the upgrade because a prerequis
 
 ## Step 3 — Hub Operator Logs
 
+The `multiclusterhub-operator` deployment runs multiple replicas with leader election — only the leader pod is actively reconciling. Reading the wrong pod gives you silence, not signal.
+
+### 3a. Find the leader pod
+
 ```bash
-# Primary operator — most diagnostic value
-oc logs -n open-cluster-management \
-  deploy/multiclusterhub-operator \
+# List leases to find the operator lock — the name may not be obvious
+oc get lease -n open-cluster-management | grep -i "hub\|multicluster\|lock"
+```
+
+The leader election lease is typically named `multicloudhub-operator-lock` (note: `multicloudhub`, not `multiclusterhub`). The `HOLDER` column contains the leader pod name.
+
+```bash
+# Extract the leader pod name from the lease holder identity
+LEADER=$(oc get lease multicloudhub-operator-lock \
+  -n open-cluster-management \
+  -o jsonpath='{.spec.holderIdentity}' \
+  | cut -d'_' -f1)
+
+echo "Leader pod: $LEADER"
+```
+
+If the lease name differs in your environment, the active pod is immediately identifiable by log verbosity — the leader will have recent reconcile activity; the standby will be mostly silent:
+
+```bash
+# Get all operator pod names
+oc get pods -n open-cluster-management \
+  -l name=multiclusterhub-operator \
+  -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
+
+# Compare recent activity — the verbose one is the leader
+oc logs -n open-cluster-management <pod-1> --tail=5
+oc logs -n open-cluster-management <pod-2> --tail=5
+```
+
+### 3b. Read leader logs
+
+```bash
+# Targeted — filter for actionable signals
+oc logs -n open-cluster-management $LEADER \
   --tail=200 | grep -i "error\|fail\|reconcil\|component\|degrad"
 
 # Stream for live observation
-oc logs -n open-cluster-management \
-  deploy/multiclusterhub-operator -f
+oc logs -n open-cluster-management $LEADER -f
 ```
 
-Look for:
-- Component name + error (shows which sub-system is failing)
-- `reconcile error` messages
-- Image pull or registry errors
-- Timeout or deadline exceeded messages
+**What the logs tell you:**
+
+| Log pattern | Meaning |
+|---|---|
+| `Reconcile completed. Requeuing after 5m0s` (no errors) | Operator is healthy — look elsewhere (Step 7a) |
+| `No updates to defaults detected` every cycle | Idle loop — nothing to deploy, stale condition may be the blocker |
+| `error deploying resource` / `Operation cannot be fulfilled` | Transient write conflict — usually self-resolves; if stale, see Step 7a |
+| `reconcile error` + component name | Sub-component failure — check that component (Step 4) |
+| Image/registry errors | Pull failure — check mirror catalog (Step 4b, 5b) |
 
 ---
 
@@ -352,19 +390,73 @@ oc get mch multiclusterhub -n open-cluster-management \
 
 ---
 
-## Step 7 — Force Reconciliation
+## Step 7 — Phase Stuck Despite Healthy Components
 
-If the operator appears healthy but MCH is not progressing, nudging the operator can help.
+This covers the case where the operator logs show no errors, all components are `Available`, `Complete: True`, and `currentVersion = desiredVersion` — yet `phase` remains `Pending`.
+
+### 7a. Identify a stale Progressing condition
 
 ```bash
-# Restart the hub operator to force a fresh reconciliation cycle
+# Check the Progressing condition — look at lastTransitionTime
+oc get mch multiclusterhub -n open-cluster-management \
+  -o jsonpath='{range .status.conditions[?(@.type=="Progressing")]}{.type}: {.status}  reason: {.reason}  last changed: {.lastTransitionTime}{"\n"}{end}'
+```
+
+If `Progressing: False` with a `lastTransitionTime` that predates the current upgrade (days, weeks, or months old), the condition is stale. The operator last hit a transient error (commonly a Kubernetes write conflict: `Operation cannot be fulfilled... the object has been modified`), set `Progressing: False`, and every subsequent reconcile has been clean but idle — "nothing to deploy" means the condition never gets touched.
+
+The reconcile log pattern for this state looks like:
+
+```
+Reconciling MultiClusterHub
+No updates to defaults detected
+[proxy / trust bundle checks]
+Reconcile completed. Requeuing after 5m0s
+```
+
+No errors. No deployment actions. The operator is healthy; the `phase: Pending` is a display artifact of the stale condition.
+
+**The hub is functionally running in this state.** The phase is cosmetic when `Complete: True` and all components are `Available`.
+
+### 7b. Fix — force a deploy cycle
+
+The operator only updates the `Progressing` condition when it actively deploys something. To clear the stale condition, give it something to act on:
+
+```bash
+# Add a harmless annotation — triggers a reconcile that enters the deploy path
+oc annotate mch multiclusterhub \
+  -n open-cluster-management \
+  troubleshooting/force-reconcile="$(date +%s)"
+```
+
+Watch the operator logs for a deploy action (cycle will no longer say just "No updates to defaults detected"):
+
+```bash
+oc logs -n open-cluster-management $LEADER -f \
+  | grep -v "Proxy configuration\|trust bundle\|KlusterletAddon"
+```
+
+Watch the phase:
+
+```bash
+watch -n 10 "oc get mch multiclusterhub -n open-cluster-management \
+  -o jsonpath='phase: {.status.phase}  progressing: {range .status.conditions[?(@.type==\"Progressing\")]}{.status} — {.reason}{end}{\"\\n\"}'"
+```
+
+### 7c. Operator restart (alternative)
+
+If the annotation approach does not trigger a deploy cycle, restart the operator to force re-evaluation:
+
+```bash
 oc rollout restart deploy/multiclusterhub-operator \
   -n open-cluster-management
 
 oc rollout status deploy/multiclusterhub-operator \
   -n open-cluster-management
+```
 
-# Watch MCH status after restart
+Watch MCH status after restart:
+
+```bash
 watch -n 15 "oc get mch -n open-cluster-management && echo && \
   oc get mch multiclusterhub -n open-cluster-management \
   -o jsonpath='{range .status.components[*]}{.name}: {.status}{\"\\n\"}{end}' \
@@ -412,6 +504,11 @@ After hub is confirmed `Running`, managed clusters showing `Unknown` should self
 ```
 MCH stuck in Updating/Pending
 │
+├── Check: Complete=True, all components Available, versions match?
+│   └── Yes → Check Progressing condition lastTransitionTime (Step 7a)
+│             Is it older than the current upgrade?
+│             └── Yes → Stale condition. Force deploy cycle (Step 7b)
+│
 ├── Check: Is CSV installed?
 │   ├── No / Installing → Check OLM InstallPlan approval (Step 2a)
 │   │                     Check CatalogSource health (Step 5b)
@@ -426,12 +523,13 @@ MCH stuck in Updating/Pending
 │   └── Yes → Check mce-subscription-spec annotation (Step 5a)
 │             Check mirror catalog coverage (Step 5b)
 │
-├── Operator logs showing errors? (Step 3)
+├── Operator logs showing errors? (Step 3b)
+│   ├── Clean idle loop ("No updates to defaults detected") → Stale condition (Step 7a)
 │   ├── Image pull → Mirror/ICSP issue (Step 4b, 5c)
 │   ├── Webhook → Fail-open workaround (Step 4d)
 │   └── CRD conflict → CRD check (Step 4e)
 │
-└── No obvious error → Force reconciliation (Step 7)
+└── No obvious error → Operator restart (Step 7c)
 ```
 
 ---
