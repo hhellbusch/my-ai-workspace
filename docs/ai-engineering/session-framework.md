@@ -15,7 +15,7 @@ AI assistants have two structural characteristics that create predictable failur
 
 **Frictionlessness.** AI assistants are trained to be agreeable. They validate your framing, inherit your assumptions, and produce fluent output that looks correct. This isn't a bug — it's what makes them fast to work with. It becomes a bug when the framing is wrong, the assumption is stale, or the output needs genuine challenge. A tool optimized to agree doesn't naturally provide adversarial pressure.
 
-The framework is a set of behaviors that address both. Some manage state so context survives across sessions. Some create structural friction to counter the AI's tendency toward agreement. None of them are mandatory — they're defaults that can be ignored when the work is simple enough not to need them.
+The framework is a set of behaviors that aim to address both. Some manage state so context survives across sessions. Some create structural friction to counter the AI's tendency toward agreement. None of them are mandatory — they're defaults that can be ignored when the work is simple enough not to need them.
 
 ---
 
