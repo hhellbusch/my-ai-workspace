@@ -14,20 +14,45 @@ A single-file working style kit. Drop it into any project, reference it at sessi
 
 ## Setup
 
-**Copy the file into your project:**
-```bash
-cp /path/to/zanshin-kit/WORKING-STYLE.md ./WORKING-STYLE.md
-```
+Two modes depending on your use case:
 
-**Load it at session start:**
+**Personal use — reference from a local clone (preferred):**
+
+Keep this repo cloned locally. Reference `WORKING-STYLE.md` directly from the clone — no copying, always current:
 
 | Tool | How to load |
 |------|-------------|
-| Copilot Chat (VS Code) | Include `#file:WORKING-STYLE.md` in your first message |
-| Any chat AI | Paste the document as your opening message, then state your task |
-| Cursor | Reference as `@WORKING-STYLE.md` or add as a rule |
+| Copilot Chat (VS Code) | `#file:/path/to/gemini-workspace/zanshin-kit/WORKING-STYLE.md` |
+| Any chat AI | Paste the file contents as your opening message |
+| Cursor | `@/path/to/gemini-workspace/zanshin-kit/WORKING-STYLE.md` |
 
-**That's it.** The practices are active for the session. Use natural language to invoke them:
+No drift, no re-copy step. Pull the repo when you want updates.
+
+**Team use — copy into the project:**
+
+Copy `WORKING-STYLE.md` into your project so it's committed alongside the code and discoverable by all team members:
+
+```bash
+cp /path/to/zanshin-kit/WORKING-STYLE.md ./docs/planning/WORKING-STYLE.md
+# or at the project root:
+cp /path/to/zanshin-kit/WORKING-STYLE.md ./WORKING-STYLE.md
+```
+
+Then load from the local path at session start (see Tool table above, adjusted for your path).
+
+---
+
+**Loading prompt** (works for both modes — adjust the file path):
+
+```
+#file:WORKING-STYLE.md
+
+I've loaded my working style. Acknowledge the practices you now have available and confirm you're ready to apply them this session.
+```
+
+A good acknowledgment names the practices back with their mechanisms — not just labels. If you get a generic reply, paste the file contents directly instead.
+
+**Invoke practices with natural language:**
 - "Spar this approach"
 - "Apply shoshin before we proceed"
 - "Run a checkpoint"
