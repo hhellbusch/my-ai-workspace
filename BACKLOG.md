@@ -88,6 +88,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### Framework: stack-based conversation tracking
+- **Product:** meta
+- **Context:** Users (and the agent) naturally explore topics in a depth-first stack pattern: push a subtopic, explore until satisfied, pop back to the parent. This is implicit in every session but invisible — making it hard to recover after a tangent and almost impossible to capture in a handoff. Encoding this: (1) recognize "push/pop" as navigational language, (2) agent surfaces "that feels resolved — we were on X before, want to return?" when a branch concludes, (3) add an optional `**Open threads:**` field to the checkpoint/whats-next format so stack state survives session boundaries. Stack depth is also a useful signal: if it's getting deep (4-5 levels), something needs to be parked before pushing further. Lightweight — convention + checkpoint field is sufficient before considering a `/stack` command.
+- **Links:** `.cursor/commands/checkpoint.md`, `.cursor/commands/whats-next.md`, `.cursor/rules/session-awareness.md`
+- **Added:** 2026-04-20
+
 ### Framework: /start simplification audit — what can become opt-in?
 - **Product:** meta
 - **Context:** `/start` currently loads ABOUT.md, BACKLOG.md (500+ lines), a session handoff, git log, and BRIEFs and ROADMAPs for every planning project on every session start. That load grows proportionally as the workspace grows. The opt-in principle (encoded in `workspace-ethos.md` 2026-04-20) asks: which of these are genuinely needed on every session, and which are only needed when you're actively working on that context? Planning project BRIEFs and ROADMAPs may only be needed when resuming that project — `/start` could note their existence and load them on request rather than speculatively. A lightweight audit: for each thing `/start` loads, ask "does the user need this on every session?" If no, make it opt-in.
