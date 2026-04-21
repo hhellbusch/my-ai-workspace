@@ -90,9 +90,15 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 
 
-### Essay: "The primary challenge isn't prompting — it's context management"
+### Framework bootstrap: peer comparison follow-up
+- **Product:** research / meta
+- **Context:** In a parallel problem session, Henry loaded the framework into GitHub Copilot by cloning this repo alongside a private project and asking Copilot to read it. Peer used standard Copilot. Copilot compared both solutions; Henry's was preferred on first pass. First cross-practitioner, cross-tool comparative event — logged in `research/framework-efficacy/intervention-log.md`. **Follow-up needed:** (1) record what problem was being solved, (2) confirm exactly which files Copilot loaded, (3) repeat with the same or different peer, using `framework-bootstrap.md` as the explicit single-file load, (4) log the comparison in the counterfactual protocol. The bootstrap doc now exists — this is about repeating and instrumenting the experiment, not about building more infrastructure.
+- **Links:** `research/framework-efficacy/intervention-log.md`, `docs/ai-engineering/framework-bootstrap.md`
+- **Added:** 2026-04-20
+
+### Essay: "Prompting is necessary but not sufficient — tackling state management"
 - **Product:** docs (ai-engineering)
-- **Context:** Thesis identified in 2026-04-20 session: the distinguishing challenge of long-horizon AI-assisted work is state management / context management across sessions, context windows, and domain boundaries — not prompting skill. This is defensible from the existing 30+ case study corpus (cross-session statelessness, compaction, stale handoffs, spar catches) without additional data. Write the document that makes this claim explicitly and points to the evidence already in place. Optional: include the IPv8 session as a cross-domain applicability data point. Companion to `session-framework.md` (which explains the *how*) — this would argue the *why it matters*.
+- **Context:** Thesis refined in 2026-04-20 session: good prompts still matter and produce better outputs within a session. The *additional* unsolved challenge for long-horizon AI-assisted work is state management — keeping work coherent across session boundaries, context window compression, and domain shifts. The framework addresses that gap; it doesn't replace prompting skill. Framing: "prompting gets you good outputs within a session; state management is what makes multi-session work coherent." Defensible from existing 30+ case study corpus without new data. Companion to `session-framework.md` (the *how*) — this argues the *why it matters and what the gap is*. IPv8 session is a useful cross-domain applicability data point.
 - **Links:** `docs/ai-engineering/session-framework.md`, `research/framework-efficacy/`, `docs/case-studies/`
 - **Added:** 2026-04-20
 

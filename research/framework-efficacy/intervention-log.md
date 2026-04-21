@@ -26,7 +26,41 @@ Append-only. New entries go at the top. One entry per notable framework interven
 
 ---
 
+## Entry types
+
+- **intervention** — framework behavior fired within a session and caught something
+- **comparative** — a between-practitioner or between-condition comparison with an independent evaluator
+
+---
+
 ## Log
+
+### 2026-04-20 — comparative — peer parallel problem: framework-loaded Copilot vs. standard Copilot
+
+**Type:** comparative  
+**Setup:** Same problem tackled in parallel by two practitioners. Henry loaded the framework from this repository into GitHub Copilot context by cloning `gemini-workspace` next to the active project on the filesystem and instructing Copilot to read the framework. Peer used standard GitHub Copilot with no framework context.  
+**Evaluator:** GitHub Copilot (Henry's instance) compared both solutions.  
+**Result:** Henry's solution was preferred on first pass.  
+**Problem domain:** *Not yet recorded — fill in after session.*
+
+**What was loaded:** Copilot was instructed to load the framework from the cloned repo. Exact files loaded not yet confirmed — likely a combination of rules, docs, or the repo as a whole. **Key open question for follow-up:** what specifically did Copilot read, and is there a minimum viable load that reproduces the effect?
+
+**Controlled:** Partially. Same problem, same tool (Copilot), different context setups. Not blinded — evaluating Copilot ran in Henry's context with framework awareness.
+
+**What this doesn't yet tell us:**
+- Which part of the framework drove the difference (problem decomposition posture? shoshin? adversarial instinct? richer identity context?)
+- Whether the peer's approach was truly comparable in effort and understanding
+- Reproducibility — one instance
+
+**What makes this notable vs. prior entries:** First cross-practitioner comparison. First evidence the framework is tool-portable (Copilot, not just Cursor). First between-condition result rather than within-session catch.
+
+**Follow-up needed:**
+- Record the problem domain
+- Confirm which files were actually loaded
+- Define the minimum viable bootstrap — can the effect be reproduced with 2–3 files rather than the whole repo?
+- Repeat with the same or different peer, logging what was loaded
+
+---
 
 ### 2026-04-20 — spar — IPv8 draft structural review
 
