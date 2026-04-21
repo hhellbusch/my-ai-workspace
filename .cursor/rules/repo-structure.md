@@ -78,3 +78,29 @@ Path-based `.gitignore` rules break silently on directory moves. After any `git 
 Any directory containing credentials, kubeconfigs, pull secrets, ISOs, or other sensitive/large files should have a local `.gitignore` as the primary protection. The root `.gitignore` is a secondary layer.
 
 See: [`docs/case-studies/directory-move-gitignore-drift.md`](../../docs/case-studies/directory-move-gitignore-drift.md)
+
+### Internal link depth drift
+
+When a directory is moved one level deeper (e.g. `ocp/` → `devops/ocp/`), every relative link inside that subtree that points *upward* (using `../`) becomes off by one level. This is silent — the files commit cleanly, but the links break.
+
+After any directory move, run a link check on the moved subtree before committing:
+
+```bash
+# Replace MOVED_DIR with the destination path, e.g. devops/ocp
+find MOVED_DIR -name "*.md" | while read f; do
+  dir=$(dirname "$f")
+  grep -oP '\]\(\K[^)]+(?=\))' "$f" | grep -v '^https\?://' | grep -v '^http' | while read link; do
+    target="${link%%#*}"
+    [ -z "$target" ] && continue
+    resolved=$(python3 -c "import os,sys; print(os.path.normpath(os.path.join(sys.argv[1],sys.argv[2])))" "$dir" "$target" 2>/dev/null)
+    [ ! -e "$resolved" ] && echo "BROKEN: $f -> $link"
+  done
+done
+```
+
+**Key patterns to fix after a one-level-deeper move:**
+- Links to `AI-DISCLOSURE.md` (lives at repo root) — each moved file needs one extra `../`
+- Sibling-directory cross-links — `../sibling/` becomes `../../sibling/` after adding a level
+- Track-crossing links — verify the hop count still reaches the right directory
+
+The `/audit` Layer 1 catches these retrospectively. Run it after any structural reorganization, or scope the check to the moved subtree immediately post-move.

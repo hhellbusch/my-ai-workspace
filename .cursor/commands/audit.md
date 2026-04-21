@@ -37,10 +37,31 @@ Scan all committed markdown files for internal links. For each link:
 
 Skip external URLs (http/https) — those are not part of this audit.
 
+**Skip these paths entirely — known false-positive sources:**
+- `research/*/sources/` — scraped web content; relative paths (e.g. `/en/products`, `/@user`) are internal site links from the original HTML, not repo paths
+- Links inside fenced code blocks (` ``` `) — example skill structures and documentation snippets contain links to hypothetical files that are not meant to resolve
+
 Use a correct extraction pattern that captures only the path inside `()`, not the surrounding link text:
 ```bash
 # Extract link paths only (not link text) — uses PCRE lookbehind
-grep -oP '\]\(\K[^)]+(?=\))' "$file" | grep -v '^https\?://'
+# Skip research sources dirs and external URLs
+git ls-files '*.md' \
+  | grep -v "^research/.*/sources/" \
+  | grep -v "^\.planning/" \
+  | while IFS= read -r file; do
+    # Strip fenced code blocks before extracting links
+    perl -0777 -pe 's/```.*?```//gs' "$file" \
+      | grep -oP '\]\(\K[^)]+(?=\))' \
+      | grep -v '^https\?://' \
+      | grep -v '^http' \
+      | while IFS= read -r link; do
+          dir=$(dirname "$file")
+          target="${link%%#*}"
+          [ -z "$target" ] && continue
+          resolved=$(python3 -c "import os,sys; print(os.path.normpath(os.path.join(sys.argv[1], sys.argv[2])))" "$dir" "$target" 2>/dev/null)
+          [ ! -e "$resolved" ] && echo "BROKEN: $file -> $link"
+        done
+  done
 ```
 Resolve each extracted path relative to the containing file's directory before checking existence.
 

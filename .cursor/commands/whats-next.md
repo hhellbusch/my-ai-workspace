@@ -80,7 +80,7 @@ Adapt the level of detail to the task type (coding, research, analysis, writing,
 
 Write to `.planning/whats-next.md` using the format below.
 
-### Step 1.4: Cross-link check for new docs
+### Step 1.4: Cross-link check and registry sync for new docs
 
 Check whether any new `.md` files were committed this session:
 
@@ -88,7 +88,30 @@ Check whether any new `.md` files were committed this session:
 git diff --name-only HEAD~5..HEAD -- '*.md' | grep -E "^docs/|^research/" | sort -u
 ```
 
-**If new docs exist in `docs/` or `research/`:** run `/cross-link --session` to find missing inbound links from related docs. Fix any gaps before closing the session — this is the moment the new doc is freshest in context.
+**If new docs exist in `docs/` or `research/`:**
+
+1. **Registry sync** — check that each new file appears in its master README:
+
+   ```bash
+   # New docs files missing from docs/README.md
+   git diff --name-only HEAD~5..HEAD -- 'docs/**/*.md' \
+     | grep -v "README.md" \
+     | while read f; do
+         name=$(basename "$f" .md)
+         grep -q "$name" docs/README.md || echo "NOT IN docs/README.md: $f"
+       done
+
+   # New research dirs missing from research/README.md
+   git diff --name-only HEAD~5..HEAD -- 'research/**/*.md' \
+     | grep -oP 'research/[^/]+' | sort -u \
+     | while read d; do
+         grep -q "$(basename $d)" research/README.md || echo "NOT IN research/README.md: $d"
+       done
+   ```
+
+   Fix any missing entries before closing the session.
+
+2. **Cross-link check** — run `/cross-link --session` to find missing inbound links from related docs. Fix any gaps.
 
 **If no new docs:** skip this step entirely.
 
