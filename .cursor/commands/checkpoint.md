@@ -68,6 +68,20 @@ Overwrite `.planning/whats-next.md` with the following compact format:
 
 Keep it short. Five minutes to write, thirty seconds to read. Do not add `<project_backlog>`, `<work_completed>`, `<critical_context>` sections — those belong in `/whats-next`. This is a save point, not a summary.
 
+### Step 2.5: Intervention log (lightweight)
+
+If a notable framework intervention fired since the last checkpoint — a spar that caught a structural issue, a stale-context detection, a recovered thread — append a one-line entry to `research/framework-efficacy/intervention-log.md`:
+
+```
+[date] [intervention-type] — [one sentence: what it caught]
+```
+
+Full entries with counterfactual and severity belong in `/whats-next`. This is just a timestamp so the event isn't lost if the session ends before a full handoff.
+
+Skip if nothing notable fired.
+
+---
+
 ### Step 3: Confirm
 
 After writing, report:

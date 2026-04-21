@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-20 (end of day — Field Notes brand, ABOUT.md, corpus-to-identity case study, collaboration style, Thread 24 shodan, all pushed)
+> Last updated: 2026-04-20 (framework efficacy measurement system built; IPv8 analysis session)
 
 ## In Progress
 
@@ -89,6 +89,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ## Ideas
 
 
+
+### Essay: "The primary challenge isn't prompting — it's context management"
+- **Product:** docs (ai-engineering)
+- **Context:** Thesis identified in 2026-04-20 session: the distinguishing challenge of long-horizon AI-assisted work is state management / context management across sessions, context windows, and domain boundaries — not prompting skill. This is defensible from the existing 30+ case study corpus (cross-session statelessness, compaction, stale handoffs, spar catches) without additional data. Write the document that makes this claim explicitly and points to the evidence already in place. Optional: include the IPv8 session as a cross-domain applicability data point. Companion to `session-framework.md` (which explains the *how*) — this would argue the *why it matters*.
+- **Links:** `docs/ai-engineering/session-framework.md`, `research/framework-efficacy/`, `docs/case-studies/`
+- **Added:** 2026-04-20
 
 ### Essay / guide: crafting a public identity for an AI workspace — the ABOUT.md pattern
 - **Product:** docs (meta / AI-engineering)
@@ -524,4 +530,9 @@ Rolling cap: at most **15** items stay here (newest first). Older completions li
 - **Links:** `docs/case-studies/stale-context-in-long-sessions.md`, `.cursor/rules/shoshin.md`, `BACKLOG.md`
 - **Completed:** 2026-04-17
 
+### Framework efficacy measurement system
+- **Product:** meta / research
+- **Context:** Built `research/framework-efficacy/` research track: `intervention-log.md` (append-only log of intervention events, seeded with IPv8 session), `counterfactual-protocol.md` (5-dimension rubric for `/spar --measure` controlled comparison), `README.md` (what the track can and can't claim). Hooked into `/whats-next` (Step 1.5), `/checkpoint` (Step 2.5), and `/spar` (`--measure` flag for naive+structured comparison). Seeded with first entry from the IPv8 spar session.
+- **Links:** `research/framework-efficacy/`, `.cursor/commands/whats-next.md`, `.cursor/commands/checkpoint.md`, `.cursor/commands/spar.md`
+- **Completed:** 2026-04-20
 

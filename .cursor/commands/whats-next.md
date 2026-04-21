@@ -80,7 +80,26 @@ Adapt the level of detail to the task type (coding, research, analysis, writing,
 
 Write to `.planning/whats-next.md` using the format below.
 
-### Step 1.5: Case study reflection
+### Step 1.5: Framework intervention log
+
+Before writing the handoff, briefly scan: did any framework intervention produce a notable outcome this session?
+
+- Did `/spar` catch something non-obvious — a structural contradiction, a load-bearing claim exposed, an assumption dressed as evidence?
+- Did the SHA guardrail detect genuine staleness in a briefing?
+- Did shoshin surface an inherited framing assumption that needed correction before work started?
+- Did compaction surface and trigger a re-read that changed a decision?
+- Did a thread get explicitly recovered after a tangent?
+- Did a checkpoint enable recovery after a crash or context loss?
+
+**If yes to any:** Append an entry to `research/framework-efficacy/intervention-log.md` using the format defined there. Be specific about what was caught and what the counterfactual would have been. Don't summarize — name the specific finding.
+
+**If a counterfactual comparison was run** (naive pass + structured pass): also add a row to the comparison table in `research/framework-efficacy/counterfactual-protocol.md`.
+
+**If nothing notable fired:** skip entirely. Don't log null events — the absence of entries should mean nothing notable, not that logging was skipped.
+
+---
+
+### Step 1.6: Case study reflection
 
 Before writing the handoff, briefly review the session's work and ask:
 
@@ -92,7 +111,7 @@ If yes to any, include a **Case Study Opportunities** section in the handoff doc
 
 If nothing stands out, skip this section entirely. Not every session produces essay-worthy material.
 
-### Step 1.75: Assumptions check (shoshin)
+### Step 1.75: Shoshin — Assumptions check
 
 Before writing the handoff, identify assumptions this session is carrying that a fresh session should question rather than inherit:
 

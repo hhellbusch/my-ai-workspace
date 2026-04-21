@@ -30,6 +30,22 @@ This is the sparring partner, not the sycophant.
 
 <process>
 
+### Step 0: Check for measurement mode
+
+Parse `$ARGUMENTS` for the `--measure` flag.
+
+**If `--measure` is present:** Run the counterfactual protocol before Steps 1–5:
+
+1. Identify the target (file, topic, or conversation context — same logic as Step 1 below)
+2. **Naive pass first:** Ask yourself: "Without any structured methodology, what are the main weaknesses of this target?" Produce 3–5 plain weakness observations. Do not use the argument structure, types, or self-audit from this command. Label this output clearly: `## Naive Pass`.
+3. **Then run Steps 1–5 normally.** Label that output: `## Structured Pass`.
+4. **Score both on the rubric** from `research/framework-efficacy/counterfactual-protocol.md` and append a comparison summary labeled `## Comparison`.
+5. **Log the result:** Add a row to the comparison table in `research/framework-efficacy/counterfactual-protocol.md` and append a full entry to `research/framework-efficacy/intervention-log.md`.
+
+**If `--measure` is not present:** Proceed directly to Step 1.
+
+---
+
 ### Step 1: Identify the target
 
 Parse `$ARGUMENTS` to determine what to spar against:
