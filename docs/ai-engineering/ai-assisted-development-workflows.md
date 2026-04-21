@@ -364,6 +364,8 @@ The Day 2 concerns in that article — rate limiting, auth governance, observabi
 | Cursor commands | `.cursor/commands/` |
 | Cursor skills | `.cursor/skills/` |
 | The Meta-Development Loop — building tools that build your workflow | [docs/ai-engineering/the-meta-development-loop.md](the-meta-development-loop.md) |
+| Zanshin — the session framework behind the multi-session patterns in this guide | [docs/ai-engineering/session-framework.md](session-framework.md) |
+| Zanshin bootstrap — load the framework into Copilot, Claude Code, or any AI tool | [docs/ai-engineering/framework-bootstrap.md](framework-bootstrap.md) |
 | From Conversation to Essay in One Session — case study | [docs/case-studies/conversation-to-essay.md](../case-studies/conversation-to-essay.md) |
 | Adversarial Review as a Meta-Development Pattern — case study | [docs/case-studies/adversarial-review-meta-development.md](../case-studies/adversarial-review-meta-development.md) |
 | Debugging Your AI Assistant's Judgment — case study | [docs/case-studies/debugging-ai-judgment.md](../case-studies/debugging-ai-judgment.md) |

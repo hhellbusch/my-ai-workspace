@@ -142,6 +142,7 @@ Use this as a starting point, not a rigid decision tree:
 
 ## Related Reading
 
+- [Zanshin — Patterns, Behaviors, and Why](session-framework.md) — the broader Zanshin framework these patterns are part of; how session orientation, handoffs, adversarial review, and the patterns here fit together
 - [Sparring and Shoshin](sparring-and-shoshin.md) — the two structural practices for resisting AI's characteristic failure modes; relevant to both planning mode (shoshin at session start) and pipeline design (sparring as a stage)
 - [The Meta-Development Loop](the-meta-development-loop.md) — the broader pattern of building tools that improve AI workflows; the session-brief and pipeline are both instances
 - [When a Spar Argument Outgrows Its Essay](../case-studies/spar-to-essay-pipeline.md) — how adversarial review generates new work rather than just improving existing work; relevant to the spar-before-committing example above

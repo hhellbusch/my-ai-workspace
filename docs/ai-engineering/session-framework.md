@@ -133,6 +133,7 @@ The ethos behind the whole: **use AI tools heavily on real problems, with human-
 
 ## Related Reading
 
+- [Zanshin — Portable Session Context](framework-bootstrap.md) — single-file entry point for loading Zanshin into any AI tool (Copilot, Claude Code, chat-based AI); start here to adopt the framework outside this workspace
 - [Sparring and Shoshin](sparring-and-shoshin.md) — the two structural practices for adversarial pressure and framing verification, in depth
 - [Interaction Patterns for AI Sessions](interaction-patterns.md) — the meta-prompt pipeline and session-start briefing as structured patterns; when each fits
 - [The Meta-Development Loop](the-meta-development-loop.md) — the engineering pattern behind building tools that improve AI workflows; the framework as a case study

@@ -110,6 +110,8 @@ If you're new to these ideas and want to go further:
 | When the spar argument becomes the new work | [When a Spar Argument Outgrows Its Essay](../case-studies/spar-to-essay-pipeline.md) |
 | How the sparring tool itself can distort the output | [When the Sparring Partner Shapes the Fighter](../case-studies/spar-distortion.md) |
 | The meta-development loop these practices are embedded in | [The Meta-Development Loop](the-meta-development-loop.md) |
+| The broader Zanshin framework these practices are part of | [Zanshin — Patterns, Behaviors, and Why](session-framework.md) |
+| Load the full Zanshin framework into your own AI tools | [Zanshin — Portable Session Context](framework-bootstrap.md) |
 
 ---
 
