@@ -36,6 +36,9 @@ Start with [The Dojo After the Automation](philosophy/the-dojo-after-the-automat
 **Came here via sparring, adversarial review, or the shoshin idea:**
 Start with [Sparring and Shoshin — Two Practices for AI-Assisted Work](ai-engineering/sparring-and-shoshin.md) — the practical introduction: what these two practices are, how to run them without any tooling, and where they fit in a workflow. Then [Adversarial Review as a Meta-Development Pattern](case-studies/adversarial-review-meta-development.md) for how the `/spar` practice was built and applied — including the self-referential complication that came out of it.
 
+**Want to understand how this framework manages multi-session AI work:**
+Start with [The Session Framework — Patterns, Behaviors, and Why](ai-engineering/session-framework.md) — what each behavior defends against and why, explained for an external reader. Then [Interaction Patterns for AI Sessions](ai-engineering/interaction-patterns.md) for how to structure the entry point of a session (the pipeline vs. the briefing vs. just working).
+
 **Want to understand how a workspace like this gets built:**
 Start with [Building a Personal Knowledge Management System with AI](case-studies/building-knowledge-management-with-ai.md). One extended session produced six interlocking tools. The meta-development loop made concrete.
 
@@ -62,7 +65,9 @@ Start with [Building a Personal Knowledge Management System with AI](case-studie
 - `essay` [The Case for Local: Disk Management as a Privacy-First AI Task](ai-engineering/local-llm-sysadmin.md) — A case study of using an AI assistant to diagnose and plan disk space cleanup. Covers why filesystem data is private by nature, the iterative analysis loop, and what a recurring local disk agent would look like. The session was conducted with a cloud model — which sharpens the argument rather than softening it.
 
 **Companion guides:**
+- `guide` [The Session Framework — Patterns, Behaviors, and Why](ai-engineering/session-framework.md) — Human-facing map of the full collaboration framework: what each behavior defends against (statelessness, context compaction, frictionlessness), how they connect, and the ethos behind them. Start here to understand the framework as a whole.
 - `guide` [Sparring and Shoshin — Two Practices for AI-Assisted Work](ai-engineering/sparring-and-shoshin.md) — Introduction to adversarial review (sparring) and beginner's mind (shoshin) as complementary structural practices. Covers what they are, how to run them without any tooling, and where they fit in a workflow. Self-contained entry point for peers new to these ideas.
+- `guide` [Interaction Patterns for AI Sessions](ai-engineering/interaction-patterns.md) — Two structured patterns for AI-assisted work (the meta-prompt pipeline and the session-start briefing), the default unstructured mode, and how to choose. Covers the briefing guardrail (scope vs. state, SHA anchoring), the privacy-filtered handoff, and when each pattern fits.
 
 ---
 
