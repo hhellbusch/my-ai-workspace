@@ -92,6 +92,14 @@ Session-end bookkeeping is not enough. Crashes, context resets, and interruption
 **Open threads:** [see stack tracking below — or "none"]
 ```
 
+**Quick capture** (time-short, no template): When there's no time for the full format, append two or three lines — no structure required:
+
+```
+> YYYY-MM-DD HH:MM — [what's happening / what's next]
+```
+
+Quick captures append to the file rather than replacing it. A future session can read the trail and reconstruct state well enough.
+
 **Session handoff** (end-of-session, fuller): Same file, same location, more detail — add remaining gaps, framing decisions made, and context a fresh session would need to pick up without asking questions already answered.
 
 **Recovery:** If a session ends without a checkpoint, the git log is the fallback. It shows what landed, not what was in flight — but clean working tree + recent commits = recoverable state.
@@ -137,5 +145,19 @@ AI output that sounds confident may still be wrong. Fluent prose covers both ass
 - Checkpoints and handoffs → `.planning/whats-next.md` (create `.planning/` if needed)
 - If no `BACKLOG.md` exists: create one with `## In Progress`, `## Up Next`, `## Ideas` sections
 - Commits go to the local repository
+
+**Multi-context collision** (multiple sessions writing to the same file): Don't replace — append. Include a datestamp so contexts are distinguishable:
+
+```
+> YYYY-MM-DD HH:MM [context label, e.g. "window 2"] — [state capture]
+```
+
+The file becomes a timestamped log when multiple contexts are active. A fresh session reads the most recent entry; stale entries above it are context archaeology, not active state.
+
+**Close-out mode** (loaded at session end, not session start): When this document is loaded to close out a session, skip spar, shoshin, and stack tracking — the session is done. Activate only progressive bookkeeping and checkpoint/handoff:
+
+> "Write a handoff for this session." — produces a checkpoint or quick capture, nothing else.
+
+Trigger: "close-out" / "write a handoff" / "session is ending."
 
 **On drift:** This document is a snapshot of a working style that evolves. If something feels off or outdated, re-copy from the source workspace. The version date above indicates how current this snapshot is.

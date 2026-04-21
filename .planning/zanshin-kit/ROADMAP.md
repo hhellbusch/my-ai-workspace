@@ -2,9 +2,9 @@
 
 > Last updated: 2026-04-20
 
-## Phase 1 — Write and test (current)
+## Phase 1 — Write and test
 
-**Status:** In progress
+**Status:** Complete — 2026-04-20
 
 **Goal:** Produce `zanshin-kit/WORKING-STYLE.md` and verify it actually activates the working disciplines in a Copilot Chat session.
 
@@ -12,29 +12,31 @@
 - `zanshin-kit/WORKING-STYLE.md` — the kit
 - `zanshin-kit/README.md` — setup instructions
 
-**Test protocol (do this before declaring Phase 1 done):**
-1. Open a new Copilot Chat session in a project other than Field Notes
-2. Reference: `#file:WORKING-STYLE.md`
-3. Ask for a spar on something real
-4. Evaluate: does the output include argument types? self-audit? attack the strongest claim?
-5. Run a checkpoint: does it write `.planning/whats-next.md` locally?
-6. Note what broke or felt off → feed back into the document
+**Findings from real use (Copilot Chat):**
 
-**Phase 1 is done when:** The spar output is indistinguishable (in discipline, not prose style) from a Field Notes `/spar` run, and checkpoints land locally.
+Spar mechanism loaded and produced typed, self-audited output — vocabulary and discipline transferred. Three structural gaps surfaced under real use:
+
+1. **Handoff format over-engineered for quick capture.** Six required fields optimizes for rich recovery; doesn't serve "I have 30 seconds to close." Needs a lightweight quick-capture variant.
+
+2. **Multi-context collision unaddressed.** One session, one file is the implicit assumption. Multiple windows writing to `.planning/whats-next.md` produced two rejected edits before "append with datestamp" emerged as the working solution. Needs explicit guidance.
+
+3. **No close-out invocation path.** Document is written for load-at-start. When loaded at session end, spar/shoshin/stack are inapplicable. Needs a trigger that skips practices and goes straight to state capture.
+
+**Meta-observation:** Copilot applied the working style's own discipline to produce the Phase 1 findings — honest, typed, no padding. That's a positive Phase 1 result.
 
 ---
 
-## Phase 2 — Iterate (after first real use)
+## Phase 2 — Iterate (current)
 
-**Status:** Not started
+**Status:** In progress
 
-**Goal:** Address what Phase 1 testing reveals. Expected candidates:
-- Document too long → trim without losing mechanism
-- Copilot drifts mid-session → add re-activation instructions or restructure for prominence
-- Missing practice → add it
-- Isolation contract violated → strengthen the instructions
+**Goal:** Address Phase 1 gaps. Three defined improvements:
 
-**No predetermined deliverables.** Phase 2 is defined by what Phase 1 breaks.
+1. **Quick capture variant** — two or three lines, no template, appends to `whats-next.md`
+2. **Multi-context guidance** — append-with-datestamp as documented convention, not emergent workaround
+3. **Close-out invocation** — trigger that activates bookkeeping only, skips practices
+
+**Deliverable:** Updated `zanshin-kit/WORKING-STYLE.md` incorporating all three. Then re-test in a real session and note whether the gaps are closed.
 
 ---
 
