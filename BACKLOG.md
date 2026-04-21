@@ -333,7 +333,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ### Essay: The Full Cup — organizational bandwidth as the barrier to learning (DRAFTED — needs author review)
 - **Product:** docs (bridge: philosophy ↔ AI-engineering)
-- **Context:** Thread 19. Drafted as `docs/philosophy/the-full-cup.md`. Needs author to add: specific stories, which Goal/Phoenix Project strategies map most directly, a real "right words" instance (bottom-right quadrant), and whether the "bow at the door" section needs a real professional example. Voice-approved validation required for any experiential content added.
+- **Context:** Thread 19. Drafted as `docs/philosophy/the-full-cup.md`. Needs author to add: specific stories, which Goal/Phoenix Project strategies map most directly, a real "right words" instance (bottom-right quadrant), and whether the "bow at the door" section needs a real professional example. Voice-approved validation required for any experiential content added. A professional instance of the cups-too-full pattern in platform migration work is in development — will be added at pattern level only (not instance-specific) when ready.
 - **Links:** `docs/philosophy/the-full-cup.md`, `.planning/zen-karate/threads.md` (thread 19)
 - **Added:** 2026-04-18
 
