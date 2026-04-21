@@ -33,6 +33,33 @@ cp /path/to/zanshin-kit/WORKING-STYLE.md ./WORKING-STYLE.md
 - "Run a checkpoint"
 - "We're getting deep — what's on the stack?"
 
+## Team repos
+
+If your project already has a `docs/planning/` or `docs/adr/` convention, put `WORKING-STYLE.md` there rather than the root:
+
+```bash
+cp /path/to/zanshin-kit/WORKING-STYLE.md ./docs/planning/WORKING-STYLE.md
+```
+
+Update the load reference accordingly:
+
+| Tool | How to load |
+|------|-------------|
+| Copilot Chat (VS Code) | `#file:docs/planning/WORKING-STYLE.md` |
+| Any chat AI | Paste the document, then state your task |
+| Cursor | `@docs/planning/WORKING-STYLE.md` or add as a rule |
+
+**What belongs in the shared repo vs. staying local:**
+
+| Artifact | Commit to team repo? |
+|----------|----------------------|
+| `WORKING-STYLE.md` | Yes — shared convention, everyone loads it |
+| `docs/planning/BRIEF.md` | Yes — project brief, shared context |
+| Session handoffs (`whats-next.md`) | No — personal session state, gitignore it |
+| Checkpoints | No — ephemeral, local only |
+
+Each team member manages their own session handoffs locally. The working style and project brief are shared; the session state is not.
+
 ## Isolation contract
 
 All artifacts stay in the project where you're working. The kit contains no references to external workspaces. Checkpoints write to `.planning/whats-next.md` locally. Nothing writes back to the source workspace.
