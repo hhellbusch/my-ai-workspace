@@ -33,6 +33,8 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 - **[Sparring and Shoshin — Two Practices for AI-Assisted Work](sparring-and-shoshin.md)** — Introduction to the two structural practices for resisting AI's characteristic failure modes: sparring (adversarial review) challenges outputs after drafting; shoshin (beginner's mind) challenges starting frames before work begins. Self-contained entry point; links to the deeper case studies and philosophy essays for each.
 
+- **[Interaction Patterns for AI Sessions](interaction-patterns.md)** — Names and compares three patterns for structuring multi-session AI work: the meta-prompt pipeline (staged, artifact-producing, for complex analytical work), planning mode (interactive, synchronous, for open-ended design), and the session-start briefing (curated entry point for a fresh session on defined scope). Covers the `/start` bypass tradeoff, the privacy-filtered handoff as a distinct use case, and practical guidance for choosing between patterns. Includes a development note on adversarial review of framework artifacts before use.
+
 ## Primary Narratives (Public)
 
 - **Dan Walsh — *Lessons learned with a career in software?*** (DevConf.US 2025) — [YouTube](https://www.youtube.com/watch?v=YKDi-ePTmRA). Full transcript and theme index: [`research/ai-engineering-public/sources/youtube-YKDi-ePTmRA-transcript.md`](../../research/ai-engineering-public/sources/youtube-YKDi-ePTmRA-transcript.md), [`library/dan-walsh-devconf-2025-career-lessons.md`](../../library/dan-walsh-devconf-2025-career-lessons.md). Useful as a **public** anchor for security-through-containers history, mentorship/succession, and late-career AI tooling (e.g. RamaLama) without relying on private correspondence.
