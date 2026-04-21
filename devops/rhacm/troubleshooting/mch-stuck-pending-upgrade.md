@@ -417,7 +417,7 @@ No errors. No deployment actions. The operator is healthy; the `phase: Pending` 
 
 **The hub is functionally running in this state.** The phase is cosmetic when `Complete: True` and all components are `Available`.
 
-### 7b. Fix — force a deploy cycle
+### 7b. Fix — force a deploy cycle via annotation
 
 The operator only updates the `Progressing` condition when it actively deploys something. To clear the stale condition, give it something to act on:
 
@@ -428,23 +428,25 @@ oc annotate mch multiclusterhub \
   troubleshooting/force-reconcile="$(date +%s)"
 ```
 
-Watch the operator logs for a deploy action (cycle will no longer say just "No updates to defaults detected"):
+Watch the operator logs for a deploy action. A successful trigger changes the log pattern — `No updates to defaults detected` disappears and the operator evaluates its component overrides instead:
 
 ```bash
 oc logs -n open-cluster-management $LEADER -f \
   | grep -v "Proxy configuration\|trust bundle\|KlusterletAddon"
 ```
 
-Watch the phase:
+Watch the phase and condition timestamp:
 
 ```bash
 watch -n 10 "oc get mch multiclusterhub -n open-cluster-management \
-  -o jsonpath='phase: {.status.phase}  progressing: {range .status.conditions[?(@.type==\"Progressing\")]}{.status} — {.reason}{end}{\"\\n\"}'"
+  -o jsonpath='phase: {.status.phase}  progressing: {range .status.conditions[?(@.type==\"Progressing\")]}{.status} — {.reason} — {.lastTransitionTime}{end}{\"\\n\"}'"
 ```
 
-### 7c. Operator restart (alternative)
+**Note:** The annotation may change the reconcile code path (eliminating the idle `No updates to defaults detected` pattern) without updating the `Progressing` condition timestamp. If the condition timestamp is still unchanged after one full reconcile cycle (~5 min), the condition is frozen — proceed to 7c and 7d.
 
-If the annotation approach does not trigger a deploy cycle, restart the operator to force re-evaluation:
+### 7c. Operator restart
+
+If the annotation approach does not trigger a condition update, restart the operator:
 
 ```bash
 oc rollout restart deploy/multiclusterhub-operator \
@@ -454,14 +456,65 @@ oc rollout status deploy/multiclusterhub-operator \
   -n open-cluster-management
 ```
 
-Watch MCH status after restart:
+After the rollout completes, get the new leader pod (it will have changed) and check logs and phase as in 7b. Wait one full reconcile cycle before concluding the restart had no effect.
+
+### 7d. Delete the conflicted ClusterRole
+
+If annotation and restart do not clear the condition, the specific ClusterRole named in the error can be deleted. The operator or MCE will recreate it on the next reconcile:
 
 ```bash
-watch -n 15 "oc get mch -n open-cluster-management && echo && \
-  oc get mch multiclusterhub -n open-cluster-management \
-  -o jsonpath='{range .status.components[*]}{.name}: {.status}{\"\\n\"}{end}' \
-  | grep -v Available"
+oc delete clusterrole open-cluster-management:cluster-manager-admin
 ```
+
+Verify it is recreated (typically within seconds):
+
+```bash
+oc get clusterrole open-cluster-management:cluster-manager-admin \
+  -o jsonpath='created: {.metadata.creationTimestamp}{"\n"}'
+```
+
+Then check whether the phase clears on the next reconcile cycle.
+
+**Important:** This is the targeted fix from [Red Hat KB 7116241](https://access.redhat.com/solutions/7116241). The KB article also specifies deleting and recreating the MCH — however, that step carries significant data risk (managed cluster registrations, policies, application subscriptions). The ClusterRole-only deletion is a lower-risk first attempt. If the ClusterRole deletion alone does not resolve the condition, see Step 7e before proceeding to any MCH deletion.
+
+### 7e. Frozen condition — escalation and acceptance
+
+If the `Progressing` condition `lastTransitionTime` remains unchanged after annotation, operator restart, and ClusterRole deletion, the condition is **frozen** — the operator's reconcile loop is not reaching the code path that writes it.
+
+**Confirm the condition is truly frozen:**
+
+```bash
+oc get mch multiclusterhub -n open-cluster-management \
+  -o jsonpath='{range .status.conditions[?(@.type=="Progressing")]}{.type}: {.status}  reason: {.reason}  updated: {.lastTransitionTime}{end}{"\n"}'
+```
+
+If the timestamp predates the current upgrade and has not moved through any of the above steps, two paths remain:
+
+**Path A — Open a Red Hat support case**
+
+Reference [KB 7116241](https://access.redhat.com/solutions/7116241). The KB resolution is MCH delete/recreate; if that is not acceptable for your environment, state that explicitly and ask for an alternative remediation for a production hub where data loss is not acceptable.
+
+**Path B — Accept the cosmetic phase**
+
+If the hub is functionally running, `phase: Pending` can be accepted as a display artifact. Confirm the hub is genuinely healthy before doing so:
+
+```bash
+# Complete=True means the operator considers the hub ready
+oc get mch multiclusterhub -n open-cluster-management \
+  -o jsonpath='{range .status.conditions[?(@.type=="Complete")]}{.type}: {.status} — {.message}{end}{"\n"}'
+
+# currentVersion = desiredVersion confirms upgrade completed
+oc get mch multiclusterhub -n open-cluster-management \
+  -o jsonpath='current: {.status.currentVersion}  desired: {.status.desiredVersion}{"\n"}'
+
+# All components Available
+oc get mch multiclusterhub -n open-cluster-management \
+  -o jsonpath='{range .status.components[*]}{.name}: {.status}{"\n"}{end}' \
+  | grep -v "Available" | wc -l
+# Should return 0
+```
+
+If `Complete: True`, versions match, zero non-Available components, and the hub console and managed cluster connectivity are confirmed working — the `Pending` phase is cosmetic and the hub is running correctly.
 
 ---
 
@@ -507,7 +560,11 @@ MCH stuck in Updating/Pending
 ├── Check: Complete=True, all components Available, versions match?
 │   └── Yes → Check Progressing condition lastTransitionTime (Step 7a)
 │             Is it older than the current upgrade?
-│             └── Yes → Stale condition. Force deploy cycle (Step 7b)
+│             └── Yes → Try in order:
+│                       1. Annotation to force deploy cycle (Step 7b)
+│                       2. Operator restart (Step 7c)
+│                       3. Delete conflicted ClusterRole (Step 7d)
+│                       4. Condition still frozen → support case or accept cosmetic phase (Step 7e)
 │
 ├── Check: Is CSV installed?
 │   ├── No / Installing → Check OLM InstallPlan approval (Step 2a)
@@ -559,6 +616,7 @@ oc get pods -n open-cluster-management,open-cluster-management-hub,multicluster-
 - [ACM 2.15 — Upgrading in disconnected environments](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.15/html/install/installing#upgrading-disconnected)
 - [ACM 2.15 — MCH advanced configuration](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.15/html/install/installing#advanced-config-hub)
 - [ACM Support Matrix](https://access.redhat.com/articles/7133095)
+- [Red Hat KB 7116241 — MultiClusterHub stuck in installing state (cluster-manager-admin ClusterRole conflict)](https://access.redhat.com/solutions/7116241)
 
 ---
 
