@@ -134,6 +134,23 @@ Register the doc in `docs/ai-engineering/README.md` when done.
 
 ---
 
+## Lifecycle
+
+**First action:** Move this file to archive before starting work:
+```bash
+mkdir -p .planning/archive
+mv .planning/session-brief.md .planning/archive/session-brief-2026-04-20.md
+```
+This signals the brief has been consumed. Work proceeds from the archived copy.
+
+**Last action:** Once all three deliverables are complete and verified, run
+`/whats-next`, then delete the archived brief:
+```bash
+rm .planning/archive/session-brief-2026-04-20.md
+```
+
+---
+
 ## Suggested starting point
 
 Read `ABOUT.md`, confirm the two BACKLOG items exist in the Ideas section,
