@@ -146,9 +146,11 @@ AI output that sounds confident may still be wrong. Fluent prose covers both ass
 - If no `BACKLOG.md` exists: create one with `## In Progress`, `## Up Next`, `## Ideas` sections
 - Commits go to the local repository
 
-**Close-out mode** (loaded at session end, not session start): When this document is loaded to close out a session, skip spar, shoshin, and stack tracking — the session is done. Activate only progressive bookkeeping and checkpoint/handoff:
+**Close-out mode** (loaded at session end, not session start): When this document is loaded to close out a session, skip spar — there's no approach to challenge. But run shoshin before writing the handoff:
 
-> "Write a handoff for this session." — produces a checkpoint or quick capture, nothing else.
+> "What's in this context window that won't survive the reboot? What have I assumed is captured that isn't? What would a fresh session need to ask for again?"
+
+Then check the stack for open threads — those belong in the handoff, not lost. Then write the checkpoint.
 
 Trigger: "close-out" / "write a handoff" / "session is ending."
 
