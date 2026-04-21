@@ -1,7 +1,7 @@
 ---
 review:
-  status: draft
-  notes: "First draft — not yet voice-approved. Created from session work 2026-04-20."
+  status: unreviewed
+  notes: "Created from session work 2026-04-20. Not yet voice-approved."
 ---
 
 # Zanshin — Portable Session Context

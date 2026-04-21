@@ -13,4 +13,4 @@ When adding a new note:
 2. Link it from this README
 3. If it grows into a full troubleshooting guide, move it to `ocp/troubleshooting/` with the standard symptom → cause → fix structure
 
-*AI-assisted content. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for review status details.*
+*AI-assisted content. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for review status details.*

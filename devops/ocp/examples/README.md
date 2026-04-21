@@ -81,9 +81,9 @@ See: [ovn-kubernetes-install-config/](ovn-kubernetes-install-config/)
 
 ### Troubleshooting Guides
 
-- [Debug Toolbox Container](../ocp/troubleshooting/debug-toolbox-container/README.md) - Use with NADs for VLAN testing
-- [AAP SSH MTU Issues](../ocp/troubleshooting/aap-ssh-mtu-issues/README.md) - MTU troubleshooting
-- [CoreOS Networking](../ocp/troubleshooting/coreos-networking-issues/README.md) - Node-level network issues
+- [Debug Toolbox Container](../troubleshooting/debug-toolbox-container/README.md) - Use with NADs for VLAN testing
+- [AAP SSH MTU Issues](../troubleshooting/aap-ssh-mtu-issues/README.md) - MTU troubleshooting
+- [CoreOS Networking](../troubleshooting/coreos-networking-issues/README.md) - Node-level network issues
 
 ### Other Examples
 
@@ -104,4 +104,4 @@ When adding new examples:
 
 ---
 
-*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

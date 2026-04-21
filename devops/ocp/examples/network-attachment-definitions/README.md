@@ -724,9 +724,9 @@ See [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) for copy-paste ready commands.
 
 ## Related Documentation
 
-- [Debug Toolbox Container](../../ocp/troubleshooting/debug-toolbox-container/README.md) - Using toolbox with NADs
-- [AAP SSH MTU Issues](../../ocp/troubleshooting/aap-ssh-mtu-issues/README.md) - MTU testing relevant for VLAN networks
-- [CoreOS Networking](../../ocp/troubleshooting/coreos-networking-issues/README.md) - Node-level network configuration
+- [Debug Toolbox Container](../../troubleshooting/debug-toolbox-container/README.md) - Using toolbox with NADs
+- [AAP SSH MTU Issues](../../troubleshooting/aap-ssh-mtu-issues/README.md) - MTU testing relevant for VLAN networks
+- [CoreOS Networking](../../troubleshooting/coreos-networking-issues/README.md) - Node-level network configuration
 
 ## Additional Resources
 
@@ -736,4 +736,4 @@ See [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) for copy-paste ready commands.
 
 ---
 
-*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

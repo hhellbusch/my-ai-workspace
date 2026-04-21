@@ -254,8 +254,8 @@ If the operator "is not picking up the new cert":
 
 ## See Also
 
-- [Control plane kubeconfigs](control-plane-kubeconfigs/README.md) – Using localhost kubeconfig on masters
-- [API slowness / certificate issues](api-slowness-web-console/README.md) – Certificate verification and force restart
-- [CSR management](csr-management/README.md) – Node and client certificate approval
+- [Control plane kubeconfigs](../control-plane-kubeconfigs/README.md) – Using localhost kubeconfig on masters
+- [API slowness / certificate issues](../api-slowness-web-console/README.md) – Certificate verification and force restart
+- [CSR management](../csr-management/README.md) – Node and client certificate approval
 - Red Hat: [Issue replacing Master API certificates in OpenShift 4](https://access.redhat.com/solutions/5991611) (subscription required)
 - OpenShift docs: [Configuring certificates](https://docs.openshift.com/container-platform/latest/security/certificates/api-server.html)

@@ -276,6 +276,6 @@ This is a significant enhancement. Please report:
 
 ## Related
 
-- [Multiple Sources Pattern Documentation](docs/patterns/MULTIPLE-SOURCES-PATTERN.md)
-- [Script README](scripts/README-diff-app-of-apps.md)
+- [Multiple Sources Pattern Documentation](patterns/MULTIPLE-SOURCES-PATTERN.md)
+- [Script README](../scripts/README-diff-app-of-apps.md)
 - [ArgoCD Multiple Sources Docs](https://argo-cd.readthedocs.io/en/stable/user-guide/multiple_sources/)

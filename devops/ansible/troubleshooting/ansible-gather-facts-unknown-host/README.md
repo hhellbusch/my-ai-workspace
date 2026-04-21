@@ -49,7 +49,7 @@ ansible-playbook -i <your-inventory> gather-facts-test.yml
 **Interpretation:**
 
 - ✅ **Simple playbook succeeds** → Problem is inside the original playbook (inventory and network are fine). Continue with the investigation below.
-- ❌ **Simple playbook also fails** → Network or inventory problem. See [aap-ssh-mtu-issues](../aap-ssh-mtu-issues/README.md) and the Inventory section below.
+- ❌ **Simple playbook also fails** → Network or inventory problem. See [aap-ssh-mtu-issues](../../../ocp/troubleshooting/aap-ssh-mtu-issues/README.md) and the Inventory section below.
 
 ---
 
@@ -358,8 +358,8 @@ ansible-playbook -i <inventory> your-playbook.yml --list-hosts
 
 ## Related Issues
 
-- [AAP SSH MTU Issues](../aap-ssh-mtu-issues/README.md) — If the simple gather_facts test also fails, MTU or firewall may be the root cause
-- [CoreOS Networking Issues](../coreos-networking-issues/README.md) — For SSH failures specific to CoreOS/RHCOS nodes
+- [AAP SSH MTU Issues](../../../ocp/troubleshooting/aap-ssh-mtu-issues/README.md) — If the simple gather_facts test also fails, MTU or firewall may be the root cause
+- [CoreOS Networking Issues](../../../ocp/troubleshooting/coreos-networking-issues/README.md) — For SSH failures specific to CoreOS/RHCOS nodes
 
 ---
 
@@ -367,4 +367,4 @@ ansible-playbook -i <inventory> your-playbook.yml --list-hosts
 
 ---
 
-*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
