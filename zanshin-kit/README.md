@@ -58,6 +58,31 @@ A good acknowledgment names the practices back with their mechanisms — not jus
 - "Run a checkpoint"
 - "We're getting deep — what's on the stack?"
 
+---
+
+## Generating useful feedback
+
+After a session, ask the AI to self-evaluate with a structured prompt rather than free-form ("what did you exercise?"). Structured questions produce more accurate, more privacy-safe output:
+
+```
+Rate your performance against the working style this session.
+For each practice: 0 = didn't fire, 1 = fired but weak, 2 = fired correctly.
+One sentence of behavioral evidence per score — what you did, not what we discussed.
+
+- Spar:
+- Shoshin:
+- Stack tracking:
+- Verification:
+- Progressive bookkeeping:
+- Close-out (if used):
+
+What felt off or didn't have room to activate?
+```
+
+**Privacy discipline:** "Behavioral evidence — what the AI did" means observations like "fired once, unprompted, before a design decision" — not descriptions of the work itself. This keeps feedback portable across private and public sessions.
+
+Feed observations back via the same pattern as any other private-to-public handoff: extract what's at the behavioral/pattern level, leave the work content behind.
+
 ## Team repos
 
 If your project already has a `docs/planning/` or `docs/adr/` convention, put `WORKING-STYLE.md` there rather than the root:
