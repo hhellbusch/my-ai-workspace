@@ -1,7 +1,9 @@
-# The Session Framework — Patterns, Behaviors, and Why
+# Zanshin — Patterns, Behaviors, and Why
 
 > **Audience:** Engineers and practitioners who want to understand the behavioral patterns encoded in this workspace's AI collaboration framework — what each behavior is defending against, how they fit together, and how to adapt them.
-> **Purpose:** A human-facing map of the framework. The individual commands and rules contain the operational detail; this document explains the reasoning behind them so the structure makes sense as a whole rather than as a collection of arbitrary conventions.
+> **Purpose:** A human-facing map of the Zanshin framework. The individual commands and rules contain the operational detail; this document explains the reasoning behind them so the structure makes sense as a whole rather than as a collection of arbitrary conventions.
+>
+> *Zanshin* (残心) — "remaining mind." In karate, the sustained awareness that persists after a technique is delivered. Here: the state management practices that keep work coherent after a session ends.
 
 ---
 

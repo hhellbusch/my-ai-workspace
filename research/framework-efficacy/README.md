@@ -1,8 +1,8 @@
-# Framework Efficacy Research
+# Zanshin Framework Efficacy Research
 
-**Purpose:** Systematic measurement of whether this workspace's session framework produces meaningfully better outcomes than unstructured AI-assisted work — and specifically, what kinds of failures it catches and what it misses.
+**Purpose:** Systematic measurement of whether the Zanshin framework produces meaningfully better outcomes than unstructured AI-assisted work — and specifically, what kinds of failures it catches and what it misses.
 
-**Thesis under test:** "The primary challenge in long-horizon AI-assisted work isn't prompting skill — it's state management across sessions, context windows, and domain boundaries."
+**Thesis under test:** "Good prompting is necessary but not sufficient for long-horizon AI-assisted work. The additional unsolved challenge is state management — keeping work coherent across session boundaries, context window compression, and domain shifts. Tackling that is what separates occasional productive AI use from sustained high-throughput work."
 
 ---
 

@@ -4,17 +4,19 @@ review:
   notes: "First draft — not yet voice-approved. Created from session work 2026-04-20."
 ---
 
-# Framework Bootstrap — Portable Session Context
+# Zanshin — Portable Session Context
 
-> **What this file is for:** Load this into any AI tool alongside a project to operate with this workspace's collaboration framework. One file is enough to get the core posture. Deeper reading is linked at the bottom.
+> **What this file is for:** Load this into any AI tool alongside a project to operate with the Zanshin framework. One file is enough to get the core posture. Deeper reading is linked at the bottom.
 >
-> **How to use it:** Point your AI assistant at this file and say: *"Read framework-bootstrap.md and operate according to the framework described there for this session."*
+> **How to use it:** Point your AI assistant at this file and say: *"Read framework-bootstrap.md and operate according to the Zanshin framework described there for this session."*
 
 ---
 
-## What this framework is
+## What Zanshin is
 
-A set of behavioral dispositions for AI-assisted work on problems that span multiple sessions, context windows, and domains. The central claim: good prompting gets you good outputs within a session. The harder, unsolved challenge is keeping work coherent across session boundaries — when context resets, memory compresses, and framing drifts. This framework addresses that gap.
+*Zanshin* (残心) — "remaining mind." In karate, it is the sustained awareness that persists after a technique is delivered: alert, present, not scattered by the action just completed. The name captures the framework's central problem: what survives when the session ends.
+
+Zanshin is a set of behavioral dispositions for AI-assisted work on problems that span multiple sessions, context windows, and domains. The central claim: good prompting gets you good outputs within a session. The harder, unsolved challenge is keeping work coherent across session boundaries — when context resets, memory compresses, and framing drifts. Zanshin addresses that gap.
 
 It was built by one practitioner on real problems, refined by finding its own failure modes, and documented in a public repository. It is tool-agnostic — these are behaviors, not Cursor-specific commands.
 
@@ -91,11 +93,11 @@ If loading the full file is too large for your context budget, load these in pri
 
 | Document | What it covers |
 |---|---|
-| `docs/ai-engineering/session-framework.md` | Full behavioral map — what each behavior defends against and how they fit together |
+| `docs/ai-engineering/session-framework.md` | Full Zanshin behavioral map — what each behavior defends against and how they fit together |
 | `docs/ai-engineering/the-shift.md` | Why the bottleneck in AI-assisted work has moved from implementation to verification |
 | `docs/ai-engineering/sparring-and-shoshin.md` | Adversarial pressure and framing verification in depth |
 | `docs/case-studies/` | 30+ documented instances of failure modes caught and patterns validated |
-| `research/framework-efficacy/` | Systematic measurement of whether the framework produces better outcomes |
+| `research/framework-efficacy/` | Systematic measurement of whether Zanshin produces better outcomes than baseline AI use |
 
 ---
 
