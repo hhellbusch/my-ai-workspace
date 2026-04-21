@@ -24,6 +24,22 @@ If the user starts a session with a vague request like "let's continue" or "what
 
 ---
 
+## Session-Start Briefings — Guardrail Check
+
+When a session opens with a briefing document (user says "read X and go," or points to a `.planning/session-brief*.md`), the briefing provides *scope* — what to work on, deliverables, constraints. It does **not** provide reliable *state* — the briefing is a snapshot, and the repo may have changed since it was written.
+
+Before executing any deliverable from a briefing, run a lightweight state check:
+
+1. **Git staleness:** `git log --oneline -5`. If commits exist that are newer than the briefing's written date, surface it: "Brief was written [date]; [N] commits have landed since then — scanning for conflicts."
+2. **BACKLOG state:** For each item the brief references by name (e.g., "this BACKLOG item is in Ideas"), verify its current state in `BACKLOG.md`. If an item has moved — already Done, already In Progress, or removed — surface it before proceeding: "Brief assumes [item] is in Ideas, but it's now Done. Check scope."
+3. **Deliverable conflicts:** If the briefing asks to create a file that already exists, or implement something that appears already committed, flag it before executing.
+
+If the check finds no conflicts, proceed directly — one line is enough ("State check: clean. Brief aligns with current repo."). If conflicts exist, surface them and confirm scope before executing any deliverable. Do not silently inherit a stale assumption.
+
+This check is **not** a full `/start`. It's targeted verification of what the brief specifically claims, not a complete orientation. The briefing still provides the focused entry point — the check just confirms the entry point is still accurate.
+
+---
+
 ## Depth-First Navigation — Conversation Stack
 
 Sessions naturally explore topics in a depth-first pattern: a main thread gets set aside to chase a subtopic, which may spawn its own subtopic, before returning up. This is implicit in every session but easy to lose track of, especially after a long tangent or context-heavy detour.
