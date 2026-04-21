@@ -45,9 +45,17 @@ When a session opens with a briefing document (user says "read X and go," or poi
 
 **State check sequence:**
 
-1. **Git staleness:** `git log --oneline -5`. If commits exist that are newer than the briefing's written date, surface it: "Brief was written [date]; [N] commits have landed since then — scanning for conflicts."
-2. **BACKLOG state:** Scan `BACKLOG.md` for each item the brief references. If an item has moved — already Done, already In Progress, or removed — surface it before proceeding: "Brief assumes [item] is in Ideas, but it's now Done. Check scope."
-3. **Deliverable conflicts:** If the briefing asks to create a file that already exists, or implement something that appears already committed, flag it.
+1. **SHA comparison:** Look for a SHA anchor in the briefing header (format: `> SHA: abc1234` or `| SHA: abc1234`). If present, run:
+   - `git log <sha>..HEAD --oneline` — lists every commit since the brief was written
+   - `git diff <sha>..HEAD -- BACKLOG.md` — shows exactly what changed in the backlog
+   - If the diff is empty, the brief's BACKLOG assumptions are still accurate. If not, surface the specific changes before proceeding.
+   - If no SHA is present, fall back to: `git log --oneline -5` and note the brief has no anchor — the check is approximate.
+2. **Deliverable conflicts:** If the briefing asks to create a file that already exists, or implement something that appears already committed, flag it.
+
+**When writing a briefing:** Record the current SHA in the header so the guardrail can anchor against it precisely:
+```
+> Written: YYYY-MM-DD | SHA: `git rev-parse --short HEAD`
+```
 
 If the check finds no conflicts, proceed directly — one line is enough ("State check: clean. Proceeding from briefing."). If conflicts exist, surface them and confirm scope before reading or executing anything from the brief. Do not silently inherit a stale assumption.
 

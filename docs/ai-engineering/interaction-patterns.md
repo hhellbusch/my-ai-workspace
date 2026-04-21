@@ -60,7 +60,9 @@ This file is an instance of that pattern — written in a private session to ori
 
 **The `/start` bypass — and its guardrail:** Using a session-start briefing means skipping the full project orientation. It does not mean skipping state verification. The briefing is a snapshot; the repo may have moved since it was written, and inheriting a stale framing before the check runs is worse than catching the conflict first.
 
-**Order matters:** The state check runs *before* the briefing's scope is absorbed, not after. Once the brief has been read, its framing is already in place. The check covers: git staleness (commits newer than the brief's date), BACKLOG state for items the brief references, and deliverable conflicts (file already exists, work already done). If the check is clean, the brief is read for scope. If conflicts exist, they're surfaced before anything from the brief is executed.
+**Order matters:** The state check runs *before* the briefing's scope is absorbed, not after. Once the brief has been read, its framing is already in place. If the briefing records a git SHA in its header (`| SHA: abc1234`), the check is precise: `git log <sha>..HEAD --oneline` shows exactly what landed since the brief was written, and `git diff <sha>..HEAD -- BACKLOG.md` shows whether the backlog changed specifically. If the diff is clean, proceed. If not, surface the specific changes before reading the brief. If no SHA is present, fall back to scanning recent commits — the check still runs, but less precisely.
+
+**When writing a briefing:** record the current SHA: `> Written: YYYY-MM-DD | SHA: <short hash>`. This is what makes the guardrail exact rather than approximate.
 
 The briefing provides scope. The state check provides accuracy. A brief drafted with rigor and sparred before use is still a snapshot — rigor at write time doesn't protect against staleness between writing and use. The guardrail catches that drift regardless of brief quality.
 
