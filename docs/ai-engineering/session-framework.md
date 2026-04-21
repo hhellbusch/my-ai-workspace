@@ -7,7 +7,7 @@
 
 ## The Problems Being Solved
 
-AI assistants have two structural characteristics that create predictable failure modes in multi-session work.
+AI assistants have three structural characteristics that create predictable failure modes in multi-session work.
 
 **Cross-session statelessness.** Every session starts fresh. Context from prior sessions — decisions made, approaches tried, scope defined — doesn't carry over unless it was committed to a file. For single-session tasks this doesn't matter. For work that spans days or weeks, it compounds into drift: the session produces good output that doesn't connect to prior work, or re-litigates decisions that were already settled.
 
@@ -15,7 +15,9 @@ AI assistants have two structural characteristics that create predictable failur
 
 **Frictionlessness.** AI assistants are trained to be agreeable. They validate your framing, inherit your assumptions, and produce fluent output that looks correct. This isn't a bug — it's what makes them fast to work with. It becomes a bug when the framing is wrong, the assumption is stale, or the output needs genuine challenge. A tool optimized to agree doesn't naturally provide adversarial pressure.
 
-The framework is a set of behaviors that aim to address both. Some manage state so context survives across sessions. Some create structural friction to counter the AI's tendency toward agreement. None of them are mandatory — they're defaults that can be ignored when the work is simple enough not to need them.
+The framework is a set of behaviors that aim to address all three. Some manage state so context survives across sessions. Some create structural friction to counter the AI's tendency toward agreement.
+
+A note on which behaviors are optional: some are always-on rules that fire regardless of task complexity (the shoshin framing check, pre-commit review, session-awareness defaults). Others are commands you invoke deliberately (`/start`, `/checkpoint`, `/whats-next`, `/spar`). The distinction matters — "the framework won't intrude on simple work" is true for the command layer, not for the always-on rules.
 
 ---
 
@@ -41,9 +43,25 @@ Two tools address this, designed for different scenarios:
 
 **`/whats-next`** is a full session handoff — comprehensive context capture for handing off to a new session or ending a long work block. It includes a backlog snapshot, work completed in detail, what remains, decisions made, and a case study reflection (did anything from this session demonstrate a pattern worth documenting?). Heavier than a checkpoint; worth running when the session produced substantial work that needs accurate context for continuation.
 
-**Why commit frequently:** A clean working tree is the cheapest form of crash recovery, and committed files are the reliable truth anchor against in-session context compaction. Uncommitted work is unrecoverable after a crash; committed state is accurate and re-readable regardless of how compressed the in-context memory has become. The framework pushes toward small, logical commits after each unit of work rather than batching — each commit externalizes state before it can be compressed.
+**Why commit frequently:** A clean working tree is the cheapest form of crash recovery. Uncommitted work is unrecoverable after a crash; committed state is always there in the git log. The framework pushes toward small, logical commits after each unit of work rather than batching.
 
-**Re-read before deciding.** In long sessions, don't rely on in-context memory of what a file said. If a decision depends on the contents of a rule, a BACKLOG item, or a prior doc, read the file. The cost of a file read is much lower than the cost of a decision made on a compressed approximation. When something feels uncertain — "I believe we decided X" or "I think the file said Y" — surface the uncertainty and re-read rather than proceeding.
+---
+
+## In-Session Context Compaction — When Memory Isn't What It Was
+
+The handoffs section covers session boundaries. This failure mode is different: it happens inside a session that feels continuous.
+
+As a long session fills its context window, earlier material gets summarized. The model continues — it doesn't announce the compression — but its working representation of prior content is now an approximation. File contents read an hour ago may be remembered in paraphrase. Decisions made mid-session may have lost their specifics. The session proceeds as if it remembers, and nothing in its behavior signals when it doesn't.
+
+**The mitigations:**
+
+**Committed files are the truth anchor.** In-context memory of a file may be compressed; the committed file is always accurate and re-readable. When a decision depends on what a rule says, what a BACKLOG item claims, or what a prior doc contains — read it. Don't rely on what the session remembers reading.
+
+**Re-read before deciding.** The cost of a file read is much lower than the cost of a decision made on a compressed approximation. This applies to any high-stakes decision in a long session: read the source, not the memory of the source.
+
+**Surface uncertainty rather than guessing.** When something feels uncertain — "I believe we decided X" or "I think the file said Y" — name the uncertainty and re-read rather than proceeding. A session that flags its own uncertainty is more trustworthy than one that proceeds with false confidence.
+
+**Frequent commits serve double duty.** Each commit externalizes state into the repo before it can be compressed. A checkpoint mid-session creates a re-readable anchor in `.planning/whats-next.md` that reflects what was true when it was written — independent of what the session currently remembers.
 
 ---
 
