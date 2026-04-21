@@ -31,9 +31,11 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 ## Companion Guides
 
+- **[The Session Framework — Patterns, Behaviors, and Why](session-framework.md)** — Human-facing map of the full collaboration framework: what each behavior defends against, how they connect, and the ethos behind them. Covers session orientation, handoffs, conversation stack tracking, adversarial pressure, structured session entries, and the meta-development loop. Start here if you want to understand the framework as a whole before reading the individual guides.
+
 - **[Sparring and Shoshin — Two Practices for AI-Assisted Work](sparring-and-shoshin.md)** — Introduction to the two structural practices for resisting AI's characteristic failure modes: sparring (adversarial review) challenges outputs after drafting; shoshin (beginner's mind) challenges starting frames before work begins. Self-contained entry point; links to the deeper case studies and philosophy essays for each.
 
-- **[Interaction Patterns for AI Sessions](interaction-patterns.md)** — Names and compares three patterns for structuring multi-session AI work: the meta-prompt pipeline (staged, artifact-producing, for complex analytical work), planning mode (interactive, synchronous, for open-ended design), and the session-start briefing (curated entry point for a fresh session on defined scope). Covers the `/start` bypass tradeoff, the privacy-filtered handoff as a distinct use case, and practical guidance for choosing between patterns. Includes a development note on adversarial review of framework artifacts before use.
+- **[Interaction Patterns for AI Sessions](interaction-patterns.md)** — Two structured patterns for AI-assisted work (the meta-prompt pipeline and the session-start briefing), the default unstructured mode, and how to choose between them. Covers the briefing guardrail (scope vs. state), the privacy-filtered handoff, and practical guidance for choosing between patterns.
 
 ## Primary Narratives (Public)
 
