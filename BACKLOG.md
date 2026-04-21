@@ -96,8 +96,37 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ### Source review: Context Window Management and Session Lifecycle — Zylos Research (2026)
 - **URL:** https://zylos.ai/research/2026-03-31-context-window-management-session-lifecycle-long-running-agents
-- **Why:** Directly challenges the "practice not engineering" framing in `docs/philosophy/zanshin.md`. Key finding: Anthropic found compaction alone sufficient for multi-session continuity with capable models. StatePlane adds "adaptive forgetting" and "goal-conditioned retrieval" — judgment operations. EngineersOfAI's architecture (Redis/Postgres/vector DB) is a mature engineering solution to exactly the problem the essay claims is unsolved. The Carnival9 pattern ("execution trace is source of truth; memory is derived state") independently converges on "commits as truth anchors." Useful context before claiming the gap is structural and permanent.
-- **Possible library entry:** `library/zylos-session-lifecycle-2026.md` — engineering counterpart to the philosophy essay
+- **Why:** Directly challenges the "practice not engineering" framing in `docs/philosophy/zanshin.md`. Key finding: Anthropic found compaction alone sufficient for multi-session continuity with capable models. StatePlane adds "adaptive forgetting" and "goal-conditioned retrieval" — judgment operations. The Carnival9 pattern ("execution trace is source of truth; memory is derived state") independently converges on "commits as truth anchors." Covers context rot, the lost-in-the-middle effect, compaction strategies (observation masking vs. LLM summarization), and the warm vs. cold start spectrum.
+- **Possible library entry:** `library/zylos-session-lifecycle-2026.md`
+- **Research track:** Part of the AI agent memory research avenue — see below
+- **Added:** 2026-04-20
+
+### Source review: Cross-Session Persistence — EngineersOfAI
+- **URL:** https://engineersofai.com/docs/agentic-ai/agent-memory/Cross-Session-Persistence
+- **Why:** Full engineering architecture for cross-session agent memory — what state must/should/should-not persist, storage backend selection (Redis for core facts, PostgreSQL for session history, vector DB for archival search), session restoration warm-restart pattern, schema versioning across memory evolution, GDPR/privacy (right to erasure). The five-layer handoff model (state snapshot + narrative context + decision log + priority queue + warnings) is directly comparable to the Zanshin framework's `/whats-next` structure.
+- **Possible library entry:** `library/engineersofai-cross-session-persistence.md`
+- **Research track:** Part of the AI agent memory research avenue — see below
+- **Added:** 2026-04-20
+
+### Source review: Memory Management for AI Agents — Chenyu Zhang (Medium, Feb 2026)
+- **URL:** https://medium.com/@fred-zhang/memory-management-for-ai-agents-from-cognitive-architectures-to-context-engineering-to-293ef6a4ccab
+- **Why:** Survey of memory management approaches from cognitive architectures → context engineering → reinforcement-learned memory. Covers layered memory model (working / episodic / semantic / procedural / long-term), MemGPT's core/archival split as first formal treatment of cross-session persistence in LLM agents (Packer et al., 2023). Good conceptual foundation for the research avenue.
+- **Possible library entry:** `library/zhang-ai-agent-memory-2026.md`
+- **Research track:** Part of the AI agent memory research avenue — see below
+- **Added:** 2026-04-20
+
+### Source review: StatePlane — Cognitive State Plane for Long-Horizon AI (arxiv, 2026)
+- **URL:** https://arxiv.org/html/2603.13644v1
+- **Why:** Academic paper proposing a model-agnostic cognitive state plane for episodic, semantic, and procedural memory. Formalizes episodic segmentation, selective encoding, goal-conditioned retrieval, and adaptive forgetting. Most directly relevant to the "judgment not retrieval" distinction in the Zanshin essay — this is a technical paper doing exactly what the essay says engineering approaches don't do. Worth reading carefully before making claims about where the engineering gap is.
+- **Possible library entry:** `library/stateplane-cognitive-state-2026.md`
+- **Research track:** Part of the AI agent memory research avenue — see below
+- **Added:** 2026-04-20
+
+### Research avenue: AI agent memory and cross-session coherence
+- **Product:** research (new directory)
+- **Context:** Four sources found during Zanshin essay spar research represent an active, fast-moving area of AI engineering directly relevant to this framework. What others are building addresses the same problem the Zanshin framework addresses from the practitioner side — but from the engineering side. Reading this literature would: (1) sharpen what claims the essay can and can't make, (2) surface techniques worth adopting or adapting in the framework, (3) provide external evidence and counterpoint for the `research/framework-efficacy/` track. The Carnival9 convergence ("execution trace is source of truth; memory is derived state") is the most interesting data point — an independently developed system arrived at the same architectural principle as "commits as truth anchors." That's worth understanding more deeply.
+- **Proposed directory:** `research/ai-agent-memory/` — sources, notes, and synthesis
+- **First step:** Read the four backlog sources above; pull any worth keeping into `library/`; open a synthesis note on where the engineering solutions end and the practice gap begins
 - **Added:** 2026-04-20
 
 ### ~~Case study: link depth drift — when a folder move silently breaks navigation~~ ✓ Done 2026-04-20
