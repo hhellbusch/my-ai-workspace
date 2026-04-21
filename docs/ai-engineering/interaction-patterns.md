@@ -64,11 +64,11 @@ This file is an instance of that pattern — written in a private session to ori
 - You want a clean, focused entry point without loading the full backlog, handoffs, planning projects, and all the context `/start` normally surfaces
 - You're curating what a new session needs without handing off everything
 
-**The `/start` bypass — and its guardrail:** Using a session-start briefing means skipping the normal orientation for *scope* — the briefing has already made the "what should I work on?" decision. It does not mean skipping orientation for *state*. The briefing is a snapshot; the repo may have moved since it was written.
+**The `/start` bypass — and its guardrail:** Using a session-start briefing means skipping the full project orientation. It does not mean skipping state verification. The briefing is a snapshot; the repo may have moved since it was written, and inheriting a stale framing before the check runs is worse than catching the conflict first.
 
-Before executing any deliverable from a briefing, a lightweight state check should run: check the git log for commits newer than the briefing's date, verify that BACKLOG items the brief references are still in the state it claims, and flag any deliverable conflicts (file already exists, work already done). If the check finds no conflicts, proceed. If it finds gaps, surface them before executing.
+**Order matters:** The state check runs *before* the briefing's scope is absorbed, not after. Once the brief has been read, its framing is already in place. The check covers: git staleness (commits newer than the brief's date), BACKLOG state for items the brief references, and deliverable conflicts (file already exists, work already done). If the check is clean, the brief is read for scope. If conflicts exist, they're surfaced before anything from the brief is executed.
 
-The briefing provides scope. The state check provides accuracy. They serve different functions and aren't in competition. A brief that was drafted with rigor and sparred before use is still a snapshot — rigor at write time doesn't protect against drift between writing and use. The guardrail catches that drift regardless of brief quality.
+The briefing provides scope. The state check provides accuracy. A brief drafted with rigor and sparred before use is still a snapshot — rigor at write time doesn't protect against staleness between writing and use. The guardrail catches that drift regardless of brief quality.
 
 **Maturity note:** This pattern has one documented instance — this file. The structural logic is sound and the design transfers (there's nothing workspace-specific about "write a scoped briefing for a fresh session"), but the claim that it's a proven, stable pattern would be premature. Treat it as a named, coherent approach rather than a documented practice with established pitfalls and mitigations.
 
@@ -87,9 +87,9 @@ The key differences:
 | | `/whats-next` | Session-start briefing |
 |---|---|---|
 | Written by | The session being handed off | A prior session or the author (curating context) |
-| Used by | The next session alongside `/start` | The new session *instead of* `/start` |
+| Used by | The next session alongside `/start` | The new session instead of full `/start` |
 | Scope | All in-flight work | Only what the new session is scoped to |
-| Replaces `/start`? | No — supplements it | Yes — intentionally |
+| State check? | Full `/start` orientation | Lightweight — git staleness, BACKLOG spot-check, deliverable conflicts |
 | Session boundary | Continuous work, same context | Scoped entry point, possibly different context |
 
 The overlap: both produce a `.md` file that a session reads to orient itself. The difference is what the file is trying to do. `/whats-next` captures continuation state. The session-start briefing captures pre-scoped entry state.
