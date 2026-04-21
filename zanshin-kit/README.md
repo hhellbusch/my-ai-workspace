@@ -22,9 +22,9 @@ Keep this repo cloned locally. Reference `WORKING-STYLE.md` directly from the cl
 
 | Tool | How to load |
 |------|-------------|
-| Copilot Chat (VS Code) | `#file:/path/to/gemini-workspace/zanshin-kit/WORKING-STYLE.md` |
+| Copilot Chat (VS Code) | `#file:~/git/hhellbusch/my-ai-workspace/zanshin-kit/WORKING-STYLE.md` |
 | Any chat AI | Paste the file contents as your opening message |
-| Cursor | `@/path/to/gemini-workspace/zanshin-kit/WORKING-STYLE.md` |
+| Cursor | `@~/git/hhellbusch/my-ai-workspace/zanshin-kit/WORKING-STYLE.md` |
 
 No drift, no re-copy step. Pull the repo when you want updates.
 
