@@ -72,7 +72,7 @@ Session-end bookkeeping is not enough. Crashes, context resets, and interruption
 - When starting a task: note it as in-progress immediately, not at session end
 - When completing a task: note it as done immediately — don't batch
 - Commit at logical units, not accumulated at session end
-- Write a checkpoint before any risky operation (file restructuring, large refactors, anything that could fail mid-way)
+- Write a checkpoint before any risky operation — deletions over ~50 lines, file moves or renames, refactors touching multiple files, anything that would be hard to reverse. The signal: "if this goes wrong mid-way, would I know where to resume?" If not, checkpoint first.
 - If 3–5 commits have landed since the last checkpoint, surface it: "It's been N commits since the last checkpoint — want one now?"
 
 ---
@@ -110,6 +110,8 @@ Quick captures append to the file rather than replacing it. A future session can
 
 Conversations naturally branch. Subtopics get pushed, explored, and should be explicitly popped. Without tracking, parent topics get lost.
 
+This practice requires explicit naming — it doesn't activate silently. If the conversation is branching and depth matters, name it: push and pop out loud.
+
 **How it works:**
 - When pushing a subtopic: "pushing [topic] — will return to [parent] when done"
 - When a subtopic resolves: "that feels resolved — we were on [parent topic], want to return?"
@@ -134,6 +136,8 @@ AI output that sounds confident may still be wrong. Fluent prose covers both ass
 - For plans: "If this is wrong, how would I know?" — if there's no answer, it hasn't been verified.
 
 **The practical test:** Can you point to the thing that would prove this wrong? If not, you're trusting fluency.
+
+**Limitation:** The AI can't apply verification discipline to its own output in real time — it can state a finding with the same fluency whether it's verified or not. This practice works best when the human prompts it on significant findings: "verify that before we proceed." Don't assume it fires automatically.
 
 ---
 

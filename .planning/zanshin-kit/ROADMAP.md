@@ -38,7 +38,20 @@ Three changes applied to `WORKING-STYLE.md`:
 
 **Secondary finding:** The kit's own discipline wasn't applied during Phase 2 iteration — shoshin should have been run on the Copilot feedback before implementing changes. This is a process observation, not a document flaw. Noted for Phase 3 practice.
 
-**Pending:** Re-test close-out mode with accumulated session context. Tested once (load → immediate close-out) — Copilot correctly wrote a minimal handoff but there was nothing for shoshin to surface. The real test requires: load at start → do actual work → trigger close-out. That's when the shoshin questions ("what's in context that won't survive the reboot?") have substance to work with. Quick capture also untested under time pressure.
+**Second real session findings (Copilot CLI, real working session):**
+
+Shoshin fired unprompted — named a specific assumption ("I'm assuming the first copy of the MFG doc is canonical — is that still true?"), not a generic list. Mechanism confirmed working.
+
+Progressive bookkeeping held for commits. Loading and acknowledgment format clean.
+
+Three gaps surfaced:
+1. **Checkpoint before risky op didn't fire** — 440-line delete executed without a pre-checkpoint. Root cause: "anything that could fail mid-way" is too abstract for real-time recognition. Fixed: added concrete threshold (~50 lines, file moves, multi-file refactors) and decision heuristic.
+2. **Verification miss caught by compaction, not by slowing down** — AI stated a finding with fluency of a verified result. Structural limitation: AI can't apply verification discipline to its own output in real time. Fixed: added explicit note that this practice requires human prompting on significant findings.
+3. **Stack tracking not named** — parallel work stayed organized but push/pop was never invoked. Fixed: added note that this practice requires explicit naming, not silent activation.
+
+**Structural observation:** `whats-next.md` and tool-native session state (e.g., `.copilot/session-state/`) coexist and serve different scopes. Addressed in README.
+
+**Pending:** Close-out mode with real accumulated session context still untested. Quick capture untested under time pressure. Both require load-at-start → real work → trigger.
 
 ---
 

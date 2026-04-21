@@ -110,6 +110,17 @@ Update the load reference accordingly:
 
 Each team member manages their own session handoffs locally. The working style and project brief are shared; the session state is not.
 
+## Coexistence with tool-native session state
+
+Some AI tools maintain their own session state independently of this kit (e.g., Copilot CLI writes to `.copilot/session-state/`). These don't conflict — they serve different scopes:
+
+| Artifact | Scope | Persists in git? |
+|----------|-------|-----------------|
+| `whats-next.md` | Project-level continuation state — what the next session picks up | Yes (or no, per team convention) |
+| Tool-native session state | Session-level implementation detail — exact file changes, line numbers, decisions made in this window | No — ephemeral |
+
+The kit's `whats-next.md` carries the baton. Tool-native state carries the detail. When both exist, read `whats-next.md` for orientation and the tool state for specifics.
+
 ## Isolation contract
 
 All artifacts stay in the project where you're working. The kit contains no references to external workspaces. Checkpoints write to `.planning/whats-next.md` locally. Nothing writes back to the source workspace.
