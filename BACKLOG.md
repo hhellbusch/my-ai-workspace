@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-20 (framework efficacy measurement system built; IPv8 analysis session)
+> Last updated: 2026-04-20 (full content audit + systemic fixes; spar trigger hook; Zanshin naming sweep)
 
 ## In Progress
 
@@ -89,6 +89,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ## Ideas
 
 
+
+### Case study: link depth drift — when a folder move silently breaks navigation
+- **Product:** docs (case-studies)
+- **Context:** Full `/audit` run (2026-04-20) found 23 broken `AI-DISCLOSURE.md` links across `devops/`. All off by exactly one `../` — a uniform depth shift caused by content being moved one level deeper into `devops/` without updating relative paths. Companion to `directory-move-gitignore-drift.md` (that case covers files being committed that shouldn't be; this covers navigation links silently breaking). The pattern is distinct: links commit cleanly, nothing signals the break at commit time, drift compounds across sessions. Resolution was systematic (one shell loop), but the root cause took diagnosis. Connects to `repo-structure.md` new link-depth-drift section.
+- **Links:** `docs/case-studies/directory-move-gitignore-drift.md`, `.cursor/rules/repo-structure.md`, commits `624d386`
+- **Added:** 2026-04-20
 
 ### Case study: when the framework became tool-portable
 - **Product:** docs (case-studies)
@@ -443,6 +449,14 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ## Done
 
 Rolling cap: at most **15** items stay here (newest first). Older completions live in `BACKLOG-ARCHIVE.md` (see `/backlog` command — **Done retention**). Git history remains authoritative.
+
+### Meta: full content audit + systemic link/registry fixes ✓ Done 2026-04-20
+- Ran `/audit` across 717 committed markdown files. Fixed 29 files: 23 `AI-DISCLOSURE.md` link depth errors (all caused by devops folder move — paths uniformly off by one `../`), 5 docs missing from `docs/README.md` (including `framework-bootstrap.md`), 3 research dirs missing from `research/README.md`, missing Zanshin anchor links in `the-shift.md`, 6 devops internal cross-links. Root-caused the false-positive problem (260/353 "broken links" were scraped web content + fenced code blocks). Applied three systemic fixes: audit Layer 1 exclusions, `/whats-next` registry sync check, `repo-structure.md` link-depth-drift guidance for directory moves.
+- **Links:** commits `624d386`, `d948f78`, `c9201fa`
+
+### Framework: spar trigger evaluation hook ✓ Done 2026-04-20
+- Added Step 2.4 to `/checkpoint` and Step 1.3 to `/whats-next`: evaluate six (seven at session close) spar trigger conditions and surface a recommendation if two or more fire. Distinguishes necessary (argumentative + external-facing, or load-bearing claim + trade-off decision) from beneficial (any two triggers) from skip (mechanical session). Never auto-runs — always asks first.
+- **Links:** `.cursor/commands/checkpoint.md`, `.cursor/commands/whats-next.md`
 
 ### Framework: /start simplification audit ✓ Done 2026-04-20
 - Audited all `/start` steps against "does the user need this every session?" Steps 2.5 (brief alignment) and 4 (ROADMAP status) both load every planning project file on every session start — cost grows proportionally as the workspace grows. Made both opt-in: Step 2.5 now announces planning projects without reading BRIEFs; Step 4 only reads ROADMAPs when the user is resuming a specific project. Steps 0, 1, 2, 3, 5 stay always-on (ABOUT.md, backlog, handoff, git log, suggestions — all genuinely needed every session).
