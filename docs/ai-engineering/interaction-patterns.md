@@ -1,7 +1,7 @@
 # Interaction Patterns for AI Sessions
 
-> **Audience:** Engineers and practitioners using AI assistants across multiple sessions. Explains three patterns for structuring AI-assisted work — what each is for, when it fits, and what it costs. Written for an external reader with no prior knowledge of this workspace's tools.
-> **Note on maturity:** The meta-prompt pipeline and planning mode are established patterns observed across many sessions. The session-start briefing is emergent — documented from a single instance. That distinction is called out where it matters.
+> **Audience:** Engineers and practitioners using AI assistants across multiple sessions. Covers two structured patterns for AI-assisted work (the meta-prompt pipeline and the session-start briefing), the default unstructured session mode, and how to choose between them. Written for an external reader with no prior knowledge of this workspace's tools.
+> **Note on maturity:** The meta-prompt pipeline is an established pattern used across many sessions. The session-start briefing is emergent — documented from a single instance. That distinction is called out where it matters.
 
 ---
 
@@ -9,11 +9,11 @@
 
 AI assistants are stateless. Each session starts fresh. For single-session tasks — write a function, explain a concept, draft a message — this doesn't matter. For work that spans sessions, or for work handed off between collaborators (or between a private and a public context), it matters a lot.
 
-Three patterns have emerged for managing this. They're not a hierarchy — not a simple → complex spectrum where the pipeline is always better than the briefing. They're genuinely different shapes of work, and using the wrong one for your task creates friction, overhead, or both.
+Two structured patterns have emerged for managing this, alongside a default mode that needs no setup. They're not a hierarchy. The pipeline and the briefing are genuinely different shapes of work; the default is what you use when neither applies. Using a heavier pattern than the work needs creates friction and overhead without payoff.
 
 ---
 
-## The Three Patterns
+## The Patterns
 
 ### 1. The Meta-Prompt Pipeline
 
@@ -33,21 +33,15 @@ Three patterns have emerged for managing this. They're not a hierarchy — not a
 
 ---
 
-### 2. Planning Mode
+### 2. The Default: Unstructured Session Work
 
-**What it is:** Collaborative, interactive design within a single session. You and the AI work through a question together — what to build, how to structure a project, which approach to take — in conversation, without producing a pipeline artifact. The output might be a planning document (`BRIEF.md`, `ROADMAP.md`), a refined scope, or a decision with reasoning captured in a handoff.
+Most AI sessions don't use either of the above patterns. You open a session, ask a question, work through something, and either commit artifacts or don't. This is the default — not a third structured pattern, but the absence of one.
 
-**How it works:** You bring a problem or question. The AI asks clarifying questions, challenges framing, proposes options, and helps you think through trade-offs. The work happens in conversation. Artifacts get written when something needs to persist — a project brief, a phase plan, a set of decisions to capture — but the conversation itself is the medium.
+It's worth naming because the "which pattern fits?" decision is really: *do I need the pipeline, do I need a briefing, or is the default fine?* The default is fine for most work. It has no setup cost, no artifact format, no staged structure. It's just conversation with an AI that can read and write files.
 
-**When it fits:**
-- "What should we build?" type questions — scope and approach are genuinely open
-- Architectural decisions with meaningful trade-offs that benefit from challenge and iteration
-- Work that's ambiguous enough that starting to implement would be premature
-- When you want to think alongside the AI rather than hand off to it
+**Where the default breaks down:** It doesn't survive session boundaries without deliberate capture. If the session ends without committing conclusions — a decision made, a direction chosen, context that only lived in conversation — the next session starts from scratch. This isn't a flaw in the default; it's the cost of having no structure. The mitigation is `/whats-next` at session end or `/checkpoint` mid-session, not switching to a heavier pattern.
 
-**What it produces:** Sometimes nothing persistent — the decision is made and you move directly to work. Sometimes a brief, a roadmap, or a handoff document. Planning mode is synchronous; it's not a pipeline. There are no structured artifacts feeding into subsequent prompts.
-
-**Where it breaks down:** Planning mode doesn't survive session boundaries well unless you produce a planning artifact. If the session ends without capturing the conclusions, the next session starts from scratch. This isn't a flaw — it's a shape. Planning mode is best for contained decisions within a session, or when a brief/roadmap is the explicit output.
+**What people call "planning mode":** When an AI session is explicitly collaborative — working through a design question, challenging framing, exploring trade-offs — it's still the default. It might produce a `BRIEF.md` or `ROADMAP.md` as output, which then anchors future sessions. The conversation itself is the medium; structured artifacts are what you produce when something needs to persist.
 
 ---
 
@@ -134,19 +128,13 @@ Use this as a starting point, not a rigid decision tree:
 - The task is complex enough that staged review adds value, not overhead
 - You're running something that benefits from parallel or sequential execution of independent stages
 
-**Use planning mode when:**
-- The question is "what should we build?" or "how should we approach this?"
-- The scope or approach is genuinely open and benefits from interactive exploration
-- You want to think alongside the AI, not hand work off to it
-- A planning artifact (brief, roadmap, decision record) is the explicit output
-
 **Use a session-start briefing when:**
 - You already know what the session needs to do — scope is pre-defined
 - You want the new session focused from the start, without loading full project orientation
 - You're moving context across a privacy boundary (private → public) or across a collaborator boundary
 - The "what should I work on?" question is already answered and you want to skip the orientation infrastructure
 
-**Default:** If none of the above clearly applies, start with planning mode (interactive, low overhead) and escalate to a pipeline or briefing if the work turns out to need it.
+**Default:** If neither the pipeline nor the briefing clearly applies, just work — open a session and start. The default has no setup cost. Escalate to a pipeline or briefing only if the work turns out to need staged structure or a pre-scoped entry point.
 
 ---
 
