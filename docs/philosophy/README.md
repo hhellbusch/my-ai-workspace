@@ -16,6 +16,8 @@ The primary lens is karate (Hayashi-ha Shito-ryu, Okinawan tradition), but the s
 
 - **[The Dojo After the Automation — What Are We Building People For?](the-dojo-after-the-automation.md)** — AI will automate the execution layer. The question isn't whether — it's what happens to the humans. Argues that learning investment determines whether the transition is liberation or disposal, and that the most powerful AI systems co-evolve with their operators. A philosophical position paper; the evidence base builds over time.
 
+- **[Zanshin — What Remains When the Session Ends](zanshin.md)** — The AI collaboration framework is named Zanshin for a reason. This essay explains what the term means in the dojo (remaining mind after the technique), why that concept names the hardest problem in AI-assisted work (what survives the session boundary), and what the framework is actually doing when it encodes that awareness into structure.
+
 *More essays planned — see [roadmap](../../.planning/zen-karate/ROADMAP.md) and [threads](../../.planning/zen-karate/threads.md) for what's coming.*
 
 ## Cross-Track Links
@@ -23,4 +25,5 @@ The primary lens is karate (Hayashi-ha Shito-ryu, Okinawan tradition), but the s
 - *Ego, AI, and the Zen Antidote* directly extends [The Shift](../ai-engineering/the-shift.md) sections 6-7
 - *The Full Cup* connects to [The Meta-Development Loop](../ai-engineering/the-meta-development-loop.md) (AI as tap-cutter) and [The Shift](../ai-engineering/the-shift.md) section 6 (AI confidence meets exhausted humans)
 - *The Dojo After the Automation* extends [The Shift](../ai-engineering/the-shift.md) (new skills as survival, not career advice) and connects to [The Meta-Development Loop](../ai-engineering/the-meta-development-loop.md) (the co-development loop in practice)
+- *Zanshin* bridges both tracks directly — it names the between-session failure mode that [The Shift](../ai-engineering/the-shift.md) and the ai-engineering essays address within sessions; its operational companion is [The Session Framework](../ai-engineering/session-framework.md)
 - The dojo/open-source essay (planned) will connect to [AI-Assisted Open Source Contributions](../ai-engineering/ai-assisted-upstream-contributions.md)
