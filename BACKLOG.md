@@ -4,6 +4,12 @@
 
 ## In Progress
 
+### Zanshin Kit — portable working style (Phase 1: write and test)
+- **Product:** meta / tooling
+- **Context:** A single `WORKING-STYLE.md` that travels into any AI-assisted environment (currently targeting Copilot Chat in VS Code) and activates the core working disciplines — spar, shoshin, progressive bookkeeping, stack tracking, verification. Complete isolation from Field Notes: all artifacts stay in the foreign environment. Phase 1 is write + test: produce the document, load it in a real Copilot session, evaluate whether spar output matches the discipline. Iterate based on what breaks. See `.planning/zanshin-kit/` for brief, roadmap, and known risks.
+- **Links:** `zanshin-kit/WORKING-STYLE.md`, `.planning/zanshin-kit/BRIEF.md`, `.planning/zanshin-kit/ROADMAP.md`
+- **Started:** 2026-04-20
+
 ### Upstream PR: `operators-installer` — `upgradeChain` (chart v3.5.0)
 - **Product:** argo (OpenShift / OLM GitOps)
 - **Context:** Contribution to [redhat-cop/helm-charts](https://github.com/redhat-cop/helm-charts) adding strict, list-position-based operator upgrade sequencing for non-semver CSV names and staged GitOps hops. Implementation lives on fork **`hhellbusch/redhat-cop-helm-charts`** (`main`); open the PR when ready (compare view sometimes times out on GitHub — use local `git diff upstream/main...HEAD` if needed).
