@@ -198,32 +198,34 @@ curl -k --connect-timeout 10 "$HUB_SERVER/healthz"
 ### 3f. Certificate expiry check
 
 ```bash
-# Hub kubeconfig secret — contains the agent's client cert
-oc get secret hub-kubeconfig-secret \
-  -n open-cluster-management-agent -o yaml | head -5
-
-# Decode the kubeconfig and check cert expiry
+# Extract the kubeconfig from the hub secret and decode it
 oc get secret hub-kubeconfig-secret \
   -n open-cluster-management-agent \
-  -o jsonpath='{.data.kubeconfig}' | base64 -d | \
-  python3 -c "
-import sys, yaml, base64, subprocess
-kc = yaml.safe_load(sys.stdin)
-cert_b64 = kc['users'][0]['user'].get('client-certificate-data', '')
-if cert_b64:
-    import tempfile, os
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.crt') as f:
-        f.write(base64.b64decode(cert_b64))
-        fname = f.name
-    subprocess.run(['openssl', 'x509', '-in', fname, '-noout', '-dates'])
-    os.unlink(fname)
-else:
-    print('No inline cert found — may be using file reference')
-"
+  -o jsonpath='{.data.kubeconfig}' | base64 -d > /tmp/hub-kubeconfig.yaml
 
-# Bootstrap token / kubeconfig
+# Pull the inline client cert (if present) and check expiry
+grep 'client-certificate-data' /tmp/hub-kubeconfig.yaml \
+  | awk '{print $2}' \
+  | base64 -d \
+  | openssl x509 -noout -dates -subject 2>/dev/null \
+  || echo "No inline client-certificate-data found — cert may be a file reference"
+
+# If no inline cert, check whether the secret has a separate tls.crt key
+oc get secret hub-kubeconfig-secret \
+  -n open-cluster-management-agent \
+  -o jsonpath='{.data.tls\.crt}' 2>/dev/null \
+  | base64 -d \
+  | openssl x509 -noout -dates -subject 2>/dev/null \
+  || true
+
+# Bootstrap kubeconfig — used if the agent needs to re-register
 oc get secret bootstrap-hub-kubeconfig \
-  -n open-cluster-management-agent -o yaml | head -5
+  -n open-cluster-management-agent \
+  -o jsonpath='{.data.kubeconfig}' | base64 -d \
+  | grep server
+
+# Clean up
+rm -f /tmp/hub-kubeconfig.yaml
 ```
 
 ---
@@ -242,6 +244,20 @@ oc rollout restart deployment/klusterlet-registration-agent \
 oc rollout status deployment/klusterlet-registration-agent \
   -n open-cluster-management-agent
 ```
+
+**If MCH phase stays `Pending` indefinitely:** The hub may be in a frozen-condition state where `phase: Pending` persists despite the hub being functionally healthy (`Complete: True`, all components `Available`, versions matched). In this case, "wait for Running" may never resolve. Check whether the hub is functionally operational:
+
+```bash
+# Is Complete=True? That is the operator's authoritative readiness signal
+oc get mch multiclusterhub -n open-cluster-management \
+  -o jsonpath='{range .status.conditions[?(@.type=="Complete")]}{.type}: {.status} — {.message}{end}{"\n"}'
+
+# Are managed clusters actively renewing leases?
+oc get lease -n <cluster-name> \
+  -o jsonpath='renewTime: {.spec.renewTime}{"\n"}'
+```
+
+If `Complete: True` and leases are renewing, the hub is functional and the `Pending` phase is a display artifact. The clusters should self-recover regardless of the phase label. If they do not, continue to the klusterlet-side checks below. See [mch-stuck-pending-upgrade.md](./mch-stuck-pending-upgrade.md) Step 7 for the frozen-condition remediation path.
 
 ### Scenario B: Klusterlet pods are CrashLoopBackOff
 
