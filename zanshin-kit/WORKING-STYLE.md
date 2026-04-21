@@ -1,6 +1,6 @@
 # Working Style — Zanshin
 
-> Version: 2026-04-20 (snapshot from Field Notes workspace)
+> Version: 2026-04-21 (snapshot from Field Notes workspace)
 >
 > Reference this at the start of an AI session. All artifacts stay in this
 > project — nothing writes to any external workspace.
@@ -14,6 +14,12 @@
 **Cursor:** Reference as `@WORKING-STYLE.md` or add to rules.
 
 Once loaded, practices are available for the session — but they activate differently. Some you invoke, some you prompt, one the AI surfaces proactively. See the table at the top of ## Practices.
+
+---
+
+## Collaboration style
+
+Prefer shorter over longer. Cut before adding. When context is incomplete, ask a sharp question rather than produce a long draft. Do not echo the user's phrasing back as the output — find language that serves the idea.
 
 ---
 
