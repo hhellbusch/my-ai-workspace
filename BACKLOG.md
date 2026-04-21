@@ -106,6 +106,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `docs/case-studies/when-the-repository-becomes-the-resume.md`, `ABOUT.md`, `.cursor/rules/cross-linking.md`
 - **Added:** 2026-04-20
 
+### Case study: language precision matters — how /spar sharpened a framework artifact
+- **Product:** docs (case-studies)
+- **Context:** During the session that produced the session-brief pattern (2026-04-20), a `/spar` run on the briefing before switching sessions surfaced three real problems: "clean room" was an inaccurate metaphor overstating the privacy guarantee; the lifecycle front-loaded ceremony before useful work; and the concept doc was being assigned before the pattern had been validated beyond one instance. All three were fixed before the new session opened. The meta-lesson: clear language in framework artifacts matters — imprecise metaphors get inherited by future sessions as if they were precise, and adversarial review before committing catches the imprecision that enthusiasm glosses over. This is also a case study in how prompt engineering is really precision engineering: the difference between "clean room" and "privacy-filtered handoff" is not cosmetic — it changes what a future agent believes it can rely on. Connects to the user's observation that being able to express oneself clearly to AI is a core skill, not a nice-to-have.
+- **Links:** `.planning/session-brief.md`, `docs/ai-engineering/interaction-patterns.md` (forthcoming), `docs/case-studies/spar-finds-the-assumption.md`
+- **Added:** 2026-04-20
+
 ### Essay: the public AI workspace as a professional record — questions of identity, authorship, and audience
 - **Product:** docs (philosophy / AI-engineering bridge)
 - **Context:** This session surfaced several interconnected questions: What does it mean to have a public AI-assisted workspace? Who is the audience? Is it a resume, a portfolio, a journal, a resource for others? How do you name yourself in a space where AI has contributed substantially to the content? The "Field Notes" branding conversation, the ABOUT.md drafting, and the corpus-to-identity case study all circle the same question: in a public AI workspace, how do you establish authorship and identity when the work is collaborative by design? Distinct from the "AI writes in your voice" case study — that's about a specific failure mode; this is about the broader philosophical question of what it means to have a public AI-assisted body of work.

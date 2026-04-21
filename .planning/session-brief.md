@@ -1,16 +1,7 @@
 # Session Brief — Framework: Stack Tracking, /start Audit, Meta-Prompts Concept Doc
 
-> Written: 2026-04-20 (private session → public session clean room handoff)
+> Written: 2026-04-20 (private session → public session privacy-filtered handoff)
 > Start here: read this file, then begin with Deliverable 1.
-
-## Who you're working with
-
-Henry Hellbusch — Red Hat consultant, architect-track, building a personal
-AI-assisted workspace called "Field Notes." See `ABOUT.md` for the full
-picture. The workspace ethos is in `.cursor/rules/workspace-ethos.md` —
-key principle for this session: **opt-in over automatic**.
-
----
 
 ## What this session is for
 
@@ -93,26 +84,41 @@ of work that genuinely has stages, with structured outputs feeding each other.
 For most sessions, it's the wrong tool — too heavy, produces `.prompts/`
 infrastructure that doesn't pay off for single-stage work.
 
-**Additional use case to cover — the clean room handoff:**
-The session-start briefing is also a **privacy membrane** for private-to-public
+**Additional use case to cover — the privacy-filtered handoff:**
+The session-start briefing is also a **curated handoff** for private-to-public
 session transitions. When a private session produces insights that should
-inform public work, you write a briefing containing only what's safe to share,
-start a fresh public session from it, and the clean room effect is automatic:
-the new session can't ask about what wasn't given to it. This is the same
-mechanism as IP clean rooms in engineering. This current file is an example:
-written in a private session, contains only pattern-level context, and the
-public session working from it has no access to the private specifics it was
-derived from.
+inform public work, you write a briefing containing only what's safe to share
+and start a fresh public session from it. The new session works only from what
+was written — it can't reconstruct what was omitted. Note: this is not a true
+"clean room" in the IP engineering sense. The brief is still written by someone
+holding the private context, so its shape reflects knowledge the public session
+won't have. The privacy guarantee is about what crosses the boundary, not about
+eliminating the author's judgment. This current file is an example: written in
+a private session, curated to pattern-level content, with the curation
+decisions made by the author — not enforced by the format.
 
-**Write:** `docs/ai-engineering/interaction-patterns.md` — a concept doc
-explaining:
+**Write:** `docs/ai-engineering/interaction-patterns.md` — a concept doc that
+names and explores these patterns. Note: this pattern (session-start briefing)
+has one documented instance — this file. Write the doc as an exploration and
+naming, not as documentation of a proven, stable pattern. Where behavior is
+observed across multiple sessions it can be stated confidently; where it is
+novel, say so. The doc should be honest about what is established vs. what is
+emerging. This is also a case study opportunity: the session-brief was sparred
+before being committed, and the spar improved it — that meta-development loop
+is itself worth documenting alongside the pattern.
+
+Cover:
 - The three patterns: meta-prompt pipeline, planning mode, session-start
-  briefing
-- What each is for, when to use it, cost/benefit of each
+  briefing — what each is for, cost/benefit, when to use it
 - The gap the meta-prompts skill fills (and where it's overkill)
-- The missing named pattern: session-start briefings (this file = example)
-- The clean room use case: private-to-public handoffs as a distinct use case
-  from same-session continuity
+- Session-brief vs. whats-next: when they overlap and when they don't — be
+  explicit, don't assume the distinction is obvious
+- The privacy-filtered handoff as a distinct use case — with the accurate
+  framing (curated handoff, not clean room)
+- The /start bypass: when using a session-brief, `/start` is intentionally
+  skipped. Name this tradeoff — you lose orientation infrastructure in exchange
+  for a focused, pre-scoped entry point. That's appropriate when you know
+  exactly what you're walking into.
 - Practical guidance: for a given task, which pattern fits?
 
 **Audience:** Peers and users new to this framework. Write for an external
@@ -136,18 +142,26 @@ Register the doc in `docs/ai-engineering/README.md` when done.
 
 ## Lifecycle
 
-**First action:** Move this file to archive before starting work:
+This file is active until consumed. Once you've read and internalized it,
+archive it so it doesn't appear stale on future `/start` runs:
+
 ```bash
 mkdir -p .planning/archive
-mv .planning/session-brief.md .planning/archive/session-brief-2026-04-20.md
+git mv .planning/session-brief.md .planning/archive/session-brief-2026-04-20.md
+git commit -m "planning: archive session brief (consumed)"
 ```
-This signals the brief has been consumed. Work proceeds from the archived copy.
 
-**Last action:** Once all three deliverables are complete and verified, run
-`/whats-next`, then delete the archived brief:
+When all three deliverables are verified complete and `/whats-next` is written,
+delete the archived copy:
+
 ```bash
-rm .planning/archive/session-brief-2026-04-20.md
+git rm .planning/archive/session-brief-2026-04-20.md
+git commit -m "planning: delete consumed session brief"
 ```
+
+Archive when done reading. Delete when done working. Don't make it your first
+action — read the brief and start working; handle the archive when it feels
+natural, not as a prescribed step 0.
 
 ---
 
