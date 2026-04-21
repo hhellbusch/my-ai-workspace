@@ -57,6 +57,10 @@ Overwrite `.planning/whats-next.md` with the following compact format:
 
 **Uncommitted work:** [None / Yes — brief description of what's staged or modified]
 
+**Open threads (stack):** *(optional — omit if only one active thread)*
+- `[bottom]` Parent topic — status
+  - `[open]` Subtopic — what's waiting
+
 ---
 
 *Checkpoint — not a full session summary. See git log for full history.*

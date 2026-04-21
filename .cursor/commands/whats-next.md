@@ -180,4 +180,15 @@ If work completed in this session resolved a backlog item, move it to Done in `B
 - Scope shifts: "The user broadened/narrowed Z" — were all planning docs updated?
 - Context reliance: "We relied on [handoff/summary] without re-reading the brief"]
 </assumptions_carried>
+
+<open_threads>
+[Optional — only include if the session left multiple threads open in a depth-first stack. Omit if there's only one active thread or the work is fully resolved.
+
+Format:
+- `[bottom]` Parent topic — status
+  - `[open]` Subtopic — what's waiting
+    - `[open]` Sub-subtopic — if needed
+
+The next session should return to each thread in reverse order (innermost first, then surface up) unless the user redirects.]
+</open_threads>
 ```

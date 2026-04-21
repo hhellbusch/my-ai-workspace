@@ -24,6 +24,26 @@ If the user starts a session with a vague request like "let's continue" or "what
 
 ---
 
+## Depth-First Navigation — Conversation Stack
+
+Sessions naturally explore topics in a depth-first pattern: a main thread gets set aside to chase a subtopic, which may spawn its own subtopic, before returning up. This is implicit in every session but easy to lose track of, especially after a long tangent or context-heavy detour.
+
+**Posture, not mechanism:** The goal is to stay attuned to when a branch has reached a natural conclusion and the conversation owes a return. When something feels resolved — a question answered, a task wrapped up, a tangent satisfied — surface it conversationally: *"That feels resolved. We were working on X before — want to return to that?"* This is a light touch, not an interruption. Skip it if the user is clearly in motion.
+
+**Stack depth as signal:** If a session is 4–5 levels deep (parent → subtopic → sub-subtopic → tangent), that's a signal to park something before pushing further. A thread that's getting hard to track verbally should be captured in a checkpoint before more context is added.
+
+**Stack state in checkpoints:** When open threads exist at checkpoint time, capture them with an optional `**Open threads (stack):**` field:
+
+```
+**Open threads (stack):**
+- `[bottom]` Parent topic — status
+  - `[open]` Subtopic — what's waiting
+```
+
+Omit the field if there's only one active thread. See `/checkpoint` and `/whats-next` for where this field appears.
+
+---
+
 ## Progressive Bookkeeping — Keep State Current During the Session
 
 Bookkeeping at session end is not enough. Crashes, context loss, and abrupt endings happen mid-session. The goal is: at any point in the session, the repository state + `.planning/whats-next.md` should be accurate enough that a new session can recover without re-litigating decisions.

@@ -88,11 +88,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
-### Framework: stack-based conversation tracking
-- **Product:** meta
-- **Context:** Users (and the agent) naturally explore topics in a depth-first stack pattern: push a subtopic, explore until satisfied, pop back to the parent. This is implicit in every session but invisible — making it hard to recover after a tangent and almost impossible to capture in a handoff. Encoding this: (1) recognize "push/pop" as navigational language, (2) agent surfaces "that feels resolved — we were on X before, want to return?" when a branch concludes, (3) add an optional `**Open threads:**` field to the checkpoint/whats-next format so stack state survives session boundaries. Stack depth is also a useful signal: if it's getting deep (4-5 levels), something needs to be parked before pushing further. Lightweight — convention + checkpoint field is sufficient before considering a `/stack` command.
-- **Links:** `.cursor/commands/checkpoint.md`, `.cursor/commands/whats-next.md`, `.cursor/rules/session-awareness.md`
-- **Added:** 2026-04-20
 
 ### Framework: /start simplification audit — what can become opt-in?
 - **Product:** meta
@@ -435,6 +430,10 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ## Done
 
 Rolling cap: at most **15** items stay here (newest first). Older completions live in `BACKLOG-ARCHIVE.md` (see `/backlog` command — **Done retention**). Git history remains authoritative.
+
+### Framework: stack-based conversation tracking ✓ Done 2026-04-20
+- Added push/pop posture to `.cursor/rules/session-awareness.md` — recognizes depth-first navigation as a conversational posture, not a state machine; agent surfaces "that feels resolved — want to return to X?" when a branch concludes. Added optional `**Open threads (stack):**` field to both `/checkpoint` and `/whats-next` formats.
+- **Links:** `.cursor/rules/session-awareness.md`, `.cursor/commands/checkpoint.md`, `.cursor/commands/whats-next.md`
 
 ### Research: Miessler Single DA Thesis — transcript, full pipeline, Thread 21
 - **Product:** library / research / docs
