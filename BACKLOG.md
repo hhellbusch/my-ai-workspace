@@ -183,11 +183,8 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `docs/case-studies/when-the-repository-becomes-the-resume.md`, `ABOUT.md`, `.cursor/rules/cross-linking.md`
 - **Added:** 2026-04-20
 
-### Case study: feedback from an AI is still a symptom report, not a diagnosis
-- **Product:** docs (case-studies)
-- **Context:** During Zanshin Kit Phase 2, Copilot produced structured, typed self-evaluation of the working style — honest, no padding, applied the kit's own discipline. On the surface, a clean Phase 1 success. But the feedback misidentified context drift (long session, diverged state) as multi-context collision (multiple windows writing to the same file). Three changes were implemented before the root cause was clarified. One of those changes (multi-context guidance) was derived directly from the misdiagnosis and was later removed after shoshin revealed the same logic that killed a proposed "context drift" addition also applied to the multi-context section. Secondary finding: the kit's own discipline wasn't applied during the iteration — shoshin should have been run on the Copilot feedback before implementing, not after. The meta-lesson: AI self-diagnosis of its own failure modes is structurally unreliable. A drifted or confused AI produces fluent, confident-sounding explanations of what went wrong — and those explanations are shaped by the same confusion that caused the problem. Treat AI feedback as a symptom report that requires the same verification discipline as any other AI output. The fix: apply shoshin to incoming feedback before acting on it.
-- **Links:** `zanshin-kit/WORKING-STYLE.md`, `.planning/zanshin-kit/ROADMAP.md`
-- **Added:** 2026-04-20
+### ~~Case study: feedback from an AI is still a symptom report, not a diagnosis~~ ✓ Done 2026-04-20
+- Published as `docs/case-studies/ai-self-diagnosis-symptom-report.md`. Registered in `docs/case-studies/README.md` and `docs/README.md`.
 
 ### Case study: language precision matters — how /spar sharpened a framework artifact
 - **Product:** docs (case-studies)

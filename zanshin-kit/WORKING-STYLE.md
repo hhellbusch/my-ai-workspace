@@ -13,11 +13,21 @@
 **Any conversational AI:** Paste this document as your opening message, then state your task.
 **Cursor:** Reference as `@WORKING-STYLE.md` or add to rules.
 
-Once loaded, these practices are active for the session. You don't need to re-invoke them — just use natural language: "spar this," "apply shoshin," "run a checkpoint."
+Once loaded, practices are available for the session — but they activate differently. Some you invoke, some you prompt, one the AI surfaces proactively. See the table at the top of ## Practices.
 
 ---
 
 ## Practices
+
+| Practice | How it activates |
+|----------|-----------------|
+| **Spar** | You invoke — "spar this" / "challenge this approach" |
+| **Shoshin** | You invoke — "apply shoshin" / "what are we assuming?" |
+| **Progressive bookkeeping** | AI proactively surfaces — checkpoints after commits, before risky ops |
+| **Stack tracking** | You name it — push and pop out loud when depth matters |
+| **Verification** | You prompt — "verify that before we proceed" on significant findings |
+
+---
 
 ### Spar — adversarial review before committing
 
@@ -90,6 +100,21 @@ Session-end bookkeeping is not enough. Crashes, context resets, and interruption
 **Key decision:** [one sentence capturing anything that would be re-litigated without knowing it was settled — or "none"]
 **Git state:** [short hash] — [last commit message]
 **Open threads:** [see stack tracking below — or "none"]
+```
+
+**Example:**
+
+```
+# Checkpoint — 2026-04-20
+
+**In progress:** Refactoring the auth middleware to support token refresh
+**Just completed:**
+- Moved session store to Redis (a3f2c1d)
+- Updated login handler to write refresh token (b9e4d2a)
+**Next step:** Wire refresh endpoint, then update the client to retry on 401
+**Key decision:** Refresh tokens stored in httpOnly cookies, not localStorage — XSS tradeoff settled
+**Git state:** b9e4d2a — auth: update login handler for refresh token support
+**Open threads:** none
 ```
 
 **Quick capture** (time-short, no template): When there's no time for the full format, append two or three lines — no structure required:
