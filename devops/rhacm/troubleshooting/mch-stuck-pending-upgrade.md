@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "AI-generated. Steps 1–3 and Step 7 detection (stale Progressing condition, leader election lease) used and confirmed in session 2026-04-21. Steps 7b–7d attempted — annotation and ClusterRole deletion executed, frozen condition unresolved. Step 7e documents open support case path. Steps 4, 5, 6 not exercised in this session. Needs full commands-verified pass against a resolved incident."
+---
+
 # Troubleshooting: MCH Stuck in Pending / Upgrading State
 
 **Symptom:** After initiating a hub cluster upgrade, the `MultiClusterHub` resource stays in `Updating`, `Pending`, or `Installing` status indefinitely — beyond the expected window of up to 10 minutes.

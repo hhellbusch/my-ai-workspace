@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "AI-generated. Step 1 (MCH status checks) and Step 2a (managed cluster status, lease renewal checks) used and confirmed in session 2026-04-21 during EUS upgrade. Scenario A updated to cover frozen-MCH case. Scenarios B–D and Step 3 klusterlet-side checks not exercised in this session. Step 3f cert expiry snippet replaced with openssl path (untested on managed cluster node). Needs commands-verified pass against a full recovery scenario."
+---
+
 # Troubleshooting: Registration Agent Stopped Updating Its Lease
 
 **Symptom:** One or more managed clusters show status `Unknown` with the message:

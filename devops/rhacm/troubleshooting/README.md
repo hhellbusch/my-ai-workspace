@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "AI-generated index. Needs read pass to confirm guide descriptions match current content."
+---
+
 # RHACM Troubleshooting Guides
 
 Practical diagnostic guides for Red Hat Advanced Cluster Management operational issues.
