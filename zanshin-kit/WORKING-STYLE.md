@@ -98,7 +98,7 @@ Session-end bookkeeping is not enough. Crashes, context resets, and interruption
 > YYYY-MM-DD HH:MM — [what's happening / what's next]
 ```
 
-Quick captures append to the file rather than replacing it. A future session can read the trail and reconstruct state well enough.
+Quick captures append to the file rather than replacing it. A future session can read the trail and reconstruct state well enough. **Quick capture is a fallback, not a default** — if the full format is possible, use it.
 
 **Session handoff** (end-of-session, fuller): Same file, same location, more detail — add remaining gaps, framing decisions made, and context a fresh session would need to pick up without asking questions already answered.
 
@@ -152,7 +152,7 @@ AI output that sounds confident may still be wrong. Fluent prose covers both ass
 > YYYY-MM-DD HH:MM [context label, e.g. "window 2"] — [state capture]
 ```
 
-The file becomes a timestamped log when multiple contexts are active. A fresh session reads the most recent entry; stale entries above it are context archaeology, not active state.
+The file becomes a timestamped log when multiple contexts are active. **The most recent datestamped entry is the active state; everything above it is history.** A fresh session reads the most recent entry; stale entries above it are context archaeology.
 
 **Close-out mode** (loaded at session end, not session start): When this document is loaded to close out a session, skip spar, shoshin, and stack tracking — the session is done. Activate only progressive bookkeeping and checkpoint/handoff:
 
