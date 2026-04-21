@@ -45,6 +45,10 @@ This would be manageable if practitioners compensated. But the session boundary 
 
 The consequences compound slowly. Decisions get re-litigated. Framing drifts across sessions. Work that felt coherent within sessions becomes incoherent across them. The model performs well in each session — the outputs are fluent, locally correct, responsive. The problems live in the gaps between sessions, where no model output covers them and no practitioner naturally lingers.
 
+The structural version of this is literal: a directory reorganization commits cleanly. Twenty sessions later, there are twenty-three broken links — relative paths that pointed correctly before the directory moved and now resolve to nothing. No individual session was negligent. The failure was treating each reorganization as complete when the files committed. Each session ended with the work feeling done. Nobody lingered at the boundary to ask what the move had broken.
+
+Engineering approaches to cross-session state exist. Long-context models retain more of a single session. Agent frameworks offer persistent memory. Context versioning tools automatically reload what was committed. These address retrieval — making information that was available once available again. They don't address judgment about what should carry forward: which decisions should be inherited unchanged, which framing has drifted from the original intent, which context accumulated during a conversation that no longer exists has silently shaped the current direction. Adding memory to a tool doesn't resolve whether a decision that made sense six sessions ago still makes sense now. That's not a retrieval problem. It's a practice problem — one that belongs to the practitioner, not the model.
+
 Most thinking about AI productivity focuses on the session: better prompts, better models, better integrations. These are real improvements. But they address quality within the unit of work, not coherence across units. The harder problem is the gap — not the technique, but the zanshin.
 
 ---
@@ -71,7 +75,7 @@ Zanshin in the dojo is different in kind. It isn't built through monitoring. It'
 
 The question the framework can't answer for you is which kind of zanshin you're building. The commands run. The handoff gets written. The context loads. That's the instrumented layer — valuable, worth having. The trained layer is whether you read what was written before generating output, whether you actually question the framing before inheriting it, whether the session close prompts genuine reflection or just triggers the appropriate commands.
 
-Both matter. Neither substitutes for the other.
+Both matter. Neither substitutes for the other. But the direction of development is asymmetric: instrumented zanshin can be taught immediately, applied by anyone, and doesn't require years of prior practice. Trained zanshin, if it develops at all, tends to develop through the accumulated use of the instrumented kind — through the practice of actually reading the handoff before generating output, of questioning inherited framing rather than carrying it forward, of treating the session close as a threshold worth attending to rather than a transition to skip. The instrumented layer is the curriculum. Whether you're developing the capacity underneath it or just running the commands is something only you can evaluate.
 
 ---
 
@@ -81,9 +85,13 @@ We named the framework Zanshin because the problem is literally: what remains wh
 
 Not "how do I get better output from a session" — there are many good answers to that. The harder question is what the next session starts from. What's in the committed files? What decisions don't have a record? What framing was established in a conversation that no longer exists? What context was accumulated, then compressed as the session grew long?
 
-The dojo concept doesn't map perfectly onto AI-assisted work. It rarely does when concepts cross domains. But the structural insight holds: the moment of completion is where the most important work either happens or doesn't. The technique lands. Remaining mind holds the awareness of what that means, what comes next, what still needs attention.
+The dojo concept doesn't map perfectly onto AI-assisted work. Zanshin in the dojo operates in continuous time — the fight is still ongoing, the opponent is present, the cost of dropped attention is immediate and felt. The session boundary is discrete: work stops, time passes, the pressure releases entirely. There is no opponent waiting to counterpunch while you're away from the keyboard.
 
-The session ends. Zanshin is what you write down.
+What maps is not the mechanics but the psychology. The dojo practitioner feels the pull to relax after a technique lands — the natural response to completion is dispersal. The practitioner at session close feels the same pull. Both are treating completion as finality when it isn't. Zanshin, in each context, is the practice of noticing that tendency and doing something different at that moment.
+
+The structural insight holds: the moment of completion is where the most important work either happens or doesn't. The technique lands. Remaining mind holds the awareness of what that means, what comes next, what still needs attention.
+
+The session ends. What you write down is evidence of remaining mind. Whether it constitutes zanshin depends on what you brought to writing it.
 
 ---
 
