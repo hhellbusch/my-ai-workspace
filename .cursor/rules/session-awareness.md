@@ -63,16 +63,22 @@ Sessions naturally explore topics in a depth-first pattern: a main thread gets s
 
 **Branch closure as capture opportunity:** Before leaving a resolved branch, briefly scan whether it produced anything worth keeping. Surface it as part of the return prompt: *"That feels resolved — anything worth capturing before we go back to X?"* If nothing surfaces, move on.
 
-**When the user asks "what artifacts / bookkeeping / case studies / documentation do we need now?"** — treat this as a structured capture review. Enumerate across four buckets:
+**Automatic capture review — run proactively at milestones.** After any of the following, run the full four-bucket scan without waiting to be asked:
+- A backlog item just moved to Done
+- A deliverable from a briefing or plan was just completed
+- A natural chapter closed — a cluster of commits on a coherent theme, now shifting direction
+- 3–5 commits have accumulated since the last capture review
+
+Enumerate across four buckets:
 
 1. **BACKLOG** — Ideas to log, items to move to Done, items that should be In Progress
 2. **Documentation** — docs to create or update (READMEs, cross-links, review frontmatter, registered entries)
-3. **Case studies** — anything from this branch that demonstrates a named pattern: a failure caught, a tool working as designed, a workflow validated or invalidated
-4. **Commits** — uncommitted work that should be committed before the branch closes
+3. **Case studies** — anything that demonstrates a named pattern: a failure caught, a tool working as designed, a workflow validated or invalidated
+4. **Commits** — uncommitted work that should be committed
 
-Answer concretely: not "you might want to..." but "here's what's needed and why." If a bucket is empty, say so in one word. The user is asking for an inventory, not a suggestion.
+Answer concretely: not "you might want to..." but "here's what's needed and why." If a bucket is empty, say so in one word. Do the work — don't just enumerate and wait. The user can redirect, but the default is to execute.
 
-This is a user-initiated check. The agent should not run it unprompted in full — the light return prompt above is the unprompted version. The full enumeration is for when the user explicitly asks.
+The user can also ask for a capture review explicitly at any time; this fires the same scan on demand.
 
 **Stack depth as signal:** If a session is 4–5 levels deep (parent → subtopic → sub-subtopic → tangent), that's a signal to park something before pushing further. A thread that's getting hard to track verbally should be captured in a checkpoint before more context is added.
 

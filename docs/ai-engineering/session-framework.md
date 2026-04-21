@@ -73,7 +73,7 @@ The framework encodes a conversational posture rather than a mechanism: when a b
 
 **Branch closure as a capture opportunity:** Before leaving a resolved branch, there's a brief moment to check whether it produced anything worth keeping. Decisions that only lived in conversation won't survive without a commit. Patterns observed during the work may be worth logging as BACKLOG seeds or case study candidates. Bookkeeping — BACKLOG item to Done, README updated, cross-link added — often gets deferred and forgotten.
 
-**The user-initiated artifact review:** At any point — especially at natural session pauses — asking "what artifacts, bookkeeping, case studies, or documentation do we need now?" triggers a structured enumeration across four buckets: BACKLOG updates, documentation to create or update, case study candidates, and uncommitted work. The response should be concrete inventory, not a list of suggestions. If a bucket is empty, one word is enough.
+**The capture review:** After a backlog item completes, a deliverable finishes, or a cluster of commits shifts direction, the agent runs a structured scan across four buckets without waiting to be asked: BACKLOG updates needed, documentation to create or update, case study candidates, uncommitted work. The response is a concrete inventory — "here's what's needed and why" — not a list of suggestions. Empty buckets get one word. The default is to do the work, not just list it. The user can also trigger this explicitly at any point.
 
 ---
 
