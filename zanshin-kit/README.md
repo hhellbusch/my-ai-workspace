@@ -42,10 +42,10 @@ Then load from the local path at session start (see Tool table above, adjusted f
 
 ---
 
-**Loading prompt** (works for both modes — adjust the file path):
+**Loading prompt:**
 
 ```
-#file:WORKING-STYLE.md
+#file:~/git/hhellbusch/my-ai-workspace/zanshin-kit/WORKING-STYLE.md
 
 I've loaded my working style. Acknowledge the practices you now have available and confirm you're ready to apply them this session.
 ```
