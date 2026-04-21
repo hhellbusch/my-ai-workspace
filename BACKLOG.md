@@ -89,11 +89,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ## Ideas
 
 
-### Framework: /start simplification audit — what can become opt-in?
-- **Product:** meta
-- **Context:** `/start` currently loads ABOUT.md, BACKLOG.md (500+ lines), a session handoff, git log, and BRIEFs and ROADMAPs for every planning project on every session start. That load grows proportionally as the workspace grows. The opt-in principle (encoded in `workspace-ethos.md` 2026-04-20) asks: which of these are genuinely needed on every session, and which are only needed when you're actively working on that context? Planning project BRIEFs and ROADMAPs may only be needed when resuming that project — `/start` could note their existence and load them on request rather than speculatively. A lightweight audit: for each thing `/start` loads, ask "does the user need this on every session?" If no, make it opt-in.
-- **Links:** `.cursor/commands/start.md`, `.cursor/rules/workspace-ethos.md`, `.cursor/rules/session-awareness.md`
-- **Added:** 2026-04-20
 
 ### Essay / guide: crafting a public identity for an AI workspace — the ABOUT.md pattern
 - **Product:** docs (meta / AI-engineering)
@@ -430,6 +425,10 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ## Done
 
 Rolling cap: at most **15** items stay here (newest first). Older completions live in `BACKLOG-ARCHIVE.md` (see `/backlog` command — **Done retention**). Git history remains authoritative.
+
+### Framework: /start simplification audit ✓ Done 2026-04-20
+- Audited all `/start` steps against "does the user need this every session?" Steps 2.5 (brief alignment) and 4 (ROADMAP status) both load every planning project file on every session start — cost grows proportionally as the workspace grows. Made both opt-in: Step 2.5 now announces planning projects without reading BRIEFs; Step 4 only reads ROADMAPs when the user is resuming a specific project. Steps 0, 1, 2, 3, 5 stay always-on (ABOUT.md, backlog, handoff, git log, suggestions — all genuinely needed every session).
+- **Links:** `.cursor/commands/start.md`
 
 ### Framework: stack-based conversation tracking ✓ Done 2026-04-20
 - Added push/pop posture to `.cursor/rules/session-awareness.md` — recognizes depth-first navigation as a conversational posture, not a state machine; agent surfaces "that feels resolved — want to return to X?" when a branch concludes. Added optional `**Open threads (stack):**` field to both `/checkpoint` and `/whats-next` formats.

@@ -96,26 +96,33 @@ If a `.continue-here*.md` file exists in any `.planning/` subdirectory:
 2. Present: which project, which phase, what was in progress
 3. Ask: "There's a planning handoff for [project]. Want to resume?"
 
-### Step 2.5: Fresh-eyes check (shoshin)
+### Step 2.5: Planning projects — announce, don't load
 
-For each directory in `.planning/` that has a `BRIEF.md`:
-
-1. Read the brief's **one-liner**, **problem** statement, and **success criteria**
-2. Compare against the current In Progress and Up Next backlog items
-3. If there's a gap — work that doesn't connect to any stated goal, or stated goals with no active work — note it briefly:
+List what's in `.planning/` without reading into every project:
 
 ```
-## Brief Alignment
+ls -d .planning/*/ 2>/dev/null
+```
+
+Present as a single line: "Planning projects: [name], [name], ..." (or "No planning projects.")
+
+**Do not read BRIEFs or ROADMAPs here.** If the user is resuming a specific project, they'll say so, and brief alignment should be checked then. Loading every BRIEF and ROADMAP on every session start scales poorly as the workspace grows — each project adds file reads even when the session has nothing to do with it.
+
+To run a brief alignment check (shoshin) for a specific project, ask the user: "Want me to check brief alignment for [project]?" or do it on request. When asked:
+1. Read the brief's **one-liner**, **problem** statement, and **success criteria**
+2. Compare against In Progress and Up Next backlog items
+3. Surface gaps only — if everything aligns, one line suffices
+
+```
+## Brief Alignment — [project]
 - **[project]**: Current work aligns with stated goals.
   OR
-- **[project]**: In Progress item "[title]" doesn't connect to any success criterion in the brief. Has the scope evolved, or has the work drifted?
+- **[project]**: In Progress item "[title]" doesn't connect to any success criterion. Has scope evolved?
   OR
-- **[project]**: Brief lists "[criterion]" as a goal but nothing in the backlog is working toward it.
+- **[project]**: Brief lists "[criterion]" but nothing in the backlog is working toward it.
 ```
 
-If a `CHANGELOG.md` exists in the planning directory, check the most recent entry — it captures why the scope last changed and may explain apparent drift.
-
-This step is lightweight. If everything aligns, one line is enough. Only surface conflicts.
+If a `CHANGELOG.md` exists in the planning directory, check its most recent entry first — it captures why scope last changed.
 
 ### Step 3: Recent activity
 
@@ -124,12 +131,16 @@ From the git log, identify:
 - Any uncommitted changes (`git status`)
 - Present as: "Last session you worked on: [summary of recent commits]"
 
-### Step 4: Planning project status
+### Step 4: Planning project status — on request only
 
-For each directory in `.planning/`:
-1. Read `ROADMAP.md` if it exists
+Do **not** read ROADMAPs automatically. The planning projects were listed in Step 2.5. Reading every ROADMAP on every session start scales poorly.
+
+If the user is resuming a specific project, or asks for roadmap status:
+1. Read `ROADMAP.md` for that project
 2. Find the current phase (first phase with status "Not started" or "In progress")
 3. Present: "[project]: Phase N — [name] ([status])"
+
+If no project is specified and the session has a clear non-planning focus, skip this step entirely.
 
 ### Step 5: Suggest focus
 
