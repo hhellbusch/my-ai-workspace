@@ -26,6 +26,9 @@ Four entry points. Each works standalone.
 **Curious about how AI shapes how we think — ego, agreement, sycophancy:**
 [Ego, AI, and the Zen Antidote](docs/philosophy/ego-ai-and-the-zen-antidote.md) — AI assistants are trained to agree with you. This essay traces why that's a structural problem (not just a behavior to watch for), and what Zen practices offer as a structural — not just behavioral — response.
 
+**Want to adopt the collaboration framework in your own work:**
+[Zanshin — Portable Session Context](docs/ai-engineering/framework-bootstrap.md) — the single-file bootstrap for loading the Zanshin framework into any AI tool. Clone this repo alongside a project, point your AI at this file, and get the framework's behavioral posture without Cursor-specific setup. Covers the core dispositions, minimum viable load, and tool-specific instructions (Copilot, Claude Code, chat-based AI).
+
 ---
 
 ## Essays and Case Studies
@@ -69,7 +72,7 @@ Practical, runnable examples and troubleshooting guides for infrastructure and p
 
 **Share specific pieces** — individual `docs/` files are the primary sharing unit. Sharing a direct GitHub link to an essay or case study is the intended workflow.
 
-**Use as a template** — the `.cursor/` directory (slash commands, skills, rules) is designed to be portable. Clone the repo and add it as a reference folder in Copilot, VS Code, Cursor, or similar tools to load the workflow patterns into your own context. [The Session Framework](docs/ai-engineering/session-framework.md) explains the behavioral patterns behind the tooling — what each behavior defends against and why.
+**Use as a template** — the `.cursor/` directory (slash commands, skills, rules) is designed to be portable. Clone the repo and add it as a reference folder in Copilot, VS Code, Cursor, or similar tools to load the workflow patterns into your own context. [Zanshin — Portable Session Context](docs/ai-engineering/framework-bootstrap.md) is the single-file entry point: point your AI at that file and it operates with the framework's posture immediately. [The Session Framework](docs/ai-engineering/session-framework.md) has the full behavioral map and reasoning behind each practice.
 
 Details and structure in [.cursor/README.md](.cursor/README.md). The [backlog](BACKLOG.md) shows what's actively in progress.
 
