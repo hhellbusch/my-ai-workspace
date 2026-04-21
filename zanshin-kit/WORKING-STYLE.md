@@ -146,18 +146,12 @@ AI output that sounds confident may still be wrong. Fluent prose covers both ass
 - If no `BACKLOG.md` exists: create one with `## In Progress`, `## Up Next`, `## Ideas` sections
 - Commits go to the local repository
 
-**Multi-context collision** (multiple sessions writing to the same file): Don't replace — append. Include a datestamp so contexts are distinguishable:
-
-```
-> YYYY-MM-DD HH:MM [context label, e.g. "window 2"] — [state capture]
-```
-
-The file becomes a timestamped log when multiple contexts are active. **The most recent datestamped entry is the active state; everything above it is history.** A fresh session reads the most recent entry; stale entries above it are context archaeology.
-
 **Close-out mode** (loaded at session end, not session start): When this document is loaded to close out a session, skip spar, shoshin, and stack tracking — the session is done. Activate only progressive bookkeeping and checkpoint/handoff:
 
 > "Write a handoff for this session." — produces a checkpoint or quick capture, nothing else.
 
 Trigger: "close-out" / "write a handoff" / "session is ending."
+
+When the session state file already has content from a previous context, append with a datestamp — don't replace. The most recent entry is the active state.
 
 **On drift:** This document is a snapshot of a working style that evolves. If something feels off or outdated, re-copy from the source workspace. The version date above indicates how current this snapshot is.
