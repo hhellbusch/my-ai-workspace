@@ -38,7 +38,7 @@ Three changes applied to `WORKING-STYLE.md`:
 
 **Secondary finding:** The kit's own discipline wasn't applied during Phase 2 iteration — shoshin should have been run on the Copilot feedback before implementing changes. This is a process observation, not a document flaw. Noted for Phase 3 practice.
 
-**Pending:** Re-test in a real Copilot session to confirm quick capture and close-out mode behave as specified. Close-out mode in particular — suppression instructions are harder to verify than activation instructions.
+**Pending:** Re-test close-out mode with accumulated session context. Tested once (load → immediate close-out) — Copilot correctly wrote a minimal handoff but there was nothing for shoshin to surface. The real test requires: load at start → do actual work → trigger close-out. That's when the shoshin questions ("what's in context that won't survive the reboot?") have substance to work with. Quick capture also untested under time pressure.
 
 ---
 
