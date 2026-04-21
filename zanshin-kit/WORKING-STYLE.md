@@ -38,14 +38,34 @@ Use before committing to an approach, design, plan, or significant decision.
 **How it works:**
 1. Generate 3–5 arguments *against* the target — approach, design, or decision
 2. **Steel-man each:** present the *strongest* version of the objection. Not a dismissal, not a strawman — the version that would make someone actually change course
-3. **Classify each argument:**
-   - **Structural** — the core logic or mechanism fails
-   - **Evidence** — confident assertion dressed as a verified finding
-   - **Scope** — framed too narrowly, too broadly, or solving the wrong problem
-   - **Presentation** — the claim holds but how it's stated undermines it
-   - **Consistency** — contradicts something else that's already decided
-4. **Self-audit:** Which argument above is genuinely strongest? Which might be contrarian reflex rather than real analysis? Say so explicitly.
-5. **Close with:** "Where am I right, and where am I pattern-matching into a devil's advocate role?"
+3. **For each argument, produce this structure:**
+
+```
+**N. [Argument title]**
+
+Type: Structural | Presentation | Scope | Evidence | Consistency
+The argument: [Steel-manned critique — the strongest version, not a strawman]
+Why it matters: [What breaks or weakens if this criticism is valid — in concrete terms]
+Strength: Strong | Moderate | Weak — [one sentence: genuine weakness or contrarian reflex?]
+```
+
+4. **Close with a self-audit in this format:**
+
+```
+**Self-Audit**
+Strongest: [number] — [why this one actually matters]
+Weakest: [number] — [why this might be contrarian pattern-matching]
+What I might be missing: [blind spots in this review itself]
+```
+
+5. **End with:** "Where am I right, and where am I pattern-matching into a devil's advocate role?"
+
+**Argument types:**
+- **Structural** — the core logic or mechanism fails
+- **Evidence** — confident assertion dressed as a verified finding
+- **Scope** — framed too narrowly, too broadly, or solving the wrong problem
+- **Presentation** — the claim holds but how it's stated undermines it
+- **Consistency** — contradicts something else that's already decided
 
 **Rules:**
 - Attack the *strongest* claims, not the weakest. Three strong arguments beat seven weak ones.

@@ -65,14 +65,31 @@ Concrete example checkpoint added to `WORKING-STYLE.md` — abstract templates p
 
 ---
 
-## Possible Phase 3 — Extended delivery (if needed)
+## Phase 3 — Output format anchoring and scope definition
 
-**Status:** Idea — evaluate after Phase 2
+**Status:** In progress — 2026-04-21
 
-**Copilot keyword registration:** `.github/copilot-instructions.md` can register keyword behaviors — teaching Copilot to respond to `/spar`, `/checkpoint` etc. as invocation keywords that trigger the corresponding WORKING-STYLE.md practice. This partially addresses the document-drift-during-session problem (Argument 1 from the Phase 1 spar): explicit keyword invocation re-anchors the practice without relying on the full document staying active in the context window. Note: this won't create a true slash command UI (that requires a VS Code extension), but it does make the invocation more reliable.
+**Finding that triggered this phase:**
+
+Spar output in Copilot Chat (Claude model, `#file:` loading) differed in pattern from spar output in Cursor (Claude, system-prompt-level rules). Same model, different execution environment. Diagnosis: the WORKING-STYLE.md spar section described the *process* in prose but provided no output template — Claude had to infer the format and produced something looser.
+
+**Fix applied (2026-04-21):**
+
+Added explicit output templates to the spar section:
+- Argument block template: `Type:`, `The argument:`, `Why it matters:`, `Strength:` as labeled fields
+- `**Self-Audit**` section template: Strongest, Weakest, What I might be missing — as explicit fields
+- Argument types moved to reference block after the templates (process steps flow cleanly, types available for reference)
+
+**Root cause principle:** When a structured process produces inconsistent output across tools, the fix is usually a format template, not a longer description. The model needs to know what to *produce*, not just what to *think about*.
+
+**Deferred to possible Phase 4:**
+
+**Copilot keyword registration:** `.github/copilot-instructions.md` can register keyword behaviors — teaching Copilot to respond to `/spar`, `/checkpoint` etc. as invocation keywords that trigger the corresponding WORKING-STYLE.md practice. This partially addresses the document-drift-during-session problem (Argument 1 from the Phase 1 spar): explicit keyword invocation re-anchors the practice without relying on the full document staying active in the context window. Note: this won't create a true slash command UI (that requires a VS Code extension), but it does make the invocation more reliable. **Deferred — defer until there's a real need.**
 
 **Cursor-native layer:** If a personal/home project environment needs it separately from Field Notes.
 
 **Version tagging:** So drift between the snapshot and Field Notes is visible. A date in the filename or a `version:` field in WORKING-STYLE.md frontmatter.
 
-**Only build if Phase 1-2 reveals a real need. Don't build speculatively.**
+**Cross-linking (portable form) and backlog capture:** See BACKLOG item "Zanshin Kit — Phase 3 scope definition." Scope and always-on vs. invoke-only not yet settled.
+
+**Only build if real need is demonstrated. Don't build speculatively.**
