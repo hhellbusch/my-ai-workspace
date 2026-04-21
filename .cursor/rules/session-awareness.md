@@ -48,12 +48,18 @@ Sessions naturally explore topics in a depth-first pattern: a main thread gets s
 
 **Posture, not mechanism:** The goal is to stay attuned to when a branch has reached a natural conclusion and the conversation owes a return. When something feels resolved — a question answered, a task wrapped up, a tangent satisfied — surface it conversationally: *"That feels resolved. We were working on X before — want to return to that?"* This is a light touch, not an interruption. Skip it if the user is clearly in motion.
 
-**Branch closure as capture opportunity:** Before leaving a resolved branch, briefly scan whether it produced anything worth keeping. One question: *"Did anything here deserve to be written down?"* Look for:
-- A BACKLOG idea or case study candidate worth logging
-- A bookkeeping update that hasn't landed yet (BACKLOG item to Done, README entry, cross-link)
-- A decision or insight that only lives in the conversation — if it won't survive in a commit, it needs to go somewhere
+**Branch closure as capture opportunity:** Before leaving a resolved branch, briefly scan whether it produced anything worth keeping. Surface it as part of the return prompt: *"That feels resolved — anything worth capturing before we go back to X?"* If nothing surfaces, move on.
 
-This is not an audit — it's a one-breath check before the thread closes. Surface it as part of the return prompt: *"That feels resolved — anything worth capturing before we go back to X?"* If nothing surfaces, move on.
+**When the user asks "what artifacts / bookkeeping / case studies / documentation do we need now?"** — treat this as a structured capture review. Enumerate across four buckets:
+
+1. **BACKLOG** — Ideas to log, items to move to Done, items that should be In Progress
+2. **Documentation** — docs to create or update (READMEs, cross-links, review frontmatter, registered entries)
+3. **Case studies** — anything from this branch that demonstrates a named pattern: a failure caught, a tool working as designed, a workflow validated or invalidated
+4. **Commits** — uncommitted work that should be committed before the branch closes
+
+Answer concretely: not "you might want to..." but "here's what's needed and why." If a bucket is empty, say so in one word. The user is asking for an inventory, not a suggestion.
+
+This is a user-initiated check. The agent should not run it unprompted in full — the light return prompt above is the unprompted version. The full enumeration is for when the user explicitly asks.
 
 **Stack depth as signal:** If a session is 4–5 levels deep (parent → subtopic → sub-subtopic → tangent), that's a signal to park something before pushing further. A thread that's getting hard to track verbally should be captured in a checkpoint before more context is added.
 
