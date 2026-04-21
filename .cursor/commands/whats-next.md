@@ -80,6 +80,34 @@ Adapt the level of detail to the task type (coding, research, analysis, writing,
 
 Write to `.planning/whats-next.md` using the format below.
 
+### Step 1.3: Spar trigger evaluation
+
+Before writing the handoff, evaluate the session output against these triggers. If **two or more** fire, surface a recommendation before proceeding:
+
+| Trigger | Signal |
+|---|---|
+| **Argumentative output** | An essay, proposal, brief, or plan was drafted or significantly revised this session |
+| **Decision with trade-offs** | A non-trivial technical or design choice was made (architecture, tool, scope, framing) |
+| **External-facing output** | Work is being prepared to share, publish, or submit |
+| **Unchallenged direction** | The session has produced uniformly agreeable outputs — no pushback, no alternatives considered |
+| **Load-bearing claim** | The work rests on a claim that wasn't verified or challenged during the session |
+| **Scope expansion** | The task broadened mid-session beyond what was originally requested |
+| **Surprising conclusion** | The session arrived at a conclusion that would have been non-obvious at the start — high value to stress-test |
+
+**If two or more triggers fire:**
+> "Spar conditions detected: [list which triggers]. Want to run `/spar` on [specific target] before closing? It would take ~5 minutes and this is the highest-value moment — the output is fresh and a spar here prevents carrying a weak argument into the next session."
+
+Do not run the spar automatically. Always ask first.
+
+**Necessity vs. benefit distinction:**
+- **Necessary** (strongly recommend): argumentative output + external-facing, OR load-bearing claim + decision with trade-offs
+- **Beneficial** (worth asking): any two triggers
+- **Optional** (skip): zero or one trigger, or purely mechanical session (link fixes, registry updates, etc.)
+
+If the session was purely mechanical — no arguments, no decisions, no output that could be wrong — skip entirely.
+
+---
+
 ### Step 1.4: Cross-link check and registry sync for new docs
 
 Check whether any new `.md` files were committed this session:

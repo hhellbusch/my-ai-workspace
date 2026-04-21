@@ -68,6 +68,30 @@ Overwrite `.planning/whats-next.md` with the following compact format:
 
 Keep it short. Five minutes to write, thirty seconds to read. Do not add `<project_backlog>`, `<work_completed>`, `<critical_context>` sections — those belong in `/whats-next`. This is a save point, not a summary.
 
+### Step 2.4: Spar trigger evaluation
+
+Before logging the checkpoint, ask: **would a spar be beneficial right now?**
+
+Score the current session output against these triggers. If **two or more** fire, surface a recommendation before saving the checkpoint:
+
+| Trigger | Signal |
+|---|---|
+| **Argumentative output** | An essay, proposal, brief, or plan was drafted or significantly revised |
+| **Decision with trade-offs** | A non-trivial technical or design choice was made (architecture, tool, scope) |
+| **External-facing output** | Work is being prepared to share, publish, or submit |
+| **Unchallenged direction** | The session has produced only agreeable outputs — no pushback, no alternatives explored |
+| **Load-bearing claim** | A claim is being made that the rest of the work depends on, but wasn't verified |
+| **Scope expansion** | The work broadened mid-session beyond the original request |
+
+**If two or more triggers fire:**
+> "Spar conditions detected: [list which triggers fired]. Want me to run `/spar` on [specific target — the document, claim, or decision] before closing?"
+
+Do not run the spar automatically. Always ask first — the user may be in a "getting things done" mode where interruption costs more than the value.
+
+**If zero or one trigger fires:** skip this step entirely.
+
+---
+
 ### Step 2.5: Intervention log (lightweight)
 
 If a notable framework intervention fired since the last checkpoint — a spar that caught a structural issue, a stale-context detection, a recovered thread — append a one-line entry to `research/framework-efficacy/intervention-log.md`:

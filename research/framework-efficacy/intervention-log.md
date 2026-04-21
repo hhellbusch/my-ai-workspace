@@ -35,6 +35,31 @@ Append-only. New entries go at the top. One entry per notable framework interven
 
 ## Log
 
+### 2026-04-20 — audit — systematic link depth drift caught and root-caused after devops folder move
+
+**Intervention:** audit (`/audit` Layer 1 + Layer 2)
+**Session context:** Full content health audit run across 717 committed markdown files.
+**What it caught:**
+- **23 broken `AI-DISCLOSURE.md` links across `devops/`** — all off by exactly one `../` level. Root cause: content was moved one level deeper into `devops/` at some point and relative upward links weren't updated. The pattern was uniform — every file in the moved subtree had `current_ups = depth - 1`. Not random breakage; a systematic depth shift from a single reorganization event.
+- **5 docs missing from `docs/README.md`** — including `framework-bootstrap.md` (created the previous session), `local-llm-setup.md`, `local-llm-vllm.md`, `youtube-video-analysis.md`, `spar-finds-the-assumption.md`. The track-level README (`ai-engineering/README.md`) had been updated but the master index lagged.
+- **3 research dirs not in `research/README.md`** — `enkamp-shi-heng-yi-mastery/`, `framework-efficacy/` (created same session as audit), `youtube-sources-apr2026/`.
+- **Cross-reference gap**: `the-shift.md` (most-read entry point) had no links to any Zanshin anchor docs despite the framework being named and documented.
+- **False-positive diagnosis**: ~260 of 353 "broken links" were scraped web content in `research/*/sources/` (site-relative paths like `/en/products`) and ~11 were links inside fenced code blocks in skill reference files (example skill structures, not navigation links). Diagnosed as a class of structural false positives and fixed in the audit command itself.
+
+**Counterfactual:** Without the audit, the AI-DISCLOSURE depth drift would have persisted indefinitely — these files render and commit cleanly, nothing signals the break except clicking the link. The registry gaps would have compounded (more docs added to track READMEs, master index falling further behind). The false-positive noise (260 fake "broken links") would have buried genuine issues in every future audit run.
+
+**Severity:** Medium — no wrong output was produced; all affected files were findable by navigation. The value was structural integrity that prevents compounding drift.
+
+**Systemic outcome:** Three structural changes followed from root-cause analysis:
+1. `audit.md` Layer 1 updated to skip scraped-content dirs and fenced code blocks
+2. `whats-next.md` Step 1.4 now includes a registry sync check for master READMEs
+3. `repo-structure.md` "When Moving Directories" section now documents the link-depth drift pattern and a pre-commit shell snippet
+
+**Baseline comparison:** No  
+**Evidence:** Commits `624d386`, `d948f78` (2026-04-20)
+
+---
+
 ### 2026-04-20 — comparative — peer parallel problem: framework-loaded Copilot vs. standard Copilot
 
 **Type:** comparative  
