@@ -40,6 +40,18 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 **Definition of done:** PR opened against `redhat-cop/helm-charts`, checks green, reviewer feedback incorporated; optional follow-up — bump example comments in this workspace that pin “requires operators-installer >= 3.5.0” once upstream chart is released.
 
+### Zanshin Kit — Phase 3 scope definition: cross-linking and backlog capture
+- **Product:** meta / tooling
+- **Context:** Deferred train of thought from 2026-04-21. Two behaviors present in Field Notes rules but absent from the kit were flagged for possible inclusion: (1) cross-linking in portable form — when creating a new file, add it to relevant README/index; when renaming, update markdown links; verify external URLs before committing; link named files on first mention; (2) backlog capture — when user defers something, write it to BACKLOG.md immediately; create with standard sections if none exists; commit separately with `backlog:` prefix. Questions to settle before writing: always-on or invoke-only for each? Phase 3 addition (clean record) or revised BRIEF? Document growth is a known risk (Phase 2 ROADMAP). Also pending: assess whether spar output quality in the kit matches the source — separate concern, see adjacent backlog item.
+- **Links:** `zanshin-kit/WORKING-STYLE.md`, `.planning/zanshin-kit/BRIEF.md`, `.planning/zanshin-kit/ROADMAP.md`
+- **Added:** 2026-04-21
+
+### Zanshin Kit — assess spar output quality divergence
+- **Product:** meta / tooling
+- **Context:** Deferred train of thought from 2026-04-21. Symptom: spar output in the kit (Copilot Chat) may differ in quality from spar output in the source workspace (Cursor/Claude). Phase 1 ROADMAP noted spar mechanism transferred — vocabulary and discipline present. But the user wants to assess this more carefully. Key questions: is the divergence in argument classification, self-audit depth, steel-manning quality, or something else? Is it model-dependent (Copilot vs. Claude) or document-dependent (mechanism not fully encoded)? See `research/framework-efficacy/` for controlled comparison protocol.
+- **Links:** `zanshin-kit/WORKING-STYLE.md`, `.planning/zanshin-kit/ROADMAP.md`, `research/framework-efficacy/`
+- **Added:** 2026-04-21
+
 ## Up Next
 
 ### Guide: agentic personal AI infrastructure (PAI/Kai pattern)
