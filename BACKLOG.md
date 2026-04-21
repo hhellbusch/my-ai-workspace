@@ -1,6 +1,6 @@
 # Backlog
 
-> Last updated: 2026-04-20 (full content audit + systemic fixes; spar trigger hook; Zanshin naming sweep)
+> Last updated: 2026-04-20 (Zanshin essay spar revisions; link depth drift case study; prompting-and-state essay; spar intervention logged)
 
 ## In Progress
 
@@ -90,11 +90,8 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 
 
-### Case study: link depth drift — when a folder move silently breaks navigation
-- **Product:** docs (case-studies)
-- **Context:** Full `/audit` run (2026-04-20) found 23 broken `AI-DISCLOSURE.md` links across `devops/`. All off by exactly one `../` — a uniform depth shift caused by content being moved one level deeper into `devops/` without updating relative paths. Companion to `directory-move-gitignore-drift.md` (that case covers files being committed that shouldn't be; this covers navigation links silently breaking). The pattern is distinct: links commit cleanly, nothing signals the break at commit time, drift compounds across sessions. Resolution was systematic (one shell loop), but the root cause took diagnosis. Connects to `repo-structure.md` new link-depth-drift section.
-- **Links:** `docs/case-studies/directory-move-gitignore-drift.md`, `.cursor/rules/repo-structure.md`, commits `624d386`
-- **Added:** 2026-04-20
+### ~~Case study: link depth drift — when a folder move silently breaks navigation~~ ✓ Done 2026-04-20
+- Published as `docs/case-studies/link-depth-drift.md`. Companion to the gitignore drift case: same directory reorganization, different failure surface. 23 links off by exactly one `../`, none signaled at commit time, found by audit months later. Covers the mechanism (relative upward links encode depth), the silence signature (uniformity), and the pre-commit check now in `repo-structure.md`. Registered in case studies README.
 
 ### Case study: when the framework became tool-portable
 - **Product:** docs (case-studies)
@@ -108,11 +105,8 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/framework-efficacy/intervention-log.md`, `docs/ai-engineering/framework-bootstrap.md`
 - **Added:** 2026-04-20
 
-### Essay: "Prompting is necessary but not sufficient — tackling state management"
-- **Product:** docs (ai-engineering)
-- **Context:** Thesis refined in 2026-04-20 session: good prompts still matter and produce better outputs within a session. The *additional* unsolved challenge for long-horizon AI-assisted work is state management — keeping work coherent across session boundaries, context window compression, and domain shifts. The framework addresses that gap; it doesn't replace prompting skill. Framing: "prompting gets you good outputs within a session; state management is what makes multi-session work coherent." Defensible from existing 30+ case study corpus without new data. Companion to `session-framework.md` (the *how*) — this argues the *why it matters and what the gap is*. IPv8 session is a useful cross-domain applicability data point.
-- **Links:** `docs/ai-engineering/session-framework.md`, `research/framework-efficacy/`, `docs/case-studies/`
-- **Added:** 2026-04-20
+### ~~Essay: "Prompting is necessary but not sufficient — tackling state management"~~ ✓ Done 2026-04-20
+- Published as `docs/ai-engineering/prompting-and-state.md`. Argues the two failure modes (within-session quality vs. cross-session coherence) are independent and compound when both are addressed. Companion to `session-framework.md` (the how) — this argues the why it matters and what the gap is. Registered in `docs/ai-engineering/README.md` and `docs/README.md`.
 
 ### Essay / guide: crafting a public identity for an AI workspace — the ABOUT.md pattern
 - **Product:** docs (meta / AI-engineering)
@@ -173,17 +167,11 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### ~~Case study: model self-report of runtime state~~ ✓ Done 2026-04-20
 - Published as `docs/case-studies/model-self-report-runtime-state.md`. Cross-linked from `local-llm-setup.md`. Source: experiment journal 2026-04-20 RamaLama entry.
 
-### ~~Case study: model self-report of runtime state — context window edition~~
-- **Product:** docs
-- **Context:** During the RamaLama qwen3:30b-a3b experiment (2026-04-20), the model self-reported a context window of 32,768 tokens when asked directly. Actual runtime `n_ctx` confirmed via llama.cpp startup logs: 14,592. The model wasn't fabricating — 32k is a real figure from its training data about its typical configuration. The failure is category confusion: answering "what is your context window?" from training knowledge about the model's usual configuration rather than from actual runtime state. Distinct from the frozen-clock idea (wrong year from training cutoff) — same root mechanism (training knowledge ≠ runtime state), different domain (configuration vs. time). Fix: always verify `n_ctx` from startup logs or `ramalama serve` output; never trust self-report for runtime values.
-- **Links:** `research/ai-tooling/local-llm-experiment-journal.md` (2026-04-20 RamaLama entry), `docs/case-studies/` (frozen-clock idea for comparison)
-- **Added:** 2026-04-20
+### ~~Case study: model self-report of runtime state — context window edition~~ ✓ Done 2026-04-20
+- Covered in `docs/case-studies/model-self-report-runtime-state.md` (the 32k self-report vs. 14k actual `n_ctx` is the central example of that case study). No separate document needed.
 
-### Case study: survivorship bias in recommendations
-- **Product:** docs
-- **Context:** After a sequence of failures (vLLM FP8 MoE failed, AWQ 32B boots at 1k context, dense 32B OOM), the one model that worked (qwen3:30b-a3b MoE) was initially framed as "the recommended default" — implying deliberate quality selection. The spar caught it: the recommendation was reached by elimination, not evaluation. The AI wasn't lying — it accurately described what worked — but positive framing obscured the selection process. Fix: explicit survivorship language ("best available option on this GPU" vs "recommended"). The pattern transfers: any AI recommendation reached by testing-until-something-works carries this risk, especially in hardware/software compatibility work where failure is the norm and success is convergence on what fits.
-- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `research/ai-tooling/local-llm-setup-sparring-notes.md` (round 2, argument 1)
-- **Added:** 2026-04-20
+### ~~Case study: survivorship bias in recommendations~~ ✓ Done 2026-04-20
+- Published as `docs/case-studies/survivorship-bias-recommendations.md`. Documents elimination-framing dressed as quality recommendation, with the local LLM failure sequence as the worked example. Registered in case studies README.
 
 ### Case study: the experiment that can't use its own findings
 - **Product:** docs

@@ -118,3 +118,37 @@ Append-only. New entries go at the top. One entry per notable framework interven
 **Score gap: +5 (8 → 13).** Likely conservative due to contamination. Key delta: the internal contradiction (R7/NIC) was entirely absent from naive pass; backward-compat concern appeared in both but at structurally different depths (doubt vs. named mechanism failure).
 
 **Evidence:** Conversation session 2026-04-20; counterfactual-protocol.md entry 2026-04-20
+
+---
+
+### 2026-04-20 — spar — Zanshin essay structural review
+
+**Intervention:** spar  
+**Session context:** Drafted first version of `docs/philosophy/zanshin.md` — the conceptual origin essay for the framework name. Ran `/spar` immediately after draft completion. Five arguments generated; all assessed as genuine structural issues, not style concerns.
+
+**What it caught:**
+
+- **Discrete/continuous disanalogy not acknowledged:** The essay imported the dojo concept without naming the critical disanalogy: zanshin in the dojo operates in continuous time (opponent present, cost immediate); session boundaries are discrete (work stops, pressure releases entirely). The essay brushed this off with "it rarely does when concepts cross domains" — a rhetorical gesture, not an argument. The analogy was borrowed without earning it.
+
+- **Load-bearing claim with no external grounding:** "Most thinking about AI productivity focuses on the session" dismissed the existing landscape without naming it. Long-context models, agent memory systems, and context versioning tools all address cross-session state. Without acknowledging and distinguishing these, the essay was asserting a gap that any reader familiar with the space would immediately contest. The specific distinction needed: those tools address retrieval; the framework addresses judgment about what *should* carry forward.
+
+- **Instrumented/trained tension left unresolved:** The "Instrumented and Trained" section correctly raised the tension but concluded with "Both matter. Neither substitutes for the other." — a non-answer. The section asked a real question (which kind of zanshin does the framework build?) and then declined to answer it. This weakened the section's credibility and left the reader without a useful conclusion.
+
+- **Closing line collapsed the essay's own distinction:** "The session ends. Zanshin is what you write down" directly contradicted the essay's earlier work distinguishing between the scaffold (the handoff document, the commands) and the quality (whether the practitioner brings genuine attention to it). The essay spent several paragraphs building that distinction and the closing line erased it.
+
+- **Circular justification:** The essay cited the framework's own documentation (`whats-next`, commits-as-truth-anchors, session-start procedure) as evidence the framework addresses the problem it defines. No external cases, no practitioner accounts, no observable outcomes — just framework artifacts citing the same framework's practices. This is the strongest argument: the essay reads as product documentation with philosophical framing rather than a genuinely philosophical essay.
+
+**Fixes applied (commit `0cc7464`):**
+1. Added a full paragraph naming engineering solutions and the retrieval/judgment distinction
+2. Added a concrete grounding example: directory reorganization producing 23 silent broken links across sessions — no individual session negligent, failure lived at the boundary
+3. Expanded "Why the Name" to explicitly name the discrete/continuous disanalogy before concluding the structural insight holds
+4. Replaced "Both matter. Neither substitutes for the other." with a directional conclusion: instrumented zanshin is the curriculum; trained develops through accumulated use of it
+5. Replaced the closing line: "What you write down is evidence of remaining mind. Whether it constitutes zanshin depends on what you brought to writing it."
+
+**Argument not fully resolved:** The circular justification critique (argument 5) is partially addressed by the concrete example but not fully. A practitioner account would complete it — the placeholder in the essay (`[Space for practitioner account...]`) is where this lives. The essay remains `review: status: unreviewed` until that content exists.
+
+**Counterfactual:** Without the spar, the essay would have been committed and potentially shared in first-draft form. The discrete/continuous disanalogy would have left the concept's transfer unexplained; the closing line would have contradicted the essay's thesis; the instrumented/trained section would have dodged its own question. All four fixed arguments changed the essay structurally, not cosmetically.
+
+**Severity:** Medium — no wrong output; value was catching self-contradictions and load-bearing claims before the essay left draft status.  
+**Baseline comparison:** No  
+**Evidence:** Commits `3bf01f2` (draft), `0cc7464` (spar revisions), 2026-04-20
