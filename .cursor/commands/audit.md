@@ -112,6 +112,13 @@ Identify content that exists but isn't linked from its natural parent or peers.
 - Check each docs/ essay's "Related Reading" section (if it has one) for links to other docs/ essays
 - Identify docs/ essays that don't have a Related Reading section at all
 - Check if planning projects in .planning/ have corresponding backlog items
+- **Anchor doc coverage:** for each of these high-traffic docs, verify that semantically related docs in the same track link to them:
+  - `docs/ai-engineering/session-framework.md` (Zanshin behavioral map)
+  - `docs/ai-engineering/framework-bootstrap.md` (Zanshin portable entry point)
+  - `docs/ai-engineering/sparring-and-shoshin.md` (most-shared entry point)
+  - `docs/ai-engineering/the-shift.md` (foundational essay)
+  - If any related doc doesn't link to an anchor, surface it as a cross-reference gap
+- For a full per-file cross-link check on specific docs, use `/cross-link [file]`
 
 ### 3c. README Coverage
 - List all directories (recursive to depth 2) that lack a README.md

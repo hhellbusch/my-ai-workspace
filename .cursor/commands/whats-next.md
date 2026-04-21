@@ -80,6 +80,20 @@ Adapt the level of detail to the task type (coding, research, analysis, writing,
 
 Write to `.planning/whats-next.md` using the format below.
 
+### Step 1.4: Cross-link check for new docs
+
+Check whether any new `.md` files were committed this session:
+
+```bash
+git diff --name-only HEAD~5..HEAD -- '*.md' | grep -E "^docs/|^research/" | sort -u
+```
+
+**If new docs exist in `docs/` or `research/`:** run `/cross-link --session` to find missing inbound links from related docs. Fix any gaps before closing the session — this is the moment the new doc is freshest in context.
+
+**If no new docs:** skip this step entirely.
+
+---
+
 ### Step 1.5: Framework intervention log
 
 Before writing the handoff, briefly scan: did any framework intervention produce a notable outcome this session?
