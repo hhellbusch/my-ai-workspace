@@ -47,8 +47,10 @@ Then load from the local path at session start (see Tool table above, adjusted f
 ```
 #file:~/git/hhellbusch/my-ai-workspace/zanshin-kit/WORKING-STYLE.md
 
-I've loaded my working style. Acknowledge the practices you now have available and confirm you're ready to apply them this session.
+[describe your task here — this becomes the session title]
 ```
+
+Include your actual task in the first message so the session gets a useful title. The working style loads silently; the task description is what you'll want to find the session by later.
 
 A good acknowledgment names the practices back with their mechanisms — not just labels. If you get a generic reply, paste the file contents directly instead.
 
