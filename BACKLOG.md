@@ -106,6 +106,15 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### Meta system optimization — faster start, lower token usage
+- **Product:** meta / tooling
+- **Context:** Brainstorm from 2026-04-21. Willing to entertain trade-offs. Key tension: always-on rules exist because opt-in behaviors get missed; conditional loading trades recall precision for speed. Ideas by category:
+  - **Rule loading:** fold `cross-linking.md` into `/review` (only matters at commit time); merge `backlog-capture.md` + `case-study-reflection.md` into one rule; fold `feedback-checkpoints.md` into `session-awareness.md`; tiered model (lightweight label always loaded, full spec loaded on activation); audit `repo-structure.md` for always-on value
+  - **Context compression:** BACKLOG summary header (counts + recent Done) read first by `/start`, full detail on demand; `.cursorrules` TÂCHES section → pointer to `.cursor/README.md`; compressed whats-next.md variant (5 lines: in-progress, next step, key decision) as default
+  - **Session start:** minimum viable start = BACKLOG summary + git log, everything else deferred; session type detection (docs/writing → load style rules; technical → skip them); gate planning one-liners on whether session has planning relevance
+  - **Handoff/state:** whats-next staleness threshold — surface archive prompt if >N commits stale; SHA-anchored workspace state snapshot as single diff target; more aggressive Done rolling cap (3–5 items)
+- **Added:** 2026-04-21
+
 ### Source review: Zanshin — Traditional Aikido of Colorado Springs
 - **URL:** https://cos-aikido.com/2023/05/11/zanshin-remaining-mind-cultivating-a-budo-mindset-part-2/
 - **Why:** Best philosophical treatment of zanshin found in research — Saito Sensei's "shooting a tiger" example, the natural-state framing ("it's about overcoming bad mental habits, not learning to do something new"), the relational "connection" quality, and the two-second hold practice. All of these have direct implications for the essay and potentially for how the framework is described. Read before finalizing `docs/philosophy/zanshin.md`.
