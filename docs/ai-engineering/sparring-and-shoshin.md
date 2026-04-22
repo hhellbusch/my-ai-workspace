@@ -20,7 +20,7 @@ AI assistants fail in two characteristic ways that are easy to miss precisely be
 
 **The second: AI inherits your framing.** When you bring context to an AI session — a summary, notes from a previous session, a description of what you're working on — the model works within that framing. If the framing is wrong, stale, or narrower than the actual situation, the model builds on that narrowness without questioning it. It can't see the frame it's inside.
 
-These two problems look different in practice but come from the same place: the AI doesn't push back. Not on your ideas, and not on your assumptions about what the problem is.
+These two problems look different in practice but share a root: AI is structurally optimized to be frictionless — to produce output that feels complete, confident, and agreeable. [The Frictionless Entity](../case-studies/frictionless-entity.md) names that property directly and traces both problems back to it.
 
 Sparring and shoshin are the structural responses. One challenges outputs. The other challenges the starting frame.
 
@@ -99,6 +99,8 @@ If you're new to these ideas and want to go further:
 |---|---|
 | The shoshin rule as implemented in this workspace | [`.cursor/rules/shoshin.md`](../../.cursor/rules/shoshin.md) |
 | The `/spar` command definition | [`.cursor/commands/spar.md`](../../.cursor/commands/spar.md) |
+| A real instance of sparring finding an assumption, not just a bug | [When Sparring Finds the Assumption, Not Just the Bug](../case-studies/spar-finds-the-assumption.md) |
+| A real instance of AI operating on stale context mid-session | [When AI Ignores Changes Made by Other Sessions](../case-studies/stale-context-in-long-sessions.md) |
 | What shoshin means for AI ego and validation traps | [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) |
 | Shoshin applied to organizational learning and the "full cup" problem | [The Full Cup](../philosophy/the-full-cup.md) |
 | What sparring and shoshin are actually defending against | [The Frictionless Entity](../case-studies/frictionless-entity.md) |
