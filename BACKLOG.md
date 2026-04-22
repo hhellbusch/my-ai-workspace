@@ -1,7 +1,7 @@
 # Backlog
 
-> **State:** 4 in progress · 8 up next · 71 ideas · Last done: Meta full content audit + systemic link/registry fixes (2026-04-20)
-> Last updated: 2026-04-21 (Claude Code alignment; plugin distribution idea; zanshin-kit Phase 3)
+> **State:** 4 in progress · 8 up next · 72 ideas · Last done: Meta full content audit + systemic link/registry fixes (2026-04-20)
+> Last updated: 2026-04-21 (Claude Code alignment; plugin distribution idea; zanshin-kit Phase 3; shell strict mode)
 
 ## In Progress
 
@@ -106,6 +106,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Added:** 2026-04-10
 
 ## Ideas
+
+### Shell strict mode — retrofit existing scripts
+- **Product:** devops / tooling
+- **Context:** `.cursor/rules/shell-strict-mode.md` was added (2026-04-21) enforcing `#!/usr/bin/env bash` + `set -euo pipefail` on all `.sh`/`.bash` files. 7 existing scripts in `devops/argo/examples/scripts/` do not yet comply (pre-rule). Additional scripts in `devops/ansible/examples/` and `.cursor/skills/` also unchecked. Retrofit is low-risk but needs per-script review — some may be candidate for the intentional-exception pattern. No urgency; new scripts are covered by the rule.
+- **Links:** `.cursor/rules/shell-strict-mode.md`, `devops/argo/examples/scripts/`
+- **Added:** 2026-04-21
 
 ### Claude Code plugin distribution for .claude/
 - **Product:** meta / tooling

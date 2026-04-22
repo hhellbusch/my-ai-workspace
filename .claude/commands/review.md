@@ -50,6 +50,7 @@ This command is read-only. It reports findings and asks for confirmation before 
 5. **Content quality** — For each new or modified file:
    - Markdown files: check for title heading, no obvious structural issues
    - Config files: check for valid syntax if tooling is available
+   - Shell scripts (`.sh`, `.bash`): verify strict mode header present — `#!/usr/bin/env bash` + `set -euo pipefail`. Flag missing headers as **"Missing shell strict mode"**. Exception: scripts with a comment explaining why strict mode is intentionally omitted are fine.
    - No secrets, credentials, or sensitive data (flag `.env`, `*secret*`, `*credential*`, `*password*`, `*token*` patterns in content)
 
 6. **Biographical/voice check** — For new or modified files in `docs/`, scan for content that speaks in the author's voice or makes biographical claims. Flag lines containing:

@@ -91,6 +91,11 @@ Project briefs, roadmaps, style guides, and phase plans for multi-session work:
 - Include inline comments in configuration files
 - Provide both simple and advanced examples where appropriate
 
+### Shell Scripts
+- All `.sh` / `.bash` scripts must start with strict mode: `#!/usr/bin/env bash` + `set -euo pipefail`
+- If a script intentionally survives errors (e.g. cleanup/trap handlers), note the reason in a comment at the top
+- Rule: `.cursor/rules/shell-strict-mode.md`
+
 ### Configuration Files
 - Use descriptive variable names
 - Include example inventories/configurations

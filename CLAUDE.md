@@ -153,6 +153,17 @@ Not a gate, not a prompt to the user during work — just capture the seed.
 
 ---
 
+## Shell Scripts
+
+All `.sh` / `.bash` files must start with:
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+```
+If a script intentionally survives errors (cleanup/trap handler), note the reason in a comment at the top. Rule: `.cursor/rules/shell-strict-mode.md`.
+
+---
+
 ## Pre-Commit Review
 
 Scale review depth to the change. **Always**, regardless of scale:
