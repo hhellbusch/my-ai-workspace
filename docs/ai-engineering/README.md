@@ -41,6 +41,8 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 - **[Zanshin — Portable Session Context (Bootstrap)](framework-bootstrap.md)** — Single-file entry point for loading the Zanshin framework into any AI tool. Clone this repository alongside a project, point your AI at this file, and operate with the framework's posture without Cursor-specific setup. Includes minimum viable load (four sentences), full behavioral dispositions, tool-specific loading instructions (Copilot, Claude Code, chat-based AI), and links to deeper reading.
 
+- **[Cursor vs. Claude Code — Implementation Differences](cursor-vs-claude-code.md)** — Structural comparison of the two native implementations: where rules live, how commands are loaded, tool name differences, and known gaps. Reference when porting changes between environments or diagnosing behavioral divergence.
+
 ## Primary Narratives (Public)
 
 - **Dan Walsh — *Lessons learned with a career in software?*** (DevConf.US 2025) — [YouTube](https://www.youtube.com/watch?v=YKDi-ePTmRA). Full transcript and theme index: [`research/ai-engineering-public/sources/youtube-YKDi-ePTmRA-transcript.md`](../../research/ai-engineering-public/sources/youtube-YKDi-ePTmRA-transcript.md), [`library/dan-walsh-devconf-2025-career-lessons.md`](../../library/dan-walsh-devconf-2025-career-lessons.md). Useful as a **public** anchor for security-through-containers history, mentorship/succession, and late-career AI tooling (e.g. RamaLama) without relying on private correspondence.

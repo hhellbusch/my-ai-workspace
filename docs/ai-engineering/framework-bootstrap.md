@@ -74,7 +74,9 @@ When there's a conflict between what the session remembers and what the repo con
 
 For a more comprehensive portable option, see `zanshin-kit/WORKING-STYLE.md` in this repository. It carries the full behavioral discipline — spar with output templates, shoshin with proactive triggers, collaboration style, checkpoints, stack tracking, and verification — plus a style guide (`zanshin-kit/STYLE.md`) that can be dropped into any project alongside it. Designed to travel into any environment without Cursor-specific infrastructure.
 
-**Claude Code / Cursor:** Add to the session context or place in `.claude/CLAUDE.md` / `.cursor/rules/`. The framework's native home is this repository; the rules in `.cursor/rules/` are the fuller implementation.
+**Claude Code:** The repo includes a workspace-level `CLAUDE.md` at the root that carries all behavioral rules inline (equivalent to `.cursor/rules/`). Workspace commands live in `.claude/commands/` and must be copied to `~/.claude/commands/` to activate — see `.claude/README.md` for the one-line copy command. Implementation is aligned with Cursor as of 2026-04-21; differences are documented in `docs/ai-engineering/cursor-vs-claude-code.md`.
+
+**Cursor:** Rules in `.cursor/rules/` and commands in `.cursor/commands/` load automatically. `.cursorrules` carries the workspace identity and collaboration style. No setup required.
 
 **Any chat-based AI:** Paste the contents of this file as a system message or opening context.
 
@@ -97,6 +99,7 @@ If loading the full file is too large for your context budget, load these in pri
 |---|---|
 | `zanshin-kit/WORKING-STYLE.md` | Portable working discipline — the full behavioral kit for any AI tool without Cursor infrastructure |
 | `zanshin-kit/STYLE.md` | Style guide defaults (voice, structure, ADRs, technical resources) — drop alongside WORKING-STYLE.md |
+| `docs/ai-engineering/cursor-vs-claude-code.md` | Structural differences between the Cursor and Claude Code implementations — tool names, command loading, rule scoping, known gaps |
 | `docs/ai-engineering/session-framework.md` | Full Zanshin behavioral map — what each behavior defends against and how they fit together |
 | `docs/ai-engineering/the-shift.md` | Why the bottleneck in AI-assisted work has moved from implementation to verification |
 | `docs/ai-engineering/sparring-and-shoshin.md` | Adversarial pressure and framing verification in depth |

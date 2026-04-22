@@ -1,0 +1,273 @@
+---
+description: Comprehensive content audit — link integrity, registry alignment, cross-references, and freshness
+allowed-tools:
+  - Bash
+  - Read
+  - Glob
+  - Grep
+---
+
+# Audit — Content Health Check
+
+<objective>
+Systematically audit the workspace for content drift, broken links, stale registries, missing cross-references, and meta-system regressions. Catches the subtle problems that accumulate as content and tooling evolve across sessions.
+
+This command is read-only. It reports findings organized by severity and asks what to fix.
+</objective>
+
+<context>
+- Read `.cursor/rules/repo-structure.md` — repo structure conventions
+- Read `CLAUDE.md` (Project Contents section) — project description
+- Read `README.md` (Directory Structure section)
+- Read `docs/README.md`
+- Read `research/README.md`
+- Read `BACKLOG.md`
+- Planning: scan .planning/ for active projects
+</context>
+
+<process>
+
+## Layer 1: Link Integrity
+
+Scan all committed markdown files for internal links. For each link:
+
+1. Resolve the path relative to the file containing it
+2. Check if the target file or directory exists
+3. Report broken links grouped by source file
+
+Skip external URLs (http/https) — those are not part of this audit.
+
+**Skip these paths entirely — known false-positive sources:**
+- `research/*/sources/` — scraped web content; relative paths (e.g. `/en/products`, `/@user`) are internal site links from the original HTML, not repo paths
+- Links inside fenced code blocks (` ``` `) — example skill structures and documentation snippets contain links to hypothetical files that are not meant to resolve
+
+Use a correct extraction pattern that captures only the path inside `()`, not the surrounding link text:
+```bash
+# Extract link paths only (not link text) — uses PCRE lookbehind
+# Skip research sources dirs and external URLs
+git ls-files '*.md' \
+  | grep -v "^research/.*/sources/" \
+  | grep -v "^\.planning/" \
+  | while IFS= read -r file; do
+    # Strip fenced code blocks before extracting links
+    perl -0777 -pe 's/```.*?```//gs' "$file" \
+      | grep -oP '\]\(\K[^)]+(?=\))' \
+      | grep -v '^https\?://' \
+      | grep -v '^http' \
+      | while IFS= read -r link; do
+          dir=$(dirname "$file")
+          target="${link%%#*}"
+          [ -z "$target" ] && continue
+          resolved=$(python3 -c "import os,sys; print(os.path.normpath(os.path.join(sys.argv[1], sys.argv[2])))" "$dir" "$target" 2>/dev/null)
+          [ ! -e "$resolved" ] && echo "BROKEN: $file -> $link"
+        done
+  done
+```
+Resolve each extracted path relative to the containing file's directory before checking existence.
+
+## Layer 2: Registry Alignment
+
+Compare documented inventories against what actually exists on disk.
+
+### 2a. Project Contents Registry
+- Read `CLAUDE.md` (Workspace Structure section) and `.cursorrules` (Project Contents section)
+- Compare against actual directories and their contents
+- Flag: directories or content on disk but missing from .cursorrules
+- Flag: entries in .cursorrules that don't match what's on disk
+
+### 2b. Root README.md Directory Structure
+- Parse the directory tree in `README.md`
+- Compare against actual top-level directories (excluding gitignored)
+- Flag: directories on disk but missing from the tree
+- Flag: stale entries in the tree
+
+### 2c. Meta-System Counts
+- Count actual files in `.cursor/commands/`, `.cursor/skills/`, `.cursor/agents/`
+- Compare against any documented counts in README.md or .cursorrules
+- Flag mismatches
+
+### 2d. docs/README.md — orphan and broken-reference check
+
+Run both directions:
+
+**Orphaned files — two tiers:**
+```bash
+# Extract .md paths from docs/README.md (sort -u avoids false positives from files linked twice)
+grep -oP '\(\K[^)]+\.md(?=\))' docs/README.md | sort -u > /tmp/master_indexed.txt
+# Extract .md paths from each track README
+grep -oP '\(\K[^)]+\.md(?=\))' docs/ai-engineering/README.md | sed 's|^|ai-engineering/|' | sort -u > /tmp/track_indexed.txt
+grep -oP '\(\K[^)]+\.md(?=\))' docs/philosophy/README.md | sed 's|^|philosophy/|' | sort -u >> /tmp/track_indexed.txt
+grep -oP '\(\K[^)]+\.md(?=\))' docs/case-studies/README.md | sed 's|^|case-studies/|' | sort -u >> /tmp/track_indexed.txt
+sort -u /tmp/track_indexed.txt -o /tmp/track_indexed.txt
+# All .md files in doc tracks (not READMEs)
+find docs/ai-engineering docs/philosophy docs/case-studies -name "*.md" ! -name "README.md" | sed 's|^docs/||' | sort -u > /tmp/ondisk.txt
+```
+
+- **True orphan** (not in any README): `comm -23 /tmp/ondisk.txt /tmp/track_indexed.txt` — fix these, they're invisible
+- **Curated omission** (in track README but not master index): files in track_indexed but not master_indexed — expected for specialist docs (e.g. vLLM reference, YouTube workflow explainer); note but don't flag as broken
+- **Stale master ref** (in master index, not on disk): `comm -13 /tmp/ondisk.txt <(sort -u /tmp/master_indexed.txt)` — fix these, they're broken links
+
+### 2e. research/README.md
+- List all directories in `research/` (excluding README.md)
+- Compare against entries in research/README.md contents table
+- Flag: directories not listed
+- Flag: stale entries
+
+### 2f. Backlog Consistency
+- Check all file path references in BACKLOG.md Links fields
+- Verify referenced paths exist
+- Flag broken references
+
+## Layer 3: Cross-Reference Gaps
+
+Identify content that exists but isn't linked from its natural parent or peers.
+
+### 3a. Orphaned Content
+- **docs/ files**: covered by Layer 2d — any file not in docs/README.md is orphaned
+- **research/ directories**: directories in `research/` not linked from research/README.md
+- **Commands**: commands in `.cursor/commands/` and `.claude/commands/` not documented in `CLAUDE.md` or `.cursorrules`
+- **Skills**: skills in `.cursor/skills/` not documented in `CLAUDE.md` or `.cursorrules`
+- **Rules**: list what rules exist in `.cursor/rules/` (informational only)
+
+### 3b. Missing Cross-Links
+- Check each docs/ essay's "Related Reading" section (if it has one) for links to other docs/ essays
+- Identify docs/ essays that don't have a Related Reading section at all
+- Check if planning projects in .planning/ have corresponding backlog items
+- **Anchor doc coverage:** for each of these high-traffic docs, verify that semantically related docs in the same track link to them:
+  - `docs/ai-engineering/session-framework.md` (Zanshin behavioral map)
+  - `docs/ai-engineering/framework-bootstrap.md` (Zanshin portable entry point)
+  - `docs/ai-engineering/sparring-and-shoshin.md` (most-shared entry point)
+  - `docs/ai-engineering/the-shift.md` (foundational essay)
+  - If any related doc doesn't link to an anchor, surface it as a cross-reference gap
+- For a full per-file cross-link check on specific docs, use `/cross-link [file]`
+
+### 3c. README Coverage
+- List all directories (recursive to depth 2) that lack a README.md
+- Exclude known exceptions: `sources/`, `findings/`, `completed/`, `phases/`, hidden directories
+
+## Layer 4: Freshness Flags
+
+### 4a. Stale Descriptions
+- Compare .cursorrules "Documentation (docs/)" description against actual docs/README.md contents
+- Check if backlog "Last updated" date is more than 2 weeks old with no recent commits
+- Check .planning/ ROADMAP progress tables against actual phase completion (SUMMARY.md files)
+
+### 4b. Potential Regressions
+- If any `.cursor/skills/*/SKILL.md` references files that don't exist (broken skill references)
+- If any `.cursor/commands/*.md` references files via @ syntax that don't exist
+- If any `.cursor/rules/*.md` references files that don't exist
+
+## Layer 5: Review Coverage
+
+Scan all committed markdown files for `review:` frontmatter blocks. Categorize files by content type and report validation status.
+
+Reference: `.cursor/rules/review-tracking.md` for the frontmatter convention and `AI-DISCLOSURE.md` for validation type definitions.
+
+### 5a. Coverage by Category
+
+For each content category, count:
+- Files with `status: reviewed`
+- Files with `status: unreviewed` (explicit — new files generated after the convention change)
+- Files with `status: direction-reviewed`
+- Files without `review:` frontmatter (legacy — assumed direction-reviewed; created before unreviewed-by-default was adopted)
+- Validation types present (how many `read`, `tested`, `fact-checked`, etc.)
+
+Surface `status: unreviewed` files prominently — these are the active review queue, distinct from legacy files that may never have been intended for deep review.
+
+Categories:
+- **Essays**: `docs/**/*.md` (excluding README.md files)
+- **DevOps**: `devops/ansible/**/*.md`, `devops/ocp/**/*.md`, `devops/argo/**/*.md`, `devops/coreos/**/*.md`, `devops/rhacm/**/*.md`, `devops/vault/**/*.md`
+- **Meta-system**: `.cursor/commands/*.md`, `.cursor/skills/**/*.md`, `.cursor/rules/*.md`
+- **Research**: `research/**/*.md`, `library/**/*.md`
+
+### 5b. Biographical Content Without `voice-approved`
+
+Scan all `docs/**/*.md` files for biographical patterns — first-person experience claims, professional identity statements, personal opinions, training history. For each file with biographical content, check if the file has `voice-approved` validation in its frontmatter. Files with biographical content but no `voice-approved` are the highest-priority review items.
+
+Patterns to detect:
+- First-person experience: "I trained," "in my years," "I've worked," "I practiced," "my experience"
+- Professional identity: "an engineer," "a consultant," "infrastructure engineer," "my role"
+- Personal philosophy: "I believe," "I've found that," "my approach," "in my view"
+- Biographical narrative: "when I started," "growing up," "my sensei," "my training"
+
+Present as:
+
+```
+### Biographical Content — Needs voice-approved
+- docs/philosophy/ego-ai-and-the-zen-antidote.md — biographical claims on lines N, M (no voice-approved)
+- docs/ai-engineering/the-shift.md — biographical claims on lines N, M (voice-approved: 2026-04-18 ✓)
+```
+
+### 5c. Recently Added Without Review
+
+Find markdown files committed in the last 14 days that have no `review:` frontmatter. These are candidates for the next review pass.
+
+### 5d. Stale Reviews
+
+Find files where the most recent validation date is older than the file's last git modification date. This means the file was changed after the last review — the review may no longer be current.
+
+If the file has an `at:` SHA in its review frontmatter, include the diff command so the author can see exactly what changed since their last review.
+
+Present as:
+
+```
+### Review Coverage
+- Essays: 3/16 reviewed (19%) — 2 read, 1 fact-checked
+- DevOps: 12/248 reviewed (5%) — 8 read, 4 tested
+- Meta-system: 15/237 reviewed (6%) — 10 read, 5 used-in-practice
+- Research: 0/100 reviewed (0%)
+- **Total: 30/601 reviewed (5%)**
+
+### Needs Review (recently added)
+- docs/case-studies/new-essay.md (committed 2026-04-17)
+
+### Stale Reviews (modified after last review)
+- docs/ai-engineering/the-shift.md — reviewed 2026-04-10, modified 2026-04-15
+  → `git diff abc1234..HEAD -- docs/ai-engineering/the-shift.md`
+```
+
+## Report
+
+Present findings organized by severity:
+
+```
+## Content Audit Report
+
+### Broken Links (fix these)
+- [ ] `file.md` line N: link to `path/that/does/not/exist`
+
+### Registry Drift (update these)
+- [ ] `.cursorrules` missing: [description of what's missing]
+- [ ] `README.md` directory tree missing: `.planning/`
+- [ ] Meta-system count: says N commands, actually M
+
+### Cross-Reference Gaps (consider adding)
+- [ ] `docs/new-essay.md` not linked from docs/README.md
+- [ ] `.cursor/commands/review.md` not documented in .cursorrules
+
+### Missing READMEs
+- [ ] `directory/` has no README.md
+
+### Freshness Flags (review these)
+- [ ] BACKLOG.md last updated N days ago
+- [ ] .planning/project/ ROADMAP shows Phase 1 in progress but SUMMARY exists
+
+### Clean Areas
+- Link integrity: N files checked, M links validated
+- Research index: up to date
+- [etc.]
+```
+
+After reporting, ask: "Want me to fix any of these? Reply with numbers, categories, or 'all'."
+</process>
+
+<success_criteria>
+- Every committed markdown file scanned for internal link integrity
+- All registry documents (.cursorrules, README.md, docs/README.md, research/README.md) compared against disk
+- Meta-system artifacts (skills, commands, rules, agents) checked for coherence
+- Cross-reference gaps identified with specific suggestions
+- Review coverage reported by content category with validation type breakdown
+- Stale reviews flagged when files were modified after their last review date
+- Clear severity-based report with actionable items
+- No false positives from gitignored directories or expected-empty directories
+</success_criteria>

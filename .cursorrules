@@ -156,3 +156,5 @@ Review status is tracked per-file via YAML frontmatter (`review:` block). Files 
 
 Commands in `.cursor/commands/`, skills in `.cursor/skills/`, agents in `.cursor/agents/`. Full reference: `.cursor/README.md`.
 
+**Claude Code:** `CLAUDE.md` (repo root) — workspace-level behavioral context for Claude Code, equivalent to `.cursorrules` + `.cursor/rules/` combined. Claude Code commands live in `.claude/commands/` and must be copied to `~/.claude/commands/` to activate. See `.claude/README.md` for setup. Implementation differences documented in `docs/ai-engineering/cursor-vs-claude-code.md`.
+

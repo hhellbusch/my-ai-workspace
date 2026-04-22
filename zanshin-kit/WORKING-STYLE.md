@@ -7,6 +7,12 @@
 
 ---
 
+## Why these practices exist
+
+Three things break AI-assisted work across sessions: **context resets** (decisions made in conversation don't persist to the next session), **context compaction** (earlier content gets compressed and approximated as the context window fills mid-session), and **fluent-but-wrong output** (confident prose covering unverified claims). These practices defend against those three failure modes specifically — not general productivity habits.
+
+---
+
 ## How to load this
 
 **Copilot Chat (VS Code):** Include `#file:WORKING-STYLE.md` in your first message.

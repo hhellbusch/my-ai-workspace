@@ -152,3 +152,5 @@ The version date at the top of `WORKING-STYLE.md` tells you how current your cop
 ## Origin
 
 Extracted from [Field Notes](https://github.com/hhellbusch/gemini-workspace) — a personal AI-assisted workspace. The working style is informed by lean verification practices, martial arts philosophy (zanshin: the sustained awareness that persists after action), and a lot of sessions where context got lost at the worst possible moment.
+
+For the conceptual grounding — what failure modes these practices defend against and why they're structured the way they are — see [`docs/ai-engineering/framework-bootstrap.md`](../docs/ai-engineering/framework-bootstrap.md) in the source repo.
