@@ -80,6 +80,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 
 | Title | Provider | Year | URL | Tags | Entry |
 |---|---|---|---|---|---|
+| What are AI Agents? (Agentic AI, Module 1) | EngineersOfAI | 2026 | https://engineersofai.com/docs/agentic-ai/agentic-foundations/What-are-AI-Agents | agentic-ai, foundations, agent-loop, tool-use, memory, scaffolding, react, reliability, llm | [enriched](engineersofai-what-are-ai-agents.md) |
 | CS106A — Programming Methodology | Stanford SEE | 2010 | https://see.stanford.edu/Course/CS106A | cs-fundamentals, java | — |
 | CS106B — Programming Abstractions | Stanford SEE | 2010 | https://see.stanford.edu/Course/CS106B | cs-fundamentals, data-structures | — |
 | CS107 — Programming Paradigms | Stanford SEE | 2010 | https://see.stanford.edu/Course/CS107 | cs-fundamentals, paradigms | — |
