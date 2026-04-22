@@ -1,6 +1,6 @@
 ---
 description: Maintain cross-references when creating or modifying content
-globs:
+globs: ["**/*.md", ".cursorrules", ".cursor/commands/**", ".cursor/skills/**"]
 alwaysApply: false
 ---
 
