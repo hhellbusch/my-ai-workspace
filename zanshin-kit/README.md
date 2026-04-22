@@ -35,12 +35,15 @@ No drift, no re-copy step. Pull the repo when you want updates.
 
 **Team use — copy into the project:**
 
-Copy `WORKING-STYLE.md` into your project so it's committed alongside the code and discoverable by all team members:
+Copy the kit files into your project so they're committed alongside the code and discoverable by all team members:
 
 ```bash
-cp /path/to/zanshin-kit/WORKING-STYLE.md ./docs/planning/WORKING-STYLE.md
-# or at the project root:
+# Working discipline + style guide defaults:
 cp /path/to/zanshin-kit/WORKING-STYLE.md ./WORKING-STYLE.md
+cp /path/to/zanshin-kit/STYLE.md ./STYLE.md
+
+# Optional — blank template if your team wants to define its own style conventions:
+cp /path/to/zanshin-kit/STYLE.template.md ./STYLE.template.md
 ```
 
 Then load from the local path at session start (see Tool table above, adjusted for your path).
@@ -92,10 +95,11 @@ Feed observations back via the same pattern as any other private-to-public hando
 
 ## Team repos
 
-If your project already has a `docs/planning/` or `docs/adr/` convention, put `WORKING-STYLE.md` there rather than the root:
+If your project already has a `docs/planning/` or `docs/adr/` convention, put the kit files there rather than the root:
 
 ```bash
 cp /path/to/zanshin-kit/WORKING-STYLE.md ./docs/planning/WORKING-STYLE.md
+cp /path/to/zanshin-kit/STYLE.md ./docs/planning/STYLE.md
 ```
 
 Update the load reference accordingly:
@@ -111,6 +115,8 @@ Update the load reference accordingly:
 | Artifact | Commit to team repo? |
 |----------|----------------------|
 | `WORKING-STYLE.md` | Yes — shared convention, everyone loads it |
+| `STYLE.md` | Yes — shared style defaults; customize before committing |
+| `STYLE.template.md` | Optional — useful reference if team wants to rebuild from scratch |
 | `docs/planning/BRIEF.md` | Yes — project brief, shared context |
 | Session handoffs (`whats-next.md`) | No — personal session state, gitignore it |
 | Checkpoints | No — ephemeral, local only |
@@ -134,7 +140,14 @@ All artifacts stay in the project where you're working. The kit contains no refe
 
 ## Updating
 
-This kit is a snapshot. When the working style in the source workspace evolves, re-copy `WORKING-STYLE.md` to get the updates. The version date at the top of the file tells you how current your copy is.
+This kit is a snapshot. When the working style in the source workspace evolves, re-copy the kit files to get the updates:
+
+```bash
+cp /path/to/zanshin-kit/WORKING-STYLE.md ./WORKING-STYLE.md
+cp /path/to/zanshin-kit/STYLE.md ./STYLE.md
+```
+
+The version date at the top of `WORKING-STYLE.md` tells you how current your copy is. `STYLE.md` carries a version line too. Don't overwrite a customized `STYLE.md` without diffing first — your project's `[DEFINE]` sections won't be in the source.
 
 ## Origin
 
