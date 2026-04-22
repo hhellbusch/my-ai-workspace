@@ -5,6 +5,7 @@ A single-file working style kit. Drop it into any project, reference it at sessi
 ## What's in it
 
 `WORKING-STYLE.md` — the kit. Contains:
+- **Collaboration style** — brevity, directness, sharp questions over long drafts
 - **Spar** — structured adversarial review before committing to approaches or decisions
 - **Shoshin** — surfacing assumptions before they become buried premises
 - **Progressive bookkeeping** — keeping state current during sessions, not batched at the end

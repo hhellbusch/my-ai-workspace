@@ -4,9 +4,9 @@
 
 ## In Progress
 
-### Zanshin Kit — portable working style (Phase 2: iterate + real session findings)
+### Zanshin Kit — portable working style (Phase 3: output format anchoring)
 - **Product:** meta / tooling
-- **Context:** Phase 1 complete. Phase 2 applied: quick capture, close-out mode, second real session findings (shoshin confirmed working; checkpoint-before-risky-op, verification, and stack tracking gaps addressed). Architecture spar: activation model table added, example checkpoint added, case study converted. Pending: close-out mode with real accumulated context still untested. See `.planning/zanshin-kit/ROADMAP.md` for full findings.
+- **Context:** Phase 1 and 2 complete. Phase 3 in progress: spar output templates added (Type/argument/why it matters/Strength + Self-Audit block) to anchor format consistency across tools; collaboration style section added (brevity, cut before adding). Root cause of Phase 3: same model (Claude), different output quality in Copilot Chat vs. Cursor — diagnosed as missing output templates, not model capability. Pending: close-out mode with real accumulated context still untested. Scope items deferred: cross-linking portable form, backlog capture, Copilot keyword registration. See `.planning/zanshin-kit/ROADMAP.md` for full findings.
 - **Links:** `zanshin-kit/WORKING-STYLE.md`, `.planning/zanshin-kit/BRIEF.md`, `.planning/zanshin-kit/ROADMAP.md`
 - **Started:** 2026-04-20
 
