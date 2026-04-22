@@ -1,7 +1,7 @@
 ---
 description: Maintain cross-references when creating or modifying content
 globs:
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Cross-Linking Convention

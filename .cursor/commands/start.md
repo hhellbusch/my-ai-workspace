@@ -16,8 +16,7 @@ Run this at the beginning of a new session, or whenever you need to re-orient.
 </objective>
 
 <context>
-- Backlog: @BACKLOG.md
-- Older completed items: `BACKLOG-ARCHIVE.md` (when **`## Done`** in the backlog is trimmed to the rolling cap)
+- Backlog summary: !`head -4 BACKLOG.md`
 - Recent commits: !`git log --oneline -10`
 - Handoff file: !`ls .planning/whats-next.md 2>/dev/null || echo "No handoff file"`
 - Planning projects: !`ls -d .planning/*/ 2>/dev/null || echo "No planning projects"`
@@ -34,26 +33,18 @@ If `ABOUT.md` does not exist, note it and proceed — but be especially cautious
 
 ### Step 1: Backlog snapshot
 
-Read `BACKLOG.md` and present the project-level context first — this is the ground truth that any handoff or continuity suggestion should be evaluated against.
+Present the summary header from `BACKLOG.md` (already loaded in context — the `> State:` line). This is the ground truth for session orientation. Do not read the full `BACKLOG.md` unless the user asks for detail on a specific section or item.
 
 ```
 ## Where Things Stand
 
-**In Progress:**
-- [title] — [first line of context] (started [date])
-
-**Up Next:**
-- [title] — [first line of context]
-- [title] — [first line of context]
-
-**Ideas:** [N] items queued
-
-**Recently Completed:** [last 2-3 items from **`## Done`** in `BACKLOG.md` — newest are listed first; older completions live in `BACKLOG-ARCHIVE.md`]
-
-**Review coverage:** N/M files reviewed (X%)
+[State line from BACKLOG.md header — counts and last done]
+[Last updated line]
 ```
 
-For the review coverage line, do a quick count: `rg -l "^  status: reviewed" --glob "*.md"` for reviewed files vs. total markdown files (excluding `.git/`). One line is enough — `/audit` has the detailed breakdown.
+If the user asks "what's in progress?" or "show me up next" or similar, then read the relevant section of `BACKLOG.md`. Otherwise, the summary is sufficient to orient the session and suggest focus.
+
+**Review coverage** is opt-in — skip unless the user asks. `/audit` has the detailed breakdown.
 
 ### Step 2: Check for handoff
 

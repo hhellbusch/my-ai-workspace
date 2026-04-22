@@ -1,6 +1,7 @@
 # Backlog
 
-> Last updated: 2026-04-20 (Zanshin essay spar revisions; link depth drift case study; prompting-and-state essay; spar intervention logged)
+> **State:** 4 in progress · 8 up next · 70 ideas · Last done: Meta full content audit + systemic link/registry fixes (2026-04-20)
+> Last updated: 2026-04-21 (meta system optimization ideas; zanshin-kit Phase 3; workspace STYLE.md)
 
 ## In Progress
 

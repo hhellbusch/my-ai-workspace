@@ -17,6 +17,7 @@ This command is read-only. It reports findings and asks for confirmation before 
 
 <context>
 - Repo conventions: @.cursor/rules/repo-structure.md
+- Cross-linking and registry rules: @.cursor/rules/cross-linking.md
 - Current changes: !`git status`
 - Staged diff: !`git diff --cached --stat`
 - Unstaged diff: !`git diff --stat`
