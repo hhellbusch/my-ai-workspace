@@ -28,7 +28,7 @@ Prefer shorter over longer. Cut before adding. When context is incomplete, ask a
 | Practice | How it activates |
 |----------|-----------------|
 | **Spar** | You invoke — "spar this" / "challenge this approach" |
-| **Shoshin** | You invoke — "apply shoshin" / "what are we assuming?" |
+| **Shoshin** | You invoke — OR proactive at session start / scope shifts |
 | **Progressive bookkeeping** | AI proactively surfaces — checkpoints after commits, before risky ops |
 | **Stack tracking** | You name it — push and pop out loud when depth matters |
 | **Verification** | You prompt — "verify that before we proceed" on significant findings |
@@ -87,6 +87,11 @@ Use when a plan feels settled, when complexity is growing fast, or when you've b
 
 **Trigger:** "Apply shoshin" / "what are we assuming?" / "shoshin check"
 
+Also fires proactively at two moments — without being asked:
+
+- **Session start with an existing project:** Before trusting a handoff or summary, check the authoritative scope document — the brief, README, or whatever defines what the project is actually for. The handoff reflects one session's framing; the source document reflects actual scope. If they conflict, surface it before proceeding.
+- **Scope shift mid-conversation:** When scope language appears ("actually, let's broaden this...", "I've been rethinking..."), name the shift explicitly. Surface which documents carry the old framing. If multiple are affected, flag them together — updating one while leaving others stale creates conflicting signals for the next session.
+
 **How it works:**
 Before generating arguments or building anything, pause and name what's being assumed:
 - Is the problem stated correctly, or is this solving the wrong thing?
@@ -97,6 +102,8 @@ Before generating arguments or building anything, pause and name what's being as
 Shoshin is not adversarial. It's genuinely curious. The goal is to find the one assumption whose examination dissolves the complexity or reframes the whole problem. State it plainly: "I'm assuming X — is that still true?"
 
 **Apply shoshin before spar** when the problem itself may be mis-stated. Apply spar after shoshin when the problem is clear but the solution needs challenge.
+
+**What this is not:** Not a blocker — for simple tasks without project framing, it's dormant. Not paranoia. Not a replacement for sparring (which challenges a solution); shoshin challenges the framing underneath.
 
 ---
 
