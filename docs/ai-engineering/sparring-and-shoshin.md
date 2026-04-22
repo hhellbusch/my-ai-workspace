@@ -30,7 +30,7 @@ Sparring and shoshin are the structural responses. One challenges outputs. The o
 
 *Shoshin* (初心) is a concept from Zen, carried into martial arts practice: approach every situation as if encountering it for the first time. In the beginner's mind, there are many possibilities. In the expert's mind, there are few.
 
-The practical version for AI-assisted work: before inheriting a summary, notes from a previous session, or any prior framing, check whether that framing is still accurate. Don't trust the map if the territory might have changed.
+The practical version for AI-assisted work: before inheriting a summary, prior documents, or any inherited framing, check whether that framing is still accurate. Don't trust the map if the territory might have changed.
 
 - When loading project context, read the source documents — not just a summary
 - Don't inherit prior framing without verifying it against the current state of the work
