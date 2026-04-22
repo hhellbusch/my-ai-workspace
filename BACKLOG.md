@@ -1,7 +1,7 @@
 # Backlog
 
-> **State:** 4 in progress · 8 up next · 70 ideas · Last done: Meta full content audit + systemic link/registry fixes (2026-04-20)
-> Last updated: 2026-04-21 (meta system optimization ideas; zanshin-kit Phase 3; workspace STYLE.md)
+> **State:** 4 in progress · 8 up next · 71 ideas · Last done: Meta full content audit + systemic link/registry fixes (2026-04-20)
+> Last updated: 2026-04-21 (Claude Code alignment; plugin distribution idea; zanshin-kit Phase 3)
 
 ## In Progress
 
@@ -106,6 +106,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Added:** 2026-04-10
 
 ## Ideas
+
+### Claude Code plugin distribution for .claude/
+- **Product:** meta / tooling
+- **Context:** The `.claude-plugin/` directory (vestigial, Feb 2026) held metadata for a plugin marketplace concept that never shipped. Now that `.claude/commands/` is a version-controlled source of adapted workspace commands, explore whether a plugin distribution mechanism makes sense — packaging `.claude/commands/` + `CLAUDE.md` so others could install the Zanshin behavioral framework into their Claude Code environment without cloning the full workspace. Similar intent to `zanshin-kit/` (portable drop-in) but targeted at Claude Code specifically. Questions to explore: does Claude Code have a plugin/extension registry? Would a `package.json`-style manifest + install script be enough? Relationship to `zanshin-kit` — same audience (portable framework) different mechanism (CLI install vs. file copy).
+- **Links:** `.claude/`, `zanshin-kit/README.md`, `.claude-plugin/` (reference only — vestigial)
+- **Added:** 2026-04-21
 
 ### Meta system optimization — faster start, lower token usage
 - **Product:** meta / tooling
