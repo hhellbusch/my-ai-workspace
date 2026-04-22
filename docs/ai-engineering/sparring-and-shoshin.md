@@ -9,6 +9,8 @@ review:
 # Sparring and Shoshin — Two Practices for AI-Assisted Work
 
 > Two complementary practices for AI-assisted work — adversarial review (sparring) and assumption-checking (shoshin). Covers what each is, how to run one, and where they fit in a workflow.
+>
+> The working implementations are in [`.cursor/rules/shoshin.md`](../../.cursor/rules/shoshin.md) and [`.cursor/commands/spar.md`](../../.cursor/commands/spar.md) — worth reading alongside this essay. They show the gap between describing a practice in prose and specifying it precisely enough for an AI to run it consistently.
 
 ## The Two Problems
 
