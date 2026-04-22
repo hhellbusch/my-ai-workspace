@@ -59,3 +59,20 @@ This was deliberately simplified through two rounds of spar and shoshin:
 ## The name
 
 "Zanshin" (残心) — the sustained, relaxed awareness that persists after action. The working style this document encodes: not rushing, staying present, completing things properly, maintaining awareness of context. The name is from the zen-karate philosophy work in Field Notes and fits better than "portable kit" or "working style framework."
+
+---
+
+## Scope evolution — Phase 3 (2026-04-21)
+
+The v1 scope above was accurate at the time. Phase 3 expanded it based on real use findings:
+
+**Added to the kit:**
+- Spar output templates (argument block: Type / The argument / Why it matters / Strength; Self-Audit block) — fixes format inconsistency across tools when loaded via `#file:` vs. system prompt
+- Collaboration style section (brevity, cut before adding, sharp questions over long drafts) — lifted from workspace `.cursorrules`
+- Shoshin operational precision — proactive triggers at session start and scope shifts, scope shift logging, style guide check, "what this is not" clarification
+- `STYLE.md` — opinionated style defaults (voice, structure, ADRs, technical resources, biographical content, code style, cross-linking)
+- `STYLE.template.md` — blank template for teams building their own conventions
+
+**Root cause of scope expansion:** Same model (Claude), different output quality in Copilot Chat vs. Cursor — diagnosed as missing output templates and missing behavioral defaults that the workspace carries in always-on rules. The kit needed to encode these explicitly since it can't rely on the rule system.
+
+**One-liner updated:** A kit that travels into any AI-assisted environment and activates consistent working discipline — including style and output format — regardless of what tool is available.
