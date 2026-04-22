@@ -1,30 +1,30 @@
 # Style Guide
 
-> Template — customize each section for your project. Delete sections that don't apply.
-> Add a `> Version:` line at the top when you publish this for your team.
->
-> Reference this at session start for any writing work. The shoshin practice checks this
-> file before writing — having it populated means those checks land on something real.
+> Version: 2026-04-21
+> Working defaults — adjust for your project. Project-specific supplements extend these
+> in `.planning/{project}/STYLE.md` or equivalent. To start from scratch, copy `STYLE.template.md`.
 
 ---
 
 ## Writing defaults
 
-These apply across all content types unless a section below overrides them.
+**Voice:** Practitioner voice — observation from practice, not prescription. "This is what I've found" rather than "you should do this." Second person or inclusive "we" for applied sections; first person only when the author has directly provided that content.
 
-**Brevity:** Prefer shorter over longer. Cut before adding. One sentence that lands is worth more than three that circle.
+**Brevity:** Prefer shorter over longer. Cut before adding. One precise sentence beats three that circle.
 
-**Voice:** [DEFINE — first person / second person / inclusive "we" / observer voice. Pick a default for this project.]
+**Claims:** Pair assertions with their limits. "This works in X context" is more useful than "this works." If something is unverified, say so. Fluent prose is not evidence.
 
-**Audience:** [DEFINE — who reads this and what they already know. Write to that reader, not to all possible readers.]
+**Audience:** Peers who are skeptical of jargon and value precision. Write for someone landing on a single file via a direct link — not for someone with full project context.
 
-**Tone:** [DEFINE — calibrate with an example: what's too formal, what's too casual, what's the target. A useful starting point: write for a skeptical peer who values precision over enthusiasm.]
+**Tone:** Between too academic and too casual. Target: a skeptical peer who values precision over enthusiasm. Observation, not prescription. Not motivational speaker energy.
 
-**Claims:** Pair assertions with their limits. "This works in X context" is more useful than "this works." If something is unverified, say so.
+**What this content is not:** Not prescriptive. Not motivational. Not academic. Insight from practice that the reader can evaluate and use — not a system they have to buy into.
 
-**AI-generated content:** [DEFINE — your policy on AI disclosure, review status, and what "unreviewed" means here. If there is no policy, see `WORKING-STYLE.md` verification section for a starting point.]
+**AI-generated content:** All AI-assisted content carries a disclosure notice. Unreviewed content is labeled as such. Before sharing any AI-generated content externally, confirm review status. Standard footer for new documents:
 
-**What this content is not:** [DEFINE — the failure mode you want to avoid. Examples: not a marketing pitch, not a technical manual for experts only, not a running log of decisions, not memoir.]
+*This document was created with AI assistance and has not been fully reviewed by the author.*
+
+Update to "has been reviewed by the author" when the author has read and validated the content.
 
 ---
 
@@ -37,7 +37,7 @@ Guides, READMEs, concept docs, how-tos.
 **How-to guides:**
 - Task-oriented — title starts with a verb
 - Each step is one action
-- State the expected output for steps where it isn't obvious
+- State expected output for steps where it isn't obvious
 - State what done looks like at the end
 
 **Concept docs:**
@@ -46,9 +46,10 @@ Guides, READMEs, concept docs, how-tos.
 - One concept per doc; link to related concepts rather than embedding them
 
 **Structure defaults:**
-- `#` for title
+- `#` for title, optionally with an em-dash subtitle
+- Front matter: brief audience and purpose statement near the top
 - `##` for main sections, `###` for subtopics
-- [DEFINE — any project-specific structural conventions, frontmatter, or headers]
+- Horizontal rules `---` between major thematic blocks
 
 ---
 
@@ -58,7 +59,7 @@ Briefs, roadmaps, backlog items, handoffs.
 
 **Briefs:** One-liner first, then: problem, hypothesis, success criteria, known risks, scope. Written once and updated when scope actually changes — not a running log.
 
-**Roadmaps:** Phase-based. Each phase has a goal, deliverables, and a status that stays current. A roadmap where all phases are marked "complete" but the work isn't done is worse than no roadmap.
+**Roadmaps:** Phase-based. Each phase has a goal, deliverables, and a status that stays current. A roadmap where all phases are marked complete but the work isn't done is worse than no roadmap.
 
 **Backlog items:** Include enough context that a fresh session understands the item without the original conversation. Link to relevant files. State definition of done.
 
@@ -90,9 +91,9 @@ What was decided. One clear statement.
 What gets better. What gets worse. What is now constrained.
 ```
 
-**Where ADRs live:** [DEFINE — e.g., `docs/adr/`, `docs/decisions/`]
+**Where ADRs live:** `docs/adr/` or `docs/decisions/` — pick one and keep it consistent.
 
-Reference: [MADR](https://adr.github.io/madr/) if you want a more structured template.
+Reference: [MADR](https://adr.github.io/madr/) for a more structured template.
 
 ---
 
@@ -109,7 +110,7 @@ Runbooks, troubleshooting guides, examples.
 **Troubleshooting guides:**
 - Start with the symptom, not the cause
 - Structure: symptom → investigation steps → root cause → resolution → prevention
-- Include the diagnostic commands, not just the concepts
+- Include diagnostic commands, not just concepts
 
 **Examples:**
 - Minimal — the smallest thing that demonstrates the point
@@ -118,16 +119,29 @@ Runbooks, troubleshooting guides, examples.
 
 ---
 
+## Biographical content
+
+Any first-person claim a reader would attribute directly to the author needs explicit review before sharing:
+
+- Professional titles or role descriptions
+- Claims about personal experience ("in my years of practice...")
+- Opinions presented as the author's
+- Biographical details
+
+When biographical content is needed and the author hasn't provided the specific detail, use general framing ("a practitioner might notice...") rather than fabricating a claim. Flag it: "This draft contains biographical statements on lines N–M that need author review."
+
+---
+
 ## Code style
 
-[DEFINE — language-specific conventions, linter config, naming patterns, comment policy.]
+**Comment policy:** Comments explain why, not what. If a comment restates what the code does, delete it. If it explains a constraint or trade-off the code can't express, keep it.
 
-**Comment policy default:** Comments explain why, not what. If a comment restates what the code does, delete it. If it explains a constraint or trade-off the code can't express, keep it.
+Language-specific conventions, linter config, and naming patterns: define these when the project has established conventions worth encoding here.
 
 ---
 
 ## Cross-linking
 
-When mentioning a specific file, doc, or resource by name in prose, link it on first mention in that section. The reader should be able to follow the reference without searching.
+When mentioning a specific file, doc, or resource by name in prose, link it on first mention in that section. Do not repeat the link within the same section. The reader should be able to follow the reference without searching.
 
-[DEFINE — any project-specific registries to keep current when new content is added. Common ones: a `docs/README.md` reading list, a `docs/adr/README.md` ADR index.]
+When new content is added, check whether any registry needs updating — a reading list, an ADR index, a changelog. Registries that aren't updated when content is added silently degrade.

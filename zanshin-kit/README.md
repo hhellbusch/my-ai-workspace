@@ -13,13 +13,9 @@ A working style kit. Drop it into any project, reference it at session start, an
 - **Stack tracking** — managing conversation depth without losing parent topics
 - **Verification discipline** — not mistaking fluent output for correct output
 
-`STYLE.md` — a style guide template. Customize it for your project; the shoshin practice checks it before writing work. Covers:
-- **Writing defaults** — voice, tone, audience, brevity, claims discipline
-- **Documentation** — READMEs, how-to guides, concept docs
-- **Project management** — briefs, roadmaps, backlog items, handoffs, changelogs
-- **ADRs** — Architecture Decision Records format and when to write one
-- **Technical resources** — runbooks, troubleshooting guides, examples
-- **Code style** — placeholder section to define per project
+`STYLE.md` — a style guide with working defaults. Drop it in, adjust what doesn't fit. Covers writing defaults (practitioner voice, brevity, claims discipline, AI disclosure), documentation, project management, ADRs, technical resources, biographical content, code style, and cross-linking.
+
+`STYLE.template.md` — a blank template with `[DEFINE]` placeholders throughout. Use this to build a style guide from scratch for a team with different conventions.
 
 ## Setup
 
