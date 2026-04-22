@@ -95,6 +95,8 @@ If you're new to these ideas and want to go further:
 
 | For | Read |
 |---|---|
+| The shoshin rule as implemented in this workspace | [`.cursor/rules/shoshin.md`](../../.cursor/rules/shoshin.md) |
+| The `/spar` command definition | [`.cursor/commands/spar.md`](../../.cursor/commands/spar.md) |
 | What shoshin means for AI ego and validation traps | [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) |
 | Shoshin applied to organizational learning and the "full cup" problem | [The Full Cup](../philosophy/the-full-cup.md) |
 | What sparring and shoshin are actually defending against | [The Frictionless Entity](../case-studies/frictionless-entity.md) |
