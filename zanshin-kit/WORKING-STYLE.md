@@ -89,7 +89,7 @@ Use when a plan feels settled, when complexity is growing fast, or when you've b
 
 Also fires proactively at two moments — without being asked:
 
-- **Session start with an existing project:** Before trusting a handoff or summary, check the authoritative scope document — the brief, README, or whatever defines what the project is actually for. The handoff reflects one session's framing; the source document reflects actual scope. If the work involves writing, also check any style guide before proceeding. If they conflict, surface it before proceeding.
+- **Session start with an existing project:** Before trusting a handoff or summary, check the authoritative scope document — the brief, README, or whatever defines what the project is actually for. The handoff reflects one session's framing; the source document reflects actual scope. If the work involves writing, also check `STYLE.md` (if it exists) before proceeding. If they conflict, surface it before proceeding.
 - **Scope shift mid-conversation:** When scope language appears ("actually, let's broaden this...", "I've been rethinking..."), name the shift explicitly. Surface which documents carry the old framing. If multiple are affected, flag them together — updating one while leaving others stale creates conflicting signals for the next session. If a changelog exists, log the scope change there.
 
 **How it works:**

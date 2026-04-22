@@ -1,10 +1,10 @@
 # Zanshin Kit
 
-A single-file working style kit. Drop it into any project, reference it at session start, and get consistent working discipline regardless of what AI tool is available.
+A working style kit. Drop it into any project, reference it at session start, and get consistent working discipline regardless of what AI tool is available.
 
 ## What's in it
 
-`WORKING-STYLE.md` — the kit. Contains:
+`WORKING-STYLE.md` — the working discipline. Contains:
 - **Collaboration style** — brevity, directness, sharp questions over long drafts
 - **Spar** — structured adversarial review before committing to approaches or decisions
 - **Shoshin** — surfacing assumptions before they become buried premises
@@ -12,6 +12,14 @@ A single-file working style kit. Drop it into any project, reference it at sessi
 - **Checkpoints and handoffs** — lightweight session recovery format
 - **Stack tracking** — managing conversation depth without losing parent topics
 - **Verification discipline** — not mistaking fluent output for correct output
+
+`STYLE.md` — a style guide template. Customize it for your project; the shoshin practice checks it before writing work. Covers:
+- **Writing defaults** — voice, tone, audience, brevity, claims discipline
+- **Documentation** — READMEs, how-to guides, concept docs
+- **Project management** — briefs, roadmaps, backlog items, handoffs, changelogs
+- **ADRs** — Architecture Decision Records format and when to write one
+- **Technical resources** — runbooks, troubleshooting guides, examples
+- **Code style** — placeholder section to define per project
 
 ## Setup
 
