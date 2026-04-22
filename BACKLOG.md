@@ -114,6 +114,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
   - **Context compression:** BACKLOG summary header (counts + recent Done) read first by `/start`, full detail on demand; `.cursorrules` TÂCHES section → pointer to `.cursor/README.md`; compressed whats-next.md variant (5 lines: in-progress, next step, key decision) as default
   - **Session start:** minimum viable start = BACKLOG summary + git log, everything else deferred; session type detection (docs/writing → load style rules; technical → skip them); gate planning one-liners on whether session has planning relevance
   - **Handoff/state:** whats-next staleness threshold — surface archive prompt if >N commits stale; SHA-anchored workspace state snapshot as single diff target; more aggressive Done rolling cap (3–5 items)
+  - **"Read before deciding" review:** The minimum viable load in `framework-bootstrap.md` includes "never trust in-context memory of a file; re-read it." This principle is defensive but may be driving heavy token usage — every decision triggers a file read. Worth examining whether a tiered version is better: re-read for high-stakes decisions (design choices, before committing) but not for routine orientation. Tension: the principle exists because compressed memory causes real errors; the cost is real too.
 - **Added:** 2026-04-21
 
 ### Source review: Zanshin — Traditional Aikido of Colorado Springs
