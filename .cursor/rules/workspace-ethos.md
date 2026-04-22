@@ -13,7 +13,8 @@ This is the *why*. Each behavioral area has an authoritative home:
 - **Verification and cross-linking** — [`.cursor/rules/cross-linking.md`](cross-linking.md)
 - **Voice, biography, review status** — [`.cursor/rules/review-tracking.md`](review-tracking.md)
 - **Session orientation and context loading** — [`.cursor/rules/session-awareness.md`](session-awareness.md)
-- **Project priorities (what work leads)** — `.planning/zen-karate/STYLE.md` (*Guiding Stars* section)
+- **Workspace writing defaults** — `STYLE.md` (repo root): voice, structure, content track purposes, cross-track priority
+- **Project priorities (zen-karate series)** — `.planning/zen-karate/STYLE.md` (*Guiding Stars* section)
 - **Scope drift and framing** — [`.cursor/rules/shoshin.md`](shoshin.md)
 
 ## Tooling preferences

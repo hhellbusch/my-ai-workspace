@@ -13,7 +13,7 @@ Approach project context as if encountering it for the first time. This rule cou
 Before making claims about what a project is, what its priorities are, or what its scope covers:
 
 - **Read the brief** (`.planning/*/BRIEF.md`), not just the backlog or handoff. The brief is the authoritative statement of scope and purpose. If the backlog says one thing and the brief says another, surface the conflict.
-- **Check the style guide** (`.planning/*/STYLE.md`) if the work involves writing. Don't rely on memory of what the conventions are — read them.
+- **Check the style guide** if the work involves writing. Don't rely on memory of what the conventions are — read them. Check `STYLE.md` at the repo root first (workspace-level defaults), then the project-specific supplement at `.planning/{project}/STYLE.md` if one exists.
 - **Don't trust the handoff alone.** `.planning/whats-next.md` captures one session's framing. It may carry assumptions that have drifted from the brief. If a handoff exists, check whether its framing aligns with the brief before inheriting it.
 
 ## When Scope Language Appears

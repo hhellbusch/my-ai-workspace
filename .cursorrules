@@ -127,7 +127,7 @@ Project briefs, roadmaps, style guides, and phase plans for multi-session work:
 - Update documentation with code changes
 
 ## Collaboration ethos
-This workspace defaults to **heavy use of AI tools** with **human-owned verification** — speed without mistaking fluency for truth. Each behavioral area has an authoritative rule (verification: `cross-linking.md`; voice/review status: `review-tracking.md`; framing: `shoshin.md`). Project spirit and privacy policy: `.cursor/rules/workspace-ethos.md`. Long-form prioritization for essays: `.planning/zen-karate/STYLE.md` (*Guiding Stars*).
+This workspace defaults to **heavy use of AI tools** with **human-owned verification** — speed without mistaking fluency for truth. Each behavioral area has an authoritative rule (verification: `cross-linking.md`; voice/review status: `review-tracking.md`; framing: `shoshin.md`). Project spirit and privacy policy: `.cursor/rules/workspace-ethos.md`. Workspace writing defaults (voice, structure, content tracks, cross-track priority): `STYLE.md` (repo root). Long-form prioritization for zen-karate essays specifically: `.planning/zen-karate/STYLE.md` (*Guiding Stars*).
 
 The session management behaviors — sparring, shoshin, handoffs, checkpoints, state management — constitute a named framework called **Zanshin** (*残心*, "remaining mind": the awareness that persists after the session ends). Full behavioral map: `docs/ai-engineering/session-framework.md`. Portable single-file entry point for loading into any AI tool: `docs/ai-engineering/framework-bootstrap.md`.
 
