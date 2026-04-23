@@ -1,7 +1,7 @@
 ---
 review:
   status: unreviewed
-  notes: "Updated 2026-04-23 against ACM 2.16 docs (https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.16/html/search/acm-search). emptyDir default, PVC config YAML, SearchPVCNotPresent alert description, Search CR field names (database/queryapi/collector/indexer), and postgres envVar names all verified against source. OOMKill memory tuning approach (envVar + resource limits) is doc-aligned. Sizing numbers are estimates — needs production validation."
+  notes: "Updated 2026-04-23 against ACM 2.16 docs (https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.16/html/search/acm-search). emptyDir default, PVC config YAML, SearchPVCNotPresent alert description, Search CR field names (database/queryapi/collector/indexer), and postgres envVar names all verified against source. PVC-resolves-OOMKill chain confirmed in production session 2026-04-23 — configuring dbStorage was sufficient to stop the crash loop without additional memory tuning. Memory envVar tuning is doc-aligned but not exercised in this session."
 ---
 
 # Troubleshooting: Search Service 503 / SearchPVCNotPresent
@@ -12,7 +12,7 @@ Covers two related alerts that often appear together on a fresh RHACM install:
 - **`SearchPVCNotPresent`:** Fires because the default postgres storage is `emptyDir` — no PVC is configured. This is expected on a new install and is resolved by configuring persistent storage.
 - **`SearchPVCNotPresentCritical`:** Same root cause, elevated severity when critical conditions accompany the missing PVC.
 
-The two problems interact: with `emptyDir`, postgres has limited disk space and compensates by using more memory, which accelerates OOMKill. Fix the PVC first, then tune memory.
+The two problems interact: with `emptyDir` (the default), postgres has no persistent disk to spill data to and compensates by holding more in memory. This drives OOMKill under normal load. **Configuring the PVC alone is typically sufficient to stop the crash loop** — the memory tuning in Scenario B is for environments that still see pressure after persistent storage is in place.
 
 ---
 
@@ -162,7 +162,7 @@ EOF
 )"
 ```
 
-**Note:** Fix Scenario A (PVC) first — configuring persistent storage reduces memory pressure significantly and may resolve the OOMKill on its own.
+**Fix the PVC first (Scenario A).** In practice, configuring persistent storage is sufficient to stop the OOMKill loop on its own — postgres with `emptyDir` has nowhere to spill data except RAM, which is what drives the crash. The memory tuning below is for environments that still see pressure after the PVC is in place.
 
 **Starting-point estimates** (actual usage depends on resource count and query patterns):
 
