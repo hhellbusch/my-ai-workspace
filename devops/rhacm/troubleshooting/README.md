@@ -14,6 +14,7 @@ Practical diagnostic guides for Red Hat Advanced Cluster Management operational 
 |---|---|
 | [mch-stuck-pending-upgrade.md](./mch-stuck-pending-upgrade.md) | `MultiClusterHub` stuck in `Updating` / `Pending` / `Installing` beyond ~10–15 min during hub upgrade |
 | [managed-cluster-lease-not-updated.md](./managed-cluster-lease-not-updated.md) | `The cluster is not reachable. Registration agent stopped updating its lease.` — clusters showing Unknown, during or after hub upgrade |
+| [search-service-503.md](./search-service-503.md) | Search UI returns 503 / "Error occurred while contacting the search service" — `search-postgres` OOMKill and other search component failures |
 
 ## Common Scenarios
 
@@ -30,6 +31,11 @@ Practical diagnostic guides for Red Hat Advanced Cluster Management operational 
 - If still Unknown after hub is healthy, investigate klusterlet and connectivity
 - See [managed-cluster-lease-not-updated.md](./managed-cluster-lease-not-updated.md)
 
+**Search UI returning 503:**
+- `search-postgres` OOMKilled — increase memory limits via the `Search` CR
+- Search service not enabled in MCH, or per-cluster addon not deployed
+- See [search-service-503.md](./search-service-503.md); for first-time setup see [notes/search-setup.md](../notes/search-setup.md)
+
 ## Reference Documentation
 
 - [ACM 2.15 — Installing and Upgrading](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.15/html/install/installing)
@@ -37,6 +43,7 @@ Practical diagnostic guides for Red Hat Advanced Cluster Management operational 
 
 ## Related
 
+- [Notes](../notes/) — RHACM quick references including search setup
 - [Examples](../examples/) — RHACM configuration examples and patterns
 - [OCP Troubleshooting](../../ocp/troubleshooting/) — OpenShift platform troubleshooting
 
