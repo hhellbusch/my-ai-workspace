@@ -1,12 +1,13 @@
 ---
-description: Enforce strict mode in shell/bash scripts with set -euo pipefail
-globs: **/*.sh,**/*.bash
+description: Enforce strict mode in shell/bash scripts and CI inline scripts with set -euo pipefail
+globs: **/*.sh,**/*.bash,**/*.yml,**/*.yaml,**/Makefile
 alwaysApply: false
 ---
 
 # Shell strict mode
 
 All shell scripts (`*.sh`, `*.bash`) must start with strict mode enabled.
+Inline shell blocks in CI configs (GitHub Actions, GitLab CI, Tekton, etc.) and Makefiles must also use strict mode.
 
 ## Required header
 
@@ -34,16 +35,44 @@ files=$(ls "$DIR")
 echo "$files" | grep foo
 ```
 
-## Inline scripts
+## CI inline scripts (GitHub Actions, GitLab CI, Tekton, etc.)
 
-For short inline scripts in CI or Makefiles, add the flags to the shebang line or
-as the first command:
+Every `run:` / `script:` block that contains more than a single command must start
+with `set -euo pipefail`:
 
 ```yaml
-# GitHub Actions / GitLab CI
-run: |
-  set -euo pipefail
-  ./deploy.sh
+# ❌ BAD — a failed step is silently swallowed by the pipe
+- name: Build
+  run: |
+    make build
+    echo $OUTPUT | tee result.txt
+
+# ✅ GOOD
+- name: Build
+  run: |
+    set -euo pipefail
+    make build
+    echo "$OUTPUT" | tee result.txt
+```
+
+For single-command `run:` blocks, strict mode is optional but encouraged.
+
+## Makefiles
+
+Recipe lines that invoke bash directly should pass the flags via the shell invocation:
+
+```makefile
+# ❌ BAD
+deploy:
+	./scripts/deploy.sh && echo done
+
+# ✅ GOOD — set SHELL and .SHELLFLAGS at the top of the Makefile
+SHELL := /usr/bin/env bash
+.SHELLFLAGS := -euo pipefail -c
+
+deploy:
+	./scripts/deploy.sh
+	echo "done"
 ```
 
 ## Exceptions
