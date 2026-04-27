@@ -104,6 +104,8 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
 - **[NFS Portworx Proxy PVC Slow Ready](nfs-portworx-proxy-pvc-slow-ready/README.md)** - PVC or pod takes 20+ minutes to become ready with NFS proxy volumes
   - **[Quick Reference](nfs-portworx-proxy-pvc-slow-ready/QUICK-REFERENCE.md)** - Pinpoint provisioning vs mount delay and run diagnostics ⚡
 
+- **[Prometheus and Alertmanager storage (StorageClass, stuck PVCs)](prometheus-monitoring-storage/README.md)** - Set `storageClassName` via CMO ConfigMaps; separate PVC Pending vs pod Pending; links to Red Hat monitoring stack docs
+
 ### Multi-Cluster Management (RHACM)
 
 - **[MultiClusterObservability Webhook Rejection](multiclusterobservability-webhook-rejection/README.md)** - Fix admission webhook rejections when editing/deleting MCO resources
