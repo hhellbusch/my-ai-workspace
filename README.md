@@ -59,6 +59,7 @@ Practical, runnable examples and troubleshooting guides for infrastructure and p
 
 - **[Ansible](devops/ansible/)** — Playbooks, retry patterns, parallel execution, BMC operations, AAP 2.5+ troubleshooting
 - **[OpenShift](devops/ocp/)** — 20+ troubleshooting guides: API slowness, bare metal, CSR management, namespace termination, OVN-Kubernetes. SNO lab setup.
+- **[Learning paths](devops/learning-path/)** — Curated curricula (for example VMware admins → OpenShift / Virt, with Git and GitHub onboarding)
 - **[ArgoCD](devops/argo/)** — App-of-apps patterns, Helm charts, multi-environment GitOps, GitHub Actions workflows
 - **[CoreOS](devops/coreos/)** — Ignition/Butane configurations
 - **[RHACM](devops/rhacm/)** — Multi-cluster management, policy and governance

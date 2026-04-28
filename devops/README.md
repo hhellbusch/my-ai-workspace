@@ -20,13 +20,19 @@ Automation patterns built from real operational needs.
 GitOps patterns for multi-cluster OpenShift environments.
 
 - **`examples/`** — Multi-hub GitOps pipelines, app-of-apps patterns, Helm charts, GitHub Actions workflows, ArgoCD framework with devspaces and team guidelines, test and validation scripts
-- **`labs/`** — Hands-on exercises: ArgoCD sync patterns, GitOps fundamentals
+- **`labs/`** — Hands-on exercises: Argo CD sync patterns, GitOps fundamentals ([index](argo/labs/README.md))
 
 ### [CoreOS](coreos/)
 
 Butane / Ignition configurations for first-boot automation.
 
 - **`examples/`** — ISO ejection after installation, first-boot configuration automation
+
+### [Learning paths](learning-path/)
+
+Curated multi-topic curricula (may span OpenShift, GitOps, and labs in this repo).
+
+- **`vmware-admins/`** — VMware platform engineers → Kubernetes, OpenShift, OpenShift Virtualization; includes a **Git / GitHub** prerequisite for GitOps; links to Red Hat docs, courses, and in-repo labs ([index](learning-path/README.md))
 
 ### [OpenShift (OCP)](ocp/)
 

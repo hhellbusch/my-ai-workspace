@@ -8,6 +8,8 @@ Audited every section of `CLAUDE.md` against two signals:
 1. **Commit fingerprints** — does this rule visibly shape actual work in the git log?
 2. **Command overlap** — is this already handled by an existing `/command`?
 
+**Limitation (surfaced via spar):** Commit fingerprints are valid for *action rules* (backlog capture, cross-linking, review tracking) that produce visible artifacts. They're blind to *behavioral rules* (feedback gates, context discipline, framing checks) that shape conversation without touching git. Those sections are evaluated instead on **failure mode coverage**: which of the three named failure modes (context resets, context compaction, fluent-but-wrong output) does the rule defend against?
+
 ---
 
 ## Audit Table
@@ -21,10 +23,10 @@ Audited every section of `CLAUDE.md` against two signals:
 | Conversation Stack Tracking | **Compress → 2 lines** | Stack awareness is good; "automatic capture review at milestones" has no fingerprint — it's already in `/checkpoint` and `/whats-next` |
 | Progressive Bookkeeping | **Keep** | `backlog:` commit prefix appears 10+ times; checkpoint reminders visible in meta: commits |
 | Shoshin | **Keep** | Active doc revisions (commits `a16da56`, `84468da`, `2108ea4`); central to workspace philosophy |
-| Feedback Checkpoints | **Remove** | No distinct fingerprint; shoshin + direct communication style make this redundant |
+| Feedback Checkpoints | **Compress → 1 sentence** | Behavioral rule — fingerprint absence is irrelevant. Defends against fluent-but-wrong output reaching the author unreviewed for voice-sensitive content. Mid-work gate shoshin (pre-work) and /review (pre-commit) don't cover. |
 | Review Tracking | **Keep** | Specific rules (no frontmatter on generation, biographical flag); commit `69eb276` shows active use |
 | Proactive Backlog Capture | **Keep** | `backlog:` prefix is a clear, regular fingerprint |
-| Case Study Reflection | **Remove** | Only 2 case study commits in history, both deliberate — not organic reflection; aspirational, not operational |
+| Case Study Reflection | **Relocate → `/checkpoint`** | Behavioral rule — low trigger rate is a placement problem, not a "remove" signal. Wired into a command it fires at the right moment; ambient in CLAUDE.md it gets forgotten. |
 | Pre-Commit Review | **Keep** | Safety-critical; URL verification + AI disclosure rules are specific and consequential |
 | Cross-Linking | **Keep** | Explicit meta commit (`696431a`); surfaces regularly when creating new content |
 | Workspace Structure | **Keep, compress slightly** | Navigation reference; "troubleshooting in devops/, not docs/" prevents real errors |
@@ -35,16 +37,23 @@ Audited every section of `CLAUDE.md` against two signals:
 ## Proposed Changes
 
 ### Remove entirely
-- **Feedback Checkpoints** — shoshin is the pre-execution check; direct communication handles in-flight concerns
-- **Case Study Reflection** — move to a backlog item if desired; it's not a reliable trigger, it's a wish
+*(none — both original removals revised; see below)*
+
+### Compress to 1 sentence
+- **Feedback Checkpoints** — not a removal. A mid-work gate for voice-sensitive content that shoshin (pre-work) and `/review` (pre-commit) don't cover. Compressed form: *"After producing substantive content in the author's voice, pause and ask before proceeding — biographical claims and opinion pieces need the author's eyes before they're sealed."*
+
+### Relocate to `/checkpoint`
+- **Case Study Reflection** — remove from CLAUDE.md entirely. Add as an explicit step in the `/checkpoint` command: *"Before writing the checkpoint, briefly check: does this session's work demonstrate a transferable pattern? If yes, note a case study seed in BACKLOG.md under Ideas."* Fires at the right moment rather than relying on ambient recall.
 
 ### Compress to 1–2 lines
 
 **Session Orientation** (currently 9 lines + sub-bullets):
+
+Keep a minimal fallback sequence — compressing entirely to "run `/start`" removes the always-on fallback for sessions that skip it. Revised form:
 ```
-At session start, run `/start`. If not running `/start`: read ABOUT.md, the `> State:` line
-from BACKLOG.md, and `git log --oneline -10`. When user says "read X and go", check for a
-SHA anchor in the brief and run `git log <sha>..HEAD` before absorbing the framing.
+At session start, prefer `/start`. Without it: read ABOUT.md, the `> State:` line from
+BACKLOG.md, and `git log --oneline -10`. When user says "read X and go", check for a SHA
+anchor and run `git log <sha>..HEAD` before absorbing the brief's framing.
 ```
 
 **In-Session Context Compaction** (currently 5 lines):
@@ -66,19 +75,30 @@ leaving a branch, check whether it produced anything worth capturing.
 
 **Workspace Structure** — the two placement rules ("troubleshooting goes in devops/, research goes in research/") are load-bearing; the directory list is reference material that could move to README.md if needed. Keep for now.
 
+### New addition: sub-agent delegation note
+
+Surfaced by comparison with TÂCHES CC Resources, which separates analysis (main context) from execution (fresh sub-agent). Zanshin has no equivalent and it's a genuine gap for complex software tasks. Add 2 lines to Session Orientation or Progressive Bookkeeping:
+
+> *For complex implementation tasks, consider delegating execution to a sub-agent: keep analysis and planning in the main context, pass a clean specification to a fresh sub-agent for implementation. This preserves context quality and prevents exploration from polluting the implementation window.*
+
+Not a behavioral obligation — a practice note. Low cost, closes a real gap.
+
 ---
 
 ## Estimated Impact
 
 | Metric | Current | Proposed |
 |---|---|---|
-| Lines | ~223 | ~130 |
-| Characters | ~13,000 | ~7,500 |
-| Sections | 13 | 11 |
-| Removals | — | Feedback Checkpoints, Case Study Reflection |
-| Compressions | — | Session Orientation, Context Compaction, Stack Tracking, Shoshin closing |
+| Lines | ~223 | ~140 |
+| Characters | ~13,000 | ~8,500 |
+| Sections | 13 | 12 (Case Study removed; sub-agent note added) |
+| Removals | — | Case Study Reflection (from CLAUDE.md → relocated to `/checkpoint`) |
+| Compressions | — | Session Orientation, Context Compaction, Stack Tracking, Shoshin closing, Feedback Checkpoints |
+| Additions | — | Sub-agent delegation note |
 
-~42% word count reduction. All load-bearing rules intact.
+~35% word count reduction. All load-bearing rules intact. **Obligation density** (ambient "when X, do Y" rules) reduced more than raw word count suggests — reference sections (Workspace Structure, Commands table) are unchanged but carry no obligation cost.
+
+**Goal reframe:** The target is reduced *obligation density*, not reduced character count. Reference sections are cheap even if long; they're not obligations. Every ambient "when X, do Y" in CLAUDE.md is a cognitive cost the AI carries every session.
 
 ---
 
@@ -92,9 +112,9 @@ The commands (`/start`, `/checkpoint`, `/whats-next`) absorb the behaviors being
 
 ## Open Questions for the Author
 
-1. **Feedback Checkpoints** — is there a specific failure mode this was written to prevent? If so, a 1-sentence version might be worth keeping.
-2. **Case Study Reflection** — should this become a `/case-study` command, or just let it happen organically when you use `/checkpoint`?
-3. **Session Orientation** — do you want the 5-step sequence preserved in `/start` (it's already there as a command) and only the stub in CLAUDE.md, or is the full sequence in CLAUDE.md doing something the command doesn't?
+1. **Case Study Reflection in `/checkpoint`** — the proposed relocation adds a step to the checkpoint command. Is that welcome, or does it make `/checkpoint` heavier than you want it to be? Alternative: add it to `/whats-next` only (end-of-session, not mid-session).
+2. **Sub-agent delegation note** — where should it live? Session Orientation (session-setup framing) or Progressive Bookkeeping (workflow framing)? Or a new 2-line section of its own?
+3. **Feedback Checkpoints compressed form** — the proposed 1-sentence version scopes it to voice-sensitive content only. Does that match what it was written to protect, or was it meant more broadly?
 
 ---
 
@@ -106,8 +126,8 @@ Several of these changes apply beyond CLAUDE.md. Assessed against Cursor rules a
 |---|---|---|---|
 | Shoshin closing compression | ✓ | ✓ `shoshin.md` "What This Is Not" block | ✓ shoshin section |
 | Stack tracking compression | ✓ | Embedded in `session-awareness.md` | ✓ Stack tracking section |
-| Remove Case Study Reflection | Remove | `alwaysApply: false` on `case-study-reflection.md` | Not in kit |
-| Remove/compress Feedback Checkpoints | Remove/1-line | `alwaysApply: false` on `feedback-checkpoints.md` | Not in kit |
+| Relocate Case Study Reflection | Remove from file → add to `/checkpoint` | `alwaysApply: false` on `case-study-reflection.md` | Not in kit |
+| Compress Feedback Checkpoints | 1 sentence (voice-sensitive gate) | `alwaysApply: false` on `feedback-checkpoints.md` | Not in kit |
 | Session Orientation stub | ✓ (stub → /start) | Different logic — `session-awareness.md` IS the rule | Not applicable |
 | Context Compaction compression | ✓ | Could compress in `session-awareness.md` | Maybe 1-liner in verification discipline |
 
@@ -121,4 +141,8 @@ Several of these changes apply beyond CLAUDE.md. Assessed against Cursor rules a
 
 ## Implementation
 
-If approved: edit `CLAUDE.md` directly. Single commit with `meta:` prefix. For cross-environment changes, a follow-on commit touches `shoshin.md`, `case-study-reflection.md`, `feedback-checkpoints.md`, and `zanshin-kit/WORKING-STYLE.md`.
+Three commits if approved:
+
+1. **`meta:` — CLAUDE.md simplification** — all compressions, Feedback Checkpoints to 1 sentence, Case Study Reflection removed, sub-agent delegation note added.
+2. **`meta:` — `/checkpoint` update** — add case study reflection step to the checkpoint command.
+3. **`meta:` — cross-environment** — shoshin closing in `shoshin.md` (Cursor) and `zanshin-kit/WORKING-STYLE.md`; `alwaysApply: false` on `feedback-checkpoints.md` and `case-study-reflection.md` in Cursor rules.

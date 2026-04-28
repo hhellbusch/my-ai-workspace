@@ -26,6 +26,7 @@ These references have deep AI-researched context (summaries, key themes, notable
 | [Shi Heng Yi — Isolation Is The Gateway to Success](shi-heng-yi-isolation.md) | YouTube | zen, shaolin, isolation, solitude, self-mastery, martial-arts | 2026-04-18 |
 | [Dan Walsh — Career lessons (DevConf.US 2025)](dan-walsh-devconf-2025-career-lessons.md) | YouTube | career, containers, selinux, open-source, mentorship, ai-tooling | 2026-04-18 |
 | [Daniel Miessler — AI WILL Replace Knowledge Workers](daniel-miessler-ai-replace-knowledge-workers.md) | YouTube | ai, knowledge-work, organizational-chaos, skills, automation, lattice | 2026-04-18 |
+| [Git For Ages 4 And Up — Michael Schwern (linux.conf.au 2013)](git-for-ages-4-and-up.md) | YouTube | git, version-control, beginner, mental-model, branching, remotes, gitops | 2026-04-28 |
 
 See [`catalog.md`](catalog.md) for the complete reference list (50+ books, courses, and training).
 

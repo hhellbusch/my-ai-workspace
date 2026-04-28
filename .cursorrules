@@ -26,10 +26,13 @@ Practical, runnable examples and troubleshooting guides for enterprise infrastru
 
 #### ArgoCD (`devops/argo/`)
 - **`examples/`** — Multi-hub GitOps pipelines, app-of-apps patterns, Helm charts, GitHub Actions workflows, test scripts, framework with devspaces and guidelines
-- **`labs/`** — Hands-on lab exercises: ArgoCD sync patterns, GitOps fundamentals
+- **`labs/`** — Hands-on lab exercises (see `labs/README.md`): Argo CD sync patterns, GitOps fundamentals
 
 #### CoreOS (`devops/coreos/`)
 - **`examples/`** — Butane configurations: ISO ejection after installation, first-boot automation
+
+#### Learning paths (`devops/learning-path/`)
+- **`vmware-admins/`** — VMware-admin → K8s/OCP/OpenShift Virtualization curriculum (includes Git/GitHub prerequisite); index in `learning-path/README.md`
 
 #### OpenShift (`devops/ocp/`)
 - **`examples/`** — OVN-Kubernetes networking, install config templates, SNO KVM lab
