@@ -1,4 +1,27 @@
-# Helm component pattern — `mustMergeOverwrite` with named component keys
+# Platform component delivery at fleet scale
+
+*Composable group-based GitOps for OpenShift fleets — ArgoCD only, no RHACM required.*
+
+---
+
+## Who this is for
+
+**Platform engineers and consultants** rolling out or managing a fleet of OpenShift clusters and looking for a structured, GitOps-native way to manage platform components (operators, configuration, tooling) across clusters that share most config but differ in meaningful ways.
+
+**CoP maintainers** evaluating how this compares to the [ApplicationSet-based framework](../framework/README.md) in this repo:
+
+| | This pattern | `framework/` |
+|---|---|---|
+| Cluster inventory | `clusters.yaml` in Git | RHACM managed clusters |
+| RHACM required | No | Yes |
+| ApplicationSet required | No | Yes |
+| Cluster lifecycle | Manual registration in Git | RHACM provisions and decommissions |
+| Group membership | `groups:` field in `clusters.yaml` | RHACM cluster labels |
+| Value priority layers | Configurable group stack + cluster override | 6-tier fixed cascade |
+| Multiple ArgoCD hubs | Yes — hub filtering built in | Typically one hub via RHACM |
+| Pre-rendered manifests | Hub layer only | No |
+
+If RHACM is available, use this pattern for *what gets deployed*; let RHACM handle cluster lifecycle and registration. If RHACM is not available, this pattern is self-contained.
 
 ---
 
@@ -104,10 +127,24 @@ The composition is what matters: rather than one monolithic config per cluster, 
 
 ---
 
-**3. `clusters.yaml` owns cluster identity; cluster value files own only deviations**
+**3. `clusters.yaml` is the single authoritative cluster inventory**
 *Principle: Single Source of Truth (SSOT) + DRY (Don't Repeat Yourself)*
 
-Cluster metadata (name, server URL, hub assignment, group membership, vault endpoint, monitoring endpoint) lives in one file. `clusters/<name>/values.yaml` contains only component-level overrides — if a cluster needs no overrides, the file can be empty. Every attribute has exactly one authoritative location. When a Vault endpoint changes, one line in one file changes, and every component on every cluster in that hub picks it up.
+Cluster metadata — name, server URL, hub assignment, group membership, vault endpoint, monitoring endpoint — lives in one file. `clusters/<name>/values.yaml` contains only component-level overrides. If a cluster needs no overrides, the file can be empty. Every cluster attribute has exactly one authoritative location: when a Vault endpoint changes, one line in one file changes, and every component on every cluster in that hub picks it up automatically.
+
+**What belongs in `clusters.yaml`** (the guardrail: if more than one component uses a value, it belongs here):
+
+| ✅ Belongs in `clusters.yaml` | ❌ Does not belong |
+|---|---|
+| Cluster API server URL | App-specific config only one component uses |
+| Vault server endpoint | Secrets or credentials (use Vault/ESO) |
+| Monitoring remote-write endpoint | Namespace-level config |
+| Hub assignment | Config that varies within a cluster |
+| Group membership | Highly volatile config (frequent PR noise) |
+| Environment, region labels | Large binary or generated data |
+| Any value shared across two or more components | |
+
+The test: if you find yourself setting the same value in two different component configs, move it to `clusters.yaml` and reference it via `.Values.cluster.<field>` in the component chart.
 
 *Cost:* `clusters.yaml` becomes a coordination point. Every cluster onboarding touches it. In large teams this can cause merge conflicts; consider automating the addition via a script or CI step.
 
@@ -421,19 +458,44 @@ Git repository (clusters.yaml + groups/ + clusters/)
 
 All hubs read from the same Git source. A change to `groups/all/values.yaml` affects every cluster on every hub when each hub's Application next syncs. A change to `hub: prod-b` in `clusters.yaml` moves a cluster from one hub's scope to another — no changes required to the hub Applications themselves.
 
+### `clusters.yaml` — the fleet inventory and what it centralises
+
+`clusters.yaml` is the single file a reader goes to for a complete picture of the fleet: every cluster, which hub manages it, which groups it belongs to, and the shared attributes that propagate to every component deployed on it.
+
+```yaml
+# The full entry for a production virt cluster — everything in one place
+- name: site-dc1
+  hub: prod-a
+  environment: production
+  region: us-east
+  server: https://api.site-dc1.example.com:6443
+  groups:
+    - all
+    - virt-enabled
+  vault:
+    server: https://vault.prod-a.example.com          # used by cert-manager, ESO, ...
+    clusterSecretStoreName: vault-backend              # used by any ESO-backed component
+  monitoring:
+    remoteWriteEndpoint: https://mimir.prod-a.example.com/api/v1/push  # used by node-exporter, kube-state-metrics, ...
+```
+
+Every field under `vault:` and `monitoring:` is injected as `.Values.cluster.vault.*` and `.Values.cluster.monitoring.*` into every component Application on that cluster. A component chart references `.Values.cluster.vault.server` once — it does not declare it per cluster.
+
+**The centralisation rule:** if more than one component chart reads the same value, that value belongs in `clusters.yaml`, not in a group or cluster values file. See the guardrails in [Opinion #3](#3-clustersyaml-is-the-single-authoritative-cluster-inventory) for the full decision table.
+
 ### Cluster values files are now just overrides
 
-With `clusters.yaml` owning identity and group membership, `clusters/<name>/values.yaml` shrinks to contain only component-level deviations from group defaults:
+With `clusters.yaml` owning identity, group membership, and shared attributes, `clusters/<name>/values.yaml` shrinks to contain only component-level deviations from group defaults:
 
 ```yaml
 # clusters/site-dc1/values.yaml — entire file
 component-site-dc1:
   apps:
     cert-manager:
-      installPlanApproval: Manual   # production override
+      installPlanApproval: Manual   # production override — this cluster only
 ```
 
-If a cluster has no deviations, the file can be empty or omitted entirely.
+If a cluster has no deviations, the file can be empty or omitted entirely. The pattern is intentionally asymmetric: `clusters.yaml` is always populated; cluster value files are often empty.
 
 ### Per-cluster `targetRevision` — pinning a cluster to a git ref
 
