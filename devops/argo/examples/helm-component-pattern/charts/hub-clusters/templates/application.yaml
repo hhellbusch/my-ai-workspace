@@ -29,6 +29,14 @@
           environment, region, and any shared attributes (vault, monitoring, etc.).
           This overwrites any cluster: key that may exist in the component values,
           making clusters.yaml the single authoritative source for cluster identity.
+          Internal fields (groups:, targetRevision:) are stripped before injection.
+
+  Per-cluster targetRevision:
+          If a cluster entry in clusters.yaml includes a targetRevision field, all
+          component Applications for that cluster use that git ref.  Falls back to
+          the hub Application's own targetRevision ($.Values.source.targetRevision).
+          Use this to pin a cluster to a release branch or promote a canary cluster
+          ahead of the rest of the fleet.
 
   Step 4  Generate Applications.
           For each app where enabled ≠ false, emit an Application whose
@@ -56,6 +64,8 @@
 {{- $clusterEntry := . -}}
 {{- $clusterName  := .name -}}
 {{- $groups       := .groups | default list -}}
+{{- /* Per-cluster targetRevision override — falls back to hub Application's revision */ -}}
+{{- $targetRevision := .targetRevision | default $.Values.source.targetRevision -}}
 
 {{- /* ── Step 1: Merge group components in declaration order ────────────────── */ -}}
 {{- $resolved := dict -}}
@@ -75,8 +85,8 @@
 {{- end -}}
 
 {{- /* ── Step 3: Build and inject the cluster metadata block ─────────────────── */ -}}
-{{- /* Strip groups: from the inventory entry — not needed by component charts  */ -}}
-{{- $clusterMeta := omit $clusterEntry "groups" -}}
+{{- /* Strip groups: and targetRevision from the inventory entry — internal fields */ -}}
+{{- $clusterMeta := omit $clusterEntry "groups" "targetRevision" -}}
 {{- /* Overwrite any cluster: key in resolved — clusters.yaml is authoritative  */ -}}
 {{- $_ := set $resolved "cluster" $clusterMeta -}}
 
@@ -107,7 +117,7 @@ spec:
 
   source:
     repoURL: {{ $.Values.source.repoURL }}
-    targetRevision: {{ $.Values.source.targetRevision }}
+    targetRevision: {{ $targetRevision }}
     path: {{ $.Values.source.componentsBasePath }}/{{ $appName }}
     helm:
       # Fully resolved values — Argo CD receives a single flat block.

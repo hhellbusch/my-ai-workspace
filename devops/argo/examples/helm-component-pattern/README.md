@@ -143,7 +143,9 @@ Each hub cluster runs its own ArgoCD scoped to the clusters it manages. There is
 **7. Hub Applications are pre-rendered; component Applications are live-rendered**
 *Principle: Apply Constraints at the Right Layer (Appropriate Consistency)*
 
-Not every layer of a system needs the same consistency model. Hub Applications change rarely (only when clusters are added or moved between hubs) — pre-rendering them gives high auditability at low Git churn. Component Applications change constantly (group value updates, new components) — pre-rendering all of them would produce enormous Git diffs every time a shared group value changes. The principle is to apply the stronger consistency guarantee (committed YAML, full audit trail) where the cost is low and the benefit is high, and use the lighter model (live render) where strong consistency would create noise.
+Not every layer of a system needs the same consistency model. Hub Applications change when clusters are added, removed, moved between hubs, or when the group membership of any cluster on a hub changes (because the `valueFiles` list in the hub Application is derived from the union of groups across all the hub's clusters). The GitHub Action re-renders the hub Application on any of these events, and the committed YAML in `hub/rendered/` makes every hub-level change visible as a plain diff in the PR. Component Applications change constantly (group value tweaks, new app versions, enable/disable flags) — pre-rendering all of them would produce enormous Git churn on every shared group value change and obscure the real intent of each PR.
+
+The principle: apply the stronger consistency guarantee (committed YAML, full audit trail) where the change rate is bounded and the diff is meaningful. Use live rendering where pre-rendering creates noise that drowns signal.
 
 *Cost:* you cannot see exactly what component Applications will be created by reading Git alone — you need `helm template` locally or argocd-diff-preview on the PR. The `hub/rendered/` file serves as the argocd-diff-preview entry point (see [PR diff visibility](#pr-diff-visibility-with-argocd-diff-preview)).
 
@@ -432,6 +434,44 @@ component-site-dc1:
 ```
 
 If a cluster has no deviations, the file can be empty or omitted entirely.
+
+### Per-cluster `targetRevision` — pinning a cluster to a git ref
+
+By default, all component Applications for every cluster point to the same git ref as the hub Application (`main`, or whichever branch the hub Application uses). To pin an individual cluster to a different ref, add `targetRevision` to its entry in `clusters.yaml`:
+
+```yaml
+# clusters.yaml
+clusters:
+  - name: site-dev-1
+    hub: dev
+    targetRevision: feature/new-nmstate-config   # this cluster tracks the feature branch
+    groups: [all]
+    ...
+
+  - name: site-dc1
+    hub: prod-a
+    # no targetRevision — inherits the hub Application's revision (main)
+    groups: [all, virt-enabled]
+    ...
+```
+
+This is how canary promotion works in this pattern:
+
+```
+main branch (all clusters)
+  └── site-dev-1 targetRevision: feature/cert-manager-upgrade
+        → tests pass → merge feature branch to main → all clusters upgrade
+```
+
+Or for a controlled rollout:
+
+```
+targetRevision: release/v1.2   → site-dev-1 (test here first)
+                               → site-edge-1 (roll out next)
+targetRevision: main           → site-dc1, site-dc2 (stay on main until ready)
+```
+
+`targetRevision` is stripped from the `cluster:` metadata block before it is injected into component chart values — component charts do not see it.
 
 ### Hub Applications are also generated — `charts/hub-bootstrap/`
 

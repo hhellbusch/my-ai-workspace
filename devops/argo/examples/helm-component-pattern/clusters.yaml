@@ -11,6 +11,13 @@
 # belong in clusters/<name>/values.yaml as component-<clusterName>.apps overrides.
 # This file owns identity and topology; the cluster values files own deviations.
 #
+# targetRevision: (optional, per cluster) — overrides the hub Application's
+# targetRevision for all component Applications on that cluster. Use this to:
+#   - Pin a cluster to a release branch during a controlled upgrade
+#   - Promote a canary cluster to a new branch before the rest of the fleet
+#   - Hold a cluster back on an older branch while issues are resolved
+# Omit to inherit the hub Application's targetRevision (typically "main").
+#
 # clusters: is loaded by the hub-clusters chart via helm valueFiles.
 # It is NOT loaded by the cluster-apps chart (the render-script approach).
 #
@@ -87,6 +94,7 @@ clusters:
     server: https://api.site-dev-1.example.com:6443
     groups:
       - all
+    # targetRevision: feature/new-component   # uncomment to pin this cluster to a branch
     vault:
       server: https://vault.dev.example.com
       clusterSecretStoreName: vault-backend
