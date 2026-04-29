@@ -2,7 +2,7 @@
 
 **Audience:** Infrastructure and platform engineers who already know vSphere — across storage, networking, and compute/VM management — and want to operate **OpenShift (OCP)** and **OpenShift Virtualization** confidently. Application development is not the primary goal; understanding Kubernetes deeply enough to administer the platform — and to automate its full lifecycle — is.
 
-**Outcomes:** Understand Kubernetes internals well enough to reason about cluster state; use `oc` and `kubectl`; operate networking and storage at a platform level; run and migrate VMs with OpenShift Virtualization; use Git and GitHub as an accountability and change management system. At fleet scale: manage configuration and compliance across many clusters with ACM and, for very large environments, automate the full cluster lifecycle with the ZTP GitOps pipeline.
+**Outcomes:** Understand Kubernetes internals well enough to reason about cluster state; use `oc` and `kubectl`; operate networking (OVN-Kubernetes, Multus, NAD, MetalLB, NMState, SR-IOV) and storage (StorageClass, PVC, ODF, DataVolume, VolumeSnapshot) at a platform level; run and migrate VMs with OpenShift Virtualization; back up and recover clusters with etcd backup and OADP; use Git and GitHub as an accountability and change management system, including structured GitOps repo layout and secrets handling; diagnose SCCs, OLM failures, and Argo CD sync errors. At fleet scale: manage configuration and compliance across many clusters with ACM and, for very large environments, automate the full cluster lifecycle with the ZTP GitOps pipeline. In disconnected environments: mirror images and operator catalogs, configure IDMS, and operate OperatorHub without internet access.
 
 **Scale and topology — which phases apply to you**
 
@@ -211,11 +211,19 @@ Pure Storage / Portworx publishes a 10-part series (also bundled as an [ebook](h
 - **MachineConfig / MachineConfigPool** — how node-level configuration is managed declaratively (and why you do not SSH into nodes to make changes)
 - **Nodes**: cordon, drain, `oc get nodes`, node conditions — the equivalents of putting a host in maintenance mode
 - **Authentication** (OAuth, identity providers) — enough to diagnose "I cannot log in" and understand who can do what
-- **Monitoring and alerting** at a high level — where to look when the API or console is slow
+- **Security Context Constraints (SCCs)** — OpenShift's pod-level security model; no VMware equivalent. Every pod runs under an SCC; `restricted-v2` is the default and is more restrictive than vanilla Kubernetes. A workload that runs on upstream Kubernetes or a development cluster often fails on OCP because of SCC violations. Use `oc adm policy who-can use scc` to audit what service accounts have elevated access.
+- **Operator Lifecycle Manager (OLM)** — how operators are installed, updated, and removed. Objects to know: `CatalogSource` (the catalog index image), `Subscription` (which operator and channel you want), `InstallPlan` (the list of resources to create — can require manual approval), `ClusterServiceVersion` (CSV — the installed operator version and its state). A CSV stuck in `Installing` is the most common operator install failure; the resolution is almost always in the CSV's own status conditions or the operator pod logs.
+- **Multi-tenancy** — when to isolate teams by namespace vs by cluster. Namespaces with `ResourceQuota` and `LimitRange` are the lightweight isolation model; separate clusters provide stronger isolation at higher operational cost. The decision depends on trust boundary, regulatory compliance requirements, and blast-radius tolerance. RBAC patterns for self-service namespace provisioning: teams should be able to operate within their namespace without requiring platform-admin intervention on every request.
+- **Observability** — the platform monitoring stack (Prometheus + Alertmanager) is installed by default; user workload monitoring is opt-in. Key objects: `PrometheusRule` (custom alerting rules), `AlertmanagerConfig` (routing and receivers). Log aggregation: LokiStack is the current log backend for the Logging Operator (replaced EFK/Elasticsearch). First-line diagnostic tools: `oc adm must-gather` (collects a full cluster snapshot for support or post-incident review), `oc adm inspect` (targeted resource-level inspection). At fleet scale: ACM Observability provides hub-level metrics aggregation across all managed clusters.
+- **Backup and disaster recovery** — `etcd` backup is the control-plane recovery mechanism; without a recent backup, a failed control plane cannot be recovered — the cluster must be rebuilt from scratch or from the GitOps repo (which recovers workloads but not cluster state such as certificates, cluster ID, and custom CRs). OADP (OpenShift API for Data Protection — Velero-based) backs up workload namespaces, PVs, and their metadata to object storage. OCP Virt VMs require the KubeVirt Velero plugin for consistent VM-level backup. Understand the two recovery models: *restore* (from etcd backup + node rebuild) vs *rebuild* (from GitOps repo re-apply) — each recovers different things and neither fully replaces the other.
 
 **Official**
 
 - [OpenShift Container Platform documentation](https://docs.redhat.com/en/documentation/openshift_container_platform/) — bookmark **Operators**, **Nodes**, **Networking**, **Security and compliance**.
+- [Managing security context constraints](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/authentication_and_authorization/managing-security-context-constraints)
+- [Backing up etcd](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/backup_and_restore/control-plane-backup-and-restore)
+- [OADP (OpenShift API for Data Protection)](https://docs.redhat.com/en/documentation/openshift_api_data_protection/)
+- [Monitoring overview](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/monitoring/)
 
 **Formal course option (paid):** [DO280 — OpenShift Administration II](https://www.redhat.com/en/services/training/Red-Hat-OpenShift-Administration-II-Operating-a-Production-Kubernetes-Cluster-DO280) (confirm current title on this page — Red Hat renames offerings).
 
@@ -223,6 +231,10 @@ Pure Storage / Portworx publishes a 10-part series (also bundled as an [ebook](h
 
 - Run `oc get co` in a lab cluster. Find one cluster operator that is not fully available or has a condition set. Using `oc describe`, `oc get events`, and the operator's own logs, write a one-paragraph explanation of what is wrong — even if you cannot fix it.
 - Cordon a worker node, confirm existing pods are not evicted (just unschedulable), then drain it and confirm pods have moved. Uncordon. Explain what you would do differently in a production cluster with PodDisruptionBudgets set.
+- **SCCs**: Deploy a pod spec that requests `hostNetwork: true`. Find the SCC-related failure in pod events. Use `oc adm policy who-can use scc hostnetwork` to identify which service accounts have that access. Explain the difference between `restricted-v2` (the default) and `privileged`, and why this matters for workload portability from vanilla Kubernetes.
+- **OLM**: Install an operator via a `Subscription`. Watch for the `InstallPlan` to appear and the CSV to reach `Succeeded`. Then modify the subscription to reference a non-existent channel. Diagnose what is stuck — use `oc get sub`, `oc get ip`, and `oc get csv -A` to trace the failure. Explain how you would recover without deleting the operator.
+- **Observability**: Write a `PrometheusRule` that fires an alert when any namespace has more than 10 pods in `Pending` state for more than 5 minutes. Confirm the alert appears in Alertmanager. Separately: explain what `oc adm must-gather` collects and when you would run it vs `oc adm inspect`.
+- **Backup and DR**: Run a manual etcd backup on a lab cluster (or trace the documented procedure step-by-step if running on a single-node lab). Describe what the backup contains, where it is stored, and what a restore procedure looks like. Compare to a vSphere VM snapshot: what does etcd backup preserve that a GitOps rebuild cannot, and what does a GitOps rebuild recover that etcd backup alone does not?
 
 **This repo (when things break)**
 
@@ -230,9 +242,82 @@ Pure Storage / Portworx publishes a 10-part series (also bundled as an [ebook](h
 
 ---
 
+## Networking and storage deep dive
+
+**Read before Phase 3.** OpenShift Virtualization is critically dependent on correct networking (for secondary VM interfaces and live migration traffic) and correct storage (for DataVolumes, live migration, and VM snapshots). The analogy table in Phase 0 mapped these in one row each. This section fills in the depth those single rows omitted — skip it and you will hit unexplained failures in Phase 3.
+
+### Networking
+
+VMware admins from NSX-T face the steepest networking relearn in this path. The Kubernetes networking model and the NSX policy model are architecturally different at every layer.
+
+**Core concepts**
+
+- **OVN-Kubernetes** — the default CNI (Container Network Interface) for OCP. Provides overlay networking for pods, services, and egress. Logical routers and switches underpin the fabric; the Cluster Network Operator manages them — you interact through Kubernetes APIs, not a graphical topology editor.
+- **NetworkPolicy** — the Kubernetes API for restricting pod-to-pod and pod-to-external traffic. Important reframe: NetworkPolicy is a set of *allow* rules, not a firewall. Without any NetworkPolicy, all pod-to-pod traffic is allowed. An NSX distributed firewall rule (deny-by-default with explicit permits) maps conceptually to a default-deny NetworkPolicy + explicit allow policies — but the implementation is entirely different. Relearn this from the Kubernetes model, not by translating NSX constructs.
+- **Multus CNI** — enables multiple network interfaces on a single pod or VM. The primary interface is always managed by OVN-Kubernetes; secondary interfaces (additional VLANs for VM workloads, storage networks, management networks) are attached via Multus with bridge, MACVLAN, or IPVLAN plugins.
+- **NetworkAttachmentDefinition (NAD)** — the CR that defines a secondary network and its plugin configuration. A VM spec references a NAD to attach to that network. Required for any OCP Virt VM that needs to appear on a physical VLAN or a network that is separate from the pod overlay. See [NAD example](../../ocp/examples/network-attachment-definitions/README.md) in this repo.
+- **MetalLB** — provides LoadBalancer-type services on bare metal clusters (a role performed by cloud load balancers on cloud clusters, or by NSX on vSphere). Required if services need external IPs on bare metal without a cloud provider.
+- **NMState** — declarative node-level network configuration (bond interfaces, VLANs, bridge creation, MTU settings). Applied via `NodeNetworkConfigurationPolicy` CRs; the OCP equivalent of maintaining `/etc/sysconfig/network-scripts` files on each node — but declarative, version-controlled, and applied by the NMState Operator.
+- **SR-IOV Network Operator** — hardware-based network virtualization for high-throughput, low-latency workloads. Creates VFs (Virtual Functions) from SR-IOV-capable NICs (PFs). Required for telco RAN workloads and performance-sensitive VM network interfaces. Uses `SriovNetworkNodePolicy` and `SriovNetwork` CRs.
+
+**Official**
+
+- [Networking overview (OCP docs)](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/networking/)
+- [OVN-Kubernetes network provider](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/networking/ovn-kubernetes-network-provider)
+- [Multiple networks with Multus](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/networking/multiple-networks)
+- [Hardware networks (SR-IOV, DPDK)](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/networking/hardware-networks)
+- [NMState for node networking](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/networking/nmstate-operator)
+
+**Verification**
+
+- Create a NAD for a bridge network. Attach a test pod to it. Confirm the secondary interface appears inside the pod. Explain which components provisioned each interface: OVN-Kubernetes for `eth0`, Multus + bridge plugin for the secondary.
+- Write a NetworkPolicy that allows ingress to a pod only from pods in the same namespace with a specific label. Confirm it blocks traffic from a pod without that label. Explain why this is not equivalent to an NSX distributed firewall rule — what is the model difference, and what happens to traffic when no NetworkPolicy exists?
+
+### Storage
+
+The shift from vSAN/VMFS datastores to the Kubernetes storage model is as significant as the networking shift. The key conceptual difference: storage is *requested per workload* (PVC), *provisioned dynamically* (StorageClass + CSI driver), and the workload does not know or care where the storage lives.
+
+**Core concepts**
+
+- **StorageClass** — defines a provisioner (CSI driver) and its configuration parameters. The equivalent of choosing a datastore type in vCenter. Multiple StorageClasses can coexist (ODF Ceph, NFS, iSCSI, local-storage) with different performance and redundancy profiles. A default StorageClass is used when a PVC does not specify one.
+- **PersistentVolumeClaim (PVC) and PersistentVolume (PV)** — the user-facing request (PVC) and the actual provisioned storage object (PV). Kubernetes binds them. Critical lifecycle distinction: a PVC persists independently of the pod that uses it — deleting a pod does not delete its PVC unless explicitly configured to do so.
+- **CSI (Container Storage Interface)** — the plugin API that connects Kubernetes to storage back ends. Every storage vendor (NetApp, Pure, Portworx, Ceph, NFS) ships a CSI driver. The driver handles provisioning, attach/detach, mount, and snapshot operations. Swapping storage back ends is a StorageClass change, not a Kubernetes change.
+- **OpenShift Data Foundation (ODF)** — Red Hat's software-defined storage layer; Ceph under the hood. The functional equivalent of vSAN. Provides block (RBD), file (CephFS), and object (RGW) storage from the same storage cluster running on OCP nodes. CephFS is the primary provider of ReadWriteMany (RWX) volumes — which are required for live migration.
+- **DataVolume and CDI (Containerized Data Importer)** — OCP Virt uses `DataVolume` CRs to import VM disk images from HTTP URLs, container registries, or existing PVCs. CDI manages the import pipeline. A `DataVolume` creates and populates a PVC; the VM boots from that PVC. Understand this before Phase 3 — it is how every VM gets its disk.
+- **VolumeSnapshot and VolumeSnapshotClass** — the Kubernetes API for point-in-time storage snapshots. A `VolumeSnapshot` object triggers the CSI driver to create a snapshot; this is not automatic and not equivalent to a vSphere VM-level snapshot (which also captures memory state, VM configuration, and network state). Only PVC data is snapshotted. The CSI driver and storage backend must support the `VolumeSnapshot` API.
+- **ReadWriteMany (RWX)** — the PVC access mode that allows simultaneous mounting by multiple nodes. Required for live migration (both source and target nodes mount the same volume during migration). Block storage (RBD, iSCSI) is typically ReadWriteOnce (RWO); file storage (CephFS, NFS) provides RWX. If your storage only provides RWO, live migration is not possible without additional configuration.
+
+**Official**
+
+- [Storage overview (OCP docs)](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/storage/)
+- [OpenShift Data Foundation documentation](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/)
+- [Persistent storage using PVCs](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/storage/understanding-persistent-storage)
+- [Volume snapshots (CSI)](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/storage/using-container-storage-interface-csi#persistent-storage-csi-snapshots)
+
+**Verification**
+
+- Create a PVC using your lab's default StorageClass. Mount it in a pod, write a file, delete the pod, confirm the file persists when a new pod mounts the same PVC. Change the reclaim policy to `Retain` on a second PVC — delete it, find the retained PV, and explain what happens next.
+- Explain why live migration requires RWX storage. Trace what happens at the `VirtualMachineInstanceMigration` object and its source/target pods when the VM's PVC is RWO. What error surfaces, and where?
+
+---
+
 ## Phase 3 — OpenShift Virtualization (2–3 weeks)
 
 **Goal:** Create, start, stop, and migrate VMs on Kubernetes; connect storage and networking; understand the KubeVirt primitives (`VirtualMachine`, `VirtualMachineInstance`, `DataVolume`) as Kubernetes resources — because that is what they are.
+
+**Topics**
+
+- **VirtualMachine, VirtualMachineInstance, DataVolume** — the KubeVirt primitives; a VM is a declarative desired-state object, a VMI is the running instance (a Pod with a hypervisor process), a DataVolume is a managed PVC with an import pipeline
+- **VM networking** — attaching VMs to secondary networks via NAD; the difference between the pod overlay network (OVN-Kubernetes) and bridge-attached networks for workload VLANs (covered in depth in the networking deep dive above)
+- **VM storage** — DataVolume import workflows (HTTP, registry, PVC clone), RWX requirement for live migration, VolumeSnapshot for VM disk point-in-time backups
+- **Live migration** — the mechanism, the Kubernetes objects involved (`VirtualMachineInstanceMigration`), the shared storage requirement, and the node scheduling decisions
+- **Migration Toolkit for Virtualization (MTV)** — bulk import from vSphere: source inventory, network maps, storage maps, cutover planning
+- **Performance tuning for latency-sensitive VM workloads** *(read-ahead, not required for every environment)*:
+  - **CPU pinning and NUMA** — `dedicatedCpuPlacement: true` in the VM spec dedicates physical CPUs to the VM, eliminating scheduling jitter; NUMA topology alignment prevents cross-NUMA memory access penalties. Requires reserved CPU capacity on the node.
+  - **HugePages** — large memory pages (2Mi or 1Gi) reduce TLB pressure for memory-intensive VMs; configured via the Node Tuning Operator or `PerformanceProfile` CR and requested in the VM spec.
+  - **SR-IOV for VM networking** — attaching SR-IOV VFs directly to VM network interfaces for near-native throughput; requires the SR-IOV operator (see networking deep dive) and a `SriovNetworkNodePolicy`. Bypasses the software CNI path entirely.
+  - **Real-time kernel** — for workloads with strict sub-millisecond latency requirements (telco RAN, financial trading); configured via a `PerformanceProfile` CR; requires specific hardware and the `openshift-rt-kernel` image.
+  - **Node Tuning Operator** — applies kernel and OS-level tuning profiles (`TuningProfile` CRs) across nodes without SSH; manages HugePages reservation, CPU isolation (`isolcpus`), IRQ affinity, and kernel parameters
 
 **Official**
 
@@ -276,6 +361,12 @@ Pure Storage / Portworx publishes a 10-part series (also bundled as an [ebook](h
 - **App-of-apps pattern** — a root Application that manages child Applications; the complete cluster inventory lives in Git
 - **Configuration drift** — what Argo CD detects when cluster state diverges from Git; `selfHeal` vs manual sync
 - **Sync options** — `Validate`, `CreateNamespace`, `RespectIgnoreDifferences`, retry strategies
+- **GitOps repository structure** — this is where new teams consistently make long-lived decisions they later regret; get it right early:
+  - **Mono-repo vs multi-repo**: a single repo for all cluster config (simple, one PR spans all changes) vs separate repos per team or per environment (cleaner access control, more operational overhead). Most platform teams start with mono-repo and split later as team count grows.
+  - **Environment promotion patterns**: three common models — (1) *branches* (`dev`, `staging`, `prod` branches; simple but merge-heavy), (2) *directories* (`envs/dev/`, `envs/staging/`, `envs/prod/` in one branch; clear structure, easier to diff), (3) *separate repos per environment* (strongest access isolation, highest overhead). Directory-based is the most common production pattern for OCP.
+  - **Kustomize overlays** — a base manifest directory (`base/`) plus per-environment patch directories (`overlays/dev/`, `overlays/prod/`). Overlays can patch any field (replica count, image tag, resource limits) without duplicating the base. Argo CD has native Kustomize support — point an Application at an overlay directory.
+  - **Helm in Argo CD** — use Helm for third-party charts with many configurable values (cert-manager, ingress-nginx, Vault); use Kustomize for manifests you own and need to patch per-environment. Mixing both is valid: Helm renders a chart, Kustomize patches the output.
+  - **Secrets in GitOps** — never commit plaintext or base64-encoded secrets to Git. Three approved patterns: (1) *Sealed Secrets* (asymmetrically encrypted in Git, decrypted by controller in-cluster — simple, no external dependency); (2) *External Secrets Operator* (references a vault; secret lives outside Git entirely — preferred for production); (3) *Helm Secrets* (age/SOPS-encrypted values file — tightly coupled to Helm workflow). Choose based on your vault investment and team secret rotation process.
 
 **Official**
 
@@ -292,6 +383,7 @@ Pure Storage / Portworx publishes a 10-part series (also bundled as an [ebook](h
 - Introduce a deliberate drift — change a resource directly via `oc`, bypassing Git. Confirm Argo CD detects it and either alerts or remediates depending on your sync policy. Explain to a colleague what just happened and why the console change did not survive.
 - Create an ApplicationSet that generates one Application per directory in a repo. Add a new directory. Confirm Argo CD creates the Application automatically.
 - **Failure modes** (the questions that arrive in production): Introduce a broken manifest into Git — a YAML syntax error or a missing required field — and push it. What state does the Application enter? How do you identify the sync error without console access? How do you unblock it? Then: intentionally cause a health check failure (deploy a pod with a container that crashes on start). Distinguish `OutOfSync` (cluster state differs from Git) from `Degraded` (cluster state matches Git but the resource is unhealthy). Explain why Argo CD can report both simultaneously and what each requires from the operator.
+- **Repo structure**: Design a directory layout for three environments (dev, staging, prod) where each runs the same base application but with different replica counts, image tags, and resource limits. Show how Kustomize overlays address this without duplicating the base manifest. Explain where the Argo CD Application definitions live in relation to the application manifests. Then: a teammate has committed a Kubernetes Secret manifest (base64-encoded data, not encrypted) to the repo. Explain the security exposure, which tool you would use to remediate it, and how you would prevent recurrence via branch protection or a pre-commit hook.
 
 ---
 
@@ -603,6 +695,82 @@ Virt-focused exams follow product announcements — check [Red Hat Certification
 
 ---
 
+## Appendix: Disconnected and air-gapped environments
+
+Many enterprise, government, and telco OCP deployments run without direct internet access — nodes cannot reach `registry.redhat.io`, `quay.io`, or the default OperatorHub catalogs. All phases above assume internet-connected infrastructure. This appendix covers the additional layers required when your environment is partially or fully disconnected.
+
+**When you need this:** Nodes in any phase cannot pull images or operator catalogs from the internet. Common scenarios: regulated industries (financial services, defence, healthcare), edge clusters with no guaranteed WAN, or lab environments behind strict egress firewalls. ZTP Phase 6 environments are often fully disconnected — the DevConf.US 2024 talk in Phase 5 demonstrates this end-to-end.
+
+### Mirror registry
+
+All images your clusters need must be copied to a local registry before they can be used. Red Hat provides `mirror-registry` (a single-node Quay instance) as the recommended local registry for this purpose.
+
+- **`oc-mirror` plugin** — the current Red Hat tool for mirroring OCP release images, operator catalogs, and additional images into a local registry. Replaces the older `oc adm release mirror` workflow. Takes an *image set configuration* file and syncs only what is declared — incremental updates on subsequent runs.
+- **Image set configuration** — a YAML file that declares which OCP release versions, operator catalogs (and which operators within them), and additional images to mirror. Controlling this file in Git is the GitOps-native approach to managing your mirror content.
+
+```yaml
+# ImageSetConfiguration — minimal example
+kind: ImageSetConfiguration
+apiVersion: mirror.openshift.io/v2alpha1
+mirror:
+  platform:
+    channels:
+      - name: stable-4.16
+        minVersion: 4.16.0
+        maxVersion: 4.16.8
+  operators:
+    - catalog: registry.redhat.io/redhat/redhat-operator-index:v4.16
+      packages:
+        - name: advanced-cluster-management
+        - name: openshift-gitops-operator
+        - name: kubevirt-hyperconverged
+```
+
+### Image content source policy
+
+After mirroring, clusters must redirect image pulls from the public registry to your local mirror:
+
+- **`ImageDigestMirrorSet` (IDMS)** — the current API (OCP 4.13+) for redirecting pulls by image digest to a mirror. Applied as a cluster-level CR; the Machine Config Operator propagates it to all nodes via `MachineConfig`. Use this for new clusters.
+- **`ImageContentSourcePolicy` (ICSP)** — the older equivalent (OCP 4.12 and earlier); functionally identical, deprecated in favor of IDMS. Still appears in older ZTP SiteConfig templates — know both.
+
+Both objects are generated automatically by `oc-mirror` at the end of a mirror run; apply the output directory to the cluster or commit it to the ZTP Git repo.
+
+### Disconnected OperatorHub
+
+By default, OperatorHub shows all operators from Red Hat's hosted index images. In a disconnected environment:
+
+1. Mirror the operator catalog index image and all required bundle images with `oc-mirror`.
+2. Disable the default internet-hosted `CatalogSources`:
+   ```bash
+   oc patch operatorhub cluster --type merge \
+     -p '{"spec":{"disableAllDefaultSources":true}}'
+   ```
+3. Create a `CatalogSource` pointing to your mirrored index image.
+
+After this, `oc get packagemanifests` shows only the operators you have mirrored. `Subscription` and `InstallPlan` objects work identically to a connected environment — the only difference is where images are pulled from.
+
+### Cross-phase integration
+
+| Phase | Disconnected addition |
+|-------|-----------------------|
+| Phase 2 (cluster operations) | Cluster nodes pull `oc adm must-gather` image from local mirror |
+| Phase 4 (GitOps) | Argo CD and OpenShift GitOps images must be mirrored; IDMS applied before install |
+| Phase 5 (ACM) | ACM hub and all managed cluster images mirrored; `MultiClusterHub` uses local registry |
+| Phase 6 (ZTP) | Full pipeline runs disconnected; SiteConfig references mirror registry; ESO pulls vault creds without internet |
+
+**Official**
+
+- [Disconnected installation mirroring (OCP docs)](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/disconnected_environments/)
+- [About the oc-mirror plugin](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/disconnected_environments/mirroring-images-for-a-disconnected-installation)
+- [Mirroring operator catalogs](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/disconnected_environments/mirroring-operator-catalogs-for-use-with-disconnected-clusters)
+
+**Verification**
+
+- Mirror one OCP minor version and two operators into a local registry using `oc-mirror`. Apply the generated `ImageDigestMirrorSet` to a lab cluster. Verify the cluster can pull those images without internet access by temporarily blocking egress (or by checking that image pulls resolve to the local registry address).
+- Disable the default OperatorHub `CatalogSources` on a lab cluster. Create a `CatalogSource` pointing to a mirrored index. Install one operator via `Subscription`. Explain why the install works without internet access and what would break if the IDMS was not applied.
+
+---
+
 ## Maintaining this path
 
 - Add internal runbook links or org-specific standards under each phase as they develop.
@@ -615,6 +783,6 @@ Virt-focused exams follow product announcements — check [Red Hat Certification
 
 ---
 
-**Document:** Learning path v1.9 · Last updated 2026-04-29 (Phase 3 live migration lab caveat; Phase 1/2 parallel clarified; fleet thinking at Phase 4/5 bridge; Phase 4 failure-mode verification; ACM policy templating grey zone; Portworx reference corrected; PolicyAutomation + Ansible bridge pattern added to Phase 5; blue-green cluster upgrade model added to Phase 6; DevConf.US 2024 RHACM+AAP talk added to library and Phase 5).
+**Document:** Learning path v2.0 · Last updated 2026-04-29 (Phase 2 expanded: SCCs, OLM lifecycle, multi-tenancy, observability depth with PrometheusRule/LokiStack/must-gather, backup and DR with etcd/OADP; new networking and storage deep dive section before Phase 3: OVN-Kubernetes, NetworkPolicy, Multus, NAD, MetalLB, NMState, SR-IOV, StorageClass, ODF, DataVolume, VolumeSnapshot, RWX for live migration; Phase 3 expanded: VM topics list and performance tuning for latency-sensitive workloads; Phase 4 expanded: GitOps repo structure patterns — mono/multi-repo, environment promotion, Kustomize overlays, Helm vs Kustomize, secrets handling with Sealed Secrets/ESO/Helm Secrets — plus repo structure verification; disconnected environments appendix: oc-mirror, ImageDigestMirrorSet, disconnected OperatorHub, cross-phase integration table; outcomes statement updated.).
 
 *AI-assisted content. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for review status details.*
