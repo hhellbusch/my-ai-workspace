@@ -1,0 +1,9 @@
+# Cluster: site-dc2
+# Component overrides only.
+#
+# Cluster metadata (hub, server, environment, groups) lives in clusters.yaml.
+# This file contains only deviations from group defaults.
+# Empty component-<name>.apps means all group defaults apply as-is.
+
+component-site-dc2:
+  apps: {}

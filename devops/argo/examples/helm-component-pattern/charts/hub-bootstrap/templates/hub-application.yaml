@@ -14,7 +14,7 @@
   For each hub the template builds the correct valueFiles list automatically:
     1. clusters.yaml — always first (provides .Values.clusters to global-root)
     2. groups/<name>/values.yaml — for every group referenced by any cluster
-       on this hub, in first-occurrence order across the hub's cluster list
+       on this hub, in the order declared in hubConfig.<hubName>.groupOrder
     3. clusters/<name>/values.yaml — for every cluster on this hub
 
   This means adding a cluster to clusters.yaml automatically updates the hub
@@ -22,12 +22,16 @@
   this chart and commits hub/rendered/hub-applications.yaml whenever
   clusters.yaml, groups/*, or clusters/* change.
 
-  ── Group order preservation ──────────────────────────────────────────────────
+  ── Group order ───────────────────────────────────────────────────────────────
 
-  Groups are collected by iterating each cluster's groups list in declaration
-  order and appending each group name if not already seen.  This preserves the
-  intended priority order (lower index = lower priority) while deduplicating
-  groups that appear in multiple clusters' lists.
+  Group load order determines mustMergeOverwrite priority (later = higher
+  priority).  Order is taken from hubConfig.<hubName>.groupOrder in clusters.yaml.
+  This makes the priority explicit and independent of cluster listing order —
+  adding a new cluster with a new group order does not silently change priority.
+
+  If hubConfig is absent the template falls back to first-occurrence order across
+  the hub's cluster list (original behaviour), but logs a warning in the rendered
+  YAML annotations so the operator knows to add a hubConfig entry.
 
 */ -}}
 
@@ -44,14 +48,28 @@
 {{- /* ── Step 2: Generate one Application per hub ──────────────────────────── */ -}}
 {{- range $hubName, $hubClusters := $hubs -}}
 
-{{- /* Collect unique groups in first-occurrence order across this hub's clusters */ -}}
+{{- /*
+  Resolve group order.
+  Prefer hubConfig.<hubName>.groupOrder (explicit); fall back to first-occurrence
+  across the hub's cluster list (implicit — order depends on cluster listing order).
+*/ -}}
+{{- $hubConfig := $.Values.hubConfig | default dict -}}
+{{- $thisCfg := index $hubConfig $hubName | default dict -}}
+{{- $explicitOrder := get $thisCfg "groupOrder" | default list -}}
 {{- $hubGroups := list -}}
-{{- range $hubClusters -}}
-  {{- range .groups -}}
-    {{- if not (has . $hubGroups) -}}
-      {{- $hubGroups = append $hubGroups . -}}
+{{- $orderSource := "" -}}
+{{- if $explicitOrder -}}
+  {{- $hubGroups = $explicitOrder -}}
+  {{- $orderSource = "explicit" -}}
+{{- else -}}
+  {{- range $hubClusters -}}
+    {{- range .groups -}}
+      {{- if not (has . $hubGroups) -}}
+        {{- $hubGroups = append $hubGroups . -}}
+      {{- end -}}
     {{- end -}}
   {{- end -}}
+  {{- $orderSource = "implicit-WARNING-add-hubConfig-groupOrder-to-clusters.yaml" -}}
 {{- end -}}
 
 {{- $prefix := $.Values.source.valueFilesPrefix -}}
@@ -68,6 +86,7 @@ metadata:
     # Human-readable cluster list — not consumed by Argo CD.
     hub-bootstrap/clusters: "{{ range $i, $c := $hubClusters }}{{ if $i }}, {{ end }}{{ $c.name }}{{ end }}"
     hub-bootstrap/groups: "{{ join ", " $hubGroups }}"
+    hub-bootstrap/group-order-source: "{{ $orderSource }}"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:

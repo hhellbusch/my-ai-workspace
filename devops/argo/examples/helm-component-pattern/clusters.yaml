@@ -13,6 +13,20 @@
 #
 # clusters: is loaded by the global-root chart via helm valueFiles.
 # It is NOT loaded by the cluster-apps chart (the render-script approach).
+#
+# hubConfig: controls hub-level settings, including the canonical group load order.
+# groupOrder: defines the priority of groups for mustMergeOverwrite — earlier in the
+# list = lower priority, later = higher priority.  The cluster's component-<name>
+# always wins (injected last), regardless of this order.
+# If a cluster belongs to a group not listed here, it is a configuration error.
+
+hubConfig:
+  prod-a:
+    groupOrder: [all, virt-enabled, edge-sno]
+  prod-b:
+    groupOrder: [all, virt-enabled]
+  dev:
+    groupOrder: [all]
 
 clusters:
 

@@ -51,7 +51,9 @@ helm-component-pattern/
 
 ## The `component-<name>` convention
 
-Each values file (group or cluster) stores its configuration under a key named `component-<name>`:
+Each values file stores its configuration under a key named `component-<name>`. Group files use `component-<groupName>`; cluster files use `component-<clusterName>`. When Helm loads multiple `--values` files, all `component-*` keys land as separate top-level entries in `.Values` — they never collide because each is namespaced by name. The template merges them in a controlled order using `mustMergeOverwrite`.
+
+**Group files** look the same in both approaches:
 
 ```yaml
 # groups/all/values.yaml
@@ -60,6 +62,8 @@ component-all:
     nmstate:
       enabled: true
       channel: stable
+    kubevirt-hyperconverged:
+      enabled: false   # disabled by default; virt-enabled group enables it
 
 # groups/virt-enabled/values.yaml
 component-virt-enabled:
@@ -69,8 +73,20 @@ component-virt-enabled:
       channel: stable
     nmstate:
       channel: stable-4.16   # override the all-group default
+```
 
-# clusters/site-dc1/values.yaml
+**Cluster files differ by approach** — this is the key schema difference:
+
+```yaml
+# Approach B (global-root) — clusters/<name>/values.yaml
+# App overrides only. Identity and group membership live in clusters.yaml.
+component-site-dc1:
+  apps:
+    cert-manager:
+      installPlanApproval: Manual   # production override
+
+# Approach A (cluster-apps + render script) — clusters/<name>/values.yaml
+# Must declare groups (for merge order) and cluster metadata (for destination).
 groups:
   - all
   - virt-enabled
@@ -78,71 +94,56 @@ component-site-dc1:
   cluster:
     name: site-dc1
     server: https://api.site-dc1.example.com:6443
+    environment: production
   apps:
     cert-manager:
-      installPlanApproval: Manual   # cluster-level override
+      installPlanApproval: Manual
 ```
 
-**Why named keys?** When Helm receives multiple `--values` files, all `component-*` keys end up as separate top-level entries in `.Values` — they never collide because each is namespaced by its own name. The template can then merge them in a controlled order.
+> **The files in `clusters/` in this repo use Approach B format.** If using Approach A, ensure cluster files include `groups:` and a `cluster:` block — `charts/cluster-apps` reads both. Without `groups:`, no group merging occurs and Applications are generated with un-merged group defaults.
 
 ---
 
-## Resolution in the Helm template
+## Resolution in the Helm templates
 
-The `charts/cluster-apps/templates/application.yaml` template merges all component keys using `mustMergeOverwrite`:
+Both charts use the same `mustMergeOverwrite` model. The difference is where the merge inputs come from:
 
-```
-Step 1  Read the groups: list from the cluster values file.
-        Merge each group's component-<name> in declaration order.
-        (Declaration order = load order = priority order.)
-
-Step 2  Merge the cluster-specific component-<clusterName> last.
-        The cluster component is any component-* key not in the groups list.
-        This key always wins — it is the highest-priority override.
-
-Step 3  Extract cluster metadata and the resolved apps map.
-        Generate one Application per app where enabled ≠ false.
-
-Step 4  Write the resolved per-app values inline into spec.source.helm.values.
-        Argo CD receives a single flat block — no further cascade at sync time.
-```
+| Step | Approach A (`cluster-apps`) | Approach B (`global-root`) |
+|------|----------------------------|---------------------------|
+| 1 | Read `groups:` from **cluster values file** | Read `groups:` from **`clusters.yaml`** entry |
+| 2 | Merge `component-<group>` keys in declared order | Same — merge in `groups:` order from `clusters.yaml` |
+| 3 | Merge `component-<clusterName>` last (highest priority) | Same |
+| 4 | Cluster metadata from `component-<clusterName>.cluster` | Cluster metadata injected from `clusters.yaml` — overwrites any `cluster:` in component values |
+| 5 | Write resolved values to `spec.source.helm.values` | Same |
 
 **`mustMergeOverwrite` vs `mergeOverwrite`:**
 - `mergeOverwrite` — shallow map replacement at the top level
-- `mustMergeOverwrite` — deep map merge; a nested key in the source updates only that key in the destination, not the whole parent map. Also panics on type conflicts (e.g. string vs map), catching configuration errors at render time.
+- `mustMergeOverwrite` — deep map merge; a nested key in the source only updates that key, not the whole parent map. Panics on type conflicts (e.g. string vs map), catching schema errors at render time.
 
-**`enabled: false` semantics:** The template uses `toString` comparison (`ne (toString ...) "false"`) rather than `default true`, because Helm's `default` function treats `false` as empty and would incorrectly enable a disabled component.
+**`enabled: false` semantics:** Templates use `toString` comparison (`ne (toString ...) "false"`) rather than `default true`. Helm's `default` treats `false` as empty and would incorrectly re-enable a disabled component.
 
 ---
 
-## Example: what site-dc1 resolves to
+## Example: what site-dc1 resolves to (Approach B)
 
-`site-dc1` belongs to `all` and `virt-enabled`. The render script invokes:
-
-```bash
-helm template site-dc1-apps charts/cluster-apps \
-  --values groups/all/values.yaml \
-  --values groups/virt-enabled/values.yaml \
-  --values clusters/site-dc1/values.yaml
-```
-
-The `mustMergeOverwrite` chain:
+`site-dc1` belongs to groups `all` and `virt-enabled` (declared in `clusters.yaml`). The global-root chart, when running on the `prod-a` hub:
 
 | Step | Source | Effect |
 |------|--------|--------|
-| 1a | `component-all` | Sets `nmstate` stable, `cert-manager` stable-v1 Automatic, `kubevirt` **disabled** |
-| 1b | `component-virt-enabled` | Sets `kubevirt` **enabled**, overrides `nmstate` channel to stable-4.16 |
-| 2  | `component-site-dc1` | Sets `cert-manager` installPlanApproval to **Manual**; cluster metadata |
+| 1a | `component-all` | `nmstate` channel stable, `cert-manager` Automatic, `kubevirt` **disabled** |
+| 1b | `component-virt-enabled` | `kubevirt` **enabled**, `nmstate` channel → stable-4.16 |
+| 2  | `component-site-dc1` | `cert-manager` installPlanApproval → **Manual** |
+| 3  | `clusters.yaml` entry | `cluster:` block injected (name, server, vault, monitoring) |
 
-Result — three Applications generated:
+Result — three Applications, each with the `cluster:` block from `clusters.yaml`:
 
 | Application | Key resolved values |
 |-------------|---------------------|
-| `site-dc1-nmstate` | channel: stable-4.16 (virt-enabled group) |
-| `site-dc1-cert-manager` | installPlanApproval: Manual (cluster override) |
-| `site-dc1-kubevirt-hyperconverged` | enabled: true (virt-enabled group) |
+| `site-dc1-nmstate` | channel: stable-4.16 |
+| `site-dc1-cert-manager` | installPlanApproval: Manual, cluster.vault.server populated |
+| `site-dc1-kubevirt-hyperconverged` | enabled: true |
 
-**site-edge-1** (groups: `all`, `edge-sno`) resolves to two Applications: `nmstate` and `cert-manager` with reduced resource requests. `kubevirt-hyperconverged` is absent because `component-all` sets `enabled: false` and `edge-sno` does not override it.
+`site-edge-1` (groups: `all`, `edge-sno`) resolves to two Applications — no kubevirt, cert-manager with reduced resource requests.
 
 ---
 
@@ -441,13 +442,13 @@ spec:
 5. Merge → Argo CD's ApplicationSet discovers rendered/ and applies the objects.
 ```
 
-### Onboarding a new cluster
+### Onboarding a new cluster (Approach A — render script)
 
 ```bash
 # 1. Create the cluster directory
 mkdir -p clusters/site-dc2/rendered
 
-# 2. Write the values file
+# 2. Write the values file — Approach A format requires groups: and cluster:
 cat > clusters/site-dc2/values.yaml <<'EOF'
 groups:
   - all
@@ -458,6 +459,7 @@ component-site-dc2:
     name: site-dc2
     server: https://api.site-dc2.example.com:6443
     environment: production
+  apps: {}   # no cluster-specific overrides; group defaults apply
 EOF
 
 # 3. Render
@@ -467,6 +469,10 @@ EOF
 git add clusters/site-dc2/
 git diff --staged
 ```
+
+### Onboarding a new cluster (Approach B — global-root)
+
+See the [Approach B section](#approach-b--global-root-chart-with-multi-hub-filtering-and-clustersyaml) — cluster onboarding is done by adding to `clusters.yaml` and merging a PR.
 
 ---
 

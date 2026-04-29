@@ -6,11 +6,12 @@ examples to a comprehensive fleet management system.
 
 ## What Is In This Directory
 
-This directory contains three categories of content:
+This directory contains four categories of content:
 
 | Category | Path | Purpose |
 |----------|------|---------|
 | [Fleet Management Framework](#fleet-management-framework) | `framework/` | Production-ready hub-and-spoke system for managing a fleet of OpenShift clusters |
+| [Helm Component Pattern](#helm-component-pattern) | `helm-component-pattern/` | Reference implementation: `mustMergeOverwrite` with named component keys, multi-hub App-of-Apps-of-Apps |
 | [Standalone Examples](#standalone-argocd-examples) | `apps/`, `charts/`, `examples/` | Reference ArgoCD Application and Helm chart examples |
 | [CI/CD & Tooling](#cicd-workflows--tooling) | `github-workflows/`, `scripts/` | Example GitHub Actions workflows and utility scripts |
 
@@ -18,6 +19,18 @@ This directory contains three categories of content:
 
 ```
 argo/examples/
+│
+├── helm-component-pattern/                # Reference: mustMergeOverwrite App-of-Apps-of-Apps
+│   ├── README.md                          #   Pattern explanation, schemas, resolution walkthrough
+│   ├── clusters.yaml                      #   Central cluster inventory (hub, groups, metadata)
+│   ├── charts/global-root/               #   Per-hub root Application generator (multi-hub filter)
+│   ├── charts/hub-bootstrap/             #   Hub-level Application generator (renders to hub/rendered/)
+│   ├── charts/cluster-apps/              #   Per-cluster component Application generator
+│   ├── groups/                            #   Group values files (component-<groupName> keys)
+│   ├── clusters/                          #   Cluster override files (component-<clusterName> keys)
+│   ├── components/                        #   Example component Helm charts (nmstate, cert-manager)
+│   ├── hub/                               #   Bootstrap entry points (bootstrap-root.yaml, rendered/)
+│   └── .github/workflows/                #   CI: render hub-applications on clusters.yaml change
 │
 ├── framework/                             # Fleet management framework (RHACM + ArgoCD)
 │   ├── README.md                          #   Architecture, value cascade, promotion model
@@ -121,6 +134,57 @@ cat framework/docs/DEVELOPER-ENVIRONMENT.md
 
 ---
 
+## Helm Component Pattern
+
+**Path:** [`helm-component-pattern/`](helm-component-pattern/)
+
+A fully-working reference implementation of an App-of-Apps-of-Apps architecture using Helm
+`mustMergeOverwrite` for value inheritance. Unlike the fleet framework (which uses RHACM),
+this pattern requires only ArgoCD itself and works with any Argo CD version that supports
+Helm chart sources.
+
+### When to use this instead of `framework/`
+
+| | `framework/` | `helm-component-pattern/` |
+|---|---|---|
+| Cluster inventory | RHACM managed clusters | `clusters.yaml` in Git |
+| Group membership | RHACM labels | `groups:` field in `clusters.yaml` |
+| ApplicationSet required | Yes | No (Approach A uses plain Applications) |
+| RHACM required | Yes | No |
+| Value priority model | 6-tier cascade | `mustMergeOverwrite` chain, depth configurable |
+| Hub count | One | Multiple (each hub manages a subset of clusters) |
+
+### Key concepts
+
+- **`component-<name>` keys** — each group or cluster file stores its config under a namespaced key, preventing collisions when Helm merges multiple value files.
+- **`mustMergeOverwrite`** — deep map merge that catches type conflicts at render time. Group defaults set `enabled: false`; group or cluster overrides selectively enable.
+- **`clusters.yaml`** — central cluster inventory. Cluster identity, hub assignment, groups, and shared attributes (Vault server, monitoring endpoint) live here, not scattered across cluster files.
+- **`hubConfig.groupOrder`** — explicit group load order per hub. Prevents priority from silently depending on cluster listing order in `clusters.yaml`.
+- **Two bootstrap approaches** — Approach A (plain Application per cluster, rendered by CI) or Approach B (global-root chart filtered by hub, managed by ArgoCD itself).
+
+### Getting Started
+
+```bash
+# Read the full explanation
+cat helm-component-pattern/README.md
+
+# See what hub-bootstrap generates
+helm template hub-bootstrap helm-component-pattern/charts/hub-bootstrap \
+  --values helm-component-pattern/clusters.yaml \
+  --set source.repoURL=https://github.com/your-org/gitops \
+  --set source.targetRevision=main
+
+# See what a cluster resolves to (global-root, prod-a hub)
+helm template global-root helm-component-pattern/charts/global-root \
+  --values helm-component-pattern/clusters.yaml \
+  --values helm-component-pattern/groups/all/values.yaml \
+  --values helm-component-pattern/groups/virt-enabled/values.yaml \
+  --values helm-component-pattern/clusters/site-dc1/values.yaml \
+  --set currentHub=prod-a
+```
+
+---
+
 ## Standalone ArgoCD Examples
 
 Reference examples for common ArgoCD patterns. These are independent of the
@@ -221,32 +285,29 @@ See [`docs/README.md`](docs/README.md) for the full reading order.
                     ┌──────────────────────────────────┐
                     │      This Directory              │
                     │      (argo/examples/)             │
-                    └──────────┬───────────────────────┘
-                               │
-            ┌──────────────────┼──────────────────────┐
-            │                  │                       │
-   ┌────────▼────────┐  ┌─────▼──────────┐  ┌────────▼────────┐
-   │  Standalone      │  │  Fleet          │  │  CI/CD           │
-   │  Examples        │  │  Framework      │  │  Workflows       │
-   │                  │  │                 │  │                  │
-   │  "I want to      │  │  "I want to     │  │  "I want GitHub  │
-   │   learn ArgoCD   │  │   manage 100+   │  │   Actions for    │
-   │   patterns"      │  │   clusters"     │  │   ArgoCD"        │
-   │                  │  │                 │  │                  │
-   │  apps/           │  │  framework/     │  │  github-workflows│
-   │  charts/         │  │                 │  │  scripts/        │
-   │  examples/       │  │                 │  │                  │
-   │  root-app*.yaml  │  │                 │  │                  │
-   └──────────────────┘  └─────────────────┘  └──────────────────┘
+                    └──────┬─────────────┬─────────────┘
+                           │             │
+          ┌────────────────┼─────────────┼──────────────────┐
+          │                │             │                   │
+ ┌────────▼───────┐ ┌──────▼──────┐ ┌───▼──────────┐ ┌─────▼──────────┐
+ │  Standalone     │ │  Helm       │ │  Fleet        │ │  CI/CD          │
+ │  Examples       │ │  Component  │ │  Framework    │ │  Workflows      │
+ │                 │ │  Pattern    │ │               │ │                 │
+ │  "I want to     │ │             │ │  "I want to   │ │  "I want GitHub │
+ │   learn ArgoCD  │ │  "I want    │ │   manage 100+ │ │   Actions for   │
+ │   patterns"     │ │   multi-hub │ │   clusters    │ │   ArgoCD"       │
+ │                 │ │   no RHACM" │ │   with RHACM" │ │                 │
+ │  apps/          │ │             │ │               │ │  github-        │
+ │  charts/        │ │  helm-      │ │  framework/   │ │  workflows/     │
+ │  examples/      │ │  component- │ │               │ │  scripts/       │
+ │  root-app*.yaml │ │  pattern/   │ │               │ │                 │
+ └─────────────────┘ └─────────────┘ └───────────────┘ └────────────────┘
 ```
 
-- **Standalone examples** are reference implementations of individual ArgoCD
-  concepts. Start here to learn the building blocks.
-- **The fleet framework** is an opinionated, production-ready system that
-  composes those concepts into a fleet management architecture. Start here if
-  you are managing multiple clusters.
-- **CI/CD workflows** are portable GitHub Actions examples that work with
-  either approach.
+- **Standalone examples** — reference implementations of individual ArgoCD concepts. Start here to learn the building blocks.
+- **Helm component pattern** — a complete multi-hub App-of-Apps-of-Apps using `mustMergeOverwrite`. ArgoCD only, no RHACM. Start here if you want the inheritance model without a full fleet management platform.
+- **The fleet framework** — opinionated, production-ready system for large fleets. Uses RHACM for cluster inventory and label-driven group membership.
+- **CI/CD workflows** — portable GitHub Actions examples that work with any of the above.
 
 ---
 
