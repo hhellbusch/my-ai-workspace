@@ -514,9 +514,38 @@ spec:
 
 TALM creates a **ClusterGroupUpgrade (CGU)** object that orchestrates the rollout — controlling concurrency, canary clusters, and timeout. Reference: [Leveraging the GitOps ZTP pipeline to upgrade OpenShift clusters](https://www.redhat.com/en/blog/leveraging-gitops-ztp-pipeline-upgrade-red-hat-openshift-clusters).
 
-**Blue-green cluster upgrades — an alternative worth considering**
+**Upgrade strategy — choosing the right model for your hardware**
 
-At scale, in-place major version upgrades can require 8+ hours of maintenance window per cluster. With a provisioning pipeline that deploys a new cluster in 40 minutes, an alternative emerges: deploy a new cluster at the target OCP version, migrate workloads, retire the old cluster. This treats clusters as cattle — disposable infrastructure — and is particularly attractive for virtualized control plane environments where the physical hardware is retained. The DevConf.US 2024 talk above describes a customer who moved from 4-hour serial cluster deployments to 5 clusters in 40 minutes, enabling this model. The tradeoff: requires a mature workload migration process and sufficient spare capacity during the transition.
+In-place upgrades via TALM and blue-green replacement are not mutually exclusive across a fleet — the right choice depends on available hardware and workload mobility. Use this to reason through your situation:
+
+| Scenario | Recommended approach |
+|----------|----------------------|
+| **Bare metal, no spare capacity** — SNO fleet where every node is a production site | TALM in-place with canary waves. `maxConcurrency` limits blast radius; `timeout` auto-aborts per CGU. Designate one SNO per region/type as the canary for each wave. |
+| **Bare metal, small spare pool (5–10%)** | Serial blue-green with hardware rotation: provision new cluster on spares, migrate workloads from site N, return site N's hardware to the spare pool. Repeat. Cost: one cluster's worth of spare hardware, not the full fleet. |
+| **Virtualized control planes** | Partial blue-green: provision new control plane VMs at the target version, drain and re-join existing physical worker nodes. Workers never leave the hardware — only the control plane layer is replaced. Hardware overhead is three control plane VMs, not a full parallel cluster. |
+| **Any environment with a fast provisioning pipeline** | Full blue-green: provision parallel cluster, migrate workloads, decommission old cluster. The DevConf.US 2024 talk describes moving from 4-hour serial deployments to 5 clusters in 40 minutes, making this viable. Requires spare capacity during the transition and a mature workload migration process. |
+
+**TALM canary wave pattern — the primary bare metal approach:**
+
+```yaml
+# ClusterGroupUpgrade — canary first, then production in batches of 5
+apiVersion: ran.openshift.io/v1alpha1
+kind: ClusterGroupUpgrade
+spec:
+  remediationStrategy:
+    maxConcurrency: 5
+    timeout: 240             # minutes; abort and mark failed after 4h
+  managedPolicies:
+    - platform-upgrade-prep
+    - platform-upgrade
+  clusters:                  # canary sites — upgraded first
+    - canary-site-region-1
+    - canary-site-region-2
+  clusterSelector:
+    - env=production         # remaining production sites follow
+```
+
+Validate canaries before expanding the CGU to the full fleet. For SNO specifically: because there is no in-cluster redundancy, canary designation is the primary risk control — pick representative sites that can tolerate a failed upgrade window without customer impact.
 
 **Secret management in ZTP — External Secrets Operator**
 
@@ -586,6 +615,6 @@ Virt-focused exams follow product announcements — check [Red Hat Certification
 
 ---
 
-**Document:** Learning path v1.8 · Last updated 2026-04-28 (Phase 3 live migration lab caveat; Phase 1/2 parallel clarified; fleet thinking at Phase 4/5 bridge; Phase 4 failure-mode verification; ACM policy templating grey zone; Portworx reference corrected; PolicyAutomation + Ansible bridge pattern added to Phase 5; blue-green cluster upgrade model added to Phase 6; DevConf.US 2024 RHACM+AAP talk added to library and Phase 5).
+**Document:** Learning path v1.9 · Last updated 2026-04-29 (Phase 3 live migration lab caveat; Phase 1/2 parallel clarified; fleet thinking at Phase 4/5 bridge; Phase 4 failure-mode verification; ACM policy templating grey zone; Portworx reference corrected; PolicyAutomation + Ansible bridge pattern added to Phase 5; blue-green cluster upgrade model added to Phase 6; DevConf.US 2024 RHACM+AAP talk added to library and Phase 5).
 
 *AI-assisted content. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for review status details.*
