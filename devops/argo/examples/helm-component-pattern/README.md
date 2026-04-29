@@ -423,7 +423,7 @@ All hubs read from the same Git source. A change to `groups/all/values.yaml` aff
 
 Every field under `vault:` and `monitoring:` is injected as `.Values.cluster.vault.*` and `.Values.cluster.monitoring.*` into every component Application on that cluster. A component chart references `.Values.cluster.vault.server` once — it does not declare it per cluster.
 
-**The centralisation rule:** if more than one component chart reads the same value, that value belongs in `clusters.yaml`, not in a group or cluster values file. See the guardrails in [Opinion #3](#3-clustersyaml-is-the-single-authoritative-cluster-inventory) for the full decision table.
+**The centralisation rule:** if more than one component chart reads the same value, that value belongs in `clusters.yaml`, not in a group or cluster values file. See the guardrails in [Opinion #3](#opinions-baked-in) for the full decision table.
 
 ### Cluster values files are now just overrides
 
@@ -737,7 +737,7 @@ git diff --staged
 
 ### Onboarding a new cluster (Approach B — hub-clusters)
 
-See the [Approach B section](#approach-b--hub-clusters-chart-with-multi-hub-filtering-and-clustersyaml) — cluster onboarding is done by adding to `clusters.yaml` and merging a PR.
+See the [Approach B section](#approach-b--hub-clusters-chart-with-multi-hub-filtering-and-clustersyaml) below — cluster onboarding is done by adding to `clusters.yaml` and merging a PR.
 
 ---
 

@@ -9,10 +9,9 @@ metadata:
     managed-by: hub-bootstrap
     hub: dev
   annotations:
-    # Human-readable cluster list — not consumed by Argo CD.
+    # Human-readable cluster and group lists — not consumed by Argo CD.
     hub-bootstrap/clusters: "site-dev-1"
     hub-bootstrap/groups: "all"
-    hub-bootstrap/group-order-source: "implicit-WARNING-add-hubConfig-groupOrder-to-clusters.yaml"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -55,7 +54,9 @@ spec:
       backoff:
         duration: 10s
         factor: 2
-        maxDuration: 3m---
+        maxDuration: 3m
+---
+# Source: hub-bootstrap/templates/hub-application.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -65,10 +66,9 @@ metadata:
     managed-by: hub-bootstrap
     hub: prod-a
   annotations:
-    # Human-readable cluster list — not consumed by Argo CD.
+    # Human-readable cluster and group lists — not consumed by Argo CD.
     hub-bootstrap/clusters: "site-dc1, site-edge-1"
-    hub-bootstrap/groups: "all, virt-enabled, map[name:edge-sno targetRevision:release/v2.0-rc1]"
-    hub-bootstrap/group-order-source: "implicit-WARNING-add-hubConfig-groupOrder-to-clusters.yaml"
+    hub-bootstrap/groups: "all, virt-enabled, edge-sno"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -93,7 +93,7 @@ spec:
         # 2. Group values files — one per unique group across all hub clusters
         - ../../groups/all/values.yaml
         - ../../groups/virt-enabled/values.yaml
-        - ../../groups/map[name:edge-sno targetRevision:release/v2.0-rc1]/values.yaml
+        - ../../groups/edge-sno/values.yaml
         # 3. Cluster-specific overrides — one per cluster on this hub
         - ../../clusters/site-dc1/values.yaml
         - ../../clusters/site-edge-1/values.yaml
@@ -114,7 +114,9 @@ spec:
       backoff:
         duration: 10s
         factor: 2
-        maxDuration: 3m---
+        maxDuration: 3m
+---
+# Source: hub-bootstrap/templates/hub-application.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -124,10 +126,9 @@ metadata:
     managed-by: hub-bootstrap
     hub: prod-b
   annotations:
-    # Human-readable cluster list — not consumed by Argo CD.
+    # Human-readable cluster and group lists — not consumed by Argo CD.
     hub-bootstrap/clusters: "site-dc2"
     hub-bootstrap/groups: "all, virt-enabled"
-    hub-bootstrap/group-order-source: "implicit-WARNING-add-hubConfig-groupOrder-to-clusters.yaml"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:

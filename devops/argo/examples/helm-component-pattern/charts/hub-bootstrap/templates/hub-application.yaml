@@ -13,8 +13,10 @@
 
   For each hub the template builds the correct valueFiles list automatically:
     1. clusters.yaml — always first (provides .Values.clusters to hub-clusters)
-    2. groups/<name>/values.yaml — for every group referenced by any cluster
-       on this hub, in the order declared in hubConfig.<hubName>.groupOrder
+    2. groups/<name>/values.yaml — for every unique group referenced by any
+       cluster on this hub, in first-occurrence order across the cluster list.
+       The order of entries in each cluster's groups: list determines merge
+       priority in hub-clusters (first = lowest, last = highest).
     3. clusters/<name>/values.yaml — for every cluster on this hub
 
   This means adding a cluster to clusters.yaml automatically updates the hub
@@ -22,16 +24,14 @@
   this chart and commits hub/rendered/hub-applications.yaml whenever
   clusters.yaml, groups/*, or clusters/* change.
 
-  ── Group order ───────────────────────────────────────────────────────────────
+  ── Group format ──────────────────────────────────────────────────────────────
 
-  Group load order determines mustMergeOverwrite priority (later = higher
-  priority).  Order is taken from hubConfig.<hubName>.groupOrder in clusters.yaml.
-  This makes the priority explicit and independent of cluster listing order —
-  adding a new cluster with a new group order does not silently change priority.
+  Groups in the clusters.yaml groups: list may be plain strings or objects:
+    groups: [all, edge-sno]                              # plain string
+    groups: [all, { name: edge-sno, targetRevision: rc }]  # object with pin
 
-  If hubConfig is absent the template falls back to first-occurrence order across
-  the hub's cluster list (original behaviour), but logs a warning in the rendered
-  YAML annotations so the operator knows to add a hubConfig entry.
+  Only the group name is used for valueFiles path derivation; the targetRevision
+  field is consumed by hub-clusters at runtime and ignored here.
 
 */ -}}
 
@@ -49,27 +49,22 @@
 {{- range $hubName, $hubClusters := $hubs -}}
 
 {{- /*
-  Resolve group order.
-  Prefer hubConfig.<hubName>.groupOrder (explicit); fall back to first-occurrence
-  across the hub's cluster list (implicit — order depends on cluster listing order).
+  Build the deduplicated, ordered group list for this hub.
+  Walk each cluster's groups: list in declaration order; extract the group name
+  from string or object entries; add each name once (first occurrence wins for
+  deduplication, preserving the natural order).
 */ -}}
-{{- $hubConfig := $.Values.hubConfig | default dict -}}
-{{- $thisCfg := index $hubConfig $hubName | default dict -}}
-{{- $explicitOrder := get $thisCfg "groupOrder" | default list -}}
 {{- $hubGroups := list -}}
-{{- $orderSource := "" -}}
-{{- if $explicitOrder -}}
-  {{- $hubGroups = $explicitOrder -}}
-  {{- $orderSource = "explicit" -}}
-{{- else -}}
-  {{- range $hubClusters -}}
-    {{- range .groups -}}
-      {{- if not (has . $hubGroups) -}}
-        {{- $hubGroups = append $hubGroups . -}}
-      {{- end -}}
+{{- range $hubClusters -}}
+  {{- range .groups -}}
+    {{- $groupName := . -}}
+    {{- if kindIs "map" . -}}
+      {{- $groupName = .name -}}
+    {{- end -}}
+    {{- if not (has $groupName $hubGroups) -}}
+      {{- $hubGroups = append $hubGroups $groupName -}}
     {{- end -}}
   {{- end -}}
-  {{- $orderSource = "implicit-WARNING-add-hubConfig-groupOrder-to-clusters.yaml" -}}
 {{- end -}}
 
 {{- $prefix := $.Values.source.valueFilesPrefix -}}
@@ -83,10 +78,9 @@ metadata:
     managed-by: hub-bootstrap
     hub: {{ $hubName }}
   annotations:
-    # Human-readable cluster list — not consumed by Argo CD.
+    # Human-readable cluster and group lists — not consumed by Argo CD.
     hub-bootstrap/clusters: "{{ range $i, $c := $hubClusters }}{{ if $i }}, {{ end }}{{ $c.name }}{{ end }}"
     hub-bootstrap/groups: "{{ join ", " $hubGroups }}"
-    hub-bootstrap/group-order-source: "{{ $orderSource }}"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -134,4 +128,4 @@ spec:
         duration: 10s
         factor: 2
         maxDuration: 3m
-{{- end -}}
+{{ end -}}
