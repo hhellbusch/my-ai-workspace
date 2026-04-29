@@ -8,20 +8,63 @@
 
 **Platform engineers and consultants** rolling out or managing a fleet of OpenShift clusters and looking for a structured, GitOps-native way to manage platform components (operators, configuration, tooling) across clusters that share most config but differ in meaningful ways.
 
-**CoP maintainers** evaluating how this compares to the [ApplicationSet-based framework](../framework/README.md) in this repo:
+**CoP maintainers** — this pattern builds on the conventions established in [redhat-cop/gitops-standards-repo-template](https://github.com/redhat-cop/gitops-standards-repo-template). The folder structure (`components/`, `groups/`, `clusters/`) and the composable groups model are the same. The differences are in implementation choices and additions. See [Relationship to gitops-standards-repo-template](#relationship-to-gitops-standards-repo-template) below.
 
-| | This pattern | `framework/` |
+---
+
+## Relationship to gitops-standards-repo-template
+
+The [redhat-cop/gitops-standards-repo-template](https://github.com/redhat-cop/gitops-standards-repo-template) is the direct upstream reference for this pattern's folder structure and composable groups model. This pattern adopts the same directory layout and group composition philosophy, then makes different implementation choices.
+
+### What is the same
+
+- `components/`, `groups/`, `clusters/` directory structure
+- Groups are composable — a cluster belongs to multiple groups; each group contributes only what it owns
+- App of Apps pattern — root Application generates child Applications
+- ApplicationSet explicitly not used (gitops-standards cites controller instability; this pattern cites compatibility and explicitness — same conclusion)
+- `targetRevision` pinning for promotion workflows
+
+### What is different
+
+| | [gitops-standards-repo-template](https://github.com/redhat-cop/gitops-standards-repo-template) | This pattern |
 |---|---|---|
-| Cluster inventory | `clusters.yaml` in Git | RHACM managed clusters |
-| RHACM required | No | Yes |
-| ApplicationSet required | No | Yes |
-| Cluster lifecycle | Manual registration in Git | RHACM provisions and decommissions |
-| Group membership | `groups:` field in `clusters.yaml` | RHACM cluster labels |
-| Value priority layers | Configurable group stack + cluster override | 6-tier fixed cascade |
-| Multiple ArgoCD hubs | Yes — hub filtering built in | Typically one hub via RHACM |
-| Pre-rendered manifests | Hub layer only | No |
+| **Templating engine** | Kustomize (with optional Helm via HelmChartInflaterGenerator) | Pure Helm |
+| **Group membership declaration** | In each cluster's `kustomization.yaml` `components:` list — distributed across cluster directories | In `clusters.yaml` — centralised in one file |
+| **Central cluster inventory** | None — a cluster exists as a directory; fleet topology is implicit | `clusters.yaml` — explicit single file listing every cluster, its hub, groups, and shared attributes |
+| **Shared attributes across components** | No built-in mechanism — each component handles its own values | `clusters.yaml` fields injected as `.Values.cluster.*` into every component; vault endpoint defined once, used by all |
+| **Value merging** | Kustomize overlay/patch mechanism | Helm `mustMergeOverwrite` chain with named `component-<name>` keys |
+| **Multi-hub support** | Not addressed — single hub model | First-class: `currentHub` parameter filters `clusters.yaml`; one ArgoCD per hub |
+| **Hub Application generation** | Root application derived from cluster-specific kustomization | `hub-bootstrap` Helm chart generates hub Applications from `clusters.yaml`; committed to Git by CI |
+| **Local debugging** | `kustomize build clusters/hub/ --enable-helm` | `helm template charts/hub-clusters ...` |
+| **Per-cluster `targetRevision`** | In kustomization file per component or per group | In `clusters.yaml` entry — one field pins all components for that cluster |
 
-If RHACM is available, use this pattern for *what gets deployed*; let RHACM handle cluster lifecycle and registration. If RHACM is not available, this pattern is self-contained.
+### Why Helm over Kustomize
+
+The gitops-standards template uses Kustomize with Helm as an optional layer. This pattern inverts that: Helm is the primary engine throughout.
+
+The practical consequence is the `mustMergeOverwrite` chain — Kustomize patches operate on rendered YAML at the resource level (strategic merge patch, JSON patch); Helm values merging operates at the configuration data level before any resource is rendered. For the specific problem of composing shared default values across many clusters, Helm values merging is more natural and less verbose than writing patches.
+
+### Why a central `clusters.yaml`
+
+gitops-standards declares group membership in each cluster's `kustomization.yaml`. This is flexible and keeps each cluster self-contained, but means there is no single file that shows the complete fleet topology.
+
+This pattern adds `clusters.yaml` as an explicit fleet inventory. The cost is a coordination point on every cluster onboarding. The benefit is a single authoritative location for shared attributes that multiple components need (Vault endpoint, monitoring remote-write, etc.) — avoiding the repetition that emerges when the same value appears in multiple component configs across multiple cluster directories.
+
+The decision rule: if a value is used by more than one component, it belongs in `clusters.yaml`.
+
+### Choosing between them
+
+Use **gitops-standards-repo-template** when:
+- Your team is already comfortable with Kustomize
+- You want flexibility to mix Kustomize and Helm per component
+- Cluster self-containment is more important than a central fleet view
+- You don't need shared attributes injected automatically across components
+
+Use **this pattern** when:
+- Your team works primarily in Helm
+- You want a single file (`clusters.yaml`) as the authoritative fleet inventory
+- Multiple components share cluster-level config (Vault, monitoring, certificates) and you want it defined once
+- Multi-hub support (multiple ArgoCD instances managing different cluster subsets) is a requirement
 
 ---
 
