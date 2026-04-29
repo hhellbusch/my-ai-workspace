@@ -1,8 +1,73 @@
 # Helm component pattern — `mustMergeOverwrite` with named component keys
 
-A GitOps framework for generating Argo CD Applications across a fleet of clusters. Configuration is composed from reusable groups using Helm's `mustMergeOverwrite`. No ApplicationSet or RHACM required.
+---
 
-This is a different approach from the [ApplicationSet-based framework](../framework/README.md) in this repo.
+## The problem
+
+You have multiple OpenShift clusters. Each cluster needs a set of platform components — cert-manager, nmstate, kubevirt, logging, monitoring agents, etc. Most config is the same across clusters, but not all:
+
+- Some clusters run OpenShift Virtualization; others don't
+- Some are single-node edge clusters with reduced resource requests
+- Some clusters override a specific setting (e.g. `installPlanApproval: Manual` in production)
+- New clusters need to be onboarded without copy-pasting config from an existing one
+
+You want all of this managed by GitOps: every change goes through a pull request, ArgoCD applies it, and nothing is applied by hand.
+
+**What goes wrong without a pattern:**
+
+```
+clusters/
+  site-dc1/cert-manager.yaml      ← full config copy
+  site-dc1/nmstate.yaml           ← full config copy
+  site-edge-1/cert-manager.yaml   ← slightly different copy
+  site-edge-1/nmstate.yaml        ← slightly different copy
+  site-dc2/cert-manager.yaml      ← another copy ...
+```
+
+When you want to change the cert-manager channel across all production clusters, you update N files. When you add a new cluster, you copy-paste and manually adjust. Config drifts. Reviews miss changes buried in large diffs.
+
+---
+
+## The principle
+
+Define each platform component **once**, with sensible defaults. Define **groups** that describe cluster types. Assign each cluster to groups. Merge the layers in priority order — later layers win.
+
+```
+component-all           ← baseline: every cluster gets cert-manager, channel: stable
+component-virt-enabled  ← override: add kubevirt, bump nmstate to stable-4.16
+component-edge-sno      ← override: reduce cert-manager resource requests
+component-site-dc1      ← cluster override: cert-manager installPlanApproval: Manual
+```
+
+For a cluster in groups `[all, virt-enabled]` with a cluster-specific override, the merge order is:
+
+```
+component-all  ──mustMergeOverwrite──▶  component-virt-enabled  ──mustMergeOverwrite──▶  component-site-dc1
+(lowest priority)                                                                          (highest priority)
+```
+
+Each layer **deep-merges** into the previous. A key set in `component-virt-enabled` only affects that key — it doesn't replace the entire map from `component-all`. The cluster layer is always last and always wins.
+
+ArgoCD generates one Application object per enabled component per cluster. Config is resolved at render time; no per-cluster copy-paste.
+
+---
+
+## "Hub" — ArgoCD fleet topology, not RHACM
+
+This pattern uses the word **hub** to mean: *a cluster where ArgoCD runs, which deploys applications to other (spoke) clusters*.
+
+This is standard ArgoCD fleet terminology and is independent of Red Hat Advanced Cluster Management (RHACM). RHACM is a separate product that provides cluster lifecycle, policy, and observability on top of this same physical topology. **This pattern requires only ArgoCD.** RHACM is not installed or used here.
+
+```
+Hub cluster (ArgoCD runs here)
+  ├── Deploys to: site-dc1   (spoke)
+  ├── Deploys to: site-dc2   (spoke)
+  └── Deploys to: site-edge-1  (spoke)
+```
+
+Multiple hub clusters are supported — `prod-a`, `prod-b`, and `dev` in this example. Each hub manages a subset of spoke clusters. All hubs read from the same Git repository.
+
+---
 
 ## How the charts relate
 
