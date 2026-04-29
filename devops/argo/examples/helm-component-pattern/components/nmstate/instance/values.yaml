@@ -1,0 +1,23 @@
+# nmstate/instance — default values
+#
+# Cluster identity is available at .Values.cluster.* — injected by hub-clusters
+# from clusters.yaml.  Use it to set node-selector, tolerations, or any
+# cluster-specific NMState configuration.
+
+# Namespace where the NMState CR is created (must match the operator namespace).
+namespace: openshift-nmstate
+
+# NMState CR configuration.
+# Override per group or cluster to customise the NMState deployment topology.
+nmstate:
+  # Node selector applied to the NMState handler DaemonSet.
+  # Useful for restricting NMState to specific node roles on mixed clusters.
+  nodeSelector: {}
+    # node-role.kubernetes.io/worker: ""
+
+  # Tolerations for the handler DaemonSet — required on edge/SNO clusters
+  # where nodes may have custom taints.
+  tolerations: []
+  # - key: "node-role.kubernetes.io/infra"
+  #   operator: "Exists"
+  #   effect: "NoSchedule"

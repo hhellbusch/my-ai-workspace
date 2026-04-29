@@ -19,7 +19,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/example/gitops
+    repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
     targetRevision: main
     path: devops/argo/examples/helm-component-pattern/charts/hub-clusters
 
@@ -75,7 +75,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/example/gitops
+    repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
     targetRevision: main
     path: devops/argo/examples/helm-component-pattern/charts/hub-clusters
 
@@ -134,7 +134,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/example/gitops
+    repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
     targetRevision: main
     path: devops/argo/examples/helm-component-pattern/charts/hub-clusters
 

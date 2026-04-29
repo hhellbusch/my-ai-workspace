@@ -7,16 +7,56 @@
 # defaults.  Components disabled here (enabled: false) are off by default
 # for every cluster; a more specific group or cluster component can enable them.
 #
-# Loaded first by render-clusters.sh — lowest priority.
+# Operator + instance split pattern:
+#   Operators that need separate installation and configuration are split into
+#   two app entries using the `path` field:
+#     <name>-operator   path: components/<name>/operator   syncWave: "0"
+#     <name>-instance   path: components/<name>/instance   syncWave: "5"
+#
+#   The operator is installed in sync wave 0; the instance CR is applied in
+#   wave 5 after the operator's CRDs are registered.  See docs/operator-management.md.
+#
+# Loaded first by hub-clusters — lowest priority in the merge chain.
 
 component-all:
   apps:
-    nmstate:
+    # ── NMState: operator + instance split ─────────────────────────────────────
+    # The operator half wraps operators-installer (redhat-cop/helm-charts) for
+    # version-pinned, InstallPlan-aware OLM installation.
+    # The instance half creates the NMState CR after the operator is ready.
+    nmstate-operator:
       enabled: true
-      channel: stable
-      namespace: openshift-nmstate
-      installPlanApproval: Automatic
+      path: components/nmstate/operator
+      syncWave: "0"
+      # operators-installer subchart configuration.
+      # Override channel / installPlanApproval / csv in virt-enabled group or
+      # cluster values files.  The `operators:` list is replaced wholesale when
+      # overridden — see docs/operator-management.md for version-pinning workflow.
+      operators-installer:
+        operators:
+          - name: kubernetes-nmstate-operator
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            namespace: openshift-nmstate
+            channel: stable
+            installPlanApproval: Automatic
+            csv: ""     # set to pin, e.g. "kubernetes-nmstate-operator.4.16.2"
+        operatorGroups:
+          - name: openshift-nmstate
+            createNamespace: true
+            targetOwnNamespace: true
 
+    nmstate-instance:
+      enabled: true
+      path: components/nmstate/instance
+      syncWave: "5"
+      namespace: openshift-nmstate
+
+    # ── cert-manager: flat pattern (simple operator, no instance CR needed) ────
+    # Kept as the flat pattern example — a single Application manages the full
+    # operator lifecycle.  Appropriate when the operator has no custom CR to configure
+    # separately (cert-manager is configured via CertificateRequest / Issuer resources
+    # created by application teams, not platform admins).
     cert-manager:
       enabled: true
       channel: stable-v1
@@ -27,9 +67,21 @@ component-all:
           memory: 128Mi
           cpu: 50m
 
-    # Disabled by default — the virt-enabled group enables this.
+    # ── OpenShift Virtualization: disabled by default, enabled by virt-enabled group
     kubevirt-hyperconverged:
       enabled: false
-      channel: stable
-      namespace: openshift-cnv
-      installPlanApproval: Automatic
+      path: components/kubevirt-hyperconverged/operator
+      syncWave: "0"
+      operators-installer:
+        operators:
+          - name: kubevirt-hyperconverged
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            namespace: openshift-cnv
+            channel: stable
+            installPlanApproval: Automatic
+            csv: ""
+        operatorGroups:
+          - name: openshift-cnv
+            createNamespace: true
+            targetOwnNamespace: true

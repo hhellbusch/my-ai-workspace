@@ -1,0 +1,13 @@
+apiVersion: v2
+name: nmstate-instance
+description: |
+  Configures NMState by creating the NMState CR after the operator is installed.
+
+  This chart is the instance half of the nmstate component pair.
+  The operator half (components/nmstate/operator/) installs the operator via OLM.
+
+  Deploy order: nmstate-operator (syncWave: "0") → nmstate-instance (syncWave: "5")
+  The sync wave gap gives the operator time to register its CRDs before this chart
+  attempts to create a NMState CR.
+type: application
+version: 0.1.0

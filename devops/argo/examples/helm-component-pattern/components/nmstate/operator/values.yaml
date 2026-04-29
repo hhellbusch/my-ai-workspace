@@ -1,0 +1,46 @@
+# nmstate/operator — default values
+#
+# These are the static, rarely-changing fields for the NMState operator installation.
+# Dynamic fields (channel, installPlanApproval, csv) are set in group and cluster
+# values files and injected by hub-clusters into spec.source.helm.values.
+#
+# hub-clusters injects the resolved app entry values at the top level of this chart's
+# values alongside the cluster: block.  The operators-installer subchart receives its
+# configuration through the `operators-installer:` key prefix (standard Helm subchart
+# values passthrough).
+#
+# Cluster identity is available at .Values.cluster.* in any template in this chart.
+
+# ── operators-installer subchart configuration ─────────────────────────────────
+#
+# Set once here; override channel / installPlanApproval / csv in group or cluster
+# values files.  Note: the operators: list is replaced wholesale when any layer
+# overrides it — this is a known Helm list-merge limitation.  To pin a version for
+# one cluster, override the full operators-installer block in that cluster's
+# component-<name>.apps.nmstate-operator entry.
+#
+# See docs/operator-management.md for the full version-pinning workflow.
+operators-installer:
+  operators:
+    - name: kubernetes-nmstate-operator
+      source: redhat-operators
+      sourceNamespace: openshift-marketplace
+      namespace: openshift-nmstate
+      # --- overridden by group/cluster values ---
+      channel: stable
+      installPlanApproval: Automatic
+      csv: ""        # pin to e.g. "kubernetes-nmstate-operator.4.16.2" for Manual approval
+  operatorGroups:
+    - name: openshift-nmstate
+      createNamespace: true
+      targetOwnNamespace: true
+
+  # Use hook-based approval to avoid lingering resources.
+  # Set to false only if the operator and instance are deployed in the same Helm release
+  # (not typical in this pattern — each component is its own ArgoCD Application).
+  approveManualInstallPlanViaHook: true
+
+  # In disconnected environments: set to false and ensure the ose-cli image
+  # and required Python libraries (openshift-client, semver) are available
+  # in the mirror registry.  See docs/operator-management.md for details.
+  installRequiredPythonLibraries: true

@@ -20,6 +20,7 @@
 | [docs/cop-maintainers.md](docs/cop-maintainers.md) | CoP maintainers: relationship to gitops-standards, Helm vs Kustomize trade-offs, choosing between them |
 | [docs/diffing-and-visibility.md](docs/diffing-and-visibility.md) | PR-level desired-state diffs, fleet-wide live-to-desired diffs, argocd-diff-preview integration |
 | [docs/convergence.md](docs/convergence.md) | *(Aspirational)* How this pattern and gitops-standards could converge; `sourceType` per component; open questions |
+| [docs/operator-management.md](docs/operator-management.md) | Operator installation via OLM, `operators-installer` integration, version pinning, operator+instance split |
 
 ---
 
@@ -737,10 +738,12 @@ See the [Approach B section](#approach-b--hub-clusters-chart-with-multi-hub-filt
 ## Converging with gitops-standards-repo-template
 
 > **Aspirational — needs team validation.** This section sketches how the two patterns could converge. See **[docs/convergence.md](docs/convergence.md)** for the full working document, including open questions for the team.
+| [docs/operator-management.md](docs/operator-management.md) | Operator installation via OLM, `operators-installer` integration, version pinning, operator+instance split |
 
 The `hub-clusters` chart supports a `sourceType` field per component (`helm` default, `kustomize` option). This allows a mixed fleet where some components are Helm charts and some are Kustomize components, while `clusters.yaml` remains the single fleet inventory and `hub-clusters` remains the single Application generator.
 
 See [docs/convergence.md](docs/convergence.md) for the full integration model, the `commonAnnotations` limitation, the ArgoCD multi-source sketch, and the migration path from gitops-standards-repo-template.
+| [docs/operator-management.md](docs/operator-management.md) | Operator installation via OLM, `operators-installer` integration, version pinning, operator+instance split |
 
 ---
 

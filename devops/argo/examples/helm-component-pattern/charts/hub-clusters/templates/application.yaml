@@ -38,6 +38,17 @@
           Use this to pin a cluster to a release branch or promote a canary cluster
           ahead of the rest of the fleet.
 
+  path — optional explicit component path:
+          Each app entry may set path: components/nmstate/operator to override the
+          default path resolution (componentsBasePath/appName).  Use this when an
+          operator and its instance configuration live together under one component
+          folder: components/<name>/operator and components/<name>/instance.
+
+  syncWave — optional ArgoCD sync wave (string "0", "5", "10" etc.):
+          Set argocd.argoproj.io/sync-wave on the generated Application.  Use to
+          order installation: operator installs in wave 0, instance CRs in wave 5
+          (after the operator's CRDs are registered).  Not set if omitted.
+
   sourceType — Kustomize or Helm per component:
           Each app entry may set sourceType: helm (default) or sourceType: kustomize.
           Helm components receive the full mustMergeOverwrite value chain injected
@@ -112,6 +123,16 @@
 {{- $enabled := ne (toString (get $appVals "enabled")) "false" -}}
 {{- if and $appVals $enabled -}}
 {{- $sourceType := get $appVals "sourceType" | default "helm" -}}
+{{- /* path — explicit override or derive from componentsBasePath/appName.
+       Use this to support sub-paths such as components/nmstate/operator or
+       components/nmstate/instance, allowing operator and instance configs to
+       live together under one component folder. */ -}}
+{{- $appPath := get $appVals "path" | default (printf "%s/%s" $.Values.source.componentsBasePath $appName) -}}
+{{- /* syncWave — optional ArgoCD sync wave annotation (string, e.g. "0", "5", "10").
+       Use to order operator installation before instance configuration:
+         operator app  → syncWave: "0"
+         instance app  → syncWave: "5" */ -}}
+{{- $syncWave := get $appVals "syncWave" | default "" -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -125,6 +146,11 @@ metadata:
     app: {{ $appName }}
     env: {{ $clusterBlock.environment | default "unknown" }}
     source-type: {{ $sourceType }}
+  annotations:
+    {{- if $syncWave }}
+    argocd.argoproj.io/sync-wave: {{ $syncWave | quote }}
+    {{- end }}
+    hub-clusters/component-path: {{ $appPath | quote }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -133,7 +159,7 @@ spec:
   source:
     repoURL: {{ $.Values.source.repoURL }}
     targetRevision: {{ $targetRevision }}
-    path: {{ $.Values.source.componentsBasePath }}/{{ $appName }}
+    path: {{ $appPath }}
     {{- if eq $sourceType "kustomize" }}
     kustomize:
       # Cluster identity injected as commonLabels — available to all Kustomize resources
@@ -170,7 +196,7 @@ spec:
       values: |
         cluster:
           {{- $clusterMeta | toYaml | nindent 10 }}
-        {{- omit $appVals "enabled" "sourceType" | toYaml | nindent 8 }}
+        {{- omit $appVals "enabled" "sourceType" "path" "syncWave" | toYaml | nindent 8 }}
     {{- end }}
 
   destination:

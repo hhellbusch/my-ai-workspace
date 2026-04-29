@@ -1,0 +1,21 @@
+---
+# NMState CR — creates the NMState handler DaemonSet and webhook.
+# Requires the NMState Operator to be installed (deploy after nmstate-operator
+# using syncWave: "5" or higher on this Application).
+apiVersion: nmstate.io/v1
+kind: NMState
+metadata:
+  name: nmstate
+  namespace: {{ .Values.namespace }}
+  labels:
+    cluster: {{ .Values.cluster.name | default "unknown" }}
+    env: {{ .Values.cluster.environment | default "unknown" }}
+spec:
+  {{- if .Values.nmstate.nodeSelector }}
+  nodeSelector:
+    {{- toYaml .Values.nmstate.nodeSelector | nindent 4 }}
+  {{- end }}
+  {{- if .Values.nmstate.tolerations }}
+  tolerations:
+    {{- toYaml .Values.nmstate.tolerations | nindent 4 }}
+  {{- end }}

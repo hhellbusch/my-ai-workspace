@@ -1,0 +1,19 @@
+apiVersion: v2
+name: nmstate-operator
+description: |
+  Installs the NMState Operator via OLM using the operators-installer Helm chart.
+
+  operators-installer (redhat-cop/helm-charts) handles:
+    - Subscription and OperatorGroup creation
+    - InstallPlan approval (Manual or Automatic)
+    - Version pinning via the csv field
+    - Incremental upgrades with verification Jobs
+
+  This chart is the operator installation half of the nmstate component pair.
+  The instance half (components/nmstate/instance/) manages the NMState CR.
+type: application
+version: 0.1.0
+dependencies:
+  - name: operators-installer
+    version: ">=3.4.0"
+    repository: "https://redhat-cop.github.io/helm-charts"
