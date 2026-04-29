@@ -1,0 +1,25 @@
+apiVersion: v2
+name: cluster-apps
+description: |
+  Generates one Argo CD Application per enabled component for a single target cluster.
+
+  Resolution model — component-<name> keys:
+    Each values file (group or cluster) namespaces its configuration under a
+    key named component-<groupName> or component-<clusterName>.  When Helm
+    receives multiple --values files, all component-* keys accumulate as
+    separate top-level maps.  The template iterates over them in load order
+    and uses mustMergeOverwrite to build a single resolved configuration.
+
+  Load order (lowest → highest priority):
+    groups/all/values.yaml
+    groups/<group1>/values.yaml
+    groups/<group2>/values.yaml       (if cluster belongs to this group)
+    clusters/<name>/values.yaml       ← highest priority
+
+  The render script (scripts/render-clusters.sh) reads the groups: list from
+  each cluster's values file and calls helm template with the correct --values
+  flags.  Rendered Application objects are committed to clusters/<name>/rendered/
+  so every change is visible in Git before Argo CD applies it.
+
+version: 0.1.0
+type: application

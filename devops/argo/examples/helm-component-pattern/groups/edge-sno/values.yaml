@@ -1,0 +1,23 @@
+# Group: edge-sno
+# Single-node OpenShift clusters at remote edge sites.
+#
+# Key convention: component-edge-sno
+#
+# Edge nodes are resource-constrained compared to data-centre clusters.
+# This group tunes operator resource requests down without disabling components.
+# No new components are enabled here — only overrides to component-all defaults.
+#
+# Merged on top of component-all by mustMergeOverwrite in the template.
+
+component-edge-sno:
+  apps:
+    cert-manager:
+      # Reduce memory pressure on single-node clusters.
+      resources:
+        requests:
+          memory: 64Mi
+          cpu: 25m
+
+    nmstate:
+      # Edge clusters use a dedicated channel for their OCP version.
+      channel: stable-4.16

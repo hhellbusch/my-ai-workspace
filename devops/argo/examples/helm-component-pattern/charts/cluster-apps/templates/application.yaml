@@ -1,0 +1,150 @@
+{{- /*
+  cluster-apps / application.yaml
+  ═══════════════════════════════
+
+  Generates one Argo CD Application per enabled component.
+
+  ── Resolution ────────────────────────────────────────────────────────────────
+
+  Step 1: Merge group components in declaration order.
+          The cluster values file carries a groups: list that names every group
+          this cluster belongs to, in lowest-to-highest priority order.
+          The template reads groups: and looks up component-<groupName> in
+          .Values to get each group's contribution.  This preserves load order
+          without relying on Go map iteration (which is random).
+
+  Step 2: Merge the cluster-specific component last (highest priority).
+          The cluster component is any component-* key that is NOT named in the
+          groups: list — exactly one such key should exist per cluster values
+          file, named component-<clusterName>.
+
+          mustMergeOverwrite (vs mergeOverwrite):
+            - Deep-merges nested maps — a group that sets apps.nmstate.channel
+              does not wipe out apps.nmstate.namespace set by an earlier group.
+            - Panics on type conflicts (e.g. string vs map for the same key),
+              catching configuration errors at render time.
+
+  Step 3: Extract cluster metadata and the apps map from the resolved config.
+          Generate one Application per app where enabled is not explicitly false.
+
+  Step 4: The resolved per-app values are written inline into spec.source.helm.values.
+          Argo CD receives a single, flat, fully-resolved values block — no
+          further valueFiles cascade happens at sync time.
+
+  ── enabled flag semantics ────────────────────────────────────────────────────
+
+  An app is rendered when enabled is absent OR true.
+  An app is suppressed when enabled is explicitly false.
+
+  Note: Helm's `default` function treats false as empty and returns the default,
+  which would turn `enabled: false` into `enabled: true`.  The template avoids
+  this by using `toString` comparison instead of `default`.
+
+  ── Values structure expected ─────────────────────────────────────────────────
+
+    # In groups/<name>/values.yaml:
+    component-<groupName>:
+      apps:
+        <appName>:
+          enabled: true        # false suppresses the Application
+          channel: stable
+          namespace: openshift-<appName>
+          # ... any additional fields forwarded to the component chart
+
+    # In clusters/<name>/values.yaml:
+    groups:
+      - all
+      - <groupName>
+    component-<clusterName>:
+      cluster:
+        name: <clusterName>          # required
+        server: https://...          # overrides destination.server default
+        environment: production
+      apps:
+        <appName>:
+          installPlanApproval: Manual  # cluster-level override example
+
+*/ -}}
+
+{{- /* ── Step 1: Merge groups in declaration order ────────────────────────── */ -}}
+{{- $groups   := .Values.groups | default list -}}
+{{- $resolved := dict -}}
+{{- range $groups -}}
+  {{- $key      := printf "component-%s" . -}}
+  {{- $groupVal := index $.Values $key | default dict -}}
+  {{- /* Guard: skip nil values that could wipe sub-maps via mustMergeOverwrite */ -}}
+  {{- if kindIs "map" $groupVal -}}
+    {{- $resolved = mustMergeOverwrite $resolved (deepCopy $groupVal) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* ── Step 2: Merge the cluster component (not in groups list) ─────────── */ -}}
+{{- range $key, $val := .Values -}}
+  {{- if hasPrefix "component-" $key -}}
+    {{- $name := trimPrefix "component-" $key -}}
+    {{- if and (not (has $name ($groups))) (kindIs "map" $val) -}}
+      {{- $resolved = mustMergeOverwrite $resolved (deepCopy $val) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* ── Step 3: Extract cluster metadata and apps ─────────────────────────── */ -}}
+{{- $cluster       := $resolved.cluster | default dict -}}
+{{- $clusterName   := $cluster.name   | default "unknown-cluster" -}}
+{{- $clusterServer := $cluster.server | default .Values.destination.server -}}
+{{- $apps          := $resolved.apps  | default dict -}}
+
+{{- /* ── Step 4: Generate one Application per enabled app ───────────────────── */ -}}
+{{- range $appName, $appVals := $apps -}}
+{{- /* Use toString comparison to correctly handle enabled: false vs absent */ -}}
+{{- $enabled := ne (toString (get $appVals "enabled")) "false" -}}
+{{- if and $appVals $enabled -}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $clusterName }}-{{ $appName }}
+  namespace: {{ $.Values.argocd.namespace }}
+  labels:
+    managed-by: cluster-apps
+    cluster: {{ $clusterName }}
+    app: {{ $appName }}
+    {{- with $cluster.environment }}
+    env: {{ . }}
+    {{- end }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ $.Values.argocd.project }}
+
+  source:
+    repoURL: {{ $.Values.source.repoURL }}
+    targetRevision: {{ $.Values.source.targetRevision }}
+    path: {{ $.Values.source.componentsBasePath }}/{{ $appName }}
+    helm:
+      # Values are fully resolved here by mustMergeOverwrite before Argo CD
+      # sees this Application.  There is no further valueFiles cascade at sync
+      # time — what you see in this block is exactly what the component chart
+      # receives.
+      values: |
+        {{- omit $appVals "enabled" | toYaml | nindent 8 }}
+
+  destination:
+    server: {{ $clusterServer }}
+    namespace: {{ get $appVals "namespace" | default $appName }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m
+{{- end -}}
+{{- end -}}

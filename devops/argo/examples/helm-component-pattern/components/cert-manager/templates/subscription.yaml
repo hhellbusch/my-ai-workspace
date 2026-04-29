@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespace }}
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: openshift-cert-manager-operator
+  namespace: {{ .Values.namespace }}
+spec:
+  channel: {{ .Values.channel }}
+  name: openshift-cert-manager-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  installPlanApproval: {{ .Values.installPlanApproval }}
+  {{- with .Values.resources }}
+  config:
+    resources:
+      requests:
+        {{- toYaml .requests | nindent 8 }}
+  {{- end }}
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: cert-manager-operator-group
+  namespace: {{ .Values.namespace }}
+spec: {}

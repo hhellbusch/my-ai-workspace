@@ -1,0 +1,23 @@
+# Cluster: site-edge-1
+# Single-node OpenShift at a remote edge site.
+#
+# groups: declares which group values files are loaded BEFORE this file.
+#   groups/all/values.yaml       → component-all
+#   groups/edge-sno/values.yaml  → component-edge-sno
+#   clusters/site-edge-1/values.yaml → component-site-edge-1  (highest priority)
+#
+groups:
+  - all
+  - edge-sno
+
+# Key convention: component-site-edge-1
+
+component-site-edge-1:
+  cluster:
+    name: site-edge-1
+    server: https://api.site-edge-1.example.com:6443
+    environment: production
+    region: edge-us-east
+  # No app overrides — group defaults from component-all and component-edge-sno apply.
+  # kubevirt-hyperconverged remains disabled (component-all sets enabled: false)
+  # because neither edge-sno nor this cluster re-enables it.

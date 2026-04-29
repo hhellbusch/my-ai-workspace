@@ -438,6 +438,7 @@ The shift from vSAN/VMFS datastores to the Kubernetes storage model is as signif
 **This repo**
 
 - [Argo CD examples](../../argo/examples/) and [Argo CD labs](../../argo/labs/README.md)
+- [Helm component pattern](../../argo/examples/helm-component-pattern/README.md) — working reference implementation of the `mustMergeOverwrite` + `component-<name>` key pattern; includes the `cluster-apps` chart, group/cluster values files, render script, and pre-rendered Application output for two example clusters
 
 **Verification (scenario-based)**
 

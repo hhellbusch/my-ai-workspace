@@ -1,0 +1,23 @@
+# Group: virt-enabled
+# Clusters running OpenShift Virtualization.
+#
+# Key convention: component-virt-enabled
+#
+# Enables kubevirt-hyperconverged (disabled in component-all by default).
+# Also pins the NMState channel — live migration requires NMState for
+# secondary bridge networks and specific channel compatibility.
+#
+# Merged on top of component-all by mustMergeOverwrite in the template.
+
+component-virt-enabled:
+  apps:
+    kubevirt-hyperconverged:
+      enabled: true
+      channel: stable
+      namespace: openshift-cnv
+      installPlanApproval: Automatic
+
+    nmstate:
+      # OCP Virt requires NMState for bridge network configuration.
+      # Pin channel for compatibility — overrides component-all default.
+      channel: stable-4.16

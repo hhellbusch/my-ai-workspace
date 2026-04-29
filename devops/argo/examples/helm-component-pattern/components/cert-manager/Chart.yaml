@@ -1,0 +1,5 @@
+apiVersion: v2
+name: cert-manager
+description: Installs the cert-manager Operator via OLM Subscription.
+version: 0.1.0
+type: application

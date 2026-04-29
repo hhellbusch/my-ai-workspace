@@ -1,0 +1,69 @@
+---
+# root-application.yaml
+#
+# Bootstrap entry point.  Apply this once on the hub cluster.
+# It creates an ApplicationSet that discovers every cluster's rendered/
+# directory and applies the pre-rendered Application objects.
+#
+# Apply with:
+#   oc apply -f hub/root-application.yaml -n openshift-gitops
+#
+# The ApplicationSet generates one child Application per cluster directory
+# found under clusters/*/rendered/.  Each child Application is a raw-YAML
+# Application (not a Helm chart) — the Helm rendering already happened
+# offline via scripts/render-clusters.sh.
+#
+# Workflow:
+#   1. Edit a group or cluster values file.
+#   2. Run: ./scripts/render-clusters.sh [cluster-name]
+#   3. Review the diff in clusters/<name>/rendered/applications.yaml.
+#   4. Open a PR — CI can validate the rendered YAML with kubeval or conftest.
+#   5. Merge → Argo CD picks up the rendered Application objects automatically.
+
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-rendered-apps
+  namespace: openshift-gitops
+  labels:
+    managed-by: helm-component-pattern
+spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+
+  generators:
+    - git:
+        repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+        revision: main
+        directories:
+          - path: devops/argo/examples/helm-component-pattern/clusters/*/rendered
+
+  template:
+    metadata:
+      # Name derived from the directory path: clusters/<cluster>/rendered → <cluster>-rendered
+      name: "{{path.basename}}-rendered"
+      namespace: openshift-gitops
+      labels:
+        managed-by: helm-component-pattern
+      annotations:
+        argocd.argoproj.io/manifest-generate-paths: "{{path}}"
+
+    spec:
+      project: default
+
+      source:
+        repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+        targetRevision: main
+        path: "{{path}}"
+
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: openshift-gitops
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=false
+          - ServerSideApply=true

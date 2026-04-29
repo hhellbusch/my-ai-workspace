@@ -1,0 +1,35 @@
+# Group: all
+# Applied to every cluster in the fleet — fleet-wide baseline.
+#
+# Key convention: component-all (component-<groupName>)
+#
+# This file defines the canonical list of available components and their
+# defaults.  Components disabled here (enabled: false) are off by default
+# for every cluster; a more specific group or cluster component can enable them.
+#
+# Loaded first by render-clusters.sh — lowest priority.
+
+component-all:
+  apps:
+    nmstate:
+      enabled: true
+      channel: stable
+      namespace: openshift-nmstate
+      installPlanApproval: Automatic
+
+    cert-manager:
+      enabled: true
+      channel: stable-v1
+      namespace: cert-manager
+      installPlanApproval: Automatic
+      resources:
+        requests:
+          memory: 128Mi
+          cpu: 50m
+
+    # Disabled by default — the virt-enabled group enables this.
+    kubevirt-hyperconverged:
+      enabled: false
+      channel: stable
+      namespace: openshift-cnv
+      installPlanApproval: Automatic

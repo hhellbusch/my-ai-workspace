@@ -1,0 +1,35 @@
+# Cluster: site-dc1
+# Data-centre cluster running OpenShift Virtualization.
+#
+# groups: declares which group values files are loaded BEFORE this file by
+# render-clusters.sh.  Load order = groups order + this file last.
+#   groups/all/values.yaml           → component-all
+#   groups/virt-enabled/values.yaml  → component-virt-enabled
+#   clusters/site-dc1/values.yaml    → component-site-dc1  (highest priority)
+#
+groups:
+  - all
+  - virt-enabled
+
+# Key convention: component-site-dc1 (component-<clusterName>)
+#
+# Values here override anything set by the groups above.
+# The cluster block is required — it provides metadata for Application generation.
+
+component-site-dc1:
+  cluster:
+    name: site-dc1
+    server: https://api.site-dc1.example.com:6443
+    environment: production
+    region: us-east
+
+  apps:
+    nmstate:
+      # Explicit cluster-level channel pin — same value as virt-enabled group
+      # but recorded here so a diff on this file shows the cluster's intended state.
+      channel: stable-4.16
+
+    cert-manager:
+      # Use manual InstallPlan approval for production — operator upgrades
+      # require explicit human approval before applying.
+      installPlanApproval: Manual

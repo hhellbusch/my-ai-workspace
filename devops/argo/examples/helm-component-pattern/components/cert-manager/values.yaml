@@ -1,0 +1,7 @@
+channel: stable-v1
+namespace: cert-manager
+installPlanApproval: Automatic
+resources:
+  requests:
+    memory: 128Mi
+    cpu: 50m
