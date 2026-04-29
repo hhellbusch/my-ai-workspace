@@ -8,8 +8,8 @@ metadata:
   name: nmstate
   namespace: {{ .Values.namespace }}
   labels:
-    cluster: {{ .Values.cluster.name | default "unknown" }}
-    env: {{ .Values.cluster.environment | default "unknown" }}
+    cluster: {{ (.Values.cluster | default dict).name | default "unknown" }}
+    env: {{ (.Values.cluster | default dict).environment | default "unknown" }}
 spec:
   {{- if .Values.nmstate.nodeSelector }}
   nodeSelector:
