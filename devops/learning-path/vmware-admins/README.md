@@ -13,7 +13,7 @@ Most teams do not run a single cluster in production. Whether you are managing t
 | Getting started / single cluster | 1–2 | 0–4 + Git prerequisite | Single cluster (SNO lab in this repo) |
 | Small fleet | 3–10 | 0–5 | Hub cluster + ≥1 managed cluster |
 | Medium fleet | 10–50 | 0–5, ACM required | Hub cluster + managed clusters |
-| Large / edge fleet | 50–200+ | 0–6 | Hub + bare metal / simulated nodes |
+| Large / edge fleet | 50–200+ | 0–5 + ZTP specialist track | Hub + bare metal / simulated nodes |
 
 ACM is not required to get value from this path. Phases 0–4 stand alone with the existing lab. Phase 5 (fleet management) and Phase 6 (ZTP) require additional infrastructure.
 
@@ -67,21 +67,23 @@ The most common failure mode for VMware teams is treating OCP as "vSphere with c
 
 ## VMware concepts: what maps, what partially maps, what to discard
 
-Use this as a **temporary scaffold only**. The right column is the destination; the left column is where you are starting. Some mappings break under pressure — the "Discard or reframe" column names where.
+Use this as a **temporary scaffold only**. The right column is the destination; the left column is where you are starting.
+
+**Expiry notice:** If you are still consulting this table after completing Phase 2, that is the signal. The analogy has done its job — stop reaching for it and read the cluster state directly. Several rows below break *before* Phase 2 is complete; those are marked explicitly.
 
 | VMware concept | OpenShift / Kubernetes analogue | Discard or reframe when… |
 |----------------|----------------------------------|--------------------------|
-| vCenter UI / web client | **OpenShift Console** — a read/observe tool, not the source of truth. Git is the source of truth. | You click something in the console and expect it to survive a GitOps sync. It will not. |
-| ESXi host | **Worker node** | You think of nodes as long-lived, managed hosts. Nodes are cattle — they can be drained, replaced, or re-provisioned. |
-| vCenter cluster | **OpenShift cluster** (Kubernetes + platform operators) | — |
-| Resource pool / reservation | **Requests and limits**, **PriorityClasses**, **scheduling** | Resource pools are administrative hierarchy. Requests/limits are per-workload contracts with the scheduler. Entirely different model. |
-| VM / template | **VirtualMachine** / **DataVolume** (Virt); **Deployment** + Pods (containers) | VM templates are static. Kubernetes manifests are declarative desired-state — the controller reconciles continuously, not at deploy-time only. |
-| Port group / dvSwitch | **Cluster Network Operator (OVN-Kubernetes)**, **NAD** / **Multus** for additional interfaces ([NAD example](../../ocp/examples/network-attachment-definitions/README.md)) | NSX policy model does not map to Kubernetes NetworkPolicy model; relearn networking from the CNI up. |
-| vSAN / VMFS / NFS datastore | **StorageClass**, **PV/PVC**, CSI drivers; Virt adds **DataVolumes** and **VolumeSnapshots** | Datastores are shared mounts. StorageClasses are dynamic provisioners — storage is requested per-workload, provisioned on demand. |
-| DRS / HA rules | **Scheduling**, **PodAffinity/AntiAffinity**, **Pod disruption budgets** | DRS optimises existing placement. Kubernetes scheduler makes placement decisions at creation time. Anti-affinity rules are constraints, not post-hoc rebalancing. |
-| vMotion / storage vMotion | **Live migration** (Virt), **drain/cordon** for nodes | — |
+| vCenter UI / web client | **OpenShift Console** — a read/observe tool, not the source of truth. Git is the source of truth. | **Breaks immediately in Phase 4.** You click something in the console and expect it to survive a GitOps sync. It will not. |
+| ESXi host | **Worker node** | **Breaks in Phase 1.** You think of nodes as long-lived, managed hosts. Nodes are cattle — they can be drained, replaced, or re-provisioned without data loss because state lives in PVCs, not on the node. |
+| vCenter cluster | **OpenShift cluster** (Kubernetes + platform operators) | Reasonable scaffold; revisit when you manage multiple clusters (Phase 5) — a "cluster" is now a unit in a fleet, not the top of the hierarchy. |
+| Resource pool / reservation | **Requests and limits**, **PriorityClasses**, **scheduling** | **Breaks in Phase 1.** Resource pools are administrative hierarchy. Requests/limits are per-workload contracts with the scheduler — an entirely different model with no concept of pool membership. |
+| VM / template | **VirtualMachine** / **DataVolume** (Virt); **Deployment** + Pods (containers) | **Breaks in Phase 1–2.** VM templates are static artifacts applied once. Kubernetes manifests are desired-state — the controller reconciles continuously, and divergence from the manifest is automatically corrected. |
+| Port group / dvSwitch | **Cluster Network Operator (OVN-Kubernetes)**, **NAD** / **Multus** for additional interfaces ([NAD example](../../ocp/examples/network-attachment-definitions/README.md)) | **Breaks in the networking deep dive.** NSX policy model does not map to Kubernetes NetworkPolicy; relearn from the CNI up. The analogy will mislead you in any non-trivial networking scenario. |
+| vSAN / VMFS / NFS datastore | **StorageClass**, **PV/PVC**, CSI drivers; Virt adds **DataVolumes** and **VolumeSnapshots** | **Breaks in the storage deep dive.** Datastores are shared mounts you manage. StorageClasses are dynamic provisioners — storage is requested per-workload, provisioned on demand, and the workload does not know where it lives. |
+| DRS / HA rules | **Scheduling**, **PodAffinity/AntiAffinity**, **Pod disruption budgets** | **Breaks in Phase 1.** DRS optimises existing placement post-hoc. The Kubernetes scheduler makes placement decisions at creation time; anti-affinity rules are constraints, not rebalancing triggers. |
+| vMotion / storage vMotion | **Live migration** (Virt), **drain/cordon** for nodes | Reasonable analogy for the outcome; the mechanism is entirely different (see Phase 3 and the storage deep dive). |
 | Bulk VM migration from vSphere | **Migration Toolkit for Virtualization (MTV)** | — |
-| Change ticket / CAB record | **Pull request** + **merge** — see the Git prerequisite section | This is the most important cultural reframe. See below. |
+| Change ticket / CAB record | **Pull request** + **merge** — see the Git prerequisite section | **Most important cultural reframe — and the slowest to complete.** The mechanics transfer; the cultural habits do not. See the Git section below. |
 
 ---
 
@@ -115,12 +117,12 @@ This is the reframe that matters most for VMware teams with mature change-manage
 | Change ticket describing the change | **Pull request** — the change is the diff; the description is the PR body |
 | CAB review / approval | **PR review** — named approvers, required reviewers enforced by branch protection |
 | Approval record | **Merge commit** — named, timestamped, traceable to the PR and the approvers |
-| Maintenance window | Not required for GitOps-managed config; rollback is `git revert` + merge |
+| Maintenance window | Not required for config-only changes managed by GitOps (e.g. a Subscription channel update, an alerting rule change). Still applies to changes that cause rolling restarts, storage migrations, or network disruptions — GitOps does not change the blast radius of a change, it makes the change traceable and reversible. |
 | "Who changed this?" investigation | `git log`, `git blame`, PR history |
 | Emergency change / break-glass | Emergency PR with post-hoc review; audit trail preserved |
-| Rollback | `git revert` creates a new commit undoing the change — the history of both the change and the rollback is preserved |
+| Rollback | `git revert` creates a new commit undoing the change — the history of both the change and the rollback is preserved. Note: reverting the Git commit reverts the *desired state*; the cluster reconciles back to the previous state. If the change caused data loss or a dependent resource was modified, `git revert` alone may not be sufficient — treat GitOps rollback as "fast and traceable," not "instantaneous and lossless." |
 
-Git does not eliminate governance. It makes governance faster, more traceable, and automated at the enforcement layer rather than the process layer.
+Git does not eliminate governance. It makes governance faster, more traceable, and automatable at the enforcement layer rather than the process layer. The speed improvement is real but depends on your org's PR cycle maturity — in a regulated environment with mandatory multi-day review queues or strict change-freeze windows, GitOps adoption can initially be slower than CAB for production changes. The long-term efficiency gain comes from eliminating the manual coordination overhead, not from bypassing review gates.
 
 ### Mechanics (checklist)
 
@@ -229,12 +231,14 @@ Pure Storage / Portworx publishes a 10-part series (also bundled as an [ebook](h
 
 **Verification (scenario-based)**
 
+*Lab for this phase: single cluster (SNO on KVM is sufficient for most checks below). Multi-node checks are marked.*
+
 - Run `oc get co` in a lab cluster. Find one cluster operator that is not fully available or has a condition set. Using `oc describe`, `oc get events`, and the operator's own logs, write a one-paragraph explanation of what is wrong — even if you cannot fix it.
-- Cordon a worker node, confirm existing pods are not evicted (just unschedulable), then drain it and confirm pods have moved. Uncordon. Explain what you would do differently in a production cluster with PodDisruptionBudgets set.
+- *(Multi-node cluster required)* Cordon a worker node, confirm existing pods are not evicted (just unschedulable), then drain it and confirm pods have moved. Uncordon. Explain what you would do differently in a production cluster with PodDisruptionBudgets set. *On SNO: read the drain/cordon documentation and trace what would happen — name the components involved and the constraint SNO imposes.*
 - **SCCs**: Deploy a pod spec that requests `hostNetwork: true`. Find the SCC-related failure in pod events. Use `oc adm policy who-can use scc hostnetwork` to identify which service accounts have that access. Explain the difference between `restricted-v2` (the default) and `privileged`, and why this matters for workload portability from vanilla Kubernetes.
 - **OLM**: Install an operator via a `Subscription`. Watch for the `InstallPlan` to appear and the CSV to reach `Succeeded`. Then modify the subscription to reference a non-existent channel. Diagnose what is stuck — use `oc get sub`, `oc get ip`, and `oc get csv -A` to trace the failure. Explain how you would recover without deleting the operator.
-- **Observability**: Write a `PrometheusRule` that fires an alert when any namespace has more than 10 pods in `Pending` state for more than 5 minutes. Confirm the alert appears in Alertmanager. Separately: explain what `oc adm must-gather` collects and when you would run it vs `oc adm inspect`.
-- **Backup and DR**: Run a manual etcd backup on a lab cluster (or trace the documented procedure step-by-step if running on a single-node lab). Describe what the backup contains, where it is stored, and what a restore procedure looks like. Compare to a vSphere VM snapshot: what does etcd backup preserve that a GitOps rebuild cannot, and what does a GitOps rebuild recover that etcd backup alone does not?
+- **Observability**: Write a `PrometheusRule` that fires an alert when any namespace has more than 10 pods in `Pending` state for more than 5 minutes. Confirm the alert appears in Alertmanager. *Prerequisite: user workload monitoring must be enabled on your lab cluster (`enableUserWorkload: true` in the cluster-monitoring ConfigMap) — this is not on by default.* Separately: explain what `oc adm must-gather` collects and when you would run it vs `oc adm inspect`.
+- **Backup and DR**: Run a manual etcd backup on a lab cluster (or trace the documented procedure step-by-step if running on a single-node lab where the etcd pod layout differs from a multi-master cluster). Describe what the backup contains, where it is stored, and what a restore procedure looks like. Compare to a vSphere VM snapshot: what does etcd backup preserve that a GitOps rebuild cannot, and what does a GitOps rebuild recover that etcd backup alone does not?
 
 **This repo (when things break)**
 
@@ -337,7 +341,9 @@ The shift from vSAN/VMFS datastores to the Kubernetes storage model is as signif
 **Verification (scenario-based)**
 
 - Create a VM from a template or YAML manifest. Console or SSH into the guest. Then: find the Pod that backs the VMI using `oc get pods`; describe it; confirm it is the same object Kubernetes is scheduling.
-- **Live migration** *(requires multi-node cluster — not possible on SNO)*: Perform a live migration between two worker nodes. After migration, explain which Kubernetes mechanisms (pod scheduling, node affinity, resource availability) determined where the VM landed. If you only have SNO available: read the live migration documentation, trace the API objects involved (`VirtualMachineInstanceMigration`, source/target pods, shared storage requirement), and explain why SNO cannot support it — understanding the constraint is the learning outcome.
+- **Live migration** *(multi-node cluster with RWX storage required — not possible on SNO)*: Perform a live migration between two worker nodes. After migration, explain which Kubernetes mechanisms (pod scheduling, node affinity, resource availability) determined where the VM landed.
+
+  *SNO fallback (documentation trace — acceptable substitute):* Read the live migration documentation and trace every API object involved: the `VirtualMachineInstanceMigration` CR, the source VMI pod, the target VMI pod, the shared PVC with RWX access mode, and the QEMU migration channel. Explain specifically why SNO cannot support live migration (single schedulable node — no valid target for the migration pod), and what the minimum cluster topology is. The constraint is the learning outcome; demonstrating you can explain it without running it counts for this check.
 - Walk through one MTV planning chapter: source vSphere inventory requirements, network maps, storage maps, cutover concepts — even if you only migrate one small VM in lab.
 
 **This repo**
@@ -449,6 +455,8 @@ The shift from vSAN/VMFS datastores to the Kubernetes storage model is as signif
 - **Repo structure**: Clone `redhat-cop/gitops-standards-repo-template`. Without reading the full README, map what each top-level folder is for by reading only the `kustomization.yaml` files. Then: design a `groups/` structure for a fleet that has three cluster types — `all` (shared baseline), `virt-enabled` (OCP Virt), and `edge-sno` (single-node, resource-constrained). Explain how a cluster that is both `virt-enabled` and `edge-sno` references both groups, and what Kustomize `kind: Component` makes possible that `kind: Kustomization` overlays do not.
 - **Catalog usage**: Browse `redhat-cop/gitops-catalog` and find the Kustomize base for NMState, MetalLB, and the External Secrets Operator. Create a `components/nmstate/kustomization.yaml` in a test repo that references the catalog as a remote base. Point an Argo CD Application at it. Confirm the operator installs.
 - **Secrets**: A teammate has committed a Kubernetes Secret manifest (base64-encoded data, not encrypted) to the GitOps repo. Explain the security exposure, which tool you would use to remediate it (Sealed Secrets vs ESO — and why), and how you would prevent recurrence via a pre-commit hook or CODEOWNERS rule.
+
+**Planting a question for Phase 5:** You now have one tool — Argo CD — and it can install operators, apply configs, and manage workloads across clusters. Before you move to Phase 5, ask yourself: *when should a platform configuration NOT be in Argo CD?* What is the difference between "Argo CD manages this" and "the platform mandates this on every cluster"? Phase 5 answers this question with a structured decision framework. Go into it with the question already alive.
 
 ---
 
@@ -562,15 +570,25 @@ When a mandate genuinely cannot be expressed as a policy template — for exampl
 
 **Verification (scenario-based)**
 
+*Lab for this phase: hub cluster with ACM + OpenShift GitOps installed, plus at least one managed cluster. A second SNO on KVM, a cloud trial, or a workshop environment works. This phase cannot be verified on a single cluster — the multi-cluster topology is the thing being learned.*
+
 - Import a second cluster into ACM. Label it. Write a PolicyGenerator manifest that enforces a configuration (an RBAC policy or alertmanager rule) on clusters matching that label. Confirm compliance status in the ACM console. Switch `remediationAction` from `inform` to `enforce` and observe the difference.
 - Explain the fleet compliance model without notes: what does "non-compliant" mean in ACM? Who is notified? How does a remediation policy differ from a monitoring policy?
 - Given this scenario: install the OpenShift Virtualization operator on all production clusters (platform mandate), and install the Strimzi operator only on clusters owned by a specific team. Argue which tool you use for each and why. What changes if the Virt operator install becomes a regulatory compliance requirement?
 
 ---
 
-## Phase 6 — Zero Touch Provisioning: Day 0 / Day 1 / Day 2 automation *(Advanced — large-scale environments)*
+---
 
-> **Who this phase is for:** Teams managing **50 or more clusters**, particularly at remote or edge sites where manual cluster installation is not operationally viable. This is the pattern used in large retail, utility, and telecommunications deployments. If you are managing a fleet of 3–20 clusters in a data centre, Phase 5 (ACM) is likely sufficient — come back here when cluster count or geographic distribution makes individual cluster provisioning a bottleneck. A dedicated learning path for ZTP at scale is planned in [`devops/learning-path/`](../README.md).
+> **The core path ends at Phase 5.** A VMware admin who completes Phases 0–5 can operate and govern an OpenShift fleet. Phase 6 below is a **specialist track** — a different role and a different infrastructure scope. Read the framing box before deciding whether it applies to you.
+
+---
+
+## Specialist track: Zero Touch Provisioning — Day 0 / Day 1 / Day 2 automation
+
+> **Who this is for:** Teams managing **50 or more clusters**, particularly at remote or edge sites where manual cluster installation is not operationally viable. This is the pattern used in large retail, utility, and telecommunications deployments. The required skills go beyond fleet operations (Phase 5) into bare metal infrastructure, hardware provisioning pipelines, and large-scale upgrade orchestration — this is a distinct engineering specialty, not the next step after Phase 5 for every operator.
+>
+> If you are managing a fleet of 3–20 clusters in a data centre, **Phase 5 is sufficient for your scope**. Come back here when cluster count or geographic distribution makes individual cluster provisioning a bottleneck. A dedicated learning path for ZTP at scale is planned in [`devops/learning-path/`](../README.md).
 
 **Goal:** Automate the complete cluster lifecycle — from bare metal preparation through installation and into ongoing Day 2 operations — using the GitOps ZTP pipeline. This is where the Git-as-change-management model, ACM policies, and Argo CD converge into a fully automated provisioning and upgrade system.
 
@@ -848,6 +866,6 @@ After this, `oc get packagemanifests` shows only the operators you have mirrored
 
 ---
 
-**Document:** Learning path v2.1 · Last updated 2026-04-29 (Phase 4 GitOps repo structure section replaced with concrete, named references: `redhat-cop/gitops-standards-repo-template` as the `components/groups/clusters` canonical pattern; `redhat-cop/gitops-catalog` as the pre-built Kustomize component library for OCP operators; Helm `mustMergeOverwrite` cascading group values as the Helm-native implementation of the same pattern; updated Phase 4 verification to use catalog and template directly; v2.0: Phase 2 SCCs/OLM/multi-tenancy/observability/backup-DR; networking+storage deep dive bridge; Phase 3 VM topics + performance tuning; Phase 4 GitOps repo structure + secrets; disconnected environments appendix).
+**Document:** Learning path v2.2 · Last updated 2026-04-29 (v2.2: adversarial review fixes — Phase 0 mapping table expiry cues with per-row break conditions; verification lab requirements and SNO fallbacks made explicit; Phase 6 reframed as specialist track separate from core path; Git/GitOps governance claims qualified for regulated-env reality; Phase 4 closes with forward-reference question for Phase 5 Argo CD vs ACM decision; scale table updated to reflect ZTP as specialist track; v2.1: Phase 4 GitOps repo structure section replaced with concrete, named references; v2.0: Phase 2 SCCs/OLM/multi-tenancy/observability/backup-DR; networking+storage deep dive bridge; Phase 3 VM topics + performance tuning; Phase 4 GitOps repo structure + secrets; disconnected environments appendix).
 
 *AI-assisted content. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for review status details.*
