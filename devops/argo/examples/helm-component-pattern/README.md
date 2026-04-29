@@ -30,7 +30,8 @@ helm-component-pattern/
 │       └── rendered/
 │           └── applications.yaml
 ├── hub/
-│   └── root-application.yaml  # ApplicationSet — discovers rendered/ dirs
+│   ├── option-a-applications.yaml    # explicit Application per cluster (any Argo CD version)
+│   └── option-b-applicationset.yaml  # ApplicationSet auto-discovery (Argo CD 2.x+)
 └── scripts/
     └── render-clusters.sh     # Reads groups from cluster values, runs helm template
 ```
@@ -131,6 +132,82 @@ Result — three Applications generated:
 | `site-dc1-kubevirt-hyperconverged` | enabled: true (virt-enabled group) |
 
 **site-edge-1** (groups: `all`, `edge-sno`) resolves to two Applications: `nmstate` and `cert-manager` with reduced resource requests. `kubevirt-hyperconverged` is absent because `component-all` sets `enabled: false` and `edge-sno` does not override it.
+
+---
+
+## Hub bootstrap — Option A vs Option B
+
+Two files in `hub/` cover different Argo CD environments. The render workflow and the `components/groups/clusters` structure are identical — only the bootstrap mechanism differs.
+
+### Option A — explicit Applications (`hub/option-a-applications.yaml`)
+
+One Argo CD `Application` object per cluster, all in a single file. No ApplicationSet controller required.
+
+```yaml
+# hub/option-a-applications.yaml — excerpt
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: site-dc1-rendered
+  namespace: openshift-gitops
+  annotations:
+    helm-component-pattern/groups: "all, virt-enabled"   # human-readable, not functional
+spec:
+  source:
+    path: devops/argo/examples/helm-component-pattern/clusters/site-dc1/rendered
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openshift-gitops
+  syncPolicy:
+    automated: {prune: true, selfHeal: true}
+```
+
+**Onboarding a new cluster:** create `clusters/<name>/rendered/`, render, then add a new Application block to this file and apply it.
+
+**When to choose:**
+- Argo CD version < 2.0, or ApplicationSet controller not installed or disabled by policy
+- Preference for explicit cluster registration — a cluster does not exist in Argo CD until someone adds it here; no implicit discovery
+- Simpler mental model for teams new to GitOps
+
+### Option B — ApplicationSet (`hub/option-b-applicationset.yaml`)
+
+A single `ApplicationSet` with a Git directory generator that discovers every `clusters/*/rendered/` directory and generates one child `Application` per cluster automatically.
+
+```yaml
+# hub/option-b-applicationset.yaml — excerpt
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+spec:
+  generators:
+    - git:
+        directories:
+          - path: devops/argo/examples/helm-component-pattern/clusters/*/rendered
+  template:
+    spec:
+      source:
+        path: "{{path}}"    # resolved per discovered directory
+```
+
+**Onboarding a new cluster:** create `clusters/<name>/rendered/`, render, commit — the ApplicationSet auto-discovers the new directory without any change to the bootstrap file.
+
+**When to choose:**
+- Argo CD 2.x with ApplicationSet controller (ships by default with OpenShift GitOps operator)
+- Fleet is growing; manual Application registration does not scale
+- Prefer convention over configuration — the directory structure IS the cluster registry
+
+### Side-by-side comparison
+
+| | Option A — Applications | Option B — ApplicationSet |
+|---|---|---|
+| Argo CD version | Any (1.x, 2.x) | 2.0+ with ApplicationSet controller |
+| Cluster registration | Manual — add Application block to `hub/option-a-applications.yaml` | Automatic — create `clusters/<name>/rendered/` directory |
+| New cluster PR change | `clusters/<name>/rendered/applications.yaml` + `hub/option-a-applications.yaml` | `clusters/<name>/rendered/applications.yaml` only |
+| Accidental cluster | Impossible — explicit registration required | Possible — a stray `rendered/` directory creates an Application |
+| Audit trail | Application objects named and labelled per cluster in a single file | ApplicationSet template; child Application names are generated |
+| Drift detection | Per-Application; each cluster's sync status is independent | Same; ApplicationSet creates standard Application objects |
+| Render workflow | Identical | Identical |
+
+**Both options** apply the same pre-rendered Application objects from `clusters/<name>/rendered/`. The choice only affects how those objects are registered with Argo CD.
 
 ---
 

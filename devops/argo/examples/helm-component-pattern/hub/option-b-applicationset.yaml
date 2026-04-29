@@ -1,24 +1,35 @@
 ---
-# root-application.yaml
+# option-b-applicationset.yaml
 #
-# Bootstrap entry point.  Apply this once on the hub cluster.
-# It creates an ApplicationSet that discovers every cluster's rendered/
-# directory and applies the pre-rendered Application objects.
+# Option B — ApplicationSet bootstrap (Argo CD 2.x with ApplicationSet controller)
+#
+# A single ApplicationSet discovers every clusters/*/rendered/ directory and
+# generates one child Application per cluster automatically.  New clusters are
+# onboarded by adding their directory and re-running the render script — no
+# manual Application YAML required.
+#
+# See also: option-a-applications.yaml — the Applications-only approach for
+# older Argo CD versions or environments without the ApplicationSet controller.
 #
 # Apply with:
-#   oc apply -f hub/root-application.yaml -n openshift-gitops
+#   oc apply -f hub/option-b-applicationset.yaml -n openshift-gitops
 #
-# The ApplicationSet generates one child Application per cluster directory
-# found under clusters/*/rendered/.  Each child Application is a raw-YAML
-# Application (not a Helm chart) — the Helm rendering already happened
-# offline via scripts/render-clusters.sh.
+# Argo CD version requirement: 2.0+ with ApplicationSet controller installed.
+# On OpenShift GitOps the controller ships with the operator by default.
+#
+# Onboarding a new cluster:
+#   1. Create clusters/<name>/values.yaml
+#   2. Run: ./scripts/render-clusters.sh <name>
+#   3. Commit clusters/<name>/rendered/applications.yaml
+#   4. Merge PR → ApplicationSet auto-discovers the new directory and creates
+#      the child Application without any change to this file.
 #
 # Workflow:
 #   1. Edit a group or cluster values file.
 #   2. Run: ./scripts/render-clusters.sh [cluster-name]
 #   3. Review the diff in clusters/<name>/rendered/applications.yaml.
 #   4. Open a PR — CI can validate the rendered YAML with kubeval or conftest.
-#   5. Merge → Argo CD picks up the rendered Application objects automatically.
+#   5. Merge → ApplicationSet picks up the rendered Application objects.
 
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
