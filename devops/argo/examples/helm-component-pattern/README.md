@@ -1,8 +1,41 @@
 # Helm component pattern — `mustMergeOverwrite` with named component keys
 
-A GitOps framework for generating Argo CD Applications across a fleet of clusters. Configuration is composed from reusable groups using Helm's `mustMergeOverwrite`. Two bootstrap approaches are documented: a pre-render workflow (committed output) and a live Argo CD render via the `hub-clusters` chart with per-hub filtering.
+A GitOps framework for generating Argo CD Applications across a fleet of clusters. Configuration is composed from reusable groups using Helm's `mustMergeOverwrite`. No ApplicationSet or RHACM required.
 
 This is a different approach from the [ApplicationSet-based framework](../framework/README.md) in this repo.
+
+## How the charts relate
+
+Three Helm charts form a cascade. Each level generates Applications that ArgoCD then manages at the next level:
+
+```
+bootstrap-root.yaml          ← applied by hand ONCE on each hub cluster
+  │  Watches: hub/rendered/hub-applications.yaml
+  │
+  └── hub-bootstrap          ← NOT run by ArgoCD; run by GitHub Action
+        │  Input:  clusters.yaml
+        │  Output: one Application per hub → hub/rendered/ (committed to Git)
+        │
+        └── hub-clusters-dev          ─┐
+        └── hub-clusters-prod-a       ─┤ ← run by ArgoCD at sync time
+        └── hub-clusters-prod-b       ─┘
+              │  Input:  clusters.yaml + groups/ + clusters/
+              │          filtered to clusters where hub == currentHub
+              │  Output: one Application per enabled component per cluster
+              │
+              └── site-dc1-cert-manager
+              └── site-dc1-nmstate
+              └── site-dc1-kubevirt-hyperconverged
+              └── site-edge-1-cert-manager  ...
+```
+
+| Chart | Run by | Input | Output |
+|---|---|---|---|
+| `hub-bootstrap` | GitHub Action (CI) | `clusters.yaml` | One `hub-clusters-<hub>` Application per hub — committed to `hub/rendered/` |
+| `hub-clusters` | ArgoCD at sync time | `clusters.yaml` + group/cluster values | One component Application per enabled app per cluster |
+| `cluster-apps` | Render script (Approach A alt) | cluster values file with `groups:` | One component Application per cluster — committed per cluster |
+
+**Why two charts for the top two levels?** `hub-bootstrap` is never run by ArgoCD — it runs in CI because of the chicken-and-egg problem: ArgoCD needs a hub Application to exist before it can create Applications. The GitHub Action breaks this by rendering `hub-bootstrap` offline and committing the output. ArgoCD then manages `hub-clusters-*` live, no pre-rendered output needed at the cluster level.
 
 ---
 
@@ -12,10 +45,9 @@ This is a different approach from the [ApplicationSet-based framework](../framew
 helm-component-pattern/
 ├── clusters.yaml              # Central cluster inventory: hub, groups, server, shared attributes
 ├── charts/
-│   ├── cluster-apps/          # Approach A: per-cluster chart for pre-render workflow
-│   │   └── templates/application.yaml
-│   └── hub-clusters/           # Approach B: hub-aware chart — live render, no script needed
-│       └── templates/application.yaml
+│   ├── cluster-apps/          # Approach A: per-cluster Application generator (render script)
+│   ├── hub-clusters/          # Approach B: per-cluster Application generator (live ArgoCD render)
+│   └── hub-bootstrap/         # Approach B: per-hub Application generator (GitHub Action only)
 ├── components/                # Individual platform component charts (the deployables)
 │   ├── nmstate/
 │   └── cert-manager/
