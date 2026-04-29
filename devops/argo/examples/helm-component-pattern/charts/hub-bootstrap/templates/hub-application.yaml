@@ -1,0 +1,118 @@
+{{- /*
+  hub-bootstrap / hub-application.yaml
+  ═════════════════════════════════════
+
+  Generates one Argo CD Application per hub found in clusters.yaml.
+
+  ── Hub discovery ────────────────────────────────────────────────────────────
+
+  The template groups the clusters list by hub name.  Every distinct hub value
+  in clusters.yaml produces one Application, named global-root-<hubName>.
+
+  ── valueFiles derivation ────────────────────────────────────────────────────
+
+  For each hub the template builds the correct valueFiles list automatically:
+    1. clusters.yaml — always first (provides .Values.clusters to global-root)
+    2. groups/<name>/values.yaml — for every group referenced by any cluster
+       on this hub, in first-occurrence order across the hub's cluster list
+    3. clusters/<name>/values.yaml — for every cluster on this hub
+
+  This means adding a cluster to clusters.yaml automatically updates the hub
+  Application's valueFiles without any manual edit.  The GitHub Action renders
+  this chart and commits hub/rendered/hub-applications.yaml whenever
+  clusters.yaml, groups/*, or clusters/* change.
+
+  ── Group order preservation ──────────────────────────────────────────────────
+
+  Groups are collected by iterating each cluster's groups list in declaration
+  order and appending each group name if not already seen.  This preserves the
+  intended priority order (lower index = lower priority) while deduplicating
+  groups that appear in multiple clusters' lists.
+
+*/ -}}
+
+{{- /* ── Step 1: Group clusters by hub ──────────────────────────────────────── */ -}}
+{{- $hubs := dict -}}
+{{- range .Values.clusters -}}
+  {{- $hubName := .hub -}}
+  {{- if not (hasKey $hubs $hubName) -}}
+    {{- $_ := set $hubs $hubName list -}}
+  {{- end -}}
+  {{- $_ := set $hubs $hubName (append (index $hubs $hubName) .) -}}
+{{- end -}}
+
+{{- /* ── Step 2: Generate one Application per hub ──────────────────────────── */ -}}
+{{- range $hubName, $hubClusters := $hubs -}}
+
+{{- /* Collect unique groups in first-occurrence order across this hub's clusters */ -}}
+{{- $hubGroups := list -}}
+{{- range $hubClusters -}}
+  {{- range .groups -}}
+    {{- if not (has . $hubGroups) -}}
+      {{- $hubGroups = append $hubGroups . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $prefix := $.Values.source.valueFilesPrefix -}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: global-root-{{ $hubName }}
+  namespace: {{ $.Values.argocd.namespace }}
+  labels:
+    managed-by: hub-bootstrap
+    hub: {{ $hubName }}
+  annotations:
+    # Human-readable cluster list — not consumed by Argo CD.
+    hub-bootstrap/clusters: "{{ range $i, $c := $hubClusters }}{{ if $i }}, {{ end }}{{ $c.name }}{{ end }}"
+    hub-bootstrap/groups: "{{ join ", " $hubGroups }}"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ $.Values.argocd.project }}
+
+  source:
+    repoURL: {{ $.Values.source.repoURL }}
+    targetRevision: {{ $.Values.source.targetRevision }}
+    path: {{ $.Values.source.globalRootChartPath }}
+
+    helm:
+      parameters:
+        - name: currentHub
+          value: {{ $hubName }}
+
+      # valueFiles are relative to the chart source path (charts/global-root/).
+      # All entries are derived from clusters.yaml — no manual list maintenance.
+      ignoreMissingValueFiles: true
+      valueFiles:
+        # 1. Cluster inventory — must be first; provides .Values.clusters to global-root
+        - {{ $prefix }}/clusters.yaml
+        # 2. Group values files — one per unique group across all hub clusters
+        {{- range $hubGroups }}
+        - {{ $prefix }}/groups/{{ . }}/values.yaml
+        {{- end }}
+        # 3. Cluster-specific overrides — one per cluster on this hub
+        {{- range $hubClusters }}
+        - {{ $prefix }}/clusters/{{ .name }}/values.yaml
+        {{- end }}
+
+  destination:
+    server: {{ $.Values.destination.server }}
+    namespace: {{ $.Values.argocd.namespace }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m
+{{- end -}}

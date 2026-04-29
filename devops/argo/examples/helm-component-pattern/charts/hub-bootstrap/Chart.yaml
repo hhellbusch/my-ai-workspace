@@ -1,0 +1,25 @@
+apiVersion: v2
+name: hub-bootstrap
+description: |
+  Generates one Argo CD Application per hub from clusters.yaml.
+
+  Each generated Application runs the global-root chart with currentHub set
+  to the hub name and a valueFiles list derived automatically from clusters.yaml:
+    - clusters.yaml (inventory)
+    - groups/<name>/values.yaml for every group used by any cluster on this hub
+      (deduplicated, in first-occurrence order across the hub's cluster list)
+    - clusters/<name>/values.yaml for every cluster on this hub
+
+  This chart is NOT run by Argo CD.  It is run by a GitHub Action that commits
+  the rendered output to hub/rendered/hub-applications.yaml.  A single manually-
+  applied bootstrap Application (hub/bootstrap-root.yaml) watches hub/rendered/
+  and applies its contents — the one piece of hand-applied YAML in the system.
+
+  Workflow:
+    Any change to clusters.yaml, groups/*, or clusters/* triggers the
+    GitHub Action (.github/workflows/render-hub-applications.yml) which
+    re-renders this chart and commits the updated hub Applications.
+    Argo CD picks up the change in hub/rendered/ via bootstrap-root.
+
+version: 0.1.0
+type: application

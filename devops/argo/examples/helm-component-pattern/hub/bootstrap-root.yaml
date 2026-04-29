@@ -1,0 +1,74 @@
+---
+# bootstrap-root.yaml
+#
+# The ONE Application applied by hand.  Everything else is generated.
+#
+# This Application watches hub/rendered/ and applies the hub Applications
+# committed there by the GitHub Action.  It is the bottom of the bootstrap
+# chain — the only resource in the entire system that is not itself managed
+# by Argo CD.
+#
+# Apply ONCE on each hub cluster during initial setup:
+#   oc apply -f hub/bootstrap-root.yaml -n openshift-gitops
+#
+# After this, the full bootstrap sequence is:
+#
+#   1. This Application syncs hub/rendered/hub-applications.yaml
+#      → creates global-root-<hub> Applications (one per hub on this cluster)
+#
+#   2. Each global-root-<hub> Application runs charts/global-root/
+#      → creates component Applications for every cluster on this hub
+#
+#   3. Each component Application deploys to its target cluster
+#      → operators, configuration, etc.
+#
+# The GitHub Action (.github/workflows/render-hub-applications.yml) keeps
+# hub/rendered/hub-applications.yaml up to date whenever clusters.yaml,
+# groups/*, or clusters/* change.  Merging a PR to main is sufficient to
+# update the fleet — no manual oc apply required after initial setup.
+#
+# Chicken-and-egg resolution:
+#   The bootstrap-root Application is the only piece of YAML applied by hand.
+#   The hub-bootstrap chart (charts/hub-bootstrap/) generates hub Applications
+#   that would previously have been hand-maintained YAML files in hub/.
+#   The GitHub Action is what breaks the chicken-egg — it renders the chart
+#   and commits the output before Argo CD needs to act.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hub-bootstrap-root
+  namespace: openshift-gitops
+  labels:
+    managed-by: manual-bootstrap
+  annotations:
+    argocd.argoproj.io/sync-wave: "-100"   # sync before everything else
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+    targetRevision: main
+    # Points at the directory containing rendered hub Applications.
+    # The GitHub Action keeps this directory current.
+    path: devops/argo/examples/helm-component-pattern/hub/rendered
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openshift-gitops
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 5m

@@ -1,0 +1,19 @@
+argocd:
+  namespace: openshift-gitops
+  project: default
+
+source:
+  repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+  targetRevision: main
+  # Path to the global-root chart within the repo.
+  globalRootChartPath: devops/argo/examples/helm-component-pattern/charts/global-root
+  # Prefix for valueFiles paths in generated Applications.
+  # Argo CD resolves valueFiles relative to the chart source path.
+  # From charts/global-root/ back to the pattern root is ../../
+  valueFilesPrefix: "../.."
+
+destination:
+  server: https://kubernetes.default.svc
+
+# clusters: populated by --values clusters.yaml when rendering this chart.
+clusters: []
