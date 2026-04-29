@@ -31,12 +31,22 @@
           making clusters.yaml the single authoritative source for cluster identity.
           Internal fields (groups:, targetRevision:) are stripped before injection.
 
-  Per-cluster targetRevision:
-          If a cluster entry in clusters.yaml includes a targetRevision field, all
-          component Applications for that cluster use that git ref.  Falls back to
-          the hub Application's own targetRevision ($.Values.source.targetRevision).
-          Use this to pin a cluster to a release branch or promote a canary cluster
-          ahead of the rest of the fleet.
+  targetRevision resolution (three levels, last wins):
+          1. $.Values.source.targetRevision — the hub Application's own revision
+             (typically "main"); the fleet-wide default.
+          2. Group-level targetRevision — groups are walked in declaration order;
+             a group entry that is an object with a targetRevision field overrides
+             the hub default.  Later groups in the list win over earlier ones.
+             Plain string entries ("all") carry no targetRevision.
+          3. Cluster-level targetRevision — if the clusters.yaml entry for this
+             cluster has a targetRevision field it wins over everything above.
+          Use this three-level chain for canary promotion, emergency rollback,
+          or controlled version testing without touching every cluster entry:
+            - Pin one group (e.g. edge-sno) to a release candidate
+            - Override a single cluster further while the rest of the group stays put
+          Group format supports both strings and objects:
+            groups: [all, edge-sno]                              # plain strings
+            groups: [all, { name: edge-sno, targetRevision: rc }]  # with override
 
   path — optional explicit component path:
           Each app entry may set path: components/nmstate/operator to override the
@@ -88,13 +98,39 @@
 {{- $clusterEntry := . -}}
 {{- $clusterName  := .name -}}
 {{- $groups       := .groups | default list -}}
-{{- /* Per-cluster targetRevision override — falls back to hub Application's revision */ -}}
-{{- $targetRevision := .targetRevision | default $.Values.source.targetRevision -}}
+
+{{- /* ── Resolve targetRevision: hub default → groups in order → cluster ────── */ -}}
+{{- /* Resolution priority (last wins):                                          */ -}}
+{{- /*   1. $.Values.source.targetRevision  — hub Application default            */ -}}
+{{- /*   2. group.targetRevision            — group object entries, in order      */ -}}
+{{- /*   3. clusters.yaml entry.targetRevision — cluster-level pin (highest)      */ -}}
+{{- /*                                                                            */ -}}
+{{- /* Group entries may be plain strings ("all") or objects                      */ -}}
+{{- /* ({ name: virt-enabled, targetRevision: release/v2.0 }).                   */ -}}
+{{- /* Plain strings carry no targetRevision and are equivalent to the old format.*/ -}}
+{{- /* A dict is used to carry mutable state across the range scope.             */ -}}
+{{- $revState := dict "rev" $.Values.source.targetRevision -}}
+{{- range $groups -}}
+  {{- if kindIs "map" . -}}
+    {{- if .targetRevision -}}
+      {{- $_ := set $revState "rev" .targetRevision -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if $clusterEntry.targetRevision -}}
+  {{- $_ := set $revState "rev" $clusterEntry.targetRevision -}}
+{{- end -}}
+{{- $targetRevision := $revState.rev -}}
 
 {{- /* ── Step 1: Merge group components in declaration order ────────────────── */ -}}
+{{- /* Groups may be plain strings or objects; extract the name accordingly.     */ -}}
 {{- $resolved := dict -}}
 {{- range $groups -}}
-  {{- $key      := printf "component-%s" . -}}
+  {{- $groupName := . -}}
+  {{- if kindIs "map" . -}}
+    {{- $groupName = .name -}}
+  {{- end -}}
+  {{- $key      := printf "component-%s" $groupName -}}
   {{- $groupVal := index $.Values $key | default dict -}}
   {{- if kindIs "map" $groupVal -}}
     {{- $resolved = mustMergeOverwrite $resolved (deepCopy $groupVal) -}}

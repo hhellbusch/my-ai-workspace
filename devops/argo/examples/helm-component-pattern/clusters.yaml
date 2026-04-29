@@ -11,12 +11,27 @@
 # belong in clusters/<name>/values.yaml as component-<clusterName>.apps overrides.
 # This file owns identity and topology; the cluster values files own deviations.
 #
-# targetRevision: (optional, per cluster) — overrides the hub Application's
-# targetRevision for all component Applications on that cluster. Use this to:
-#   - Pin a cluster to a release branch during a controlled upgrade
-#   - Promote a canary cluster to a new branch before the rest of the fleet
-#   - Hold a cluster back on an older branch while issues are resolved
-# Omit to inherit the hub Application's targetRevision (typically "main").
+# targetRevision — three-level resolution (last wins):
+#
+#   1. Hub Application targetRevision (typically "main") — fleet default.
+#
+#   2. Group-level targetRevision — set on a group entry as an object:
+#        groups:
+#          - all
+#          - name: edge-sno
+#            targetRevision: release/v2.0    # all edge-sno clusters track this
+#      Plain string entries carry no targetRevision (backward compatible).
+#      Groups are walked in declaration order; later groups win.
+#
+#   3. Cluster-level targetRevision — field on this cluster entry.
+#      Overrides group-level and hub default.
+#      Use to pin one specific cluster independent of its groups.
+#
+# Common patterns:
+#   Canary:   one cluster → targetRevision: feature/cert-manager-upgrade
+#   Ring:     group object edge-sno → targetRevision: release/v1.3
+#             then site-edge-1 → targetRevision: release/v1.3-rc1 (further ahead)
+#   Rollback: add targetRevision: release/v1.2 to a cluster to hold it back
 #
 # clusters: is loaded by the hub-clusters chart via helm valueFiles.
 # It is NOT loaded by the cluster-apps chart (the render-script approach).
@@ -62,7 +77,12 @@ clusters:
     server: https://api.site-edge-1.example.com:6443
     groups:
       - all
-      - edge-sno
+      # Group object format — pins all edge-sno clusters to a release candidate
+      # while the rest of the fleet stays on main.  Other edge clusters that
+      # belong to edge-sno will also pick up this targetRevision automatically.
+      # Remove the object form (revert to "- edge-sno") once the release is stable.
+      - name: edge-sno
+        targetRevision: release/v2.0-rc1
     vault:
       server: https://vault.prod-a.example.com
       clusterSecretStoreName: vault-backend
@@ -94,7 +114,10 @@ clusters:
     server: https://api.site-dev-1.example.com:6443
     groups:
       - all
-    # targetRevision: feature/new-component   # uncomment to pin this cluster to a branch
+    # Cluster-level override — uncomment to pin this cluster to a specific ref
+    # while the hub default (main) remains in effect for all other clusters.
+    # This takes priority over any group-level targetRevision.
+    # targetRevision: feature/new-component
     vault:
       server: https://vault.dev.example.com
       clusterSecretStoreName: vault-backend

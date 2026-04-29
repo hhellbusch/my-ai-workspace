@@ -439,43 +439,71 @@ component-site-dc1:
 
 If a cluster has no deviations, the file can be empty or omitted entirely. The pattern is intentionally asymmetric: `clusters.yaml` is always populated; cluster value files are often empty.
 
-### Per-cluster `targetRevision` — pinning a cluster to a git ref
+### `targetRevision` — three-level resolution
 
-By default, all component Applications for every cluster point to the same git ref as the hub Application (`main`, or whichever branch the hub Application uses). To pin an individual cluster to a different ref, add `targetRevision` to its entry in `clusters.yaml`:
+By default every component Application points to the same git ref as the hub Application (`main`, or whatever revision the hub Application uses). `targetRevision` can be overridden at three levels, evaluated in order — last one wins:
+
+| Level | Set in | Typical use |
+|---|---|---|
+| **1 — Hub default** | Hub Application `spec.source.targetRevision` | Fleet baseline (usually `main`) |
+| **2 — Group** | Group entry as an object in `groups:` | Pin an entire group (e.g. all edge clusters) to a release candidate |
+| **3 — Cluster** | `targetRevision:` field on the cluster entry in `clusters.yaml` | Pin one specific cluster independent of its group |
+
+#### Group-level pin
+
+Groups in the `groups:` list can be plain strings (the default, no pin) or objects with a `targetRevision` field:
+
+```yaml
+# clusters.yaml
+clusters:
+  - name: site-edge-1
+    hub: prod-a
+    groups:
+      - all                           # plain string — no pin
+      - name: edge-sno
+        targetRevision: release/v2.0-rc1   # all edge-sno clusters track the RC
+```
+
+Groups are walked in declaration order; a later group's `targetRevision` overrides an earlier one. The cluster entry's `targetRevision` (level 3) overrides both.
+
+#### Cluster-level pin
 
 ```yaml
 # clusters.yaml
 clusters:
   - name: site-dev-1
     hub: dev
-    targetRevision: feature/new-nmstate-config   # this cluster tracks the feature branch
+    targetRevision: feature/new-nmstate-config   # this cluster only
     groups: [all]
-    ...
-
-  - name: site-dc1
-    hub: prod-a
-    # no targetRevision — inherits the hub Application's revision (main)
-    groups: [all, virt-enabled]
-    ...
 ```
 
-This is how canary promotion works in this pattern:
+#### Typical promotion workflows
 
+**Canary individual cluster** — test a branch on one cluster before merging to main:
 ```
-main branch (all clusters)
-  └── site-dev-1 targetRevision: feature/cert-manager-upgrade
-        → tests pass → merge feature branch to main → all clusters upgrade
-```
-
-Or for a controlled rollout:
-
-```
-targetRevision: release/v1.2   → site-dev-1 (test here first)
-                               → site-edge-1 (roll out next)
-targetRevision: main           → site-dc1, site-dc2 (stay on main until ready)
+main ──── site-dc1, site-dc2 (no pin)
+          site-dev-1 → targetRevision: feature/cert-manager-upgrade
+                     → tests pass → merge to main → all clusters upgrade
 ```
 
-`targetRevision` is stripped from the `cluster:` metadata block before it is injected into component chart values — component charts do not see it.
+**Ring rollout via group** — roll a release to an entire group before the rest of the fleet:
+```
+groups:
+  - all
+  - name: edge-sno
+    targetRevision: release/v2.0    # all edge clusters on the new release
+
+site-dc1, site-dc2  →  main (fleet default)
+site-edge-1, site-edge-2  →  release/v2.0 (via group)
+```
+
+**Emergency rollback** — hold one cluster back while a fix is prepared:
+```yaml
+- name: site-dc1
+  targetRevision: release/v1.8.2   # pinned while investigating v1.9 issue
+```
+
+`targetRevision` is stripped from the `cluster:` metadata block before injection — component charts do not see it and cannot branch-test on it.
 
 ### Hub Applications are also generated — `charts/hub-bootstrap/`
 
