@@ -14,6 +14,7 @@ Practical diagnostic guides for Red Hat Advanced Cluster Management operational 
 |---|---|
 | [mch-stuck-pending-upgrade.md](./mch-stuck-pending-upgrade.md) | `MultiClusterHub` stuck in `Updating` / `Pending` / `Installing` beyond ~10–15 min during hub upgrade |
 | [managed-cluster-lease-not-updated.md](./managed-cluster-lease-not-updated.md) | `The cluster is not reachable. Registration agent stopped updating its lease.` — clusters showing Unknown, during or after hub upgrade |
+| [observability-addon-missing.md](./observability-addon-missing.md) | `ManagedClusterAddon` and `ManifestWork` for observability absent on hub — metrics not collected for some clusters |
 | [search-service-503.md](./search-service-503.md) | Search UI returns 503 / "Error occurred while contacting the search service" — `search-postgres` OOMKill and other search component failures |
 
 ## Common Scenarios
@@ -30,6 +31,14 @@ Practical diagnostic guides for Red Hat Advanced Cluster Management operational 
 - Clusters should self-recover after MCH returns to Running
 - If still Unknown after hub is healthy, investigate klusterlet and connectivity
 - See [managed-cluster-lease-not-updated.md](./managed-cluster-lease-not-updated.md)
+
+**Observability addon missing for some clusters:**
+- No `ManagedClusterAddon` or `ManifestWork` on the hub for affected clusters
+- Cluster may be `Available` with no skip annotation — operator simply didn't reconcile it
+- Often caused by a transient condition at import time (e.g. firewall blocking initial connection)
+- Fix: restart `multicluster-observability-operator` in `open-cluster-management` namespace
+- Operator is in `open-cluster-management`, not `open-cluster-management-observability`
+- See [observability-addon-missing.md](./observability-addon-missing.md)
 
 **Search UI returning 503:**
 - `search-postgres` OOMKilled — increase memory limits via the `Search` CR
