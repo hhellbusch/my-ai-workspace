@@ -1,8 +1,21 @@
 # Learning path: VMware admin → Kubernetes, OpenShift, and OpenShift Virtualization
 
-**Audience:** Infrastructure and platform engineers who already know vSphere — across storage, networking, and compute/VM management — and want to operate **OpenShift (OCP)** and **OpenShift Virtualization** confidently. Application development is not the primary goal; understanding Kubernetes deeply enough to administer the platform is.
+**Audience:** Infrastructure and platform engineers who already know vSphere — across storage, networking, and compute/VM management — and want to operate **OpenShift (OCP)** and **OpenShift Virtualization** confidently. Application development is not the primary goal; understanding Kubernetes deeply enough to administer the platform — and to automate its full lifecycle — is.
 
-**Outcomes:** Understand Kubernetes internals well enough to reason about cluster state; use `oc` and `kubectl`; operate networking and storage at a platform level; run and migrate VMs with OpenShift Virtualization; use Git and GitHub as an accountability and change management system; understand why GitOps replaces ClickOps and how it maps to your existing change-management practices.
+**Outcomes:** Understand Kubernetes internals well enough to reason about cluster state; use `oc` and `kubectl`; operate networking and storage at a platform level; run and migrate VMs with OpenShift Virtualization; use Git and GitHub as an accountability and change management system. At fleet scale: manage configuration and compliance across many clusters with ACM and, for very large environments, automate the full cluster lifecycle with the ZTP GitOps pipeline.
+
+**Scale and topology — which phases apply to you**
+
+Most teams do not run a single cluster in production. Whether you are managing ten clusters across two data centres or two hundred edge sites, the operational model changes when you add more clusters. Use this as a guide to which phases are relevant:
+
+| Environment | Typical cluster count | Recommended phases | Lab requirement |
+|-------------|----------------------|-------------------|----------------|
+| Getting started / single cluster | 1–2 | 0–4 + Git prerequisite | Single cluster (SNO lab in this repo) |
+| Small fleet | 3–10 | 0–5 | Hub cluster + ≥1 managed cluster |
+| Medium fleet | 10–50 | 0–5, ACM required | Hub cluster + managed clusters |
+| Large / edge fleet | 50–200+ | 0–6 | Hub + bare metal / simulated nodes |
+
+ACM is not required to get value from this path. Phases 0–4 stand alone with the existing lab. Phase 5 (fleet management) and Phase 6 (ZTP) require additional infrastructure.
 
 **Disclaimer:** This is a curated study guide, not Red Hat training, certification prep, or support. Official product behavior, course numbers, and doc URLs change — verify against [Red Hat Documentation](https://docs.redhat.com/) and your subscription entitlements before production decisions. *Red Hat*, *OpenShift*, and related marks are trademarks of Red Hat, Inc. *Portworx* and *Pure Storage* content is third-party; see the supplementary section for scope.
 
@@ -11,10 +24,10 @@
 ## How to use this path
 
 1. **Start fresh.** See Phase 0. The biggest obstacle is not a missing skill — it is a mental model that needs to be rebuilt, not extended.
-2. If you are **new to Git**, complete the **[Prerequisite: Git and GitHub](#prerequisite-git-and-github)** section before Phase 4 (GitOps); doing it before Phase 1 makes lab and "edit YAML in repo" workflows much easier.
-3. Work **in order** through Phases 0–3 before deep-diving on Virt. OpenShift Virtualization runs on top of Kubernetes; understanding the substrate first is not optional — it is the difference between operating the platform and cargo-culting commands.
+2. If you are **new to Git**, complete the **[Prerequisite: Git and GitHub](#prerequisite-git-and-github)** section before Phase 4; doing it before Phase 1 makes lab and "edit YAML in repo" workflows much easier.
+3. **Phases 1 and 2 can run in parallel** — Phase 1 covers application-layer Kubernetes (Pods, Deployments, Services); Phase 2 covers cluster-level operations (cluster operators, MachineConfig, node management). They are distinct enough that an experienced infrastructure engineer can move through both simultaneously. **Both must be substantially complete before Phase 3.** OpenShift Virtualization runs on top of Kubernetes; understanding the substrate first is not optional.
 4. Each phase has **verification** — scenario-based, not definition-recall. If you cannot do the check without notes, that phase is not done.
-5. Pair **reading** with a **single lab cluster** (workshop, cloud trial, or home lab) so every concept maps to something you can inspect in the console **or** from the CLI.
+5. Pair **reading** with a **single lab cluster** (workshop, cloud trial, or home lab) so every concept maps to something you can inspect in the console **or** from the CLI. Note the lab requirements per phase in the scale table above — Phases 5 and 6 need infrastructure beyond a single SNO.
 
 **Lab options in this repo**
 
@@ -151,7 +164,7 @@ Pure Storage / Portworx publishes a 10-part series (also bundled as an [ebook](h
 | SDDC stack mapping (compute / storage / network) | Phase 1 (after you have run one app) |
 | NSX → Kubernetes networking | Phase 1–2 |
 | KubeVirt, VMware-to-Kubernetes migration | Phase 3 (before or parallel to MTV docs) |
-| Day 2, security, migration planning | Phase 2–4 |
+| Day 2, security, migration planning | Phase 2–5 |
 
 **Posts:** [ClickOps to GitOps](https://portworx.com/blog/paradigm-shift-from-clickops-to-gitops/) · [Mapping the stack](https://portworx.com/blog/mapping-the-stack-sddc-to-cloud-native/) · [ESXi vs nodes](https://portworx.com/blog/compute-esxi-hosts-vs-kubernetes-nodes/) · [NSX to K8s networking](https://portworx.com/blog/nsx-to-kubernetes-networking/) · [KubeVirt migration](https://portworx.com/blog/migrate-vmware-to-kubernetes-kubevirt/)
 
@@ -239,7 +252,7 @@ Pure Storage / Portworx publishes a 10-part series (also bundled as an [ebook](h
 **Verification (scenario-based)**
 
 - Create a VM from a template or YAML manifest. Console or SSH into the guest. Then: find the Pod that backs the VMI using `oc get pods`; describe it; confirm it is the same object Kubernetes is scheduling.
-- Perform a live migration between two worker nodes. After migration, explain which Kubernetes mechanisms (pod scheduling, node affinity, resource availability) determined where the VM landed.
+- **Live migration** *(requires multi-node cluster — not possible on SNO)*: Perform a live migration between two worker nodes. After migration, explain which Kubernetes mechanisms (pod scheduling, node affinity, resource availability) determined where the VM landed. If you only have SNO available: read the live migration documentation, trace the API objects involved (`VirtualMachineInstanceMigration`, source/target pods, shared storage requirement), and explain why SNO cannot support it — understanding the constraint is the learning outcome.
 - Walk through one MTV planning chapter: source vSphere inventory requirements, network maps, storage maps, cutover concepts — even if you only migrate one small VM in lab.
 
 **This repo**
@@ -248,22 +261,26 @@ Pure Storage / Portworx publishes a 10-part series (also bundled as an [ebook](h
 
 ---
 
-## Phase 4 — GitOps and multicluster (1–2 weeks to first value; ongoing)
+## Phase 4 — GitOps with Argo CD (1–2 weeks)
 
-**Goal:** Apply what you learned about Git-as-change-management to cluster configuration. A PR merge replaces a change ticket. A Git revert replaces an emergency rollback procedure. Argo CD is the reconciliation engine that closes the loop between what is in Git and what is running in the cluster.
+**Goal:** Apply Git-as-change-management to cluster configuration. A PR merge replaces a change ticket. A `git revert` replaces an emergency rollback procedure. Argo CD (OpenShift GitOps) is the reconciliation engine that closes the loop between what is in Git and what is running in the cluster.
 
-**Depends on:** [Prerequisite: Git and GitHub](#prerequisite-git-and-github) (or equivalent experience).
+**Lab:** The [SNO KVM lab](../../ocp/examples/sno-kvm-lab/README.md) in this repo is sufficient for this entire phase — you need one cluster and a Git repo.
+
+**Depends on:** [Prerequisite: Git and GitHub](#prerequisite-git-and-github).
 
 **Topics**
 
-- **OpenShift GitOps** (Argo CD): Application, AppProject, sync policies, health checks
-- **App-of-apps pattern** — managing many applications declaratively from a single root Application
-- Optional: **RHACM** for fleet-wide policy and GitOps at scale across many clusters
+- **OpenShift GitOps (Argo CD)**: Application, AppProject, sync policies, health checks, self-healing
+- **ApplicationSet** — generate many Applications from a single template (by cluster label, by directory, by Git branch)
+- **App-of-apps pattern** — a root Application that manages child Applications; the complete cluster inventory lives in Git
+- **Configuration drift** — what Argo CD detects when cluster state diverges from Git; `selfHeal` vs manual sync
+- **Sync options** — `Validate`, `CreateNamespace`, `RespectIgnoreDifferences`, retry strategies
 
 **Official**
 
 - [Understanding OpenShift GitOps](https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/latest/html/understanding_openshift_gitops/index)
-- [GitOps overview (RHACM)](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/latest/html/gitops/gitops-overview) if multicluster is in scope.
+- [`redhat-cop/helm-charts` — operators-installer](https://github.com/redhat-cop/helm-charts/tree/main/charts/operators-installer) — community Helm chart for GitOps-driven operator installation; a useful pattern for team-owned operators
 
 **This repo**
 
@@ -271,14 +288,289 @@ Pure Storage / Portworx publishes a 10-part series (also bundled as an [ebook](h
 
 **Verification (scenario-based)**
 
-- Create an Argo CD Application syncing from a Git repo. Make a change to a manifest in Git (wrong replica count, incorrect image tag). Watch the cluster converge — or detect the error in Argo CD's health status. Roll back by reverting the commit in Git and watching the cluster follow.
-- Explain to a colleague: "If someone makes a change directly in the OpenShift console instead of through Git, what happens?" (Answer: Argo CD detects drift and either alerts or auto-remediates, depending on sync policy. The console change is not the source of truth.)
+- Create an Argo CD Application syncing from a Git repo. Make a change in Git (wrong replica count, incorrect image tag). Watch the cluster converge. Roll back by reverting the commit and watching the cluster follow.
+- Introduce a deliberate drift — change a resource directly via `oc`, bypassing Git. Confirm Argo CD detects it and either alerts or remediates depending on your sync policy. Explain to a colleague what just happened and why the console change did not survive.
+- Create an ApplicationSet that generates one Application per directory in a repo. Add a new directory. Confirm Argo CD creates the Application automatically.
+- **Failure modes** (the questions that arrive in production): Introduce a broken manifest into Git — a YAML syntax error or a missing required field — and push it. What state does the Application enter? How do you identify the sync error without console access? How do you unblock it? Then: intentionally cause a health check failure (deploy a pod with a container that crashes on start). Distinguish `OutOfSync` (cluster state differs from Git) from `Degraded` (cluster state matches Git but the resource is unhealthy). Explain why Argo CD can report both simultaneously and what each requires from the operator.
 
 ---
 
-## Phase 5 — Certification (optional)
+## Fleet thinking — the second mental model shift
 
-**Red Hat Certified OpenShift Administrator (EX280)** after Phase 2 depth. Virt-focused exams follow product announcements — check [Red Hat Certification](https://www.redhat.com/en/services/certifications) for current names and prerequisites.
+Phase 0 required you to throw out the VMware mental model and rebuild from Kubernetes up. Phase 5 requires a second rebuild: from *single-cluster operator* to *fleet operator*. The instincts that served you well in Phases 1–4 become liabilities at fleet scale if you don't name them.
+
+In single-cluster thinking, your job is: configure this cluster, fix this problem, deploy this workload. In fleet thinking, your job is: define what *every* cluster should look like, detect when any cluster drifts from that definition, and push corrections declaratively — without logging into each one.
+
+| Single-cluster instinct | Fleet-operator reframe |
+|-------------------------|----------------------|
+| "I'll fix this cluster" | "I'll fix the policy and let ACM apply it everywhere" |
+| "Who changed that?" | "Which commit changed the policy? Which clusters are now non-compliant?" |
+| "I'll deploy this operator" | "All clusters labelled `virt=enabled` should have the Virt operator — I'll write a policy for that" |
+| Console change, then document it | Console is a read/observe tool; Git is the change record for the fleet |
+
+Returning to single-cluster habits at fleet scale is how teams end up with configuration drift they cannot explain and compliance posture they cannot prove.
+
+---
+
+## Phase 5 — Fleet management with ACM (2–3 weeks)
+
+**Goal:** Operate a fleet of clusters declaratively. ACM (Red Hat Advanced Cluster Management) is the governance and policy layer that makes consistency across many clusters tractable. Argo CD handles reconciliation; ACM handles targeting, compliance reporting, and enforcement. This phase requires a hub cluster and at least one managed cluster — the single-node lab is not sufficient.
+
+**Lab setup:** You need a hub cluster with ACM and OpenShift GitOps installed, and at least one additional managed cluster enrolled. A second SNO on KVM, a cloud trial cluster, or a workshop environment all work.
+
+**When ACM earns its keep:** At 3+ clusters you will feel configuration drift within weeks without it. Policy consistency — everyone running the same OAuth config, the same kubelet settings, the same Virt operator version — becomes a manual problem that scales with cluster count. ACM solves this declaratively.
+
+**Architecture — hub-and-spoke:**
+
+```
+Git repository
+     │
+     ▼
+Hub cluster (ACM + Argo CD)
+     ├── Managed cluster A  ← policies + ApplicationSets
+     ├── Managed cluster B
+     └── Managed cluster C (OCP Virt workloads)
+```
+
+**Topics**
+
+- **Cluster lifecycle with ACM** — importing clusters, labeling for policy targeting, viewing fleet compliance status
+- **ACM PolicyGenerator** — converts YAML manifests into RHACM policies via a kustomize plugin; the primary tool for fleet-wide config
+- **ACM Placements and PlacementBindings** — label-based targeting: which policy applies to which clusters
+- **`inform` vs `enforce`** — inform detects and reports non-compliance without changing anything; enforce remediates automatically
+- **`PolicyAutomation`** — the ACM object that links a policy compliance event to an AAP job; when a policy goes non-compliant ACM calls a specific AAP workflow; used for Day 2 tasks, ServiceNow tickets, PagerDuty alerts, or anything AAP can reach outside Kubernetes
+- **Ansible + ACM bridge pattern** — teams with existing Ansible investment do not need to discard it; AAP generates Kubernetes CRs using Jinja templates (which can query Redfish, Vault, DNS); ACM deploys; ACM policies trigger AAP post-provisioning jobs via `PolicyAutomation`; the pipeline is fully idempotent
+- **Secret management** — keeping sensitive data out of Git; External Secrets Operator (ESO) with a Vault back end; prerequisite for Phase 6 ZTP
+
+**Key decision: Argo CD Application vs ACM Policy**
+
+You now know both tools. This is the question practitioners get wrong most often — both can install an operator or deploy a config, but the choice is about *ownership, enforcement, and compliance posture*.
+
+| Signal | Use Argo CD (e.g. operators-installer Helm chart) | Use ACM Policy |
+|--------|--------------------------------------------------|----------------|
+| Who decides this exists? | A team — they own the operator for their workloads | Platform mandate — all clusters of type X must have this |
+| What if it goes missing? | The workload breaks; team notices and fixes it | Compliance violation — platform team must know immediately |
+| Enforcement required? | No — Argo CD reconciliation is sufficient | Yes — drift must be detected, optionally auto-corrected |
+| Environment variation? | Yes — dev uses `alpha` channel, prod uses `stable` | No — the same baseline everywhere |
+| Audit trail needed? | Git log + PR history | ACM compliance dashboard + policy report + Git log |
+| Cluster lifecycle stage | Day 2 workload deployment | Day 1 bootstrap or organizational baseline |
+
+*Use ACM Policy for:* NMState, cert-manager, OpenShift Virtualization operator, file-integrity-operator, OAuth, kubelet config, kubeadmin removal, pull secret distribution — platform mandates that must not drift.
+
+*Use Argo CD / operators-installer for:* Team-owned operators (Strimzi, app-specific monitoring stacks) that vary by environment or team ownership.
+
+**When the table gives conflicting signals — the grey zone**
+
+The table breaks when a requirement triggers multiple columns simultaneously. The most common case: a platform mandate (→ ACM Policy) on a heterogeneous fleet where different clusters need different operator versions (→ Argo CD). Example: NMState must be on every Virt cluster, but OCP 4.16 clusters need NMState channel `stable-4.16` and OCP 4.18 clusters need `stable-4.18`.
+
+The resolution is **ACM policy templating**, not a switch to Argo CD. ACM policies support Go-template-style variable substitution against cluster labels and hub cluster facts. You write one policy that evaluates the target cluster's OCP version label and selects the correct channel at enforcement time — the mandate stays in ACM, the variation is handled within the policy rather than by routing to a different tool.
+
+```yaml
+# Policy template using cluster label for channel selection
+spec:
+  object-templates:
+    - complianceType: musthave
+      objectDefinition:
+        apiVersion: operators.coreos.com/v1alpha1
+        kind: Subscription
+        spec:
+          channel: '{{ fromClusterClaim "openshiftVersion" | splitList "." | first | printf "stable-4.%s" }}'
+```
+
+When a mandate genuinely cannot be expressed as a policy template — for example, the configuration is too complex, varies by team rather than by cluster type, or is owned by a team that should not have ACM access — that is the signal to reach for Argo CD, even for something that looks like a platform concern. The deciding factor is always: *who owns this, and does deviation represent a compliance violation or a team preference?*
+
+**The hybrid pattern:** ACM and Argo CD are complementary layers. A common production pattern uses ACM to *deliver* an Argo CD ApplicationSet to every managed cluster — ACM ensures the ApplicationSet object exists, Argo CD reconciles the workload content. Fleet-wide targeting plus application-level reconciliation in one pipeline.
+
+**Official**
+
+- [GitOps with ACM](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.16/html/gitops/gitops-overview) — ACM + Argo CD integration; hub-managed ApplicationSets; subscription-based GitOps
+- [ACM governance](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.16/html/governance/governance) — policy concepts, PlacementRules, compliance status
+- [PolicyGenerator integration](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.11/html/governance/integrate-policy-generator) — the kustomize generator plugin
+
+**Blog and reference**
+
+- [GitOps approach to configure OpenShift clusters managed by RHACM](https://www.redhat.com/en/blog/gitops-approach-to-configure-openshift-clusters-managed-by-red-hat-advanced-cluster-management-for-kubernetes) — policy templating, PolicyGenerator, and drift detection end-to-end
+- [How to manage a fleet of heterogeneous OpenShift clusters](https://developers.redhat.com/articles/2024/03/18/how-manage-fleet-heterogeneous-openshift-clusters) — real-world fleet management across different OCP versions and regions
+- [Leveraging ApplicationSets and Helm with cluster labels in RHACM](https://developers.redhat.com/articles/2025/08/27/leveraging-applicationsets-helm-cluster-labels) — label-driven targeting for differentiated deployments
+- [Automate OpenShift Cluster Deployment with RHACM and AAP (DevConf.US 2024)](https://www.youtube.com/watch?v=mi1z5H4VL3Q) — 31-minute practitioner talk; real customer engagement (hundreds of clusters, two-week deadline); shows `PolicyAutomation`, the Ansible+ACM bridge pattern, blue-green cluster upgrades, and disconnected environment operation. Library entry: [`library/automate-ocp-cluster-deployment-rhacm-aap.md`](../../../library/automate-ocp-cluster-deployment-rhacm-aap.md)
+- [Implement zero-touch provisioning for OpenShift with GitOps](https://developers.redhat.com/articles/2025/07/29/implement-zero-touch-provisioning-openshift-gitops) — read **Policy management** and **Best practices** now; return for ZTP Day 1 content in Phase 6
+
+**Formal course option (paid)**
+
+- [DO480 — Multicluster Management with Red Hat OpenShift Platform Plus](https://www.redhat.com/en/services/training/do480-multicluster-management-red-hat-openshift-platform-plus) — ACM, policy management, RHACS, Quay; requires DO280 and DO380. Preparation for EX480.
+
+**This repo**
+
+- [RHACM examples](../../rhacm/examples/) — secret management, cluster import, GitOps integration
+
+**Verification (scenario-based)**
+
+- Import a second cluster into ACM. Label it. Write a PolicyGenerator manifest that enforces a configuration (an RBAC policy or alertmanager rule) on clusters matching that label. Confirm compliance status in the ACM console. Switch `remediationAction` from `inform` to `enforce` and observe the difference.
+- Explain the fleet compliance model without notes: what does "non-compliant" mean in ACM? Who is notified? How does a remediation policy differ from a monitoring policy?
+- Given this scenario: install the OpenShift Virtualization operator on all production clusters (platform mandate), and install the Strimzi operator only on clusters owned by a specific team. Argue which tool you use for each and why. What changes if the Virt operator install becomes a regulatory compliance requirement?
+
+---
+
+## Phase 6 — Zero Touch Provisioning: Day 0 / Day 1 / Day 2 automation *(Advanced — large-scale environments)*
+
+> **Who this phase is for:** Teams managing **50 or more clusters**, particularly at remote or edge sites where manual cluster installation is not operationally viable. This is the pattern used in large retail, utility, and telecommunications deployments. If you are managing a fleet of 3–20 clusters in a data centre, Phase 5 (ACM) is likely sufficient — come back here when cluster count or geographic distribution makes individual cluster provisioning a bottleneck. A dedicated learning path for ZTP at scale is planned in [`devops/learning-path/`](../README.md).
+
+**Goal:** Automate the complete cluster lifecycle — from bare metal preparation through installation and into ongoing Day 2 operations — using the GitOps ZTP pipeline. This is where the Git-as-change-management model, ACM policies, and Argo CD converge into a fully automated provisioning and upgrade system.
+
+**Depends on:** Phases 0–5 fully completed, including ACM fleet management. ZTP makes no sense without understanding Pods, operators, ACM policy, and Argo CD Applications — all of which it uses internally.
+
+**Day 0 / Day 1 / Day 2 — the operations framework**
+
+ZTP is organized around this three-day model, which you will encounter throughout Red Hat documentation for edge and large-scale deployments:
+
+| Day | What it covers | ZTP component |
+|-----|---------------|--------------|
+| **Day 0** | Pre-installation: network config, bare metal preparation, health checks | ClusterCurator + Ansible Automation Platform hooks |
+| **Day 1** | Cluster installation and initial provisioning | SiteConfig, AgentClusterInstall, infraenv, Assisted Installer |
+| **Day 2** | Post-installation: config management, upgrades, compliance, scaling | PolicyGenTemplate, TALM, ClusterGroupUpgrade |
+
+Most VMware admins joining an existing OCP team land in **Day 2** operations first — clusters already exist. ZTP adds Day 0 and Day 1 automation on top of the Day 2 skills built in Phases 1–4.
+
+**The ZTP pipeline — what it is**
+
+ZTP (Zero Touch Provisioning) is a GitOps-driven pipeline that provisions and configures OpenShift clusters on bare metal without human intervention after the initial Git commit. The pipeline is:
+
+```
+Git commit (SiteConfig / PolicyGenTemplate)
+     │
+     ▼
+Argo CD (on hub) detects change → applies CRs to ACM
+     │
+     ▼
+ACM + Assisted Installer provisions the cluster (Day 1)
+     │
+     ▼
+TALM operator applies Day 2 policies via ClusterGroupUpgrade
+     │
+     ▼
+Managed cluster: running, compliant, GitOps-managed
+```
+
+**Day 0 — pre-installation automation**
+
+Before a cluster is installed, ZTP allows automation of infrastructure preparation via **ClusterCurator** and **Ansible Automation Platform (AAP)**:
+
+- Network configuration automation
+- Bare metal host preparation and health checks
+- Prerequisite verification (storage, firmware, connectivity)
+
+```yaml
+# ClusterCurator pre/post hooks — runs AAP jobs at install/upgrade events
+spec:
+  install:
+    towerAuthSecret: aap-integrations
+    prehook:
+      - name: Pre-Installation Check
+        extra_vars:
+          check_network: true
+          check_storage: true
+    posthook:
+      - name: Post-Installation Validation
+        extra_vars:
+          validate_operators: true
+```
+
+**Day 1 — cluster provisioning (SiteConfig)**
+
+The `SiteConfig` (or equivalent `AgentClusterInstall` / `ClusterDeployment` manifests) defines the cluster topology and is committed to Git. Argo CD picks it up; ACM and the Assisted Installer provision the cluster. Key Day 1 files:
+
+```
+cluster-name/
+├── day1-agentclusterinstall.yaml   # Cluster topology (nodes, networking)
+├── day1-bmh.yaml                   # BareMetalHost definitions
+├── day1-clusterdeployment.yaml     # Cluster deployment
+├── day1-infraenv.yaml              # Discovery ISO / agent environment
+├── day1-managedcluster.yaml        # ACM managed cluster enrollment
+├── day1-nmstateconfig.yaml         # Node network configuration
+└── kustomization.yaml
+```
+
+An `ApplicationSet` on the hub automatically creates an Argo CD Application for each cluster directory found in Git — new cluster = new directory = automated provisioning triggered.
+
+**Day 2 — policy-driven configuration and upgrades (PolicyGenTemplate / TALM)**
+
+After installation, Day 2 configuration is applied via **PolicyGenTemplate** (PGT) — a ZTP-specific generator that produces RHACM policies from concise YAML, then applies them through the **Topology Aware Lifecycle Manager (TALM)** operator.
+
+Cluster upgrades follow the same GitOps pattern: update the desired version in Git, commit, and Argo CD + ACM + TALM handle the rest:
+
+```yaml
+# PolicyGenTemplate — cluster upgrade via Git commit
+spec:
+  bindingRules:
+    name: "cluster-name"
+  sourceFiles:
+    - fileName: ClusterVersion.yaml
+      policyName: "platform-upgrade"
+      spec:
+        channel: "stable-4.16"
+        desiredUpdate:
+          version: 4.16.8
+```
+
+TALM creates a **ClusterGroupUpgrade (CGU)** object that orchestrates the rollout — controlling concurrency, canary clusters, and timeout. Reference: [Leveraging the GitOps ZTP pipeline to upgrade OpenShift clusters](https://www.redhat.com/en/blog/leveraging-gitops-ztp-pipeline-upgrade-red-hat-openshift-clusters).
+
+**Blue-green cluster upgrades — an alternative worth considering**
+
+At scale, in-place major version upgrades can require 8+ hours of maintenance window per cluster. With a provisioning pipeline that deploys a new cluster in 40 minutes, an alternative emerges: deploy a new cluster at the target OCP version, migrate workloads, retire the old cluster. This treats clusters as cattle — disposable infrastructure — and is particularly attractive for virtualized control plane environments where the physical hardware is retained. The DevConf.US 2024 talk above describes a customer who moved from 4-hour serial cluster deployments to 5 clusters in 40 minutes, enabling this model. The tradeoff: requires a mature workload migration process and sufficient spare capacity during the transition.
+
+**Secret management in ZTP — External Secrets Operator**
+
+Never store sensitive data in Git. ZTP environments use the **External Secrets Operator (ESO)** to pull secrets from a vault (HashiCorp Vault, AWS Secrets Manager, or similar) at runtime:
+
+- `SecretStore`: defines the connection to the vault back end
+- `ExternalSecret`: maps vault paths to Kubernetes Secrets in the cluster
+
+Secrets managed this way include: pull secrets, BMH credentials, ingress certificates, Htpasswd auth, and ACM communication tokens.
+
+**Recommended policy folder structure**
+
+```
+policies/
+├── Global/
+│   ├── base-config/          # chrony, custom CA, kubelet, SSH keys
+│   ├── day2-config/          # alertmanager, ingress certs, storage class
+│   ├── security-auth/        # OAuth, remove kubeadmin, RBAC
+│   ├── secrets-config/       # External Secrets, SecretStore
+│   └── testing/
+│       └── virtualizations/
+│           ├── policy-install-mtv.yaml           # Migration Toolkit
+│           ├── policy-install-nmstate.yaml        # NMState operator
+│           └── policy-install-virtualization.yaml # OpenShift Virt
+└── Hub/
+    ├── policy-clusterlogging.yaml
+    └── policy-storagecluster.yaml
+```
+
+**Official and reference reading**
+
+- [Challenges of the network far edge and ZTP overview (OCP 4.19)](https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/edge_computing/ztp-deploying-far-edge-clusters-at-scale) — start here; covers the overall ZTP architecture, hub setup, and the SiteConfig / PolicyGenTemplate pipeline
+- [Updating GitOps ZTP (OCP 4.19)](https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/edge_computing/ztp-updating-gitops) — Day 1 and Day 2 pipeline update procedures including TALM integration
+- [TALM (Topology Aware Lifecycle Manager) for cluster updates](https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/edge_computing/cnf-talm-for-cluster-updates) — ClusterGroupUpgrade, canary clusters, batch rollout, timeout strategies
+- [Implement zero-touch provisioning for OpenShift with GitOps](https://developers.redhat.com/articles/2025/07/29/implement-zero-touch-provisioning-openshift-gitops) — full ZTP walkthrough including OpenShift Virtualization integration, ESO, AAP hooks, ApplicationSet patterns
+- [Leveraging the GitOps ZTP pipeline to upgrade OpenShift clusters](https://www.redhat.com/en/blog/leveraging-gitops-ztp-pipeline-upgrade-red-hat-openshift-clusters) — practical upgrade workflow: PolicyGenTemplate → Argo CD → ACM → TALM → CGU → cluster
+
+**Verification (scenario-based)**
+
+- Commit a new `SiteConfig` directory to the ZTP Git repo and watch the hub's Argo CD detect it. Trace the chain: ApplicationSet → Application → ACM ManagedCluster CR → Assisted Installer. Even if you cannot run a full installation to completion in lab, map the objects and understand which component is responsible for each step.
+- Write a `PolicyGenTemplate` that installs the OpenShift Virtualization operator on all clusters labeled `virt=enabled`. Apply it through TALM via a `ClusterGroupUpgrade` object. Confirm the operator appears on the managed cluster.
+- Given a ZTP upgrade workflow: a new version is committed to Git. Trace every step from `git push` to `oc adm upgrade` completing on the managed cluster. Name the component responsible at each step: Argo CD → ACM → PolicyGenTemplate → TALM → CGU → ClusterVersion operator.
+- Walk through the ESO secret flow: where does the secret live? How does ESO authenticate to the vault? When does the Kubernetes Secret appear on the managed cluster?
+
+---
+
+## Phase 7 — Certification (optional)
+
+| Exam | After which phase | Notes |
+|------|------------------|-------|
+| [EX280 — Red Hat Certified OpenShift Administrator](https://www.redhat.com/en/services/training/ex280-red-hat-certified-openshift-administrator-exam) | Phase 2 depth | Core cluster admin skills |
+| [EX480 — Red Hat Certified Specialist in MultiCluster Management](https://www.redhat.com/en/services/training/ex480-red-hat-certified-specialist-multicluster-management-exam) | Phase 5 depth | ACM, policy management, fleet governance; prepare with DO480 |
+
+Virt-focused exams follow product announcements — check [Red Hat Certification](https://www.redhat.com/en/services/certifications) for current names and prerequisites.
 
 ---
 
@@ -289,9 +581,11 @@ Pure Storage / Portworx publishes a 10-part series (also bundled as an [ebook](h
 - OpenShift GitOps docs live under `red_hat_openshift_gitops` on docs.redhat.com, not the older `openshift_gitops` path.
 - Third-party URLs (Portworx blog, ebook) change when campaigns refresh — spot-check periodically.
 - **GitHub** UI and GitHub Skills URLs move — refresh the prerequisite section when onboarding feedback reports broken links.
+- **ZTP tooling evolves rapidly** — `PolicyGenTemplate` (PGT) is the current generator; `SiteConfig` v1/v2 naming has changed across OCP releases. Verify against the installed `ztp-site-generate` image version, not doc screenshots.
+- ACM policy API (`policy.open-cluster-management.io`) version and `PolicyGenerator` kustomize plugin version can drift from OCP releases — check the ACM release notes when upgrading the hub.
 
 ---
 
-**Document:** Learning path v1.2 · Last updated 2026-04-28 (Phase 0 reframe; analogy table with discard column; IaC / CAB–PR framing; scenario-based verification throughout).
+**Document:** Learning path v1.8 · Last updated 2026-04-28 (Phase 3 live migration lab caveat; Phase 1/2 parallel clarified; fleet thinking at Phase 4/5 bridge; Phase 4 failure-mode verification; ACM policy templating grey zone; Portworx reference corrected; PolicyAutomation + Ansible bridge pattern added to Phase 5; blue-green cluster upgrade model added to Phase 6; DevConf.US 2024 RHACM+AAP talk added to library and Phase 5).
 
 *AI-assisted content. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for review status details.*

@@ -91,6 +91,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Title | Creator | Year | URL | Tags | Entry |
 |---|---|---|---|---|---|
 | Git For Ages 4 And Up | Michael Schwern (linux.conf.au 2013) | 2013 | https://www.youtube.com/watch?v=1ffBJ4sVUb4 | git, version-control, beginner, mental-model, branching, remotes, gitops | [enriched](git-for-ages-4-and-up.md) |
+| Automate OpenShift Cluster Deployment with RHACM and AAP | Michael Navarro, Michael Dado, Michael Zamot — DevConf.US 2024 | 2024 | https://www.youtube.com/watch?v=mi1z5H4VL3Q | openshift, rhacm, aap, ansible, gitops, cluster-lifecycle, policy-automation, fleet, disconnected | [enriched](automate-ocp-cluster-deployment-rhacm-aap.md) |
 | Karate by Jesse (Jesse Enkamp) | Jesse Enkamp | ongoing | https://www.karatebyjesse.com | karate, okinawa, history, bunkai | [enriched](karate-by-jesse.md) |
 | Simple Lucas | Simple Lucas | ongoing | https://www.youtube.com/@SimpleLucas | productivity, single-tasking | [enriched](simple-lucas.md) |
 | Rian Doris / FlowState | Rian Doris | ongoing | https://www.youtube.com/@RianDoris | neuroscience, flow, dopamine, focus | [enriched](rian-doris.md) |

@@ -4,7 +4,8 @@ Curated curricula that span multiple areas of this repository (OpenShift, GitOps
 
 | Path | Audience | Summary |
 |------|------------|---------|
-| [VMware admins → Kubernetes / OpenShift / OpenShift Virtualization](vmware-admins/README.md) | Platform engineers from a vSphere background | Phased topics, verification checks, Red Hat and third-party links, in-repo labs |
+| [VMware admins → Kubernetes / OpenShift / OpenShift Virtualization](vmware-admins/README.md) | Platform engineers from a vSphere background | Phased topics, verification checks, Red Hat and third-party links, in-repo labs. Phase 5 introduces ZTP for large fleets; see the dedicated path below for depth. |
+| ZTP at scale *(planned)* | Platform engineers operating 50+ clusters at edge or distributed sites | Zero Touch Provisioning deep dive: SiteConfig, PolicyGenTemplate, TALM, ClusterGroupUpgrade, ClusterCurator/AAP, External Secrets Operator. Assumes ACM and completion of the VMware admins path through Phase 4. |
 
 Add new paths as sibling directories (for example `learning-path/<topic>/README.md`) and link them from this index.
 
