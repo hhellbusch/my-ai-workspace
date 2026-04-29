@@ -367,6 +367,28 @@ Approach B trades explicit rendered output for a live render. To regain the "wha
 
 The tool spins up a temporary Argo CD instance, renders the current branch and the PR branch independently, and posts a desired-state-to-desired-state diff as a PR comment. Unlike a current-state diff, this shows only what the PR changes — no unrelated cluster drift, no pending reconciliations.
 
+### Why `hub/rendered/hub-applications.yaml` is the bootstrapping anchor
+
+argocd-diff-preview needs a **static Application file** as its entry point — a committed YAML file it can open, find `kind: Application` objects in, and then follow each Application's `source.path` to render what it would produce.
+
+In a fully live-rendered system (no committed files at all), the tool has nothing to start from. `hub/rendered/hub-applications.yaml` solves this: it is a real, committed YAML file containing `hub-clusters-dev`, `hub-clusters-prod-a`, and `hub-clusters-prod-b` Application objects. The tool can:
+
+```
+1. Read hub/rendered/hub-applications.yaml
+   → finds hub-clusters-prod-a
+     source.path:   charts/hub-clusters
+     helm.values:   currentHub=prod-a
+     valueFiles:    clusters.yaml, groups/all/values.yaml, ...
+
+2. Run helm template charts/hub-clusters ... (for both PR branch and base branch)
+   → produces component Application objects (site-dc1-cert-manager, etc.)
+
+3. Diff the two rendered outputs
+   → posts exactly which component Applications changed, were added, or removed
+```
+
+This means the "partial rendered manifest" design at the hub layer — which exists to solve the chicken-and-egg bootstrapping problem — also provides a natural, stable entry point for CI diff tooling. The committed file serves two purposes.
+
 **Running on OpenShift without cluster-admin:** deploy argocd-diff-preview into a dedicated namespace (e.g. `argocd-diff`) using a namespace-scoped Argo CD instance (the OpenShift GitOps operator supports this). CI uses only namespace-scoped credentials — no production Argo CD access required.
 
 See the library entry: [`library/argocd-diff-preview.md`](../../../../library/argocd-diff-preview.md)
