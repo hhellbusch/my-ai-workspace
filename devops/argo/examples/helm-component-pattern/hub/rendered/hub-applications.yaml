@@ -12,7 +12,7 @@ metadata:
     # Human-readable cluster list — not consumed by Argo CD.
     hub-bootstrap/clusters: "site-dev-1"
     hub-bootstrap/groups: "all"
-    hub-bootstrap/group-order-source: "explicit"
+    hub-bootstrap/group-order-source: "implicit-WARNING-add-hubConfig-groupOrder-to-clusters.yaml"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -67,8 +67,8 @@ metadata:
   annotations:
     # Human-readable cluster list — not consumed by Argo CD.
     hub-bootstrap/clusters: "site-dc1, site-edge-1"
-    hub-bootstrap/groups: "all, virt-enabled, edge-sno"
-    hub-bootstrap/group-order-source: "explicit"
+    hub-bootstrap/groups: "all, virt-enabled, map[name:edge-sno targetRevision:release/v2.0-rc1]"
+    hub-bootstrap/group-order-source: "implicit-WARNING-add-hubConfig-groupOrder-to-clusters.yaml"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -93,7 +93,7 @@ spec:
         # 2. Group values files — one per unique group across all hub clusters
         - ../../groups/all/values.yaml
         - ../../groups/virt-enabled/values.yaml
-        - ../../groups/edge-sno/values.yaml
+        - ../../groups/map[name:edge-sno targetRevision:release/v2.0-rc1]/values.yaml
         # 3. Cluster-specific overrides — one per cluster on this hub
         - ../../clusters/site-dc1/values.yaml
         - ../../clusters/site-edge-1/values.yaml
@@ -127,7 +127,7 @@ metadata:
     # Human-readable cluster list — not consumed by Argo CD.
     hub-bootstrap/clusters: "site-dc2"
     hub-bootstrap/groups: "all, virt-enabled"
-    hub-bootstrap/group-order-source: "explicit"
+    hub-bootstrap/group-order-source: "implicit-WARNING-add-hubConfig-groupOrder-to-clusters.yaml"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:

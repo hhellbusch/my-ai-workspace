@@ -1,17 +1,32 @@
 # clusters.yaml — central cluster inventory
 #
 # Single authoritative source for:
-#   - Which clusters exist
-#   - Which hub manages each cluster (hub: field — must match the currentHub
+#   - Which clusters exist (including the hub clusters themselves)
+#   - Which ArgoCD instance manages each cluster (hub: field — matches currentHub
 #     parameter on each hub's hub-clusters Application)
 #   - Which groups the cluster belongs to (drives mustMergeOverwrite order)
 #   - Shared cluster attributes pushed into every component's cluster: block
 #
-# Component-level overrides (e.g. installPlanApproval: Manual for cert-manager)
-# belong in clusters/<name>/values.yaml as component-<clusterName>.apps overrides.
-# This file owns identity and topology; the cluster values files own deviations.
+# ── Hub clusters are just clusters ────────────────────────────────────────────
 #
-# targetRevision — three-level resolution (last wins):
+# Hub clusters (where ArgoCD runs) can be listed here like any managed cluster.
+# Point their server: to https://kubernetes.default.svc for in-cluster access.
+# This means the hub itself can have platform components managed by the same
+# ArgoCD instance that manages the fleet.
+#
+# The hub: field determines WHICH hub's ArgoCD instance manages a given cluster.
+# A cluster with hub: prod-a is managed by the ArgoCD running on prod-a.
+# A hub cluster managing itself uses hub: <its own hub name>.
+#
+# ── No separate hubConfig ─────────────────────────────────────────────────────
+#
+# Group merge priority is determined entirely by the order of entries in the
+# cluster's groups: list — earlier entries have lower priority, later entries
+# have higher priority.  There is no separate groupOrder configuration.
+# The cluster's component-<name> layer (clusters/<name>/values.yaml) always
+# wins regardless of group order.
+#
+# ── targetRevision — three-level resolution (last wins) ───────────────────────
 #
 #   1. Hub Application targetRevision (typically "main") — fleet default.
 #
@@ -33,22 +48,11 @@
 #             then site-edge-1 → targetRevision: release/v1.3-rc1 (further ahead)
 #   Rollback: add targetRevision: release/v1.2 to a cluster to hold it back
 #
-# clusters: is loaded by the hub-clusters chart via helm valueFiles.
-# It is NOT loaded by the cluster-apps chart (the render-script approach).
+# ── Component-level overrides ─────────────────────────────────────────────────
 #
-# hubConfig: controls hub-level settings, including the canonical group load order.
-# groupOrder: defines the priority of groups for mustMergeOverwrite — earlier in the
-# list = lower priority, later = higher priority.  The cluster's component-<name>
-# always wins (injected last), regardless of this order.
-# If a cluster belongs to a group not listed here, it is a configuration error.
-
-hubConfig:
-  prod-a:
-    groupOrder: [all, virt-enabled, edge-sno]
-  prod-b:
-    groupOrder: [all, virt-enabled]
-  dev:
-    groupOrder: [all]
+# Component-level overrides (e.g. installPlanApproval: Manual for cert-manager)
+# belong in clusters/<name>/values.yaml as component-<clusterName>.apps overrides.
+# This file owns identity and topology; cluster value files own deviations.
 
 clusters:
 
@@ -123,3 +127,22 @@ clusters:
       clusterSecretStoreName: vault-backend
     monitoring:
       remoteWriteEndpoint: https://mimir.dev.example.com/api/v1/push
+
+  # ── Hub clusters managing themselves ───────────────────────────────────────
+  # Hub clusters can be listed as regular cluster entries using
+  # https://kubernetes.default.svc so ArgoCD manages their own platform
+  # components through the same pipeline as managed clusters.
+  # Uncomment to activate.
+
+  # - name: hub-prod-a
+  #   hub: prod-a
+  #   environment: production
+  #   region: us-east
+  #   server: https://kubernetes.default.svc   # in-cluster — the hub itself
+  #   groups:
+  #     - all
+  #   vault:
+  #     server: https://vault.prod-a.example.com
+  #     clusterSecretStoreName: vault-backend
+  #   monitoring:
+  #     remoteWriteEndpoint: https://mimir.prod-a.example.com/api/v1/push

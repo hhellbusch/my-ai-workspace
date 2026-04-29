@@ -1,0 +1,71 @@
+{{- /*
+  hub-clusters / appproject.yaml
+  ════════════════════════════════
+
+  Generates one ArgoCD AppProject per managed cluster when appProject.enabled is true.
+
+  Why per-cluster AppProjects?
+  ──────────────────────────────
+  A single shared AppProject (e.g. "default") provides no destination isolation:
+  a misconfigured Application spec could point at the wrong cluster.  Per-cluster
+  AppProjects scope destinations to exactly one cluster's API server, so ArgoCD
+  will refuse to sync any Application in that project to any other destination.
+
+  Audit boundary:
+    - Every Application for cluster X belongs to project X
+    - ArgoCD RBAC can grant team-level access to project X only
+    - Audit logs are naturally partitioned by cluster
+    - Source restrictions prevent pulling from untrusted repositories
+
+  Applications reference spec.project: <clusterName>.
+  When appProject.enabled is false, Applications fall back to spec.project: default
+  and no AppProjects are generated.
+
+*/ -}}
+
+{{- if $.Values.appProject.enabled -}}
+{{- $currentHub := .Values.currentHub | required "currentHub is required — set via helm.parameters in the hub Application" -}}
+
+{{- range .Values.clusters -}}
+{{- if eq .hub $currentHub -}}
+{{- $clusterEntry := . -}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.argocd.namespace }}
+  labels:
+    managed-by: hub-clusters
+    hub: {{ $currentHub }}
+    cluster: {{ .name }}
+    env: {{ .environment | default "unknown" }}
+spec:
+  description: "Platform components for {{ .name }} ({{ .environment | default "unknown" }}, hub: {{ $currentHub }})"
+
+  # Source repositories — Applications in this project may only use these repos.
+  # Override via appProject.sourceRepos in values.
+  sourceRepos:
+    {{- $.Values.appProject.sourceRepos | toYaml | nindent 4 }}
+
+  # Destination is scoped to exactly this cluster.
+  # No Application in this project can target any other cluster.
+  destinations:
+    - server: {{ .server }}
+      namespace: "*"
+
+  # Cluster-scoped resources this project is allowed to manage.
+  clusterResourceWhitelist:
+    {{- $.Values.appProject.clusterResourceWhitelist | toYaml | nindent 4 }}
+
+  {{- if $.Values.appProject.namespaceResourceWhitelist }}
+  namespaceResourceWhitelist:
+    {{- $.Values.appProject.namespaceResourceWhitelist | toYaml | nindent 4 }}
+  {{- end }}
+  {{- if $.Values.appProject.roles }}
+  roles:
+    {{- $.Values.appProject.roles | toYaml | nindent 4 }}
+  {{- end }}
+{{ end -}}
+{{ end -}}
+{{- end }}

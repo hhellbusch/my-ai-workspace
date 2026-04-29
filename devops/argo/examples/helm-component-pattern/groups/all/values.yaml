@@ -3,35 +3,26 @@
 #
 # Key convention: component-all (component-<groupName>)
 #
-# This file defines the canonical list of available components and their
-# defaults.  Components disabled here (enabled: false) are off by default
-# for every cluster; a more specific group or cluster component can enable them.
+# This file ENABLES components and provides their value overrides.
+# path, syncWave, and description are defined in componentRegistry (values.yaml) —
+# do NOT duplicate them here.  Only override them here if a specific group needs
+# a non-standard path or wave.
 #
-# Operator + instance split pattern:
-#   Operators that need separate installation and configuration are split into
-#   two app entries using the `path` field:
-#     <name>-operator   path: components/<name>/operator   syncWave: "0"
-#     <name>-instance   path: components/<name>/instance   syncWave: "5"
-#
-#   The operator is installed in sync wave 0; the instance CR is applied in
-#   wave 5 after the operator's CRDs are registered.  See docs/operator-management.md.
+# Operator + instance split:
+#   For operators that need separate OLM installation and CR configuration,
+#   two app entries are defined (e.g. nmstate-operator + nmstate-instance).
+#   Ordering is handled by syncWave in the registry, not in this file.
 #
 # Loaded first by hub-clusters — lowest priority in the merge chain.
 
 component-all:
   apps:
     # ── NMState: operator + instance split ─────────────────────────────────────
-    # The operator half wraps operators-installer (redhat-cop/helm-charts) for
-    # version-pinned, InstallPlan-aware OLM installation.
-    # The instance half creates the NMState CR after the operator is ready.
     nmstate-operator:
       enabled: true
-      path: components/nmstate/operator
-      syncWave: "0"
       # operators-installer subchart configuration.
-      # Override channel / installPlanApproval / csv in virt-enabled group or
-      # cluster values files.  The `operators:` list is replaced wholesale when
-      # overridden — see docs/operator-management.md for version-pinning workflow.
+      # Note: overriding operators-installer.operators replaces the entire list
+      # (list merge limitation — see docs/operator-management.md).
       operators-installer:
         operators:
           - name: kubernetes-nmstate-operator
@@ -40,7 +31,7 @@ component-all:
             namespace: openshift-nmstate
             channel: stable
             installPlanApproval: Automatic
-            csv: ""     # set to pin, e.g. "kubernetes-nmstate-operator.4.16.2"
+            csv: ""     # set to pin version, e.g. "kubernetes-nmstate-operator.4.16.2"
         operatorGroups:
           - name: openshift-nmstate
             createNamespace: true
@@ -48,15 +39,10 @@ component-all:
 
     nmstate-instance:
       enabled: true
-      path: components/nmstate/instance
-      syncWave: "5"
       namespace: openshift-nmstate
 
-    # ── cert-manager: flat pattern (simple operator, no instance CR needed) ────
-    # Kept as the flat pattern example — a single Application manages the full
-    # operator lifecycle.  Appropriate when the operator has no custom CR to configure
-    # separately (cert-manager is configured via CertificateRequest / Issuer resources
-    # created by application teams, not platform admins).
+    # ── cert-manager: flat pattern ──────────────────────────────────────────────
+    # Single Application manages the full operator lifecycle.
     cert-manager:
       enabled: true
       channel: stable-v1
@@ -67,11 +53,9 @@ component-all:
           memory: 128Mi
           cpu: 50m
 
-    # ── OpenShift Virtualization: disabled by default, enabled by virt-enabled group
+    # ── OpenShift Virtualization: disabled by default ───────────────────────────
     kubevirt-hyperconverged:
       enabled: false
-      path: components/kubevirt-hyperconverged/operator
-      syncWave: "0"
       operators-installer:
         operators:
           - name: kubevirt-hyperconverged

@@ -1,4 +1,5 @@
-# Chart defaults — all override-able by the hub Application's helm parameters/valueFiles.
+# hub-clusters chart defaults
+# All values are override-able by the hub Application's helm parameters / valueFiles.
 
 # currentHub must be overridden by the hub Application.
 # It selects which clusters from clusters.yaml are managed by this Argo CD instance.
@@ -6,7 +7,6 @@ currentHub: ""   # required — set via helm.parameters in the hub Application
 
 argocd:
   namespace: openshift-gitops
-  project: default
 
 source:
   repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
@@ -20,3 +20,103 @@ destination:
 # clusters: is populated by clusters.yaml loaded as a valueFile.
 # Do not define it here.
 clusters: []
+
+# ── Component registry ──────────────────────────────────────────────────────────
+#
+# The canonical list of components that may be deployed across the fleet.
+# Defines structural defaults for each component (path, syncWave, syncPolicy).
+#
+# ENFORCES KNOWN-GOOD APPS: the template iterates over this registry, not over
+# the group/cluster value files. An app key in a group file that is NOT in this
+# registry will never generate an Application — preventing phantom Applications
+# from typos or misconfiguration.
+#
+# Group/cluster value files set:
+#   enabled: true/false
+#   Any value overrides the component chart needs (channel, csv, etc.)
+#
+# The registry sets:
+#   path:        Git path for the component (required; overridden if group file sets path:)
+#   syncWave:    ArgoCD sync-wave annotation (optional; overridden per component in group)
+#   description: Human-readable label (used in AppProject description, audit logs)
+#   syncPolicy:  Per-component syncPolicy fragment; merged over defaults.syncPolicy.
+#                Use to disable prune for sensitive components (e.g. cert-manager).
+#
+# All registry fields may still be overridden at the group or cluster layer — the
+# registry provides the lowest-priority defaults, not hard constraints.
+componentRegistry:
+  nmstate-operator:
+    path: components/nmstate/operator
+    syncWave: "0"
+    description: "NMState Operator installation via OLM (operators-installer)"
+
+  nmstate-instance:
+    path: components/nmstate/instance
+    syncWave: "5"
+    description: "NMState CR — activates the NMState DaemonSet after operator install"
+
+  cert-manager:
+    path: components/cert-manager
+    description: "cert-manager Operator"
+    # cert-manager manages live certificate resources — disabling prune avoids
+    # accidental deletion of in-use Certificates during a misconfigured sync.
+    syncPolicy:
+      automated:
+        prune: false
+
+  kubevirt-hyperconverged:
+    path: components/kubevirt-hyperconverged/operator
+    syncWave: "0"
+    description: "OpenShift Virtualization Operator"
+
+# ── ArgoCD sync defaults ────────────────────────────────────────────────────────
+#
+# Applied to every generated Application's syncPolicy.
+# Individual components may override via:
+#   1. componentRegistry.<name>.syncPolicy  (structural default per component)
+#   2. Group / cluster values' syncPolicy:  (highest priority)
+#
+# Note: syncOptions is a list — any layer that sets it replaces the entire list
+# (mustMergeOverwrite does not concatenate lists).  Append extra options at the
+# cluster layer by repeating the full list.
+defaults:
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m
+
+# ── AppProject ──────────────────────────────────────────────────────────────────
+#
+# When enabled, one AppProject is generated per managed cluster (not per hub).
+# Each project's destinations are scoped to exactly that cluster's API server —
+# providing a clear audit boundary: a misconfigured Application cannot deploy to
+# the wrong cluster because its project's destination whitelist prevents it.
+#
+# Applications reference spec.project: <clusterName> instead of a shared project.
+#
+# sourceRepos should list ONLY the repo(s) that contain platform component charts.
+# Wildcard "*" disables source restrictions — NOT recommended for production.
+appProject:
+  enabled: true
+  # Source repositories allowed for all Applications in this project.
+  sourceRepos:
+    - "https://github.com/YOUR-ORG/YOUR-REPO.git"
+  # Cluster-scoped resource kinds this project is permitted to manage.
+  # Restrict to specific kinds in high-security environments.
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  # Namespace-scoped resource whitelist. Empty list = all namespace resources allowed.
+  namespaceResourceWhitelist: []
+  # Optional ArgoCD RBAC roles scoped to this project.
+  # See: https://argo-cd.readthedocs.io/en/stable/user-guide/projects/#project-roles
+  roles: []

@@ -48,16 +48,34 @@
             groups: [all, edge-sno]                              # plain strings
             groups: [all, { name: edge-sno, targetRevision: rc }]  # with override
 
+  ── Component registry ────────────────────────────────────────────────────────
+
+  Step 4  Iterate over componentRegistry (not over the merged app values).
+          Only components listed in componentRegistry can generate Applications.
+          This prevents phantom Applications from typos or ad-hoc group entries.
+
+          For each registry entry:
+            a. Look up the resolved app values from Step 1–3 ($apps[appName]).
+            b. Skip if enabled == false (or not set at all and no registry default).
+            c. Merge layers (lowest → highest priority):
+                 i.   defaults.syncPolicy               (global baseline)
+                 ii.  registry entry                    (structural default)
+                 iii. resolved app values               (group/cluster overrides)
+               Merged result drives path, syncWave, syncPolicy, values injection.
+
   path — optional explicit component path:
-          Each app entry may set path: components/nmstate/operator to override the
-          default path resolution (componentsBasePath/appName).  Use this when an
-          operator and its instance configuration live together under one component
-          folder: components/<name>/operator and components/<name>/instance.
+          Registry sets the canonical path.  A group or cluster can override it.
+          Supports sub-paths: components/nmstate/operator, components/nmstate/instance.
 
   syncWave — optional ArgoCD sync wave (string "0", "5", "10" etc.):
           Set argocd.argoproj.io/sync-wave on the generated Application.  Use to
           order installation: operator installs in wave 0, instance CRs in wave 5
           (after the operator's CRDs are registered).  Not set if omitted.
+
+  syncPolicy — per-component ArgoCD sync policy:
+          The global default (values.defaults.syncPolicy) is merged with the
+          component's registry syncPolicy and then with any group/cluster override.
+          Use to disable prune for sensitive components (cert-manager, etc.).
 
   sourceType — Kustomize or Helm per component:
           Each app entry may set sourceType: helm (default) or sourceType: kustomize.
@@ -72,15 +90,12 @@
           components, use ArgoCD multi-source (ArgoCD 2.6+) to supply a separate
           cluster-specific patch source alongside the Kustomize component path.
 
-  Step 4  Generate Applications.
-          For each app where enabled ≠ false, emit an Application whose
-          spec.source.helm.values contains:
-            cluster:     the fully-populated cluster block (from clusters.yaml)
-            <app-keys>:  merged component values (from groups + cluster override)
+  ── AppProject ────────────────────────────────────────────────────────────────
 
-  The component chart receives .Values.cluster.<field> for environment-aware
-  behaviour (e.g. choosing a Vault path, selecting a monitoring endpoint) without
-  any per-component duplication of cluster metadata.
+  When appProject.enabled is true, each Application references
+  spec.project: <clusterName>.  The corresponding AppProject is generated in
+  appproject.yaml with destinations scoped to exactly that cluster's server.
+  When disabled, spec.project: default is used (no audit boundary isolation).
 
   ── enabled: false semantics ─────────────────────────────────────────────────
 
@@ -90,6 +105,7 @@
 */ -}}
 
 {{- $currentHub := .Values.currentHub | required "currentHub is required — set via helm.parameters in the hub Application" -}}
+{{- $registry   := .Values.componentRegistry | default dict -}}
 
 {{- range .Values.clusters -}}
 {{- if eq .hub $currentHub -}}
@@ -154,21 +170,41 @@
 {{- $clusterBlock  := $resolved.cluster | default dict -}}
 {{- $clusterServer := $clusterBlock.server | default $.Values.destination.server -}}
 
-{{- /* ── Step 4: Generate one Application per enabled app ─────────────────────── */ -}}
-{{- range $appName, $appVals := $apps -}}
-{{- $enabled := ne (toString (get $appVals "enabled")) "false" -}}
-{{- if and $appVals $enabled -}}
-{{- $sourceType := get $appVals "sourceType" | default "helm" -}}
-{{- /* path — explicit override or derive from componentsBasePath/appName.
-       Use this to support sub-paths such as components/nmstate/operator or
-       components/nmstate/instance, allowing operator and instance configs to
-       live together under one component folder. */ -}}
-{{- $appPath := get $appVals "path" | default (printf "%s/%s" $.Values.source.componentsBasePath $appName) -}}
-{{- /* syncWave — optional ArgoCD sync wave annotation (string, e.g. "0", "5", "10").
-       Use to order operator installation before instance configuration:
-         operator app  → syncWave: "0"
-         instance app  → syncWave: "5" */ -}}
-{{- $syncWave := get $appVals "syncWave" | default "" -}}
+{{- /* ── Step 4: Generate one Application per enabled registry component ────── */ -}}
+{{- /* Iterates over componentRegistry — only known components generate Apps.    */ -}}
+{{- /* An app key in a group file NOT listed in componentRegistry is silently    */ -}}
+{{- /* ignored, preventing phantom Applications from typos.                      */ -}}
+{{- range $appName, $registryEntry := $registry -}}
+{{- $appVals  := get $apps $appName | default dict -}}
+{{- $enabled  := ne (toString (get $appVals "enabled")) "false" -}}
+{{- /* An app with no group/cluster entry at all defaults to disabled. */ -}}
+{{- $hasEntry := gt (len $appVals) 0 -}}
+{{- if and $hasEntry $enabled -}}
+
+{{- /* ── Merge layers (lowest → highest priority): ─────────────────────────── */ -}}
+{{- /*   a. defaults.syncPolicy (global baseline, kept separate for syncPolicy)  */ -}}
+{{- /*   b. registry entry     (structural defaults: path, syncWave, etc.)       */ -}}
+{{- /*   c. resolved app values (group + cluster overrides)                      */ -}}
+{{- $finalVals := mustMergeOverwrite (deepCopy $registryEntry) (deepCopy $appVals) -}}
+
+{{- $sourceType := get $finalVals "sourceType" | default "helm" -}}
+{{- $appPath    := get $finalVals "path" | default (printf "%s/%s" $.Values.source.componentsBasePath $appName) -}}
+{{- $syncWave   := get $finalVals "syncWave" | default "" -}}
+
+{{- /* ── Resolve syncPolicy: global defaults → registry override → app override */ -}}
+{{- $syncPolicy := deepCopy ($.Values.defaults.syncPolicy | default dict) -}}
+{{- if $registryEntry.syncPolicy -}}
+  {{- $syncPolicy = mustMergeOverwrite $syncPolicy (deepCopy $registryEntry.syncPolicy) -}}
+{{- end -}}
+{{- if $appVals.syncPolicy -}}
+  {{- $syncPolicy = mustMergeOverwrite $syncPolicy (deepCopy $appVals.syncPolicy) -}}
+{{- end -}}
+
+{{- /* ── AppProject reference ─────────────────────────────────────────────────*/ -}}
+{{- $projectName := $clusterName -}}
+{{- if not $.Values.appProject.enabled -}}
+  {{- $projectName = "default" -}}
+{{- end -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -187,10 +223,11 @@ metadata:
     argocd.argoproj.io/sync-wave: {{ $syncWave | quote }}
     {{- end }}
     hub-clusters/component-path: {{ $appPath | quote }}
+    hub-clusters/registry-description: {{ $registryEntry.description | default "" | quote }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: {{ $.Values.argocd.project }}
+  project: {{ $projectName }}
 
   source:
     repoURL: {{ $.Values.source.repoURL }}
@@ -232,26 +269,15 @@ spec:
       values: |
         cluster:
           {{- $clusterMeta | toYaml | nindent 10 }}
-        {{- omit $appVals "enabled" "sourceType" "path" "syncWave" | toYaml | nindent 8 }}
+        {{- omit $finalVals "enabled" "sourceType" "path" "syncWave" "syncPolicy" | toYaml | nindent 8 }}
     {{- end }}
 
   destination:
     server: {{ $clusterServer }}
-    namespace: {{ get $appVals "namespace" | default $appName }}
+    namespace: {{ get $finalVals "namespace" | default $appName }}
 
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-      - ServerSideApply=true
-    retry:
-      limit: 3
-      backoff:
-        duration: 10s
-        factor: 2
-        maxDuration: 3m
+    {{- $syncPolicy | toYaml | nindent 4 }}
 {{- end -}}
 {{- end -}}
 
