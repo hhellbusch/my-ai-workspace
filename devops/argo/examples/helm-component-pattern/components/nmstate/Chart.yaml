@@ -1,5 +1,0 @@
-apiVersion: v2
-name: nmstate
-description: Installs the NMState Operator via OLM Subscription.
-version: 0.1.0
-type: application

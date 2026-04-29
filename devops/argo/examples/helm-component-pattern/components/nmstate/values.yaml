@@ -1,5 +1,0 @@
-# Component defaults — overridden by the values baked into the Argo CD Application
-# by the cluster-apps chart at render time.
-channel: stable
-namespace: openshift-nmstate
-installPlanApproval: Automatic
