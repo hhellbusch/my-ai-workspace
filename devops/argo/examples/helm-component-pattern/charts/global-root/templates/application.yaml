@@ -1,0 +1,144 @@
+{{- /*
+  global-root / application.yaml
+  ════════════════════════════════
+
+  Generates one Argo CD Application per enabled component for every cluster
+  that belongs to the current hub.
+
+  ── Multi-hub filtering ───────────────────────────────────────────────────────
+
+  .Values.currentHub is set by the hub Application's helm.parameters.
+  Only clusters where cluster.hub == currentHub are rendered.  One instance
+  of this chart runs on each hub cluster, scoped to its own environment.
+
+  ── Resolution pipeline ───────────────────────────────────────────────────────
+
+  For each hub-matched cluster:
+
+  Step 1  Read groups: from clusters.yaml for this cluster.
+          Merge component-<groupName> keys in declaration order using
+          mustMergeOverwrite.  Groups listed later override groups listed
+          earlier — the all group is always listed first (lowest priority).
+
+  Step 2  Merge component-<clusterName> last.
+          The cluster-specific component (from clusters/<name>/values.yaml)
+          is always the highest-priority override layer.
+
+  Step 3  Inject cluster metadata from clusters.yaml.
+          Build the cluster: block from the clusters.yaml entry — name, server,
+          environment, region, and any shared attributes (vault, monitoring, etc.).
+          This overwrites any cluster: key that may exist in the component values,
+          making clusters.yaml the single authoritative source for cluster identity.
+
+  Step 4  Generate Applications.
+          For each app where enabled ≠ false, emit an Application whose
+          spec.source.helm.values contains:
+            cluster:     the fully-populated cluster block (from clusters.yaml)
+            <app-keys>:  merged component values (from groups + cluster override)
+
+  The component chart receives .Values.cluster.<field> for environment-aware
+  behaviour (e.g. choosing a Vault path, selecting a monitoring endpoint) without
+  any per-component duplication of cluster metadata.
+
+  ── enabled: false semantics ─────────────────────────────────────────────────
+
+  toString comparison (ne ... "false") correctly handles the Helm `default`
+  function quirk where `default true false` returns true.
+
+*/ -}}
+
+{{- $currentHub := .Values.currentHub | required "currentHub is required — set via helm.parameters in the hub Application" -}}
+
+{{- range .Values.clusters -}}
+{{- if eq .hub $currentHub -}}
+
+{{- /* ── Capture the full clusters.yaml entry for this cluster ─────────────── */ -}}
+{{- $clusterEntry := . -}}
+{{- $clusterName  := .name -}}
+{{- $groups       := .groups | default list -}}
+
+{{- /* ── Step 1: Merge group components in declaration order ────────────────── */ -}}
+{{- $resolved := dict -}}
+{{- range $groups -}}
+  {{- $key      := printf "component-%s" . -}}
+  {{- $groupVal := index $.Values $key | default dict -}}
+  {{- if kindIs "map" $groupVal -}}
+    {{- $resolved = mustMergeOverwrite $resolved (deepCopy $groupVal) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* ── Step 2: Merge cluster-specific component overrides ─────────────────── */ -}}
+{{- $clusterKey := printf "component-%s" $clusterName -}}
+{{- $clusterVal := index $.Values $clusterKey | default dict -}}
+{{- if kindIs "map" $clusterVal -}}
+  {{- $resolved = mustMergeOverwrite $resolved (deepCopy $clusterVal) -}}
+{{- end -}}
+
+{{- /* ── Step 3: Build and inject the cluster metadata block ─────────────────── */ -}}
+{{- /* Strip groups: from the inventory entry — not needed by component charts  */ -}}
+{{- $clusterMeta := omit $clusterEntry "groups" -}}
+{{- /* Overwrite any cluster: key in resolved — clusters.yaml is authoritative  */ -}}
+{{- $_ := set $resolved "cluster" $clusterMeta -}}
+
+{{- $apps          := $resolved.apps   | default dict -}}
+{{- $clusterBlock  := $resolved.cluster | default dict -}}
+{{- $clusterServer := $clusterBlock.server | default $.Values.destination.server -}}
+
+{{- /* ── Step 4: Generate one Application per enabled app ─────────────────────── */ -}}
+{{- range $appName, $appVals := $apps -}}
+{{- $enabled := ne (toString (get $appVals "enabled")) "false" -}}
+{{- if and $appVals $enabled -}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $clusterName }}-{{ $appName }}
+  namespace: {{ $.Values.argocd.namespace }}
+  labels:
+    managed-by: global-root
+    hub: {{ $currentHub }}
+    cluster: {{ $clusterName }}
+    app: {{ $appName }}
+    env: {{ $clusterBlock.environment | default "unknown" }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ $.Values.argocd.project }}
+
+  source:
+    repoURL: {{ $.Values.source.repoURL }}
+    targetRevision: {{ $.Values.source.targetRevision }}
+    path: {{ $.Values.source.componentsBasePath }}/{{ $appName }}
+    helm:
+      # Fully resolved values — Argo CD receives a single flat block.
+      #
+      # cluster: is populated from clusters.yaml (not from component values files).
+      # Component charts use .Values.cluster.environment, .Values.cluster.vault,
+      # etc. for environment-specific behaviour without any per-component repetition.
+      values: |
+        cluster:
+          {{- $clusterMeta | toYaml | nindent 10 }}
+        {{- omit $appVals "enabled" | toYaml | nindent 8 }}
+
+  destination:
+    server: {{ $clusterServer }}
+    namespace: {{ get $appVals "namespace" | default $appName }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m
+{{- end -}}
+{{- end -}}
+
+{{- end -}}
+{{- end -}}

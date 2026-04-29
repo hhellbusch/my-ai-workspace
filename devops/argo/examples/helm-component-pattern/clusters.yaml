@@ -1,0 +1,80 @@
+# clusters.yaml — central cluster inventory
+#
+# Single authoritative source for:
+#   - Which clusters exist
+#   - Which hub manages each cluster (hub: field — must match the currentHub
+#     parameter on each hub's global-root Application)
+#   - Which groups the cluster belongs to (drives mustMergeOverwrite order)
+#   - Shared cluster attributes pushed into every component's cluster: block
+#
+# Component-level overrides (e.g. installPlanApproval: Manual for cert-manager)
+# belong in clusters/<name>/values.yaml as component-<clusterName>.apps overrides.
+# This file owns identity and topology; the cluster values files own deviations.
+#
+# clusters: is loaded by the global-root chart via helm valueFiles.
+# It is NOT loaded by the cluster-apps chart (the render-script approach).
+
+clusters:
+
+  # ── prod-a hub ─────────────────────────────────────────────────────────────
+
+  - name: site-dc1
+    hub: prod-a
+    environment: production
+    region: us-east
+    server: https://api.site-dc1.example.com:6443
+    groups:
+      - all
+      - virt-enabled
+    # Shared attributes — pushed into every component Application's cluster: block.
+    # Component charts use .Values.cluster.vault, .Values.cluster.monitoring, etc.
+    vault:
+      server: https://vault.prod-a.example.com
+      clusterSecretStoreName: vault-backend
+    monitoring:
+      remoteWriteEndpoint: https://mimir.prod-a.example.com/api/v1/push
+
+  - name: site-edge-1
+    hub: prod-a
+    environment: production
+    region: edge-us-east
+    server: https://api.site-edge-1.example.com:6443
+    groups:
+      - all
+      - edge-sno
+    vault:
+      server: https://vault.prod-a.example.com
+      clusterSecretStoreName: vault-backend
+    monitoring:
+      remoteWriteEndpoint: https://mimir.prod-a.example.com/api/v1/push
+
+  # ── prod-b hub ─────────────────────────────────────────────────────────────
+
+  - name: site-dc2
+    hub: prod-b
+    environment: production
+    region: us-west
+    server: https://api.site-dc2.example.com:6443
+    groups:
+      - all
+      - virt-enabled
+    vault:
+      server: https://vault.prod-b.example.com
+      clusterSecretStoreName: vault-backend
+    monitoring:
+      remoteWriteEndpoint: https://mimir.prod-b.example.com/api/v1/push
+
+  # ── dev hub ────────────────────────────────────────────────────────────────
+
+  - name: site-dev-1
+    hub: dev
+    environment: development
+    region: us-east
+    server: https://api.site-dev-1.example.com:6443
+    groups:
+      - all
+    vault:
+      server: https://vault.dev.example.com
+      clusterSecretStoreName: vault-backend
+    monitoring:
+      remoteWriteEndpoint: https://mimir.dev.example.com/api/v1/push

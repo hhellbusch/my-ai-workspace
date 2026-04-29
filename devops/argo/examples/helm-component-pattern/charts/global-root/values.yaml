@@ -1,0 +1,22 @@
+# Chart defaults — all override-able by the hub Application's helm parameters/valueFiles.
+
+# currentHub must be overridden by the hub Application.
+# It selects which clusters from clusters.yaml are managed by this Argo CD instance.
+currentHub: ""   # required — set via helm.parameters in the hub Application
+
+argocd:
+  namespace: openshift-gitops
+  project: default
+
+source:
+  repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+  targetRevision: main
+  componentsBasePath: devops/argo/examples/helm-component-pattern/components
+
+destination:
+  # Fallback server — overridden per cluster by cluster.server from clusters.yaml.
+  server: https://kubernetes.default.svc
+
+# clusters: is populated by clusters.yaml loaded as a valueFile.
+# Do not define it here.
+clusters: []

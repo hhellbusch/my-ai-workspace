@@ -1,8 +1,8 @@
 # Helm component pattern — `mustMergeOverwrite` with named component keys
 
-A GitOps framework for generating Argo CD Applications across a fleet of clusters. Configuration is composed from reusable groups using Helm's `mustMergeOverwrite`, and the resolved Applications are committed to Git so every change is visible as a diff before Argo CD applies it.
+A GitOps framework for generating Argo CD Applications across a fleet of clusters. Configuration is composed from reusable groups using Helm's `mustMergeOverwrite`. Two bootstrap approaches are documented: a pre-render workflow (committed output) and a live Argo CD render via the `global-root` chart with per-hub filtering.
 
-This is a different approach from the [ApplicationSet-based framework](../framework/README.md) in this repo. The key architectural distinction: **resolution happens offline in Helm, not at Argo CD sync time**. Argo CD receives pre-rendered Application objects with fully-resolved values baked in.
+This is a different approach from the [ApplicationSet-based framework](../framework/README.md) in this repo.
 
 ---
 
@@ -10,30 +10,35 @@ This is a different approach from the [ApplicationSet-based framework](../framew
 
 ```
 helm-component-pattern/
-├── charts/cluster-apps/       # Helm chart — generates Application objects
-│   └── templates/
-│       └── application.yaml   # mustMergeOverwrite resolution + Application template
+├── clusters.yaml              # Central cluster inventory: hub, groups, server, shared attributes
+├── charts/
+│   ├── cluster-apps/          # Approach A: per-cluster chart for pre-render workflow
+│   │   └── templates/application.yaml
+│   └── global-root/           # Approach B: hub-aware chart — live render, no script needed
+│       └── templates/application.yaml
 ├── components/                # Individual platform component charts (the deployables)
 │   ├── nmstate/
 │   └── cert-manager/
 ├── groups/                    # Composable cluster profiles
-│   ├── all/values.yaml        # component-all:  fleet baseline (lowest priority)
+│   ├── all/values.yaml        # component-all: fleet baseline (lowest priority)
 │   ├── virt-enabled/values.yaml  # component-virt-enabled: enables OCP Virt
 │   └── edge-sno/values.yaml   # component-edge-sno: resource tuning for SNO
-├── clusters/                  # One directory per cluster
+├── clusters/                  # One directory per cluster — component overrides only
 │   ├── site-dc1/
-│   │   ├── values.yaml        # declares groups: + component-site-dc1: overrides
-│   │   └── rendered/
-│   │       └── applications.yaml   # pre-rendered Applications — committed to Git
+│   │   ├── values.yaml        # component-site-dc1: app overrides (no cluster: block)
+│   │   └── rendered/          # Approach A only: pre-rendered Applications
+│   │       └── applications.yaml
 │   └── site-edge-1/
 │       ├── values.yaml
 │       └── rendered/
 │           └── applications.yaml
-├── hub/
-│   ├── option-a-applications.yaml    # explicit Application per cluster (any Argo CD version)
-│   └── option-b-applicationset.yaml  # ApplicationSet auto-discovery (Argo CD 2.x+)
+├── hub/                       # Bootstrap Applications — one per hub or approach
+│   ├── option-a-applications.yaml    # Approach A: explicit Application per cluster
+│   ├── option-b-applicationset.yaml  # Approach A: ApplicationSet auto-discovery
+│   ├── prod-a-global-root.yaml       # Approach B: global-root for prod-a hub
+│   └── dev-global-root.yaml          # Approach B: global-root for dev hub
 └── scripts/
-    └── render-clusters.sh     # Reads groups from cluster values, runs helm template
+    └── render-clusters.sh     # Approach A only: offline render → clusters/*/rendered/
 ```
 
 ---
@@ -132,6 +137,149 @@ Result — three Applications generated:
 | `site-dc1-kubevirt-hyperconverged` | enabled: true (virt-enabled group) |
 
 **site-edge-1** (groups: `all`, `edge-sno`) resolves to two Applications: `nmstate` and `cert-manager` with reduced resource requests. `kubevirt-hyperconverged` is absent because `component-all` sets `enabled: false` and `edge-sno` does not override it.
+
+---
+
+## Approach B — global-root chart with multi-hub filtering and `clusters.yaml`
+
+This approach eliminates the render script entirely. Argo CD calls `helm template` on the `charts/global-root/` chart at sync time. The chart reads `clusters.yaml` (the single authoritative cluster inventory), filters by the `currentHub` parameter, and generates all component Applications live. No output is pre-committed to Git.
+
+### `clusters.yaml` — the single source of truth for cluster identity
+
+```yaml
+# clusters.yaml
+clusters:
+  - name: site-dc1
+    hub: prod-a               # which Argo CD hub instance manages this cluster
+    environment: production
+    region: us-east
+    server: https://api.site-dc1.example.com:6443
+    groups:                   # mustMergeOverwrite order (lowest → highest priority)
+      - all
+      - virt-enabled
+    # Shared attributes — injected into every component Application's cluster: block
+    vault:
+      server: https://vault.prod-a.example.com
+      clusterSecretStoreName: vault-backend
+    monitoring:
+      remoteWriteEndpoint: https://mimir.prod-a.example.com/api/v1/push
+```
+
+**What lives in `clusters.yaml`:** cluster identity (name, hub, server, environment, region), group membership, and shared operational attributes (vault endpoints, monitoring configuration, pull-secret references, etc.).
+
+**What does NOT live in `clusters.yaml`:** component-level configuration (operator channels, resource limits, installPlanApproval). Those remain in `groups/` and `clusters/<name>/values.yaml`.
+
+### The `cluster:` block in every component
+
+The global-root chart strips `groups:` from each `clusters.yaml` entry and injects the rest as the `cluster:` block in every generated Application's `spec.source.helm.values`:
+
+```yaml
+# Generated Application for site-dc1-cert-manager
+spec:
+  source:
+    helm:
+      values: |
+        cluster:               # ← from clusters.yaml, not from cert-manager values
+          name: site-dc1
+          hub: prod-a
+          environment: production
+          vault:
+            server: https://vault.prod-a.example.com
+            clusterSecretStoreName: vault-backend
+          monitoring:
+            remoteWriteEndpoint: https://mimir.prod-a.example.com/api/v1/push
+        channel: stable-v1     # ← from group/cluster component merge
+        installPlanApproval: Manual
+```
+
+A component chart that needs the Vault endpoint uses `.Values.cluster.vault.server` — once, in its own template — rather than each cluster repeating this value per component. Shared attributes propagate automatically when updated in `clusters.yaml`.
+
+### Multi-hub architecture
+
+One `global-root` Application per hub. Each Application sets `currentHub` as a Helm parameter. The chart filters `clusters.yaml` to only the clusters where `hub == currentHub`:
+
+```
+Git repository (clusters.yaml + groups/ + clusters/)
+         │
+         ├── prod-a hub cluster (global-root-prod-a Application)
+         │     currentHub=prod-a → renders site-dc1, site-edge-1
+         │
+         ├── prod-b hub cluster (global-root-prod-b Application)
+         │     currentHub=prod-b → renders site-dc2
+         │
+         └── dev hub cluster (global-root-dev Application)
+               currentHub=dev → renders site-dev-1
+```
+
+All hubs read from the same Git source. A change to `groups/all/values.yaml` affects every cluster on every hub when each hub's Application next syncs. A change to `hub: prod-b` in `clusters.yaml` moves a cluster from one hub's scope to another — no changes required to the hub Applications themselves.
+
+### Cluster values files are now just overrides
+
+With `clusters.yaml` owning identity and group membership, `clusters/<name>/values.yaml` shrinks to contain only component-level deviations from group defaults:
+
+```yaml
+# clusters/site-dc1/values.yaml — entire file
+component-site-dc1:
+  apps:
+    cert-manager:
+      installPlanApproval: Manual   # production override
+```
+
+If a cluster has no deviations, the file can be empty or omitted entirely.
+
+### Hub Application structure
+
+```yaml
+# hub/prod-a-global-root.yaml
+spec:
+  source:
+    path: devops/argo/examples/helm-component-pattern/charts/global-root
+    helm:
+      parameters:
+        - name: currentHub
+          value: prod-a
+      valueFiles:
+        - ../../clusters.yaml           # inventory (loaded first)
+        - ../../groups/all/values.yaml
+        - ../../groups/virt-enabled/values.yaml
+        - ../../groups/edge-sno/values.yaml
+        - ../../clusters/site-dc1/values.yaml
+        - ../../clusters/site-edge-1/values.yaml
+```
+
+When adding a new cluster to prod-a:
+1. Add the entry to `clusters.yaml`
+2. Optionally add `clusters/<name>/values.yaml` for overrides
+3. Add the cluster's valueFiles entry to `hub/prod-a-global-root.yaml`
+4. Merge PR → Argo CD re-renders the chart, new Applications appear automatically
+
+### Approach A vs Approach B — when to choose each
+
+| | Approach A (render script + pre-rendered) | Approach B (global-root, live render) |
+|---|---|---|
+| Render timing | Offline — developer runs the script | Live — Argo CD renders at sync time |
+| Git diff on PR | Explicit — `clusters/*/rendered/` shows exact manifests | Implicit — must run `helm template` or use argocd-diff-preview to see output |
+| Argo CD version | Any | Any (no ApplicationSet required for global-root) |
+| Multi-hub support | Per-hub bootstrap files + rendered dirs per cluster | Native — `currentHub` parameter filters `clusters.yaml` |
+| `clusters.yaml` | Not required — cluster metadata in cluster values files | Required — single source of truth for cluster identity |
+| Cluster values file | `cluster:` block + `groups:` + app overrides | App overrides only (identity/groups live in `clusters.yaml`) |
+| Scale | Works; render script output grows with fleet | Scales naturally; chart handles any number of clusters |
+
+---
+
+## PR diff visibility with argocd-diff-preview
+
+Approach B trades explicit rendered output for a live render. To regain the "what exactly changes in the cluster?" answer on every PR, the recommended complement is **argocd-diff-preview** by dag-andersen.
+
+The tool spins up a temporary Argo CD instance, renders the current branch and the PR branch independently, and posts a desired-state-to-desired-state diff as a PR comment. Unlike a current-state diff, this shows only what the PR changes — no unrelated cluster drift, no pending reconciliations.
+
+**Running on OpenShift without cluster-admin:** deploy argocd-diff-preview into a dedicated namespace (e.g. `argocd-diff`) using a namespace-scoped Argo CD instance (the OpenShift GitOps operator supports this). CI uses only namespace-scoped credentials — no production Argo CD access required.
+
+See the library entry: [`library/argocd-diff-preview.md`](../../../../../library/argocd-diff-preview.md)
+
+Reference videos:
+- [https://www.youtube.com/watch?v=3aeP__qPSms](https://www.youtube.com/watch?v=3aeP__qPSms)
+- [https://www.youtube.com/watch?v=fcajag5di68](https://www.youtube.com/watch?v=fcajag5di68)
 
 ---
 

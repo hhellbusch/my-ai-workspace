@@ -1,0 +1,51 @@
+---
+# dev-global-root.yaml
+#
+# Bootstrap Application for the dev hub.
+# Apply once on the dev hub cluster.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: global-root-dev
+  namespace: openshift-gitops
+  labels:
+    managed-by: helm-component-pattern
+    hub: dev
+  annotations:
+    helm-component-pattern/clusters: "site-dev-1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
+    targetRevision: main
+    path: devops/argo/examples/helm-component-pattern/charts/global-root
+
+    helm:
+      parameters:
+        - name: currentHub
+          value: dev
+
+      ignoreMissingValueFiles: true
+      valueFiles:
+        - ../../clusters.yaml
+        - ../../groups/all/values.yaml
+        # dev hub only uses the all group — virt-enabled and edge-sno not loaded
+        # (ignoreMissingValueFiles would skip them anyway, but being explicit
+        #  reduces unnecessary file lookups at sync time)
+        - ../../clusters/site-dev-1/values.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openshift-gitops
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true
