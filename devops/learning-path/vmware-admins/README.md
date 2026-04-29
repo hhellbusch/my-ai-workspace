@@ -396,29 +396,33 @@ The shift from vSAN/VMFS datastores to the Kubernetes storage model is as signif
 
   Directly relevant entries for this learning path: `advanced-cluster-management`, `nmstate`, `metallb-operator`, `openshift-data-foundation-operator`, `virtualization-operator`, `topology-aware-lifecycle-manager-operator`, `external-secrets-operator`, `sealed-secrets-operator`, `loki-operator`, `openshift-api-for-data-protection-operator`, `openshift-sriov-network-operator`. Start here instead of writing operator YAML from scratch.
 
-  **Helm variant — `mustMergeOverwrite` for cascading group values**
+  **Helm variant — `mustMergeOverwrite` with named component keys**
 
-  The same `components/groups/clusters` concept can be implemented with Helm instead of Kustomize. The app-of-apps chart renders cluster Applications from values files; groups are separate values files that are merged in order. The key Helm behaviour to enable cascading group composition is `mustMergeOverwrite` — it deep-merges maps (dictionaries) rather than replacing them, so group values accumulate rather than override:
+  The same `components/groups/clusters` concept can be implemented with Helm instead of Kustomize. Each values file — whether a group or a cluster — defines its configuration under a key named `component-<groupName>` or `component-<clusterName>`. This namespacing is the resolution mechanism: when all values files are merged with `mustMergeOverwrite`, each component's key is distinct and Helm's deep map merge accumulates them without collision. The Argo CD Application Helm template then explicitly reads each component key and sets the resolved values directly on the Application YAML.
 
   ```yaml
-  # groups/all/values.yaml  — base defaults for every cluster
-  operators:
-    nmstate: {enabled: true, channel: stable}
+  # groups/all/values.yaml
+  component-all:
+    operators:
+      nmstate: {enabled: true, channel: stable}
+      cert-manager: {enabled: true}
 
-  # groups/virt-enabled/values.yaml  — additive layer
-  operators:
-    kubevirt: {enabled: true, channel: stable}
+  # groups/virt-enabled/values.yaml
+  component-virt-enabled:
+    operators:
+      kubevirt: {enabled: true, channel: stable}
+      nmstate: {channel: stable-4.16}   # virt group overrides the channel
 
-  # clusters/site-dc1/values.yaml  — compose groups, add cluster-specific overrides
-  groups:
-    - all
-    - virt-enabled
-  clusterName: site-dc1
-  operators:
-    nmstate: {channel: stable-4.16}   # cluster-level override of the group default
+  # clusters/site-dc1/values.yaml
+  component-site-dc1:
+    clusterName: site-dc1
+    operators:
+      nmstate: {channel: stable-4.16}   # cluster-level pin, same result
   ```
 
-  When Helm merges these values files with `mustMergeOverwrite`, maps are deep-merged rather than replaced — `site-dc1` gets `nmstate` (from `all`) and `kubevirt` (from `virt-enabled`) with the channel override applied only where specified. This gives the same composability as Kustomize components without leaving the Helm values model.
+  The Helm template that generates Argo CD Application objects merges these component keys in order using `mustMergeOverwrite` and then explicitly sets the resolved values on each Application's `spec.source.helm.values` (or `parameters`). The Application YAML that Argo CD receives already has the fully-resolved configuration baked in — there is no further value resolution at sync time. This is the "app of app of apps" pattern: the parent chart generates Application objects whose own Helm values have been resolved by the parent chart's template logic before Argo CD ever sees them.
+
+  The naming convention (`component-<name>`) is not cosmetic — it is what prevents key collisions when Helm merges a cluster's values file with multiple group values files simultaneously, and it is what the template uses to iterate over resolved components to build each Application's final values.
 
   **Mono-repo vs multi-repo**: a single repo for all cluster config (simple, one PR spans all changes) vs separate repos per team or per environment (cleaner access control, more operational overhead). Most platform teams start with mono-repo and split when team count or access control requirements force it.
 
