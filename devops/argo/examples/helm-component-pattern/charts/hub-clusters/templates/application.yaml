@@ -38,6 +38,19 @@
           Use this to pin a cluster to a release branch or promote a canary cluster
           ahead of the rest of the fleet.
 
+  sourceType — Kustomize or Helm per component:
+          Each app entry may set sourceType: helm (default) or sourceType: kustomize.
+          Helm components receive the full mustMergeOverwrite value chain injected
+          into spec.source.helm.values (current behaviour).
+          Kustomize components receive a spec.source.kustomize block with:
+            commonLabels:   cluster identity fields (name, environment, region, hub)
+            commonAnnotations: flat string representations of nested attributes
+          Note: Kustomize commonLabels/Annotations carry only flat string values.
+          Nested cluster attributes (vault, monitoring) are serialised as JSON strings
+          in commonAnnotations.  For richer per-cluster configuration in Kustomize
+          components, use ArgoCD multi-source (ArgoCD 2.6+) to supply a separate
+          cluster-specific patch source alongside the Kustomize component path.
+
   Step 4  Generate Applications.
           For each app where enabled ≠ false, emit an Application whose
           spec.source.helm.values contains:
@@ -98,6 +111,7 @@
 {{- range $appName, $appVals := $apps -}}
 {{- $enabled := ne (toString (get $appVals "enabled")) "false" -}}
 {{- if and $appVals $enabled -}}
+{{- $sourceType := get $appVals "sourceType" | default "helm" -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -110,6 +124,7 @@ metadata:
     cluster: {{ $clusterName }}
     app: {{ $appName }}
     env: {{ $clusterBlock.environment | default "unknown" }}
+    source-type: {{ $sourceType }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -119,6 +134,33 @@ spec:
     repoURL: {{ $.Values.source.repoURL }}
     targetRevision: {{ $targetRevision }}
     path: {{ $.Values.source.componentsBasePath }}/{{ $appName }}
+    {{- if eq $sourceType "kustomize" }}
+    kustomize:
+      # Cluster identity injected as commonLabels — available to all Kustomize resources
+      # as labels without any template logic in the component itself.
+      commonLabels:
+        cluster-name: {{ $clusterMeta.name | quote }}
+        cluster-environment: {{ $clusterMeta.environment | default "unknown" | quote }}
+        cluster-region: {{ $clusterMeta.region | default "" | quote }}
+        cluster-hub: {{ $currentHub | quote }}
+      # Nested cluster attributes (vault, monitoring, etc.) serialised as JSON strings.
+      # These cover fields not already expressed as commonLabels above.
+      # Components that need these values should use ArgoCD multi-source (ArgoCD 2.6+)
+      # to supply a separate cluster-specific patch source alongside this Kustomize path.
+      {{- $labelKeys := list "name" "environment" "region" "server" "hub" -}}
+      {{- $extraAttrs := dict -}}
+      {{- range $k, $v := $clusterMeta -}}
+      {{- if not (has $k $labelKeys) -}}
+      {{- $_ := set $extraAttrs $k $v -}}
+      {{- end -}}
+      {{- end -}}
+      {{- if $extraAttrs }}
+      commonAnnotations:
+        {{- range $k, $v := $extraAttrs }}
+        cluster-{{ $k }}: {{ $v | toJson | quote }}
+        {{- end }}
+      {{- end }}
+    {{- else }}
     helm:
       # Fully resolved values — Argo CD receives a single flat block.
       #
@@ -128,7 +170,8 @@ spec:
       values: |
         cluster:
           {{- $clusterMeta | toYaml | nindent 10 }}
-        {{- omit $appVals "enabled" | toYaml | nindent 8 }}
+        {{- omit $appVals "enabled" "sourceType" | toYaml | nindent 8 }}
+    {{- end }}
 
   destination:
     server: {{ $clusterServer }}

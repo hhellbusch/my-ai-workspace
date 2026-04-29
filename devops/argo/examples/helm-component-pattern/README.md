@@ -6,65 +6,20 @@
 
 ## Who this is for
 
-**Platform engineers and consultants** rolling out or managing a fleet of OpenShift clusters and looking for a structured, GitOps-native way to manage platform components (operators, configuration, tooling) across clusters that share most config but differ in meaningful ways.
+**Platform engineers and consultants** rolling out or managing a fleet of OpenShift clusters, looking for a structured GitOps-native way to manage platform components across clusters that share most config but differ in meaningful ways.
 
-**CoP maintainers** — this pattern builds on the conventions established in [redhat-cop/gitops-standards-repo-template](https://github.com/redhat-cop/gitops-standards-repo-template). The folder structure (`components/`, `groups/`, `clusters/`) and the composable groups model are the same. The differences are in implementation choices and additions. See [Relationship to gitops-standards-repo-template](#relationship-to-gitops-standards-repo-template) below.
+**CoP maintainers** — this pattern builds on the conventions established in [redhat-cop/gitops-standards-repo-template](https://github.com/redhat-cop/gitops-standards-repo-template). The folder structure and composable groups model are the same; the implementation choices differ. See [docs/cop-maintainers.md](docs/cop-maintainers.md) for a full comparison, trade-off analysis, and guidance on choosing between them.
 
 ---
 
-## Relationship to gitops-standards-repo-template
+## Further reading
 
-The [redhat-cop/gitops-standards-repo-template](https://github.com/redhat-cop/gitops-standards-repo-template) is the direct upstream reference for this pattern's folder structure and composable groups model. This pattern adopts the same directory layout and group composition philosophy, then makes different implementation choices.
-
-### What is the same
-
-- `components/`, `groups/`, `clusters/` directory structure
-- Groups are composable — a cluster belongs to multiple groups; each group contributes only what it owns
-- App of Apps pattern — root Application generates child Applications
-- ApplicationSet explicitly not used (gitops-standards cites controller instability; this pattern cites compatibility and explicitness — same conclusion)
-- `targetRevision` pinning for promotion workflows
-
-### What is different
-
-| | [gitops-standards-repo-template](https://github.com/redhat-cop/gitops-standards-repo-template) | This pattern |
-|---|---|---|
-| **Templating engine** | Kustomize (with optional Helm via HelmChartInflaterGenerator) | Pure Helm |
-| **Group membership declaration** | In each cluster's `kustomization.yaml` `components:` list — distributed across cluster directories | In `clusters.yaml` — centralised in one file |
-| **Central cluster inventory** | None — a cluster exists as a directory; fleet topology is implicit | `clusters.yaml` — explicit single file listing every cluster, its hub, groups, and shared attributes |
-| **Shared attributes across components** | No built-in mechanism — each component handles its own values | `clusters.yaml` fields injected as `.Values.cluster.*` into every component; vault endpoint defined once, used by all |
-| **Value merging** | Kustomize overlay/patch mechanism | Helm `mustMergeOverwrite` chain with named `component-<name>` keys |
-| **Multi-hub support** | Not addressed — single hub model | First-class: `currentHub` parameter filters `clusters.yaml`; one ArgoCD per hub |
-| **Hub Application generation** | Root application derived from cluster-specific kustomization | `hub-bootstrap` Helm chart generates hub Applications from `clusters.yaml`; committed to Git by CI |
-| **Local debugging** | `kustomize build clusters/hub/ --enable-helm` | `helm template charts/hub-clusters ...` |
-| **Per-cluster `targetRevision`** | In kustomization file per component or per group | In `clusters.yaml` entry — one field pins all components for that cluster |
-
-### Why Helm over Kustomize
-
-The gitops-standards template uses Kustomize with Helm as an optional layer. This pattern inverts that: Helm is the primary engine throughout.
-
-The practical consequence is the `mustMergeOverwrite` chain — Kustomize patches operate on rendered YAML at the resource level (strategic merge patch, JSON patch); Helm values merging operates at the configuration data level before any resource is rendered. For the specific problem of composing shared default values across many clusters, Helm values merging is more natural and less verbose than writing patches.
-
-### Why a central `clusters.yaml`
-
-gitops-standards declares group membership in each cluster's `kustomization.yaml`. This is flexible and keeps each cluster self-contained, but means there is no single file that shows the complete fleet topology.
-
-This pattern adds `clusters.yaml` as an explicit fleet inventory. The cost is a coordination point on every cluster onboarding. The benefit is a single authoritative location for shared attributes that multiple components need (Vault endpoint, monitoring remote-write, etc.) — avoiding the repetition that emerges when the same value appears in multiple component configs across multiple cluster directories.
-
-The decision rule: if a value is used by more than one component, it belongs in `clusters.yaml`.
-
-### Choosing between them
-
-Use **gitops-standards-repo-template** when:
-- Your team is already comfortable with Kustomize
-- You want flexibility to mix Kustomize and Helm per component
-- Cluster self-containment is more important than a central fleet view
-- You don't need shared attributes injected automatically across components
-
-Use **this pattern** when:
-- Your team works primarily in Helm
-- You want a single file (`clusters.yaml`) as the authoritative fleet inventory
-- Multiple components share cluster-level config (Vault, monitoring, certificates) and you want it defined once
-- Multi-hub support (multiple ArgoCD instances managing different cluster subsets) is a requirement
+| Document | Audience |
+|---|---|
+| [docs/architecture-opinions.md](docs/architecture-opinions.md) | The problem, the principle, the Hub concept, and the 9 design opinions with full trade-offs |
+| [docs/cop-maintainers.md](docs/cop-maintainers.md) | CoP maintainers: relationship to gitops-standards, Helm vs Kustomize trade-offs, choosing between them |
+| [docs/diffing-and-visibility.md](docs/diffing-and-visibility.md) | PR-level desired-state diffs, fleet-wide live-to-desired diffs, argocd-diff-preview integration |
+| [docs/convergence.md](docs/convergence.md) | *(Aspirational)* How this pattern and gitops-standards could converge; `sourceType` per component; open questions |
 
 ---
 
@@ -146,112 +101,20 @@ Multiple hub clusters are supported — `prod-a`, `prod-b`, and `dev` in this ex
 
 ## Opinions baked in
 
-Every design has trade-offs. These are the choices made in this pattern and what they cost. Each opinion is grounded in a named software engineering principle — these are not arbitrary preferences.
+For the full design rationale — including the problem statement, the principle, Hub topology explained, and all 9 opinions with their complete trade-offs — see **[docs/architecture-opinions.md](docs/architecture-opinions.md)**.
 
----
+Brief summary of the key decisions:
 
-**1. Groups are a general-purpose composition mechanism**
-*Principle: Separation of Concerns + Composition over Inheritance*
-
-A group is any named slice of configuration that more than one cluster shares. Groups can describe capability (`virt-enabled`, `edge-sno`), environment (`env-production`, `env-staging`), region (`region-us-east`), hardware type (`baremetal`), or any other axis that makes sense for your fleet. A cluster can belong to multiple groups simultaneously — there is no single inheritance axis.
-
-The composition is what matters: rather than one monolithic config per cluster, you build each cluster's config by merging a stack of focused groups. A production bare-metal cluster running OCP Virt might belong to `[all, env-production, baremetal, virt-enabled]`. Each group contributes only what it knows about; no group needs to account for the concerns of another.
-
-*Cost:* group names become a shared vocabulary across the team. Inconsistent naming (`prod`, `production`, `env-prod`) creates ambiguity about which group to use. Establish a naming convention early and document it in the groups directory.
-
----
-
-**2. Components are opt-out at the fleet level, opt-in per group**
-*Principle: Secure by Default + Explicit over Implicit*
-
-`component-all` sets `enabled: false` for anything that isn't universally required. Groups opt components in. This means adding a new component to the registry does not automatically install it anywhere — it requires an explicit group or cluster override. Safer for destructive components (storage, networking operators). This is the same principle as deny-by-default in access control: you must explicitly grant, not explicitly deny.
-
-*Cost:* group files grow as the component list grows. A component that truly belongs on every cluster still needs an explicit `enabled: true` in `component-all`.
-
----
-
-**3. `clusters.yaml` is the single authoritative cluster inventory**
-*Principle: Single Source of Truth (SSOT) + DRY (Don't Repeat Yourself)*
-
-Cluster metadata — name, server URL, hub assignment, group membership, vault endpoint, monitoring endpoint — lives in one file. `clusters/<name>/values.yaml` contains only component-level overrides. If a cluster needs no overrides, the file can be empty. Every cluster attribute has exactly one authoritative location: when a Vault endpoint changes, one line in one file changes, and every component on every cluster in that hub picks it up automatically.
-
-**What belongs in `clusters.yaml`** (the guardrail: if more than one component uses a value, it belongs here):
-
-| ✅ Belongs in `clusters.yaml` | ❌ Does not belong |
+| Opinion | One-line summary |
 |---|---|
-| Cluster API server URL | App-specific config only one component uses |
-| Vault server endpoint | Secrets or credentials (use Vault/ESO) |
-| Monitoring remote-write endpoint | Namespace-level config |
-| Hub assignment | Config that varies within a cluster |
-| Group membership | Highly volatile config (frequent PR noise) |
-| Environment, region labels | Large binary or generated data |
-| Any value shared across two or more components | |
-
-The test: if you find yourself setting the same value in two different component configs, move it to `clusters.yaml` and reference it via `.Values.cluster.<field>` in the component chart.
-
-*Cost:* `clusters.yaml` becomes a coordination point. Every cluster onboarding touches it. In large teams this can cause merge conflicts; consider automating the addition via a script or CI step.
-
----
-
-**4. `mustMergeOverwrite` over `mergeOverwrite` (deep merge)**
-*Principle: Fail Fast + Principle of Least Surprise*
-
-`mergeOverwrite` does a shallow top-level replacement — a group setting an `apps.nmstate` key replaces the entire map from the lower layer, silently losing sibling keys. `mustMergeOverwrite` recurses: only the keys explicitly set in the higher-priority layer are overridden. The Fail Fast principle applies to the type-conflict panic: a schema mistake (a key is a string in one layer and a map in another) causes an immediate render-time error rather than silently producing incorrect YAML that only fails when applied to the cluster.
-
-*Cost:* all layers must agree on the type of every key they share. Mixed types that happen to work with `mergeOverwrite` will panic with `mustMergeOverwrite`.
-
----
-
-**5. Group priority order is explicit (`hubConfig.groupOrder`)**
-*Principle: Make the Implicit Explicit + Principle of Least Surprise*
-
-The order groups are loaded determines which wins when two groups set the same key. This order is declared explicitly in `clusters.yaml` under `hubConfig.<hub>.groupOrder` rather than derived from the order clusters are listed in the file. Cluster listing order is an implementation detail; merge priority is a policy decision. Making it explicit means a new engineer reading `clusters.yaml` can answer "which group wins?" without tracing through template logic.
-
-*Cost:* adding a new group requires updating `hubConfig.groupOrder` for every hub that uses it, or the template falls back to implicit ordering with a warning annotation.
-
----
-
-**6. One ArgoCD instance per hub, not one global instance**
-*Principle: Bulkhead Pattern + Defence in Depth*
-
-Each hub cluster runs its own ArgoCD scoped to the clusters it manages. There is no single "master" ArgoCD targeting all clusters across all environments. The Bulkhead pattern (from ship design: watertight compartments limit flooding) applied here means a misconfiguration in the dev hub cannot affect prod clusters — the failure is contained to one compartment. Defence in depth means prod clusters require a separate credential, a separate ArgoCD instance, and a separate PR merged to a separate hub's scope before anything reaches them.
-
-*Cost:* multiple ArgoCD instances to operate. Shared config (RBAC, repositories, projects) must be reproduced or templated across hubs.
-
----
-
-**7. Hub Applications are pre-rendered; component Applications are live-rendered**
-*Principle: Apply Constraints at the Right Layer (Appropriate Consistency)*
-
-Not every layer of a system needs the same consistency model. Hub Applications change when clusters are added, removed, moved between hubs, or when the group membership of any cluster on a hub changes (because the `valueFiles` list in the hub Application is derived from the union of groups across all the hub's clusters). The GitHub Action re-renders the hub Application on any of these events, and the committed YAML in `hub/rendered/` makes every hub-level change visible as a plain diff in the PR. Component Applications change constantly (group value tweaks, new app versions, enable/disable flags) — pre-rendering all of them would produce enormous Git churn on every shared group value change and obscure the real intent of each PR.
-
-The principle: apply the stronger consistency guarantee (committed YAML, full audit trail) where the change rate is bounded and the diff is meaningful. Use live rendering where pre-rendering creates noise that drowns signal.
-
-*Cost:* you cannot see exactly what component Applications will be created by reading Git alone — you need `helm template` locally or argocd-diff-preview on the PR. The `hub/rendered/` file serves as the argocd-diff-preview entry point (see [PR diff visibility](#pr-diff-visibility-with-argocd-diff-preview)).
-
----
-
-**8. No ApplicationSet**
-*Principle: YAGNI (You Aren't Gonna Need It) + Minimise External Dependencies*
-
-Applications are generated by Helm templates, not by an ApplicationSet controller. The generation logic is explicit, version-controlled in this repo, and testable offline with `helm template` — no running controller required. This was a pragmatic choice for compatibility with older ArgoCD versions where ApplicationSet was not bundled, and it keeps the blast radius of a template bug contained to a CI failure rather than a live controller acting on the cluster.
-
-*Cost:* no automatic cluster discovery — every cluster must be explicitly registered in `clusters.yaml`. See `hub/option-b-applicationset.yaml` for what an ApplicationSet bootstrap would look like.
-
----
-
-### Principles at a glance
-
-| Opinion | Primary principle | Secondary principle |
-|---|---|---|
-| Groups = general-purpose composition (capability, environment, region, …) | Separation of Concerns | Composition over Inheritance |
-| Opt-out defaults, opt-in per group | Secure by Default | Explicit over Implicit |
-| `clusters.yaml` as single identity source | Single Source of Truth | DRY |
-| `mustMergeOverwrite` + type panics | Fail Fast | Principle of Least Surprise |
-| Explicit group order | Make the Implicit Explicit | Principle of Least Surprise |
-| One ArgoCD per hub | Bulkhead Pattern | Defence in Depth |
-| Hybrid pre-render / live-render | Appropriate Consistency | (apply constraints where cost is low) |
-| No ApplicationSet | YAGNI | Minimise External Dependencies |
+| Groups = general-purpose composition | Capability, environment, region — any axis that makes sense. Clusters compose multiple groups. |
+| Opt-out defaults, opt-in per group | `component-all` disables everything. Groups explicitly enable. Safer than opt-in-by-default. |
+| `clusters.yaml` as single identity source | One file = complete fleet topology. Shared attributes (Vault, monitoring) defined once, injected into all components. |
+| `mustMergeOverwrite` over `mergeOverwrite` | Deep map merge with type-conflict panic. Lists require `extra*/concat` — see the Resolution section below. |
+| Explicit group order (`hubConfig.groupOrder`) | Merge priority is a policy decision, not an ordering side-effect. |
+| One ArgoCD per hub | Blast-radius isolation. No single point of failure across all environments. No cross-hub visibility without RHACM. |
+| Hub pre-rendered; components live-rendered | Committed hub Applications enable CI diff tooling; component churn stays live. |
+| No ApplicationSet | Generation in Helm templates — testable offline, no controller dependency. |
 
 ---
 
@@ -401,7 +264,42 @@ Both charts use the same `mustMergeOverwrite` model. The difference is where the
 - `mergeOverwrite` — shallow map replacement at the top level
 - `mustMergeOverwrite` — deep map merge; a nested key in the source only updates that key, not the whole parent map. Panics on type conflicts (e.g. string vs map), catching schema errors at render time.
 
+**Lists are not merged — they are replaced.** Neither `mergeOverwrite` nor `mustMergeOverwrite` concatenates YAML sequences across layers. The higher-priority layer's list wins outright. Components that need additive list behaviour (imagePullSecrets, CIDR ranges, alerting silences, etc.) must use the `extra*/concat` pattern from the [`../framework/`](../framework/) charts: define the base array under the primary key and a companion `extra<Name>: []` key for per-layer additions, then concatenate in the template with `concat .Values.<key> .Values.extra<Name>`.
+
 **`enabled: false` semantics:** Templates use `toString` comparison (`ne (toString ...) "false"`) rather than `default true`. Helm's `default` treats `false` as empty and would incorrectly re-enable a disabled component.
+
+### Silent failure modes and guardrails
+
+`mustMergeOverwrite` panics on type conflicts — that is the loud failure. There are also quiet failures to be aware of:
+
+| Failure mode | What happens | How to detect | Guardrail |
+|---|---|---|---|
+| **Typo in component key name** | `component-virt-enabeld` is ignored silently — no merge, no error | `helm template` output has fewer Applications than expected for that group | CI: after render, assert expected Application names are present (grep or a test script) |
+| **Cluster in `clusters.yaml` with no values file** | Cluster gets only group-default values — may be correct or may be missing overrides | Render output has no cluster-level overrides; may be intentional | Convention: always create `clusters/<name>/values.yaml`, even if empty, as an explicit acknowledgement |
+| **Group in cluster's `groups:` list with no values file** | Group is silently skipped — no merge, no error | Applications have only the lower-priority groups' values | CI: add a check that every group name in `clusters.yaml` has a corresponding `groups/<name>/values.yaml` |
+| **Component key only in cluster file, not in any group** | Component is disabled by `component-all`'s `enabled: false` default; cluster override never fires | Application is not generated | Always define the component in `component-all` first (even as `enabled: false`), then enable in a group or cluster |
+| **`clusters.yaml` entry with no `hub:` field** | Cluster is excluded from all hubs; no Applications generated | `helm template` with any hub produces no output for that cluster | Make `hub:` a required field; consider a CI lint step that validates `clusters.yaml` schema |
+
+**Recommended CI assertions (Approach B):**
+
+```bash
+# After rendering hub-applications, verify expected hub names appear
+helm template hub-bootstrap charts/hub-bootstrap \
+  --values clusters.yaml ... \
+  | grep "name: hub-clusters-" | sort
+
+# After a full hub render, check that expected cluster Applications exist
+helm template hub-clusters charts/hub-clusters \
+  --values clusters.yaml --values groups/all/values.yaml \
+  --set currentHub=prod-a ... \
+  | grep "^  name:" | sort > rendered-apps.txt
+
+# Diff against a known-good baseline or check for minimum expected names
+grep "site-dc1-cert-manager\|site-dc1-nmstate" rendered-apps.txt || \
+  { echo "MISSING EXPECTED APPLICATIONS"; exit 1; }
+```
+
+The `scripts/trace-value.sh` equivalent from `../framework/` is worth building for this pattern — a script that takes a cluster name and component name and traces which layer set each value, making merge order visible without inspecting template internals.
 
 ---
 
@@ -675,41 +573,13 @@ When adding a cluster to a hub:
 
 ---
 
-## PR diff visibility with argocd-diff-preview
+## Diffing and visibility
 
-Approach B trades explicit rendered output for a live render. To regain the "what exactly changes in the cluster?" answer on every PR, the recommended complement is **argocd-diff-preview** by dag-andersen.
+Approach B trades explicit rendered output for a live render. This creates two distinct visibility questions: "what will this PR change?" and "which clusters are currently out of sync across the fleet?"
 
-The tool spins up a temporary Argo CD instance, renders the current branch and the PR branch independently, and posts a desired-state-to-desired-state diff as a PR comment. Unlike a current-state diff, this shows only what the PR changes — no unrelated cluster drift, no pending reconciliations.
+For the full discussion — including argocd-diff-preview integration, the role of `hub/rendered/` as the CI entry point, fleet-wide live-to-desired diff approaches, and the two-layer visibility model — see **[docs/diffing-and-visibility.md](docs/diffing-and-visibility.md)**.
 
-### Why `hub/rendered/hub-applications.yaml` is the bootstrapping anchor
-
-argocd-diff-preview needs a **static Application file** as its entry point — a committed YAML file it can open, find `kind: Application` objects in, and then follow each Application's `source.path` to render what it would produce.
-
-In a fully live-rendered system (no committed files at all), the tool has nothing to start from. `hub/rendered/hub-applications.yaml` solves this: it is a real, committed YAML file containing `hub-clusters-dev`, `hub-clusters-prod-a`, and `hub-clusters-prod-b` Application objects. The tool can:
-
-```
-1. Read hub/rendered/hub-applications.yaml
-   → finds hub-clusters-prod-a
-     source.path:   charts/hub-clusters
-     helm.values:   currentHub=prod-a
-     valueFiles:    clusters.yaml, groups/all/values.yaml, ...
-
-2. Run helm template charts/hub-clusters ... (for both PR branch and base branch)
-   → produces component Application objects (site-dc1-cert-manager, etc.)
-
-3. Diff the two rendered outputs
-   → posts exactly which component Applications changed, were added, or removed
-```
-
-This means the "partial rendered manifest" design at the hub layer — which exists to solve the chicken-and-egg bootstrapping problem — also provides a natural, stable entry point for CI diff tooling. The committed file serves two purposes.
-
-**Running on OpenShift without cluster-admin:** deploy argocd-diff-preview into a dedicated namespace (e.g. `argocd-diff`) using a namespace-scoped Argo CD instance (the OpenShift GitOps operator supports this). CI uses only namespace-scoped credentials — no production Argo CD access required.
-
-See the library entry: [`library/argocd-diff-preview.md`](../../../../library/argocd-diff-preview.md)
-
-Reference videos:
-- [https://www.youtube.com/watch?v=3aeP__qPSms](https://www.youtube.com/watch?v=3aeP__qPSms)
-- [https://www.youtube.com/watch?v=fcajag5di68](https://www.youtube.com/watch?v=fcajag5di68)
+**Quick summary:** `hub/rendered/hub-applications.yaml` is the entry point for argocd-diff-preview. It is committed to Git by CI (via the `hub-bootstrap` render step) and provides a stable, static file that the diff tool uses to discover hub Applications and render component Applications from both the PR and base branches. The diff posted to the PR shows desired-state-to-desired-state changes — not live cluster drift. For fleet-wide live state visibility, RHACM Observability or Prometheus metric federation across hubs is needed.
 
 ---
 
@@ -861,6 +731,16 @@ See the [Approach B section](#approach-b--hub-clusters-chart-with-multi-hub-filt
 | Group composition | N groups listed in ApplicationSet template `valueFiles` | `groups:` list in cluster values; render script builds `--values` flags |
 | Merge mechanism | Helm's standard last-wins map replacement | `mustMergeOverwrite` — deep map merge, type-conflict detection |
 | When to use | Simpler setups; Argo CD manages rendering | Auditable pre-rendered output preferred; CI validation of Application objects required |
+
+---
+
+## Converging with gitops-standards-repo-template
+
+> **Aspirational — needs team validation.** This section sketches how the two patterns could converge. See **[docs/convergence.md](docs/convergence.md)** for the full working document, including open questions for the team.
+
+The `hub-clusters` chart supports a `sourceType` field per component (`helm` default, `kustomize` option). This allows a mixed fleet where some components are Helm charts and some are Kustomize components, while `clusters.yaml` remains the single fleet inventory and `hub-clusters` remains the single Application generator.
+
+See [docs/convergence.md](docs/convergence.md) for the full integration model, the `commonAnnotations` limitation, the ArgoCD multi-source sketch, and the migration path from gitops-standards-repo-template.
 
 ---
 
