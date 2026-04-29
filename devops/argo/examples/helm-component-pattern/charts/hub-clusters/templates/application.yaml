@@ -1,5 +1,5 @@
 {{- /*
-  global-root / application.yaml
+  hub-clusters / application.yaml
   ════════════════════════════════
 
   Generates one Argo CD Application per enabled component for every cluster
@@ -95,7 +95,7 @@ metadata:
   name: {{ $clusterName }}-{{ $appName }}
   namespace: {{ $.Values.argocd.namespace }}
   labels:
-    managed-by: global-root
+    managed-by: hub-clusters
     hub: {{ $currentHub }}
     cluster: {{ $clusterName }}
     app: {{ $appName }}

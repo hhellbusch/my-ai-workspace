@@ -3,11 +3,11 @@ name: hub-bootstrap
 description: |
   Generates one Argo CD Application per hub from clusters.yaml.
 
-  Each generated Application runs the global-root chart with currentHub set
+  Each generated Application runs the hub-clusters chart with currentHub set
   to the hub name and a valueFiles list derived automatically from clusters.yaml:
     - clusters.yaml (inventory)
     - groups/<name>/values.yaml for every group used by any cluster on this hub
-      (deduplicated, in first-occurrence order across the hub's cluster list)
+      (in hubConfig.<hubName>.groupOrder, or first-occurrence order as fallback)
     - clusters/<name>/values.yaml for every cluster on this hub
 
   This chart is NOT run by Argo CD.  It is run by a GitHub Action that commits

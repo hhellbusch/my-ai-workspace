@@ -2,7 +2,7 @@
 # Component overrides only.
 #
 # Cluster metadata (hub, server, environment, region, groups, vault, monitoring)
-# lives in clusters.yaml — the global-root chart injects it into every
+# lives in clusters.yaml — the hub-clusters chart injects it into every
 # Application's cluster: block automatically.
 #
 # This file only needs to exist when site-dc1 deviates from group defaults.

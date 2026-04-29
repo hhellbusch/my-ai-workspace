@@ -23,7 +23,7 @@ argo/examples/
 ├── helm-component-pattern/                # Reference: mustMergeOverwrite App-of-Apps-of-Apps
 │   ├── README.md                          #   Pattern explanation, schemas, resolution walkthrough
 │   ├── clusters.yaml                      #   Central cluster inventory (hub, groups, metadata)
-│   ├── charts/global-root/               #   Per-hub root Application generator (multi-hub filter)
+│   ├── charts/hub-clusters/               #   Per-hub root Application generator (multi-hub filter)
 │   ├── charts/hub-bootstrap/             #   Hub-level Application generator (renders to hub/rendered/)
 │   ├── charts/cluster-apps/              #   Per-cluster component Application generator
 │   ├── groups/                            #   Group values files (component-<groupName> keys)
@@ -160,7 +160,7 @@ Helm chart sources.
 - **`mustMergeOverwrite`** — deep map merge that catches type conflicts at render time. Group defaults set `enabled: false`; group or cluster overrides selectively enable.
 - **`clusters.yaml`** — central cluster inventory. Cluster identity, hub assignment, groups, and shared attributes (Vault server, monitoring endpoint) live here, not scattered across cluster files.
 - **`hubConfig.groupOrder`** — explicit group load order per hub. Prevents priority from silently depending on cluster listing order in `clusters.yaml`.
-- **Two bootstrap approaches** — Approach A (plain Application per cluster, rendered by CI) or Approach B (global-root chart filtered by hub, managed by ArgoCD itself).
+- **Two bootstrap approaches** — Approach A (plain Application per cluster, rendered by CI) or Approach B (hub-clusters chart filtered by hub, managed by ArgoCD itself).
 
 ### Getting Started
 
@@ -174,8 +174,8 @@ helm template hub-bootstrap helm-component-pattern/charts/hub-bootstrap \
   --set source.repoURL=https://github.com/your-org/gitops \
   --set source.targetRevision=main
 
-# See what a cluster resolves to (global-root, prod-a hub)
-helm template global-root helm-component-pattern/charts/global-root \
+# See what a cluster resolves to (hub-clusters, prod-a hub)
+helm template hub-clusters helm-component-pattern/charts/hub-clusters \
   --values helm-component-pattern/clusters.yaml \
   --values helm-component-pattern/groups/all/values.yaml \
   --values helm-component-pattern/groups/virt-enabled/values.yaml \

@@ -5,11 +5,11 @@ argocd:
 source:
   repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
   targetRevision: main
-  # Path to the global-root chart within the repo.
-  globalRootChartPath: devops/argo/examples/helm-component-pattern/charts/global-root
+  # Path to the hub-clusters chart within the repo.
+  hubClustersChartPath: devops/argo/examples/helm-component-pattern/charts/hub-clusters
   # Prefix for valueFiles paths in generated Applications.
   # Argo CD resolves valueFiles relative to the chart source path.
-  # From charts/global-root/ back to the pattern root is ../../
+  # From charts/hub-clusters/ back to the pattern root is ../../
   valueFilesPrefix: "../.."
 
 destination:

@@ -15,7 +15,7 @@ on:
       - 'devops/argo/examples/helm-component-pattern/groups/**'
       - 'devops/argo/examples/helm-component-pattern/clusters/**'
       - 'devops/argo/examples/helm-component-pattern/charts/hub-bootstrap/**'
-      - 'devops/argo/examples/helm-component-pattern/charts/global-root/**'
+      - 'devops/argo/examples/helm-component-pattern/charts/hub-clusters/**'
 
   # Allow manual trigger — useful when testing a new hub or onboarding.
   workflow_dispatch:

@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: global-root-dev
+  name: hub-clusters-dev
   namespace: openshift-gitops
   labels:
     managed-by: hub-bootstrap
@@ -21,18 +21,18 @@ spec:
   source:
     repoURL: https://github.com/example/gitops
     targetRevision: main
-    path: devops/argo/examples/helm-component-pattern/charts/global-root
+    path: devops/argo/examples/helm-component-pattern/charts/hub-clusters
 
     helm:
       parameters:
         - name: currentHub
           value: dev
 
-      # valueFiles are relative to the chart source path (charts/global-root/).
+      # valueFiles are relative to the chart source path (charts/hub-clusters/).
       # All entries are derived from clusters.yaml — no manual list maintenance.
       ignoreMissingValueFiles: true
       valueFiles:
-        # 1. Cluster inventory — must be first; provides .Values.clusters to global-root
+        # 1. Cluster inventory — must be first; provides .Values.clusters to hub-clusters
         - ../../clusters.yaml
         # 2. Group values files — one per unique group across all hub clusters
         - ../../groups/all/values.yaml
@@ -59,7 +59,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: global-root-prod-a
+  name: hub-clusters-prod-a
   namespace: openshift-gitops
   labels:
     managed-by: hub-bootstrap
@@ -77,18 +77,18 @@ spec:
   source:
     repoURL: https://github.com/example/gitops
     targetRevision: main
-    path: devops/argo/examples/helm-component-pattern/charts/global-root
+    path: devops/argo/examples/helm-component-pattern/charts/hub-clusters
 
     helm:
       parameters:
         - name: currentHub
           value: prod-a
 
-      # valueFiles are relative to the chart source path (charts/global-root/).
+      # valueFiles are relative to the chart source path (charts/hub-clusters/).
       # All entries are derived from clusters.yaml — no manual list maintenance.
       ignoreMissingValueFiles: true
       valueFiles:
-        # 1. Cluster inventory — must be first; provides .Values.clusters to global-root
+        # 1. Cluster inventory — must be first; provides .Values.clusters to hub-clusters
         - ../../clusters.yaml
         # 2. Group values files — one per unique group across all hub clusters
         - ../../groups/all/values.yaml
@@ -118,7 +118,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: global-root-prod-b
+  name: hub-clusters-prod-b
   namespace: openshift-gitops
   labels:
     managed-by: hub-bootstrap
@@ -136,18 +136,18 @@ spec:
   source:
     repoURL: https://github.com/example/gitops
     targetRevision: main
-    path: devops/argo/examples/helm-component-pattern/charts/global-root
+    path: devops/argo/examples/helm-component-pattern/charts/hub-clusters
 
     helm:
       parameters:
         - name: currentHub
           value: prod-b
 
-      # valueFiles are relative to the chart source path (charts/global-root/).
+      # valueFiles are relative to the chart source path (charts/hub-clusters/).
       # All entries are derived from clusters.yaml — no manual list maintenance.
       ignoreMissingValueFiles: true
       valueFiles:
-        # 1. Cluster inventory — must be first; provides .Values.clusters to global-root
+        # 1. Cluster inventory — must be first; provides .Values.clusters to hub-clusters
         - ../../clusters.yaml
         # 2. Group values files — one per unique group across all hub clusters
         - ../../groups/all/values.yaml

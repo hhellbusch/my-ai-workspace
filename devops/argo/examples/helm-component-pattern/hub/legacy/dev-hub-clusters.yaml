@@ -1,13 +1,13 @@
 ---
-# dev-global-root.yaml
+# dev-hub-clusters.yaml  (formerly dev-global-root.yaml)
 #
-# Bootstrap Application for the dev hub.
-# Apply once on the dev hub cluster.
+# Legacy hand-authored hub Application for the dev hub.
+# Superseded by hub-bootstrap chart + GitHub Action (see hub/bootstrap-root.yaml).
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: global-root-dev
+  name: hub-clusters-dev
   namespace: openshift-gitops
   labels:
     managed-by: helm-component-pattern
@@ -22,7 +22,7 @@ spec:
   source:
     repoURL: https://github.com/YOUR-ORG/YOUR-REPO.git
     targetRevision: main
-    path: devops/argo/examples/helm-component-pattern/charts/global-root
+    path: devops/argo/examples/helm-component-pattern/charts/hub-clusters
 
     helm:
       parameters:

@@ -3,7 +3,7 @@
 # Single authoritative source for:
 #   - Which clusters exist
 #   - Which hub manages each cluster (hub: field — must match the currentHub
-#     parameter on each hub's global-root Application)
+#     parameter on each hub's hub-clusters Application)
 #   - Which groups the cluster belongs to (drives mustMergeOverwrite order)
 #   - Shared cluster attributes pushed into every component's cluster: block
 #
@@ -11,7 +11,7 @@
 # belong in clusters/<name>/values.yaml as component-<clusterName>.apps overrides.
 # This file owns identity and topology; the cluster values files own deviations.
 #
-# clusters: is loaded by the global-root chart via helm valueFiles.
+# clusters: is loaded by the hub-clusters chart via helm valueFiles.
 # It is NOT loaded by the cluster-apps chart (the render-script approach).
 #
 # hubConfig: controls hub-level settings, including the canonical group load order.

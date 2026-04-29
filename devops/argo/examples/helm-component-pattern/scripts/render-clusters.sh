@@ -4,7 +4,7 @@
 # This script implements Approach A: render per-cluster Application files
 # using charts/cluster-apps and commit them to clusters/<name>/rendered/.
 #
-# THIS REPO NOW USES APPROACH B (global-root + hub-bootstrap).
+# THIS REPO NOW USES APPROACH B (hub-clusters + hub-bootstrap).
 # In Approach B, cluster values files use a different schema (no groups: or
 # cluster: blocks) and there are no per-cluster rendered/ directories.
 # The hub-level rendered output lives in hub/rendered/hub-applications.yaml,

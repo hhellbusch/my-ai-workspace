@@ -1,19 +1,19 @@
 apiVersion: v2
-name: global-root
+name: hub-clusters
 description: |
-  Hub-aware root chart.  Reads clusters.yaml (the central cluster inventory),
-  filters to clusters belonging to the current hub, and generates one Argo CD
-  Application per enabled component per cluster — all in a single Helm render.
+  Hub-scoped cluster dispatch chart.  Reads clusters.yaml (the central cluster
+  inventory), filters to clusters belonging to the current hub, and generates one
+  Argo CD Application per enabled component per cluster — all in a single render.
 
-  This chart replaces the render-script + cluster-apps approach with a live
-  Argo CD render.  No pre-rendered output files are committed to Git; Argo CD
-  calls helm template at sync time.
+  This chart runs as a child of hub-bootstrap (one Application per hub).  The
+  full three-level cascade is:
+    bootstrap-root → hub-bootstrap (per hub) → hub-clusters (per cluster)
 
   Key behaviours:
     - currentHub parameter determines which clusters are in scope for this
       Argo CD instance.  One hub Application per environment (dev, prod-a, prod-b).
     - Group components (component-<groupName>) are merged in the declaration order
-      from the cluster's groups: list in clusters.yaml using mustMergeOverwrite.
+      from hubConfig.<hubName>.groupOrder in clusters.yaml using mustMergeOverwrite.
     - Cluster component (component-<clusterName>) is merged last as the highest-
       priority override layer.
     - Cluster metadata from clusters.yaml (name, server, environment, region,
@@ -22,7 +22,7 @@ description: |
       a fully-populated cluster: block without repeating this data per component.
 
   Values loaded by the hub Application (lowest → highest priority):
-    charts/global-root/values.yaml   (chart defaults)
+    charts/hub-clusters/values.yaml  (chart defaults)
     clusters.yaml                    (cluster inventory — provides .Values.clusters)
     groups/all/values.yaml           (component-all)
     groups/<group>/values.yaml       (component-<group>, one per group)

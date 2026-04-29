@@ -1,6 +1,6 @@
 # Helm component pattern — `mustMergeOverwrite` with named component keys
 
-A GitOps framework for generating Argo CD Applications across a fleet of clusters. Configuration is composed from reusable groups using Helm's `mustMergeOverwrite`. Two bootstrap approaches are documented: a pre-render workflow (committed output) and a live Argo CD render via the `global-root` chart with per-hub filtering.
+A GitOps framework for generating Argo CD Applications across a fleet of clusters. Configuration is composed from reusable groups using Helm's `mustMergeOverwrite`. Two bootstrap approaches are documented: a pre-render workflow (committed output) and a live Argo CD render via the `hub-clusters` chart with per-hub filtering.
 
 This is a different approach from the [ApplicationSet-based framework](../framework/README.md) in this repo.
 
@@ -14,7 +14,7 @@ helm-component-pattern/
 ├── charts/
 │   ├── cluster-apps/          # Approach A: per-cluster chart for pre-render workflow
 │   │   └── templates/application.yaml
-│   └── global-root/           # Approach B: hub-aware chart — live render, no script needed
+│   └── hub-clusters/           # Approach B: hub-aware chart — live render, no script needed
 │       └── templates/application.yaml
 ├── components/                # Individual platform component charts (the deployables)
 │   ├── nmstate/
@@ -37,8 +37,8 @@ helm-component-pattern/
 │   ├── option-a-applications.yaml    # Approach A alt: explicit Application per cluster
 │   ├── option-b-applicationset.yaml  # Approach A alt: ApplicationSet auto-discovery
 │   └── legacy/                       # Reference: hand-authored hub Applications (superseded)
-│       ├── prod-a-global-root.yaml
-│       └── dev-global-root.yaml
+│       ├── prod-a-hub-clusters.yaml
+│       └── dev-hub-clusters.yaml
 ├── .github/workflows/
 │   └── render-hub-applications.yml   # Renders hub-bootstrap chart → commits hub/rendered/
 └── scripts/
@@ -76,7 +76,7 @@ component-virt-enabled:
 **Cluster files differ by approach** — this is the key schema difference:
 
 ```yaml
-# Approach B (global-root) — clusters/<name>/values.yaml
+# Approach B (hub-clusters) — clusters/<name>/values.yaml
 # App overrides only. Identity and group membership live in clusters.yaml.
 component-site-dc1:
   apps:
@@ -106,7 +106,7 @@ component-site-dc1:
 
 Both charts use the same `mustMergeOverwrite` model. The difference is where the merge inputs come from:
 
-| Step | Approach A (`cluster-apps`) | Approach B (`global-root`) |
+| Step | Approach A (`cluster-apps`) | Approach B (`hub-clusters`) |
 |------|----------------------------|---------------------------|
 | 1 | Read `groups:` from **cluster values file** | Read `groups:` from **`clusters.yaml`** entry |
 | 2 | Merge `component-<group>` keys in declared order | Same — merge in `groups:` order from `clusters.yaml` |
@@ -124,7 +124,7 @@ Both charts use the same `mustMergeOverwrite` model. The difference is where the
 
 ## Example: what site-dc1 resolves to (Approach B)
 
-`site-dc1` belongs to groups `all` and `virt-enabled` (declared in `clusters.yaml`). The global-root chart, when running on the `prod-a` hub:
+`site-dc1` belongs to groups `all` and `virt-enabled` (declared in `clusters.yaml`). The hub-clusters chart, when running on the `prod-a` hub:
 
 | Step | Source | Effect |
 |------|--------|--------|
@@ -145,9 +145,9 @@ Result — three Applications, each with the `cluster:` block from `clusters.yam
 
 ---
 
-## Approach B — global-root chart with multi-hub filtering and `clusters.yaml`
+## Approach B — hub-clusters chart with multi-hub filtering and `clusters.yaml`
 
-This approach eliminates the render script entirely. Argo CD calls `helm template` on the `charts/global-root/` chart at sync time. The chart reads `clusters.yaml` (the single authoritative cluster inventory), filters by the `currentHub` parameter, and generates all component Applications live. No output is pre-committed to Git.
+This approach eliminates the render script entirely. Argo CD calls `helm template` on the `charts/hub-clusters/` chart at sync time. The chart reads `clusters.yaml` (the single authoritative cluster inventory), filters by the `currentHub` parameter, and generates all component Applications live. No output is pre-committed to Git.
 
 ### `clusters.yaml` — the single source of truth for cluster identity
 
@@ -176,7 +176,7 @@ clusters:
 
 ### The `cluster:` block in every component
 
-The global-root chart strips `groups:` from each `clusters.yaml` entry and injects the rest as the `cluster:` block in every generated Application's `spec.source.helm.values`:
+The hub-clusters chart strips `groups:` from each `clusters.yaml` entry and injects the rest as the `cluster:` block in every generated Application's `spec.source.helm.values`:
 
 ```yaml
 # Generated Application for site-dc1-cert-manager
@@ -201,18 +201,18 @@ A component chart that needs the Vault endpoint uses `.Values.cluster.vault.serv
 
 ### Multi-hub architecture
 
-One `global-root` Application per hub. Each Application sets `currentHub` as a Helm parameter. The chart filters `clusters.yaml` to only the clusters where `hub == currentHub`:
+One `hub-clusters` Application per hub. Each Application sets `currentHub` as a Helm parameter. The chart filters `clusters.yaml` to only the clusters where `hub == currentHub`:
 
 ```
 Git repository (clusters.yaml + groups/ + clusters/)
          │
-         ├── prod-a hub cluster (global-root-prod-a Application)
+         ├── prod-a hub cluster (hub-clusters-prod-a Application)
          │     currentHub=prod-a → renders site-dc1, site-edge-1
          │
-         ├── prod-b hub cluster (global-root-prod-b Application)
+         ├── prod-b hub cluster (hub-clusters-prod-b Application)
          │     currentHub=prod-b → renders site-dc2
          │
-         └── dev hub cluster (global-root-dev Application)
+         └── dev hub cluster (hub-clusters-dev Application)
                currentHub=dev → renders site-dev-1
 ```
 
@@ -234,7 +234,7 @@ If a cluster has no deviations, the file can be empty or omitted entirely.
 
 ### Hub Applications are also generated — `charts/hub-bootstrap/`
 
-The hub Applications themselves (`global-root-<hub>`) were previously hand-authored YAML that required manual updates whenever a cluster was added or a group changed. The `charts/hub-bootstrap/` chart generates them automatically from `clusters.yaml`.
+The hub Applications themselves (`hub-clusters-<hub>`) were previously hand-authored YAML that required manual updates whenever a cluster was added or a group changed. The `charts/hub-bootstrap/` chart generates them automatically from `clusters.yaml`.
 
 For each distinct `hub:` value in `clusters.yaml`, the chart emits one Application. The `valueFiles` list is derived entirely from the cluster data — no manual maintenance required:
 
@@ -243,13 +243,13 @@ For each distinct `hub:` value in `clusters.yaml`, the chart emits one Applicati
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: global-root-prod-a
+  name: hub-clusters-prod-a
   annotations:
     hub-bootstrap/clusters: "site-dc1, site-edge-1"
     hub-bootstrap/groups: "all, virt-enabled, edge-sno"
 spec:
   source:
-    path: devops/argo/examples/helm-component-pattern/charts/global-root
+    path: devops/argo/examples/helm-component-pattern/charts/hub-clusters
     helm:
       parameters:
         - name: currentHub
@@ -281,8 +281,8 @@ Adding a cluster to `clusters.yaml` regenerates this list automatically. The pro
          ┌────────────────────┼────────────────────┐
          │                   │                    │
 Application:           Application:          Application:
-global-root-dev       global-root-prod-a    global-root-prod-b
-Runs: charts/global-root  (same)            (same)
+hub-clusters-dev       hub-clusters-prod-a    hub-clusters-prod-b
+Runs: charts/hub-clusters  (same)            (same)
 currentHub=dev        currentHub=prod-a     currentHub=prod-b
          │                   │                    │
          ▼                   ▼                    ▼
@@ -313,15 +313,15 @@ Triggers: any change to `clusters.yaml`, `groups/**`, `clusters/**`, or either c
 When adding a cluster to a hub:
 1. Add the entry to `clusters.yaml`
 2. Optionally add `clusters/<name>/values.yaml` for component overrides
-3. Merge PR → Action renders hub Applications → bootstrap-root picks up the change → global-root creates the new cluster's component Applications
+3. Merge PR → Action renders hub Applications → bootstrap-root picks up the change → hub-clusters creates the new cluster's component Applications
 
 ### Approach A vs Approach B — when to choose each
 
-| | Approach A (render script + pre-rendered) | Approach B (global-root, live render) |
+| | Approach A (render script + pre-rendered) | Approach B (hub-clusters, live render) |
 |---|---|---|
 | Render timing | Offline — developer runs the script | Live — Argo CD renders at sync time |
 | Git diff on PR | Explicit — `clusters/*/rendered/` shows exact manifests | Implicit — must run `helm template` or use argocd-diff-preview to see output |
-| Argo CD version | Any | Any (no ApplicationSet required for global-root) |
+| Argo CD version | Any | Any (no ApplicationSet required for hub-clusters) |
 | Multi-hub support | Per-hub bootstrap files + rendered dirs per cluster | Native — `currentHub` parameter filters `clusters.yaml` |
 | `clusters.yaml` | Not required — cluster metadata in cluster values files | Required — single source of truth for cluster identity |
 | Cluster values file | `cluster:` block + `groups:` + app overrides | App overrides only (identity/groups live in `clusters.yaml`) |
@@ -468,9 +468,9 @@ git add clusters/site-dc2/
 git diff --staged
 ```
 
-### Onboarding a new cluster (Approach B — global-root)
+### Onboarding a new cluster (Approach B — hub-clusters)
 
-See the [Approach B section](#approach-b--global-root-chart-with-multi-hub-filtering-and-clustersyaml) — cluster onboarding is done by adding to `clusters.yaml` and merging a PR.
+See the [Approach B section](#approach-b--hub-clusters-chart-with-multi-hub-filtering-and-clustersyaml) — cluster onboarding is done by adding to `clusters.yaml` and merging a PR.
 
 ---
 

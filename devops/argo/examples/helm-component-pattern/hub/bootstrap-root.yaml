@@ -14,9 +14,9 @@
 # After this, the full bootstrap sequence is:
 #
 #   1. This Application syncs hub/rendered/hub-applications.yaml
-#      → creates global-root-<hub> Applications (one per hub on this cluster)
+#      → creates hub-clusters-<hub> Applications (one per hub on this cluster)
 #
-#   2. Each global-root-<hub> Application runs charts/global-root/
+#   2. Each hub-clusters-<hub> Application runs charts/hub-clusters/
 #      → creates component Applications for every cluster on this hub
 #
 #   3. Each component Application deploys to its target cluster

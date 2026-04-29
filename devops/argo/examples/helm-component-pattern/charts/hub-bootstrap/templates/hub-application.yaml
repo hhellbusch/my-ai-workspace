@@ -7,12 +7,12 @@
   ── Hub discovery ────────────────────────────────────────────────────────────
 
   The template groups the clusters list by hub name.  Every distinct hub value
-  in clusters.yaml produces one Application, named global-root-<hubName>.
+  in clusters.yaml produces one Application, named hub-clusters-<hubName>.
 
   ── valueFiles derivation ────────────────────────────────────────────────────
 
   For each hub the template builds the correct valueFiles list automatically:
-    1. clusters.yaml — always first (provides .Values.clusters to global-root)
+    1. clusters.yaml — always first (provides .Values.clusters to hub-clusters)
     2. groups/<name>/values.yaml — for every group referenced by any cluster
        on this hub, in the order declared in hubConfig.<hubName>.groupOrder
     3. clusters/<name>/values.yaml — for every cluster on this hub
@@ -77,7 +77,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: global-root-{{ $hubName }}
+  name: hub-clusters-{{ $hubName }}
   namespace: {{ $.Values.argocd.namespace }}
   labels:
     managed-by: hub-bootstrap
@@ -95,18 +95,18 @@ spec:
   source:
     repoURL: {{ $.Values.source.repoURL }}
     targetRevision: {{ $.Values.source.targetRevision }}
-    path: {{ $.Values.source.globalRootChartPath }}
+    path: {{ $.Values.source.hubClustersChartPath }}
 
     helm:
       parameters:
         - name: currentHub
           value: {{ $hubName }}
 
-      # valueFiles are relative to the chart source path (charts/global-root/).
+      # valueFiles are relative to the chart source path (charts/hub-clusters/).
       # All entries are derived from clusters.yaml — no manual list maintenance.
       ignoreMissingValueFiles: true
       valueFiles:
-        # 1. Cluster inventory — must be first; provides .Values.clusters to global-root
+        # 1. Cluster inventory — must be first; provides .Values.clusters to hub-clusters
         - {{ $prefix }}/clusters.yaml
         # 2. Group values files — one per unique group across all hub clusters
         {{- range $hubGroups }}
