@@ -56,7 +56,7 @@ ArgoCD generates one Application object per enabled component per cluster. Confi
 
 This pattern uses the word **hub** to mean: *a cluster where ArgoCD runs, which deploys applications to other (spoke) clusters*.
 
-This is standard ArgoCD fleet terminology and is independent of Red Hat Advanced Cluster Management (RHACM). RHACM is a separate product that provides cluster lifecycle, policy, and observability on top of this same physical topology. **This pattern requires only ArgoCD.** RHACM is not installed or used here.
+This is standard ArgoCD fleet terminology. **This pattern requires only ArgoCD** — no Red Hat Advanced Cluster Management (RHACM) is installed or used in this reference implementation.
 
 ```
 Hub cluster (ArgoCD runs here)
@@ -64,6 +64,15 @@ Hub cluster (ArgoCD runs here)
   ├── Deploys to: site-dc2   (spoke)
   └── Deploys to: site-edge-1  (spoke)
 ```
+
+**RHACM can be used alongside this pattern and makes some things easier.** RHACM automates the operational steps that this pattern leaves manual:
+
+- Registering spoke clusters with the hub ArgoCD instance (cluster secrets, RBAC, kubeconfig)
+- Propagating the ArgoCD namespace and service account to spoke clusters
+- Cluster lifecycle (provisioning, decommissioning, upgrades)
+- Policy enforcement across the fleet independent of ArgoCD
+
+If RHACM is available, use it for cluster registration and let this pattern handle *what gets deployed* to each cluster. The two are complementary: RHACM manages the fleet topology; this pattern manages the application configuration that runs on it.
 
 Multiple hub clusters are supported — `prod-a`, `prod-b`, and `dev` in this example. Each hub manages a subset of spoke clusters. All hubs read from the same Git repository.
 
