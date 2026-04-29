@@ -361,17 +361,75 @@ The shift from vSAN/VMFS datastores to the Kubernetes storage model is as signif
 - **App-of-apps pattern** — a root Application that manages child Applications; the complete cluster inventory lives in Git
 - **Configuration drift** — what Argo CD detects when cluster state diverges from Git; `selfHeal` vs manual sync
 - **Sync options** — `Validate`, `CreateNamespace`, `RespectIgnoreDifferences`, retry strategies
-- **GitOps repository structure** — this is where new teams consistently make long-lived decisions they later regret; get it right early:
-  - **Mono-repo vs multi-repo**: a single repo for all cluster config (simple, one PR spans all changes) vs separate repos per team or per environment (cleaner access control, more operational overhead). Most platform teams start with mono-repo and split later as team count grows.
-  - **Environment promotion patterns**: three common models — (1) *branches* (`dev`, `staging`, `prod` branches; simple but merge-heavy), (2) *directories* (`envs/dev/`, `envs/staging/`, `envs/prod/` in one branch; clear structure, easier to diff), (3) *separate repos per environment* (strongest access isolation, highest overhead). Directory-based is the most common production pattern for OCP.
-  - **Kustomize overlays** — a base manifest directory (`base/`) plus per-environment patch directories (`overlays/dev/`, `overlays/prod/`). Overlays can patch any field (replica count, image tag, resource limits) without duplicating the base. Argo CD has native Kustomize support — point an Application at an overlay directory.
-  - **Helm in Argo CD** — use Helm for third-party charts with many configurable values (cert-manager, ingress-nginx, Vault); use Kustomize for manifests you own and need to patch per-environment. Mixing both is valid: Helm renders a chart, Kustomize patches the output.
-  - **Secrets in GitOps** — never commit plaintext or base64-encoded secrets to Git. Three approved patterns: (1) *Sealed Secrets* (asymmetrically encrypted in Git, decrypted by controller in-cluster — simple, no external dependency); (2) *External Secrets Operator* (references a vault; secret lives outside Git entirely — preferred for production); (3) *Helm Secrets* (age/SOPS-encrypted values file — tightly coupled to Helm workflow). Choose based on your vault investment and team secret rotation process.
+- **GitOps repository structure** — this is where new teams consistently make long-lived decisions they later regret; get it right early. The Red Hat COP `components/groups/clusters` pattern is the standard starting point:
+
+  **The `components / groups / clusters` pattern** ([`redhat-cop/gitops-standards-repo-template`](https://github.com/redhat-cop/gitops-standards-repo-template))
+
+  Red Hat's community of practice publishes a reference repo template for multi-cluster day-2 configuration. It defines three folders whose separation is the key design insight:
+
+  ```
+  components/          # atomic, reusable building blocks — one config concern per subfolder
+  │  ├── oauth/        # no cluster-specific values; just the raw manifest
+  │  ├── nmstate/
+  │  └── cert-manager/
+  groups/              # composable cluster profiles — each group is a Kustomize Component
+  │  ├── all/          # applied to every cluster
+  │  ├── non-prod/     # overrides for non-production clusters
+  │  ├── geo-east/     # geography-based group
+  │  └── virt-enabled/ # clusters running OpenShift Virtualization
+  clusters/            # cluster-specific config — selects which groups to compose
+     ├── hub/
+     └── site-dc1/
+  ```
+
+  Groups are Kustomize `kind: Component` (not `kind: Kustomization`), which makes them *composable* rather than *inherited*. A cluster can belong to `all + non-prod + geo-east` simultaneously. This avoids the combinatorial explosion of full overlays.
+
+  **`redhat-cop/gitops-catalog`** — the component library ([`redhat-cop/gitops-catalog`](https://github.com/redhat-cop/gitops-catalog))
+
+  A library of 80+ pre-built Kustomize base components for common OCP operators and configurations. Rather than writing your own `Subscription` and `OperatorGroup` YAML for every operator, reference a catalog entry as a Kustomize remote base:
+
+  ```yaml
+  # components/nmstate/kustomization.yaml
+  resources:
+    - github.com/redhat-cop/gitops-catalog/nmstate/operator/overlays/stable?ref=main
+  ```
+
+  Directly relevant entries for this learning path: `advanced-cluster-management`, `nmstate`, `metallb-operator`, `openshift-data-foundation-operator`, `virtualization-operator`, `topology-aware-lifecycle-manager-operator`, `external-secrets-operator`, `sealed-secrets-operator`, `loki-operator`, `openshift-api-for-data-protection-operator`, `openshift-sriov-network-operator`. Start here instead of writing operator YAML from scratch.
+
+  **Helm variant — `mustMergeOverwrite` for cascading group values**
+
+  The same `components/groups/clusters` concept can be implemented with Helm instead of Kustomize. The app-of-apps chart renders cluster Applications from values files; groups are separate values files that are merged in order. The key Helm behaviour to enable cascading group composition is `mustMergeOverwrite` — it deep-merges maps (dictionaries) rather than replacing them, so group values accumulate rather than override:
+
+  ```yaml
+  # groups/all/values.yaml  — base defaults for every cluster
+  operators:
+    nmstate: {enabled: true, channel: stable}
+
+  # groups/virt-enabled/values.yaml  — additive layer
+  operators:
+    kubevirt: {enabled: true, channel: stable}
+
+  # clusters/site-dc1/values.yaml  — compose groups, add cluster-specific overrides
+  groups:
+    - all
+    - virt-enabled
+  clusterName: site-dc1
+  operators:
+    nmstate: {channel: stable-4.16}   # cluster-level override of the group default
+  ```
+
+  When Helm merges these values files with `mustMergeOverwrite`, maps are deep-merged rather than replaced — `site-dc1` gets `nmstate` (from `all`) and `kubevirt` (from `virt-enabled`) with the channel override applied only where specified. This gives the same composability as Kustomize components without leaving the Helm values model.
+
+  **Mono-repo vs multi-repo**: a single repo for all cluster config (simple, one PR spans all changes) vs separate repos per team or per environment (cleaner access control, more operational overhead). Most platform teams start with mono-repo and split when team count or access control requirements force it.
+
+  **Secrets in GitOps** — never commit plaintext or base64-encoded secrets to Git. Three approved patterns: (1) *Sealed Secrets* (asymmetrically encrypted in Git, decrypted by controller in-cluster — simple, no external dependency; `gitops-catalog` has a component for it); (2) *External Secrets Operator* (secret lives in a vault, never in Git — preferred for production; also in `gitops-catalog`); (3) *Helm Secrets* (SOPS-encrypted values file — works with the Helm variant above). Choose based on vault investment and secret rotation cadence.
 
 **Official**
 
 - [Understanding OpenShift GitOps](https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/latest/html/understanding_openshift_gitops/index)
-- [`redhat-cop/helm-charts` — operators-installer](https://github.com/redhat-cop/helm-charts/tree/main/charts/operators-installer) — community Helm chart for GitOps-driven operator installation; a useful pattern for team-owned operators
+- [`redhat-cop/gitops-standards-repo-template`](https://github.com/redhat-cop/gitops-standards-repo-template) — the `components/groups/clusters` reference layout for multi-cluster day-2 configuration; use as the starting template for any new GitOps repo
+- [`redhat-cop/gitops-catalog`](https://github.com/redhat-cop/gitops-catalog) — 80+ pre-built Kustomize base components for OCP operators; reference as remote bases rather than writing operator YAML from scratch
+- [`redhat-cop/helm-charts` — operators-installer](https://github.com/redhat-cop/helm-charts/tree/main/charts/operators-installer) — community Helm chart for GitOps-driven operator installation; the foundation for the Helm app-of-apps variant
 
 **This repo**
 
@@ -383,7 +441,9 @@ The shift from vSAN/VMFS datastores to the Kubernetes storage model is as signif
 - Introduce a deliberate drift — change a resource directly via `oc`, bypassing Git. Confirm Argo CD detects it and either alerts or remediates depending on your sync policy. Explain to a colleague what just happened and why the console change did not survive.
 - Create an ApplicationSet that generates one Application per directory in a repo. Add a new directory. Confirm Argo CD creates the Application automatically.
 - **Failure modes** (the questions that arrive in production): Introduce a broken manifest into Git — a YAML syntax error or a missing required field — and push it. What state does the Application enter? How do you identify the sync error without console access? How do you unblock it? Then: intentionally cause a health check failure (deploy a pod with a container that crashes on start). Distinguish `OutOfSync` (cluster state differs from Git) from `Degraded` (cluster state matches Git but the resource is unhealthy). Explain why Argo CD can report both simultaneously and what each requires from the operator.
-- **Repo structure**: Design a directory layout for three environments (dev, staging, prod) where each runs the same base application but with different replica counts, image tags, and resource limits. Show how Kustomize overlays address this without duplicating the base manifest. Explain where the Argo CD Application definitions live in relation to the application manifests. Then: a teammate has committed a Kubernetes Secret manifest (base64-encoded data, not encrypted) to the repo. Explain the security exposure, which tool you would use to remediate it, and how you would prevent recurrence via branch protection or a pre-commit hook.
+- **Repo structure**: Clone `redhat-cop/gitops-standards-repo-template`. Without reading the full README, map what each top-level folder is for by reading only the `kustomization.yaml` files. Then: design a `groups/` structure for a fleet that has three cluster types — `all` (shared baseline), `virt-enabled` (OCP Virt), and `edge-sno` (single-node, resource-constrained). Explain how a cluster that is both `virt-enabled` and `edge-sno` references both groups, and what Kustomize `kind: Component` makes possible that `kind: Kustomization` overlays do not.
+- **Catalog usage**: Browse `redhat-cop/gitops-catalog` and find the Kustomize base for NMState, MetalLB, and the External Secrets Operator. Create a `components/nmstate/kustomization.yaml` in a test repo that references the catalog as a remote base. Point an Argo CD Application at it. Confirm the operator installs.
+- **Secrets**: A teammate has committed a Kubernetes Secret manifest (base64-encoded data, not encrypted) to the GitOps repo. Explain the security exposure, which tool you would use to remediate it (Sealed Secrets vs ESO — and why), and how you would prevent recurrence via a pre-commit hook or CODEOWNERS rule.
 
 ---
 
@@ -783,6 +843,6 @@ After this, `oc get packagemanifests` shows only the operators you have mirrored
 
 ---
 
-**Document:** Learning path v2.0 · Last updated 2026-04-29 (Phase 2 expanded: SCCs, OLM lifecycle, multi-tenancy, observability depth with PrometheusRule/LokiStack/must-gather, backup and DR with etcd/OADP; new networking and storage deep dive section before Phase 3: OVN-Kubernetes, NetworkPolicy, Multus, NAD, MetalLB, NMState, SR-IOV, StorageClass, ODF, DataVolume, VolumeSnapshot, RWX for live migration; Phase 3 expanded: VM topics list and performance tuning for latency-sensitive workloads; Phase 4 expanded: GitOps repo structure patterns — mono/multi-repo, environment promotion, Kustomize overlays, Helm vs Kustomize, secrets handling with Sealed Secrets/ESO/Helm Secrets — plus repo structure verification; disconnected environments appendix: oc-mirror, ImageDigestMirrorSet, disconnected OperatorHub, cross-phase integration table; outcomes statement updated.).
+**Document:** Learning path v2.1 · Last updated 2026-04-29 (Phase 4 GitOps repo structure section replaced with concrete, named references: `redhat-cop/gitops-standards-repo-template` as the `components/groups/clusters` canonical pattern; `redhat-cop/gitops-catalog` as the pre-built Kustomize component library for OCP operators; Helm `mustMergeOverwrite` cascading group values as the Helm-native implementation of the same pattern; updated Phase 4 verification to use catalog and template directly; v2.0: Phase 2 SCCs/OLM/multi-tenancy/observability/backup-DR; networking+storage deep dive bridge; Phase 3 VM topics + performance tuning; Phase 4 GitOps repo structure + secrets; disconnected environments appendix).
 
 *AI-assisted content. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for review status details.*
