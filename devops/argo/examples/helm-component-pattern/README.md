@@ -23,15 +23,13 @@ helm-component-pattern/
 │   ├── all/values.yaml        # component-all: fleet baseline (lowest priority)
 │   ├── virt-enabled/values.yaml  # component-virt-enabled: enables OCP Virt
 │   └── edge-sno/values.yaml   # component-edge-sno: resource tuning for SNO
-├── clusters/                  # One directory per cluster — component overrides only
-│   ├── site-dc1/
-│   │   ├── values.yaml        # component-site-dc1: app overrides (no cluster: block)
-│   │   └── rendered/          # Approach A only: pre-rendered Applications
-│   │       └── applications.yaml
-│   └── site-edge-1/
-│       ├── values.yaml
-│       └── rendered/
-│           └── applications.yaml
+├── clusters/                  # One directory per cluster — Approach B format (overrides only)
+│   ├── site-dc1/values.yaml   # component-site-dc1: app overrides; no groups: or cluster: block
+│   ├── site-edge-1/values.yaml
+│   ├── site-dc2/values.yaml
+│   └── site-dev-1/values.yaml
+│   # In Approach A you would also have clusters/<name>/rendered/applications.yaml
+│   # (pre-rendered by scripts/render-clusters.sh). Not present here — this repo uses Approach B.
 ├── hub/
 │   ├── bootstrap-root.yaml           # The ONE Application applied by hand (watches hub/rendered/)
 │   ├── rendered/
@@ -339,7 +337,7 @@ The tool spins up a temporary Argo CD instance, renders the current branch and t
 
 **Running on OpenShift without cluster-admin:** deploy argocd-diff-preview into a dedicated namespace (e.g. `argocd-diff`) using a namespace-scoped Argo CD instance (the OpenShift GitOps operator supports this). CI uses only namespace-scoped credentials — no production Argo CD access required.
 
-See the library entry: [`library/argocd-diff-preview.md`](../../../../../library/argocd-diff-preview.md)
+See the library entry: [`library/argocd-diff-preview.md`](../../../../library/argocd-diff-preview.md)
 
 Reference videos:
 - [https://www.youtube.com/watch?v=3aeP__qPSms](https://www.youtube.com/watch?v=3aeP__qPSms)
