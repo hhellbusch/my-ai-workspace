@@ -71,71 +71,94 @@ Multiple hub clusters are supported — `prod-a`, `prod-b`, and `dev` in this ex
 
 ## Opinions baked in
 
-Every design has trade-offs. These are the choices made in this pattern and what they cost.
+Every design has trade-offs. These are the choices made in this pattern and what they cost. Each opinion is grounded in a named software engineering principle — these are not arbitrary preferences.
 
 ---
 
 **1. Groups describe capability, not environment**
+*Principle: Separation of Concerns + Composition over Inheritance*
 
-Groups are named after what a cluster *is* (`virt-enabled`, `edge-sno`), not where it sits in a promotion pipeline (`env-production`, `env-staging`). A cluster can belong to multiple groups simultaneously. An environment-based model forces you into a single inheritance axis; a capability-based model composes freely.
+Groups are named after what a cluster *is* (`virt-enabled`, `edge-sno`), not where it sits in a promotion pipeline (`env-production`, `env-staging`). A cluster can belong to multiple groups simultaneously. An environment-based model forces you into a single inheritance axis; a capability-based model composes freely — a cluster can be both `virt-enabled` and `edge-sno` without a combined `virt-enabled-edge-sno` group.
 
 *Cost:* requires discipline in naming — groups that leak environment concerns (`prod-only-cert-manager`) undermine the model. Environment-specific config belongs in a cluster override file, not a group.
 
 ---
 
 **2. Components are opt-out at the fleet level, opt-in per group**
+*Principle: Secure by Default + Explicit over Implicit*
 
-`component-all` sets `enabled: false` for anything that isn't universally required. Groups opt components in. This means adding a new component to the registry does not automatically install it anywhere — it requires an explicit group or cluster override. Safer for destructive components (storage, networking).
+`component-all` sets `enabled: false` for anything that isn't universally required. Groups opt components in. This means adding a new component to the registry does not automatically install it anywhere — it requires an explicit group or cluster override. Safer for destructive components (storage, networking operators). This is the same principle as deny-by-default in access control: you must explicitly grant, not explicitly deny.
 
 *Cost:* group files grow as the component list grows. A component that truly belongs on every cluster still needs an explicit `enabled: true` in `component-all`.
 
 ---
 
 **3. `clusters.yaml` owns cluster identity; cluster value files own only deviations**
+*Principle: Single Source of Truth (SSOT) + DRY (Don't Repeat Yourself)*
 
-Cluster metadata (name, server URL, hub assignment, group membership, vault endpoint, monitoring endpoint) lives in one file. `clusters/<name>/values.yaml` contains only component-level overrides — if a cluster needs no overrides, the file can be empty. A new reader knows where to look for any cluster attribute.
+Cluster metadata (name, server URL, hub assignment, group membership, vault endpoint, monitoring endpoint) lives in one file. `clusters/<name>/values.yaml` contains only component-level overrides — if a cluster needs no overrides, the file can be empty. Every attribute has exactly one authoritative location. When a Vault endpoint changes, one line in one file changes, and every component on every cluster in that hub picks it up.
 
 *Cost:* `clusters.yaml` becomes a coordination point. Every cluster onboarding touches it. In large teams this can cause merge conflicts; consider automating the addition via a script or CI step.
 
 ---
 
 **4. `mustMergeOverwrite` over `mergeOverwrite` (deep merge)**
+*Principle: Fail Fast + Principle of Least Surprise*
 
-`mergeOverwrite` does a shallow top-level replacement — if `component-virt-enabled` sets an `apps.nmstate` key, it replaces the entire `apps.nmstate` map from `component-all`, losing any sibling keys. `mustMergeOverwrite` recurses into maps: only the keys explicitly set in the higher-priority layer are overridden; the rest are inherited.
+`mergeOverwrite` does a shallow top-level replacement — a group setting an `apps.nmstate` key replaces the entire map from the lower layer, silently losing sibling keys. `mustMergeOverwrite` recurses: only the keys explicitly set in the higher-priority layer are overridden. The Fail Fast principle applies to the type-conflict panic: a schema mistake (a key is a string in one layer and a map in another) causes an immediate render-time error rather than silently producing incorrect YAML that only fails when applied to the cluster.
 
-*Cost:* type conflicts (a key is a string in one layer and a map in another) cause a hard render-time panic rather than a silent merge. This is intentional — it surfaces schema mistakes early. But it means all layers must agree on the type of every key they share.
+*Cost:* all layers must agree on the type of every key they share. Mixed types that happen to work with `mergeOverwrite` will panic with `mustMergeOverwrite`.
 
 ---
 
 **5. Group priority order is explicit (`hubConfig.groupOrder`)**
+*Principle: Make the Implicit Explicit + Principle of Least Surprise*
 
-The order groups are loaded determines which wins when two groups set the same key. This order is declared explicitly in `clusters.yaml` under `hubConfig.<hub>.groupOrder` rather than derived from the order clusters are listed in the file. Cluster listing order is an implementation detail; merge priority is a policy decision.
+The order groups are loaded determines which wins when two groups set the same key. This order is declared explicitly in `clusters.yaml` under `hubConfig.<hub>.groupOrder` rather than derived from the order clusters are listed in the file. Cluster listing order is an implementation detail; merge priority is a policy decision. Making it explicit means a new engineer reading `clusters.yaml` can answer "which group wins?" without tracing through template logic.
 
 *Cost:* adding a new group requires updating `hubConfig.groupOrder` for every hub that uses it, or the template falls back to implicit ordering with a warning annotation.
 
 ---
 
 **6. One ArgoCD instance per hub, not one global instance**
+*Principle: Bulkhead Pattern + Defence in Depth*
 
-Each hub cluster runs its own ArgoCD. The hub is scoped to the clusters it manages. There is no single "master" ArgoCD that targets all clusters across all environments. This limits blast radius — a misconfiguration in the dev hub cannot affect prod clusters.
+Each hub cluster runs its own ArgoCD scoped to the clusters it manages. There is no single "master" ArgoCD targeting all clusters across all environments. The Bulkhead pattern (from ship design: watertight compartments limit flooding) applied here means a misconfiguration in the dev hub cannot affect prod clusters — the failure is contained to one compartment. Defence in depth means prod clusters require a separate credential, a separate ArgoCD instance, and a separate PR merged to a separate hub's scope before anything reaches them.
 
-*Cost:* multiple ArgoCD instances to operate. Shared config (RBAC, repositories, projects) must be reproduced or templated across hubs. This is the same trade-off as any hub-and-spoke topology.
+*Cost:* multiple ArgoCD instances to operate. Shared config (RBAC, repositories, projects) must be reproduced or templated across hubs.
 
 ---
 
 **7. Hub Applications are pre-rendered; component Applications are live-rendered**
+*Principle: Apply Constraints at the Right Layer (Appropriate Consistency)*
 
-Hub Applications (`hub-clusters-*`) are committed to Git as plain YAML. Component Applications are generated by ArgoCD at sync time. This hybrid exists because of the chicken-and-egg problem at the hub layer, and is a deliberate trade-off: the hub layer is stable (changes only when clusters are added/moved), so pre-rendering it is low churn and high auditability. The component layer changes constantly, so live rendering avoids large Git diffs on every group value change.
+Not every layer of a system needs the same consistency model. Hub Applications change rarely (only when clusters are added or moved between hubs) — pre-rendering them gives high auditability at low Git churn. Component Applications change constantly (group value updates, new components) — pre-rendering all of them would produce enormous Git diffs every time a shared group value changes. The principle is to apply the stronger consistency guarantee (committed YAML, full audit trail) where the cost is low and the benefit is high, and use the lighter model (live render) where strong consistency would create noise.
 
-*Cost:* you cannot see exactly what component Applications will be created by reading Git alone — you need to run `helm template` locally or use argocd-diff-preview on the PR. The `hub/rendered/` file serves as the argocd-diff-preview entry point (see [PR diff visibility](#pr-diff-visibility-with-argocd-diff-preview)).
+*Cost:* you cannot see exactly what component Applications will be created by reading Git alone — you need `helm template` locally or argocd-diff-preview on the PR. The `hub/rendered/` file serves as the argocd-diff-preview entry point (see [PR diff visibility](#pr-diff-visibility-with-argocd-diff-preview)).
 
 ---
 
 **8. No ApplicationSet**
+*Principle: YAGNI (You Aren't Gonna Need It) + Minimise External Dependencies*
 
-Applications are generated by Helm templates, not by an ApplicationSet controller. This was a pragmatic choice for compatibility with environments running older ArgoCD versions where ApplicationSet was not bundled. It also makes the generation logic explicit and testable with `helm template` rather than requiring a running ApplicationSet controller.
+Applications are generated by Helm templates, not by an ApplicationSet controller. The generation logic is explicit, version-controlled in this repo, and testable offline with `helm template` — no running controller required. This was a pragmatic choice for compatibility with older ArgoCD versions where ApplicationSet was not bundled, and it keeps the blast radius of a template bug contained to a CI failure rather than a live controller acting on the cluster.
 
-*Cost:* no automatic cluster discovery — every cluster must be explicitly registered in `clusters.yaml`. An ApplicationSet with a Git directory generator can auto-discover clusters; this pattern cannot. See `hub/option-b-applicationset.yaml` for what an ApplicationSet bootstrap would look like if you later want to migrate.
+*Cost:* no automatic cluster discovery — every cluster must be explicitly registered in `clusters.yaml`. See `hub/option-b-applicationset.yaml` for what an ApplicationSet bootstrap would look like.
+
+---
+
+### Principles at a glance
+
+| Opinion | Primary principle | Secondary principle |
+|---|---|---|
+| Groups = capability, not environment | Separation of Concerns | Composition over Inheritance |
+| Opt-out defaults, opt-in per group | Secure by Default | Explicit over Implicit |
+| `clusters.yaml` as single identity source | Single Source of Truth | DRY |
+| `mustMergeOverwrite` + type panics | Fail Fast | Principle of Least Surprise |
+| Explicit group order | Make the Implicit Explicit | Principle of Least Surprise |
+| One ArgoCD per hub | Bulkhead Pattern | Defence in Depth |
+| Hybrid pre-render / live-render | Appropriate Consistency | (apply constraints where cost is low) |
+| No ApplicationSet | YAGNI | Minimise External Dependencies |
 
 ---
 
