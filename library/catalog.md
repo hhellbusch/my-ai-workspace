@@ -108,6 +108,8 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Dex Horthy — No Vibes Allowed: Solving Hard Problems in Complex Codebases | AI Engineer (London 2026) | 2026 | https://www.youtube.com/watch?v=rmvDxxNubIg | ai-engineering, context-engineering, rpi, dumb-zone, sub-agents, brownfield, humanlayer, no-slop | [enriched](dex-horthy-no-vibes-allowed.md) |
 | Andrej Karpathy — From Vibe Coding to Agentic Engineering | Sequoia Capital | 2026 | https://www.youtube.com/watch?v=96jN2OCOfLs | ai-engineering, vibe-coding, agentic-engineering, software-3.0, jagged-intelligence, verifiability, karpathy | [enriched](andrej-karpathy-vibe-coding-to-agentic-engineering.md) |
 | Simon Scrapes — Every Claude Code Memory System Compared (So You Don't Have To) | Simon Scrapes | 2026 | https://www.youtube.com/watch?v=UHVFcUzAGlM | ai-engineering, memory, claude-code, agents, memsearch, mempalace, autonomous-agents, paude | [enriched](simon-scrapes-claude-code-memory-systems.md) |
+| Andrej Karpathy — LLM Wiki | Andrej Karpathy | ~2024 | https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f | ai-engineering, memory, llm-wiki, knowledge-base, schema, ingest, persistent-context | [enriched](karpathy-llm-wiki.md) |
+| MemPalace — Local-first AI memory | MemPalace (open-source) | 2025–2026 | https://github.com/mempalace/mempalace | ai-engineering, memory, verbatim-storage, semantic-search, wings-rooms-drawers, mcp, agent-memory, chromadb | [enriched](mempalace.md) |
 
 ## Other Training
 

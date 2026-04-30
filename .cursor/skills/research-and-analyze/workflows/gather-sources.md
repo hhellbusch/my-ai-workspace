@@ -138,7 +138,33 @@ If there are failed fetches:
 3. If an alternative is found, manually update the manifest URL and re-run
 4. For truly unreachable sources, mark as `unreachable` and note in findings
 
-## Step 8: Phase-Boundary Checkpoint — HARD STOP
+## Step 8: Create Library Entry Stub — REQUIRED BEFORE CHECKPOINT
+
+Before stopping, create a minimal library entry stub so no transcript is left orphaned:
+
+1. Check whether a library entry already exists for this source:
+   ```bash
+   ls library/ | grep -i "{subject-slug}"
+   ```
+
+2. If none exists, create `library/{subject-slug}.md` with at minimum:
+   - Metadata block (title, author, URL, type, tags, added date, wing)
+   - One-line "Why This Matters (personal)" placeholder: `> Stub — full entry pending analysis phase.`
+
+3. Append to `library/log.md`:
+   ```
+   ## [YYYY-MM-DD] ingest | {Title}
+   - **Entry:** [{subject-slug}.md]({subject-slug}.md)
+   - **Wing:** {wing}
+   - **Source:** {type} / research/{subject-slug}/sources/
+   - **Note:** Transcript fetched; library entry stub created. Full enrichment pending analysis.
+   ```
+
+4. Add a row to `library/catalog.md` (or note that it already exists).
+
+This step is non-optional. An orphaned transcript with no library entry is an incomplete ingest.
+
+## Step 9: Phase-Boundary Checkpoint — HARD STOP
 
 **Do not proceed to analysis. Stop here and report to the user.**
 
@@ -147,10 +173,11 @@ Tell the user:
 - Number of sources on disk vs. total
 - For transcript variant: confirm the transcript was saved and show the segment count
 - For standard path: fetch success/failure counts
+- Confirm the library entry stub exists and is logged in `library/log.md`
 
 Then ask:
 
-> **Gather phase complete.** Files are on disk at `research/{subject-slug}/`. Ready to move to claim analysis?
+> **Gather phase complete.** Files are on disk at `research/{subject-slug}/`. Library stub created at `library/{subject-slug}.md`. Ready to move to claim analysis?
 > - Yes — proceed to `analyze-claims.md`
 > - No — describe what to fix
 
@@ -165,5 +192,7 @@ This workflow is complete when:
 - [ ] Manifest has one entry per reference or claim, all marked `pending`
 - [ ] Fetch script has been run at least once and output confirmed
 - [ ] Failed fetches have been retried or documented
+- [ ] Library entry stub exists at `library/{subject-slug}.md`
+- [ ] Entry logged in `library/log.md` with wing tag
 - [ ] User has explicitly confirmed readiness to proceed to analysis
 </success_criteria>

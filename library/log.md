@@ -1,0 +1,128 @@
+# Library Ingest Log
+
+Append-only. One entry per ingest. Format: `## [YYYY-MM-DD] ingest | Title`
+
+Parseable: `grep "^## " library/log.md | tail -10`
+
+---
+
+## [2026-04-17] ingest | The Zen Way to Martial Arts — Taisen Deshimaru
+- **Entry:** [zen-way-martial-arts.md](zen-way-martial-arts.md)
+- **Wing:** philosophy-practice
+- **Source:** Book
+
+## [2026-04-17] ingest | Finding Karate — Gavin Mulholland
+- **Entry:** [finding-karate.md](finding-karate.md)
+- **Wing:** philosophy-practice
+- **Source:** Book
+
+## [2026-04-17] ingest | Karate Philosophy — Gichin Funakoshi et al.
+- **Entry:** [karate-philosophy.md](karate-philosophy.md)
+- **Wing:** philosophy-practice
+- **Source:** Book
+
+## [2026-04-17] ingest | Karate by Jesse — Jesse Enkamp
+- **Entry:** [karate-by-jesse.md](karate-by-jesse.md)
+- **Wing:** philosophy-practice
+- **Source:** YouTube / Website
+
+## [2026-04-17] ingest | Simple Lucas — productivity / single-tasking
+- **Entry:** [simple-lucas.md](simple-lucas.md)
+- **Wing:** philosophy-practice
+- **Source:** YouTube
+
+## [2026-04-17] ingest | Rian Doris / FlowState — neuroscience of flow
+- **Entry:** [rian-doris.md](rian-doris.md)
+- **Wing:** philosophy-practice
+- **Source:** YouTube
+
+## [2026-04-17] ingest | 3Blue1Brown — Deep Learning Series
+- **Entry:** [3blue1brown.md](3blue1brown.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/3blue1brown/
+
+## [2026-04-18] ingest | Shi Heng Yi — Isolation Is The Gateway to Success
+- **Entry:** [shi-heng-yi-isolation.md](shi-heng-yi-isolation.md)
+- **Wing:** philosophy-practice
+- **Source:** YouTube
+
+## [2026-04-18] ingest | Dan Walsh — Career Lessons (DevConf.US 2025)
+- **Entry:** [dan-walsh-devconf-2025-career-lessons.md](dan-walsh-devconf-2025-career-lessons.md)
+- **Wing:** ai-engineering / devops
+- **Source:** YouTube / research/ai-engineering-public/
+
+## [2026-04-18] ingest | Daniel Miessler — AI WILL Replace Knowledge Workers
+- **Entry:** [daniel-miessler-ai-replace-knowledge-workers.md](daniel-miessler-ai-replace-knowledge-workers.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/zen-karate-philosophy/
+
+## [2026-04-18] ingest | Daniel Miessler — Personal AI Infrastructure (PAI)
+- **Entry:** [daniel-miessler-pai.md](daniel-miessler-pai.md)
+- **Wing:** ai-engineering
+- **Source:** Article
+
+## [2026-04-18] ingest | Daniel Miessler — We're All Building a Single Digital Assistant
+- **Entry:** [daniel-miessler-single-da-thesis.md](daniel-miessler-single-da-thesis.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/miessler-single-da-thesis/
+
+## [2026-04-18] ingest | Jesse Enkamp × Shi Heng Yi — If I Started Martial Arts From Scratch In 2026
+- **Entry:** [enkamp-shi-heng-yi-mastery.md](enkamp-shi-heng-yi-mastery.md)
+- **Wing:** philosophy-practice
+- **Source:** YouTube / research/enkamp-shi-heng-yi-mastery/
+
+## [2026-04-18] ingest | André Bertel — Adaptive Reliability (Seminar)
+- **Entry:** [andre-bertel-adaptive-reliability.md](andre-bertel-adaptive-reliability.md)
+- **Wing:** philosophy-practice
+- **Source:** YouTube
+
+## [2026-04-18] ingest | Hank Green — Why is Everyone So Wrong About AI Water Use??
+- **Entry:** [hank-green-ai-water-use.md](hank-green-ai-water-use.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/youtube-sources-apr2026/
+
+## [2026-04-28] ingest | Git For Ages 4 And Up — Michael Schwern
+- **Entry:** [git-for-ages-4-and-up.md](git-for-ages-4-and-up.md)
+- **Wing:** devops
+- **Source:** YouTube
+
+## [2026-04-28] ingest | Automate OpenShift Cluster Deployment with RHACM and AAP (DevConf.US 2024)
+- **Entry:** [automate-ocp-cluster-deployment-rhacm-aap.md](automate-ocp-cluster-deployment-rhacm-aap.md)
+- **Wing:** devops
+- **Source:** YouTube
+
+## [2026-04-28] ingest | EngineersOfAI — What are AI Agents? (Agentic AI, Module 1)
+- **Entry:** [engineersofai-what-are-ai-agents.md](engineersofai-what-are-ai-agents.md)
+- **Wing:** ai-engineering
+- **Source:** Online course
+
+## [2026-04-29] ingest | Simon Scrapes — Every Claude Code Memory System Compared
+- **Entry:** [simon-scrapes-claude-code-memory-systems.md](simon-scrapes-claude-code-memory-systems.md)
+- **Wing:** ai-engineering / memory
+- **Source:** YouTube / research/pai-kai-paude/sources/ref-02-transcript.md
+- **Note:** Transcript fetched 2026-04-29; library entry created 2026-04-30
+
+## [2026-04-30] ingest | Ryan Lopopolo — Harness Engineering (AI Engineer London 2026)
+- **Entry:** [ryan-lopopolo-harness-engineering.md](ryan-lopopolo-harness-engineering.md)
+- **Wing:** ai-engineering / harness
+- **Source:** YouTube / research/ai-engineering-talks-apr-2026/sources/
+
+## [2026-04-30] ingest | Dex Horthy — No Vibes Allowed (AI Engineer London 2026)
+- **Entry:** [dex-horthy-no-vibes-allowed.md](dex-horthy-no-vibes-allowed.md)
+- **Wing:** ai-engineering / context-engineering
+- **Source:** YouTube / research/ai-engineering-talks-apr-2026/sources/
+
+## [2026-04-30] ingest | Andrej Karpathy — From Vibe Coding to Agentic Engineering (Sequoia 2026)
+- **Entry:** [andrej-karpathy-vibe-coding-to-agentic-engineering.md](andrej-karpathy-vibe-coding-to-agentic-engineering.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ai-engineering-talks-apr-2026/sources/
+
+## [2026-04-30] ingest | Andrej Karpathy — LLM Wiki (GitHub Gist)
+- **Entry:** [karpathy-llm-wiki.md](karpathy-llm-wiki.md)
+- **Wing:** ai-engineering / memory
+- **Source:** Gist — https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
+
+## [2026-04-30] ingest | MemPalace — Local-first AI memory (wings/rooms/drawers)
+- **Entry:** [mempalace.md](mempalace.md)
+- **Wing:** ai-engineering / memory
+- **Source:** GitHub — https://github.com/mempalace/mempalace

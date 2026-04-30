@@ -156,7 +156,7 @@ For directory moves (`git mv`): run `git status` before committing and scan for 
 When creating or modifying content (any `.md` file, commands, skills, `.cursorrules`):
 
 - **New file in `docs/`** — add to track `README.md` and `docs/README.md` cross-track list. Add to Related Reading of related essays.
-- **New file in `library/`** — add to `library/README.md` and `library/catalog.md`.
+- **New file in `library/`** — add to `library/README.md`, `library/catalog.md`, and `library/log.md`.
 - **New directory in `research/`** — add to `research/README.md`.
 - **New command or skill** — check if `.cursorrules` TÂCHES section needs updating.
 - **New planning project** — ensure a corresponding backlog item exists.
@@ -174,14 +174,34 @@ Content is organized by product/technology. Key directories:
 
 - `devops/` — all product-specific technical reference (`ansible/`, `argo/`, `coreos/`, `ocp/`, `rhacm/`, `vault/`)
 - `docs/` — essays and guides: `ai-engineering/`, `philosophy/`, `case-studies/` — each with `README.md`; master index at `docs/README.md`
-- `library/` — personal reference library; indexed in `library/README.md` and `library/catalog.md`
-- `research/` — research workspaces; indexed in `research/README.md`
+- `library/` — **wiki layer**: enriched entries indexed in `library/README.md` and `library/catalog.md`; every ingest logged in `library/log.md`
+- `research/` — **workshop/drawer layer**: raw sources and transcripts that feed the library wiki; indexed in `research/README.md`
 - `.planning/` — project briefs, roadmaps, style supplements; one dir per project
 - `STYLE.md` — workspace-level writing defaults (check before writing docs content)
 - `ABOUT.md` — workspace owner identity (read before corpus)
 - `BACKLOG.md` — project tracking (summary header: `> State:` line)
 
 Troubleshooting guides go in `devops/{product}/troubleshooting/`, never in `docs/`. Research output goes in `research/{topic}/`, never in `docs/`.
+
+---
+
+## Library — Knowledge Wiki
+
+**Mental model:** `library/` is the wiki — accumulated, synthesized knowledge indexed for retrieval. `research/*/sources/` are the raw workshop drawers that feed it. Research exists to produce library entries, not as an end in itself.
+
+**Wing convention (MemPalace-inspired):** entries belong to a topic wing. Assign the wing tag when logging:
+- `ai-engineering` — agents, harness, context, memory, models, agentic-workflow
+- `philosophy-practice` — zen, karate, flow, solitude, martial arts
+- `devops` — git, openshift, rhacm, aap, ansible
+- `leadership-org` — career, AI organizational impact, team dynamics
+
+**Every ingest must do all four steps:**
+1. Create the entry file in `library/`
+2. Add a row to `library/catalog.md`
+3. Add an entry block to `library/README.md` (Enriched Entries table)
+4. Append a dated entry to `library/log.md`
+
+An orphaned transcript in `research/*/sources/` with no library entry is an incomplete ingest.
 
 ---
 
