@@ -1,0 +1,28 @@
+id: hello-world
+intent: >
+  Smoke test — agent creates a single markdown file and commits it.
+  Verifies the full paude run pipeline end-to-end.
+
+spec_file: ../task-specs/hello-world-spec.txt
+agent: claude
+timeout_minutes: 15
+
+claims:
+  - id: HW-001
+    check: git_committed
+
+  - id: HW-002
+    check: file_exists
+    path: docs/paude-hello-world.md
+
+  - id: HW-003
+    check: file_contains
+    path: docs/paude-hello-world.md
+    contains: "Hello from Paude"
+
+  - id: HW-004
+    check: file_contains
+    path: docs/paude-hello-world.md
+    contains: "paude run pipeline"
+
+on_failure: notify_human

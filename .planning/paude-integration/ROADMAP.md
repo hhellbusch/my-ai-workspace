@@ -101,6 +101,23 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Mechanics | 1/1 | Complete | 2026-04-29 |
 | 2. Real Task | 1/2 | In progress | - |
-| 3. Orchestration | 0/1 | Not started | - |
+| 3. Orchestration | 0/1 | In progress | - |
 | 4. Multi-Agent | 0/1 | Not started | - |
 | 5. Assessment | 0/1 | Not started | - |
+
+## Orchestration infrastructure completed (2026-04-30)
+
+The following were built and validated before moving to Phase 3 proper:
+
+- **`paude run`** — atomic `create → wait → harvest → claims` command in `workflow.py`
+- **`paude wait`** — programmatic session idle detection (polls tmux pane activity)
+- **`paude tail`** — structured `.paude-events.jsonl` stream for agent observability
+- **Claims-based verification** — `git_committed`, `file_exists`, `file_contains`, `agent_review` types
+- **Timestamp session names** — `task-{id}-{YYYYMMDD-HHMMSS}` suffix prevents collision on reruns; cleanup is deferred to the janitor
+- **Git worktree convention** — `worktrees/{slug}/` inside repo, gitignored; `paude run` works correctly from worktree (`exists()` not `is_dir()` for `.git` check)
+- **Headless prompt quoting fix** — launcher script on disk sidesteps host shell expansion of multi-line prompts with backticks
+- **`paude-janitor.sh`** — sweeps stopped containers, orphaned volumes/networks, stale git remotes, stale registry entries, and merged worktrees; dry-run by default
+
+**Validated end-to-end:**
+- Observability platform metrics troubleshooting guide — all 5 claims passed (including 2 `agent_review` claims)
+- Hello-world smoke test — clean fast-forward merge, correct shared history (no orphan commits)
