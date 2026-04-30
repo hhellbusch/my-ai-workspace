@@ -31,6 +31,7 @@ These references have deep AI-researched context (summaries, key themes, notable
 | [Ryan Lopopolo — Harness Engineering (AI Engineer London 2026)](ryan-lopopolo-harness-engineering.md) | YouTube | ai-engineering, agents, harness, context-engineering, code-is-free, openai, codex | 2026-04-30 |
 | [Dex Horthy — No Vibes Allowed (AI Engineer London 2026)](dex-horthy-no-vibes-allowed.md) | YouTube | ai-engineering, context-engineering, rpi, dumb-zone, sub-agents, brownfield, humanlayer | 2026-04-30 |
 | [Andrej Karpathy — From Vibe Coding to Agentic Engineering (Sequoia 2026)](andrej-karpathy-vibe-coding-to-agentic-engineering.md) | YouTube | ai-engineering, vibe-coding, agentic-engineering, software-3.0, jagged-intelligence, verifiability, karpathy | 2026-04-30 |
+| [Simon Scrapes — Every Claude Code Memory System Compared](simon-scrapes-claude-code-memory-systems.md) | YouTube | ai-engineering, memory, claude-code, agents, memsearch, mempalace, autonomous-agents, paude | 2026-04-30 |
 
 See [`catalog.md`](catalog.md) for the complete reference list (50+ books, courses, and training).
 

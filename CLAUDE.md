@@ -102,6 +102,27 @@ Capture ideas and deferred tasks as backlog items immediately — don't batch to
 
 ---
 
+## Parallel Agent Work — Git Worktrees
+
+When multiple agents (or an agent and a human session) are running simultaneously, each needs its own worktree — a separate working directory and staging area on an isolated branch. Shared working trees cause staging collisions and work landing on the wrong branch.
+
+**Convention:** worktrees live as siblings of the main workspace at `~/gemini-workspace-{slug}/`.
+
+```bash
+# Create
+git worktree add ~/gemini-workspace-{slug} -b {slug}
+
+# List
+git worktree list
+
+# Remove after merge
+git worktree remove ~/gemini-workspace-{slug} && git branch -d {slug}
+```
+
+For paude tasks, point `--git` at the worktree directory. Full rule: `.cursor/rules/git-worktrees.md`.
+
+---
+
 ## Shell Scripts
 
 All `.sh` / `.bash` files must start with:

@@ -73,6 +73,15 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Up Next
 
+### Distributed agent methodology: git worktrees → paude → OpenShift
+- **Product:** meta / tooling / paude-integration
+- **Context:** Near-term parallel agent work is unblocked via git worktrees (rule added: `.cursor/rules/git-worktrees.md`, section in `CLAUDE.md`). Convention: each agent task gets its own working directory and branch at `~/gemini-workspace-{slug}/`. Medium-term: paude replaces manual worktree management with containerized isolation + git sync. Long-term: paude on OpenShift provides proper distributed orchestration with shared memory (Level 6 / OpenBrain pattern from Simon Scrapes taxonomy). Each stage subsumes the previous. See memory architecture synthesis in `research/pai-kai-paude/findings/ref-02-memory-systems.md` for the three-layer memory model that should accompany this (session brief / working memory / long-term recall).
+- **Stage 1 — done:** `.cursor/rules/git-worktrees.md` + `CLAUDE.md` section. Manual worktree-per-task convention.
+- **Stage 2 — next:** Paude as the worktree manager. Task specs drive container create/assign/harvest; human reviews diffs. Relates to `.planning/paude-integration/phases/04-multi-agent/`.
+- **Stage 3 — later:** OpenShift + shared agent memory (OpenBrain / Mem0). Multiple Paude containers sharing a Postgres brain. Enterprise-scale.
+- **Links:** `.cursor/rules/git-worktrees.md`, `.planning/paude-integration/phases/04-multi-agent/`, `research/pai-kai-paude/findings/ref-02-memory-systems.md`, `library/simon-scrapes-claude-code-memory-systems.md`
+- **Added:** 2026-04-30
+
 ### Guide: agentic personal AI infrastructure (PAI/Kai pattern)
 - **Product:** docs
 - **Context:** Companion guide to `local-llm-setup.md` for the power-user audience: model and hardware selection for PAI/Kai-style autonomous agent architectures, memory systems (three-tier: session/work/learning), scaffolding design for The Algorithm's two-loop structure. Explicitly scoped to local or hybrid execution (not just API). Draws from [`research/pai-kai-paude/`](research/pai-kai-paude/), [`library/daniel-miessler-pai.md`](library/daniel-miessler-pai.md), and the Kai GitHub. Blocked on the Explore PAI/Kai backlog item making more progress — don't draft until there's hands-on familiarity with the architecture.

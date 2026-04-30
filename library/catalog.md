@@ -107,6 +107,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Ryan Lopopolo — Harness Engineering: How to Build Software When Humans Steer, Agents Execute | AI Engineer (London 2026) | 2026 | https://www.youtube.com/watch?v=am_oeAoUhew | ai-engineering, agents, harness, context-engineering, code-is-free, openai, codex, token-billionaire | [enriched](ryan-lopopolo-harness-engineering.md) |
 | Dex Horthy — No Vibes Allowed: Solving Hard Problems in Complex Codebases | AI Engineer (London 2026) | 2026 | https://www.youtube.com/watch?v=rmvDxxNubIg | ai-engineering, context-engineering, rpi, dumb-zone, sub-agents, brownfield, humanlayer, no-slop | [enriched](dex-horthy-no-vibes-allowed.md) |
 | Andrej Karpathy — From Vibe Coding to Agentic Engineering | Sequoia Capital | 2026 | https://www.youtube.com/watch?v=96jN2OCOfLs | ai-engineering, vibe-coding, agentic-engineering, software-3.0, jagged-intelligence, verifiability, karpathy | [enriched](andrej-karpathy-vibe-coding-to-agentic-engineering.md) |
+| Simon Scrapes — Every Claude Code Memory System Compared (So You Don't Have To) | Simon Scrapes | 2026 | https://www.youtube.com/watch?v=UHVFcUzAGlM | ai-engineering, memory, claude-code, agents, memsearch, mempalace, autonomous-agents, paude | [enriched](simon-scrapes-claude-code-memory-systems.md) |
 
 ## Other Training
 
