@@ -34,14 +34,22 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 02-01: Push this workspace to a Paude session with `--git`, assign a bounded task via `-a` (e.g., expand an OCP troubleshooting guide or create a CoreOS troubleshooting README), let it run, harvest to a branch, review diff
+- [x] 02-01: Push this workspace to a Paude session with `--git`, assign a bounded task via `-a` (e.g., expand an OCP troubleshooting guide or create a CoreOS troubleshooting README), let it run, harvest to a branch, review diff
 - [ ] 02-02: Assign a "Pi upgrade–shaped" task — ecosystem survey (scan a topic, diff against an existing workspace resource, propose specific changes) — to test whether `.cursorrules` suffices for high-autonomy, broad-scope, bounded-output work without interactive steering
 
 **Key questions to answer:**
-- Does `.cursorrules` give the agent enough context without interactive steering?
-- How does output quality compare to an interactive session?
-- What's the overhead of the harvest-review-merge cycle vs direct editing?
-- Does harvesting a Paude session feel like "talking to Kai" (single interface to results) or "managing contractors" (army overhead recreated at harvest)? (PAI signal: single conversation locus as UX criterion)
+- Does `.cursorrules` give the agent enough context without interactive steering? **Yes — agent read `.cursorrules` and adapted correctly (e.g., detected STYLE.md applies to `docs/` not `devops/` and adjusted tone accordingly)**
+- How does output quality compare to an interactive session? **High — AGENT-NOTES showed deliberate, defensible decisions. Output was merge-worthy on first successful run.**
+- What's the overhead of the harvest-review-merge cycle vs direct editing? **Low once workflow is understood. The friction was spec quality, not tool overhead.**
+- Does harvesting a Paude session feel like "talking to Kai" or "managing contractors"? **Closer to Kai when the spec is good — single review point, agent self-assessed via AGENT-NOTES. Felt like contractors only during the failed attempts when spec was underspecified.**
+
+**Failure modes surfaced (2026-04-29):**
+1. Prompt starting with a workspace slash command keyword ("Review…") — agent ran `/review` instead of the task
+2. Ambiguous phrasing in headless mode — agent stalled waiting for clarification it couldn't get
+3. No explicit commit instruction — agent wrote files but didn't commit; harvest produced empty diff
+4. `paude reset` after a failed attempt wipes any work before harvest — reset only after harvesting
+
+**Workflow pattern established:** Craft → Gate → Hand off → Monitor → Harvest → Analyze. Documented in `docs/ai-engineering/paude-getting-started.md`.
 
 ### Phase 3: Orchestration
 **Goal**: Full fire-and-forget workflow tested, including the reset -> reassign cycle
@@ -92,7 +100,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Mechanics | 1/1 | Complete | 2026-04-29 |
-| 2. Real Task | 0/2 | Not started | - |
+| 2. Real Task | 1/2 | In progress | - |
 | 3. Orchestration | 0/1 | Not started | - |
 | 4. Multi-Agent | 0/1 | Not started | - |
 | 5. Assessment | 0/1 | Not started | - |
