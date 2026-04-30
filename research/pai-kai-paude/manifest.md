@@ -50,6 +50,7 @@ This research session builds on that foundation with a **different angle**: what
 | ref_id | file | status | notes |
 | --- | --- | --- | --- |
 | ref-01 | `sources/ref-01-transcript.md` | fetched | 933 segments, 32:16 duration |
+| ref-02 | `sources/ref-02-transcript.md` | fetched | Simon Scrapes — "Every Claude Code Memory System Compared", 41:21, 2026-04-23. 6-level memory taxonomy. Not a Paude video; relevant to memory architecture for autonomous agent workflows. Findings: `findings/ref-02-memory-systems.md` |
 | prior-assessment | `../miessler-single-da-thesis/assessment.md` | fetched | Full DA thesis assessment — use as foundation |
 | library-pai | `../../library/daniel-miessler-pai.md` | on-disk | PAI seven-component breakdown |
 | dojo-essay | `../../docs/philosophy/the-dojo-after-the-automation.md` | on-disk | Primary essay connection |
