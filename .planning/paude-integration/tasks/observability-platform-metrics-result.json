@@ -1,0 +1,41 @@
+{
+  "task_id": "observability-platform-metrics",
+  "session": "task-observability-platform-metrics",
+  "harvest_branch": "task/observability-platform-metrics",
+  "status": "fail",
+  "elapsed_seconds": 359,
+  "claims": [
+    {
+      "id": "GUIDE-001",
+      "check": "git_committed",
+      "result": "pass",
+      "detail": "commit found: 3fb844f chore: add paude task spec for observability platform metrics guide"
+    },
+    {
+      "id": "GUIDE-002",
+      "check": "file_exists",
+      "result": "fail",
+      "detail": "/home/hhellbusch/gemini-workspace/devops/rhacm/troubleshooting/observability-platform-metrics-missing.md"
+    },
+    {
+      "id": "GUIDE-003",
+      "check": "file_contains",
+      "result": "fail",
+      "detail": "'observability-platform-metrics-missing.md' not found in /home/hhellbusch/gemini-workspace/devops/rhacm/troubleshooting/README.md"
+    },
+    {
+      "id": "GUIDE-004",
+      "check": "agent_review",
+      "result": "fail",
+      "detail": "agent review: unclear \u2014 ",
+      "agent_response": ""
+    },
+    {
+      "id": "GUIDE-005",
+      "check": "agent_review",
+      "result": "fail",
+      "detail": "agent review: unclear \u2014 ",
+      "agent_response": ""
+    }
+  ]
+}

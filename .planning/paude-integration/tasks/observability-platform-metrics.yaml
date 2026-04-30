@@ -1,0 +1,39 @@
+id: observability-platform-metrics
+intent: >
+  Add a troubleshooting guide covering Prometheus PVC full as the root cause
+  for platform metrics missing in ACM/MCO dashboards, and update the guide index.
+
+spec_file: ../task-specs/observability-platform-metrics-missing-spec.txt
+agent: claude
+timeout_minutes: 60
+
+claims:
+  - id: GUIDE-001
+    check: git_committed
+
+  - id: GUIDE-002
+    check: file_exists
+    path: devops/rhacm/troubleshooting/observability-platform-metrics-missing.md
+
+  - id: GUIDE-003
+    check: file_contains
+    path: devops/rhacm/troubleshooting/README.md
+    contains: observability-platform-metrics-missing.md
+
+  - id: GUIDE-004
+    check: agent_review
+    prompt: >
+      Read the file devops/rhacm/troubleshooting/observability-platform-metrics-missing.md
+      and answer: does it include a step for checking PVC disk usage on the spoke cluster
+      AND a step for expanding a PVC using oc patch?
+      Answer YES or NO followed by a brief explanation.
+
+  - id: GUIDE-005
+    check: agent_review
+    prompt: >
+      Read the file devops/rhacm/troubleshooting/observability-platform-metrics-missing.md
+      and answer: does it include a section covering how to set Prometheus retention
+      (both time-based and size-based) via the ClusterMonitoringConfig ConfigMap?
+      Answer YES or NO followed by a brief explanation.
+
+on_failure: notify_human
