@@ -35,6 +35,8 @@ These references have deep AI-researched context (summaries, key themes, notable
 | [Simon Scrapes — Every Claude Code Memory System Compared](simon-scrapes-claude-code-memory-systems.md) | YouTube | ai-engineering, memory, claude-code, agents, memsearch, mempalace, autonomous-agents, paude | 2026-04-30 |
 | [Andrej Karpathy — LLM Wiki (GitHub Gist)](karpathy-llm-wiki.md) | Gist | ai-engineering, memory, llm-wiki, knowledge-base, schema, ingest, persistent-context | 2026-04-30 |
 | [MemPalace — Local-first AI memory](mempalace.md) | Tool / Architecture | ai-engineering, memory, verbatim-storage, semantic-search, wings-rooms-drawers, mcp, agent-memory | 2026-04-30 |
+| [Alberta Tech — Why Devs Are OBSESSED with Claude Code](alberta-tech-why-devs-obsessed-claude-code.md) | YouTube | ai-engineering, claude-code, form-factor, developer-psychology, adoption, agent-harness, terminal-bench | 2026-04-30 |
+| [Jared Burck — Enterprise Generative AI: LLMs on Red Hat OpenShift](jared-burck-openshift-ai-llm-deployment.md) | Article | devops, openshift, openshift-ai, llm, enterprise, kserve, vllm, rhoai | 2026-04-30 |
 
 See [`catalog.md`](catalog.md) for the complete reference list (50+ books, courses, and training).
 
@@ -62,6 +64,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [EngineersOfAI — What are AI Agents?](engineersofai-what-are-ai-agents.md) | agents / foundations | 2026-04-28 |
 | [Daniel Miessler — PAI](daniel-miessler-pai.md) | personal AI infrastructure | 2026-04-18 |
 | [Daniel Miessler — Single Digital Assistant](daniel-miessler-single-da-thesis.md) | agentic / orchestration | 2026-04-18 |
+| [Alberta Tech — Why Devs Are OBSESSED with Claude Code](alberta-tech-why-devs-obsessed-claude-code.md) | claude-code / form-factor / developer-psychology | 2026-04-30 |
 
 ### `philosophy-practice`
 
@@ -88,6 +91,8 @@ Git, OpenShift, RHACM, AAP, Ansible, cluster lifecycle:
 | [Git For Ages 4 And Up](git-for-ages-4-and-up.md) | git / mental-model | 2026-04-28 |
 | [Automate OCP Cluster Deployment — RHACM + AAP](automate-ocp-cluster-deployment-rhacm-aap.md) | openshift / cluster-lifecycle | 2026-04-28 |
 | [Dan Walsh — Career Lessons](dan-walsh-devconf-2025-career-lessons.md) | containers / selinux / career | 2026-04-18 |
+| [argocd-diff-preview](argocd-diff-preview.md) | argocd / desired-state diff / CI | 2026-04-29 |
+| [Jared Burck — LLMs on Red Hat OpenShift](jared-burck-openshift-ai-llm-deployment.md) | openshift-ai / kserve / vllm / enterprise LLM | 2026-04-30 |
 
 ## Entry Template
 

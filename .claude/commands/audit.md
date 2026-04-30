@@ -27,6 +27,20 @@ This command is read-only. It reports findings organized by severity and asks wh
 
 <process>
 
+## Layer 0: Library Gap Audit
+
+Run the structural gap check first — this is fast and catches orphaned research before the deeper layers.
+
+```bash
+bash scripts/audit-library-gaps.sh
+```
+
+Report the result:
+- Exit 0: "Library gap check: clean." — proceed to Layer 1.
+- Exit 1: List the gaps exactly as printed. These are **fix-before-proceeding** items — an orphaned transcript or missing log entry indicates the ingest workflow was skipped. Do not suppress or defer these.
+
+Use `--verbose` to see all entries including matched ones and exempt dirs.
+
 ## Layer 1: Link Integrity
 
 Scan all committed markdown files for internal links. For each link:

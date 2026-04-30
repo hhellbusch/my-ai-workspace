@@ -110,6 +110,8 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Simon Scrapes — Every Claude Code Memory System Compared (So You Don't Have To) | Simon Scrapes | 2026 | https://www.youtube.com/watch?v=UHVFcUzAGlM | ai-engineering, memory, claude-code, agents, memsearch, mempalace, autonomous-agents, paude | [enriched](simon-scrapes-claude-code-memory-systems.md) |
 | Andrej Karpathy — LLM Wiki | Andrej Karpathy | ~2024 | https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f | ai-engineering, memory, llm-wiki, knowledge-base, schema, ingest, persistent-context | [enriched](karpathy-llm-wiki.md) |
 | MemPalace — Local-first AI memory | MemPalace (open-source) | 2025–2026 | https://github.com/mempalace/mempalace | ai-engineering, memory, verbatim-storage, semantic-search, wings-rooms-drawers, mcp, agent-memory, chromadb | [enriched](mempalace.md) |
+| Alberta Tech — Why Devs Are OBSESSED with Claude Code | Alberta Tech | 2026 | https://www.youtube.com/watch?v=LACyqdAfnaw | ai-engineering, claude-code, form-factor, developer-psychology, adoption, agent-harness, terminal-bench, leaked-source | [enriched](alberta-tech-why-devs-obsessed-claude-code.md) |
+| Enterprise Generative AI: LLMs on Red Hat OpenShift | Jared Burck | 2026 | https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/ | devops, openshift, openshift-ai, llm, enterprise, kserve, vllm, rhoai, knative, service-mesh, mlops | [enriched](jared-burck-openshift-ai-llm-deployment.md) |
 
 ## Other Training
 

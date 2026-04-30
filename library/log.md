@@ -132,14 +132,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Wing:** ai-engineering / memory
 - **Source:** GitHub — https://github.com/mempalace/mempalace
 
-## [2026-04-30] research | OpenShift AI LLM Deployment — research-backed docs (not library entry)
-- **Entry:** none — research produced `docs/ai-engineering/openshift-ai-llm-deployment-summary.md` directly
+## [2026-04-30] ingest | Jared Burck — Enterprise Generative AI: LLMs on Red Hat OpenShift
+- **Entry:** [jared-burck-openshift-ai-llm-deployment.md](jared-burck-openshift-ai-llm-deployment.md)
 - **Wing:** devops / ai-engineering
-- **Source:** research/openshift-ai-llm-deployment/sources/ (50+ refs)
-- **Note:** Logged to close audit gap. Pending: enrich to a library entry if general reference value justifies it.
+- **Source:** Article / research/openshift-ai-llm-deployment/ (62 refs analyzed 2026-04-17, docs output 2026-04-17)
 
-## [2026-04-30] research | Alberta Tech — Why Devs Are OBSESSED with Claude Code (stub)
-- **Entry:** none — transcript at research/ai-tooling/why-devs-are-obsessed-with-claude-code.md, library entry pending
+## [2026-04-30] ingest | Alberta Tech — Why Devs Are OBSESSED with Claude Code
+- **Entry:** [alberta-tech-why-devs-obsessed-claude-code.md](alberta-tech-why-devs-obsessed-claude-code.md)
 - **Wing:** ai-engineering
-- **Source:** YouTube / research/ai-tooling/
-- **Note:** Stub logged to close audit gap. Create library entry when ai-tooling research is reviewed.
+- **Source:** YouTube / research/ai-tooling/why-devs-are-obsessed-with-claude-code.md
