@@ -15,6 +15,7 @@ Practical diagnostic guides for Red Hat Advanced Cluster Management operational 
 | [mch-stuck-pending-upgrade.md](./mch-stuck-pending-upgrade.md) | `MultiClusterHub` stuck in `Updating` / `Pending` / `Installing` beyond ~10–15 min during hub upgrade |
 | [managed-cluster-lease-not-updated.md](./managed-cluster-lease-not-updated.md) | `The cluster is not reachable. Registration agent stopped updating its lease.` — clusters showing Unknown, during or after hub upgrade |
 | [observability-addon-missing.md](./observability-addon-missing.md) | `ManagedClusterAddon` and `ManifestWork` for observability absent on hub — metrics not collected for some clusters |
+| [observability-platform-metrics-missing.md](./observability-platform-metrics-missing.md) | Custom metrics flowing to ACM dashboards but platform metrics (cpu, memory, kubelet) absent — Prometheus PVC full on spoke causing TSDB write failures and alert storm |
 | [search-service-503.md](./search-service-503.md) | Search UI returns 503 / "Error occurred while contacting the search service" — `search-postgres` OOMKill and other search component failures |
 
 ## Common Scenarios
@@ -39,6 +40,14 @@ Practical diagnostic guides for Red Hat Advanced Cluster Management operational 
 - Fix: restart `multicluster-observability-operator` in `open-cluster-management` namespace
 - Operator is in `open-cluster-management`, not `open-cluster-management-observability`
 - See [observability-addon-missing.md](./observability-addon-missing.md)
+
+**Custom metrics flowing, platform metrics absent:**
+- Custom metrics appearing in ACM hub dashboards; platform metrics completely missing
+- Prometheus firing `KubeAPIDown` / `KubeletDown` alerts despite cluster being reachable
+- `ManagedClusterAddon` exists and shows Available
+- Root cause: Prometheus PVC on spoke is full → TSDB write failures → no platform metrics forwarded
+- Fix: expand PVCs, set `retention` and `retentionSize` in `cluster-monitoring-config`
+- See [observability-platform-metrics-missing.md](./observability-platform-metrics-missing.md)
 
 **Search UI returning 503:**
 - `search-postgres` OOMKilled — increase memory limits via the `Search` CR
