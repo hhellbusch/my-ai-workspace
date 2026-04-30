@@ -1,7 +1,8 @@
 # Getting Started with Paude — Autonomous Agent Sessions
 
 > **Status:** In progress — being written from first-hand exploration. Sections marked `[pending]` are not yet written.
-> **Source:** Paude v0.15.0 · [github.com/bbrowning/paude](https://github.com/bbrowning/paude) · Fedora Linux / Podman
+> **Source:** Paude v0.20.0a2 · [github.com/bbrowning/paude](https://github.com/bbrowning/paude) · Fedora Linux / Podman
+> **Local fork:** `gemini-workspace/paude` on branch `feature/wait-and-prompt-file` — adds `paude wait` and `--prompt-file` flag
 
 Paude runs AI coding agents (Claude Code, Gemini CLI, Cursor CLI, OpenClaw) in isolated, network-filtered containers with git-based sync. You push your code in, assign a task, disconnect, and pull the output back as a branch when the agent is done. The value is parallelism and isolation — the agent runs without you watching, and you review a diff rather than a live session.
 
@@ -80,39 +81,63 @@ Key flags on `paude create`:
 |---|---|
 | `--git` | Push your workspace into the container, set as origin |
 | `--yolo` | Skip all permission prompts — agent runs without asking |
-| `-a '-p "..."'` | Assign a prompt to the agent as the initial task |
+| `--prompt-file <path>` | Read initial prompt from a file on the host — no shell quoting issues |
+| `-a '-p "..."'` | Inline prompt (fragile for multi-line — prefer `--prompt-file`) |
 | `--agent` | Choose agent: `claude` (default), `gemini`, `cursor`, `openclaw` |
 | `--dry-run` | Preview the full resolved config without running |
 
 ### Writing a task spec that works
 
-Three failure modes surfaced in early hands-on runs — all from spec problems, not tool problems:
+Four failure modes surfaced in hands-on runs — all from spec problems, not tool problems:
 
 | Failure | Cause | Fix |
 |---|---|---|
 | Agent ran `/review` instead of the task | Prompt started with "Review..." — matched a workspace slash command | Never start a prompt with a word that matches a workspace command |
 | Agent asked for clarification in headless mode | "Two lab folders" was ambiguous — agent didn't know which two | Name things explicitly: full paths, not counts |
-| Harvest produced empty diff | Agent wrote files but didn't commit | Always end the prompt with an explicit commit instruction |
+| Harvest produced empty diff | Agent wrote files but didn't commit | Always end the spec with an explicit commit instruction |
+| Agent received broken or truncated prompt | Long spec passed via shell expansion — backticks, embedded quotes, and newlines mangled before Paude received them | Use `--prompt-file` (see below) |
+| Spec file not found in container — agent did nothing | `--git` clones from origin; spec committed locally but not pushed, OR session created from a branch that doesn't have the spec commit | Use `--prompt-file` — reads from host filesystem, branch-independent. Or push spec commit to origin first. |
+
+### `--prompt-file` — the canonical approach for non-trivial tasks
+
+`--prompt-file <path>` reads the spec from the host filesystem and passes it to the agent directly — no shell expansion, no quoting issues, no need to commit the file first. Paude reads it in Python before any shell touches it.
+
+```bash
+paude create my-session --git --yolo \
+  --prompt-file .planning/paude-integration/task-specs/my-task-spec.txt
+```
+
+The spec file lives wherever is convenient. It does not need to be in the repo or committed. The agent receives the full content verbatim.
 
 **Prompt checklist before handing off:**
 
-1. Does the prompt start with a word that matches a workspace slash command? Rename it.
+1. Does the spec start with a word that matches a workspace slash command? Rename it.
 2. Are all paths, names, and quantities explicit? No "the two files" — use full paths.
-3. Does the prompt end with a commit instruction?
-4. Would a junior engineer reading this cold know exactly what to do — and what not to do?
+3. Does the spec end with a commit instruction?
+4. Would a junior engineer reading the spec cold know exactly what to do — and what not to do?
 
-**Always end headless prompts with:**
+**Always end specs with:**
 
 ```
 After completing all work, run: git add -A && git commit -m "feat: describe what was done"
 ```
 
+**Verify a commit exists before harvesting:**
+
+```bash
+paude connect my-session
+# Inside the container:
+git log --oneline -3
+# If the expected commit is present, detach (Ctrl+b d) and harvest.
+# If git log shows nothing new, the agent didn't commit — do it manually before exiting.
+```
+
 **Headless vs. interactive:**
 
-- **Headless (`-a '-p "..."'`)**: fire-and-forget. Use only when the spec is airtight. Agent cannot ask clarifying questions without stalling.
-- **Interactive (no `-a`, `paude connect` first)**: agent can clarify, you can course-correct. Use for exploratory or underspecified tasks.
+- **Headless (`--prompt-file`)**: fire-and-forget. Use when the spec is airtight. Agent cannot ask clarifying questions without stalling.
+- **Interactive (no prompt, `paude connect` first)**: agent can clarify, you can course-correct. Use for exploratory or underspecified tasks.
 
-**The spec gate:** before handing off any headless task, read the prompt aloud as if you're briefing someone who has never seen the codebase. If you'd need to add a sentence of context to make it clear — add it to the prompt.
+**The spec gate:** before handing off any headless task, read the spec file cold — as if you're briefing someone who has never seen the codebase. If you'd need to add a sentence of context to make it clear, add it to the spec before launching.
 
 ### The AGENT-NOTES pattern
 
@@ -128,17 +153,44 @@ This surfaces where the spec was underspecified — the most useful output for i
 
 Every successful Paude run follows this sequence. Skipping steps produces empty diffs and confused agents.
 
-**Craft** — write the task spec. Apply the prompt checklist above. End with an explicit commit instruction.
+**Craft** — write the task spec to a file in `.planning/paude-integration/task-specs/`. Apply the prompt checklist. End with an explicit commit instruction. Write the AGENT-NOTES request at the bottom.
 
-**Gate** — read it cold. Use `/grill-me` or a peer read. Would someone with no prior context know exactly what to do? If not, fix the spec — not the tool.
+**Gate** — read the spec file cold. Use `/grill-me` or a peer read. Would someone with no prior context know exactly what to do? If not, fix the spec — not the tool.
 
 **Hand off** — choose mode:
-- Airtight spec → headless (`paude create --yolo --git -a '-p "..."'`)
+- Airtight spec → headless with `--prompt-file`:
+  ```bash
+  paude create my-session --git --yolo \
+    --prompt-file .planning/paude-integration/task-specs/my-task-spec.txt
+  ```
 - Exploratory or uncertain → interactive (`paude create --yolo --git`, then `paude connect`)
 
-**Monitor** — `paude status` every 30-60 seconds. `Active` means working. `Idle` means done or stalled. If Active longer than expected, connect and check — the agent may be waiting for clarification it can't get in headless mode.
+**Monitor** — two tools, two levels of detail:
 
-**Harvest** — `paude harvest -b review/branch-name`. Empty diff = agent didn't commit. Connect and check `git status` inside the container; commit manually if files are there.
+`paude wait` tracks session state (Active / Idle) and fires actions when done:
+```bash
+paude wait my-session
+paude wait my-session --on-idle "paude harvest my-session -b review/branch-name" --notify
+```
+Options: `--timeout <minutes>` (default: 60), `--interval <seconds>` (default: 30), `--notify` (desktop notification via `notify-send`).
+
+`paude tail` reads the agent's actual tmux output without attaching — useful when you want to see what the agent is writing:
+```bash
+paude tail my-session            # last 50 lines, then exit
+paude tail my-session -n 100    # last 100 lines
+paude tail my-session -f        # follow: stream new lines as they appear (Ctrl+C to stop)
+```
+
+`Active` means working. `Idle` means done or stalled. If Active longer than expected, `paude tail -f` will show whether the agent is stuck asking for clarification or still producing output.
+
+**Harvest** — before running `paude harvest`, connect and verify a commit exists:
+```bash
+paude connect my-session
+git log --oneline -3   # confirm the expected commit is there
+# Ctrl+b d to detach
+paude harvest my-session -b review/branch-name
+```
+Empty diff after harvest = agent didn't commit. Connect and check `git status` inside the container; commit manually if files are there.
 
 **Analyze** — read in this order:
 1. `AGENT-NOTES.md` — what did the agent find ambiguous or underspecified?
@@ -152,10 +204,21 @@ The analysis feeds the next spec. The pattern compounds — each run produces a 
 ## Phase 3: Fire-and-Forget Orchestration
 
 ```bash
-paude create my-project --git --yolo -a '-p "..."'
-# disconnect — go do something else
+# Launch with spec from file
+paude create my-project --git --yolo \
+  --prompt-file .planning/paude-integration/task-specs/my-task-spec.txt
+
+# Option A — block and watch; auto-harvest when Idle
+paude wait my-project \
+  --on-idle "paude harvest my-project -b feature/my-task" \
+  --notify
+
+# Option B — fire-and-forget; check back manually
+paude wait my-project &
+# ... go do other things ...
 paude status my-project                    # check back periodically
 paude harvest my-project -b feature/my-task  # pull changes into a local branch
+
 git diff main..feature/my-task             # review the diff
 ```
 
@@ -300,6 +363,9 @@ Captures token counts, timing, and traces. The endpoint hostname is automaticall
 | `paude stop` | Stop session, preserve volume |
 | `paude connect` | Attach to running session |
 | `paude status` | Enriched status: activity, state, summary |
+| `paude tail [-n N] [-f]` | Print last N lines of agent's tmux output without attaching |
+| `paude run --task-file <path>` | Atomic create+wait+harvest+claim evaluation from a task YAML |
+| `paude wait [--on-idle cmd] [--notify]` | Poll until Idle; optionally run a command and send a notification |
 | `paude list` | All sessions with version info |
 | `paude harvest -b <branch>` | Pull agent commits into a local branch |
 | `paude harvest -b <branch> --pr` | Harvest + open a PR |
