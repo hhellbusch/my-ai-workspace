@@ -1,0 +1,74 @@
+Create a new troubleshooting guide at `devops/rhacm/troubleshooting/observability-platform-metrics-missing.md` and update the index at `devops/rhacm/troubleshooting/README.md`.
+
+---
+
+## New file: devops/rhacm/troubleshooting/observability-platform-metrics-missing.md
+
+This guide covers a specific ACM Multicluster Observability failure mode: custom metrics are flowing to the hub dashboards, but platform metrics (cpu, memory, node, kubelet, kube-state) are absent for one or more managed clusters. The ManagedClusterAddon exists and is not degraded. The cluster is reachable.
+
+**Root cause chain documented in this session (2026-04-30):**
+The spoke cluster's Prometheus PVCs were full. Full storage causes TSDB write failures, which cause Prometheus to stop writing new samples. Scrape targets continue to be attempted but nothing persists. Prometheus then fires KubeAPIDown, KubeControllerManagerDown, and KubeletDown alerts because it cannot scrape those endpoints successfully. The metrics-collector on the spoke has no platform metrics to forward — so the ACM hub dashboards show nothing for platform metrics while custom metrics (if from a separate recording source or already buffered) continue to arrive.
+
+**Guide structure to follow:** Match the format and tone of `devops/rhacm/troubleshooting/observability-addon-missing.md`. Use the same frontmatter block (review.status: unreviewed, review.notes describing AI-generated origin and session date 2026-04-30). Use the same table style for commands, the same heading hierarchy, and the same Quick Reference table at the end.
+
+**The guide must cover these sections:**
+
+1. **Symptom** — custom metrics flowing, platform metrics absent, alert storm on spoke (KubeAPIDown, KubeletDown, KubeControllerManagerDown, possibly more). ManagedClusterAddon exists and shows Available. Contrast this with the addon-missing scenario.
+
+2. **How to distinguish this from actual infrastructure failure** — these same alerts fire when the cluster components are genuinely down. The distinguishing signal is that Prometheus is running and the alerts ARE firing (so Prometheus can write alert state), but scrape targets show down. Check whether the cluster API is actually reachable from outside Prometheus: `oc get nodes` returning results rules out a genuine API outage.
+
+3. **Step 1 — Check PVC usage on the spoke** (run on the spoke cluster):
+   ```
+   oc get pvc -n openshift-monitoring
+   oc exec -n openshift-monitoring prometheus-k8s-0 -- df -h /prometheus
+   ```
+   If the prometheus data volume is at or near 100%, this is the cause.
+
+4. **Step 2 — Confirm TSDB write failures in Prometheus logs**:
+   ```
+   oc logs -n openshift-monitoring prometheus-k8s-0 -c prometheus --since=2h | grep -iE "tsdb|no space|write|err"
+   ```
+   Common log signatures: "no space left on device", "err opening chunk segment", "WAL write failed".
+
+5. **Step 3 — Fix: Expand the PVC**
+   Document the OCP procedure for expanding a PVC on a running StatefulSet (edit the PVC spec to increase storage — OCP supports online expansion for most storage classes). Include the command pattern:
+   ```
+   oc patch pvc prometheus-k8s-db-prometheus-k8s-0 -n openshift-monitoring \
+     -p '{"spec":{"resources":{"requests":{"storage":"<new-size>"}}}}'
+   ```
+   Note that both PVCs need to be expanded (prometheus-k8s-0 and prometheus-k8s-1).
+   After expansion, Prometheus recovers automatically — no pod restart required.
+
+6. **Step 4 — Fix: Set retention to prevent recurrence**
+   Document how to configure retention via the `ClusterMonitoringConfig` ConfigMap in `openshift-monitoring`. Cover both:
+   - `retention` (time-based, e.g., "15d") — stops accumulating beyond a time window
+   - `retentionSize` (size-based, e.g., "30GB") — hard cap on storage usage
+   Recommend setting both. Include the ConfigMap edit pattern.
+
+7. **Prevention** — recommended sizing guidance: Prometheus default retention is 15 days; default PVC size varies by OCP version (often 40Gi). For active clusters with many workloads, 50-100Gi with retentionSize set is safer. Link to the OCP monitoring configuration docs if possible (use a placeholder URL if not certain of the exact path).
+
+8. **Quick Reference table** — same format as the one in observability-addon-missing.md. Cover: PVC check (spoke), Prometheus logs (spoke), PVC expansion (spoke), retention config (spoke), ManagedClusterAddon status (hub).
+
+9. **Footer** — same AI disclosure footer as the existing guides:
+   `*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*`
+
+---
+
+## Update: devops/rhacm/troubleshooting/README.md
+
+Add a row to the Guides table for the new file:
+- Guide: `observability-platform-metrics-missing.md`
+- Symptom: Custom metrics flowing to ACM dashboards but platform metrics (cpu, memory, kubelet) absent — Prometheus PVC full on spoke causing TSDB write failures and alert storm
+
+Also add a new entry to the Common Scenarios section describing the full-storage scenario:
+- Custom metrics flowing, platform metrics absent
+- Prometheus firing KubeAPIDown / KubeletDown despite cluster being reachable
+- Root cause: Prometheus PVC full, TSDB write failures
+- Fix: Expand PVCs, set retention in ClusterMonitoringConfig
+- See observability-platform-metrics-missing.md
+
+---
+
+After completing all work, run: git add -A && git commit -m "docs: add observability platform metrics missing troubleshooting guide"
+
+After completing the task, write AGENT-NOTES.md in the workspace root documenting: what decisions did you make that the spec did not explicitly cover? What was ambiguous? What assumptions did you make about OCP version, storage class behavior, or retention defaults?
