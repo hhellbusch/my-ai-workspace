@@ -16,46 +16,52 @@ When multiple agents (or an agent and a human session) are working on the same r
 
 ## Convention
 
-Worktrees live as siblings of the main workspace:
+Worktrees live **inside** the main workspace under `worktrees/`:
 
 ```
-~/gemini-workspace/           ← main worktree (main branch or current base)
-~/gemini-workspace-{slug}/    ← agent task worktree
+~/gemini-workspace/                        ← main worktree (main branch)
+~/gemini-workspace/worktrees/{slug}/       ← agent task worktree
 ```
 
-**Slug** = short kebab-case description of the task (e.g. `paude-async-delegation`, `library-additions`, `ocp-troubleshooting-update`).
+`worktrees/` is gitignored — git tracks the branch, not the working directory on disk.
+
+**Slug** = short kebab-case description of the task (e.g. `paude-async-delegation`, `obs-guide`, `ocp-storage-fix`). The branch name matches the slug.
 
 ## Creating a worktree
 
 ```bash
 # New branch (most common — new task)
-git worktree add ~/gemini-workspace-{slug} -b {slug}
+git -C ~/gemini-workspace worktree add worktrees/{slug} -b {slug}
 
 # Existing branch (resuming or handing off)
-git worktree add ~/gemini-workspace-{slug} {branch-name}
+git -C ~/gemini-workspace worktree add worktrees/{slug} {branch-name}
 ```
 
-The agent or task then runs inside `~/gemini-workspace-{slug}/`. It has its own index and staging area. Both share the same `.git` object store — no repo duplication.
+The agent or task then runs inside `~/gemini-workspace/worktrees/{slug}/`. It has its own index and staging area. Both share the same `.git` object store — no repo duplication.
 
 ## Listing and removing
 
 ```bash
-# See all active worktrees
+# See all active worktrees (run from anywhere inside the repo)
 git worktree list
 
 # Remove after branch is merged
-git worktree remove ~/gemini-workspace-{slug}
+git worktree remove ~/gemini-workspace/worktrees/{slug}
 git branch -d {slug}
 ```
 
 ## Handing a worktree to an agent (paude pattern)
 
-For paude tasks, point `--git` at the worktree directory rather than the main workspace. The agent commits to its branch; you harvest the diff and open a PR to main.
+`cd` into the worktree before running `paude create` — it infers the workspace from `cwd`. The agent commits to its isolated branch; harvest the diff and open a PR to main when done.
 
 ```bash
-git worktree add ~/gemini-workspace-{task-slug} -b {task-slug}
-paude create --git ~/gemini-workspace-{task-slug} --yolo --prompt-file task.md
+git -C ~/gemini-workspace worktree add worktrees/{slug} -b {slug}
+cd ~/gemini-workspace/worktrees/{slug}
+paude create {slug} --git --yolo --prompt-file ~/gemini-workspace/.planning/.../spec.md
 ```
+
+> `--git` is a boolean flag, not a path. The workspace is always the current directory.
+> Use absolute paths for `--prompt-file` — the cwd changes per worktree.
 
 ## Rules
 
