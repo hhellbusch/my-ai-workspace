@@ -104,6 +104,9 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Daniel Miessler — AI WILL Replace Knowledge Workers | Unsupervised Learning | 2026 | https://www.youtube.com/watch?v=g3SrYIUv-OE | ai, knowledge-work, organizational-chaos, skills, automation, lattice-architecture | [enriched](daniel-miessler-ai-replace-knowledge-workers.md) |
 | Daniel Miessler — Personal AI Infrastructure (PAI) | Daniel Miessler | 2025–2026 | https://danielmiessler.com/blog/personal-ai-infrastructure | ai, personal-ai, scaffolding, skills, hooks, memory, orchestration, fabric | [enriched](daniel-miessler-pai.md) |
 | Daniel Miessler — We're All Building a Single Digital Assistant | Unsupervised Learning | 2026 | https://www.youtube.com/watch?v=uUForkn00mk | ai, personal-ai, digital-assistant, da-thesis, tlos, ideal-state, maturity-model, pi, kai | [enriched](daniel-miessler-single-da-thesis.md) |
+| Ryan Lopopolo — Harness Engineering: How to Build Software When Humans Steer, Agents Execute | AI Engineer (London 2026) | 2026 | https://www.youtube.com/watch?v=am_oeAoUhew | ai-engineering, agents, harness, context-engineering, code-is-free, openai, codex, token-billionaire | [enriched](ryan-lopopolo-harness-engineering.md) |
+| Dex Horthy — No Vibes Allowed: Solving Hard Problems in Complex Codebases | AI Engineer (London 2026) | 2026 | https://www.youtube.com/watch?v=rmvDxxNubIg | ai-engineering, context-engineering, rpi, dumb-zone, sub-agents, brownfield, humanlayer, no-slop | [enriched](dex-horthy-no-vibes-allowed.md) |
+| Andrej Karpathy — From Vibe Coding to Agentic Engineering | Sequoia Capital | 2026 | https://www.youtube.com/watch?v=96jN2OCOfLs | ai-engineering, vibe-coding, agentic-engineering, software-3.0, jagged-intelligence, verifiability, karpathy | [enriched](andrej-karpathy-vibe-coding-to-agentic-engineering.md) |
 
 ## Other Training
 
