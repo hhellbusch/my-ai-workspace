@@ -6,7 +6,7 @@ A structured evaluation progressing from basic mechanics through real autonomous
 
 ## Phases
 
-- [ ] **Phase 1: Mechanics** — Install Paude, smoke-test full session lifecycle
+- [x] **Phase 1: Mechanics** — Install Paude, smoke-test full session lifecycle
 - [ ] **Phase 2: Real Task** — Autonomous task against this workspace, harvest and review
 - [ ] **Phase 3: Orchestration** — Fire-and-forget -> harvest -> PR -> reset cycle
 - [ ] **Phase 4: Multi-Agent** — Same task with Claude and Gemini, compare outputs
@@ -20,7 +20,7 @@ A structured evaluation progressing from basic mechanics through real autonomous
 **Plans**: 1 plan
 
 Plans:
-- [ ] 01-01: Install Paude via `uv tool install paude`, verify Podman, create throwaway session against a test directory, exercise create -> connect -> status -> harvest -> stop -> delete
+- [x] 01-01: Install Paude via `uv tool install paude`, verify Podman, create throwaway session against a test directory, exercise create -> connect -> status -> harvest -> stop -> delete
 
 **Key questions to answer:**
 - How fast is session creation after images are cached?
@@ -91,7 +91,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Mechanics | 0/1 | Not started | - |
+| 1. Mechanics | 1/1 | Complete | 2026-04-29 |
 | 2. Real Task | 0/2 | Not started | - |
 | 3. Orchestration | 0/1 | Not started | - |
 | 4. Multi-Agent | 0/1 | Not started | - |
