@@ -1,7 +1,7 @@
 # Backlog
 
-> **State:** 4 in progress · 8 up next · 72 ideas · Last done: Meta full content audit + systemic link/registry fixes (2026-04-20)
-> Last updated: 2026-04-21 (Claude Code alignment; plugin distribution idea; zanshin-kit Phase 3; shell strict mode)
+> **State:** 3 in progress · 8 up next · 75 ideas · Last done: Case studies + grill-me + CLAUDE.md simplification (2026-04-29)
+> Last updated: 2026-04-29 (case studies written, grill-me command, CLAUDE.md simplified, caveman/Paude/OCP AI ideas logged)
 
 ## In Progress
 
@@ -53,15 +53,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `zanshin-kit/WORKING-STYLE.md`, `.planning/zanshin-kit/ROADMAP.md`, `research/framework-efficacy/`
 - **Added:** 2026-04-21
 
-### Case studies from helm-component-pattern retro (two candidates, audience defined)
-- **Product:** docs / case-studies
-- **Context:** April 29 meta-analysis session surfaced two new case study candidates, both relevant to agentic/YOLO-mode workflows. Audience now more clearly defined: someone running AI autonomously who wants to understand structural failure modes and when human intervention is required.
-  - **"Technical correctness doesn't validate conceptual communication"** — CI passes, helm lint passes, all features work — and a peer says "I didn't understand what we're trying to solve." For autonomous workflows: what's the non-technical validation gate? Peer feedback was the forcing function; no automated check caught it. Pattern: technical quality gates and communication quality are orthogonal.
-  - **"The frame you inherited shapes the solution you can see"** — The Approach A/B framing survived spar, shoshin, and multiple review passes because all checks operated inside the same documents that established the frame. User pressure ("we don't really need legacy things") was the only exit. For YOLO-mode: this names what autonomous agents structurally cannot catch — the AI cannot question the brief it treats as authoritative. Frame dissolution requires deliberate human intervention.
-- **Both connect to:** `shoshin.md` "When the Document Itself May Be Wrong" (the structural fix), `zanshin-kit/WORKING-STYLE.md` (the portable practice layer)
-- **Write when:** starting from scratch, not at end of a long session — these deserve clean drafts with the audience in mind
-- **Links:** `docs/case-studies/`, transcript `16174bc5-eea8-4b4b-b81b-9bf5eca4b1ab`
-- **Added:** 2026-04-29
 
 ### Source: fetch and analyze UHVFcUzAGlM (Paude/Claude autonomous mode video)
 - **Product:** research / paude-integration
@@ -133,6 +124,18 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Added:** 2026-04-10
 
 ## Ideas
+
+### Evaluate caveman for token savings (output compression + CLAUDE.md compress)
+- **Product:** meta / tooling
+- **Context:** [caveman](https://github.com/JuliusBrussee/caveman) (50k stars) is a Claude Code skill/plugin that instructs the agent to respond in telegraphic "caveman speak" — dropping articles, filler, pleasantries — while keeping full technical accuracy. Benchmarks claim ~65% average output token savings (range 22–87%). Two distinct capabilities worth evaluating separately:
+  1. **Output compression (caveman mode):** makes agent responses terser. Potential conflict: the workspace writing style is practitioner voice (direct, not telegraphic). Useful in YOLO/Paude sessions where no human reads responses directly; less appropriate for sessions producing docs or essays.
+  2. **`caveman-compress`:** rewrites memory files (CLAUDE.md, etc.) into compressed form for AI reading while keeping a human-readable `.original.md` backup. Claims ~46% average input token savings on prose files. More workspace-compatible — CLAUDE.md simplification just done would compound with this. Try: `/caveman:compress CLAUDE.md`.
+- **Ecosystem:** also ships `cavemem` (SQLite cross-agent memory) and `cavekit` (spec-driven autonomous build loop) — both relevant to Paude orchestration thread.
+- **Install (Claude Code):** `claude plugin marketplace add JuliusBrussee/caveman && claude plugin install caveman@caveman`
+- **Install (Cursor):** `npx skills add JuliusBrussee/caveman -a cursor`
+- **Key question:** does caveman-compress on CLAUDE.md survive round-trip? Human edits the `.original.md`, re-runs compress — does it degrade? Check before adopting.
+- **Links:** https://github.com/juliusbrussee/caveman
+- **Added:** 2026-04-29
 
 ### Shell strict mode — retrofit existing scripts
 - **Product:** devops / tooling
@@ -539,6 +542,47 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** https://danielmiessler.com/blog/personal-ai-infrastructure, https://github.com/danielmiessler/PAI, `library/daniel-miessler-ai-replace-knowledge-workers.md`, `.planning/zen-karate/thread-development.md` (voice #15)
 - **Added:** 2026-04-18
 
+### Reference architecture: OpenShift + OpenShift AI as enterprise AI coding agent platform
+- **Product:** devops / meta / research
+- **Context:** The team use case for self-hosted AI coding agents — where the personal exploration (home + Paude) generalizes into something a platform team deploys for software engineering teams across an organization. OpenShift provides the execution and policy layer; OpenShift AI provides the inference layer; Paude (or equivalent) provides the agent container model. Code never leaves the cluster; no cloud API dependency; audit trails built in.
+- **Why this is interesting beyond personal use:**
+  - **Data sovereignty:** engineering teams with compliance constraints (government, financial, healthcare) cannot send code to Anthropic or OpenAI APIs. Self-hosted inference removes that blocker entirely.
+  - **Cost model shifts:** at team scale, inference cost per developer-hour on shared vLLM is predictable and bounded; per-token cloud costs are unbounded and spiky.
+  - **The platform team's role:** one team (platform/SRE) manages the vLLM serving stack and the agent execution infrastructure; all engineering teams consume it as a service — same model as how OpenShift itself is operated.
+- **Architecture sketch:**
+  1. **Inference layer (OpenShift AI):** vLLM serving runtime deployed via OpenShift AI operator, backed by GPU nodes (NodeFeatureDiscovery + GPU operator). Model stored in ODF or S3-compatible storage. Exposes an OpenAI-compatible `/v1` endpoint inside the cluster. LiteLLM as an API gateway layer — translates Claude Code's Anthropic API calls to OpenAI format, enforces per-team rate limits, adds token metering.
+  2. **Execution layer (Paude-style):** per-developer or per-team agent containers running Claude Code CLI / Cursor CLI, configured with `ANTHROPIC_BASE_URL` pointing at LiteLLM. NetworkPolicy restricts egress to only: the LiteLLM service, internal git (Gitea/Gitlab), and the team's target repos. Code never leaves the cluster.
+  3. **GitOps layer (this workspace's patterns):** the entire agent infrastructure is itself managed via GitOps. The `helm-component-pattern` / `componentRegistry` could model: the vLLM ServingRuntime, LiteLLM deployment, per-team NetworkPolicies, per-team AppProjects, agent container templates. Teams onboarded as cluster/namespace entries; their agent access is derived from ArgoCD AppProject source restrictions.
+  4. **Observability:** GPU utilization via OpenShift metrics stack; per-team token counts via LiteLLM's built-in metering; agent task outcomes via git (completed PRs, commit rate) — same "engineered measurement" pattern from the YOLO-mode aspiration.
+- **The recursive angle:** the GitOps patterns already documented in `devops/argo/examples/helm-component-pattern/` are the right tool for managing this AI infrastructure. The platform that would run AI agents is best deployed by AI agents using GitOps. This closes a loop that's worth naming explicitly.
+- **Teaching angle:** this is a strong candidate for the "teach others to fish" goal. A platform engineer reading this workspace should be able to take the helm-component-pattern, the OpenShift AI deployment research, and this reference architecture and build a team-scale AI coding platform without the author's involvement. That's the test.
+- **What this is not:** a product — no roadmap, no versioning, no SLA. A reference architecture and a guide. The user doesn't need to build all of it; documenting the design and the key decisions is the deliverable.
+- **Key open questions (grill-me candidate for when this gets prioritized):**
+  - LiteLLM as API gateway vs. direct vLLM endpoint — is the translation layer worth the complexity for Claude Code?
+  - Multi-tenancy model: per-team namespace with dedicated agent pods, or shared agent pool with per-user auth?
+  - Model selection for a team platform: what's the minimum viable model for a real engineering team's agentic workload? (This needs a benchmark, not a guess)
+  - How does Paude's git-sync model work in an air-gapped or semi-isolated cluster? (git push/pull to internal Gitea?)
+  - What does "good enough" look like for the inference backend — token latency, throughput per team?
+- **Relates to:** `Local model as Paude inference backend`, `Explore Paude for containerized agent workflows`, `research/openshift-ai-llm-deployment/`, `devops/argo/examples/helm-component-pattern/`, `Zanshin-kit portability test and YOLO-mode design`
+- **Added:** 2026-04-29
+
+### Local model as Paude inference backend — home and OpenShift AI
+- **Product:** meta / research / devops (argo / OpenShift AI)
+- **Context:** Paude runs Claude Code / Gemini CLI / etc. inside containers and calls out to the cloud inference API. The question: can the inference call be pointed at a local model (Ollama at home, vLLM on OpenShift AI) instead — making agent orchestration fully on-premises or hybrid, with no cloud API dependency?
+- **Two deployment targets:**
+  1. **Home / local:** Ollama exposing an OpenAI-compatible endpoint (`http://localhost:11434/v1`). Paude containers would need to reach the host network. The binding question is model capability: agentic work (tool use, long context, multi-step planning) requires a model that follows system prompts precisely and handles function-calling reliably. Candidates worth benchmarking: Qwen2.5-Coder-32B, Devstral, Gemma3. Hardware constraint: see existing case study "When the Bus Is the Bottleneck" — PCIe bandwidth is the ceiling for large models in hybrid RAM/GPU inference.
+  2. **OpenShift AI + vLLM:** OpenShift AI provides vLLM as a model-serving runtime (single-model serving via KServe). Exposes an OpenAI-compatible `/v1` endpoint that Paude could target by setting `ANTHROPIC_BASE_URL` (if Claude Code supports it) or via LiteLLM as a translation proxy. This is the more scalable path — dedicated GPU nodes, model pinned, inference isolated from the Paude containers. Also where **llm-d** becomes relevant: Red Hat's disaggregated inference project, designed for large models that exceed a single node's GPU capacity. Worth watching maturity before adopting; vLLM is the production-ready choice today.
+- **The unsolved problem — tool use fidelity:** Cloud models (Claude Sonnet) are significantly ahead of local models on the tool-calling / agentic behavior that Paude depends on. The risk: a local model that "works" for chatting fails at the multi-step agent loop because it hallucinates tool calls or ignores system prompt constraints. The measurement question: what does a passing vs. failing agent run look like, and can you detect failure without watching every step?
+- **Interesting intersection:** caveman-compress reduces input tokens per session (see caveman backlog item). If running on a local model with a smaller context window, this compounds — a compressed CLAUDE.md matters more when you're at 8k context than at 200k.
+- **Key questions for a scoping session (grill-me candidate):**
+  - Does Paude support `ANTHROPIC_BASE_URL` or `OPENAI_BASE_URL` overrides to point at a local endpoint?
+  - Is LiteLLM required as a translation layer, or does vLLM's OpenAI compatibility cover Claude Code's API calls directly?
+  - Which model is the minimum viable agent? (needs a benchmark: run a defined Paude task against cloud Claude vs. local candidates, compare completion rate and correctness)
+  - For OpenShift AI: what does the vLLM serving stack look like? NodeFeatureDiscovery + GPU operator + KServe + ServingRuntime? (This is already partially documented in `research/openshift-ai-llm-deployment/`)
+  - For llm-d: what's the current maturity and what workload profiles does it target?
+- **Relates to:** `Explore Paude for containerized agent workflows`, `Paude as external executor for meta-prompting pipelines`, `Local LLM: electricity measurement and case studies`, `research/openshift-ai-llm-deployment/`, `docs/ai-engineering/local-llm-setup.md`
+- **Added:** 2026-04-29
+
 ### Explore Paude for containerized agent workflows
 - **Product:** meta
 - **Context:** [Paude](https://github.com/bbrowning/paude) runs AI coding agents (Claude Code, Cursor CLI, Gemini CLI, OpenClaw) in secure containers with git-based sync. Could strengthen the meta-prompting system by enabling isolated, parallelizable agent sessions — e.g., running research, drafting, and review agents concurrently in containers with `--yolo` safely enabled, or orchestrating fire-and-forget agent tasks against this workspace. Worth exploring whether its orchestration model (harvest, PRs, multi-session) maps to the multi-stage meta-prompt pipelines already in use here. Also explore intersection with PAI/Kai — Paude provides the containerized execution environment; PAI provides the scaffolding architecture. Could Paude containers run PAI-style agents with structured memory and learning loops?
@@ -577,6 +621,9 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ## Done
 
 Rolling cap: at most **15** items stay here (newest first). Older completions live in `BACKLOG-ARCHIVE.md` (see `/backlog` command — **Done retention**). Git history remains authoritative.
+
+### Case studies (helm-component-pattern retro) + grill-me + CLAUDE.md simplification ✓ Done 2026-04-29
+- Two case studies written: `docs/case-studies/technical-correctness-vs-communication.md` and `docs/case-studies/inherited-frame-shapes-solution.md`. Registered in `docs/case-studies/README.md`. `/grill-me` command created in `.cursor/commands/` and `.claude/commands/`. CLAUDE.md simplified from ~223 → 183 lines (Session Orientation, Context Compaction, Stack Tracking, Feedback Checkpoints compressed; Case Study Reflection removed from CLAUDE.md → relocated to `/checkpoint` Step 2.3). `alwaysApply: false` set on `feedback-checkpoints.md` and `case-study-reflection.md` Cursor rules. Three new backlog items logged (caveman, local model Paude, enterprise OCP AI agent platform).
 
 ### Meta: full content audit + systemic link/registry fixes ✓ Done 2026-04-20
 - Ran `/audit` across 717 committed markdown files. Fixed 29 files: 23 `AI-DISCLOSURE.md` link depth errors (all caused by devops folder move — paths uniformly off by one `../`), 5 docs missing from `docs/README.md` (including `framework-bootstrap.md`), 3 research dirs missing from `research/README.md`, missing Zanshin anchor links in `the-shift.md`, 6 devops internal cross-links. Root-caused the false-positive problem (260/353 "broken links" were scraped web content + fenced code blocks). Applied three systemic fixes: audit Layer 1 exclusions, `/whats-next` registry sync check, `repo-structure.md` link-depth-drift guidance for directory moves.

@@ -1,7 +1,7 @@
 ---
 description: Notice when current work could connect to existing content or become a case study
 globs:
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Case Study Reflection

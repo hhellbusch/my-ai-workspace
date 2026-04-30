@@ -1,7 +1,7 @@
 ---
 description: Solicit feedback at natural stopping points — the lightweight counterpart to sparring
 globs:
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Feedback Checkpoints

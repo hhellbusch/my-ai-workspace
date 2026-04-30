@@ -68,6 +68,20 @@ Overwrite `.planning/whats-next.md` with the following compact format:
 
 Keep it short. Five minutes to write, thirty seconds to read. Do not add `<project_backlog>`, `<work_completed>`, `<critical_context>` sections — those belong in `/whats-next`. This is a save point, not a summary.
 
+### Step 2.3: Case study seed check
+
+Before logging the checkpoint, ask one question: *does this session's work demonstrate a transferable pattern?*
+
+Check against two signals:
+- **Connected to an existing pattern** — does what just happened illustrate something documented in `docs/case-studies/` or `docs/ai-engineering/`?
+- **Reveals a new gap or mechanism** — did an AI failure mode surface, a workflow decision get made, or a tool prove itself or fail?
+
+If yes to either: add one line to `BACKLOG.md` under `## Ideas` with a `Case study:` prefix. Include enough context that a new session could reconstruct why it mattered. Commit immediately with `backlog:` prefix.
+
+If no: skip without comment.
+
+---
+
 ### Step 2.4: Spar trigger evaluation
 
 Before logging the checkpoint, ask: **would a spar be beneficial right now?**

@@ -26,6 +26,8 @@ Documented examples of meta-development patterns, workflow decisions, and AI-ass
 
 ---
 
+---
+
 ## AI Failure Modes
 
 - `failure` **[When AI Fabricates the Evidence for Its Own Argument](fabricated-references.md)** — AI fabricated a plausible Anthropic URL while defining sycophancy — in the same paragraph the failure mode was being explained. Fix: external URL verification rule and pre-commit review step.
@@ -53,6 +55,10 @@ Documented examples of meta-development patterns, workflow decisions, and AI-ass
 - `failure` **[When the Directory Moves and the Links Don't Know](link-depth-drift.md)** — The same reorganization silently broke 23 internal navigation links — all off by exactly one `../`, all in the moved subtree, none signaled at commit time. Discovered months later by audit. Companion to the gitignore drift case: same root cause, different failure surface. One failure was loud; this one was silent and slow to accumulate.
 
 - `failure` **[When the Meta-Document Tries to Be the Catalog](meta-document-drift.md)** — The AI orientation file (`.cursorrules`) had inline title lists and hardcoded document counts — duplicating what the track READMEs authoritatively tracked. Every document added without updating `.cursorrules` made the AI's model of the corpus staler. Fix: remove inventory from orientation files; let them describe purpose and point to authoritative sources.
+
+- `failure` **[When Technical Correctness Isn't Enough](technical-correctness-vs-communication.md)** — A GitOps reference pattern passed every technical gate — lint, render, pre-commit review — and still failed its audience. A peer couldn't follow what the pattern was solving. Documents why AI review is structurally blind to comprehension failure, and what it takes to catch it.
+
+- `failure` **[The Frame You Inherited Shapes the Solution You Can See](inherited-frame-shapes-solution.md)** — An Approach A/B comparison survived spar, shoshin, and multiple review sessions because all checks operated inside the same documents that established it. The frame was removed only when the user explicitly rejected it. Documents why AI review cannot challenge its own organizing assumptions — and what triggers are needed to interrupt a frame from outside it.
 
 - `failure` **[When the Repository Becomes the Resume](when-the-repository-becomes-the-resume.md)** — The AI consistently identified the workspace owner as an "infrastructure engineer" across multiple sessions, despite corrections. Two compounding causes: the `.cursorrules` opener set that frame, and the dominant technical corpus reinforced it. Names the mechanism (corpus-to-identity conflation) and the fix: identity-first meta-documents that explicitly name what the dominant content does *not* imply.
 

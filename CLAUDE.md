@@ -20,51 +20,21 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 
 ## Session Orientation
 
-At session start (or when running `/start`), load context in this order:
+At session start, prefer `/start`. Without it: read `ABOUT.md`, the `> State:` line from `BACKLOG.md`, and `git log --oneline -10`. When user says "read X and go", look for a `> Written: YYYY-MM-DD | SHA: <hash>` header — if present, run `git log <sha>..HEAD --oneline` before absorbing the brief's framing. Review coverage opt-in only.
 
-1. **`ABOUT.md`** — read first, always. Identity before corpus.
-2. **`BACKLOG.md` summary header** — the `> State:` line (counts + last done). Do not read the full file unless the user asks for detail on a specific section.
-3. **`.planning/whats-next.md`** — if it exists, check staleness: compare file mtime against most recent commit timestamp (`git log -1 --format=%ct`). If commits are newer, flag it as potentially stale. Read in full and cross-reference against the backlog.
-4. **`git log --oneline -10`** — recent activity. If no handoff exists, reconstruct session context from the commit cluster.
-5. **`.planning/*/BRIEF.md` one-liners** — read only the one-liner from each brief. Surface gaps if the brief doesn't connect to anything in the backlog.
-
-**If no handoff exists:** use the git log as the synthetic handoff. State clearly what it can't recover (decisions made in conversation, pending intent, approach choices not committed).
-
-**Review coverage:** opt-in only — skip at session start unless asked.
+**For complex implementation tasks**, consider delegating execution to a sub-agent: keep analysis and planning in the main context, pass a clean specification to a fresh sub-agent for implementation. This preserves context quality and prevents exploration from polluting the implementation window.
 
 ---
 
 ## In-Session Context Compaction
 
-Within long sessions, earlier context gets compressed. The session feels continuous but specific file contents and decisions may be approximations.
-
-- **Re-read before deciding.** If a decision depends on a file's contents, read the file — don't trust in-context memory of it, especially in long sessions.
-- **Surface compaction rather than guessing.** If something feels uncertain ("I think we decided X"), say so and re-read rather than proceeding.
-- **Committed files are truth.** When memory and repo conflict, the repo is right.
-- **Checkpoint frequency reduces compaction risk.** Each commit externalizes state before it can be compressed.
-
----
-
-## Session-Start Briefing Guardrail
-
-When a session opens with a briefing document (user says "read X and go"), run this check *before* absorbing the brief's framing:
-
-1. Look for `> Written: YYYY-MM-DD | SHA: <hash>` in the briefing header.
-2. If present: `git log <sha>..HEAD --oneline` and `git diff <sha>..HEAD -- BACKLOG.md`
-3. If no SHA: `git log --oneline -5` and note the brief has no anchor.
-4. Surface conflicts before reading the brief. Once you've absorbed a briefing's framing, a conflict becomes a correction rather than a prevention.
-
-If clean: one line — "State check: clean. Proceeding from briefing."
+Re-read files before deciding — don't trust in-context memory in long sessions. When memory and repo conflict, the repo is right.
 
 ---
 
 ## Conversation Stack Tracking
 
-Sessions branch naturally. When a subtopic resolves, surface it: *"That feels resolved. We were working on X before — want to return?"* Stack depth (4–5 levels) is a signal to park something before pushing further. Before leaving a resolved branch, check whether it produced anything worth capturing.
-
-**Automatic capture review — run proactively at milestones** (backlog item done, deliverable complete, natural chapter shift, or 3–5 commits accumulated):
-
-Scan four buckets: (1) BACKLOG updates needed, (2) documentation to create or update, (3) case study candidates, (4) uncommitted work. Answer concretely — not "you might want to..." but "here's what's needed and why." Default is to do the work, not enumerate.
+When a subtopic resolves, surface it: *"That feels resolved — want to return to X?"* Before leaving a branch, check whether it produced anything worth capturing.
 
 ---
 
@@ -105,15 +75,7 @@ State plainly: "I'm assuming X — is that still true?"
 
 ## Feedback Checkpoints
 
-At natural stopping points, explicitly invite feedback: "Any feedback, questions, thoughts, or concerns?" or "Does this match what you had in mind?"
-
-**When to check in:**
-- After completing a multi-step task
-- Before committing
-- After presenting a plan or design — before executing
-- After substantive content changes, especially essays or anything in the author's voice
-
-**Not sparring** (structured adversarial review). **Not a gate** — ask, then continue if the user indicates forward momentum. Reserve for moments where the user's input genuinely matters.
+After producing substantive output — especially content in the author's voice, a plan, or a design — pause and invite feedback: "Does this match what you had in mind?" Not sparring; not a gate — ask, then continue on forward momentum.
 
 ---
 
@@ -137,19 +99,6 @@ Capture ideas and deferred tasks as backlog items immediately — don't batch to
 - Current work reveals a gap or improvement opportunity out of scope right now
 
 **How:** Add to `BACKLOG.md` `## Ideas` section with product tag, context, links. Every backlog update gets its own commit with `backlog:` prefix. Include enough context that a fresh session understands the item without the original conversation.
-
----
-
-## Case Study Reflection
-
-When completing non-trivial work, briefly consider:
-1. Does this demonstrate a pattern that connects to an existing essay in `docs/`?
-2. Could this become its own case study?
-3. Does this validate or challenge a claim in an existing doc?
-
-If yes: add a seed to `BACKLOG.md` under **Ideas** with `Case study:` title prefix. Commit with `backlog:` prefix. Mention it briefly: "Added a case study idea: [title]."
-
-Not a gate, not a prompt to the user during work — just capture the seed.
 
 ---
 
@@ -226,6 +175,7 @@ Available via `~/.claude/commands/`. Key workspace commands:
 | `/whats-next` | Full session handoff |
 | `/backlog [add\|pick\|done\|review\|prioritize]` | Backlog management |
 | `/spar [target]` | Adversarial review |
+| `/grill-me [plan\|design]` | Relentless design interrogation — walk the decision tree before building |
 | `/review` | Pre-commit quality gate |
 | `/validate <file> <type>` | Mark content as human-reviewed |
 | `/audit` | Content health check — links, registries, cross-references |
