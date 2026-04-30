@@ -125,6 +125,29 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### Research: LID (Linked-Intent Development) — enterprise-validated agentic SDD methodology
+- **Product:** research / meta / devops
+- **Source:** https://github.com/jszmajda/lid · https://linked-intent.dev/
+- **Signal:** First-hand enterprise account of LID being useful and beneficial in production settings (not just star count — 37 stars, but practitioner-validated). Author background: AWS. Shared by a peer.
+- **What it is:** A spec-driven development methodology purpose-built for agentic coding. Core claim: **code is output, not the artifact you maintain.** Intent is made explicit and traceable through a five-level chain: HLD → LLDs → EARS specs → Tests → Code. The design documents are the system; code is compiled from them. Done correctly, you can delete all tests and code and regenerate them from the documents alone.
+- **Three research angles worth pursuing:**
+  1. **LID as Paude brief format.** The existing Paude assessment (Signal 3) asks: what level of task specification lets a fire-and-forget agent produce interactive-session quality? LID's HLD + LLD + EARS is a structured answer. A YOLO-mode agent given a LID-formatted spec has the why (HLD), the how (LLD), the what (EARS), and success criteria (specs). Code failures are recoverable — re-run from specs. Intent wasn't lost, only the output was.
+  2. **Bidirectional-differential as automated coherence check.** The experimental plugin runs two parallel fresh Claude sessions: one generates code from EARS specs, the other reconstructs specs from code with specs stripped. When both match, intent and implementation are coherent. When they diverge, the gaps name where intent was unstated or code drifted. This is a structured, automated analog to `/spar` applied to code coherence — adversarial review baked into the build process.
+  3. **Enterprise adoption pattern.** What does LID look like in a team/platform context? How does it interact with code review, PR processes, existing design doc practices? How does the discipline requirement (no skipping design phases, all changes cascade downward) hold up in a team with mixed adoption? The first-hand account here is the most valuable signal.
+- **Connections to existing threads:**
+  - Paude: LID answers the "brief quality" problem for autonomous agent execution
+  - Enterprise OCP AI agent platform: LID provides the standard for how teams scope agent tasks
+  - `grill-me`: grill-me is upstream of LID — use grill-me to interrogate a design, then commit it as LID's HLD. Complementary, not duplicated.
+  - helm-component-pattern: same philosophy applied to infrastructure (values.yaml = intent, rendered ArgoCD apps = output). LID validates the approach across domains.
+  - Frame problem case study (`inherited-frame-shapes-solution.md`): LID's HLD-first + competing-options phase is the structural answer to preventing inherited frames from silently controlling downstream decisions.
+- **What to do in a research session:**
+  - Install in a test project and run the full greenfield workflow: HLD phase (competing options → pick), LLD + edge-case probe, EARS generation, bidirectional-differential audit
+  - Interview the friend: what specifically made it useful? What was hard? What did the team resist? What changed in how they wrote specs vs. before?
+  - Compare to the Paude brief: take an existing Paude task spec (from `.planning/paude-integration/`) and rewrite it in LID format. Does it produce better autonomous output?
+  - Evaluate bidirectional-differential vs. `/spar` on the same target — are they catching the same things or different things?
+- **Links:** https://github.com/jszmajda/lid, https://linked-intent.dev/, `.planning/paude-integration/`, `research/pai-kai-paude/`
+- **Added:** 2026-04-29
+
 ### Evaluate caveman for token savings (output compression + CLAUDE.md compress)
 - **Product:** meta / tooling
 - **Context:** [caveman](https://github.com/JuliusBrussee/caveman) (50k stars) is a Claude Code skill/plugin that instructs the agent to respond in telegraphic "caveman speak" — dropping articles, filler, pleasantries — while keeping full technical accuracy. Benchmarks claim ~65% average output token savings (range 22–87%). Two distinct capabilities worth evaluating separately:
