@@ -589,7 +589,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Relates to:** `Local model as Paude inference backend`, `Explore Paude for containerized agent workflows`, `research/openshift-ai-llm-deployment/`, `devops/argo/examples/helm-component-pattern/`, `Zanshin-kit portability test and YOLO-mode design`
 - **Added:** 2026-04-29
 
-### Local model as Paude inference backend — home and OpenShift AI
+### Local model as Paude inference backend — home and OpenShift AI *(lower priority — POC on public models first)*
 - **Product:** meta / research / devops (argo / OpenShift AI)
 - **Context:** Paude runs Claude Code / Gemini CLI / etc. inside containers and calls out to the cloud inference API. The question: can the inference call be pointed at a local model (Ollama at home, vLLM on OpenShift AI) instead — making agent orchestration fully on-premises or hybrid, with no cloud API dependency?
 - **Two deployment targets:**
@@ -608,9 +608,11 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ### Explore Paude for containerized agent workflows
 - **Product:** meta
-- **Context:** [Paude](https://github.com/bbrowning/paude) runs AI coding agents (Claude Code, Cursor CLI, Gemini CLI, OpenClaw) in secure containers with git-based sync. Could strengthen the meta-prompting system by enabling isolated, parallelizable agent sessions — e.g., running research, drafting, and review agents concurrently in containers with `--yolo` safely enabled, or orchestrating fire-and-forget agent tasks against this workspace. Worth exploring whether its orchestration model (harvest, PRs, multi-session) maps to the multi-stage meta-prompt pipelines already in use here. Also explore intersection with PAI/Kai — Paude provides the containerized execution environment; PAI provides the scaffolding architecture. Could Paude containers run PAI-style agents with structured memory and learning loops?
-- **Links:** https://github.com/bbrowning/paude, `.planning/paude-integration/`
-- **Added:** 2026-04-17
+- **Context:** [Paude](https://github.com/bbrowning/paude) runs AI coding agents (Claude Code, Cursor CLI, Gemini CLI, OpenClaw) in secure containers with git-based sync. POC on public cloud models first — local model inference is a separate lower-priority thread (see "Local model as Paude inference backend").
+- **Multi-agent as first-class experiment:** Paude's support for multiple agents (Claude Code, Gemini CLI, Cursor CLI) is the core of the value proposition, not a detail. Key experiment: run the same task spec through Claude Code and Gemini CLI via Paude on the same task. Don't compare quality — compare *behavior*: how did each interpret the spec, where did each deviate, which required more precision to get right? This informs how LID-formatted briefs need to be written for agent-agnostic vs. agent-specific tasks. It also informs the enterprise platform adoption story — teams bring their preferred agent; Paude provides the container, isolation, and git sync.
+- **First-hand exploration needed before scoping:** (1) Run one complete Paude cycle — create, assign, `--yolo`, harvest. (2) Run the same task through two agents (Claude Code + Gemini CLI) and observe behavioral differences. (3) Install memsearch and observe one session's memory output.
+- **Links:** https://github.com/bbrowning/paude, `.planning/paude-integration/`, `research/pai-kai-paude/`
+- **Added:** 2026-04-17 · **Updated:** 2026-04-29
 
 ### ~~Repo reorganization: move DevOps technical samples into a subfolder~~ ✓ Done 2026-04-20
 - Moved `ansible/`, `argo/`, `coreos/`, `ocp/`, `rhacm/`, `vault/` → `devops/{name}/`. Updated all cross-references in README, docs, .cursor/ commands/rules, .cursorrules, BACKLOG. Root directory now: `devops/ docs/ examples/ library/ research/`. Also produced a case study on the gitignore drift failure mode that emerged from the move.
