@@ -23,6 +23,8 @@ This workspace has persistent project state that survives across sessions. When 
 
 If the user starts a session with a vague request like "let's continue" or "what should I work on," check these sources before asking clarifying questions. The `/start` command automates this orientation.
 
+**Audit freshness:** Run `git log --oneline --all | grep -i "audit" | head -1` to find the last audit commit. If it is older than 7 days, surface it once at session start: *"Last audit was N days ago — consider running `/audit` before the session ends."* Don't repeat it mid-session. Skip if the user has a clear task already in motion.
+
 ---
 
 ## In-Session Context Compaction
