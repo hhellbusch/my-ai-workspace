@@ -1,0 +1,3 @@
+Internal measurement infrastructure for the Zanshin framework efficacy study.
+This directory tracks counterfactual protocol runs, not external sources.
+Excluded from library gap audit.

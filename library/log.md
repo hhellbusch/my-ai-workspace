@@ -26,17 +26,17 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Wing:** philosophy-practice
 - **Source:** YouTube / Website
 
-## [2026-04-17] ingest | Simple Lucas — productivity / single-tasking
+## [2026-04-18] ingest | Simple Lucas — productivity / single-tasking
 - **Entry:** [simple-lucas.md](simple-lucas.md)
 - **Wing:** philosophy-practice
 - **Source:** YouTube
 
-## [2026-04-17] ingest | Rian Doris / FlowState — neuroscience of flow
+## [2026-04-18] ingest | Rian Doris / FlowState — neuroscience of flow
 - **Entry:** [rian-doris.md](rian-doris.md)
 - **Wing:** philosophy-practice
 - **Source:** YouTube
 
-## [2026-04-17] ingest | 3Blue1Brown — Deep Learning Series
+## [2026-04-18] ingest | 3Blue1Brown — Deep Learning Series
 - **Entry:** [3blue1brown.md](3blue1brown.md)
 - **Wing:** ai-engineering
 - **Source:** YouTube / research/3blue1brown/
@@ -66,17 +66,17 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Wing:** ai-engineering
 - **Source:** YouTube / research/miessler-single-da-thesis/
 
-## [2026-04-18] ingest | Jesse Enkamp × Shi Heng Yi — If I Started Martial Arts From Scratch In 2026
+## [2026-04-19] ingest | Jesse Enkamp × Shi Heng Yi — If I Started Martial Arts From Scratch In 2026
 - **Entry:** [enkamp-shi-heng-yi-mastery.md](enkamp-shi-heng-yi-mastery.md)
 - **Wing:** philosophy-practice
 - **Source:** YouTube / research/enkamp-shi-heng-yi-mastery/
 
-## [2026-04-18] ingest | André Bertel — Adaptive Reliability (Seminar)
+## [2026-04-19] ingest | André Bertel — Adaptive Reliability (Seminar)
 - **Entry:** [andre-bertel-adaptive-reliability.md](andre-bertel-adaptive-reliability.md)
 - **Wing:** philosophy-practice
 - **Source:** YouTube
 
-## [2026-04-18] ingest | Hank Green — Why is Everyone So Wrong About AI Water Use??
+## [2026-04-20] ingest | Hank Green — Why is Everyone So Wrong About AI Water Use??
 - **Entry:** [hank-green-ai-water-use.md](hank-green-ai-water-use.md)
 - **Wing:** ai-engineering
 - **Source:** YouTube / research/youtube-sources-apr2026/
@@ -91,10 +91,15 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Wing:** devops
 - **Source:** YouTube
 
-## [2026-04-28] ingest | EngineersOfAI — What are AI Agents? (Agentic AI, Module 1)
+## [2026-04-21] ingest | EngineersOfAI — What are AI Agents? (Agentic AI, Module 1)
 - **Entry:** [engineersofai-what-are-ai-agents.md](engineersofai-what-are-ai-agents.md)
 - **Wing:** ai-engineering
 - **Source:** Online course
+
+## [2026-04-29] ingest | argocd-diff-preview — desired-state-to-desired-state diff for Argo CD
+- **Entry:** [argocd-diff-preview.md](argocd-diff-preview.md)
+- **Wing:** devops
+- **Source:** GitHub — https://github.com/dag-andersen/argocd-diff-preview
 
 ## [2026-04-29] ingest | Simon Scrapes — Every Claude Code Memory System Compared
 - **Entry:** [simon-scrapes-claude-code-memory-systems.md](simon-scrapes-claude-code-memory-systems.md)
@@ -126,3 +131,15 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Entry:** [mempalace.md](mempalace.md)
 - **Wing:** ai-engineering / memory
 - **Source:** GitHub — https://github.com/mempalace/mempalace
+
+## [2026-04-30] research | OpenShift AI LLM Deployment — research-backed docs (not library entry)
+- **Entry:** none — research produced `docs/ai-engineering/openshift-ai-llm-deployment-summary.md` directly
+- **Wing:** devops / ai-engineering
+- **Source:** research/openshift-ai-llm-deployment/sources/ (50+ refs)
+- **Note:** Logged to close audit gap. Pending: enrich to a library entry if general reference value justifies it.
+
+## [2026-04-30] research | Alberta Tech — Why Devs Are OBSESSED with Claude Code (stub)
+- **Entry:** none — transcript at research/ai-tooling/why-devs-are-obsessed-with-claude-code.md, library entry pending
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ai-tooling/
+- **Note:** Stub logged to close audit gap. Create library entry when ai-tooling research is reviewed.

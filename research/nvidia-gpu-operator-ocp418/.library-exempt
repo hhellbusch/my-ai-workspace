@@ -1,0 +1,3 @@
+Ad-hoc technical analysis of NVIDIA GPU Operator on OCP 4.18.
+Not a general reference — internal analysis that fed engineering decisions.
+Excluded from library gap audit.

@@ -156,8 +156,8 @@ For directory moves (`git mv`): run `git status` before committing and scan for 
 When creating or modifying content (any `.md` file, commands, skills, `.cursorrules`):
 
 - **New file in `docs/`** — add to track `README.md` and `docs/README.md` cross-track list. Add to Related Reading of related essays.
-- **New file in `library/`** — add to `library/README.md`, `library/catalog.md`, and `library/log.md`.
-- **New directory in `research/`** — add to `research/README.md`.
+- **New file in `library/`** — follow the 4-step ingest checklist in the Library section below.
+- **New directory in `research/`** — add to `research/README.md`. Add a `.library-exempt` marker if it is internal infrastructure rather than an external source.
 - **New command or skill** — check if `.cursorrules` TÂCHES section needs updating.
 - **New planning project** — ensure a corresponding backlog item exists.
 - **Renamed or moved file** — search for markdown links pointing to the old path and update them.
@@ -182,6 +182,18 @@ Content is organized by product/technology. Key directories:
 - `BACKLOG.md` — project tracking (summary header: `> State:` line)
 
 Troubleshooting guides go in `devops/{product}/troubleshooting/`, never in `docs/`. Research output goes in `research/{topic}/`, never in `docs/`.
+
+---
+
+## Engineering Discipline
+
+Three principles that govern how this workspace is built and maintained:
+
+**Prefer detection over mandate.** A script that finds gaps is more reliable than a rule that asks people not to create them. When a recurring problem is found, the fix is a scanner, not another checklist item. Example: `scripts/audit-library-gaps.sh` finds orphaned research rather than relying on the ingest checklist to never be skipped.
+
+**Validate before building on.** Each layer of the stack must work before the next is designed. Don't plan Phase N+1 until Phase N produces real, verifiable output. Applies to Paude stages, library structure, and any multi-layer system.
+
+**Consolidate before adding.** Before adding a new rule, check whether it overlaps with an existing one. Two rules covering the same behavior create ambiguity about which is authoritative — and tend to cause both to be ignored.
 
 ---
 
