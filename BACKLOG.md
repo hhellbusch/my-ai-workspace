@@ -140,9 +140,10 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
   - `grill-me`: grill-me is upstream of LID — use grill-me to interrogate a design, then commit it as LID's HLD. Complementary, not duplicated.
   - helm-component-pattern: same philosophy applied to infrastructure (values.yaml = intent, rendered ArgoCD apps = output). LID validates the approach across domains.
   - Frame problem case study (`inherited-frame-shapes-solution.md`): LID's HLD-first + competing-options phase is the structural answer to preventing inherited frames from silently controlling downstream decisions.
+- **The cohesion question (log this explicitly):** LID's non-obvious claim is that the discipline *holds* under delivery pressure in a team setting. Most methodology tools die when deadlines arrive and someone wants to skip the design phases. The first-hand enterprise account is evidence it held. The research question is: *why did it hold, and where did it almost not?* Ask the friend: What did the team resist first? What was the first thing someone wanted to skip? What happened when someone tried to fix code without walking the arrow? What made people keep doing it after the first friction? That's the adoption pattern that doesn't exist in docs or on the internet yet.
 - **What to do in a research session:**
+  - Interview the friend before anything else — capture the cohesion question above while the account is fresh
   - Install in a test project and run the full greenfield workflow: HLD phase (competing options → pick), LLD + edge-case probe, EARS generation, bidirectional-differential audit
-  - Interview the friend: what specifically made it useful? What was hard? What did the team resist? What changed in how they wrote specs vs. before?
   - Compare to the Paude brief: take an existing Paude task spec (from `.planning/paude-integration/`) and rewrite it in LID format. Does it produce better autonomous output?
   - Evaluate bidirectional-differential vs. `/spar` on the same target — are they catching the same things or different things?
 - **Links:** https://github.com/jszmajda/lid, https://linked-intent.dev/, `.planning/paude-integration/`, `research/pai-kai-paude/`
