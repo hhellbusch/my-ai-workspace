@@ -31,6 +31,10 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 - **[The Case for Local: Disk Management as a Privacy-First AI Task](local-llm-sysadmin.md)** — A case study of using a local LLM to diagnose and plan disk space cleanup. Covers why filesystem data is private by nature, the iterative `du → interpret → drill down → decide` loop, and what a recurring local disk agent would look like. Includes a table of when local beats cloud and the irony of AI experimentation being one of the fastest ways to fill a disk.
 
+## Practitioner Guides
+
+- **[Getting Started with Paude — Autonomous Agent Sessions](paude-getting-started.md)** — How to run AI coding agents (Claude Code, Gemini CLI, Cursor CLI) in isolated containers using Paude: install, smoke test, writing task specs, the AGENT-NOTES self-assessment pattern, multi-agent comparison, and measurement via OpenTelemetry. Written from first-hand exploration and updated as new phases are completed. *(In progress — sections marked pending are being populated from hands-on runs.)*
+
 ## Companion Guides
 
 - **[The Session Framework — Patterns, Behaviors, and Why](session-framework.md)** — Human-facing map of the full collaboration framework: what each behavior defends against, how they connect, and the ethos behind them. Covers session orientation, handoffs, conversation stack tracking, adversarial pressure, structured session entries, and the meta-development loop. Start here if you want to understand the framework as a whole before reading the individual guides.
