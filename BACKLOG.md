@@ -63,6 +63,13 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `docs/case-studies/`, transcript `16174bc5-eea8-4b4b-b81b-9bf5eca4b1ab`
 - **Added:** 2026-04-29
 
+### Source: fetch and analyze UHVFcUzAGlM (Paude/Claude autonomous mode video)
+- **Product:** research / paude-integration
+- **URL:** https://www.youtube.com/watch?v=UHVFcUzAGlM&t=1166s (timestamp 19:26 specifically flagged)
+- **Context:** User shared during April 29 session in the context of Paude/Claude exploration and the YOLO-mode / workspace-as-orchestration-layer vision. Not yet fetched. Likely demonstrates Claude Code in autonomous mode relevant to the grill-me → brief → Paude kick-off workflow. Should be fetched via transcript tool and added to `research/pai-kai-paude/` alongside existing Miessler analysis.
+- **Action:** Fetch transcript → analyze against `research/pai-kai-paude/assessment.md` → surface what's new for the orchestration design
+- **Added:** 2026-04-29
+
 ### Zanshin-kit portability test and YOLO-mode design
 - **Product:** meta / tooling / research
 - **Context:** April 29 session surfaced a gap: the zanshin-kit has been embedded in the Field Notes workspace but hasn't been tested in a genuinely isolated context. The YOLO-mode vision (autonomous agents running on local compute, user observing and measuring results in an engineered way) requires the kit to work without the full workspace context. Key questions to explore:
