@@ -1,0 +1,41 @@
+You are running inside a containerised agent session with access to a git workspace.
+Your only job is to produce a single file: `docs/workspace-snapshot.md`.
+
+## What to write
+
+Create `docs/workspace-snapshot.md` with the following sections:
+
+### 1. Header
+```
+# Workspace Snapshot
+Generated: <ISO 8601 datetime>
+Agent: Claude (Paude autonomous session)
+```
+
+### 2. Repository at a glance
+Run `git log --oneline -10` and display the 10 most recent commits as a table:
+
+| Hash | Message |
+|------|---------|
+| ...  | ...     |
+
+### 3. Directory inventory
+Run `find . -maxdepth 2 -type d | sort` (excluding `.git`) and list the top-level structure with a one-line description of what each directory contains (use your knowledge of the workspace, not just filenames).
+
+### 4. File counts by type
+Run a shell command to count files by extension (show the top 10 by count). Present as a table:
+
+| Extension | Count |
+|-----------|-------|
+| ...       | ...   |
+
+### 5. Agent notes
+Write 2–3 sentences describing what you observed about this workspace while creating this snapshot. Be honest and specific — this section is read by a human reviewing your work.
+
+---
+
+After writing the file, commit it:
+  git add docs/workspace-snapshot.md
+  git commit -m "docs: workspace snapshot (autonomous agent demo)"
+
+Do not modify any other files.

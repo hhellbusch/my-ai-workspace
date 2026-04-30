@@ -1,0 +1,36 @@
+id: workspace-snapshot
+intent: >
+  Agent scans the workspace and writes a structured snapshot report:
+  recent commits, directory structure, file counts, and its own observations.
+  Demonstrates autonomous file creation, shell tool use, and git commit.
+
+spec_file: ../task-specs/workspace-snapshot-spec.txt
+agent: claude
+timeout_minutes: 15
+
+claims:
+  - id: SNAP-001
+    check: git_committed
+
+  - id: SNAP-002
+    check: file_exists
+    path: docs/workspace-snapshot.md
+
+  - id: SNAP-003
+    check: file_contains
+    path: docs/workspace-snapshot.md
+    contains: "Workspace Snapshot"
+
+  - id: SNAP-004
+    check: file_contains
+    path: docs/workspace-snapshot.md
+    contains: "Agent notes"
+
+  - id: SNAP-005
+    check: agent_review
+    prompt: >
+      Read docs/workspace-snapshot.md and answer: does it contain a table
+      of recent git commits AND a table of file counts by extension?
+      Answer YES or NO followed by one sentence.
+
+on_failure: notify_human
