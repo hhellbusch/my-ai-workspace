@@ -35,11 +35,17 @@ The directory names stayed as `zen-karate` — renaming would have broken links 
 
 In the same conversation, the user made a distinction: "the style i trained in was hayashi-ha shito-ryu — which is more of okinawan than japanese i feel... compared to gichin and his japanesed karate it is."
 
-This introduced an important nuance — the difference between Okinawan karate (closer to the original *te* and *tode*, Chinese influence, less formalized) and the karate that Gichin Funakoshi adapted for mainland Japan (Shotokan, the 3K format of kihon/kata/kumite, sport orientation).
+This introduced an important nuance — the difference between Okinawan karate (closer to the original *te* and *tode*, strong Chinese influence, more fluid and circular) and the karate that Gichin Funakoshi formalized for mainland Japan (Shotokan, the 3K structure of kihon/kata/kumite, longer stances, large-scale systematic teachability).
 
 But then the user self-corrected: "i do want to make it clear that funakoshi's japanesed karate is still karate."
 
-This was the project's scope *learning*. The user's first instinct was to draw a sharp line — Okinawan is more authentic, Funakoshi adapted it. The second instinct was to soften that line — it's a different expression, not a lesser one. The personal-notes.md was updated to reflect this: "Funakoshi's Shotokan is a legitimate and influential tradition, but it adapted karate for the mainland Japanese context. Hayashi-ha Shito-ryu preserves closer ties to the Okinawan roots — different flavor, not better or worse."
+This was the project's scope *learning* — moving from a sharp line (Okinawan is more authentic, Funakoshi adapted it) toward something more honest. The personal-notes.md was updated to reflect this.
+
+The framing that survived into the updated notes, however, still centered Okinawan as the reference point: "Hayashi-ha Shito-ryu preserves closer ties to the Okinawan roots — different flavor, not better or worse." A Shotokan practitioner reading that isn't being evaluated on their tradition's own terms — they're being granted clearance relative to a baseline that isn't theirs. Funakoshi's decisions were deliberate: the 3K structure was a specific answer to making karate teachable at scale across mainland Japan. That's not dilution; it's a different design choice solving a different problem.
+
+The more honest framing: describe what each tradition *solved* rather than how much each preserved or diverged from a common source. Hayashi-ha Shito-ryu carries strong Okinawan and Chinese influence and a particular relationship to kata forms. Shotokan answered a specific context — mass teachability, mainland Japan, a coherent theory of the body. Neither is a reference point for the other.
+
+This reframing matters for the essays. "Different flavor, not better or worse" is diplomatic. But the essay series is reaching toward something closer to Jesse Enkamp's *no-style* — the idea that the principles transcend any tradition, and every tradition is one embodied path toward them. That aspiration requires a frame where traditions are *parallel paths*, not a primary tradition plus acknowledged others.
 
 ---
 
@@ -85,6 +91,20 @@ Each session inherits the previous session's framing through the documents it re
 
 Subtle shifts — like the "different flavor, not better or worse" nuance — are the hardest to propagate. They're not structural changes that show up in file lists or link audits. They're tonal shifts that only matter when the AI writes prose.
 
+### Coverage expanded; the frame didn't dissolve
+
+There are two distinct kinds of scope evolution:
+
+**Coverage expansion** — adding more traditions, more examples, more territory to what the project includes. The AI can do this: update the brief, broaden the style guide, add scope notes to threads.
+
+**Frame dissolution** — questioning whether the organizing principle itself is right. The AI cannot do this: it reads the brief as authoritative and works within the frame the brief establishes.
+
+This case study documents the first but not the second. The scope expanded from "Zen and Karate" to "martial arts broadly" — that's coverage expansion. But the organizing frame — *karate as the primary lens through which everything else is seen* — didn't change. The brief still says: "Karate is the primary lens because that's where the author's decades of practice live." The AI carried that frame forward, improved content within it, and treated it as the authoritative structure.
+
+If the essays are reaching toward no-style — toward the principles as the lens, with every tradition as an equally valid path — then the brief's "primary lens" language is the frame that needs dissolving, not just the coverage that needs expanding. That requires the author to explicitly name the exit condition, as with the Approach A/B removal in a technical project: only deliberate pressure from outside the frame creates the opening.
+
+**The recursive note:** this document, which is about scope evolution, is itself an example of coverage expanding without the frame dissolving. It was updated when the scope broadened; it hasn't been updated to question whether "karate as primary lens" is the right organizing structure for essays that aspire to no-style. That gap is being named here rather than left implicit.
+
 ### The project's name is now inaccurate
 
 The planning directory is still called `zen-karate/`. The research directory is `zen-karate-philosophy/`. These names made sense when the scope was Zen and karate. Now they're handles that reference a narrower frame than the project actually has. This is a minor friction — anyone reading the files inside will see the broadened scope — but it's a concrete example of how creative evolution creates technical debt in an AI-managed workspace.
@@ -98,6 +118,12 @@ The project's scope evolution is itself an example of *shoshin* (beginner's mind
 This is harder than it sounds. Planning documents want to be definitive. Roadmaps want to be stable. Style guides want to be authoritative. Having all of them say "this is our scope, and our scope is still learning" requires a kind of institutional humility that planning documents aren't designed for.
 
 The project brief handles this with: "The scope is deliberately wider than one style or tradition. The philosophical threads — how you train, how you teach, how you carry yourself — run through martial arts worldwide. Karate is the primary lens because that's where the author's decades of practice live, but the ideas aren't confined to it." That framing allows the scope to keep evolving without requiring another cascade of document updates.
+
+But shoshin applied to the brief itself surfaces a tension. The brief says "karate is the primary lens" — honest, autobiographical, grounded in decades of practice. And the essay series is reaching toward *no-style* as articulated by Jesse Enkamp: the idea that the principles — timing, zanshin, mushin, adaptability — transcend any tradition, and every tradition is one embodied path toward them. No-style isn't "my style plus awareness of others." It's specifically the removal of style-as-lens: the principles become the frame, and the tradition you trained in becomes evidence, not the organizing viewpoint.
+
+Those two positions — "karate as primary lens" and "principles as lens, karate as one path" — produce different essays. In the first, essays translate karate concepts into work contexts; a Shotokan practitioner receives a translation through a different tradition's vocabulary. In the second, essays surface principles that show up in all traditions, and any practitioner recognizes their own training in what's described.
+
+The brief is honest about what it is. The question it hasn't answered is whether "karate as primary lens" is what the essays are actually reaching toward — or whether that's the frame the brief established early and the project has since grown past.
 
 ---
 
@@ -119,6 +145,7 @@ The project brief handles this with: "The scope is deliberately wider than one s
 | No "project evolution" log | Git history captures changes but not *why* the scope shifted |
 | No cross-session scope-drift detection | The [`/audit`](../../.cursor/commands/audit.md) (periodic content health check) command checks links and registries but not tonal consistency |
 | No mechanism for propagating subtle nuance | Structural changes cascade; tonal shifts don't |
+| No trigger for frame dissolution vs. coverage expansion | AI can update documents when scope coverage broadens — it cannot question whether the organizing frame is right. That requires deliberate external pressure (peer feedback, explicit user pushback, milestone shoshin). The distinction isn't named anywhere in the convention set — so it doesn't get applied. |
 
 ---
 
