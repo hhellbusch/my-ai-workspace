@@ -53,6 +53,26 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `zanshin-kit/WORKING-STYLE.md`, `.planning/zanshin-kit/ROADMAP.md`, `research/framework-efficacy/`
 - **Added:** 2026-04-21
 
+### Case studies from helm-component-pattern retro (two candidates, audience defined)
+- **Product:** docs / case-studies
+- **Context:** April 29 meta-analysis session surfaced two new case study candidates, both relevant to agentic/YOLO-mode workflows. Audience now more clearly defined: someone running AI autonomously who wants to understand structural failure modes and when human intervention is required.
+  - **"Technical correctness doesn't validate conceptual communication"** — CI passes, helm lint passes, all features work — and a peer says "I didn't understand what we're trying to solve." For autonomous workflows: what's the non-technical validation gate? Peer feedback was the forcing function; no automated check caught it. Pattern: technical quality gates and communication quality are orthogonal.
+  - **"The frame you inherited shapes the solution you can see"** — The Approach A/B framing survived spar, shoshin, and multiple review passes because all checks operated inside the same documents that established the frame. User pressure ("we don't really need legacy things") was the only exit. For YOLO-mode: this names what autonomous agents structurally cannot catch — the AI cannot question the brief it treats as authoritative. Frame dissolution requires deliberate human intervention.
+- **Both connect to:** `shoshin.md` "When the Document Itself May Be Wrong" (the structural fix), `zanshin-kit/WORKING-STYLE.md` (the portable practice layer)
+- **Write when:** starting from scratch, not at end of a long session — these deserve clean drafts with the audience in mind
+- **Links:** `docs/case-studies/`, transcript `16174bc5-eea8-4b4b-b81b-9bf5eca4b1ab`
+- **Added:** 2026-04-29
+
+### Zanshin-kit portability test and YOLO-mode design
+- **Product:** meta / tooling / research
+- **Context:** April 29 session surfaced a gap: the zanshin-kit has been embedded in the Field Notes workspace but hasn't been tested in a genuinely isolated context. The YOLO-mode vision (autonomous agents running on local compute, user observing and measuring results in an engineered way) requires the kit to work without the full workspace context. Key questions to explore:
+  - Does a reader have enough in the zanshin-kit to act on it without knowing this workspace?
+  - The framework-efficacy measurement system (`research/framework-efficacy/`) measures session outcomes but doesn't connect to the output layer — the case studies carry patterns but not evidence. Is that loop worth closing?
+  - The "teach others to fish" aspiration: case studies and patterns need to be self-contained enough that the author isn't required to interpret them. Are they?
+  - The YOLO-mode reader as an interesting secondary audience — someone designing agentic workflows who wants to know which failure modes require human intervention vs. which quality gates can be automated.
+- **Relates to:** `.planning/paude-integration/`, `research/framework-efficacy/`, `zanshin-kit/`, `.planning/zanshin-kit/ROADMAP.md`
+- **Added:** 2026-04-29
+
 ## Up Next
 
 ### Guide: agentic personal AI infrastructure (PAI/Kai pattern)
