@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|StrReplace",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/py-edit-check.sh",
+            "timeout": 10000
+          }
+        ]
+      }
+    ]
+  }
+}

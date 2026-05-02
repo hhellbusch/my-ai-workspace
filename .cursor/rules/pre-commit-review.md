@@ -34,3 +34,7 @@ A quick review means: read the diff, verify internal links resolve, check for se
 5. **Flag performed-honesty language.** Scan new `docs/` content for self-referential honesty signals: phrases like "honest assessment," "the real story," "unlike other guides," "gets the math wrong," or "real data changes the conversation." These are not problems in themselves, but flag them to the author: "This document contains N self-referential honesty claims — verify that each one is earned by the surrounding content, not just asserted." The pattern to watch for: honesty language appearing in body text where unverified claims also appear. See `docs/case-studies/` for the "performed honesty" case study when written.
 
 If the user asks you to "commit" without saying "review," apply the appropriate level above. Don't skip review entirely, but don't run a 10-step process for a one-line change.
+
+## Python file edits
+
+AST parse and function inventory checks run automatically after every Write or StrReplace on a `.py` file via `.claude/hooks/py-edit-check.sh`. If the hook flagged a syntax error or unexpected def count in the session, resolve it before staging. See `structured-edit-discipline.md` for the underlying anchor discipline.

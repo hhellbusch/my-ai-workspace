@@ -195,6 +195,8 @@ Three principles that govern how this workspace is built and maintained:
 
 **Consolidate before adding.** Before adding a new rule, check whether it overlaps with an existing one. Two rules covering the same behavior create ambiguity about which is authoritative — and tend to cause both to be ignored.
 
+**Insertion ≠ replacement — verify the anchor.** When using `old_str` (or any edit anchor) to locate an insertion point, every line in `old_str` that should survive must appear verbatim in `new_str`. A line present in `old_str` but absent from `new_str` is a silent deletion. For Python files, AST parse and function inventory checks run automatically via `.claude/hooks/py-edit-check.sh` after every Write or StrReplace — read the hook output before staging. Rule: `.cursor/rules/structured-edit-discipline.md`.
+
 ---
 
 ## Library — Knowledge Wiki
