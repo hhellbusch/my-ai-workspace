@@ -32,6 +32,17 @@ All essays, case studies, and guides in `docs/` follow this structure:
 
 ---
 
+## Line breaks
+
+Use semantic line breaks: one sentence per line, blank line between paragraphs.
+Do not hard-wrap at a character limit.
+
+This keeps diffs clean (a word change touches one line, not a reflowed paragraph),
+preserves human readability at sentence boundaries,
+and lets editors reflow text without creating noise.
+
+---
+
 ## Content tracks
 
 Each track in `docs/` has a distinct purpose that determines framing:
