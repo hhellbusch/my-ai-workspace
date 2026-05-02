@@ -89,69 +89,39 @@ Use this as a **temporary scaffold only**. The right column is the destination; 
 
 ## Prerequisite: Git and GitHub
 
-**Who needs this:** Anyone who has not used source control day to day. If you already commit and open PRs regularly, skim the "why" section and the CAB/change-ticket framing — even experienced Git users often miss why GitOps replaces their existing change-management process.
+**Who needs this:** Anyone who has not used source control day to day. If you already commit and open PRs regularly, skim the change-management reframe below — even experienced Git users often miss why GitOps replaces their existing CAB process.
 
-### Why Git — Infrastructure as Code
+**Full path:** See the dedicated **[Git and GitHub Learning Path](../git/README.md)** for the complete staged curriculum (mental model → hands-on basics → internals → paid/optional → certification).
 
-Before the mechanics, the reason. Git and GitOps are not just a new tool for doing what you already do. They are a different accountability and change management model. The principles matter as much as the commands.
+### The one reframe that matters before you start
 
-**Infrastructure as Code** means infrastructure is defined in text files, stored in Git, reviewed before applying, and applied automatically when approved. The benefits are not abstract:
+Git and GitOps are not just a new tool for doing what you already do. They are a different accountability and change management model.
 
-| Principle | What it replaces / improves |
-|-----------|----------------------------|
-| **Version control** | "Who changed this and when?" is answered by `git log`, not by asking around or trawling change tickets. |
-| **Auditability** | Every change has an author, a timestamp, a diff, a PR discussion, and an approver. This is your audit trail. |
-| **Accountability** | A merge commit to the production branch is a named, timestamped, peer-reviewed action. Drift from that state is detectable. |
-| **Consistency** | The same manifest applied to dev, staging, and prod produces the same result. Snowflake configs are a Git diff, not a mystery. |
-| **Speed and efficiency** | Approved changes apply automatically. No maintenance window required for config changes the team has already reviewed. |
-| **Security and compliance** | Branch protection, required reviewers, CODEOWNERS, and signed commits are enforceable controls — comparable to CAB gates but with a full diff attached. |
-| **Scalability** | One repo can drive hundreds of clusters. ClickOps does not scale. |
-| **Declarative by nature** | You describe the desired state; the system reconciles. You stop writing runbooks for "how to apply this" and start writing manifests for "what this should be." |
-
-### Git replaces (and improves on) your change management process
-
-This is the reframe that matters most for VMware teams with mature change-management practices.
-
-| Your current process | Git / GitOps equivalent |
+| Your current process | Git / GitHub equivalent |
 |----------------------|-------------------------|
-| Change ticket describing the change | **Pull request** — the change is the diff; the description is the PR body |
+| Change ticket describing the change | **Pull request** — the change *is* the diff; the description is the PR body |
 | CAB review / approval | **PR review** — named approvers, required reviewers enforced by branch protection |
 | Approval record | **Merge commit** — named, timestamped, traceable to the PR and the approvers |
-| Maintenance window | Not required for config-only changes managed by GitOps (e.g. a Subscription channel update, an alerting rule change). Still applies to changes that cause rolling restarts, storage migrations, or network disruptions — GitOps does not change the blast radius of a change, it makes the change traceable and reversible. |
+| Maintenance window | Not required for config-only GitOps changes (still applies to rolling restarts, storage migrations, network disruptions) |
 | "Who changed this?" investigation | `git log`, `git blame`, PR history |
 | Emergency change / break-glass | Emergency PR with post-hoc review; audit trail preserved |
-| Rollback | `git revert` creates a new commit undoing the change — the history of both the change and the rollback is preserved. Note: reverting the Git commit reverts the *desired state*; the cluster reconciles back to the previous state. If the change caused data loss or a dependent resource was modified, `git revert` alone may not be sufficient — treat GitOps rollback as "fast and traceable," not "instantaneous and lossless." |
+| Rollback | `git revert` — history of both the change and the rollback is preserved |
 
-Git does not eliminate governance. It makes governance faster, more traceable, and automatable at the enforcement layer rather than the process layer. The speed improvement is real but depends on your org's PR cycle maturity — in a regulated environment with mandatory multi-day review queues or strict change-freeze windows, GitOps adoption can initially be slower than CAB for production changes. The long-term efficiency gain comes from eliminating the manual coordination overhead, not from bypassing review gates.
+Git does not eliminate governance. It makes governance faster, more traceable, and automatable at the enforcement layer rather than the process layer.
 
-### Mechanics (checklist)
+### Minimum mechanics for this path
 
-| Topic | Why it matters for OpenShift / GitOps |
-|-------|----------------------------------------|
-| Install Git locally; `user.name` / `user.email` | Every commit is attributed; matches org policy and audit requirements. |
-| **Clone**, **remote**, **fetch** vs **pull** | Argo CD reads from the remote; you need a reproducible local copy. |
-| **Branch**, **commit**, **push** | Typical flow: feature branch → PR → merge to `main` / environment branch. |
-| **Pull request** lifecycle | Where review and approval happen before Argo CD syncs config to the cluster. |
-| **Diff** (`git diff`, IDE view) | You will compare YAML changes to cluster behavior constantly. |
-| Org basics: **permissions**, **CODEOWNERS**, **branch protection** | You may not be able to push to `main`; that is correct and intentional. |
-| Optional: **GitHub CLI** (`gh`) | Open PRs and check status from the terminal — useful when you live in `oc` shells. |
+Before Phase 1 you need: clone, branch, commit, push, open a PR, read `git log` and `git diff`. Before Phase 4 you need: merge, `git revert`, branch protection, CODEOWNERS.
 
-**Official starting points (free)**
+**Start here (free, ~2 hours each):**
 
-- **[Git For Ages 4 And Up — Michael Schwern (linux.conf.au 2013)](https://www.youtube.com/watch?v=1ffBJ4sVUb4)** (~1h 40m) — the best single introduction to *how Git actually works*. Schwern teaches the inside-out mental model (objects → commits → labels → staging area → remotes) using physical props. He does not say "Git is like Subversion but better." He says throw out what you know and build the model from scratch — the same approach this path recommends for Kubernetes. Library entry: [`library/git-for-ages-4-and-up.md`](../../../library/git-for-ages-4-and-up.md).
-- [GitHub Docs — Get started](https://docs.github.com/en/get-started) — account, repos, forks, clones, PRs. Follow after the Schwern talk.
-- [Introduction to GitHub](https://skills.github.com/) (GitHub Skills) — short guided modules.
-- [Pro Git book](https://git-scm.com/book/en/v2) (online) — Chapters 1–3 for internals; deeper chapters when you troubleshoot merges.
+- **[Git For Ages 4 And Up — Michael Schwern](https://www.youtube.com/watch?v=1ffBJ4sVUb4)** (~1h 40m) — the inside-out mental model. Do this first. Library entry: [`library/git-for-ages-4-and-up.md`](../../../library/git-for-ages-4-and-up.md).
+- [GitHub Skills](https://skills.github.com/) — interactive in-repo exercises (Introduction to Git, Introduction to GitHub).
+- [Microsoft Learn — Introduction to Git](https://learn.microsoft.com/en-us/training/modules/intro-to-git/) — structured free module with knowledge checks (~1h 26m).
 
-**Enterprise GitHub**
+See the **[Git and GitHub Learning Path](../git/README.md)** for the full staged curriculum including paid options, [learngitbranching.js.org](https://learngitbranching.js.org/), the Pro Git book, enterprise GitHub notes, and the optional GitHub Foundations certification.
 
-If your org uses SSO or SAML with GitHub Enterprise, complete IT's device / token onboarding *before* the verification below — tokens often require SSO authorization once before they work.
-
-**Verification (scenario-based)**
-
-- Clone a team repo (or disposable public template), create a branch, edit one line, commit, push, open a PR. Write a PR description as if it were a change ticket: what changed, why, what the risk is, how to verify.
-- Explain out loud, without notes: what is the difference between a `git commit` (local history) and a `git push` (publish to remote)? What is the difference between `git pull` on your laptop and merging a PR on GitHub (review gates, approval record, audit trail)?
-- Given a repo's `git log`, answer: who changed `deployment.yaml` two weeks ago, what did they change, and was it reviewed?
+**Verification:** Clone a team repo, create a branch, edit one file, commit, push, open a PR. Write the PR description as a change ticket: what changed, why, what the risk is, how to verify. Explain without notes: what is the difference between `git commit` and `git push`? Between `git pull` and merging a PR?
 
 ---
 

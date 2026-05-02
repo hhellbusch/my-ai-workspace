@@ -4,6 +4,7 @@ Curated curricula that span multiple areas of this repository (OpenShift, GitOps
 
 | Path | Audience | Summary |
 |------|------------|---------|
+| [Git and GitHub](git/README.md) | Anyone new to source control — infrastructure and platform engineers especially | Staged curriculum: inside-out mental model (Schwern), GitHub Skills, Microsoft Learn, learngitbranching, Pro Git, paid options, enterprise GitHub, optional GitHub Foundations cert. |
 | [VMware admins → Kubernetes / OpenShift / OpenShift Virtualization](vmware-admins/README.md) | Platform engineers from a vSphere background | Phased topics, verification checks, Red Hat and third-party links, in-repo labs. Phase 5 introduces ZTP for large fleets; see the dedicated path below for depth. |
 | ZTP at scale *(planned)* | Platform engineers operating 50+ clusters at edge or distributed sites | Zero Touch Provisioning deep dive: SiteConfig, PolicyGenTemplate, TALM, ClusterGroupUpgrade, ClusterCurator/AAP, External Secrets Operator. Assumes ACM and completion of the VMware admins path through Phase 4. |
 
