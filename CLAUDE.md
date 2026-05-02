@@ -3,6 +3,10 @@
 > This file is the Claude Code equivalent of `.cursorrules` + `.cursor/rules/`. It is loaded
 > at every session and encodes the behavioral rules for working in this workspace.
 > Commands live in `~/.claude/commands/`. Full TÂCHES reference: `~/.claude/` directory.
+>
+> **Copilot CLI:** This file also serves as the Copilot CLI project-level context — both agents
+> read the same file. `.claude/commands/` doubles as Copilot CLI project skills (`spar`,
+> `checkpoint`, `start`, etc. are available automatically).
 
 ---
 
@@ -20,6 +24,8 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 
 ## Session Orientation
 
+**Working discipline:** Read `zanshin-kit/WORKING-STYLE.md` at session start. It is the canonical definition of the working practices used in this workspace — spar, shoshin, progressive bookkeeping, stack tracking, verification, and review discipline. The sections below extend it with workspace-specific behavior; they don't replace it.
+
 At session start, prefer `/start`. Without it: read `ABOUT.md`, the `> State:` line from `BACKLOG.md`, and `git log --oneline -10`. When user says "read X and go", look for a `> Written: YYYY-MM-DD | SHA: <hash>` header — if present, run `git log <sha>..HEAD --oneline` before absorbing the brief's framing. Review coverage opt-in only.
 
 **For complex implementation tasks**, consider delegating execution to a sub-agent: keep analysis and planning in the main context, pass a clean specification to a fresh sub-agent for implementation. This preserves context quality and prevents exploration from polluting the implementation window.
@@ -32,60 +38,23 @@ Re-read files before deciding — don't trust in-context memory in long sessions
 
 ---
 
-## Conversation Stack Tracking
-
-When a subtopic resolves, surface it: *"That feels resolved — want to return to X?"* Before leaving a branch, check whether it produced anything worth capturing.
-
----
-
-## Progressive Bookkeeping
-
-- When starting a backlog item: move it to `## In Progress` immediately — don't batch.
-- When completing a backlog item: mark it Done immediately.
-- Commit at logical units. Do not accumulate multiple completed units before committing.
-- **Checkpoint before risky operations:** `git mv`, multi-file refactors, anything that could fail mid-way. Also before long context-heavy tasks (sparring, research pipeline, essay draft).
-- If 3–5 commits have accumulated since the last checkpoint, surface it: "It's been N commits — want a checkpoint?"
-
----
-
-## Shoshin — Beginner's Mind
-
-Approach project context as if encountering it for the first time. Counter the tendency to inherit framing from handoffs without verifying it.
-
-**Fires proactively at two moments:**
-
-- **Session start with an existing project:** Before trusting a handoff or summary, check the authoritative scope document — the brief, README, or whatever defines what the project is for. If the work involves writing, also check `STYLE.md` (root) then `.planning/{project}/STYLE.md` if one exists. If they conflict, surface it before proceeding.
-- **Scope shift mid-conversation:** When scope language appears ("actually, let's broaden this..."), name the shift explicitly. Surface which documents carry the old framing. If multiple are affected, flag them together — updating one while leaving others stale creates conflicting signals. If a changelog exists, log the scope change.
-
-**Also invocable:** "apply shoshin" / "what are we assuming?" / "shoshin check"
-
-**When invoked:** Before generating arguments or building anything, pause and name what's being assumed:
-- Is the problem stated correctly, or is this solving the wrong thing?
-- Are the constraints real, or inherited from habit or prior context?
-- Is the scope appropriate, or has it drifted?
-- What would a beginner ask that an expert would skip?
-
-State plainly: "I'm assuming X — is that still true?"
-
-**Apply shoshin before spar** when the problem may be mis-stated. Apply spar after when the problem is clear but the solution needs challenge.
-
-**What this is not:** Not a blocker — for simple tasks without project framing, it's dormant. Not paranoia. Not a replacement for sparring (challenges solutions) or zero-base evaluation (challenges priorities) — shoshin challenges the framing underneath both.
-
----
-
 ## Feedback Checkpoints
 
 After producing substantive output — especially content in the author's voice, a plan, or a design — pause and invite feedback: "Does this match what you had in mind?" Not sparring; not a gate — ask, then continue on forward momentum.
 
 ---
 
-## Review Tracking
+## Review Tracking — workspace implementation
 
-**Do NOT add `review:` frontmatter when generating new files.** That is the author's responsibility. Exception: new files in `docs/`, `library/`, `research/`, or product directories may have `review: status: unreviewed` added by the agent.
+The kit (`zanshin-kit/WORKING-STYLE.md`) defines the general review discipline. This section is the workspace-specific implementation of it.
+
+**Frontmatter convention:** Do NOT add `review:` frontmatter when generating new files — that is the author's responsibility. Exception: new files in `docs/`, `library/`, `research/`, or product directories may have `review: status: unreviewed` added by the agent.
 
 **Flag biographical content at generation time.** When new content contains first-person biographical claims (professional titles, experience claims, personal opinions, biographical details), note: "This draft contains biographical statements on lines N–M that need voice-approved review."
 
 **Flag when editing a reviewed file.** Before editing any file with `review: status: reviewed`, note to the user: "This file has been reviewed (read: DATE). This edit will make the review stale — you'll need to re-read the changes." Proceed with the edit, but make the staleness visible.
+
+**AI disclosure footer** on new `docs/` files (excluding READMEs): *This document was created with AI assistance and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
 
 ---
 

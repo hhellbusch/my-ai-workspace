@@ -6,6 +6,8 @@ alwaysApply: true
 
 # Shoshin — Beginner's Mind
 
+> Extends `zanshin-kit/WORKING-STYLE.md` — workspace-specific depth for Cursor.
+
 Approach project context as if encountering it for the first time. This rule counters the tendency to inherit framing from prior sessions, conversation summaries, or handoff documents without verifying it against source documents.
 
 ## When Loading Project Context

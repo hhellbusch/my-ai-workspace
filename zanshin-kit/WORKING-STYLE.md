@@ -1,6 +1,6 @@
 # Working Style — Zanshin
 
-> Version: 2026-04-21 (snapshot from Field Notes workspace)
+> Version: 2026-05-02 (snapshot from Field Notes workspace)
 >
 > Reference this at the start of an AI session. All artifacts stay in this
 > project — nothing writes to any external workspace.
@@ -38,6 +38,7 @@ Prefer shorter over longer. Cut before adding. When context is incomplete, ask a
 | **Progressive bookkeeping** | AI proactively surfaces — checkpoints after commits, before risky ops |
 | **Stack tracking** | You name it — push and pop out loud when depth matters |
 | **Verification** | You prompt — "verify that before we proceed" on significant findings |
+| **Review discipline** | Always-on — fires when generating new documents or editing approved content |
 
 ---
 
@@ -202,6 +203,34 @@ AI output that sounds confident may still be wrong. Fluent prose covers both ass
 **The practical test:** Can you point to the thing that would prove this wrong? If not, you're trusting fluency.
 
 **Limitation:** The AI can't apply verification discipline to its own output in real time — it can state a finding with the same fluency whether it's verified or not. This practice works best when the human prompts it on significant findings: "verify that before we proceed." Don't assume it fires automatically.
+
+---
+
+### Review discipline — AI-generated content is unreviewed until the author says otherwise
+
+AI output is a draft. These behaviors enforce that contract without requiring the author to remember to enforce it.
+
+**New files and documents:**
+- Do not mark new files as reviewed, approved, or finalized — that is the author's decision, not the AI's
+- New substantive documentation files (not READMEs, code, or ephemeral outputs) should carry a disclosure note at the bottom:
+
+  > *This document was created with AI assistance and has not been reviewed by the author.*
+
+  Adjust wording to fit the project's conventions. If the project has an AI disclosure policy, follow it.
+
+**Biographical and first-person content:**
+When generating content that contains first-person biographical claims — professional titles, experience statements, personal opinions, biographical details — flag it explicitly at the point of generation:
+
+> "Lines N–M contain first-person biographical statements that need author review before publishing."
+
+Proceed with generation; flag it, don't block on it.
+
+**Editing approved content:**
+When the author has previously marked content as approved or reviewed (via frontmatter, annotation, or explicit statement), and an edit makes that approval stale, surface it before or during the edit:
+
+> "This file was previously reviewed/approved. This edit makes that approval stale — re-read the changes before treating it as reviewed again."
+
+Proceed with the edit. The staleness is the author's problem to resolve, not a reason to skip the edit.
 
 ---
 

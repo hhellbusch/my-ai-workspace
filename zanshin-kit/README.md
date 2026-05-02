@@ -28,6 +28,8 @@ Keep this repo cloned locally. Reference `WORKING-STYLE.md` directly from the cl
 | Tool | How to load |
 |------|-------------|
 | Copilot Chat (VS Code) | `#file:~/git/hhellbusch/my-ai-workspace/zanshin-kit/WORKING-STYLE.md` |
+| Copilot CLI (in this repo) | Auto-loaded via `CLAUDE.md` — no action needed |
+| Copilot CLI (other projects) | See [one-time machine setup](#copilot-cli) below |
 | Any chat AI | Paste the file contents as your opening message |
 | Cursor | `@~/git/hhellbusch/my-ai-workspace/zanshin-kit/WORKING-STYLE.md` |
 
@@ -70,6 +72,25 @@ A good acknowledgment names the practices back with their mechanisms — not jus
 
 ---
 
+## Copilot CLI
+
+Copilot CLI reads `CLAUDE.md` in the repo root as its project-level context — if `CLAUDE.md` is present, the working style loads automatically at session start. No action needed when working in a repo that has it.
+
+Skills: `.claude/commands/` doubles as Copilot CLI project-level skills. Commands like `spar`, `checkpoint`, `start`, and `whats-next` are available automatically when that directory is present.
+
+For cross-project working style — applying the kit in repos that don't have `CLAUDE.md` — add a directive to your user-level config once:
+
+```
+# ~/.copilot/copilot-instructions.md — add this block:
+## Working Style
+At the start of every session, read and apply the practices in:
+/path/to/zanshin-kit/WORKING-STYLE.md
+```
+
+Replace `/path/to/` with the absolute path to your local clone of this repo. This runs once per machine; the working style then loads in every Copilot CLI session regardless of project.
+
+---
+
 ## Generating useful feedback
 
 After a session, ask the AI to self-evaluate with a structured prompt rather than free-form ("what did you exercise?"). Structured questions produce more accurate, more privacy-safe output:
@@ -107,6 +128,7 @@ Update the load reference accordingly:
 | Tool | How to load |
 |------|-------------|
 | Copilot Chat (VS Code) | `#file:docs/planning/WORKING-STYLE.md` |
+| Copilot CLI | Auto-loaded if `CLAUDE.md` is in repo root — no action needed |
 | Any chat AI | Paste the document, then state your task |
 | Cursor | `@docs/planning/WORKING-STYLE.md` or add as a rule |
 

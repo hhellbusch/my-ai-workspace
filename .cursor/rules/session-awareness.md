@@ -6,6 +6,8 @@ alwaysApply: true
 
 # Session Awareness
 
+> Extends `zanshin-kit/WORKING-STYLE.md` — workspace-specific depth for progressive bookkeeping, stack tracking, and context compaction in Cursor.
+
 This workspace has persistent project state that survives across sessions. When starting work or when the user's intent is unclear, be aware of these context sources:
 
 - **`ABOUT.md`** (if it exists) — Read this **first**, before forming any assumptions about the workspace owner's professional domain, technical background, or perspective. It is more authoritative than inferences from the corpus. The corpus reflects what work has been documented so far; `ABOUT.md` reflects who the person actually is. Do not skip this even if `.cursorrules` provides a summary — `ABOUT.md` is the owner's own words.
