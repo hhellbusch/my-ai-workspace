@@ -1,0 +1,107 @@
+{
+  "_comment": "Operations definition for on-demand discovery pattern (3+ operations)",
+  "_usage": "Copy this file to your server's src/ directory and customize",
+
+  "categories": {
+    "items": {
+      "description": "Item management operations",
+      "operations": {
+        "list": {
+          "description": "List all items with optional filtering",
+          "parameters": {
+            "limit": {
+              "type": "integer",
+              "description": "Maximum items to return",
+              "default": 20
+            },
+            "offset": {
+              "type": "integer",
+              "description": "Pagination offset",
+              "default": 0
+            },
+            "filter": {
+              "type": "string",
+              "description": "Filter expression"
+            }
+          },
+          "required": []
+        },
+        "get": {
+          "description": "Get a specific item by ID",
+          "parameters": {
+            "id": {
+              "type": "string",
+              "description": "Item ID"
+            }
+          },
+          "required": ["id"]
+        },
+        "create": {
+          "description": "Create a new item",
+          "parameters": {
+            "name": {
+              "type": "string",
+              "description": "Item name"
+            },
+            "data": {
+              "type": "object",
+              "description": "Item data"
+            }
+          },
+          "required": ["name"]
+        },
+        "update": {
+          "description": "Update an existing item",
+          "parameters": {
+            "id": {
+              "type": "string",
+              "description": "Item ID"
+            },
+            "data": {
+              "type": "object",
+              "description": "Updated data"
+            }
+          },
+          "required": ["id", "data"]
+        },
+        "delete": {
+          "description": "Delete an item",
+          "parameters": {
+            "id": {
+              "type": "string",
+              "description": "Item ID"
+            }
+          },
+          "required": ["id"]
+        }
+      }
+    },
+    "search": {
+      "description": "Search operations",
+      "operations": {
+        "query": {
+          "description": "Search items by query",
+          "parameters": {
+            "query": {
+              "type": "string",
+              "description": "Search query"
+            },
+            "limit": {
+              "type": "integer",
+              "description": "Maximum results",
+              "default": 10
+            }
+          },
+          "required": ["query"]
+        }
+      }
+    }
+  },
+
+  "_meta_tools": {
+    "discover": "Browse categories and operations - returns this structure",
+    "get_schema": "Get parameter schema for 'category.operation' (e.g., 'items.list')",
+    "execute": "Execute 'category.operation' with params",
+    "continue": "Continue paginated results from previous execute"
+  }
+}
