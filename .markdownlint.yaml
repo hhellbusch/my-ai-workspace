@@ -1,0 +1,13 @@
+# markdownlint configuration
+#
+# This repo contains documentation-heavy files with rich tables and long link
+# URLs. The line-length and table-alignment rules are disabled to match actual
+# project conventions. Structural and semantic rules remain active.
+
+default: true
+
+# Line length — disabled: tables and URLs routinely exceed 80 chars across this repo.
+MD013: false
+
+# Table column style — disabled: tables are not padded to align pipes; content clarity is preferred.
+MD060: false
