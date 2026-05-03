@@ -1,29 +1,34 @@
 # Workspace Ethos
 
-This workspace is guided by the principle: **use AI tools heavily on real problems, with human-owned verification at every merge point.** Speed without mistaking fluency for truth. Prefer free and open-source tools. Content in `docs/` is for public consumption and should be written for clarity and reusability with relative links. New capabilities should be opt-in.
+Use AI tools heavily on real problems; **human-owned verification at every merge point.** Speed without mistaking fluency for truth. Prefer FOSS. `docs/` is public-facing (clear prose, relative links). New capabilities: opt-in.
 
 ---
 
-# Session Awareness & Working Style
+# Session bootstrap (token-conscious)
 
-When starting a session or when my intent is unclear, you must be aware of the project's state by consulting these sources in order:
+**Working style:** `zanshin-kit/WORKING-STYLE.md` is canonical (spar, shoshin, checkpoints, verification). Skim headings first; read sections when the task needs them — not the full file every turn.
 
-1.  **`ABOUT.md`**: Read this first to understand the workspace owner's background and perspective. It is the most authoritative source on identity.
-2.  **`BACKLOG.md`**: Check this to understand current and upcoming work.
-3.  **`.planning/whats-next.md`**: Look for this handoff document from a previous session. Check it for staleness against recent git commits.
-4.  **`STYLE.md`**: Consult this for voice, tone, and structure before writing content.
-5.  **`private/`**: **NEVER** read or reference this directory unless explicitly asked to work privately.
-6.  **Recent git log**: Use this to reconstruct context if no handoff file exists.
+**When starting or when intent is unclear**, in order — **narrow reads first**:
 
-## In-Session Rules
+1. **`ABOUT.md`** — read fully (short).
+2. **`BACKLOG.md`** — **bootstrap only:** the `> State:` line plus any `>` summary lines directly under it. **Do not** read the full file unless editing backlog, triaging ideas, or asked. Body is large; on-demand only.
+3. **`.planning/whats-next.md`** — if present; sanity-check vs `git log --oneline -10`.
+4. **`STYLE.md`** — before writing for `docs/`.
+5. **`private/`** — never, unless explicitly asked.
+6. **`git log --oneline -10`** — if no handoff or to verify recency.
 
-*   **Context Compaction**: Re-read files before making decisions that depend on them. Do not rely on summarized memory. Commits are the truth anchor.
-*   **Session-Start Briefings**: When given a briefing document, perform a state check (e.g., `git diff`) *before* absorbing the brief's framing to identify and flag any conflicts or staleness.
-*   **Depth-First Navigation**: Keep track of the conversation stack. When a sub-topic feels resolved, offer to return to the parent topic and ask if anything from the sub-topic is worth capturing.
-*   **Progressive Bookkeeping**:
-    *   Update `BACKLOG.md` in real-time.
-    *   Commit frequently in small, logical units.
-    *   Use `/checkpoint` before risky operations or after significant milestones.
+**"Read X and go":** If the doc has `> Written: … | SHA: <hash>`, run `git log <sha>..HEAD --oneline` before trusting its framing.
+
+**Heavy implementation:** Prefer a fresh sub-agent with a tight spec; keep analysis here.
 
 ---
-This SYSTEM.md is a combination of the `workspace-ethos.md` and `session-awareness.md` files from the .cursor configuration.
+
+# In-session
+
+* **Compaction:** Re-read before a decision depends on a file; repo beats memory.
+* **Stack:** Sub-topic done → offer return to parent; capture anything worth keeping.
+* **Bookkeeping:** Touch `BACKLOG.md` when state changes; small commits; `/checkpoint` before risk or after milestones.
+
+---
+
+Fuller rules and command tables: `CLAUDE.md` at repo root.
