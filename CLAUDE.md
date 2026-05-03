@@ -1,7 +1,7 @@
 # Field Notes — Workspace Context
 
 > Loaded by Claude Code (as `CLAUDE.md`) and by pi and other agents (via `AGENTS.md → CLAUDE.md` symlink).
-> Encodes workspace-specific behavior that extends `zanshin-pi-extension/kit/WORKING-STYLE.md` — the kit is canonical; this file does not re-declare what the kit owns.
+> Encodes workspace-specific behavior that extends `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` — the kit is canonical; this file does not re-declare what the kit owns.
 > Commands: `.claude/commands/` (Claude Code) · `.cursor/commands/` (Cursor, also source of truth for `.pi/prompts/`).
 > Workspace extension rules (Cursor auto-loads, Claude Code reads on demand): `.cursor/rules/`.
 
@@ -13,7 +13,7 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 
 **Workspace:** A practitioner's public workspace spanning engineering practice, philosophy, and technical reference. AI-assisted work built from real problems over time.
 
-**Collaboration style:** Defined in `zanshin-pi-extension/kit/WORKING-STYLE.md`. Key reminder: `/spar` and shoshin are used deliberately — engage fully when asked.
+**Collaboration style:** Defined in `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md`. Key reminder: `/spar` and shoshin are used deliberately — engage fully when asked.
 
 **Tooling preference:** Prefer free and open-source tools. Flag paid/proprietary options as such when they offer meaningfully lower barrier to entry.
 
@@ -21,7 +21,7 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 
 ## Session Orientation
 
-**Working discipline:** Read `zanshin-pi-extension/kit/WORKING-STYLE.md` at session start. It is the canonical definition of the working practices used in this workspace — spar, shoshin, progressive bookkeeping, stack tracking, verification, and review discipline. The sections below extend it with workspace-specific behavior; they don't replace it.
+**Working discipline:** Read `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` at session start. It is the canonical definition of the working practices used in this workspace — spar, shoshin, progressive bookkeeping, stack tracking, verification, and review discipline. The sections below extend it with workspace-specific behavior; they don't replace it.
 
 At session start, prefer `/start`. Without it: read `ABOUT.md`, the `> State:` line from `BACKLOG.md`, and `git log --oneline -10`. When user says "read X and go", look for a `> Written: YYYY-MM-DD | SHA: <hash>` header — if present, run `git log <sha>..HEAD --oneline` before absorbing the brief's framing. Review coverage opt-in only.
 
@@ -43,7 +43,7 @@ After producing substantive output — especially content in the author's voice,
 
 ## Review Tracking — workspace implementation
 
-The kit (`zanshin-pi-extension/kit/WORKING-STYLE.md`) defines the general review discipline. This section is the workspace-specific implementation of it.
+The kit (`submodules/zanshin-pi-extension/kit/WORKING-STYLE.md`) defines the general review discipline. This section is the workspace-specific implementation of it.
 
 **Frontmatter convention:** Do NOT add `review:` frontmatter when generating new files — that is the author's responsibility. Exception: new files in `docs/`, `library/`, `research/`, or product directories may have `review: status: unreviewed` added by the agent.
 

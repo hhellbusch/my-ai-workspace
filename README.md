@@ -71,7 +71,7 @@ Practical, runnable examples and troubleshooting guides for infrastructure and p
 
 **Read directly on GitHub** — essays and case studies are written for external readers. Any file link works standalone; relative links let you navigate the collection naturally from any starting point.
 
-**Clone with submodules** — this repo vendors the [Zanshin Pi extension](https://github.com/hhellbusch/zanshin-pi-extension) at `zanshin-pi-extension/` (working discipline lives under `zanshin-pi-extension/kit/`). After `git clone`, run:
+**Clone with submodules** — this repo vendors the [Zanshin Pi extension](https://github.com/hhellbusch/zanshin-pi-extension) and other submodules under `submodules/` (working discipline lives under `submodules/zanshin-pi-extension/kit/`). After `git clone`, run:
 
 ```bash
 git submodule update --init --recursive

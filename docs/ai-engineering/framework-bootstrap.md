@@ -72,7 +72,7 @@ When there's a conflict between what the session remembers and what the repo con
 
 Instructions come from different places depending on the tool. This repository keeps a **written split** (what is always-on vs on-demand) in `.planning/ai-context-architecture/` — start with `BRIEF.md` and `ROADMAP.md` there.
 
-**Rule of thumb:** Portable posture lives in this file (or the **zanshin-pi-extension** L0 for Pi). **Depth** lives in `zanshin-pi-extension/kit/WORKING-STYLE.md` (git submodule at repo root) — load it when the work needs full practice detail, not by default every turn. **Repo state** lives in headers and handoffs (`BACKLOG.md` summary block, `.planning/whats-next.md`, `git log`) — avoid reading large reference bodies until the task requires them.
+**Rule of thumb:** Portable posture lives in this file (or the **zanshin-pi-extension** L0 for Pi). **Depth** lives in `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` (git submodule at repo root) — load it when the work needs full practice detail, not by default every turn. **Repo state** lives in headers and handoffs (`BACKLOG.md` summary block, `.planning/whats-next.md`, `git log`) — avoid reading large reference bodies until the task requires them.
 
 ---
 
@@ -80,7 +80,7 @@ Instructions come from different places depending on the tool. This repository k
 
 **GitHub Copilot / VS Code:** Clone or place this repository on the filesystem alongside your project. Reference this file directly: *"Read [path]/docs/ai-engineering/framework-bootstrap.md and use the framework described there."*
 
-For a more comprehensive portable option, see `zanshin-pi-extension/kit/WORKING-STYLE.md` in this repository (submodule). It carries the full behavioral discipline — spar with output templates, shoshin with proactive triggers, collaboration style, checkpoints, stack tracking, and verification — plus a style guide (`zanshin-pi-extension/kit/STYLE.md`) that can be dropped into any project alongside it. The same paths are what **`pi install`** users get inside the extension package.
+For a more comprehensive portable option, see `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` in this repository (submodule). It carries the full behavioral discipline — spar with output templates, shoshin with proactive triggers, collaboration style, checkpoints, stack tracking, and verification — plus a style guide (`submodules/zanshin-pi-extension/kit/STYLE.md`) that can be dropped into any project alongside it. The same paths are what **`pi install`** users get inside the extension package.
 
 **Claude Code:** The repo includes a workspace-level `CLAUDE.md` at the root that carries all behavioral rules inline (equivalent to `.cursor/rules/`). Workspace commands live in `.claude/commands/` and must be copied to `~/.claude/commands/` to activate — see `.claude/README.md` for the one-line copy command. Implementation is aligned with Cursor as of 2026-04-21; differences are documented in `docs/ai-engineering/cursor-vs-claude-code.md`.
 
@@ -88,7 +88,7 @@ For a more comprehensive portable option, see `zanshin-pi-extension/kit/WORKING-
 
 **Any chat-based AI:** Paste the contents of this file as a system message or opening context.
 
-**Pi (terminal agent, including via paude):** If the project has `.pi/SYSTEM.md`, Pi treats it as **project-local** system context for that workspace. It is the right place for repo-specific guardrails (paths, `private/`, backlog bootstrap). It should stay short; the full Zanshin kit in this monorepo lives under **`zanshin-pi-extension/kit/`** (git submodule). The same files ship with [zanshin-pi-extension](https://github.com/hhellbusch/zanshin-pi-extension) after `pi install`; the extension injects L0 plus absolute paths to those files on the machine. For a **global** always-on Zanshin on any repo, install that extension (`pi install git:https://github.com/hhellbusch/zanshin-pi-extension.git` — pin a commit SHA when stable). Roadmap: `.planning/ai-context-architecture/ROADMAP.md` Phase 3.
+**Pi (terminal agent, including via paude):** If the project has `.pi/SYSTEM.md`, Pi treats it as **project-local** system context for that workspace. It is the right place for repo-specific guardrails (paths, `private/`, backlog bootstrap). It should stay short; the full Zanshin kit in this monorepo lives under **`submodules/zanshin-pi-extension/kit/`** (git submodule). The same files ship with [zanshin-pi-extension](https://github.com/hhellbusch/zanshin-pi-extension) after `pi install`; the extension injects L0 plus absolute paths to those files on the machine. For a **global** always-on Zanshin on any repo, install that extension (`pi install git:https://github.com/hhellbusch/zanshin-pi-extension.git` — pin a commit SHA when stable). Roadmap: `.planning/ai-context-architecture/ROADMAP.md` Phase 3.
 
 ---
 
@@ -107,8 +107,8 @@ If loading the full file is too large for your context budget, load these in pri
 
 | Document | What it covers |
 |---|---|
-| `zanshin-pi-extension/kit/WORKING-STYLE.md` | Portable working discipline — the full behavioral kit (submodule + Pi package) |
-| `zanshin-pi-extension/kit/STYLE.md` | Style guide defaults (voice, structure, ADRs, technical resources) — alongside WORKING-STYLE.md |
+| `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` | Portable working discipline — the full behavioral kit (submodule + Pi package) |
+| `submodules/zanshin-pi-extension/kit/STYLE.md` | Style guide defaults (voice, structure, ADRs, technical resources) — alongside WORKING-STYLE.md |
 | `docs/ai-engineering/cursor-vs-claude-code.md` | Structural differences between the Cursor and Claude Code implementations — tool names, command loading, rule scoping, known gaps |
 | `docs/ai-engineering/session-framework.md` | Full Zanshin behavioral map — what each behavior defends against and how they fit together |
 | `docs/ai-engineering/the-shift.md` | Why the bottleneck in AI-assisted work has moved from implementation to verification |

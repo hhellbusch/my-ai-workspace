@@ -16,7 +16,7 @@ Define how **always-on context** vs **on-demand workspace context** is split acr
 |--------|----------------|
 | **Global (Pi extension, future)** | Portable L0: three failure modes, collaboration line, “when to read the kit” — same injection on any machine / any cwd. |
 | **Project `.pi/SYSTEM.md`** | This repo’s contract: paths, guardrails, backlog bootstrap (`> State:` only), pointers to `CLAUDE.md` / kit. |
-| **`zanshin-pi-extension/kit/WORKING-STYLE.md`** | Canonical deep manual (git submodule) — read when the user asks or the task needs practices in full. |
+| **`submodules/zanshin-pi-extension/kit/WORKING-STYLE.md`** | Canonical deep manual (git submodule) — read when the user asks or the task needs practices in full. |
 | **Heavy workspace** (`BACKLOG` body, large `docs/`, research trees) | **Tools / explicit user request** — never implied “read everything at start.” |
 
 ## Success criteria

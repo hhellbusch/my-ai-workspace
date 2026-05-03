@@ -6,7 +6,7 @@ alwaysApply: true
 
 # LID L0 — linked-intent discipline
 
-> Extends `lid-pi-extension/kit/LID-WORKFLOW.md` — workspace-specific trigger.
+> Extends `submodules/lid-pi-extension/kit/LID-WORKFLOW.md` — workspace-specific trigger.
 > Full workflow, phase templates, and cascade rules: read that file when planning
 > a change. This rule is the always-on reminder; the kit file is the depth.
 
@@ -23,12 +23,12 @@ If you can't write it, the scope is larger than it appears.
 **Change** (3–5 files, OR any new command / skill / rule / configuration)
 Write a one-paragraph Intent Note before touching any files.
 State the problem, not the solution. Stop for acknowledgment before proceeding.
-Template: `lid-pi-extension/kit/templates/INTENT.md`
+Template: `submodules/lid-pi-extension/kit/templates/INTENT.md`
 
 **Restructure** (5+ files, new directories, or architectural shifts)
 Walk the full arrow — Intent → Design Note → Acceptance Criteria → Change.
 Stop for review after each step. No changes until Acceptance Criteria are approved.
-Templates: `lid-pi-extension/kit/templates/`
+Templates: `submodules/lid-pi-extension/kit/templates/`
 
 ## Spar the intent, not the implementation
 

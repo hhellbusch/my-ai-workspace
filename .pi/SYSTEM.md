@@ -6,7 +6,7 @@
 
 # Session bootstrap
 
-**Working style:** `zanshin-pi-extension/kit/WORKING-STYLE.md` is canonical
+**Working style:** `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` is canonical
 
 **When starting or when intent is unclear**, in order — **narrow reads first**:
 

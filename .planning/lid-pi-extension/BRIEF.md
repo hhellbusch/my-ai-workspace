@@ -78,7 +78,7 @@ For Cursor and Claude Code, the extension ships as a **git submodule** in the
 workspace — that's the install mechanism. Pi ignores the submodule and uses
 its own installed copy. Both coexist without conflict.
 
-While the extension is being developed inside this workspace (`lid-pi-extension/`
+While the extension is being developed inside this workspace (`submodules/lid-pi-extension/`
 directory), Cursor and Claude Code reference it by directory path. Once extracted
 to its own repo, the directory becomes a submodule — paths stay the same.
 

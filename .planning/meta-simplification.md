@@ -145,4 +145,4 @@ Three commits if approved:
 
 1. **`meta:` — CLAUDE.md simplification** — all compressions, Feedback Checkpoints to 1 sentence, Case Study Reflection removed, sub-agent delegation note added.
 2. **`meta:` — `/checkpoint` update** — add case study reflection step to the checkpoint command.
-3. **`meta:` — cross-environment** — shoshin closing in `shoshin.md` (Cursor) and `zanshin-pi-extension/kit/WORKING-STYLE.md`; `alwaysApply: false` on `feedback-checkpoints.md` and `case-study-reflection.md` in Cursor rules.
+3. **`meta:` — cross-environment** — shoshin closing in `shoshin.md` (Cursor) and `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md`; `alwaysApply: false` on `feedback-checkpoints.md` and `case-study-reflection.md` in Cursor rules.

@@ -8,7 +8,7 @@
 ### Zanshin Kit — portable working style (Phase 3: output format anchoring)
 - **Product:** meta / tooling
 - **Context:** Phase 1 and 2 complete. Phase 3 in progress: spar output templates added (Type/argument/why it matters/Strength + Self-Audit block) to anchor format consistency across tools; collaboration style section added (brevity, cut before adding). Root cause of Phase 3: same model (Claude), different output quality in Copilot Chat vs. Cursor — diagnosed as missing output templates, not model capability. Pending: close-out mode with real accumulated context still untested. Scope items deferred: cross-linking portable form, backlog capture, Copilot keyword registration. See `.planning/zanshin-kit/ROADMAP.md` for full findings.
-- **Links:** `zanshin-pi-extension/kit/WORKING-STYLE.md`, `.planning/zanshin-kit/BRIEF.md`, `.planning/zanshin-kit/ROADMAP.md`
+- **Links:** `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md`, `.planning/zanshin-kit/BRIEF.md`, `.planning/zanshin-kit/ROADMAP.md`
 - **Started:** 2026-04-20
 
 ### Upstream PR: `operators-installer` — `upgradeChain` (chart v3.5.0)
@@ -44,13 +44,13 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### Zanshin Kit — Phase 3 scope definition: cross-linking and backlog capture
 - **Product:** meta / tooling
 - **Context:** Deferred train of thought from 2026-04-21. Two behaviors present in Field Notes rules but absent from the kit were flagged for possible inclusion: (1) cross-linking in portable form — when creating a new file, add it to relevant README/index; when renaming, update markdown links; verify external URLs before committing; link named files on first mention; (2) backlog capture — when user defers something, write it to BACKLOG.md immediately; create with standard sections if none exists; commit separately with `backlog:` prefix. Questions to settle before writing: always-on or invoke-only for each? Phase 3 addition (clean record) or revised BRIEF? Document growth is a known risk (Phase 2 ROADMAP). Also pending: assess whether spar output quality in the kit matches the source — separate concern, see adjacent backlog item.
-- **Links:** `zanshin-pi-extension/kit/WORKING-STYLE.md`, `.planning/zanshin-kit/BRIEF.md`, `.planning/zanshin-kit/ROADMAP.md`
+- **Links:** `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md`, `.planning/zanshin-kit/BRIEF.md`, `.planning/zanshin-kit/ROADMAP.md`
 - **Added:** 2026-04-21
 
 ### Zanshin Kit — assess spar output quality divergence
 - **Product:** meta / tooling
 - **Context:** Deferred train of thought from 2026-04-21. Symptom: spar output in the kit (Copilot Chat) may differ in quality from spar output in the source workspace (Cursor/Claude). Phase 1 ROADMAP noted spar mechanism transferred — vocabulary and discipline present. But the user wants to assess this more carefully. Key questions: is the divergence in argument classification, self-audit depth, steel-manning quality, or something else? Is it model-dependent (Copilot vs. Claude) or document-dependent (mechanism not fully encoded)? See `research/framework-efficacy/` for controlled comparison protocol.
-- **Links:** `zanshin-pi-extension/kit/WORKING-STYLE.md`, `.planning/zanshin-kit/ROADMAP.md`, `research/framework-efficacy/`
+- **Links:** `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md`, `.planning/zanshin-kit/ROADMAP.md`, `research/framework-efficacy/`
 - **Added:** 2026-04-21
 
 
@@ -64,11 +64,11 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### Zanshin-kit portability test and YOLO-mode design
 - **Product:** meta / tooling / research
 - **Context:** April 29 session surfaced a gap: the zanshin-kit has been embedded in the Field Notes workspace but hasn't been tested in a genuinely isolated context. The YOLO-mode vision (autonomous agents running on local compute, user observing and measuring results in an engineered way) requires the kit to work without the full workspace context. Key questions to explore:
-  - Does a reader have enough in the Zanshin kit (`zanshin-pi-extension/kit/`) to act on it without knowing this workspace?
+  - Does a reader have enough in the Zanshin kit (`submodules/zanshin-pi-extension/kit/`) to act on it without knowing this workspace?
   - The framework-efficacy measurement system (`research/framework-efficacy/`) measures session outcomes but doesn't connect to the output layer — the case studies carry patterns but not evidence. Is that loop worth closing?
   - The "teach others to fish" aspiration: case studies and patterns need to be self-contained enough that the author isn't required to interpret them. Are they?
   - The YOLO-mode reader as an interesting secondary audience — someone designing agentic workflows who wants to know which failure modes require human intervention vs. which quality gates can be automated.
-- **Relates to:** `.planning/paude-integration/`, `research/framework-efficacy/`, `zanshin-pi-extension/` (submodule), `.planning/zanshin-kit/ROADMAP.md`
+- **Relates to:** `.planning/paude-integration/`, `research/framework-efficacy/`, `submodules/zanshin-pi-extension/` (submodule), `.planning/zanshin-kit/ROADMAP.md`
 - **Added:** 2026-04-29
 
 ## Up Next
@@ -145,10 +145,9 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Idea:** Use AI agents to design and run structured experiments — factorial designs, controlled comparisons, hypothesis-driven testing. Starting point: identify a concrete problem in the workspace (performance, workflow efficiency, or technical evaluation) and have the agent design the experiment: define factors, levels, response variables, and run order. Build toward a repeatable DOE workflow that agents can execute with human review of design and interpretation.
 - **Context:** DOE is an existing practice skill (see `ABOUT.md`); the goal is extending it into agent-assisted work, not learning DOE from scratch.
 
-### Normalize .gitmodules URLs to SSH
+### ~~Normalize .gitmodules URLs to SSH~~ ✓
 - **Product:** meta
-- **Context:** zanshin-pi-extension uses SSH URL, lid-pi-extension uses HTTPS (added in container where SSH is unavailable). Normalize both to SSH on host after harvest:
-  `git submodule set-url lid-pi-extension git@github.com:hhellbusch/lid-pi-extension.git`
+- **Status:** Done — all submodules now use SSH URLs and live under `submodules/` (2026-05-03)
 
 ### Research: LID (Linked-Intent Development) — enterprise-validated agentic SDD methodology
 - **Product:** research / meta / devops
@@ -193,7 +192,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Deployment:** **Standalone GitHub repo** + `pi install git:…` (normal distribution). L0 prompt lives in the extension; this workspace keeps **`.pi/SYSTEM.md`** repo-only (no duplicate L0 once installed). Author creates empty remote, push scaffold there — see `.planning/ai-context-architecture/ROADMAP.md` Phase 3.
 - **Headless note:** `input` hook commands only fire in interactive sessions; headless paude runs should bake spar/shoshin invocations into the spec file. The `before_agent_start` injection is what makes this valuable headlessly.
 - **Relationship to zanshin-kit roadmap:** Additive step after L0 text stabilizes. Execution plan: `.planning/ai-context-architecture/` (replaces vague “after Phase 3 closes”).
-- **Links:** `zanshin-pi-extension/kit/WORKING-STYLE.md`, `docs/ai-engineering/session-framework.md`, https://github.com/habitssss/pi-caveman-mode (reference implementation)
+- **Links:** `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md`, `docs/ai-engineering/session-framework.md`, https://github.com/habitssss/pi-caveman-mode (reference implementation)
 - **Added:** 2026-05-02
 
 ### Paude domain aliases and defaults.json setup
@@ -213,8 +212,8 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ### Claude Code plugin distribution for .claude/
 - **Product:** meta / tooling
-- **Context:** The `.claude-plugin/` directory (vestigial, Feb 2026) held metadata for a plugin marketplace concept that never shipped. Now that `.claude/commands/` is a version-controlled source of adapted workspace commands, explore whether a plugin distribution mechanism makes sense — packaging `.claude/commands/` + `CLAUDE.md` so others could install the Zanshin behavioral framework into their Claude Code environment without cloning the full workspace. Similar intent to the portable Zanshin kit (`zanshin-pi-extension/kit/`, submodule + `pi install`) but targeted at Claude Code specifically. Questions to explore: does Claude Code have a plugin/extension registry? Would a `package.json`-style manifest + install script be enough? Relationship to the same kit content — same audience (portable framework) different mechanism (CLI install vs. file copy).
-- **Links:** `.claude/`, `zanshin-pi-extension/kit/STANDALONE-KIT.md` (long-form kit setup doc), `.claude-plugin/` (reference only — vestigial)
+- **Context:** The `.claude-plugin/` directory (vestigial, Feb 2026) held metadata for a plugin marketplace concept that never shipped. Now that `.claude/commands/` is a version-controlled source of adapted workspace commands, explore whether a plugin distribution mechanism makes sense — packaging `.claude/commands/` + `CLAUDE.md` so others could install the Zanshin behavioral framework into their Claude Code environment without cloning the full workspace. Similar intent to the portable Zanshin kit (`submodules/zanshin-pi-extension/kit/`, submodule + `pi install`) but targeted at Claude Code specifically. Questions to explore: does Claude Code have a plugin/extension registry? Would a `package.json`-style manifest + install script be enough? Relationship to the same kit content — same audience (portable framework) different mechanism (CLI install vs. file copy).
+- **Links:** `.claude/`, `submodules/zanshin-pi-extension/kit/STANDALONE-KIT.md` (long-form kit setup doc), `.claude-plugin/` (reference only — vestigial)
 - **Added:** 2026-04-21
 
 ### Meta system optimization — faster start, lower token usage

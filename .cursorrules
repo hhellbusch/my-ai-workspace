@@ -6,7 +6,7 @@ A practitioner's public workspace — AI-assisted work spanning engineering prac
 
 ## Collaboration Style
 
-Defined in `zanshin-pi-extension/kit/WORKING-STYLE.md` — the canonical source. Key reminders: `/spar` and shoshin are used deliberately; engage fully when asked. Cross-domain bridging is the norm; frame writing as practitioner voice, not observer voice.
+Defined in `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` — the canonical source. Key reminders: `/spar` and shoshin are used deliberately; engage fully when asked. Cross-domain bridging is the norm; frame writing as practitioner voice, not observer voice.
 
 ## Project Contents
 
@@ -52,10 +52,20 @@ Essays and case studies organized by track, each with its own README and reading
 Standalone scripts and artifacts referenced by documentation:
 - GIF recoloring script and output files
 
+#### Submodules (`submodules/`)
+Git submodules for Pi extensions and forked projects:
+- zanshin-pi-extension — Zanshin working discipline kit (Pi extension + `kit/` markdown)
+- lid-pi-extension — Linked-intent discipline Pi extension
+- paude — Containerized agent workflow tool
+- argocd-diff-preview — ArgoCD diff preview (forked for feasibility improvement)
+- helm-charts — Red Hat CoP Helm charts (forked for improvement)
+- paude-pi-extension — Paude Pi extension
+- pi-anthropic-vertex — Anthropic Vertex Pi extension
+- pi-openai-compat — OpenAI-compatible Pi extension
+
 #### Git Projects (`git-projects/`) — gitignored
-External git repositories cloned for exploration and upstream contributions:
-- argocd-diff-preview — explored feasibility improvement, resulted in upstream issue
-- helm-charts — Helm chart improvement in progress
+External git repositories cloned for exploration (no fork):
+- paude-proxy, pi-mono, ramalama
 
 #### Prompts (`.prompts/`)
 Structured AI prompt templates for repeatable tasks (run with `/run-prompt`):

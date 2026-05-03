@@ -6,7 +6,7 @@ alwaysApply: true
 
 # Zanshin Working Style
 
-**At session start, read [`zanshin-pi-extension/kit/WORKING-STYLE.md`](../../zanshin-pi-extension/kit/WORKING-STYLE.md).** It is the canonical, portable definition of the working practices — spar, shoshin, progressive bookkeeping, stack tracking, verification, and review discipline. The rules in this workspace (`shoshin.md`, `session-awareness.md`, `review-tracking.md`, etc.) extend it with workspace-specific depth; they don't replace it. *(Source: [`zanshin-pi-extension`](https://github.com/hhellbusch/zanshin-pi-extension) git submodule.)*
+**At session start, read [`submodules/zanshin-pi-extension/kit/WORKING-STYLE.md`](../../submodules/zanshin-pi-extension/kit/WORKING-STYLE.md).** It is the canonical, portable definition of the working practices — spar, shoshin, progressive bookkeeping, stack tracking, verification, and review discipline. The rules in this workspace (`shoshin.md`, `session-awareness.md`, `review-tracking.md`, etc.) extend it with workspace-specific depth; they don't replace it. *(Source: [`zanshin-pi-extension`](https://github.com/hhellbusch/zanshin-pi-extension) git submodule.)*
 
 ## Practices and where they live
 

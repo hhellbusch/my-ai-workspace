@@ -94,7 +94,6 @@ private/
 # macOS files
 .DS_Store
 **/.DS_Store
-paude/
 worktrees/
 .paude-events.jsonl
 .paude-prompt.txt
