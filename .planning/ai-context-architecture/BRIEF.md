@@ -31,6 +31,7 @@ Define how **always-on context** vs **on-demand workspace context** is split acr
 - Corporate / shared GCP: no secrets in repo; paude continues to use ADC + proxy patterns already validated.
 - **DRY:** kit remains canonical; extension is a **distilled** surface (small intentional overlap).
 - Plans stay **small phases** (see `ROADMAP.md`) so execution does not burn a whole context window in one pass.
+- **Pi extension distribution:** **Standalone GitHub repository** — not a monorepo subfolder. Local paude `defaults.json` is personal preference and **out of scope** for this track.
 
 ## Links
 

@@ -1,7 +1,7 @@
 # Backlog
 
 > **State:** 3 in progress · 8 up next · 77 ideas · Last done: Case studies + grill-me + CLAUDE.md simplification (2026-04-29)
-> Last updated: 2026-05-02 (Pi agent added to paude fork; zanshin Pi extension, paude domain aliases, caveman Pi port logged)
+> Last updated: 2026-05-03 (context-architecture plan: standalone Pi extension repo; defaults.json not tracked in plan)
 
 ## In Progress
 
@@ -174,17 +174,17 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Product:** meta / tooling / zanshin-kit
 - **Context:** Pi's extension API (since v0.59.0) exposes a `before_agent_start` hook that appends to the system prompt and an `input` hook for slash-command-style triggers. The caveman Pi port demonstrates the pattern. A zanshin extension would inject the always-on behavioral rules (re-read files before deciding, repo beats memory, no fabricated URLs, no review frontmatter) via `before_agent_start`, and wire `spar` / `shoshin` / `checkpoint` as input commands.
 - **Design constraint:** The always-on rules must be compact — the full `WORKING-STYLE.md` (259 lines) is too long to inject per-request. The distillation work (compact form, ~10-15 lines) is the real effort. The TypeScript wrapper is trivial once the prompt exists.
-- **Deployment:** Project-local `.pi/extensions/zanshin.ts` (auto-discovered by Pi) so it travels with the workspace. Activates automatically in every paude Pi session against this repo. Global install (`~/.pi/agent/extensions/`) for cross-workspace use later.
+- **Deployment:** **Standalone GitHub repo** + `pi install git:…` (normal distribution). L0 prompt lives in the extension; this workspace keeps **`.pi/SYSTEM.md`** repo-only (no duplicate L0 once installed). Author creates empty remote, push scaffold there — see `.planning/ai-context-architecture/ROADMAP.md` Phase 3.
 - **Headless note:** `input` hook commands only fire in interactive sessions; headless paude runs should bake spar/shoshin invocations into the spec file. The `before_agent_start` injection is what makes this valuable headlessly.
-- **Relationship to zanshin-kit roadmap:** Additive step after Phase 3 closes — don't start until the compact form stabilizes. Tracked separately from the main zanshin-kit backlog item.
+- **Relationship to zanshin-kit roadmap:** Additive step after L0 text stabilizes. Execution plan: `.planning/ai-context-architecture/` (replaces vague “after Phase 3 closes”).
 - **Links:** `zanshin-kit/WORKING-STYLE.md`, `docs/ai-engineering/session-framework.md`, https://github.com/habitssss/pi-caveman-mode (reference implementation)
 - **Added:** 2026-05-02
 
 ### Paude domain aliases and defaults.json setup
 - **Product:** paude / tooling
-- **Context:** Two pieces of pending setup deferred after the Pi agent work:
+- **Context:** Pending setup deferred after the Pi agent work:
   1. **`youtube` and `research` domain aliases** in `paude/src/paude/domains.py`. `youtube` needs `www.youtube.com` and `youtubei.googleapis.com` (for `youtube-transcript-api`). `research` needs DuckDuckGo, Wikipedia, arXiv, Stack Overflow, HN, MDN. Once added these unlock `--allowed-domains "default youtube research"` as a useful preset for research sessions.
-  2. **`~/.config/paude/defaults.json`** — set `backend: podman`, `agent: pi`, `provider: vertex` as global defaults so bare `paude create` works correctly in this environment. Blocked on the domain aliases being in code first so the config is actually usable.
+  2. **`~/.config/paude/defaults.json`** — optional personal setup (`git`, `agent`, etc.); documented in `paude/docs/CONFIGURATION.md` and `docs/ai-engineering/paude-getting-started.md`, **not** tracked in `.planning/ai-context-architecture/`.
 - **Then:** also install the Pi caveman mode extension for headless token efficiency in YOLO sessions.
 - **Links:** `paude/src/paude/domains.py`, `paude/docs/CONFIGURATION.md`, `paude/docs/PI.md`
 - **Added:** 2026-05-02

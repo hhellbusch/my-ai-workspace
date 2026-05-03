@@ -2,7 +2,7 @@
 
 > Last updated: 2026-05-03
 
-Execution order is **Phase 0 → 1 → 2** first (docs + alignment); **Phase 3** is the larger build; **Phase 4** is optional hygiene.
+**Done:** Phases 0–1 (baseline + portable docs). **Next:** Phase 3 — Zanshin L0 Pi extension in a **standalone GitHub repo** (normal install: `pi install git:…`). Local `~/.config/paude/defaults.json` is optional personal setup — **not tracked in this plan**. **Later:** Phase 4 (BACKLOG hygiene), Phase 5 (cross-tool parity).
 
 ---
 
@@ -35,29 +35,20 @@ Execution order is **Phase 0 → 1 → 2** first (docs + alignment); **Phase 3**
 
 ---
 
-## Phase 2 — Operator defaults
-
-**Goal:** Fewer “empty volume / forgot push” surprises; less manual repetition.
-
-| Task | Action | Verify |
-|------|--------|--------|
-| 2.1 | Author `~/.config/paude/defaults.json` (local only, not committed) with `"git": true` and your preferred `backend` / `agent` / `provider`. | Human: run `paude config init`, merge example from docs |
-| 2.2 | Example defaults with `"git": true` in `paude/docs/CONFIGURATION.md` + workspace `paude-getting-started.md`. | Done — 2026-05-03 |
-
----
-
 ## Phase 3 — Zanshin L0 Pi extension (portable)
 
 **Goal:** Same minimal zanshin contract **on every Pi session**, any repo, without copying `.pi/SYSTEM.md` into customer trees.
 
+**Distribution:** **Standalone GitHub repository** (author creates empty remote, push scaffold there). Consumers: `pi install git:https://github.com/<org>/<repo>.git` (pin SHA in docs once stable). Monorepo subfolder is out of scope for this track.
+
 | Task | Action | Verify |
 |------|--------|--------|
 | 3.1 | **Spec:** Freeze L0 text (max ~400–600 tokens) sourced from `zanshin-kit/WORKING-STYLE.md` § “Why these practices exist” + collaboration line + one sentence: “Read kit path when user asks or work is high-stakes.” | Human approves L0 in a PR or issue comment |
-| 3.2 | **Scaffold:** New repo `zanshin-pi-extension` (or `zanshin-kit/pi-extension/`) with Pi extension entrypoint per `pi-caveman-mode` pattern (`client?` systemPrompt injection). | `npm install` + `pi` loads extension in dev |
-| 3.3 | **Supply chain:** Pin git SHA or npm version in docs; repeat paude pattern if baking into image is ever needed (default: **host** `pi install`). | Install doc exists |
-| 3.4 | **Trim repo `SYSTEM.md`:** Remove any L0 duplication once extension is installed everywhere you care about. | `.pi/SYSTEM.md` only repo-specific |
+| 3.2 | **Scaffold:** New **standalone** repo (e.g. `zanshin-pi-extension`) — Pi extension entrypoint per `pi-caveman-mode` pattern (`client?` systemPrompt injection). README: install + link to canonical `zanshin-kit/WORKING-STYLE.md` in this workspace or published kit. | `npm install` + `pi` loads extension in dev |
+| 3.3 | **Supply chain:** Pin git SHA in README; host `pi install` is default. Baking into paude image only if a product decision says so later. | README documents pinned install |
+| 3.4 | **Trim this repo’s `.pi/SYSTEM.md`:** Remove L0 duplication once the extension is installed everywhere you care about. | `.pi/SYSTEM.md` only repo-specific |
 
-**Checkpoint:** `checkpoint:decision` — monorepo subfolder vs standalone extension repo (affects how customers vendor it).
+**Checkpoint:** None for repo shape — **standalone remote** is decided.
 
 ---
 
