@@ -1,10 +1,10 @@
 # Getting Started with Paude — Autonomous Agent Sessions
 
 > **Status:** In progress — being written from first-hand exploration. Sections marked `[pending]` are not yet written.
-> **Source:** Paude v0.20.0a2 · [github.com/bbrowning/paude](https://github.com/bbrowning/paude) · Fedora Linux / Podman
-> **Local fork:** `gemini-workspace/paude` on branch `feature/wait-and-prompt-file` — adds `paude wait` and `--prompt-file` flag
+> **Source:** Paude v0.20.0a2+ · [github.com/hhellbusch/paude](https://github.com/hhellbusch/paude/tree/feature/wait-and-prompt-file) · Fedora Linux / Podman
+> **Fork of:** [github.com/bbrowning/paude](https://github.com/bbrowning/paude) — adds `paude wait`, `--prompt-file`, Pi agent, and GitHub Copilot agent
 
-Paude runs AI coding agents (Claude Code, Gemini CLI, Cursor CLI, OpenClaw) in isolated, network-filtered containers with git-based sync. You push your code in, assign a task, disconnect, and pull the output back as a branch when the agent is done. The value is parallelism and isolation — the agent runs without you watching, and you review a diff rather than a live session.
+Paude runs AI coding agents (Claude Code, Gemini CLI, Cursor CLI, OpenClaw, Pi, GitHub Copilot) in isolated, network-filtered containers with git-based sync. You push your code in, assign a task, disconnect, and pull the output back as a branch when the agent is done. The value is parallelism and isolation — the agent runs without you watching, and you review a diff rather than a live session.
 
 This guide is written from hands-on exploration. It covers what actually works, not just what the README describes.
 
@@ -12,14 +12,18 @@ This guide is written from hands-on exploration. It covers what actually works, 
 
 ## Supported Agents
 
-| Agent | Flag |
-|---|---|
-| Claude Code | `--agent claude` (default) |
-| Gemini CLI | `--agent gemini` |
-| Cursor CLI | `--agent cursor` |
-| OpenClaw | `--agent openclaw` |
+| Agent | Flag | Primary use |
+|---|---|---|
+| Claude Code | `--agent claude` (default) | Claude via Vertex AI or direct Anthropic API |
+| Gemini CLI | `--agent gemini` | Gemini via Google AI or Vertex AI |
+| Cursor CLI | `--agent cursor` | Cursor subscription |
+| OpenClaw | `--agent openclaw` | Multi-model gateway (browser UI) |
+| Pi | `--agent pi` | Minimal terminal agent; no permission system — container is the boundary |
+| GitHub Copilot CLI | `--agent copilot` | GitHub Copilot enterprise/personal subscription |
 
 Agents are installed automatically inside the container — no local agent install needed. You just need auth credentials for your chosen provider.
+
+Pi is the day-to-day agent in this workspace. It runs against Vertex AI (Claude Sonnet by default, switchable to Gemini) using the same ADC auth flow as Claude Code.
 
 ---
 
@@ -330,12 +334,18 @@ Example `~/.config/paude/defaults.json`:
 {
   "defaults": {
     "backend": "podman",
-    "agent": "claude",
-    "yolo": true,
-    "git": true,
+    "agent": "pi",
+    "provider": "vertex",
     "allowed-domains": ["default"]
   }
 }
+```
+
+With this, `paude create --yolo --git my-session` runs Pi on Vertex (Claude Sonnet) with no extra flags. Override at create time as needed:
+
+```bash
+paude create --agent claude my-session           # Claude Code instead of Pi
+paude create --allowed-domains "default youtube" # add domains for this session
 ```
 
 ---
