@@ -1,6 +1,6 @@
 # Backlog
 
-> **State:** 3 in progress · 8 up next · 77 ideas · Last done: workspace cleanup + lid-pi-extension scaffold (2026-05-03)
+> **State:** 3 in progress · 8 up next · 78 ideas · Last done: workspace cleanup + lid-pi-extension scaffold (2026-05-03)
 > Last updated: 2026-05-03
 
 ## In Progress
@@ -139,6 +139,11 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Idea:** Control when the agent can push to GitHub by gating SSH key access. Two approaches worth evaluating: (1) socat proxy — host forwards `$SSH_AUTH_SOCK` into container via a shared socket file, kills the process to revoke; (2) fine-grained GitHub PAT in a host-controlled file — host writes/deletes the credential, agent can only push when file exists. Combine with branch-based pushes so review happens as a GitHub PR rather than a worktree diff. Wrap in two host scripts: `paude-grant` and `paude-revoke`.
 - **Blocker:** Unclear whether `/pvc/` is accessible from both host and container sides (PVC vs. local volume mount). Verify before building.
 - **Current approach:** PAT with write permissions — simpler, good enough for now.
+
+### AI-assisted design of experiments
+- **Product:** ai-engineering / research
+- **Idea:** Use AI agents to design and run structured experiments — factorial designs, controlled comparisons, hypothesis-driven testing. Starting point: identify a concrete problem in the workspace (performance, workflow efficiency, or technical evaluation) and have the agent design the experiment: define factors, levels, response variables, and run order. Build toward a repeatable DOE workflow that agents can execute with human review of design and interpretation.
+- **Context:** DOE is an existing practice skill (see `ABOUT.md`); the goal is extending it into agent-assisted work, not learning DOE from scratch.
 
 ### Normalize .gitmodules URLs to SSH
 - **Product:** meta
