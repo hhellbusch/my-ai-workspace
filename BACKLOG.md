@@ -134,6 +134,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### Paude push gate — explicit SSH key grant/revoke
+- **Product:** meta / paude / security
+- **Idea:** Control when the agent can push to GitHub by gating SSH key access. Two approaches worth evaluating: (1) socat proxy — host forwards `$SSH_AUTH_SOCK` into container via a shared socket file, kills the process to revoke; (2) fine-grained GitHub PAT in a host-controlled file — host writes/deletes the credential, agent can only push when file exists. Combine with branch-based pushes so review happens as a GitHub PR rather than a worktree diff. Wrap in two host scripts: `paude-grant` and `paude-revoke`.
+- **Blocker:** Unclear whether `/pvc/` is accessible from both host and container sides (PVC vs. local volume mount). Verify before building.
+- **Current approach:** PAT with write permissions — simpler, good enough for now.
+
 ### Extract lid-pi-extension to its own GitHub repo
 - **Product:** meta / tooling
 - **Context:** `lid-pi-extension/` directory scaffolded in this workspace (2026-05-03). Ready to become a standalone repo: `git init`, push to `github.com/hhellbusch/lid-pi-extension`, then add back as a submodule. Mirrors zanshin-pi-extension pattern.
