@@ -90,6 +90,8 @@ llama.cpp auto-fits context to available VRAM. On a 20 GB card with `qwen3:30b-a
 
 RamaLama tradeoffs vs. manual `podman run`: less control over fine-grained inference flags (`--enforce-eager`, `--max-model-len`, `--gpu-memory-utilization`), which matter at the edge of available VRAM. For routine model runs, it significantly reduces friction.
 
+> **Fedora / glibc / RamaLama:** If `ramalama serve` fails with **`GLIBC_2.43` not found** from **`libllama.so` / `libggml-base.so`**, check **both** host **and** the **default ROCm OCI image**: `podman run --rm quay.io/ramalama/rocm:latest ldd --version`. The error paths look like **`/lib64/...`** but **`llama-server` usually runs inside the container**, so **image glibc** can stay **2.42** while the **bundled** llama `.so` files expect **2.43** — **upgrading the host** (e.g. to Fedora 44) **may not fix it** until the **image** userspace catches up. Workaround: **Ollama ROCm container** or another image/tag/digest. See [experiment journal](../../research/ai-tooling/local-llm-experiment-journal.md) (**2026-05-06**, **2026-05-07**).
+
 ### LM Studio
 
 **[LM Studio](https://lmstudio.ai/)** takes the same approach with a graphical interface. Its local server runs at `http://localhost:1234/v1`.
@@ -99,6 +101,99 @@ RamaLama tradeoffs vs. manual `podman run`: less control over fine-grained infer
 **[vLLM](https://docs.vllm.ai/)** targets Linux with a discrete GPU and is built for serving throughput (continuous batching, PagedAttention). It's more complex to set up but gives the most control. Install and serve commands are in the [vLLM Reference](local-llm-vllm.md).
 
 Point Cursor at the vLLM server: Settings → Models → OpenAI Base URL → `http://localhost:8000/v1`. Model ID is the Hugging Face repo name (not Ollama tag syntax).
+
+### Pi + paude (OpenAI-compatible server on the LAN)
+
+**[paude](https://github.com/bbrowning/paude)** (this workspace’s fork) can run **[Pi](https://github.com/badlogic/pi-mono)** against any **OpenAI-compatible** HTTP API — including **RamaLama** / **llama.cpp** on the same machine or on a **dedicated LLM host** (flat home LAN, DHCP reservation + DNS such as `llm.lan`, host firewall allowing only the LAN CIDR). See the [experiment journal](../../research/ai-tooling/local-llm-experiment-journal.md) (**2026-05-03**, **2026-05-08**) for image / `n_ctx` notes.
+
+1. **Serve** the model (example: RamaLama with a ROCm image that matches host libc — journal).
+2. **On the host** (same shell you use for `paude create`):
+
+   ```bash
+   export OPENAI_BASE_URL=http://127.0.0.1:8080/v1    # or http://llm.lan:8080/v1
+   export OPENAI_API_KEY=sk-local-placeholder        # if the server does not enforce keys
+   ```
+
+   **Pi detail:** Pi’s OpenAI client uses each model’s **`baseUrl`** from its catalog (built-ins default to **`https://api.openai.com/v1`**). Setting **`OPENAI_BASE_URL`** alone does not change that. Pi expects **`providers.openai.baseUrl`** in **`~/.pi/agent/models.json`** (see Pi [models.md](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/models.md) — *Overriding built-in providers*). **paude** injects that merge from **`OPENAI_BASE_URL`** when you use **`--agent pi --provider openai`** (first container start / sandbox script).
+
+3. **Create a session** (Podman/Docker backend):
+
+   ```bash
+   paude create --agent pi --provider openai
+   ```
+
+   Default model flag matches RamaLama’s **`GET /v1/models`** id for the Ollama-style alias (e.g. **`openai/library/qwen2.5-coder`**); override with **`--agent-args '--model openai/…'`** if your server reports a different id.
+
+4. **Egress proxy (paude-proxy):** Agent traffic uses **`HTTP_PROXY` / `HTTPS_PROXY`** with **`NO_PROXY`** limited to **loopback** so **all** other destinations go through the forward proxy. For restricted **`--allowed-domains`**, paude **appends the hostname** from **`OPENAI_BASE_URL`** / **`OPENAI_API_BASE`** to the **proxy allowlist** (unless **`all`**). Same-host LLM: use **`http://host.containers.internal:8080/v1`** in **`OPENAI_BASE_URL`** so the **proxy** can reach the host from its network namespace (the agent often cannot route to the host’s own LAN IP). Add **`--allowed-domains`** entries for any other hosts you need.
+
+5. **Quick check** that the API is reachable from the host:
+
+   ```bash
+   ./scripts/smoke-local-openai-api.sh "$OPENAI_BASE_URL"
+   ```
+
+6. **Pi `models.json`:** Set **`contextWindow`** to the **measured runtime `n_ctx`** for that model id (journal); otherwise long prompts can truncate silently.
+
+#### Serving the LLM over HTTPS (required for paude-proxy)
+
+**Why it's required:** `paude-proxy` does TLS MITM on all `CONNECT` tunnel requests. Pi's Node.js `undici` client uses `CONNECT` tunneling for **all** proxied traffic — including plain `http://` targets. The proxy's MITM then opens a TLS session to the upstream, which fails with `tls: first record does not look like a TLS handshake` when the LLM server only speaks plain HTTP.
+
+The solution is to put a TLS-terminating reverse proxy in front of the LLM server, backed by a private CA cert that the proxy container is told to trust.
+
+**Step 1 — Generate a private CA and server cert:**
+
+```bash
+./scripts/gen-llm-tls-cert.sh ~/llm-certs 10.0.0.202 llm.lan
+# Writes ca.crt, server.crt, server.key to ~/llm-certs/
+```
+
+**Step 2 — Run a TLS reverse proxy in front of RamaLama.**  [Caddy](https://caddyserver.com/) is the simplest option on Fedora:
+
+```bash
+sudo dnf install caddy
+
+cat > /tmp/Caddyfile <<'EOF'
+{
+    auto_https disable_redirects
+}
+:8443 {
+    tls /home/USER/llm-certs/server.crt /home/USER/llm-certs/server.key
+    reverse_proxy localhost:8080
+}
+EOF
+
+caddy run --config /tmp/Caddyfile
+```
+
+Or nginx:
+
+```nginx
+server {
+    listen 8443 ssl;
+    ssl_certificate     /home/USER/llm-certs/server.crt;
+    ssl_certificate_key /home/USER/llm-certs/server.key;
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+    }
+}
+```
+
+**Step 3 — Point `OPENAI_BASE_URL` at the HTTPS port:**
+
+```bash
+export OPENAI_BASE_URL=https://10.0.0.202:8443/v1
+export OPENAI_API_KEY=local-placeholder
+```
+
+**Step 4 — Create a paude session, injecting the CA cert into the proxy container:**
+
+```bash
+paude create --provider openai --upstream-ca ~/llm-certs/ca.crt
+```
+
+The `--upstream-ca` flag mounts the CA file into the proxy container at startup and runs `update-ca-trust` before the proxy process starts.  The Go TLS client inside the proxy then trusts the cert when it opens its upstream connection to the LLM server.  The cert path is persisted in a container label so proxy recreation (e.g. `paude allowed-domains --add`) re-mounts it automatically.
+
+> **Port note:** port 443 is already open in the proxy's default port filter.  If you serve on 8443, paude auto-adds that port to `ALLOWED_OTEL_PORTS` (the same mechanism used for OTEL ports) when `--provider openai` is set.
 
 ---
 
@@ -234,6 +329,7 @@ The cost argument requires honest accounting: hardware purchase, power draw, coo
 - [Enterprise LLM Deployment on OpenShift AI](openshift-ai-llm-deployment-summary.md) — the enterprise side of the same question: vLLM on Kubernetes, multi-tenancy, economics at scale
 - [AI-Assisted Development Workflows](ai-assisted-development-workflows.md) — broader patterns for AI-assisted work
 - [Local LLM Experiment Journal](../../research/ai-tooling/local-llm-experiment-journal.md) — dated logs of what was actually run: commands, failures, layer splits, tok/s numbers
+- [Level1Techs — AI and You Against the Machine](../../library/level1techs-ai-you-against-machine-local.md) — long-context local MoE + quant framing; AMD vs NVIDIA paths (library entry + cached transcript)
 
 ---
 

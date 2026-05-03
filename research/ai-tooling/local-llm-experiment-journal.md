@@ -12,13 +12,44 @@ Hands-on log: what was tried, what worked, and what failed. Complements the gene
 
 ---
 
-## Planned experiments (next up)
+## Prioritized experiments — pick a daily-driver model
 
-- **RAG index** — `ramalama rag add research/zen-karate-philosophy/ library/` → query Inoue/Rika content → compare against Sonnet on same sources. See backlog: *RAG index for local LLM*.
-- **qwen2.5:32b Q3_K_M** — lower quant (~13–14 GiB weights) would leave ~6 GiB for KV + compute — should fit cleanly with meaningful headroom. Trade-off: reduced output quality vs Q4_K_M. Low priority — qwen3:30b-a3b MoE is the confirmed practical ceiling on this hardware.
-- **Non-thinking qwen3 variant** — test latency difference on short prompts (routine completions) vs thinking variant.
-- **Electricity baseline** — deferred until a stable, usable model is confirmed running. Plan: once a model is in daily use (candidate: qwen2.5:32b if it fits), capture circuit-level draw at idle vs. inference across representative task types (coding, essay, research queries). Data source: whole-home circuit monitoring (>1 year of history available). Compare against GPU idle (38W confirmed from prior session) and published TDP estimates.
-- **Community tips (Level1Techs)** — optional: `llama.cpp` + **Vulkan** path; **Qwen3.5-35B-A3B** (MoE + vision) via GGUF — **verify VRAM / hybrid** on 20 GB before assuming full-GPU; **gpt-oss:20B** as smaller fast option. See **2026-05-03** entry for links and caveats vs this machine’s prior results.
+**Goal:** Pick **one** primary local model (and optionally one **fast** secondary) for **Pi + harness** work, based on **measured `n_ctx`**, **speed**, and **a few fixed coding/reasoning probes** — not vibes.
+
+**Protocol (reuse every run)** — log in a new **Entries** block after each experiment:
+
+1. **Clean GPU state** — reboot or ensure no leaked VRAM consumers before “max context” runs (journal: fragmentation mattered for `qwen2.5:32b`).
+2. **Serve** — `ramalama serve ollama://<tag>` (or Ollama container); capture **startup line with `n_ctx`**.
+3. **Numbers** — note **`n_ctx`**, **VRAM** from `rocm-smi` (or cleanup line on exit), **~90 tok/s** class figure from a **short** `POST /v1/chat/completions` if you care about latency.
+4. **Probes (same every model)** — e.g. (a) **small refactor** in a known file, (b) **explain error** from a trimmed stack trace, (c) **multi-hop** “use context A + B” — score **pass / partial / fail** without changing the prompts between models.
+5. **Pi** — set **`models.json` `contextWindow`** to the **measured `n_ctx`** for that model (see **2026-05-05**); then one **long-context** harness run to confirm no silent truncation.
+
+| Priority | Experiment | Why it matters | Decision signal |
+|----------|------------|----------------|-----------------|
+| **P0** | **Baseline — `ollama://qwen3:30b-a3b`** (RamaLama, current best) | Known-good on **gfx1100**; all other candidates compare here. | Log **fresh `n_ctx`** (expect **~10k–15k**). If this already meets quality + speed → **default** unless a lower tier wins on *latency* or a smaller model wins on *context*. |
+| **P1** | **Pi wiring + one characterization pass** | Validates **harness ∩ server** before sweeping models. | **`models.json`** + server model id + **`OPENAI_BASE_URL`** (LAN or **`127.0.0.1:8080/v1`**); **`contextWindow` ≈ `n_ctx`**; **`paude create --agent pi --provider openai`** (allowlist auto-merges API host from **`OPENAI_BASE_URL`** when domains are restricted); one **12k-token**-class task completes without garbage. |
+| **P2** | **Fast tier — `gpt-oss:20b` or `qwen2.5-coder:7b`** (Ollama tags via RamaLama) | Cheap **latency** checks and **larger `n_ctx`** than 30B MoE; good **second model** for quick turns. | **`qwen2.5-coder:7b` unblocked** — **2026-05-08**: local ROCm image **`localhost/ramalama-rocm:f44`** (glibc **2.43**) + upstream **RamaLama venv ~0.20**; measured **`n_ctx` = 32,768** (full training context on 20 GB). **`gpt-oss:20b`:** retry with **`--runtime-args '--no-jinja'`** (template issue, journal). Quay **`rocm:latest`** still **2.42** until upstream rebuild. |
+| **P3** | **Non-thinking Qwen3** (if available on registry as distinct tag) | Same MoE family, **less thinking latency** on short prompts (journal backlog). | If **latency** improves **measurably** and quality holds → consider **replacing** thinking variant as daily driver. |
+| **P4** | **Ollama ROCm container vs RamaLama** on **same tag** (`qwen3:30b-a3b`) | Same weights, different wrapper — settles **“which serve path”** for Pi. | Prefer stack with **same or higher `n_ctx`**, **simpler ops**, **fewer surprises** (SELinux, ports). |
+| **P5** | **`qwen2.5:32b` Q3_K_M** (if tag exists) or next **lighter quant** that fits | Trades quality for **KV headroom** → often **higher `n_ctx`** than Q4 32B on 20 GB. | If **`n_ctx` ≫ 4096** (Apr Q4 result) **and** probes ≥ baseline on **P0** for your tasks → candidate for **“long context dense”** slot; else skip. |
+| **P6** | **`qwen2.5:32b` Q4** (repeat Apr with **clean boot** only if pursuing dense 32B) | Already logged **4096 `n_ctx`** full-GPU; only if you **need** dense over MoE. | Win only if **probe quality** beats **P0** *enough* to justify **~5× slower** generation (journal). |
+| **P7** | **Vulkan `llama.cpp`** on **one MoE GGUF** | Level1 path; may beat ROCm for **some** long-context shapes — **extra build friction**. | Pursue only if **P0–P5** leave a **specific gap** (e.g. long-doc RAG + local). |
+| **P8** | **Larger MoE tags** (`qwen3.5-*`, vision) | May **not fit** 20 GB full-GPU; risk **hybrid slowness**. | Try only after **P2** shows you need **capability** over **fit**; accept **CPU spill** only if measured **tok/s** is still usable. |
+| **Watchlist** | **`Qwen3-Coder-Next`** family (HF **`Qwen/Qwen3-Coder-Next`**, **`…-FP8`**) | **Same “want”** as cloud docs / AMD Instinct guides — **not** in P0–P8 until a **runnable artifact** exists on **gfx1100 + 20 GB**. | **Requeue when:** (1) **`ollama://` / RamaLama** (or GGUF) ships a **quantized Coder-Next** that **fits** and serves — **pull + `n_ctx` log** like any other candidate; (2) **vLLM ROCm** release notes claim **FP8 MoE on RDNA3** — rerun minimal **`Qwen3-Coder-Next-FP8`** container; (3) **hardware** changes (e.g. **24 GB+**, **gfx12**, Instinct). **Current state:** **FP8** on vLLM **blocked** (**2026-05-03**); **BF16** full weights **oversized** for one 20 GB card (**2026-05-04** table). |
+
+**Likely outcome (hypothesis)** — **Primary:** `qwen3:30b-a3b` (thinking) **or** non-thinking variant if P3 wins. **Secondary:** `gpt-oss:20b` or `qwen2.5-coder:7b`. **Skip unless needed:** dense 32B, vLLM on this GPU for MoE. **Coder-Next:** **watchlist**, not daily-driver queue, until a **local** path works.
+
+---
+
+## Backlog (not blocking model choice)
+
+- **RAG index** — `ramalama rag add research/zen-karate-philosophy/ library/` → compare to cloud Sonnet on same sources.
+- **Electricity baseline** — after a daily driver is chosen; circuit-level idle vs inference (journal Apr plan).
+- **Strix Halo / 128 GB unified** — hardware TCO; see **2026-05-05** entry.
+- **vLLM FP8 MoE upstream** — contribution idea only; see **2026-05-05**.
+- **SGLang ROCm** — only if a release explicitly targets **gfx1100 + your model class**.
+- **Qwen3-Coder-Next** — periodic **Ollama library / HF** check for a **served** quant on **20 GB**; **vLLM** smoke on **new major** `vllm-openai-rocm` tags only if upstream signals **gfx1100 FP8 MoE** (see **Watchlist** row above).
+- **RamaLama ROCm image** — after P2 unblocks, consider **pinning image digest** (avoid `:latest` drift vs host libc).
 
 ---
 
@@ -36,7 +67,7 @@ Keep **Environment (baseline)** updated when the machine or driver stack changes
 
 | Field | Value |
 |--------|--------|
-| Host OS | Fedora 43 (linux **6.19.13-200.fc43.x86_64**) |
+| Host OS | **Fedora 44** + **glibc 2.43**; **RamaLama** upstream **venv** (~**0.20**); ROCm serve image **`localhost/ramalama-rocm:f44`** (local build, glibc **2.43** in image) — see **2026-05-08** |
 | CPU | 13th Gen Intel Core i5-13600K |
 | GPU | AMD Radeon RX 7900 XT, 20 GB VRAM (**gfx1100**) |
 | ROCm (host) | **6.4.2** (most packages) / **6.4.4** (`rocm-core`), from Fedora repos |
@@ -46,10 +77,186 @@ Keep **Environment (baseline)** updated when the machine or driver stack changes
 
 ## Entries (newest first)
 
-### 2026-05-03 — Literature pass: vLLM FP8 MoE upstream + Level1Techs forum (no new GPU run yet)
+### 2026-05-03 — **Home LLM topology (flat LAN)** + **paude → Pi → OpenAI-compatible**
 
-- **Goal:** Re-check whether **Qwen3-Coder-Next-FP8** (or similar FP8 MoE) on **vLLM + ROCm** is realistic on **RX 7900 XT (gfx1100)** after upstream churn; capture **repeatable commands** for a hands-on retry; note **community** guidance from Level1Techs.
-- **Status:** Desk research only this date — **author should run commands below** and paste outcome.
+- **Topology:** Single **trusted flat LAN** (no VLAN split for now). **Dedicated LLM host** later: **DHCP reservation + local DNS** (e.g. `llm.lan`) on the router; **host firewall** on the LLM box (**inbound** allow only **LAN CIDR** to the serve port, default **no WAN** port-forward). Optional **reverse proxy + bearer** in front of llama.cpp/RamaLama for defense in depth against casual LAN abuse; **pfSense** not relied on for east-west filtering on a flat segment.
+- **Client URL:** Pi / OpenAI SDK need a **stable base** — e.g. `http://llm.lan:8080/v1` (IPv4); avoid assuming **`127.0.0.1`** when the server runs in another container or on another machine.
+- **Context:** For **`library/qwen2.5-coder`** via RamaLama, logs showed **`n_ctx = 32768`** — align Pi **`models.json`** **`contextWindow`** with that id when using long prompts (see **2026-05-08**).
+- **paude (this repo):** **`--agent pi --provider openai`** — passthrough **`OPENAI_BASE_URL`** / **`OPENAI_API_BASE`**, secret **`OPENAI_API_KEY`**; default **`--model openai/library/qwen2.5-coder`**. **`paude create`** expands **paude-proxy** allowlists from **`OPENAI_BASE_URL` / `OPENAI_API_BASE`** (hostname appended, same idea as **`--otel-endpoint`**) unless **`--allowed-domains all`**. Agent **`NO_PROXY`** stays **loopback-only** so outbound HTTP(S) goes through **paude-proxy**; same-host LLM → **`http://host.containers.internal:8080/v1`** (proxy can reach the host; agent often cannot use the host’s own LAN IP). Extra hosts via **`--allowed-domains`** / **`paude.json`**.
+- **Smoke:** from repo root, **`scripts/smoke-local-openai-api.sh`** (or pass base URL) — **`GET …/v1/models`** against a running server.
+
+---
+
+### 2026-05-08 — **P2 fast tier works:** `ollama://qwen2.5-coder:7b` + **local ROCm image** + upstream RamaLama
+
+- **Stack:** **`ramalama serve --pull=never --image localhost/ramalama-rocm:f44 ollama://qwen2.5-coder:7b`** (upstream RamaLama from **editable venv**, not dnf **0.17.1**).
+- **Image:** **`localhost/ramalama-rocm:f44`** — built from **containers/ramalama** `container-images/rocm/Containerfile` (**Fedora 44** base); **`podman run … ldd --version` → 2.43** (fixes **2026-05-06 / 2026-05-07** glibc mismatch vs **`quay.io/ramalama/rocm:*`** still on **2.42**).
+- **GPU:** **RX 7900 XT gfx1100**; **`load_backend: … libggml-hip.so`** — ROCm path healthy.
+- **Measured runtime context:** **`llama_context: n_ctx = 32768`** (matches **`n_ctx_train`** 32768 from GGUF metadata for this 7B Q4_K — KV ~**1792 MiB**, ~**4.2 GiB** weights on GPU per log).
+- **Server:** listens **`http://:::8080`** — Pi / clients that need IPv4 should use **`http://127.0.0.1:8080/v1`**; confirm **`GET /v1/models`** id for this alias (often **`library/…`** style, not the Ollama tag string).
+- **Still open:** **`gpt-oss:20b`** — **chat template / Jinja** parse failure on llama-server without **`--runtime-args '--no-jinja'`** (separate from libc); **`qwen2.5-coder:7b`** loaded template successfully (log shows **`chat template, thinking = 0`**).
+- **Next:** Pi **`models.json`** → set **`contextWindow`** to **32768** for this server model id; run **P2 probes** (latency + coding tasks); optional **P0** re-smoke **`qwen3:30b-a3b`** on same **`f44`** image for apples-to-apples.
+
+---
+
+### 2026-05-07 — RamaLama **`GLIBC_2.43`**: root cause is **container image**, not host (**P2**)
+
+- **After Fedora 44:** host **`ldd --version`** → **2.43**; **`readelf -V /lib64/libm.so.6`** shows **GLIBC_2.43** — host is fine.
+- **`LD_DEBUG=libs`** showed **host** helpers loading **`/lib64/libm.so.6`**; **`llama-server`** error still appears — consistent with **`llama-server` running inside Podman** where **`/lib64`** is the **image** rootfs, not the host inode.
+- **Measured inside default ROCm image:**  
+  `podman run --rm quay.io/ramalama/rocm:latest ldd --version | head -1` → **`ldd (GNU libc) 2.42`**. So **`libllama.so` / `libggml-base.so` / `libmtmd.so`** in that image were built expecting **`libm`** symbols versioned **GLIBC_2.43**, but the **image ships glibc 2.42** — **ABI mismatch inside the OCI image** (upstream packaging / `:latest` drift). **Upgrading the host** does not change the image’s libc.
+- **Supersedes (partially) the 2026-05-06 “host too old” reading** — F43 host was *also* 2.42, but the **decisive** check is **glibc inside the image** RamaLama runs.
+
+**Follow-ups**
+
+```bash
+# Confirm any alternate default image (if RamaLama switched default)
+podman run --rm quay.io/ramalama/rocm-fedora:latest ldd --version | head -1
+
+podman pull quay.io/ramalama/rocm:latest   # refresh; retry only if upstream bumped base
+ramalama serve ollama://gpt-oss:20b
+```
+
+- **If still 2.42 in image:** file or find **[containers/ramalama](https://github.com/containers/ramalama)** issue — **ROCm image userspace must be ≥ build libc of bundled llama stack**; use **Ollama ROCm container** for fast tier until fixed.
+
+---
+
+### 2026-05-06 — Fast tier smoke (**P2**): `gpt-oss:20b` + `qwen2.5-coder:7b` via RamaLama (**blocked — glibc**)
+
+- **Goal:** Start **fast tier** from prioritized ladder — pull **`ollama://gpt-oss:20b`** (then **`qwen2.5-coder:7b`**) with **`ramalama serve`**, log **`n_ctx`** and run probes.
+- **Tool:** `ramalama` (Fedora dnf); pulls **`quay.io/ramalama/rocm:latest`** then Ollama blobs.
+- **Status:** **Failed before model load** (both tags). Same error path after download.
+
+**Root error**
+
+```
+llama-server: /lib64/libm.so.6: version `GLIBC_2.43' not found (required by /lib64/libmtmd.so.0)
+llama-server: /lib64/libm.so.6: version `GLIBC_2.43' not found (required by /lib64/libllama.so.0)
+llama-server: /lib64/libm.so.6: version `GLIBC_2.43' not found (required by /lib64/libggml-base.so.0)
+```
+
+- **Interpretation (initial):** `llama-server` + **`libllama.so`** expect **GLIBC_2.43** from **`libm`** — **ABI mismatch**, not an Ollama model issue.
+- **Correction — see 2026-05-07:** The **`/lib64/libm.so.6`** in the error is the **container rootfs’s** `libm` (default **`quay.io/ramalama/rocm:latest`** still **glibc 2.42** inside the image), not “host bind too old” as the only story. Host **F43** was **2.42**; host **F44** is **2.43** but **does not fix** serve until the **image** libc matches what the **bundled** `.so` files need.
+- **Measured (F43 session):** host `ldd --version` → **2.42**. **`qwen2.5-coder:7b`** failed the same way — not model-specific.
+- **Author follow-up:** **`podman run --rm <ramalama-default-rocm-image> ldd --version`**; **`podman pull`**; newer **RamaLama** / image tag if upstream fixes; **`podman run … ollama/ollama:rocm`** (Apr journal) for fast tier. Pin **image digest** once a good combo is found.
+
+**Commands (retry when glibc / image aligned)**
+
+```bash
+# Prefer: one model at a time; read n_ctx from first screenful of logs after load.
+ramalama serve ollama://gpt-oss:20b
+# or
+ramalama serve ollama://qwen2.5-coder:7b
+```
+
+**P2 status (as of 2026-05-06 handoff):** Blocked on glibc — **2026-05-07** shows the real gate is **image** glibc, not host **F44**.
+
+**Session handoff (superseded by 2026-05-07):** F44 upgrade done for host; **retry P2** only after **ROCm OCI image** ships **glibc ≥ 2.43** inside the rootfs (or alternate runner).
+
+---
+
+### 2026-05-05 — Strix Halo (128 GB) “affordable?” + context knob + upstream contribution (idea)
+
+- **Status:** Planning / literature — **no purchase decision here**; prices move; verify before checkout.
+
+**Is Strix Halo + 128 GB the most affordable path for big local models?**
+
+- **Cannot confirm as globally “most affordable.”** It is **competitive for a prebuilt with 128 GB unified memory** in a **small form factor** — aligns with Level1’s demo narrative (RAM bandwidth + huge pool for **llama.cpp**-class loads). Your **$2.5k–3.5k** band matches **2026** street pricing for flagship configs, but **flagship Corsair-class prebuilts have climbed** (e.g. press coverage of **~$3,399** for **Ryzen AI Max+ 395** / **128 GB** tier amid memory cost pressure: [Tom’s Hardware on Corsair AI Workstation 300](https://www.tomshardware.com/desktops/mini-pcs/corsairs-strix-halo-ai-workstation-300-gets-even-more-expensive-amid-the-rampocalypse-ryzen-ai-max-395-flagship-now-sits-at-usd3-399)). Lower tiers (**64 GB**, smaller iGPU) land **much lower** but **do not** give the same “feed Wikipedia” headroom.
+- **Often cheaper in absolute dollars:** **DIY tower** — used **RTX 3090 24 GB** + **128 GB DDR5** + mainstream CPU can beat **$3k** if you optimize used parts — but **worse unified-memory story**, more power/noise, and **PCIe split** still matters for multi-GPU (see journal **Apr 2026** mobo lesson).
+- **Does Halo solve our vLLM FP8 MoE blocker?** **Do not assume yes.** Maintainer thread on [vLLM #36105](https://github.com/vllm-project/vllm/issues/36105) classifies **gfx1151 / Strix Halo–class iGPU** as **without native FP8** for the FP8 MoE backend story — same *class* of limitation as **gfx1100** for **`Qwen3-Coder-Next-FP8`**. Halo still shines for **unified RAM + iGPU** when the **software path is llama.cpp / Vulkan / Ollama-style** (Level1’s line of work), not automatically for **vLLM FP8 MoE on ROCm**.
+
+**Level1Techs video (user link)**
+
+- [Best 120b Model for Offline Use? Nemotron 3 Super Out Now](https://www.youtube.com/watch?v=J5nwl38pev8) — Level1Techs (oEmbed title; **not** exclusively a “Halo buyer’s guide,” but in the same **offline / big-model** orbit). Transcript not fetched this session; add under `research/youtube-sources-apr2026/sources/` if you want it indexed like `T17bpGItqXw`.
+
+**“Context management is the bottleneck” — tune this knob first (software)**
+
+Hardware buys RAM; **harness** buys effective context. Workspace pointers:
+
+- [**Dex Horthy — No Vibes Allowed**](../../library/dex-horthy-no-vibes-allowed.md) — stay out of the **dumb zone** (~40%+ fill), **RPI** (research → plan → implement), **sub-agents for context fork** not cosplay.
+- [**Karpathy — Agentic Engineering**](../../library/andrej-karpathy-vibe-coding-to-agentic-engineering.md) — **jagged intelligence**, verification.
+- [**MemPalace**](../../library/mempalace.md) — **local-first memory** outside the model window.
+- **Local inference:** maximize **`n_ctx` you actually use** (paste only what matters; summarize tiers; retrieval before prompt) — same lesson as Level1 “paste the article” in [`library/level1techs-ai-you-against-machine-local.md`](../../library/level1techs-ai-you-against-machine-local.md).
+
+**RamaLama — measured runtime context (Apr 2026, this GPU)**
+
+| Model / command | Runtime `n_ctx` (llama.cpp logs) | Notes |
+|-----------------|----------------------------------|--------|
+| **`ollama://qwen3:30b-a3b`** | **`14,592` tokens** (one verified `ramalama serve` launch) | Expect **~10k–15k** depending on **free VRAM at launch**; always read **`n_ctx` from startup logs**, not `GET /v1/models` (`n_ctx_train` is training metadata). |
+| **`ollama://qwen2.5:32b`** (when load succeeded) | **`4096`** | Tight VRAM; journal has full memory breakdown. |
+
+**Harness (Paude / Pi) + local OpenAI-compatible server — characterization (planned)**
+
+- **Serve:** `ramalama serve ollama://qwen3:30b-a3b` → **`http://127.0.0.1:8080/v1`** (use **127.0.0.1**, not `localhost`). **Model id:** `library/qwen3` (per Apr log).
+- **Characterization goal:** sweep **prompt sizes** (e.g. 2k / 6k / 12k / 14k tokens of filler + one task) and log **latency, truncation, tool errors** — effective **agent** context is min(**harness budget**, **`n_ctx`**).
+- **Wiring:** Any OpenAI-compatible client needs **`OPENAI_BASE_URL`** (or product-specific equivalent) **+** a placeholder **`OPENAI_API_KEY`** if the server ignores it. **LiteLLM** proxy pattern in [`docs/ai-engineering/local-llm-setup.md`](../../docs/ai-engineering/local-llm-setup.md) if the agent stack expects Anthropic-shaped traffic. *Exact Pi / OpenClaw env names — confirm in product docs when wiring;* append a row here after first successful run.
+
+**Pi monorepo (local clone) — `models.json` vs real `n_ctx`**
+
+- **Path:** [`git-projects/pi-mono`](../../git-projects/pi-mono) — upstream [badlogic/pi-mono](https://github.com/badlogic/pi-mono); coding agent under **`packages/coding-agent`**.
+- **Custom models file:** `~/.pi/agent/models.json` — see **[`packages/coding-agent/docs/models.md`](../../git-projects/pi-mono/packages/coding-agent/docs/models.md)** (Ollama, vLLM, LM Studio, `baseUrl`, `api: "openai-completions"`, **`contextWindow`** / **`maxTokens`**, **`modelOverrides`** for built-ins).
+- **Registry behavior:** `ModelDefinitionSchema` allows per-model **`contextWindow`**; `parseModels` defaults **`contextWindow` → 128000** and **`maxTokens` → 16384** when omitted (`model-registry.ts`). **`applyModelOverride`** can lower **`contextWindow`** on a built-in model via **`modelOverrides`**.
+- **Important:** Pi’s **`contextWindow`** is the **client / harness budget** (compaction, UI, “how much history to plan for”) — it does **not** increase llama.cpp **`n_ctx`**. If **`contextWindow` ≫ server `n_ctx`**, Pi may **assume** more headroom than the server has → tune **`contextWindow` ≈ measured `n_ctx`** (e.g. **~14_500** for **`qwen3:30b-a3b`**) so characterization matches reality.
+- **Larger *real* context on same GPU** → usually **smaller / leaner weights** (more KV headroom): e.g. **`qwen2.5-coder:7b`**, **`gemma3:12b`**, **`gpt-oss:20b`**, or **lower quant** (journal backlog: **qwen2.5:32b Q3_K_M**) — each needs a **fresh `n_ctx` readout** from serve logs after pull.
+
+**Idea (not now): modify upstream**
+
+- **vLLM:** contribute **ROCm gfx11 FP8 MoE** support in `select_fp8_moe_backend` / `TritonExperts.is_supported_config` / tuned configs — **high effort**, needs **repro on gfx1100 or gfx1151**, tests, AMD coordination; track [vLLM #36105](https://github.com/vllm-project/vllm/issues/36105) / follow-on PRs.
+- **llama.cpp:** Level1 called out **ROCm + variable-bitweight quants** plumbing gap for **7900 XTX** — potentially **smaller surface area** than full vLLM MoE if the goal is **run their GGUFs**.
+- **When to revisit:** after you have a **minimal repro + perf numbers** and a **clear upstream issue** so maintainers can adopt; until then, **software context engineering** + **RamaLama** path stays higher ROI.
+
+---
+
+### 2026-05-04 — MoE on RX 7900 XT: alternate runtimes (**inventory**, not yet re-run)
+
+- **Context:** After **2026-05-03** confirmed **vLLM 0.20.1** still cannot select an **FP8 MoE** backend for **`Qwen/Qwen3-Coder-Next-FP8`** on **gfx1100**, ask: *what other ways could we run a MoE model on this hardware?*
+- **Status:** Planning only — **author picks one row to execute next** and replaces this block’s status.
+
+**Clarify the goal**
+
+| If you mean… | Reality on 20 GB + gfx1100 |
+|--------------|-----------------------------|
+| **Same HF weights** `Qwen/Qwen3-Coder-Next-FP8` | **vLLM ROCm** is the blocker today; **changing container flags** will not add an MoE kernel. Other servers (**TensorRT-LLM**, **TGI**) are **NVIDIA-first** or different packaging — not a quick win on Radeon. |
+| **Same *class*** — large **MoE**, coding-ish, local | **Already works:** **`ramalama run ollama://qwen3:30b-a3b`** (llama.cpp / Ollama registry, **Q4**, ~90 tok/s in Apr log). Different checkpoint than Coder-Next, same *stack family*. |
+| **Even larger MoE** (e.g. Qwen3.5 35B A3B) | Try **`ollama://`** or GGUF only if weights fit; expect **CPU spill** or OOM — same discipline as **72B hybrid** journal entry. |
+
+**Practical alternate *stacks* (MoE-capable)**
+
+| Stack | Role | MoE on AMD? | Next step to try |
+|-------|------|-------------|------------------|
+| **RamaLama** | Default low-friction | **Yes** (`ollama://qwen3:30b-a3b` proven) | Keep as baseline; optional **`ramalama serve`** vs **`run`** A/B. |
+| **Ollama (Podman ROCm)** | Same llama.cpp ecosystem, layer-split for oversized | **Yes** | **A/B vs RamaLama:** `podman … ollama/ollama:rocm` + `ollama pull qwen3:30b-a3b` — journal Apr entry documents **SELinux + `HSA_OVERRIDE_GFX_VERSION`** flags. |
+| **`llama.cpp` + Vulkan** | Level1Techs / forum: sometimes **better on AMD** for long context; avoids some ROCm quant paths | **Yes**, if **GGUF** exists for the model | Build or distro package with **`-ngl`**, compare to ROCm backend on same GGUF; see [`library/level1techs-ai-you-against-machine-local.md`](../../library/level1techs-ai-you-against-machine-local.md). |
+| **`llama.cpp` + ROCm** | Manual control vs RamaLama wrapper | **Yes** | Only if you need flags RamaLama does not expose; else redundant. |
+| **LM Studio** | GUI wrapper around llama.cpp–class servers | **Yes** | Same models as Ollama/GGUF; convenience only. |
+| **vLLM ROCm + AWQ dense** | Throughput server, not Coder-Next MoE | **MoE no**; dense **yes** (tight context) | Already logged: **32B AWQ ~1k context** — use when you need OpenAI API + batching, not long chat. |
+| **SGLang / mlx / etc.** | Alternatives | **MLX = Apple only**; **SGLang** ROCm = *verify current docs* before investing | Low priority unless a release note explicitly lists **gfx1100 + target MoE**. |
+
+**What does *not* bypass the vLLM FP8 MoE gap**
+
+- Another **vLLM-only** flag set on **`Qwen3-Coder-Next-FP8`** — failure is **kernel support**, not tuning.
+- **`Qwen/Qwen3-Coder-Next`** (non-FP8 **BF16** full weights) on **one 20 GB card** — weights alone exceed VRAM; would need **multi-GPU**, **CPU hybrid** (journal: painful for huge splits), or **smaller / quantized non-vLLM** artifact.
+
+**Suggested next run (pick one)**
+
+1. **Parity:** Ollama container vs RamaLama on **`qwen3:30b-a3b`** — latency, `n_ctx`, VRAM headroom.  
+2. **Vulkan:** one MoE GGUF (e.g. from [Bartowski](https://huggingface.co/bartowski) or Ollama-exported) via `llama.cpp` **`-ngl 99`** with **Vulkan** backend — log tok/s vs ROCm path.  
+3. **Model exploration:** `ollama show` / library pull for **`qwen3` coder-tagged** variants that still fit **20 GB** — update journal with **exact tag** and outcome.
+
+---
+
+### 2026-05-03 — vLLM ROCm + Qwen3-Coder-Next-FP8 (hands-on) + upstream notes + Level1Techs
+
+- **Goal:** Re-check whether **Qwen3-Coder-Next-FP8** on **vLLM + ROCm** works on **RX 7900 XT (gfx1100)** after pulling current `vllm-openai-rocm:latest`; keep **repeatable commands** and **community** references in one place.
+- **Status (hands-on):** **Failed** at model load — same failure class as **2026-04-20** (`NotImplementedError: No FP8 MoE backend supports the deployment configuration`). **vLLM 0.20.1** (was **0.19.x** in Apr container logs) — version moved; **gfx1100 outcome unchanged** for this checkpoint.
+
+**Hands-on — Podman, `docker.io/vllm/vllm-openai-rocm:latest`, `Qwen/Qwen3-Coder-Next-FP8`**
+
+- **Command:** Journal block below (`--tensor-parallel-size 1`, `--max-model-len 4096`, `--gpu-memory-utilization 0.95`, `--max-num-seqs 1`, `--enforce-eager`).
+- **Image:** `docker.io/vllm/vllm-openai-rocm:latest` (record digest anytime with `podman images --digests | grep vllm-openai-rocm`).
+- **Observed:** Engine **V1** / `Initializing a V1 LLM engine (v0.20.1)`; `Resolved architecture: Qwen3NextForCausalLM`; **`Selected TritonFp8BlockScaledMMKernel for Fp8LinearMethod`** — linear FP8 path selects a Triton kernel; stack then dies building **`Qwen3NextSparseMoeBlock` → `FusedMoE` → `Fp8MoEMethod` → `select_fp8_moe_backend`** (`fp8.py`, MoE oracle).
+- **Root error (one line):** `NotImplementedError: No FP8 MoE backend supports the deployment configuration.`
+- **Lesson:** FP8 **non-MoE** pieces can be farther along than FP8 **MoE** on this stack; do not infer MoE support from linear-layer logs alone.
 
 **vLLM / ROCm — what changed upstream (Apr 2026)**
 
@@ -87,7 +294,7 @@ podman run --rm -it \
   --enforce-eager
 ```
 
-If it fails at init with `No FP8 MoE backend supports the deployment configuration`, note **exact vLLM version line** from logs and stop — no need to chase inductor OOM until MoE backend passes.
+**2026-05-03 run:** Confirmed at **`version 0.20.1`** in banner — then stop; no point tuning inductor/KV until MoE backend selection passes.
 
 **Commands — confirm known-good stack (RamaLama, no vLLM)**
 
@@ -97,6 +304,8 @@ ramalama run ollama://qwen3:30b-a3b
 # ramalama serve ollama://qwen3:30b-a3b
 # API: http://127.0.0.1:8080/v1  (not localhost); model id library/qwen3
 ```
+
+**Level1Techs video (same ecosystem):** [AI and You Against the Machine: Guide so you can own Big AI and Run Local](https://www.youtube.com/watch?v=T17bpGItqXw) — Level1Techs. **Transcript:** [`research/youtube-sources-apr2026/sources/youtube-T17bpGItqXw-transcript.md`](../youtube-sources-apr2026/sources/youtube-T17bpGItqXw-transcript.md). **Library entry:** [`library/level1techs-ai-you-against-machine-local.md`](../../library/level1techs-ai-you-against-machine-local.md) (see [`library/log.md`](../../library/log.md) **2026-05-03**). Themes in the table below stay high-level; use the transcript for quotes and chapter-level detail.
 
 **Level1Techs forum — what we can learn** ([post #2 by lambda, Mar 2026](https://forum.level1techs.com/t/looking-for-tips-for-local-llm/246807/2))
 
@@ -446,5 +655,5 @@ One-line rollup you can refresh when the picture changes:
 
 | Stack | Qwen3-Coder-Next-FP8 | Practical alternative on this GPU |
 |--------|----------------------|-----------------------------------|
-| vLLM + ROCm Radeon | No (FP8 MoE backend) | **AWQ 32B works** with **`--enforce-eager`**, **`--max-model-len 1024`**, high **`gpu-memory-utilization`**, **`--max-num-seqs 1`** — **~1.2k KV tokens** only on **20 GB**; longer context → **Ollama** or smaller model |
+| vLLM + ROCm Radeon | No (FP8 MoE backend) — **retest 2026-05-03 v0.20.1**, same `select_fp8_moe_backend` error on gfx1100 | **AWQ 32B works** with **`--enforce-eager`**, **`--max-model-len 1024`**, high **`gpu-memory-utilization`**, **`--max-num-seqs 1`** — **~1.2k KV tokens** only on **20 GB**; longer context → **Ollama/RamaLama** or smaller model |
 | vLLM + CUDA | Expected yes | *(not tested on this journal host)* |
