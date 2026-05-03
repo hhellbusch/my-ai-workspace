@@ -88,7 +88,7 @@ For a more comprehensive portable option, see `zanshin-kit/WORKING-STYLE.md` in 
 
 **Any chat-based AI:** Paste the contents of this file as a system message or opening context.
 
-**Pi (terminal agent, including via paude):** If the project has `.pi/SYSTEM.md`, Pi treats it as **project-local** system context for that workspace. It is the right place for repo-specific guardrails (paths, `private/`, backlog bootstrap). It should stay short; the full Zanshin kit remains `zanshin-kit/WORKING-STYLE.md` on demand. A **global** always-on zanshin slice for Pi (any repo) is a separate extension track — see `.planning/ai-context-architecture/ROADMAP.md` Phase 3.
+**Pi (terminal agent, including via paude):** If the project has `.pi/SYSTEM.md`, Pi treats it as **project-local** system context for that workspace. It is the right place for repo-specific guardrails (paths, `private/`, backlog bootstrap). It should stay short; the full Zanshin kit remains `zanshin-kit/WORKING-STYLE.md` on demand. For a **global** always-on Zanshin L0 on any repo, install [zanshin-pi-extension](https://github.com/hhellbusch/zanshin-pi-extension) (`pi install git:https://github.com/hhellbusch/zanshin-pi-extension.git` — pin a commit SHA when stable). Roadmap: `.planning/ai-context-architecture/ROADMAP.md` Phase 3.
 
 ---
 

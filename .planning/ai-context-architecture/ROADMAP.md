@@ -37,15 +37,17 @@
 
 ## Phase 3 — Zanshin L0 Pi extension (portable)
 
+**Status:** In progress — scaffold on `main` at [hhellbusch/zanshin-pi-extension](https://github.com/hhellbusch/zanshin-pi-extension) (`85ca55e` initial).
+
 **Goal:** Same minimal zanshin contract **on every Pi session**, any repo, without copying `.pi/SYSTEM.md` into customer trees.
 
-**Distribution:** **Standalone GitHub repository** (author creates empty remote, push scaffold there). Consumers: `pi install git:https://github.com/<org>/<repo>.git` (pin SHA in docs once stable). Monorepo subfolder is out of scope for this track.
+**Distribution:** **Standalone GitHub repository** — [github.com/hhellbusch/zanshin-pi-extension](https://github.com/hhellbusch/zanshin-pi-extension). Consumers: `pi install git:https://github.com/hhellbusch/zanshin-pi-extension.git` (pin `#<sha>` once stable). Monorepo subfolder is out of scope for this track.
 
 | Task | Action | Verify |
 |------|--------|--------|
 | 3.1 | **Spec:** Freeze L0 text (max ~400–600 tokens) sourced from `zanshin-kit/WORKING-STYLE.md` § “Why these practices exist” + collaboration line + one sentence: “Read kit path when user asks or work is high-stakes.” | Human approves L0 in a PR or issue comment |
-| 3.2 | **Scaffold:** New **standalone** repo (e.g. `zanshin-pi-extension`) — Pi extension entrypoint per `pi-caveman-mode` pattern (`client?` systemPrompt injection). README: install + link to canonical `zanshin-kit/WORKING-STYLE.md` in this workspace or published kit. | `npm install` + `pi` loads extension in dev |
-| 3.3 | **Supply chain:** Pin git SHA in README; host `pi install` is default. Baking into paude image only if a product decision says so later. | README documents pinned install |
+| 3.2 | **Scaffold:** New **standalone** repo — Pi extension entrypoint per `pi-caveman-mode` pattern (`before_agent_start` → `systemPrompt`). README: install + link to canonical kit. | Done — push `main`; local clone lives beside workspace (`zanshin-pi-extension/`, gitignored here) |
+| 3.3 | **Supply chain:** Pin git SHA in README after L0 text is approved; host `pi install` is default. Baking into paude image only if a product decision says so later. | Update README with `#85ca55e` or newer once L0 frozen |
 | 3.4 | **Trim this repo’s `.pi/SYSTEM.md`:** Remove L0 duplication once the extension is installed everywhere you care about. | `.pi/SYSTEM.md` only repo-specific |
 
 **Checkpoint:** None for repo shape — **standalone remote** is decided.

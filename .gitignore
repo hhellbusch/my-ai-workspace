@@ -93,6 +93,8 @@ private/
 .DS_Store
 **/.DS_Store
 paude/
+# Nested clone: standalone Pi extension repo (own origin); do not commit into this workspace
+zanshin-pi-extension/
 worktrees/
 .paude-events.jsonl
 .paude-prompt.txt
