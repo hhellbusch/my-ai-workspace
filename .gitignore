@@ -97,4 +97,5 @@ private/
 worktrees/
 .paude-events.jsonl
 .paude-prompt.txt
+AGENT-NOTES.md
 .github_pat
