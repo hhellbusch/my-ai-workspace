@@ -1,74 +1,38 @@
-# AGENT-NOTES
+# Agent Notes
 
-Session: 2026-05-03 — workspace meta cleanup + lid-pi-extension scaffold
+**Task:** Fix `youtube-transcript-library` skill conflict — `description is required`
 
-## What this session did
+## What was wrong
 
-1. **Workspace cleanup** (`f0df97c`)
-   - `AGENTS.md → CLAUDE.md` symlink: pi, Copilot, Zed, Cline now auto-load
-     workspace context without a second file
-   - `CLAUDE.md`: removed collaboration style re-declaration (kit owns it),
-     fixed dead `.cursor/rules/` citations → on-demand read table, fixed YouTube
-     skill path, added Intent First section, added Workspace Extensions table
-   - `.cursorrules`: trimmed collaboration style to a kit pointer; updated Tool
-     Resources section to reflect symlink architecture
+`.pi/skills/youtube-transcript-library/SKILL.md` existed but was completely empty.
+The skill loader requires a YAML frontmatter block with at minimum a `description` field.
+An empty file satisfies neither requirement, producing the conflict at load time.
 
-2. **lid-pi-extension scaffold** (this commit)
-   - Full extension ready to extract to its own GitHub repo
-   - Non-code arrow adaptation: Intent → Design Note → Acceptance Criteria → Change
-   - Three-tier trigger: Touch / Change / Restructure
-   - `.cursor/rules/lid.mdc` for Cursor auto-load
-   - CLAUDE.md already has the Intent First section (Claude Code / pi)
-   - `.planning/lid-pi-extension/BRIEF.md` documents all design decisions
+Note: `.pi/skills` is a symlink to `.cursor/skills`. Git operations must target
+`.cursor/skills/...` — staging via the symlink path fails with "beyond a symbolic link".
 
-## Decisions made (not in task spec)
+## Decisions not specified by the task
 
-**Submodule question — keep zanshin submodule.**
-The submodule serves Cursor and Claude Code; pi uses the installed extension.
-Two delivery mechanisms for two tool contexts — both correct. Removing the
-submodule would break Cursor rules and CLAUDE.md references to kit files.
+**Content of the skill** — The task only said "description is required"; it didn't say
+what to write. I reconstructed the intended scope from:
+- AGENTS.md reference: "narrow entry skill for transcript-only + library stub routing"
+- `research-and-analyze` SKILL.md, which names this skill as the YouTube-specific router
+- AGENTS.md library ingest checklist (4 mandatory steps)
+- AGENTS.md wing tag table
 
-**lid-pi-extension as directory, not submodule yet.**
-Currently lives in `lid-pi-extension/` at workspace root. Cursor rule and
-CLAUDE.md reference it by directory path. Once extracted to its own repo,
-paths stay the same — it becomes a submodule and nothing else changes.
-Backlog item added for extraction.
+## Assumptions
 
-**Commands parity — cannot symlink `.claude/commands/` → `.cursor/commands/`.**
-The files have meaningful content differences beyond tool names: Cursor uses
-`@file` reference syntax and different read patterns; Claude Code uses explicit
-`Read` steps. Symlinking would break Claude Code commands. Parity requires
-porting missing commands individually. Not done this session — left for later.
-
-**Paude workspace architecture — separate workspace per code project.**
-Code projects should NOT be git submodules of this workspace. Each gets its own
-paude workspace (`/pvc/`). This workspace is the knowledge/practice workspace.
-Extensions (zanshin, lid) are installed per workspace — they're the portability
-layer. Tool extensions remain submodules here because this workspace consumes them.
-
-**`.gitmodules` not staged.**
-The container required HTTPS to clone the zanshin submodule (SSH blocked).
-The `.gitmodules` file shows `url = https://...` as a result. Not committed —
-the host environment uses SSH and should keep it. Revert after harvest if needed:
-```
-git submodule set-url zanshin-pi-extension git@github.com:hhellbusch/zanshin-pi-extension.git
-```
+1. The skill is intentionally narrow (transcript + library stub only). I did not expand
+   it into a full analysis skill — `research-and-analyze` owns that.
+2. The 4-step library ingest checklist is authoritative as written in AGENTS.md and
+   should be reproduced here so the skill is self-contained.
+3. Wing tag values were copied from AGENTS.md verbatim.
+4. Script path (`.pi/skills/research-and-analyze/scripts/fetch-transcript.py`) was
+   confirmed from the `research-and-analyze` skill's scripts index.
 
 ## Ambiguities resolved
 
-**Non-code EARS adaptation**: dropped EARS terminology and `@spec` annotations
-entirely for the non-code workflow. They're code-specific and add noise without
-value in a docs/tooling workspace. Plain acceptance criteria language is enough.
-Semantic IDs retained as optional for long-running structural work.
-
-**Integration between Zanshin and LID**: achieved by loading both extensions,
-not by baking integration into either. Each is independently useful. Natural
-touchpoints (shoshin at phase gates, checkpoints after phases, spar for edge
-audit) are documented in LID-WORKFLOW.md and the README but not enforced.
-
-## What's ready for next steps
-
-- Extract `lid-pi-extension/` to its own GitHub repo (backlog item added)
-- Port missing `.cursor/commands/` commands to `.claude/commands/` format
-  (commands parity gap — not tackled this session)
-- Consider opening upstream discussion with LID repo about non-code adaptation
+- **Should the skill have a workflow section?** Yes — without one an agent invoking the
+  skill has no steps to follow, defeating the purpose.
+- **How detailed?** Kept procedural (4 steps, script example) rather than exhaustive.
+  The full fetch mechanics live in `research-and-analyze`.
