@@ -1,7 +1,7 @@
 # Backlog
 
-> **State:** 3 in progress · 8 up next · 75 ideas · Last done: Case studies + grill-me + CLAUDE.md simplification (2026-04-29)
-> Last updated: 2026-04-29 (case studies written, grill-me command, CLAUDE.md simplified, caveman/Paude/OCP AI ideas logged)
+> **State:** 3 in progress · 8 up next · 77 ideas · Last done: Case studies + grill-me + CLAUDE.md simplification (2026-04-29)
+> Last updated: 2026-05-02 (Pi agent added to paude fork; zanshin Pi extension, paude domain aliases, caveman Pi port logged)
 
 ## In Progress
 
@@ -159,15 +159,35 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ### Evaluate caveman for token savings (output compression + CLAUDE.md compress)
 - **Product:** meta / tooling
-- **Context:** [caveman](https://github.com/JuliusBrussee/caveman) (50k stars) is a Claude Code skill/plugin that instructs the agent to respond in telegraphic "caveman speak" — dropping articles, filler, pleasantries — while keeping full technical accuracy. Benchmarks claim ~65% average output token savings (range 22–87%). Two distinct capabilities worth evaluating separately:
+- **Context:** [caveman](https://github.com/JuliusBrussee/caveman) (50k stars, now 52.5k) is a Claude Code skill/plugin that instructs the agent to respond in telegraphic "caveman speak" — dropping articles, filler, pleasantries — while keeping full technical accuracy. Benchmarks claim ~65% average output token savings (range 22–87%). Two distinct capabilities worth evaluating separately:
   1. **Output compression (caveman mode):** makes agent responses terser. Potential conflict: the workspace writing style is practitioner voice (direct, not telegraphic). Useful in YOLO/Paude sessions where no human reads responses directly; less appropriate for sessions producing docs or essays.
   2. **`caveman-compress`:** rewrites memory files (CLAUDE.md, etc.) into compressed form for AI reading while keeping a human-readable `.original.md` backup. Claims ~46% average input token savings on prose files. More workspace-compatible — CLAUDE.md simplification just done would compound with this. Try: `/caveman:compress CLAUDE.md`.
+- **Pi extension:** A community Pi port exists at [habitssss/pi-caveman-mode](https://github.com/habitssss/pi-caveman-mode) — installs via `pi install git:github.com/habitssss/pi-caveman-mode`. Caveman mode most useful in headless paude sessions where no human reads agent output directly.
 - **Ecosystem:** also ships `cavemem` (SQLite cross-agent memory) and `cavekit` (spec-driven autonomous build loop) — both relevant to Paude orchestration thread.
 - **Install (Claude Code):** `claude plugin marketplace add JuliusBrussee/caveman && claude plugin install caveman@caveman`
 - **Install (Cursor):** `npx skills add JuliusBrussee/caveman -a cursor`
 - **Key question:** does caveman-compress on CLAUDE.md survive round-trip? Human edits the `.original.md`, re-runs compress — does it degrade? Check before adopting.
 - **Links:** https://github.com/juliusbrussee/caveman
 - **Added:** 2026-04-29
+
+### Zanshin-kit as Pi extension
+- **Product:** meta / tooling / zanshin-kit
+- **Context:** Pi's extension API (since v0.59.0) exposes a `before_agent_start` hook that appends to the system prompt and an `input` hook for slash-command-style triggers. The caveman Pi port demonstrates the pattern. A zanshin extension would inject the always-on behavioral rules (re-read files before deciding, repo beats memory, no fabricated URLs, no review frontmatter) via `before_agent_start`, and wire `spar` / `shoshin` / `checkpoint` as input commands.
+- **Design constraint:** The always-on rules must be compact — the full `WORKING-STYLE.md` (259 lines) is too long to inject per-request. The distillation work (compact form, ~10-15 lines) is the real effort. The TypeScript wrapper is trivial once the prompt exists.
+- **Deployment:** Project-local `.pi/extensions/zanshin.ts` (auto-discovered by Pi) so it travels with the workspace. Activates automatically in every paude Pi session against this repo. Global install (`~/.pi/agent/extensions/`) for cross-workspace use later.
+- **Headless note:** `input` hook commands only fire in interactive sessions; headless paude runs should bake spar/shoshin invocations into the spec file. The `before_agent_start` injection is what makes this valuable headlessly.
+- **Relationship to zanshin-kit roadmap:** Additive step after Phase 3 closes — don't start until the compact form stabilizes. Tracked separately from the main zanshin-kit backlog item.
+- **Links:** `zanshin-kit/WORKING-STYLE.md`, `docs/ai-engineering/session-framework.md`, https://github.com/habitssss/pi-caveman-mode (reference implementation)
+- **Added:** 2026-05-02
+
+### Paude domain aliases and defaults.json setup
+- **Product:** paude / tooling
+- **Context:** Two pieces of pending setup deferred after the Pi agent work:
+  1. **`youtube` and `research` domain aliases** in `paude/src/paude/domains.py`. `youtube` needs `www.youtube.com` and `youtubei.googleapis.com` (for `youtube-transcript-api`). `research` needs DuckDuckGo, Wikipedia, arXiv, Stack Overflow, HN, MDN. Once added these unlock `--allowed-domains "default youtube research"` as a useful preset for research sessions.
+  2. **`~/.config/paude/defaults.json`** — set `backend: podman`, `agent: pi`, `provider: vertex` as global defaults so bare `paude create` works correctly in this environment. Blocked on the domain aliases being in code first so the config is actually usable.
+- **Then:** also install the Pi caveman mode extension for headless token efficiency in YOLO sessions.
+- **Links:** `paude/src/paude/domains.py`, `paude/docs/CONFIGURATION.md`, `paude/docs/PI.md`
+- **Added:** 2026-05-02
 
 ### Shell strict mode — retrofit existing scripts
 - **Product:** devops / tooling
