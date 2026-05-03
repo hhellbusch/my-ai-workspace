@@ -1,3 +1,6 @@
 [submodule "zanshin-pi-extension"]
 	path = zanshin-pi-extension
 	url = git@github.com:hhellbusch/zanshin-pi-extension.git
+[submodule "lid-pi-extension"]
+	path = lid-pi-extension
+	url = https://github.com/hhellbusch/lid-pi-extension.git

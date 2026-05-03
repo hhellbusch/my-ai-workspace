@@ -98,3 +98,4 @@ paude/
 worktrees/
 .paude-events.jsonl
 .paude-prompt.txt
+.github_pat
