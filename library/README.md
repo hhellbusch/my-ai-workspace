@@ -66,6 +66,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Daniel Miessler — PAI](daniel-miessler-pai.md) | personal AI infrastructure | 2026-04-18 |
 | [Daniel Miessler — Single Digital Assistant](daniel-miessler-single-da-thesis.md) | agentic / orchestration | 2026-04-18 |
 | [Alberta Tech — Why Devs Are OBSESSED with Claude Code](alberta-tech-why-devs-obsessed-claude-code.md) | claude-code / form-factor / developer-psychology | 2026-04-30 |
+| [Level1Techs — AI and You Against the Machine](level1techs-ai-you-against-machine-local.md) | local-llm / quantization / MoE / consumer GPU | 2026-05-03 |
 
 ### `philosophy-practice`
 

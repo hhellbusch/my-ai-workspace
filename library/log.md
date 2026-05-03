@@ -146,4 +146,4 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Entry:** [level1techs-ai-you-against-machine-local.md](level1techs-ai-you-against-machine-local.md)
 - **Wing:** ai-engineering
 - **Source:** YouTube / research/youtube-sources-apr2026/sources/youtube-T17bpGItqXw-transcript.md
-- **Note:** Transcript via `research-and-analyze` skill `fetch-transcript.py`; library stub pending personal “why” + theme pass.
+- **Note:** Enriched entry added 2026-05-03 — themes, quotes, links to experiment journal + `local-llm-setup.md`. **Personal “Why”** section in entry still a short placeholder for author fill-in.
