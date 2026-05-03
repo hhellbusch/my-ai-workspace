@@ -55,7 +55,10 @@ Skills provide deep domain knowledge. Reference them to load methodologies:
 @.cursor/skills/debug-like-expert/SKILL.md
 @.cursor/skills/create-plans/SKILL.md
 @.cursor/skills/create-agent-skills/SKILL.md
+@.cursor/skills/youtube-transcript-library/SKILL.md
 ```
+
+**YouTube transcripts → library:** `youtube-transcript-library` is scoped for `youtube.com` / `youtu.be` ingest (`fetch-transcript.py`). Broader research lives in `research-and-analyze`.
 
 Then describe your task - I'll follow the skill's methodology.
 

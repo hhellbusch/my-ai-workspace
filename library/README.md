@@ -37,6 +37,7 @@ These references have deep AI-researched context (summaries, key themes, notable
 | [MemPalace — Local-first AI memory](mempalace.md) | Tool / Architecture | ai-engineering, memory, verbatim-storage, semantic-search, wings-rooms-drawers, mcp, agent-memory | 2026-04-30 |
 | [Alberta Tech — Why Devs Are OBSESSED with Claude Code](alberta-tech-why-devs-obsessed-claude-code.md) | YouTube | ai-engineering, claude-code, form-factor, developer-psychology, adoption, agent-harness, terminal-bench | 2026-04-30 |
 | [Jared Burck — Enterprise Generative AI: LLMs on Red Hat OpenShift](jared-burck-openshift-ai-llm-deployment.md) | Article | devops, openshift, openshift-ai, llm, enterprise, kserve, vllm, rhoai | 2026-04-30 |
+| [Level1Techs — AI and You Against the Machine (local / Big AI)](level1techs-ai-you-against-machine-local.md) | YouTube | local-llm, quantization, moe, deepseek, context-window, consumer-gpu | 2026-05-03 |
 
 See [`catalog.md`](catalog.md) for the complete reference list (50+ books, courses, and training).
 

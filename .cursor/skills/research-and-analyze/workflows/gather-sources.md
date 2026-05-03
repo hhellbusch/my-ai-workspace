@@ -40,6 +40,8 @@ If the article is a URL, fetch it first and save it as `research/{subject}/sourc
 
 *(Use this path when the source is a YouTube video, a talk, or any single source with no external citations to verify.)*
 
+**Fast path (Cursor / Pi):** When the user only needs captions + library ingest, the **`youtube-transcript-library`** skill (`../youtube-transcript-library/SKILL.md`) is the scoped entry point — same `fetch-transcript.py` command below, explicit anti–`yt-dlp`-only guidance, and the library checklist.
+
 **Fetch the transcript:**
 
 ```bash

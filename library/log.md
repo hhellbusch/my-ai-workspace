@@ -141,3 +141,9 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Entry:** [alberta-tech-why-devs-obsessed-claude-code.md](alberta-tech-why-devs-obsessed-claude-code.md)
 - **Wing:** ai-engineering
 - **Source:** YouTube / research/ai-tooling/why-devs-are-obsessed-with-claude-code.md
+
+## [2026-05-03] ingest | Level1Techs — AI and You Against the Machine (run local / own Big AI)
+- **Entry:** [level1techs-ai-you-against-machine-local.md](level1techs-ai-you-against-machine-local.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/youtube-sources-apr2026/sources/youtube-T17bpGItqXw-transcript.md
+- **Note:** Transcript via `research-and-analyze` skill `fetch-transcript.py`; library stub pending personal “why” + theme pass.

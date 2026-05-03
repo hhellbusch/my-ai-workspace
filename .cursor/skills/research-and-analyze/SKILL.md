@@ -1,6 +1,14 @@
 ---
 name: research-and-analyze
-description: Systematic research and source verification for articles, blog posts, technical documentation, and video transcripts. Use when verifying claims against cited sources, analyzing accuracy of external content, evaluating talks and videos, or building evidence-based assessments from any source material.
+description: >-
+  YouTube transcript ingestion via fetch-transcript.py (captions to markdown under
+  research/), plus systematic research, citation verification, and evidence-based
+  analysis of articles, docs, and talks. Use when the user pastes youtube.com or
+  youtu.be URLs, asks to save or pull a video transcript, verify claims against
+  sources, evaluate a talk or video, run gather/manifest/analyze pipelines, or build
+  assessments from source material. For transcript-only + library stub routing,
+  youtube-transcript-library is the narrow entry skill; this skill holds the full
+  workflows and scripts.
 ---
 
 <essential_principles>
@@ -86,6 +94,7 @@ Also tell me: **what subject slug should I use for the research directory?** (e.
 <routing>
 | Response | Workflow |
 |----------|----------|
+| YouTube URL pasted / “transcript” / “captions” / library ingest for a video | **`youtube-transcript-library`** skill first (`fetch-transcript.py` + library checklist); then this skill if they want claims analysis or full pipeline |
 | 1, "new", "start", "verify", "article" | `workflows/gather-sources.md` |
 | 2, "youtube", "transcript", "video", "talk", "single source" | `workflows/gather-sources.md` — transcript variant (Step 2T) |
 | 3, "continue", "fetch", "retry" | `workflows/gather-sources.md` (resume mode) |
@@ -124,4 +133,5 @@ All domain knowledge in `references/`:
 |----------|---------|
 | fetch-sources.py | Concurrent batch URL fetcher with stealth headers, proxy support, PDF extraction, and domain-aware rate limiting |
 | fetch-transcript.py | YouTube transcript fetcher — single video or batch mode, saves timestamped markdown to disk |
+| (skill) `../youtube-transcript-library/SKILL.md` | YouTube-only ingest routing + library checklist — invokes this script |
 </scripts_index>

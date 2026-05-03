@@ -18,6 +18,7 @@ Hands-on log: what was tried, what worked, and what failed. Complements the gene
 - **qwen2.5:32b Q3_K_M** — lower quant (~13–14 GiB weights) would leave ~6 GiB for KV + compute — should fit cleanly with meaningful headroom. Trade-off: reduced output quality vs Q4_K_M. Low priority — qwen3:30b-a3b MoE is the confirmed practical ceiling on this hardware.
 - **Non-thinking qwen3 variant** — test latency difference on short prompts (routine completions) vs thinking variant.
 - **Electricity baseline** — deferred until a stable, usable model is confirmed running. Plan: once a model is in daily use (candidate: qwen2.5:32b if it fits), capture circuit-level draw at idle vs. inference across representative task types (coding, essay, research queries). Data source: whole-home circuit monitoring (>1 year of history available). Compare against GPU idle (38W confirmed from prior session) and published TDP estimates.
+- **Community tips (Level1Techs)** — optional: `llama.cpp` + **Vulkan** path; **Qwen3.5-35B-A3B** (MoE + vision) via GGUF — **verify VRAM / hybrid** on 20 GB before assuming full-GPU; **gpt-oss:20B** as smaller fast option. See **2026-05-03** entry for links and caveats vs this machine’s prior results.
 
 ---
 
@@ -35,7 +36,7 @@ Keep **Environment (baseline)** updated when the machine or driver stack changes
 
 | Field | Value |
 |--------|--------|
-| Host OS | Fedora 43 (linux **6.18.10-200.fc43.x86_64**) |
+| Host OS | Fedora 43 (linux **6.19.13-200.fc43.x86_64**) |
 | CPU | 13th Gen Intel Core i5-13600K |
 | GPU | AMD Radeon RX 7900 XT, 20 GB VRAM (**gfx1100**) |
 | ROCm (host) | **6.4.2** (most packages) / **6.4.4** (`rocm-core`), from Fedora repos |
@@ -44,6 +45,72 @@ Keep **Environment (baseline)** updated when the machine or driver stack changes
 ---
 
 ## Entries (newest first)
+
+### 2026-05-03 — Literature pass: vLLM FP8 MoE upstream + Level1Techs forum (no new GPU run yet)
+
+- **Goal:** Re-check whether **Qwen3-Coder-Next-FP8** (or similar FP8 MoE) on **vLLM + ROCm** is realistic on **RX 7900 XT (gfx1100)** after upstream churn; capture **repeatable commands** for a hands-on retry; note **community** guidance from Level1Techs.
+- **Status:** Desk research only this date — **author should run commands below** and paste outcome.
+
+**vLLM / ROCm — what changed upstream (Apr 2026)**
+
+- [vLLM #36105](https://github.com/vllm-project/vllm/issues/36105): same class of failure as our Apr session (`NotImplementedError: No FP8 MoE backend supports the deployment configuration`). Closed **2026-04-02** by work targeting **gfx1201 (Radeon R9700)** — [PR #38086](https://github.com/vllm-project/vllm/pull/38086) / commit [`551b3fb`](https://github.com/vllm-project/vllm/commit/551b3fb39f3a95ff3dc3feca9528ab4c90649316): Triton FP8 MoE **configs** for `AMD_Radeon_R9700`, tuned for **Qwen3-30B-A3B-FP8** and **Qwen3.5-35B-A3B-FP8** at **TP=2**. **gfx1100 is not in that enablement path** (RDNA3 vs RDNA4 gfx12).
+- Maintainer thread: **RX 7900 XTX / Strix Halo class** described as lacking **native FP8** for this stack; **gfx1151** explicitly called out as unsupported for the same reason ([issue comment 2026-04-09](https://github.com/vllm-project/vllm/issues/36105#issuecomment-2795847029)).
+- [AMD Day 0 Qwen3-Coder-Next](https://www.amd.com/en/developer/resources/technical-articles/2026/day-0-support-for-qwen3-coder-next-on-amd-instinct-gpus.html): **Instinct MI300X+** + ROCm 7 + vLLM — not a consumer 20 GB Radeon guarantee.
+
+**Hypothesis for gfx1100:** Software upgrades alone are **unlikely** to unlock **Qwen3-Coder-Next-FP8** on vLLM ROCm until a backend explicitly supports this arch + MoE layout; **RamaLama + `qwen3:30b-a3b`** remains the documented working path on this GPU.
+
+**Commands — retry FP8 MoE on latest vLLM ROCm image (expect failure on gfx1100; proves image rev)**
+
+Record the image digest after pull (`podman images --digests`).
+
+```bash
+# Optional: fresh pull
+podman pull docker.io/vllm/vllm-openai-rocm:latest
+
+# Minimal repro: Qwen3-Coder-Next-FP8 (same failure class as Apr 2026)
+podman run --rm -it \
+  --group-add=video \
+  --cap-add=SYS_PTRACE \
+  --security-opt seccomp=unconfined \
+  --device /dev/kfd \
+  --device /dev/dri \
+  -v "${HOME}/.cache/huggingface:/root/.cache/huggingface" \
+  --env "HF_TOKEN=${HF_TOKEN:-}" \
+  -p 8000:8000 \
+  --ipc=host \
+  docker.io/vllm/vllm-openai-rocm:latest \
+  Qwen/Qwen3-Coder-Next-FP8 \
+  --tensor-parallel-size 1 \
+  --max-model-len 4096 \
+  --gpu-memory-utilization 0.95 \
+  --max-num-seqs 1 \
+  --enforce-eager
+```
+
+If it fails at init with `No FP8 MoE backend supports the deployment configuration`, note **exact vLLM version line** from logs and stop — no need to chase inductor OOM until MoE backend passes.
+
+**Commands — confirm known-good stack (RamaLama, no vLLM)**
+
+```bash
+ramalama run ollama://qwen3:30b-a3b
+# or serve:
+# ramalama serve ollama://qwen3:30b-a3b
+# API: http://127.0.0.1:8080/v1  (not localhost); model id library/qwen3
+```
+
+**Level1Techs forum — what we can learn** ([post #2 by lambda, Mar 2026](https://forum.level1techs.com/t/looking-for-tips-for-local-llm/246807/2))
+
+| Idea | Takeaway for this workspace |
+|------|-------------------------------|
+| Prefer **newer** open models over small old dense checkpoints | Aligns with our move toward **Qwen3** / MoE; still need **VRAM-aware** picks (we already hit dense 32B ceiling). |
+| **Qwen3.5-35B-A3B** MoE + vision | Same *family* direction as upstream FP8 MoE work, but **on gfx1100** prefer **llama.cpp / Ollama / RamaLama** with a tag that **fits**; forum notes model may **spill to CPU** if VRAM insufficient — treat like our **72B hybrid** lesson (usable only if split is acceptable). |
+| **llama.cpp + Vulkan** first, ROCm optional | Useful **portability** and driver isolation on Linux; orthogonal to vLLM FP8 MoE — worth an experiment if ROCm path is painful. |
+| **LM Studio** | Same role as Ollama/RamaLama for local OpenAI-compatible serve; GUI tradeoff. |
+| **gpt-oss:20B** for speed / VRAM | Smaller active footprint — plausible **fast** tier on 20 GB; separate quality eval from Qwen MoE. |
+
+**Unsloth / HF links from that thread (for follow-up, not verified here):** [unsloth/Qwen3.5-35B-A3B-GGUF](https://huggingface.co/unsloth/Qwen3.5-35B-A3B-GGUF), [Unsloth Qwen3.5 local guide](https://unsloth.ai/docs/models/qwen3-how-to-run-and-fine-tune), [gpt-oss-20b GGUF](https://huggingface.co/unsloth/gpt-oss-20b-GGUF), [gpt-oss run guide](https://unsloth.ai/docs/models/gpt-oss-how-to-run-and-fine-tune).
+
+---
 
 ### 2026-04-20 — RamaLama, qwen2.5:32b full-GPU (**OOM at KV cache — confirmed fails**)
 

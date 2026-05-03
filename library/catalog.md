@@ -112,6 +112,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | MemPalace — Local-first AI memory | MemPalace (open-source) | 2025–2026 | https://github.com/mempalace/mempalace | ai-engineering, memory, verbatim-storage, semantic-search, wings-rooms-drawers, mcp, agent-memory, chromadb | [enriched](mempalace.md) |
 | Alberta Tech — Why Devs Are OBSESSED with Claude Code | Alberta Tech | 2026 | https://www.youtube.com/watch?v=LACyqdAfnaw | ai-engineering, claude-code, form-factor, developer-psychology, adoption, agent-harness, terminal-bench, leaked-source | [enriched](alberta-tech-why-devs-obsessed-claude-code.md) |
 | Enterprise Generative AI: LLMs on Red Hat OpenShift | Jared Burck | 2026 | https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/ | devops, openshift, openshift-ai, llm, enterprise, kserve, vllm, rhoai, knative, service-mesh, mlops | [enriched](jared-burck-openshift-ai-llm-deployment.md) |
+| AI and You Against the Machine: own Big AI and Run Local | Level1Techs | 2026 | https://www.youtube.com/watch?v=T17bpGItqXw | local-llm, quantization, moe, deepseek, context-window, consumer-gpu, level1techs | [stub](level1techs-ai-you-against-machine-local.md) |
 
 ## Other Training
 
