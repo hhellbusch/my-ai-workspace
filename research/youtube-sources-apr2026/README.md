@@ -1,6 +1,6 @@
 # YouTube Sources — April 2026
 
-Raw transcript collection. Sources fetched for research and analysis; not yet assessed or linked to a specific essay track.
+Raw transcript collection. Sources fetched for research and analysis. **Level1Techs `T17bpGItqXw`** is linked from [`library/level1techs-ai-you-against-machine-local.md`](../../library/level1techs-ai-you-against-machine-local.md) and [`research/ai-tooling/local-llm-experiment-journal.md`](../ai-tooling/local-llm-experiment-journal.md) (2026-05-03).
 
 ## Contents
 
