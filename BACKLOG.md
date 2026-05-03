@@ -1,7 +1,7 @@
 # Backlog
 
-> **State:** 3 in progress · 8 up next · 77 ideas · Last done: Case studies + grill-me + CLAUDE.md simplification (2026-04-29)
-> Last updated: 2026-05-03 (context-architecture plan: standalone Pi extension repo; defaults.json not tracked in plan)
+> **State:** 3 in progress · 8 up next · 77 ideas · Last done: workspace cleanup + lid-pi-extension scaffold (2026-05-03)
+> Last updated: 2026-05-03
 
 ## In Progress
 
@@ -134,10 +134,16 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### Extract lid-pi-extension to its own GitHub repo
+- **Product:** meta / tooling
+- **Context:** `lid-pi-extension/` directory scaffolded in this workspace (2026-05-03). Ready to become a standalone repo: `git init`, push to `github.com/hhellbusch/lid-pi-extension`, then add back as a submodule. Mirrors zanshin-pi-extension pattern.
+- **Files:** `lid-pi-extension/` — package.json, extensions/lid-l0.ts, kit/LID-WORKFLOW.md, kit/templates/, README.md, LICENSE
+- **Then:** add `.cursor/rules/lid.mdc` submodule path reference (currently uses local dir path, will be same after submodule add)
+
 ### Research: LID (Linked-Intent Development) — enterprise-validated agentic SDD methodology
 - **Product:** research / meta / devops
-- **Source:** https://github.com/jszmajda/lid · https://linked-intent.dev/
-- **Signal:** First-hand enterprise account of LID being useful and beneficial in production settings (not just star count — 37 stars, but practitioner-validated). Author background: AWS. Shared by a peer.
+- **Source:** https://github.com/jszmajda/lid
+- **Status:** Incorporated — lid-pi-extension scaffolded (2026-05-03). Non-code arrow adaptation written. Cursor rule and CLAUDE.md section added. Remaining: extract to own repo, open upstream discussion about non-code adaptation.
 - **What it is:** A spec-driven development methodology purpose-built for agentic coding. Core claim: **code is output, not the artifact you maintain.** Intent is made explicit and traceable through a five-level chain: HLD → LLDs → EARS specs → Tests → Code. The design documents are the system; code is compiled from them. Done correctly, you can delete all tests and code and regenerate them from the documents alone.
 - **Three research angles worth pursuing:**
   1. **LID as Paude brief format.** The existing Paude assessment (Signal 3) asks: what level of task specification lets a fire-and-forget agent produce interactive-session quality? LID's HLD + LLD + EARS is a structured answer. A YOLO-mode agent given a LID-formatted spec has the why (HLD), the how (LLD), the what (EARS), and success criteria (specs). Code failures are recoverable — re-run from specs. Intent wasn't lost, only the output was.

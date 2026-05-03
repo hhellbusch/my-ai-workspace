@@ -1,0 +1,26 @@
+{
+  "name": "lid-pi-extension",
+  "version": "0.1.0",
+  "description": "Linked-Intent Development (LID) discipline for Pi — auto-injected L0 with non-code workflow adaptation.",
+  "keywords": ["pi-package", "pi-extension", "extension", "pi", "lid", "linked-intent"],
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hhellbusch/lid-pi-extension.git"
+  },
+  "homepage": "https://github.com/hhellbusch/lid-pi-extension#readme",
+  "bugs": {
+    "url": "https://github.com/hhellbusch/lid-pi-extension/issues"
+  },
+  "files": ["extensions", "kit", "README.md", "LICENSE"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-coding-agent": "*"
+  },
+  "pi": {
+    "extensions": ["./extensions"]
+  }
+}
