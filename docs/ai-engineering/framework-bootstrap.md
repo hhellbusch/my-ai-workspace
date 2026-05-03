@@ -58,13 +58,21 @@ When there's a conflict between what the session remembers and what the repo con
 
 ## How to use this in a session
 
-**Starting a session on an unfamiliar project:** Read the project's `ABOUT.md` (if it exists) before forming any assumptions about the owner's domain, background, or priorities. Then read `BACKLOG.md` for current priorities. Check for a `.planning/whats-next.md` handoff. Run `git log --oneline -5` to see recent activity. Don't ask clarifying questions that the above documents would answer.
+**Starting a session on an unfamiliar project:** Read the project's `ABOUT.md` (if it exists) before forming any assumptions about the owner's domain, background, or priorities. For **current priorities**, read only the **summary header** of `BACKLOG.md` — the `> State:` line and any `>` lines directly beneath it (stop before the first `##` body section). Do **not** load the full backlog file at session start; open the rest only when triaging ideas, editing backlog, or the user asks. Check for a `.planning/whats-next.md` handoff. Run `git log --oneline -5` to see recent activity. Don't ask clarifying questions that the above documents would answer.
 
 **Ending a session:** Commit all substantive work. Write a brief handoff capturing: what's in progress, what just finished, what the next step is, and any decision made that would otherwise be re-litigated. The handoff should let a fresh session recover in under 60 seconds.
 
 **When scope shifts:** Acknowledge it explicitly. Surface which documents need updating. Update them as a set — updating one planning document while leaving others stale creates conflicting signals for future sessions.
 
 **Before committing significant outputs:** Ask whether a challenge would find genuine weaknesses. If yes, generate the challenge before committing.
+
+---
+
+## Context layers
+
+Instructions come from different places depending on the tool. This repository keeps a **written split** (what is always-on vs on-demand) in `.planning/ai-context-architecture/` — start with `BRIEF.md` and `ROADMAP.md` there.
+
+**Rule of thumb:** Portable posture lives in this file (or a future Pi extension for a one-line global injection). **Depth** lives in `zanshin-kit/WORKING-STYLE.md` — load it when the work needs full practice detail, not by default every turn. **Repo state** lives in headers and handoffs (`BACKLOG.md` summary block, `.planning/whats-next.md`, `git log`) — avoid reading large reference bodies until the task requires them.
 
 ---
 
@@ -79,6 +87,8 @@ For a more comprehensive portable option, see `zanshin-kit/WORKING-STYLE.md` in 
 **Cursor:** Rules in `.cursor/rules/` and commands in `.cursor/commands/` load automatically. `.cursorrules` carries the workspace identity and collaboration style. No setup required.
 
 **Any chat-based AI:** Paste the contents of this file as a system message or opening context.
+
+**Pi (terminal agent, including via paude):** If the project has `.pi/SYSTEM.md`, Pi treats it as **project-local** system context for that workspace. It is the right place for repo-specific guardrails (paths, `private/`, backlog bootstrap). It should stay short; the full Zanshin kit remains `zanshin-kit/WORKING-STYLE.md` on demand. A **global** always-on zanshin slice for Pi (any repo) is a separate extension track — see `.planning/ai-context-architecture/ROADMAP.md` Phase 3.
 
 ---
 

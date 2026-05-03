@@ -25,6 +25,8 @@ Agents are installed automatically inside the container — no local agent insta
 
 Pi is the day-to-day agent in this workspace. It runs against Vertex AI (Claude Sonnet by default, switchable to Gemini) using the same ADC auth flow as Claude Code.
 
+**Project context in Pi:** After `--git`, your tree is under `/pvc/workspace/`. Pi loads **`.pi/SYSTEM.md`** as project-local system prompt material for that repo. It does **not** automatically ingest large files such as the full `BACKLOG.md` or `zanshin-kit/WORKING-STYLE.md` unless you or `.pi/SYSTEM.md` direct a read. Keep `.pi/SYSTEM.md` small. For the split between always-on vs on-demand context (and a future portable Pi extension), see `.planning/ai-context-architecture/`.
+
 ---
 
 ## Prerequisites
@@ -87,7 +89,7 @@ Key flags on `paude create`:
 | `--yolo` | Skip all permission prompts — agent runs without asking |
 | `--prompt-file <path>` | Read initial prompt from a file on the host — no shell quoting issues |
 | `-a '-p "..."'` | Inline prompt (fragile for multi-line — prefer `--prompt-file`) |
-| `--agent` | Choose agent: `claude` (default), `gemini`, `cursor`, `openclaw` |
+| `--agent` | Choose agent: `claude` (default), `gemini`, `cursor`, `openclaw`, `pi`, `copilot` |
 | `--dry-run` | Preview the full resolved config without running |
 
 ### Writing a task spec that works
@@ -336,12 +338,15 @@ Example `~/.config/paude/defaults.json`:
     "backend": "podman",
     "agent": "pi",
     "provider": "vertex",
+    "git": true,
     "allowed-domains": ["default"]
   }
 }
 ```
 
-With this, `paude create --yolo --git my-session` runs Pi on Vertex (Claude Sonnet) with no extra flags. Override at create time as needed:
+`"git": true` wires `paude remote add` + `git push` on every `paude create`, so `/pvc/workspace/` is populated without a separate manual step (matches the resolver default of `git: false` if omitted).
+
+With this, `paude create --yolo my-session` runs Pi on Vertex (Claude Sonnet) with workspace sync — no `--git` flag needed each time. Override at create time as needed:
 
 ```bash
 paude create --agent claude my-session           # Claude Code instead of Pi

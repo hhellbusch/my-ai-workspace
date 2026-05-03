@@ -21,13 +21,15 @@ Execution order is **Phase 0 → 1 → 2** first (docs + alignment); **Phase 3**
 
 ## Phase 1 — Portable docs alignment
 
+**Status:** Complete — 2026-05-03
+
 **Goal:** One story for humans and Copilot-style “read this file” loads; no contradiction with Pi’s narrow backlog rule.
 
 | Task | Action | Verify |
 |------|--------|--------|
-| 1.1 | Update `docs/ai-engineering/framework-bootstrap.md` “Starting a session” bullet: **first** read `> State:` block from `BACKLOG.md` (or `rg '^> '` first N lines); full backlog only when triaging or asked. | Grep doc for old “read BACKLOG.md for priorities”-only wording gone |
-| 1.2 | Add a short “Context layers” subsection linking here: `.planning/ai-context-architecture/` and stating Pi vs Claude vs portable file. | Link resolves in repo |
-| 1.3 | Optional one-line in `docs/ai-engineering/paude-getting-started.md`: Pi loads `.pi/SYSTEM.md` from workspace; heavy files are not auto-loaded. | Accurate vs paude behavior |
+| 1.1 | Update `docs/ai-engineering/framework-bootstrap.md` “Starting a session” bullet: **first** read `> State:` block from `BACKLOG.md` (or `rg '^> '` first N lines); full backlog only when triaging or asked. | Done |
+| 1.2 | Add a short “Context layers” subsection linking here: `.planning/ai-context-architecture/` and stating Pi vs Claude vs portable file. | Done |
+| 1.3 | `docs/ai-engineering/paude-getting-started.md`: Pi + `.pi/SYSTEM.md`; `--agent` table includes `pi` / `copilot`; defaults example includes `"git": true`. | Done |
 
 **Checkpoint:** None unless you want to voice-check `framework-bootstrap.md` tone for external readers.
 
@@ -39,8 +41,8 @@ Execution order is **Phase 0 → 1 → 2** first (docs + alignment); **Phase 3**
 
 | Task | Action | Verify |
 |------|--------|--------|
-| 2.1 | Author `~/.config/paude/defaults.json` (local only, not committed) with `"git": true` and your preferred `backend` / `agent` / `provider`. | `paude create` runs remote+push path without extra flags |
-| 2.2 | If desired, add an **example** snippet to `paude/docs/CONFIGURATION.md` or workspace `paude-getting-started.md` (already has examples — extend with `git: true` one-liner). | Doc matches resolver behavior |
+| 2.1 | Author `~/.config/paude/defaults.json` (local only, not committed) with `"git": true` and your preferred `backend` / `agent` / `provider`. | Human: run `paude config init`, merge example from docs |
+| 2.2 | Example defaults with `"git": true` in `paude/docs/CONFIGURATION.md` + workspace `paude-getting-started.md`. | Done — 2026-05-03 |
 
 ---
 
