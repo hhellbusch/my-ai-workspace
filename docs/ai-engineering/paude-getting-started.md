@@ -25,7 +25,7 @@ Agents are installed automatically inside the container — no local agent insta
 
 Pi is the day-to-day agent in this workspace. It runs against Vertex AI (Claude Sonnet by default, switchable to Gemini) using the same ADC auth flow as Claude Code.
 
-**Project context in Pi:** After `--git`, your tree is under `/pvc/workspace/`. Pi loads **`.pi/SYSTEM.md`** as project-local system prompt material for that repo. It does **not** automatically ingest large files such as the full `BACKLOG.md` or `zanshin-kit/WORKING-STYLE.md` unless you or `.pi/SYSTEM.md` direct a read. Keep `.pi/SYSTEM.md` small. For the split between always-on vs on-demand context (and a future portable Pi extension), see `.planning/ai-context-architecture/`.
+**Project context in Pi:** After `--git`, your tree is under `/pvc/workspace/`. Pi loads **`.pi/SYSTEM.md`** as project-local system prompt material for that repo. It does **not** automatically ingest large files such as the full `BACKLOG.md` or `zanshin-pi-extension/kit/WORKING-STYLE.md` unless you or `.pi/SYSTEM.md` direct a read. Keep `.pi/SYSTEM.md` small. For the split between always-on vs on-demand context (and a future portable Pi extension), see `.planning/ai-context-architecture/`.
 
 ---
 

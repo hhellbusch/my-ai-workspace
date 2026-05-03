@@ -45,7 +45,7 @@
 
 | Task | Action | Verify |
 |------|--------|--------|
-| 3.1 | **Spec:** Freeze L0 text (max ~400–600 tokens) sourced from `zanshin-kit/WORKING-STYLE.md` § “Why these practices exist” + collaboration line + one sentence: “Read kit path when user asks or work is high-stakes.” | Human approves L0 in a PR or issue comment |
+| 3.1 | **Spec:** Freeze L0 text (max ~400–600 tokens) sourced from `zanshin-pi-extension/kit/WORKING-STYLE.md` § “Why these practices exist” + collaboration line + one sentence: “Read kit path when user asks or work is high-stakes.” | Human approves L0 in a PR or issue comment |
 | 3.2 | **Scaffold:** New **standalone** repo — Pi extension entrypoint per `pi-caveman-mode` pattern (`before_agent_start` → `systemPrompt`). README: install + link to canonical kit. | Done — push `main`; local clone lives beside workspace (`zanshin-pi-extension/`, gitignored here) |
 | 3.3 | **Supply chain:** Pin git SHA at install time (README links to commits); host `pi install` is default. Baking into paude image only if a product decision says so later. | README has pin instructions |
 | 3.4 | **Trim this repo’s `.pi/SYSTEM.md`:** Remove L0 duplication once the extension is installed everywhere you care about. | `.pi/SYSTEM.md` only repo-specific |
@@ -79,4 +79,4 @@
 @.planning/ai-context-architecture/BRIEF.md  
 @.planning/meta-simplification.md  
 @.pi/SYSTEM.md  
-@zanshin-kit/WORKING-STYLE.md (lines 1–42 for L0 source material)
+@zanshin-pi-extension/kit/WORKING-STYLE.md (lines 1–42 for L0 source material)

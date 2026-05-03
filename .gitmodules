@@ -1,0 +1,3 @@
+[submodule "zanshin-pi-extension"]
+	path = zanshin-pi-extension
+	url = https://github.com/hhellbusch/zanshin-pi-extension.git

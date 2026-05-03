@@ -123,6 +123,6 @@ The lesson isn't that AI feedback is worthless. It's that AI feedback about AI b
 
 ---
 
-*This case study documents Phase 2 of the Zanshin Kit, 2026-04-20. The working style it describes is live at `zanshin-kit/WORKING-STYLE.md`.*
+*This case study documents Phase 2 of the Zanshin Kit, 2026-04-20. The working style it describes is live at `zanshin-pi-extension/kit/WORKING-STYLE.md`.*
 
 *AI-assisted writing and analysis. Root cause clarification and the ground truth about what the session actually involved: the author.*

@@ -6,11 +6,11 @@
 
 **Status:** Complete — 2026-04-20
 
-**Goal:** Produce `zanshin-kit/WORKING-STYLE.md` and verify it actually activates the working disciplines in a Copilot Chat session.
+**Goal:** Produce the working style kit and verify it actually activates the working disciplines in a Copilot Chat session. *(Paths today: `zanshin-pi-extension/kit/WORKING-STYLE.md` via git submodule + Pi package; this roadmap predates that move.)*
 
 **Deliverables:**
-- `zanshin-kit/WORKING-STYLE.md` — the kit
-- `zanshin-kit/README.md` — setup instructions
+- `zanshin-pi-extension/kit/WORKING-STYLE.md` — the kit
+- `zanshin-pi-extension/kit/STANDALONE-KIT.md` — long-form setup (legacy README body)
 
 **Findings from real use (Copilot Chat):**
 

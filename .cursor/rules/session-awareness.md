@@ -6,7 +6,7 @@ alwaysApply: true
 
 # Session Awareness
 
-> Extends `zanshin-kit/WORKING-STYLE.md` — workspace-specific depth for progressive bookkeeping, stack tracking, and context compaction in Cursor.
+> Extends `zanshin-pi-extension/kit/WORKING-STYLE.md` — workspace-specific depth for progressive bookkeeping, stack tracking, and context compaction in Cursor.
 
 This workspace has persistent project state that survives across sessions. When starting work or when the user's intent is unclear, be aware of these context sources:
 

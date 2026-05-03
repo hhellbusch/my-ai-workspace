@@ -4,7 +4,7 @@
 
 ## Objective
 
-Define how **always-on context** vs **on-demand workspace context** is split across **Pi**, **paude**, **Cursor / Claude Code**, and the **zanshin-kit**, so that:
+Define how **always-on context** vs **on-demand workspace context** is split across **Pi**, **paude**, **Cursor / Claude Code**, and the **Zanshin kit** (`zanshin-pi-extension` git submodule / `pi install`), so that:
 
 1. **Token budget stays low** at session start (no accidental full-file reads of large artifacts).
 2. **Zanshin behavioral contract** is available **everywhere Pi runs** (not only repos that ship `.pi/`).
@@ -16,7 +16,7 @@ Define how **always-on context** vs **on-demand workspace context** is split acr
 |--------|----------------|
 | **Global (Pi extension, future)** | Portable L0: three failure modes, collaboration line, “when to read the kit” — same injection on any machine / any cwd. |
 | **Project `.pi/SYSTEM.md`** | This repo’s contract: paths, guardrails, backlog bootstrap (`> State:` only), pointers to `CLAUDE.md` / kit. |
-| **`zanshin-kit/WORKING-STYLE.md`** | Canonical deep manual — read when the user asks or the task needs practices in full. |
+| **`zanshin-pi-extension/kit/WORKING-STYLE.md`** | Canonical deep manual (git submodule) — read when the user asks or the task needs practices in full. |
 | **Heavy workspace** (`BACKLOG` body, large `docs/`, research trees) | **Tools / explicit user request** — never implied “read everything at start.” |
 
 ## Success criteria

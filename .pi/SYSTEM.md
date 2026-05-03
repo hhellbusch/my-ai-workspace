@@ -6,7 +6,7 @@ Use AI tools heavily on real problems; **human-owned verification at every merge
 
 # Session bootstrap (token-conscious)
 
-**Working style:** `zanshin-kit/WORKING-STYLE.md` is canonical (spar, shoshin, checkpoints, verification). Skim headings first; read sections when the task needs them — not the full file every turn.
+**Working style:** `zanshin-pi-extension/kit/WORKING-STYLE.md` is canonical (spar, shoshin, checkpoints, verification). Skim headings first; read sections when the task needs them — not the full file every turn.
 
 **When starting or when intent is unclear**, in order — **narrow reads first**:
 
