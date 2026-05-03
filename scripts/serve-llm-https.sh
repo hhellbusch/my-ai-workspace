@@ -141,12 +141,14 @@ fi
 
 # ── Ready ─────────────────────────────────────────────────────────────────────
 HOST_IP="$(hostname -I | awk '{print $1}')"
+HOST_NAME="$(hostname -f 2>/dev/null || hostname)"
 echo "" >&2
 echo "  LLM endpoint (plain HTTP, host only):  http://127.0.0.1:${HTTP_PORT}/v1" >&2
 echo "  LLM endpoint (HTTPS, LAN-accessible):  https://${HOST_IP}:${HTTPS_PORT}/v1" >&2
+echo "  LLM endpoint (HTTPS, hostname):        https://${HOST_NAME}:${HTTPS_PORT}/v1" >&2
 echo "" >&2
-echo "  Set in your shell before paude create:" >&2
-echo "    export OPENAI_BASE_URL=https://${HOST_IP}:${HTTPS_PORT}/v1" >&2
+echo "  Set in your shell before paude create (prefer hostname for portability):" >&2
+echo "    export OPENAI_BASE_URL=https://${HOST_NAME}:${HTTPS_PORT}/v1" >&2
 echo "    export OPENAI_API_KEY=local-placeholder" >&2
 echo "" >&2
 echo "  Press Ctrl-C to stop." >&2

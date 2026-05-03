@@ -19,10 +19,10 @@ set -euo pipefail
 OUT_DIR="${1:-${HOME}/llm-certs}"
 shift || true
 
-# Collect SANs from remaining args; default to 10.0.0.202
+# Collect SANs from remaining args; default to IP + hostname
 SANS=("$@")
 if [[ ${#SANS[@]} -eq 0 ]]; then
-    SANS=("10.0.0.202")
+    SANS=("10.0.0.202" "tellurium.local")
 fi
 
 echo "Output directory : ${OUT_DIR}"
