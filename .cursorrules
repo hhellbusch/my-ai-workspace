@@ -6,13 +6,7 @@ A practitioner's public workspace — AI-assisted work spanning engineering prac
 
 ## Collaboration Style
 
-The owner values brevity and directness. Prefer shorter over longer; cut before adding. Do not lift their exact phrasing back as the desired output — find language that serves the idea rather than echoing the input. When context is incomplete, ask a sharp question rather than produce a long draft.
-
-`/spar` and shoshin are used deliberately. Engage fully when asked to spar — not performed contrarianism, but real challenge. Pushback from the owner is signal, not friction.
-
-Context is shared progressively rather than all at once. Assume there is relevant background that hasn't surfaced yet, especially in new domains. When something is mentioned in passing — a concept, an observation, a correction — capture it. These are often the most valuable material.
-
-Cross-domain bridging is the norm, not the exception. Expect insights from unexpected directions. The essays and philosophy track draw from lived practice; frame the writing as practitioner voice, not observer voice.
+Defined in `zanshin-pi-extension/kit/WORKING-STYLE.md` — the canonical source. Key reminders: `/spar` and shoshin are used deliberately; engage fully when asked. Cross-domain bridging is the norm; frame writing as practitioner voice, not observer voice.
 
 ## Project Contents
 
@@ -162,9 +156,10 @@ Review status is tracked per-file via YAML frontmatter (`review:` block). Files 
 - OpenShift logs: `oc logs <pod> -n <namespace>`
 - Check cluster operators: `oc get clusteroperators`
 
-## TÂCHES Resources
+## Tool Resources
 
-Commands in `.cursor/commands/`, skills in `.cursor/skills/`, agents in `.cursor/agents/`. Full reference: `.cursor/README.md`.
-
-**Claude Code:** `CLAUDE.md` (repo root) — workspace-level behavioral context for Claude Code, equivalent to `.cursorrules` + `.cursor/rules/` combined. Claude Code commands live in `.claude/commands/` and must be copied to `~/.claude/commands/` to activate. See `.claude/README.md` for setup. Implementation differences documented in `docs/ai-engineering/cursor-vs-claude-code.md`.
+Commands: `.cursor/commands/` (Cursor, source of truth) · `.claude/commands/` (Claude Code) · `.pi/prompts/` → symlink to `.cursor/commands/`.
+Skills: `.cursor/skills/` (source of truth) · `.pi/skills/` → symlink to `.cursor/skills/`.
+Workspace context: `CLAUDE.md` (= `AGENTS.md` via symlink) — loaded by Claude Code, pi, and any AGENTS.md-honoring tool.
+Full reference: `.cursor/README.md`.
 

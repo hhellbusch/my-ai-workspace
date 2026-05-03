@@ -1,12 +1,9 @@
-# Field Notes — Claude Code Workspace Context
+# Field Notes — Workspace Context
 
-> This file is the Claude Code equivalent of `.cursorrules` + `.cursor/rules/`. It is loaded
-> at every session and encodes the behavioral rules for working in this workspace.
-> Commands live in `~/.claude/commands/`. Full TÂCHES reference: `~/.claude/` directory.
->
-> **Copilot CLI:** This file also serves as the Copilot CLI project-level context — both agents
-> read the same file. `.claude/commands/` doubles as Copilot CLI project skills (`spar`,
-> `checkpoint`, `start`, etc. are available automatically).
+> Loaded by Claude Code (as `CLAUDE.md`) and by pi and other agents (via `AGENTS.md → CLAUDE.md` symlink).
+> Encodes workspace-specific behavior that extends `zanshin-pi-extension/kit/WORKING-STYLE.md` — the kit is canonical; this file does not re-declare what the kit owns.
+> Commands: `.claude/commands/` (Claude Code) · `.cursor/commands/` (Cursor, also source of truth for `.pi/prompts/`).
+> Workspace extension rules (Cursor auto-loads, Claude Code reads on demand): `.cursor/rules/`.
 
 ---
 
@@ -16,7 +13,7 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 
 **Workspace:** A practitioner's public workspace spanning engineering practice, philosophy, and technical reference. AI-assisted work built from real problems over time.
 
-**Collaboration style:** Prefer shorter over longer. Cut before adding. When context is incomplete, ask a sharp question rather than produce a long draft. Do not echo the user's phrasing back as output. `/spar` and shoshin are used deliberately — engage fully when asked.
+**Collaboration style:** Defined in `zanshin-pi-extension/kit/WORKING-STYLE.md`. Key reminder: `/spar` and shoshin are used deliberately — engage fully when asked.
 
 **Tooling preference:** Prefer free and open-source tools. Flag paid/proprietary options as such when they offer meaningfully lower barrier to entry.
 
@@ -88,7 +85,7 @@ git worktree list
 git worktree remove worktrees/{slug} && git branch -d {slug}
 ```
 
-For paude tasks, `cd worktrees/{slug}` first — `paude create` infers workspace from `cwd`. Full rule: `.cursor/rules/git-worktrees.md`.
+For paude tasks, `cd worktrees/{slug}` first — `paude create` infers workspace from `cwd`.
 
 ---
 
@@ -99,7 +96,7 @@ All `.sh` / `.bash` files must start with:
 #!/usr/bin/env bash
 set -euo pipefail
 ```
-If a script intentionally survives errors (cleanup/trap handler), note the reason in a comment at the top. Rule: `.cursor/rules/shell-strict-mode.md`.
+If a script intentionally survives errors (cleanup/trap handler), note the reason in a comment at the top.
 
 ---
 
@@ -127,7 +124,7 @@ When creating or modifying content (any `.md` file, commands, skills, `.cursorru
 - **New file in `docs/`** — add to track `README.md` and `docs/README.md` cross-track list. Add to Related Reading of related essays.
 - **New file in `library/`** — follow the 4-step ingest checklist in the Library section below.
 - **New directory in `research/`** — add to `research/README.md`. Add a `.library-exempt` marker if it is internal infrastructure rather than an external source.
-- **New command or skill** — check if `.cursorrules` TÂCHES section needs updating.
+- **New command or skill** — add to the Commands table at the bottom of this file if user-facing.
 - **New planning project** — ensure a corresponding backlog item exists.
 - **Renamed or moved file** — search for markdown links pointing to the old path and update them.
 - **External URLs** — verify before committing. AI fabricates plausible-looking URLs.
@@ -164,7 +161,7 @@ Three principles that govern how this workspace is built and maintained:
 
 **Consolidate before adding.** Before adding a new rule, check whether it overlaps with an existing one. Two rules covering the same behavior create ambiguity about which is authoritative — and tend to cause both to be ignored.
 
-**Insertion ≠ replacement — verify the anchor.** When using `old_str` (or any edit anchor) to locate an insertion point, every line in `old_str` that should survive must appear verbatim in `new_str`. A line present in `old_str` but absent from `new_str` is a silent deletion. For Python files, AST parse and function inventory checks run automatically via `.claude/hooks/py-edit-check.sh` after every Write or StrReplace — read the hook output before staging. Rule: `.cursor/rules/structured-edit-discipline.md`.
+**Insertion ≠ replacement — verify the anchor.** When using `old_str` (or any edit anchor) to locate an insertion point, every line in `old_str` that should survive must appear verbatim in `new_str`. A line present in `old_str` but absent from `new_str` is a silent deletion. For Python files, AST parse and function inventory checks run automatically via `.claude/hooks/py-edit-check.sh` after every Write or StrReplace — read the hook output before staging.
 
 ---
 
@@ -184,15 +181,38 @@ Three principles that govern how this workspace is built and maintained:
 3. Add an entry block to `library/README.md` (Enriched Entries table)
 4. Append a dated entry to `library/log.md`
 
-**YouTube / video URLs:** For `youtube.com`, `youtu.be`, or transcript/caption requests, follow **`.cursor/skills/youtube-transcript-library/SKILL.md`** — use **`fetch-transcript.py`** under `.cursor/skills/research-and-analyze/scripts/` or `.pi/skills/research-and-analyze/scripts/`, not `yt-dlp` alone for captions.
+**YouTube / video URLs:** For `youtube.com`, `youtu.be`, or transcript/caption requests, follow **`.pi/skills/youtube-transcript-library/SKILL.md`** — use **`fetch-transcript.py`** under `.pi/skills/research-and-analyze/scripts/`, not `yt-dlp` alone for captions.
 
 An orphaned transcript in `research/*/sources/` with no library entry is an incomplete ingest.
 
 ---
 
+## Workspace Changes — Intent First
+
+Before touching 3+ files or adding commands, skills, or rules: write a one-paragraph intent note in `.planning/` or the commit message that answers *why* — not just *what*. This is the LID discipline applied to tooling: intent is the artifact, implementation is output. Prevents the pattern where a future agent (or session) can't tell why something exists and refactors it away.
+
+For any structural change, run `/spar` against the intent before executing.
+
+---
+
+## Workspace Extensions
+
+Workspace-specific extensions of the kit live in `.cursor/rules/` and are auto-loaded by Cursor. In Claude Code / pi, read them on demand:
+
+| Rule | Read when |
+|---|---|
+| `.cursor/rules/session-awareness.md` | Session start, or when context sources need refreshing |
+| `.cursor/rules/shoshin.md` | Before inheriting a brief's framing, or at scope shifts |
+| `.cursor/rules/review-tracking.md` | Generating or editing content files |
+| `.cursor/rules/pre-commit-review.md` | Before committing |
+| `.cursor/rules/cross-linking.md` | Creating or moving files |
+| `.cursor/rules/repo-structure.md` | Placing new content |
+
+---
+
 ## Commands
 
-Available via `~/.claude/commands/`. Key workspace commands:
+Full command set: `.cursor/commands/` (Cursor) and `.claude/commands/` (Claude Code). Key commands:
 
 | Command | Purpose |
 |---|---|
