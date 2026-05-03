@@ -140,11 +140,10 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Blocker:** Unclear whether `/pvc/` is accessible from both host and container sides (PVC vs. local volume mount). Verify before building.
 - **Current approach:** PAT with write permissions — simpler, good enough for now.
 
-### Extract lid-pi-extension to its own GitHub repo
-- **Product:** meta / tooling
-- **Context:** `lid-pi-extension/` directory scaffolded in this workspace (2026-05-03). Ready to become a standalone repo: `git init`, push to `github.com/hhellbusch/lid-pi-extension`, then add back as a submodule. Mirrors zanshin-pi-extension pattern.
-- **Files:** `lid-pi-extension/` — package.json, extensions/lid-l0.ts, kit/LID-WORKFLOW.md, kit/templates/, README.md, LICENSE
-- **Then:** add `.cursor/rules/lid.mdc` submodule path reference (currently uses local dir path, will be same after submodule add)
+### Normalize .gitmodules URLs to SSH
+- **Product:** meta
+- **Context:** zanshin-pi-extension uses SSH URL, lid-pi-extension uses HTTPS (added in container where SSH is unavailable). Normalize both to SSH on host after harvest:
+  `git submodule set-url lid-pi-extension git@github.com:hhellbusch/lid-pi-extension.git`
 
 ### Research: LID (Linked-Intent Development) — enterprise-validated agentic SDD methodology
 - **Product:** research / meta / devops
