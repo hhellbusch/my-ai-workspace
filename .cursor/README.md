@@ -1,6 +1,6 @@
-# TÂCHES Resources for Cursor
+# Resources for Cursor
 
-**Source:** [TÂCHES Claude Code Resources](https://github.com/glittercowboy/taches-cc-resources)  
+**Original Source of many of these:** [TÂCHES Claude Code Resources](https://github.com/glittercowboy/taches-cc-resources)  
 **Platform:** Cursor IDE (Native Slash Commands + Skills)  
 **Date:** February 3, 2026
 
