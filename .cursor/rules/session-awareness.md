@@ -120,6 +120,8 @@ Bookkeeping at session end is not enough. Crashes, context loss, and abrupt endi
 - Do not accumulate multiple completed units before committing
 - A clean working tree is the cheapest form of crash recovery — uncommitted work is unrecoverable
 
+**Tests-pass trigger:** After running a test suite that passes (full or partial), immediately evaluate: "Is there uncommitted work that this test run validates?" If yes, commit before chasing the next issue. This is especially critical during debugging chains where each fix surfaces a new error — the passing tests prove the current fix works and that's a commit boundary. Debugging momentum is not a reason to skip this.
+
 **Checkpoint before risky operations:**
 Before any operation that could fail mid-way or produce unintended side effects, run `/checkpoint` to save current state first:
 - `git mv` or directory reorganization
