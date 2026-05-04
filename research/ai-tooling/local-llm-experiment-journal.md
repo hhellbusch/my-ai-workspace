@@ -51,6 +51,17 @@ Hands-on log: what was tried, what worked, and what failed. Complements the gene
 - **Qwen3-Coder-Next** — periodic **Ollama library / HF** check for a **served** quant on **20 GB**; **vLLM** smoke on **new major** `vllm-openai-rocm` tags only if upstream signals **gfx1100 FP8 MoE** (see **Watchlist** row above).
 - **RamaLama ROCm image** — after P2 unblocks, consider **pinning image digest** (avoid `:latest` drift vs host libc).
 
+### Writing ideas (someday — from journal + guide material)
+
+If the track settles and something feels worth publishing, these are the seeds. No drafting pressure — just noting what the raw material could become.
+
+- **Case study — consumer AMD + vLLM:** FP8 MoE backend gap vs AWQ path; Inductor/HIP OOM vs `--enforce-eager`; KV cache when weights ~18.26 GiB on 20 GB; Ollama vs vLLM by constraint. Cite this journal as timeline; keep claims commands-verified.
+- **Case study (meta) — stable guide vs experiment journal:** Why the split, cross-linking discipline, when to promote journal findings into the guide (avoid orphan logs).
+- **Short essay — choosing a local inference stack** under real hardware limits: throughput vs comfort, "loads" vs "fits your prompt."
+- **Essay — "a customer could have this conversation":** The full arc: try vLLM → hit FP8 MoE gap → AWQ barely works at 1k context → discover RamaLama → auto-detects ROCm → realize context ceiling (14k vs 1M cloud) → understand hybrid architecture path → model enterprise vs consumer hardware gap. The pattern is the point. Red Hat employment disclosure consideration applies.
+- **Landscape piece — Red Hat ecosystem comparison:** RamaLama / Podman AI Lab / InstructLab / RHEL AI.
+- **Spar notes:** [`local-llm-setup-sparring-notes.md`](local-llm-setup-sparring-notes.md) (performed-honesty language) may merge with the performed honesty case-study idea if either gets drafted.
+
 ---
 
 ## How to add an entry

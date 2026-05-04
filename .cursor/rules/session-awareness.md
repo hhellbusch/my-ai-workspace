@@ -12,7 +12,7 @@ This workspace has persistent project state that survives across sessions. When 
 
 - **`ABOUT.md`** (if it exists) — Read this **first**, before forming any assumptions about the workspace owner's professional domain, technical background, or perspective. It is more authoritative than inferences from the corpus. The corpus reflects what work has been documented so far; `ABOUT.md` reflects who the person actually is. Do not skip this even if `.cursorrules` provides a summary — `ABOUT.md` is the owner's own words.
 
-- **`BACKLOG.md`** — Tracks in-progress work, what's coming next, ideas, and a short rolling **Done** list (older completions in `BACKLOG-ARCHIVE.md`). Check this to understand what the user has been working on.
+- **`BACKLOG.md`** — Tracks in-progress work, what's coming next, and ideas (three sections: In Progress, Up Next, Ideas). Completed items are deleted — git history is the record. Check this to understand what the user has been working on.
 - **`.planning/whats-next.md`** (if it exists) — A handoff document from a previous session with detailed context about work in progress, decisions made, and what remains. **Staleness check:** if commits have been made since the handoff was written, the handoff may be outdated — cross-reference it against the backlog and git log before inheriting its framing.
 - **`STYLE.md`** (repo root) — Workspace-level writing defaults: voice, tone, structural conventions, AI disclosure, content track purposes, and cross-track priority. Check this before writing any `docs/` content. Project-specific supplements live in `.planning/{project}/STYLE.md` and extend these defaults.
 - **`.planning/`** — Project briefs, roadmaps, and project-specific style supplements for multi-session efforts. Each subdirectory is a project. For zen-karate essay prioritization specifically, the *Guiding Stars* section of `.planning/zen-karate/STYLE.md` states what leads vs. supports.
@@ -77,14 +77,14 @@ Sessions naturally explore topics in a depth-first pattern: a main thread gets s
 **Branch closure as capture opportunity:** Before leaving a resolved branch, briefly scan whether it produced anything worth keeping. Surface it as part of the return prompt: *"That feels resolved — anything worth capturing before we go back to X?"* If nothing surfaces, move on.
 
 **Automatic capture review — run proactively at milestones.** After any of the following, run the full four-bucket scan without waiting to be asked:
-- A backlog item just moved to Done
+- A backlog item was just completed and removed
 - A deliverable from a briefing or plan was just completed
 - A natural chapter closed — a cluster of commits on a coherent theme, now shifting direction
 - 3–5 commits have accumulated since the last capture review
 
 Enumerate across four buckets:
 
-1. **BACKLOG** — Ideas to log, items to move to Done, items that should be In Progress
+1. **BACKLOG** — Ideas to log, completed items to delete, items that should be In Progress
 2. **Documentation** — docs to create or update (READMEs, cross-links, review frontmatter, registered entries)
 3. **Case studies** — anything that demonstrates a named pattern: a failure caught, a tool working as designed, a workflow validated or invalidated
 4. **Commits** — uncommitted work that should be committed
@@ -113,7 +113,7 @@ Bookkeeping at session end is not enough. Crashes, context loss, and abrupt endi
 
 **BACKLOG.md — update in real time, not in batch:**
 - When starting a backlog item: immediately move it to `## In Progress` — don't wait until end-of-session
-- When completing a backlog item: immediately mark it Done in `## Done` — don't batch completions
+- When completing a backlog item: immediately delete it from the backlog — don't batch completions. Git history is the record.
 
 **Commit frequently — small and logical:**
 - Each logical unit of work gets its own commit

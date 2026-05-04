@@ -1,6 +1,6 @@
 # Backlog
 
-> **State:** 3 in progress · 8 up next · 78 ideas · Last done: workspace cleanup + lid-pi-extension scaffold (2026-05-03)
+> **State:** 2 in progress · 7 up next · 55 ideas
 > Last updated: 2026-05-03
 
 ## In Progress
@@ -336,20 +336,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Context:** qwen2.5:72b on RX 7900 XT (20 GB VRAM): 36% GPU / 64% CPU split, 718 graph switches per prefill batch, >6 minutes to first token on a short prompt. The bottleneck isn't compute — it's PCIe bus saturation from the activation hand-offs between the 29 GPU layers and 52 CPU layers. Counterintuitive finding: 62 GB system RAM provides no meaningful help when the bus is the constraint. Contrast with bs=1 (generation phase) which has only 3 graph splits — the asymmetry explains why prefill is brutal and generation *might* be tolerable if you ever reached it. Good explainer material for engineers who assume "more RAM = can run bigger models." Also documents the contrast with full-GPU inference (qwen3:30b-a3b: ~90 tok/s, 3–5 splits). Source: experiment journal 2026-04-20.
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`
 - **Added:** 2026-04-20
-
-### Local LLM / vLLM track — derivative artifacts
-- **Product:** docs / meta / research
-- **TL;DR (logged only, no drafting now):** From the journal + guide, later consider: (1) **case study** — Radeon vLLM (FP8 MoE gap, eager/KV limits, Ollama vs vLLM vs RamaLama); (2) **meta case study** — guide vs experiment journal; (3) **short essay** — stack choice under real VRAM/kernel constraints; (4) **electricity** backlog + **spar** notes if drafting; (5) **meta essay** — "a customer could have this conversation" (see dedicated backlog item); (6) **Red Hat ecosystem comparison** — RamaLama / Podman AI Lab / InstructLab / RHEL AI as a landscape piece.
-- **"A customer could have this conversation" — session material now rich enough to draft:** The full arc from this track: try vLLM → hit FP8 MoE gap → find AWQ barely works at 1k context → discover RamaLama → auto-detects ROCm → realize context ceiling (14k vs 1M cloud) → understand hybrid architecture path → model enterprise vs consumer hardware gap. That's exactly the evaluation journey an enterprise customer runs — compressed into one session. No pricing claims needed; the pattern is the point. The experiment journal is the primary source. See also: enterprise cost caveat in journal (⚠️ non-authoritative); Red Hat employment disclosure consideration.
-- **Detail — candidate artifacts:** The ROCm + Radeon + vLLM work is producing **raw material** in [`research/ai-tooling/local-llm-experiment-journal.md`](research/ai-tooling/local-llm-experiment-journal.md) and [`docs/ai-engineering/local-llm-setup.md`](docs/ai-engineering/local-llm-setup.md). When the track settles, decide what to publish — not everything belongs in the long-form guide.
-  - **Case study (`docs/case-studies/`):** Consumer **AMD + vLLM** — FP8 MoE backend gap vs **AWQ** path; **Inductor/HIP OOM** vs **`--enforce-eager`**; **KV cache** when weights ~**18.26 GiB** on **20 GB**; **Ollama vs vLLM** by constraint (context, kernels, ops). Cite the journal as timeline; keep claims **commands-verified** before publishing.
-  - **Case study (meta):** **Stable guide vs experiment journal** — why the split, cross-linking, when to promote journal findings into the guide (avoid orphan logs).
-  - **Essay / short (`docs/ai-engineering/`):** **Choosing a local inference stack** under real hardware limits: throughput vs comfort, “loads” vs “fits your prompt,” FOSS-first bias in [`workspace-ethos.md`](.cursor/rules/workspace-ethos.md).
-  - **Spar / audit:** [`research/ai-tooling/local-llm-setup-sparring-notes.md`](research/ai-tooling/local-llm-setup-sparring-notes.md) (e.g. performed-honesty language) may merge with the **performed honesty** case-study idea already in this backlog when drafting.
-  - **Electricity / economics:** *Local LLM: electricity measurement and case studies* (Up Next) — measured workload write-up can use the same hardware; journal records the **software** stack for that run.
-- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`, `research/ai-tooling/local-llm-setup-sparring-notes.md`, `docs/case-studies/README.md`, `BACKLOG.md` (electricity track), `.cursor/rules/workspace-ethos.md`
-- **Added:** 2026-04-20
-
 
 ### Index: surface review status as a trust signal (undecided)
 - **Product:** meta
