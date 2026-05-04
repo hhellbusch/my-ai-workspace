@@ -37,14 +37,9 @@ Describe your task. Claude creates a prompt optimized for its purpose.
 
 ## Installation
 
-**Install command** (global):
+**Install skill** (workspace):
 ```bash
-cp commands/*.md ~/.claude/commands/
-```
-
-**Install skill**:
-```bash
-cp -r skills/* ~/.claude/skills/
+cp -r skills/* .agents/skills/
 ```
 
 ## Example Workflow

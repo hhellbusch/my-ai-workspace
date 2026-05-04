@@ -8,7 +8,7 @@
 
 ## The Symptom
 
-The project uses a persistent backlog ([`BACKLOG.md`](../../BACKLOG.md)) managed through [`/backlog`](../../.cursor/commands/backlog.md). When asked to re-prioritize, the AI would analyze all items and produce a recommended ordering. The ordering was always reasonable. It was also always suspiciously close to the existing ordering.
+The project uses a persistent backlog ([`BACKLOG.md`](../../BACKLOG.md)) managed through [`/backlog`](../../.agents/skills/backlog/SKILL.md). When asked to re-prioritize, the AI would analyze all items and produce a recommended ordering. The ordering was always reasonable. It was also always suspiciously close to the existing ordering.
 
 Items that were already in "Up Next" stayed in "Up Next." Items in "Ideas" stayed in "Ideas." The AI would shuffle within sections, occasionally promote one item, and produce a confident justification for why the current structure was mostly right. It looked like analysis. It was anchoring.
 
@@ -44,7 +44,7 @@ Each cycle reinforces the original placement. The AI is sycophantic toward its o
 
 ## The Fix
 
-The structural fix was a **zero-base evaluation** step added to the [`/backlog prioritize`](../../.cursor/commands/backlog.md) command. Before analyzing items by their current section placement, the command now:
+The structural fix was a **zero-base evaluation** step added to the [`/backlog prioritize`](../../.agents/skills/backlog/SKILL.md) command. Before analyzing items by their current section placement, the command now:
 
 1. **Strips section labels.** Evaluates every non-Done item as if it had no current priority. The AI sees the item's content, context, and links — but not whether it was in "Up Next" or "Ideas."
 
@@ -78,7 +78,7 @@ The user sees both orderings and decides what to act on. The AI presents the ana
 
 The anchoring problem isn't unique to backlog management. It appears anywhere the AI reads its own prior outputs as input:
 
-- **Session handoffs** — [`/whats-next`](../../.cursor/commands/whats-next.md) (session handoff command that captures in-flight state for future sessions) creates a handoff document. The next session's [`/start`](../../.cursor/commands/start.md) (session orientation command that reads the backlog, handoffs, and recent git activity) reads it. If the handoff emphasizes certain priorities, the next session inherits that emphasis. The AI's framing of "where we left off" becomes the frame for "what to do next."
+- **Session handoffs** — [`/whats-next`](../../.agents/skills/whats-next/SKILL.md) (session handoff command that captures in-flight state for future sessions) creates a handoff document. The next session's [`/start`](../../.agents/skills/start/SKILL.md) (session orientation command that reads the backlog, handoffs, and recent git activity) reads it. If the handoff emphasizes certain priorities, the next session inherits that emphasis. The AI's framing of "where we left off" becomes the frame for "what to do next."
 
 - **Planning documents** — A roadmap written by AI in session 1 becomes authoritative context for session 2. If the roadmap's phase ordering was a guess, session 2 treats it as a decision.
 
@@ -108,7 +108,7 @@ This followed the same pattern as debugging code:
 2. **Formed a hypothesis** — the AI is anchoring on section placement
 3. **Named the mechanism** — RLHF-trained alignment with perceived user intent, applied to structural cues in the input
 4. **Designed a fix** — remove the structural cues before analysis, then compare
-5. **Tested it** — the zero-base evaluation is now part of the [`/backlog prioritize`](../../.cursor/commands/backlog.md) command
+5. **Tested it** — the zero-base evaluation is now part of the [`/backlog prioritize`](../../.agents/skills/backlog/SKILL.md) command
 
 The fix is structural, not behavioral. You could tell the AI "don't anchor on existing priorities" and it would nod along and then anchor anyway, because the section labels are still in the context window. Stripping the labels removes the cue. The AI can't anchor on information it doesn't receive.
 
@@ -124,10 +124,10 @@ The user noticed the anchoring pattern and named it precisely before any fix was
 
 | Artifact | What it is |
 |---|---|
-| [/backlog prioritize](../../.cursor/commands/backlog.md) | The command with zero-base de-biasing integrated |
+| [/backlog prioritize](../../.agents/skills/backlog/SKILL.md) | The command with zero-base de-biasing integrated |
 | [The Shift — section 6](../ai-engineering/the-shift.md) | The sycophancy problem this case study extends |
 | [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) | The philosophical lens connecting non-attachment to workflow design |
-| [Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md) | Sibling case study — the [`/spar`](../../.cursor/commands/spar.md) system built in the same session |
+| [Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md) | Sibling case study — the [`/spar`](../../.agents/skills/spar/SKILL.md) system built in the same session |
 
 ---
 

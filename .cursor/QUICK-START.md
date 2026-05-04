@@ -4,7 +4,7 @@
 
 ## ✅ Slash Commands Work Natively!
 
-Cursor auto-discovers commands in `.cursor/commands/`. Just type `/` and they appear!
+Cursor auto-discovers agent skills in `.agents/skills/<name>/SKILL.md`. Just type `/` and they appear!
 
 ## Quick Examples
 

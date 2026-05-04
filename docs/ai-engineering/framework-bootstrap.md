@@ -82,9 +82,9 @@ Instructions come from different places depending on the tool. This repository k
 
 For a more comprehensive portable option, see `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` in this repository (submodule). It carries the full behavioral discipline — spar with output templates, shoshin with proactive triggers, collaboration style, checkpoints, stack tracking, and verification — plus a style guide (`submodules/zanshin-pi-extension/kit/STYLE.md`) that can be dropped into any project alongside it. The same paths are what **`pi install`** users get inside the extension package.
 
-**Claude Code:** The repo includes a workspace-level `CLAUDE.md` at the root that carries all behavioral rules inline (equivalent to `.cursor/rules/`). Workspace commands live in `.claude/commands/` and must be copied to `~/.claude/commands/` to activate — see `.claude/README.md` for the one-line copy command. Implementation is aligned with Cursor as of 2026-04-21; differences are documented in `docs/ai-engineering/cursor-vs-claude-code.md`.
+**Claude Code:** The repo includes a workspace-level `CLAUDE.md` at the root that carries all behavioral rules inline (equivalent to `.cursor/rules/`). Slash commands are skills in `.agents/skills/<name>/SKILL.md` ([AgentSkills](https://agentskills.io/specification)); Claude Code discovers them natively — see `.claude/README.md`. Implementation is aligned with Cursor as of 2026-04-21; differences are documented in `docs/ai-engineering/cursor-vs-claude-code.md`.
 
-**Cursor:** Rules in `.cursor/rules/` and commands in `.cursor/commands/` load automatically. `.cursorrules` carries the workspace identity and collaboration style. No setup required.
+**Cursor:** Rules in `.cursor/rules/` load automatically. The same `.agents/skills/<name>/SKILL.md` definitions are discovered natively as Agent Skills. `.cursorrules` carries the workspace identity and collaboration style. No setup required.
 
 **Any chat-based AI:** Paste the contents of this file as a system message or opening context.
 

@@ -1,28 +1,21 @@
 ---
-description: Guardrail for editing shared commands — edit .commands/ first, then sync
+description: Guardrail for editing skills — edit .agents/skills/ directly
 globs:
-  - .commands/**
-  - .cursor/commands/**
-  - .claude/commands/**
+  - .agents/skills/**
 alwaysApply: false
 ---
 
-# Command Editing — Source of Truth
+# Skill Editing
 
-Shared command bodies live in `.commands/` (repo root). Platform wrappers in `.cursor/commands/` and `.claude/commands/` add YAML frontmatter (tool names differ between platforms) and embed the shared body after a `<!-- body: ../.commands/foo.md -->` marker.
+All skills live in `.agents/skills/<name>/SKILL.md` ([AgentSkills standard](https://agentskills.io/specification)). Cursor, Claude Code, and Pi all discover this directory natively.
 
-## When editing a shared command
+## Frontmatter fields
 
-1. **Edit `.commands/foo.md`** — this is the source of truth for the body.
-2. **Run `scripts/sync-commands.sh`** — propagates the body into both platform wrappers, preserving each wrapper's frontmatter.
-3. **Review the diff** in `.cursor/commands/` and `.claude/commands/` before committing.
+- `name`, `description` — required (AgentSkills spec)
+- `argument-hint` — shown in `/` menu autocomplete
+- `allowed-tools` — space-separated string of pre-approved tools (experimental)
+- `metadata` — arbitrary key-value for additional properties
 
-## When editing a platform wrapper directly
+## Editing
 
-If the file contains a `<!-- body: -->` marker, **stop** — you are about to edit a generated file. Edit `.commands/` instead, then sync. Changes made directly to the wrapper body will be overwritten on the next sync.
-
-Editing **frontmatter only** (description, allowed-tools, argument-hint) in the wrapper is fine — the sync script preserves frontmatter. Frontmatter is platform-specific and lives in the wrapper, not in `.commands/`.
-
-## Cursor-only commands
-
-Commands in `.cursor/commands/` that have **no** `<!-- body: -->` marker are Cursor-only — they have no shared body and no `.claude/commands/` counterpart. Edit them directly.
+Edit `.agents/skills/<name>/SKILL.md` directly. No sync or build step needed.

@@ -48,7 +48,7 @@ This doesn't prevent biographical content — some essays require it. It shifts 
 
 ### At commit time
 
-The [`/review`](../../.cursor/commands/review.md) pre-commit command (a quality gate that checks links, cross-references, and conventions before each commit) now includes a biographical/voice check (step 6) that scans changed `docs/` files for:
+The [`/review`](../../.agents/skills/review/SKILL.md) pre-commit command (a quality gate that checks links, cross-references, and conventions before each commit) now includes a biographical/voice check (step 6) that scans changed `docs/` files for:
 
 - Professional titles or role descriptions applied to the author
 - First-person claims about experience, training, or career
@@ -59,11 +59,11 @@ Flagged lines appear in a dedicated "Biographical Content — Needs `voice-appro
 
 ### At audit time
 
-The [`/audit`](../../.cursor/commands/audit.md) command (a periodic content health check that scans the full workspace) in its Layer 5b scans all `docs/` essays for biographical patterns and cross-references against `voice-approved` frontmatter. Files with biographical content but no `voice-approved` validation are the highest-priority review items.
+The [`/audit`](../../.agents/skills/audit/SKILL.md) command (a periodic content health check that scans the full workspace) in its Layer 5b scans all `docs/` essays for biographical patterns and cross-references against `voice-approved` frontmatter. Files with biographical content but no `voice-approved` validation are the highest-priority review items.
 
 ### At validation time
 
-The [`/validate`](../../.cursor/commands/validate.md) command (which stamps files with the author's review status) recognizes `voice-approved` as a type. If an author validates a `docs/` file with `read` but the file contains biographical content, the command prompts: "This file contains biographical content. Consider also running `/validate <path> voice-approved` after reviewing those sections."
+The [`/validate`](../../.agents/skills/validate/SKILL.md) command (which stamps files with the author's review status) recognizes `voice-approved` as a type. If an author validates a `docs/` file with `read` but the file contains biographical content, the command prompts: "This file contains biographical content. Consider also running `/validate <path> voice-approved` after reviewing those sections."
 
 ---
 
@@ -99,9 +99,9 @@ The concern was the author's — triggered by a single sentence that claimed a p
 | Artifact | What it is |
 |---|---|
 | [review-tracking.md](../../.cursor/rules/review-tracking.md) | The rule defining `voice-approved` and biographical content patterns |
-| [/review](../../.cursor/commands/review.md) | Pre-commit command with biographical/voice check (step 6) |
-| [/audit](../../.cursor/commands/audit.md) | Content audit with Layer 5b biographical scan |
-| [/validate](../../.cursor/commands/validate.md) | Validation command with `voice-approved` type and prompting |
+| [/review](../../.agents/skills/review/SKILL.md) | Pre-commit command with biographical/voice check (step 6) |
+| [/audit](../../.agents/skills/audit/SKILL.md) | Content audit with Layer 5b biographical scan |
+| [/validate](../../.agents/skills/validate/SKILL.md) | Validation command with `voice-approved` type and prompting |
 | [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) | Disclosure policy documenting `voice-approved` significance |
 | [STYLE.md](../../.planning/zen-karate/STYLE.md) | Style guide with biographical caution in personal voice section |
 | [The Shift — section 6](../ai-engineering/the-shift.md) | The confidence uniformity problem this case study extends |

@@ -148,11 +148,11 @@ This is [The Shift](the-shift.md)'s sycophancy problem (section 6) expressed as 
 
 **Patterns that help:**
 
-**Persistent tracking with periodic fresh evaluation.** A [`BACKLOG.md`](../../BACKLOG.md) managed through a structured command ([`/backlog`](../../.cursor/commands/backlog.md)) keeps work visible across sessions. But periodic re-prioritization should use [zero-base evaluation](../case-studies/debugging-ai-judgment.md) — strip existing section labels and score items on merits before comparing against the current ordering. Without this, each re-prioritization reinforces the last one.
+**Persistent tracking with periodic fresh evaluation.** A [`BACKLOG.md`](../../BACKLOG.md) managed through a structured command ([`/backlog`](../../.agents/skills/backlog/SKILL.md)) keeps work visible across sessions. But periodic re-prioritization should use [zero-base evaluation](../case-studies/debugging-ai-judgment.md) — strip existing section labels and score items on merits before comparing against the current ordering. Without this, each re-prioritization reinforces the last one.
 
-**Session orientation that checks for drift.** A [`/start`](../../.cursor/commands/start.md) command that reads the backlog, checks recent git activity, and suggests focus options gives a new session structure. Adding a [fresh-eyes check](../../.cursor/rules/shoshin.md) — comparing project brief goals against current backlog items — catches scope drift that accumulates across sessions without anyone noticing.
+**Session orientation that checks for drift.** A [`/start`](../../.agents/skills/start/SKILL.md) command that reads the backlog, checks recent git activity, and suggests focus options gives a new session structure. Adding a [fresh-eyes check](../../.cursor/rules/shoshin.md) — comparing project brief goals against current backlog items — catches scope drift that accumulates across sessions without anyone noticing.
 
-**Handoffs that name their assumptions.** A session handoff document (e.g., from a [`/whats-next`](../../.cursor/commands/whats-next.md) command) is useful for continuity but dangerous for anchoring. The mitigation is to include an assumptions section: what framing decisions did this session make? What was taken as given that a fresh session should question? This gives the next session permission to disagree with the handoff rather than inheriting it uncritically.
+**Handoffs that name their assumptions.** A session handoff document (e.g., from a [`/whats-next`](../../.agents/skills/whats-next/SKILL.md) command) is useful for continuity but dangerous for anchoring. The mitigation is to include an assumptions section: what framing decisions did this session make? What was taken as given that a fresh session should question? This gives the next session permission to disagree with the handoff rather than inheriting it uncritically.
 
 **Scope changes updated as a set.** When a project's scope shifts — the user's understanding evolves, priorities change, a new direction emerges — update all related documents in the same session: brief, roadmap, style guide, personal notes, threads. AI sessions read documents independently. If the brief says "broad scope" but the style guide still says "narrow terminology," the AI gets conflicting signals. Updating as a set eliminates the inconsistency. (See [How AI Handles Evolving Creative Scope](../case-studies/evolving-creative-scope.md) for the full pattern.)
 
@@ -361,7 +361,7 @@ The Day 2 concerns in that article — rate limiting, auth governance, observabi
 | OpenShift troubleshooting guides | `devops/ocp/troubleshooting/` |
 | AAP 2.5 token 404 root cause write-up | `devops/ansible/troubleshooting/aap-controller-token-404/` |
 | External project clones for upstream contribution | `git-projects/` |
-| Cursor commands | `.cursor/commands/` |
+| Cursor commands | `.agents/skills/` |
 | Cursor skills | `.cursor/skills/` |
 | The Meta-Development Loop — building tools that build your workflow | [docs/ai-engineering/the-meta-development-loop.md](the-meta-development-loop.md) |
 | Zanshin — the session framework behind the multi-session patterns in this guide | [docs/ai-engineering/session-framework.md](session-framework.md) |

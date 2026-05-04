@@ -13,7 +13,7 @@
 **Done:**
 - `.pi/SYSTEM.md` — `> State:`-only backlog bootstrap; skim-then-deep-read for kit; pointer to `CLAUDE.md`.
 - `paude` fork: `GOOGLE_CLOUD_LOCATION` derived from `CLOUD_ML_REGION` for google-vertex model discovery.
-- `.pi/skills` / `.pi/prompts` → symlinks to `.cursor/` (DRY).
+- Agent skills at `.agents/skills/` (slash workflows); rich skills under `.cursor/skills/`; `.pi/prompts` removed from this layout.
 
 **Verify:** `wc -c .pi/SYSTEM.md` ≲ 2.5 KB; `rg "BACKLOG" .pi/SYSTEM.md` shows on-demand rule.
 

@@ -97,7 +97,7 @@ The distinction matters because collections make implicit claims. A `docs/README
 
 ## What This Connects To
 
-The corpus spar is a natural escalation of the per-document [`/spar` command](../../.cursor/commands/spar.md) (an adversarial review tool that generates steel-manned counterarguments against any file or idea). The per-document spar asks "is this argument sound?" The corpus spar asks "does this collection of arguments add up to a coherent and honest claim?"
+The corpus spar is a natural escalation of the per-document [`/spar` command](../../.agents/skills/spar/SKILL.md) (an adversarial review tool that generates steel-manned counterarguments against any file or idea). The per-document spar asks "is this argument sound?" The corpus spar asks "does this collection of arguments add up to a coherent and honest claim?"
 
 The finding in `the-shift.md` — the conditional universal about the bottleneck moving — is the same failure mode documented in [When the Source Says the Opposite of the Claim](context-stripped-citations.md), just at a different scale. There, an individual citation claimed more than its source supported. Here, an individual document claimed more than its scope supported. Context stripping happens within documents and across them.
 

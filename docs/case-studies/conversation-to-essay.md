@@ -64,7 +64,7 @@ These conventions came from the [style guide](../../.planning/zen-karate/STYLE.m
 
 ### 5. Adversarial review
 
-The [`/spar`](../../.cursor/commands/spar.md) (an adversarial review tool that generates steel-manned counterarguments against any file or idea) command was built and applied to the essay in the same session (documented in [Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md) — building the `/spar` command and applying it to this essay immediately). Seven counterarguments were generated, including the structural criticism that the essay's core claim is unverified and the meta-observation that an AI wrote an essay about resisting AI.
+The [`/spar`](../../.agents/skills/spar/SKILL.md) (an adversarial review tool that generates steel-manned counterarguments against any file or idea) command was built and applied to the essay in the same session (documented in [Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md) — building the `/spar` command and applying it to this essay immediately). Seven counterarguments were generated, including the structural criticism that the essay's core claim is unverified and the meta-observation that an AI wrote an essay about resisting AI.
 
 The sparring notes were saved with blank response sections for the author. The essay's Open Review section links to them. The counterarguments are not resolved — they're surfaced.
 
@@ -110,7 +110,7 @@ The roadmap was updated rather than followed rigidly. The plan is a tool, not a 
 | Thread | Idea captured as thread 14 | [`threads.md`](../../.planning/zen-karate/threads.md) in `.planning/zen-karate/` |
 | Draft | Essay written from cached sources and existing essays | [Style guide](../../.planning/zen-karate/STYLE.md), source cache, [cross-linking conventions](../../.cursor/rules/cross-linking.md) |
 | Provenance | Sources and References table added | [Cross-linking rule](../../.cursor/rules/cross-linking.md), file-based research workflow |
-| Challenge | [`/spar`](../../.cursor/commands/spar.md) applied, 7 counterarguments generated | `/spar` command (built same session) |
+| Challenge | [`/spar`](../../.agents/skills/spar/SKILL.md) applied, 7 counterarguments generated | `/spar` command (built same session) |
 | Capture | Sparring notes saved with blank response sections | [Sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#1-the-core-claim-is-unverified) convention |
 | Integration | Essay published, cross-linked, backlog updated | docs/ track structure, [`BACKLOG.md`](../../BACKLOG.md), [roadmap](../../.planning/zen-karate/ROADMAP.md) |
 

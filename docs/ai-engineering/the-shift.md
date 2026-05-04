@@ -286,7 +286,7 @@ This creates a specific feedback loop in multi-session projects:
 A concrete example: when asked to re-prioritize a backlog it previously organized, the AI consistently confirmed the existing ordering — not because the ordering was right, but because the section labels ("Up Next" vs. "Ideas") carried implicit weight. Items in "Up Next" stayed in "Up Next" because the AI read placement as signal of importance. The fix required structurally stripping the section labels before analysis so the AI couldn't anchor on them. (For the full story, see [Debugging Your AI Assistant's Judgment](../case-studies/debugging-ai-judgment.md).)
 
 The same mechanism applies to:
-- **Session handoffs** — a [`/whats-next`](../../.cursor/commands/whats-next.md) document frames "where we left off," and the next session inherits that frame as "what to do next"
+- **Session handoffs** — a [`/whats-next`](../../.agents/skills/whats-next/SKILL.md) document frames "where we left off," and the next session inherits that frame as "what to do next"
 - **Planning documents** — a roadmap written by AI in session 1 becomes authoritative context for session 2, even if the phase ordering was a guess
 - **Scope framing** — the AI updates documents to reflect a scope change but treats the updated documents as equally authoritative as the original, losing the *evolution* (see [How AI Handles Evolving Creative Scope](../case-studies/evolving-creative-scope.md))
 

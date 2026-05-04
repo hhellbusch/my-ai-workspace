@@ -20,29 +20,29 @@ In one extended session, the workspace gained six interlocking systems:
 
 ### 1. Project tracking (`BACKLOG.md` + `/backlog`)
 
-A persistent markdown file with four sections — In Progress, Up Next, Ideas, Done — managed through [`/backlog`](../../.cursor/commands/backlog.md) (project tracking command managing a persistent markdown-based task list) with subcommands for adding items, picking work, completing items, reviewing staleness, and prioritizing. Every item has a product tag, context, links, and a date.
+A persistent markdown file with four sections — In Progress, Up Next, Ideas, Done — managed through [`/backlog`](../../.agents/skills/backlog/SKILL.md) (project tracking command managing a persistent markdown-based task list) with subcommands for adding items, picking work, completing items, reviewing staleness, and prioritizing. Every item has a product tag, context, links, and a date.
 
 The backlog replaced an earlier TACHES TO-DOS.md pattern that wasn't being used. The key design decision: the file is meant to be readable by a human browsing the repo, not just by the AI. Context descriptions are written for a fresh session that has never seen the item before.
 
 ### 2. Personal reference library (`library/` + `/reference`)
 
-A [directory](../../library/) with a master catalog of 50+ references (books, courses, training from 2010–present) and enriched entries for sources that need deep context. The [`/reference`](../../.cursor/commands/reference.md) (library management command for books, courses, and video references) handles adding, searching, enriching (with AI-researched summaries, key themes, cached sources), and linking references to active projects.
+A [directory](../../library/) with a master catalog of 50+ references (books, courses, training from 2010–present) and enriched entries for sources that need deep context. The [`/reference`](../../.agents/skills/reference/SKILL.md) (library management command for books, courses, and video references) handles adding, searching, enriching (with AI-researched summaries, key themes, cached sources), and linking references to active projects.
 
 The enrichment workflow is the key feature. When adding a video reference, the command calls [`fetch-transcript.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-transcript.py) to cache the transcript, then searches the web for reviews and analyses, synthesizes the findings into the entry's Key Themes and Notable Ideas sections, and caches the source URLs. A future session can read the enriched entry and understand the source without re-researching it.
 
 ### 3. Session orientation (`/start` + session-awareness rule)
 
-A [`/start`](../../.cursor/commands/start.md) (session orientation command that reads the backlog, handoffs, and recent git activity) that checks for handoff files, reads the backlog, summarizes recent git activity, checks planning project status, and suggests 2-3 focus options. Complemented by a [session-awareness rule](../../.cursor/rules/session-awareness.md) (always-on reminders to load backlog, handoffs, planning, library, and git context) that passively reminds the AI about persistent context sources (backlog, handoffs, planning, library, git log).
+A [`/start`](../../.agents/skills/start/SKILL.md) (session orientation command that reads the backlog, handoffs, and recent git activity) that checks for handoff files, reads the backlog, summarizes recent git activity, checks planning project status, and suggests 2-3 focus options. Complemented by a [session-awareness rule](../../.cursor/rules/session-awareness.md) (always-on reminders to load backlog, handoffs, planning, library, and git context) that passively reminds the AI about persistent context sources (backlog, handoffs, planning, library, git log).
 
 Together, these mean a new session can orient itself without the user explaining where things stand.
 
 ### 4. Pre-commit review (`/review` + `pre-commit-review` rule)
 
-A [`/review`](../../.cursor/commands/review.md) (a pre-commit quality gate that checks links, cross-references, and conventions) that acts as a quality gate before commits — checks for broken links, missing cross-references, registry drift, convention violations, and (for essays) an optional "Assumptions to challenge" section. An [always-applied rule](../../.cursor/rules/pre-commit-review.md) reminds the AI to run this before committing.
+A [`/review`](../../.agents/skills/review/SKILL.md) (a pre-commit quality gate that checks links, cross-references, and conventions) that acts as a quality gate before commits — checks for broken links, missing cross-references, registry drift, convention violations, and (for essays) an optional "Assumptions to challenge" section. An [always-applied rule](../../.cursor/rules/pre-commit-review.md) reminds the AI to run this before committing.
 
 ### 5. Content audit (`/audit`)
 
-A [`/audit`](../../.cursor/commands/audit.md) (periodic content health check scanning the full workspace) that systematically checks link integrity, registry alignment (docs/README.md, research/README.md, library/README.md, BACKLOG.md), cross-reference gaps, and content freshness. Read-only — it reports findings and asks what to fix. The first run caught 6 registry drift issues.
+A [`/audit`](../../.agents/skills/audit/SKILL.md) (periodic content health check scanning the full workspace) that systematically checks link integrity, registry alignment (docs/README.md, research/README.md, library/README.md, BACKLOG.md), cross-reference gaps, and content freshness. Read-only — it reports findings and asks what to fix. The first run caught 6 registry drift issues.
 
 ### 6. Cross-linking conventions
 
@@ -75,7 +75,7 @@ This mirrors the problem decomposition pattern from [The Shift](../ai-engineerin
 
 ### Both sides immediately use the result
 
-The backlog was populated the same session it was built. The library got its first enriched entry (Deshimaru's "[The Zen Way to Martial Arts](../../library/zen-way-martial-arts.md)") within minutes of the [`/reference`](../../.cursor/commands/reference.md) command being created. The [`/start`](../../.cursor/commands/start.md) command was tested by simulating a session orientation. The [`/audit`](../../.cursor/commands/audit.md) command found real issues on its first run.
+The backlog was populated the same session it was built. The library got its first enriched entry (Deshimaru's "[The Zen Way to Martial Arts](../../library/zen-way-martial-arts.md)") within minutes of the [`/reference`](../../.agents/skills/reference/SKILL.md) command being created. The [`/start`](../../.agents/skills/start/SKILL.md) command was tested by simulating a session orientation. The [`/audit`](../../.agents/skills/audit/SKILL.md) command found real issues on its first run.
 
 This immediate feedback is what separates meta-development from planning. Planning produces documents about what to build. Meta-development produces tools that are used the moment they exist.
 
@@ -83,7 +83,7 @@ This immediate feedback is what separates meta-development from planning. Planni
 
 The cross-linking rule ensures new content connects to existing content. The backlog-capture rule ensures ideas don't get lost. The session-awareness rule ensures future sessions find the infrastructure. The pre-commit review checks that conventions are followed. Each piece reinforces the others.
 
-This self-reinforcement is also a risk. The [debugging AI judgment](debugging-ai-judgment.md) case study — sibling piece on anchoring to persisted artifacts and prior AI outputs — documents how the AI anchors on its own prior outputs — and the session orientation system is a mechanism for exactly that. The [`/start`](../../.cursor/commands/start.md) command reads the backlog the AI wrote, the handoff the AI created, and the planning docs the AI drafted. Every piece of the infrastructure carries the AI's framing into the next session.
+This self-reinforcement is also a risk. The [debugging AI judgment](debugging-ai-judgment.md) case study — sibling piece on anchoring to persisted artifacts and prior AI outputs — documents how the AI anchors on its own prior outputs — and the session orientation system is a mechanism for exactly that. The [`/start`](../../.agents/skills/start/SKILL.md) command reads the backlog the AI wrote, the handoff the AI created, and the planning docs the AI drafted. Every piece of the infrastructure carries the AI's framing into the next session.
 
 ### The infrastructure-to-output ratio is worth watching
 
@@ -98,12 +98,12 @@ The counterargument: every essay written after this session benefits from the in
 | Tool | Purpose | How it fits |
 |---|---|---|
 | [BACKLOG.md](../../BACKLOG.md) | Track work across sessions | Persistent state that `/start` reads and `/backlog` manages |
-| [/backlog](../../.cursor/commands/backlog.md) | Manage the backlog | add, pick, done, review, prioritize |
+| [/backlog](../../.agents/skills/backlog/SKILL.md) | Manage the backlog | add, pick, done, review, prioritize |
 | [library/](../../library/) | Personal reference library | Enriched entries with AI-researched context |
-| [/reference](../../.cursor/commands/reference.md) | Manage library entries | add, search, enrich, link |
-| [/start](../../.cursor/commands/start.md) | Orient new sessions | Reads backlog, handoffs, planning, git log |
-| [/review](../../.cursor/commands/review.md) | Pre-commit quality gate | Links, cross-refs, conventions, assumptions |
-| [/audit](../../.cursor/commands/audit.md) | Content health check | Full workspace integrity scan |
+| [/reference](../../.agents/skills/reference/SKILL.md) | Manage library entries | add, search, enrich, link |
+| [/start](../../.agents/skills/start/SKILL.md) | Orient new sessions | Reads backlog, handoffs, planning, git log |
+| [/review](../../.agents/skills/review/SKILL.md) | Pre-commit quality gate | Links, cross-refs, conventions, assumptions |
+| [/audit](../../.agents/skills/audit/SKILL.md) | Content health check | Full workspace integrity scan |
 | [session-awareness](../../.cursor/rules/session-awareness.md) | Passive context loading | Always-applied rule pointing to persistent state |
 | [cross-linking](../../.cursor/rules/cross-linking.md) | Maintain connections | Triggers for new/moved/deleted content |
 | [backlog-capture](../../.cursor/rules/backlog-capture.md) | Don't lose ideas | Always-applied rule for immediate capture |

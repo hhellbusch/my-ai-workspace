@@ -62,7 +62,7 @@ Telegram, iMessage, terminal — the library is CLI-first and voice. The video r
 Ranked by signal clarity and implementation tractability:
 
 **1. Pi upgrade skill analog — `workspace-upgrade` prompt or slash command**
-Pi's upgrade skill does a standing loop: monitor field → diff against harness → recommend. This workspace has the research-and-analyze skill for point-in-time analysis. What it lacks is a standing, invoke-anytime command that scans the AI landscape (GitHub trending, Anthropic blog, new tool releases) and checks whether anything should change in `.cursor/skills/`, `.cursor/commands/`, or the planning backlog. A `/upgrade` or `/whats-new` slash command with a research step would be the tractable analog.
+Pi's upgrade skill does a standing loop: monitor field → diff against harness → recommend. This workspace has the research-and-analyze skill for point-in-time analysis. What it lacks is a standing, invoke-anytime command that scans the AI landscape (GitHub trending, Anthropic blog, new tool releases) and checks whether anything should change in `.cursor/skills/`, `.agents/skills/`, or the planning backlog. A `/upgrade` or `/whats-new` slash command with a research step would be the tractable analog.
 
 **2. TLOS-style ideal state documentation**
 TLOS (goals, challenges, projects, team dynamics) is Pi's structured ideal-state capture. This workspace has `BACKLOG.md` for task tracking and `.planning/*/BRIEF.md` for project briefs, but no equivalent to TLOS at the *life/work goals* level. The gap: without a TLOS-equivalent, any agent operating in this workspace must infer priorities from the backlog, which captures tasks but not direction. A lightweight `GOALS.md` or enhancement to the BRIEF template would close part of this.

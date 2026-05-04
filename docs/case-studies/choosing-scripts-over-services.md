@@ -93,7 +93,7 @@ The [`fetch-transcript.py`](../../.cursor/skills/research-and-analyze/scripts/fe
 - Supports batch mode via a text file of URLs
 - Lives in [`.cursor/skills/research-and-analyze/scripts/`](../../.cursor/skills/research-and-analyze/scripts/) alongside [`fetch-sources.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-sources.py)
 
-The first test run fetched the Shi Heng Yi interview: 2,142 segments, 1 hour 37 minutes, saved as a markdown file that the research skill could immediately process. The [`/reference`](../../.cursor/commands/reference.md) command (which manages a personal library of books, courses, and videos) was updated in its video enrichment workflow to call the script automatically.
+The first test run fetched the Shi Heng Yi interview: 2,142 segments, 1 hour 37 minutes, saved as a markdown file that the research skill could immediately process. The [`/reference`](../../.agents/skills/reference/SKILL.md) command (which manages a personal library of books, courses, and videos) was updated in its video enrichment workflow to call the script automatically.
 
 Total development time: one conversation exchange for the script, one for testing, one for integration.
 
@@ -138,7 +138,7 @@ The AI presented three options with honest trade-offs. The human made the judgme
 | Artifact | What it is |
 |---|---|
 | [fetch-transcript.py](../../.cursor/skills/research-and-analyze/scripts/fetch-transcript.py) | The script that was built |
-| [/reference command](../../.cursor/commands/reference.md) | Updated to use the script for video enrichment |
+| [/reference command](../../.agents/skills/reference/SKILL.md) | Updated to use the script for video enrichment |
 | [Research skill SKILL.md](../../.cursor/skills/research-and-analyze/SKILL.md) | Scripts index updated to include the transcript fetcher |
 | [Shi Heng Yi transcript](../../research/zen-karate-philosophy/sources/they-betrayed-me---master-shi-heng-yi-explains-the-true-cost-of-success-shaolin-.md) | The first transcript fetched — primary source for the essay series |
 

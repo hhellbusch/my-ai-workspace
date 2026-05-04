@@ -8,15 +8,15 @@
 
 This directory contains TÂCHES resources properly integrated with Cursor's native features:
 
-- **Slash Commands** - `.cursor/commands/` → Auto-discovered by Cursor
+- **Agent skills (slash commands)** - `.agents/skills/<name>/SKILL.md` (repo root) → Auto-discovered by Cursor, Claude Code, and Pi
 - **Skills** - `.cursor/skills/` → Reference with `@.cursor/skills/`
 - **Agents** - `.cursor/agents/` → Reference with `@.cursor/agents/`
 
 ## How to Use
 
-### 1. Slash Commands (Native - Works Automatically!)
+### 1. Slash commands via Agent Skills (Native - Works Automatically!)
 
-Cursor automatically discovers commands in `.cursor/commands/`. Use them like any built-in command:
+This workspace keeps reusable slash workflows as [Agent Skills](https://agentskills.io/specification) under `.agents/skills/<name>/SKILL.md`. Cursor discovers them automatically—use them like built-in commands:
 
 ```
 /create-plan Build a REST API with authentication
@@ -75,42 +75,33 @@ Agent guides provide evaluation checklists:
 ## Directory Structure
 
 ```
-.cursor/
-├── README.md              # This file
-├── commands/              # ✅ Auto-discovered as slash commands!
-│   ├── create-plan.md
-│   ├── debug.md
-│   ├── .planning/whats-next.md
-│   ├── create-agent-skill.md
-│   ├── add-to-todos.md
-│   ├── check-todos.md
-│   ├── consider/          # Thinking frameworks
-│   │   ├── first-principles.md
-│   │   ├── 5-whys.md
-│   │   ├── pareto.md
-│   │   └── ... (12 frameworks)
-│   └── research/          # Research templates
-│       ├── technical.md
-│       ├── feasibility.md
-│       └── options.md
-├── skills/                # Reference with @.cursor/skills/
-│   ├── create-agent-skills/
-│   ├── create-plans/
-│   ├── create-meta-prompts/
-│   ├── create-slash-commands/
-│   ├── create-subagents/
-│   ├── create-hooks/
-│   ├── create-mcp-servers/
-│   ├── debug-like-expert/
-│   ├── setup-ralph/
-│   └── expertise/
-│       ├── iphone-apps/
-│       ├── macos-apps/
-│       └── n8n-automations/
-└── agents/                # Reference with @.cursor/agents/
-    ├── skill-auditor.md
-    ├── slash-command-auditor.md
-    └── subagent-auditor.md
+<repo-root>/
+├── .agents/skills/        # ✅ Agent Skills — slash commands (SKILL.md per skill)
+│   ├── create-plan/
+│   │   └── SKILL.md
+│   ├── debug/
+│   ├── whats-next/
+│   └── …
+└── .cursor/
+    ├── README.md          # This file
+    ├── skills/            # Reference with @.cursor/skills/
+    │   ├── create-agent-skills/
+    │   ├── create-plans/
+    │   ├── create-meta-prompts/
+    │   ├── create-slash-commands/
+    │   ├── create-subagents/
+    │   ├── create-hooks/
+    │   ├── create-mcp-servers/
+    │   ├── debug-like-expert/
+    │   ├── setup-ralph/
+    │   └── expertise/
+    │       ├── iphone-apps/
+    │       ├── macos-apps/
+    │       └── n8n-automations/
+    └── agents/            # Reference with @.cursor/agents/
+        ├── skill-auditor.md
+        ├── slash-command-auditor.md
+        └── subagent-auditor.md
 ```
 
 ## Quick Examples
@@ -255,13 +246,13 @@ My OpenShift cluster has [describe issue]
 
 | Feature | Claude Code | Cursor |
 |---------|-------------|--------|
-| **Commands** | ✅ `~/.claude/commands/` | ✅ `.cursor/commands/` |
+| **Agent skills / commands** | ✅ `~/.claude/skills/` (and project `.agents/skills/`) | ✅ `.agents/skills/` |
 | **Slash Syntax** | ✅ `/command` | ✅ `/command` |
 | **Skills** | ✅ `Skill()` invocation | ⚠️ `@.cursor/skills/` |
 | **Agents** | ✅ Spawn subagents | ⚠️ `@.cursor/agents/` |
-| **Auto-discovery** | ✅ Yes | ✅ Yes (commands only) |
+| **Auto-discovery** | ✅ Yes | ✅ Yes (`.agents/skills/`) |
 
-**Bottom line:** Commands work identically. Skills require `@` reference in Cursor.
+**Bottom line:** Slash workflows use the same `SKILL.md` layout; deep methodology still loads with `@` in Cursor.
 
 ## Tips for Effective Use
 
@@ -305,11 +296,12 @@ Update from TÂCHES repository:
 ```bash
 cd /path/to/repo
 git clone https://github.com/glittercowboy/taches-cc-resources.git .taches-update
-cp -r .taches-update/commands/* .cursor/commands/
 cp -r .taches-update/skills/* .cursor/skills/
 cp -r .taches-update/agents/* .cursor/agents/
 rm -rf .taches-update
 ```
+
+Port new slash workflows into `.agents/skills/<name>/SKILL.md` separately when adopting upstream command ideas.
 
 ## Resources
 

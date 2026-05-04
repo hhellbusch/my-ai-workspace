@@ -8,20 +8,19 @@ Reference for how pi discovers and displays resources in this workspace.
 
 ```
 /pvc/workspace/
+├── .agents/
+│   └── skills/                ← AgentSkills standard; discovered by Cursor, Claude Code, Pi
+│       └── <name>/SKILL.md
 ├── .pi/
-│   ├── SYSTEM.md               ← project system prompt (pi-native)
-│   ├── skills -> ../.cursor/skills      ← symlink; pi scans this for SKILL.md
-│   └── prompts -> ../.cursor/commands  ← symlink; pi scans this for *.md
+│   └── SYSTEM.md              ← project system prompt (pi-native)
 ├── .cursor/
-│   ├── skills/                 ← source of truth for skills
+│   ├── skills/                ← rich skills with scripts/assets (Cursor-specific)
 │   │   └── <name>/SKILL.md
-│   └── commands/               ← source of truth for prompt templates
-│       └── <name>.md
+│   └── rules/                 ← Cursor rules (auto-loaded)
 └── CLAUDE.md  (AGENTS.md symlinks to it)
 ```
 
-`.pi/skills` and `.pi/prompts` are symlinks created in commit `eba0e3b`.
-Node.js follows them correctly — pi sees the same files as if they were real directories.
+All commands are skills in `.agents/skills/`. Pi discovers them natively — no symlinks or sync needed.
 
 ---
 
@@ -31,8 +30,7 @@ Pi looks in `<cwd>/.pi/` for project-level resources and `~/.pi/agent/` for user
 
 | Resource | Location scanned | Discovery rule |
 |----------|-----------------|----------------|
-| Skills | `.pi/skills/` | Recursive scan for `SKILL.md` in each subdir |
-| Prompts | `.pi/prompts/` | Top-level `*.md` files only (no recursion) |
+| Skills | `.agents/skills/`, `.pi/skills/` | Recursive scan for `SKILL.md` in each subdir |
 | Extensions | `.pi/extensions/` | `*.ts` / `*.js` files |
 | Themes | `.pi/themes/` | `*.json` files |
 | Context | `CLAUDE.md` / `AGENTS.md` | First match walking up from cwd |
@@ -65,8 +63,7 @@ At startup pi renders these sections into the chat area — **section only appea
 
 ```
 [Context]     CLAUDE.md (walked up from cwd)
-[Skills]      from .pi/skills/ → .cursor/skills/<name>/SKILL.md
-[Prompts]     from .pi/prompts/ → .cursor/commands/<name>.md
+[Skills]      from .agents/skills/<name>/SKILL.md
 [Extensions]  from installed packages (paude, zanshin, openai-compat, vertex)
 [Themes]      none configured
 ```
@@ -77,32 +74,8 @@ Controlled by `getQuietStartup()`. If quiet mode is on, sections are suppressed 
 
 ---
 
-## `/config` selector
-
-Opens a TUI list of **all resolved resources** (enabled and disabled) grouped by:
-1. Origin: `package` (from installed packages) vs `top-level` (from `.pi/` or `~/.pi/agent/`)
-2. Scope: `user` vs `project`
-
-Within each group, subgroups appear for: Extensions · Skills · Prompts · Themes.
-
-A subgroup only renders if it has at least one item.
-
----
-
-## Known quirk: prompt subdirectory recursion
-
-`collectAutoPromptEntries` reads only **top-level** `.md` files from the prompts directory.
-Subdirectories like `.cursor/commands/consider/` and `.cursor/commands/research/` are **not** scanned.
-Those prompts are on disk but not loaded by pi.
-
-Skills do recurse — `collectAutoSkillEntries` walks subdirectories looking for `SKILL.md`.
-
----
-
 ## Troubleshooting checklist
 
-1. **`! ls -la /pvc/workspace/.pi`** — confirm symlinks exist and point to `../.cursor/commands` and `../.cursor/skills`
-2. **`! ls /pvc/workspace/.cursor/skills`** — confirm skill directories are present with `SKILL.md` inside
-3. **`! ls /pvc/workspace/.cursor/commands/*.md`** — confirm prompt `.md` files exist at top level
-4. **No `.pi/settings.json`** should exist — if it does, check for `skills: [...]` or `prompts: [...]` override entries that might be disabling resources
-5. **Quiet startup** — if pi was started with quiet mode, no sections show; check `~/.pi/agent/settings.json` for `"quietStartup": true`
+1. **`! ls .agents/skills/`** — confirm skill directories are present with `SKILL.md` inside
+2. **No `.pi/settings.json`** should exist — if it does, check for `skills: [...]` override entries that might be disabling resources
+3. **Quiet startup** — if pi was started with quiet mode, no sections show; check `~/.pi/agent/settings.json` for `"quietStartup": true`

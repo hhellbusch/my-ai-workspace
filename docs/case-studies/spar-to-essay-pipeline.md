@@ -16,7 +16,7 @@ Spar #9 didn't follow that pattern.
 
 ## The Argument That Wouldn't Fit
 
-The [`/spar` command](../../.cursor/commands/spar.md) generates steel-manned counterarguments against any essay or idea, each typed and rated for strength. Spar #9 from the Full Cup review:
+The [`/spar` command](../../.agents/skills/spar/SKILL.md) generates steel-manned counterarguments against any essay or idea, each typed and rated for strength. Spar #9 from the Full Cup review:
 
 > **#9. The Miessler counter-position is stronger than the essay acknowledges**
 > *Type: Structural | Strength: Strong*
@@ -120,7 +120,7 @@ Thesis D didn't emerge from the adversarial review alone. The spar generated the
 | [Sparring notes — #9](../../research/zen-karate-philosophy/sparring-notes.md#9-the-miessler-counter-position-is-stronger-than-the-essay-acknowledges) | The argument and the author's response that outgrew the essay |
 | [Thread 20](../../.planning/zen-karate/threads.md) | Planning entry with thesis, connections, evidence gaps |
 | [Thread development — voice inputs #13-16](../../.planning/zen-karate/thread-development.md) | Author observations captured during the escalation |
-| [/spar command](../../.cursor/commands/spar.md) | The adversarial review tool that started the pipeline |
+| [/spar command](../../.agents/skills/spar/SKILL.md) | The adversarial review tool that started the pipeline |
 | [When the Sparring Partner Shapes the Fighter](spar-distortion.md) | Sequel: the essay this case study documents was subsequently revised because the spar process distorted its framing |
 
 ---

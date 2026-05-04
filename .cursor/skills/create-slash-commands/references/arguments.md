@@ -10,7 +10,7 @@ Captures all arguments as a single concatenated string.
 
 ### Basic Example
 
-**Command file**: `.claude/commands/fix-issue.md`
+**Skill file**: `.agents/skills/fix-issue/SKILL.md`
 ```markdown
 ---
 description: Fix issue following coding standards
@@ -31,7 +31,7 @@ Fix issue #123 high-priority following our coding standards
 
 ### Multi-Step Workflow Example
 
-**Command file**: `.claude/commands/fix-issue.md`
+**Skill file**: `.agents/skills/fix-issue/SKILL.md`
 ```markdown
 ---
 description: Fix issue following coding standards
@@ -61,7 +61,7 @@ Access specific arguments individually.
 
 ### Example
 
-**Command file**: `.claude/commands/review-pr.md`
+**Skill file**: `.agents/skills/review-pr/SKILL.md`
 ```markdown
 ---
 description: Review PR with priority and assignee

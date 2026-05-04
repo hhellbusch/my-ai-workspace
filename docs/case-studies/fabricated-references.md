@@ -51,7 +51,7 @@ The project already had a [`cross-linking.md`](../../.cursor/rules/cross-linking
 
 1. **Always-applied rule** — Added an "External Links — Verify Before Committing" section to the cross-linking rule. The rule states plainly: AI models fabricate plausible-looking URLs. Every new external URL must be fetched before inclusion.
 
-2. **Pre-commit check** — Added external URL verification to the [`/review`](../../.cursor/commands/review.md) command (a pre-commit quality gate that checks links, cross-references, and conventions). The report template now includes an "External URLs: N verified / M broken" line.
+2. **Pre-commit check** — Added external URL verification to the [`/review`](../../.agents/skills/review/SKILL.md) command (a pre-commit quality gate that checks links, cross-references, and conventions). The report template now includes an "External URLs: N verified / M broken" line.
 
 The systemic fix follows the same pattern as [debugging AI judgment](debugging-ai-judgment.md): remove the opportunity for the failure rather than relying on vigilance. A rule that says "check URLs" is less reliable than a workflow step that makes checking visible in the review output.
 
@@ -88,7 +88,7 @@ The author clicked the link. No automated system, linter, or review process woul
 |---|---|
 | [The Shift — Design thinking at scale](../ai-engineering/the-shift.md) | The essay section where the fabricated URL was introduced and corrected |
 | [cross-linking.md](../../.cursor/rules/cross-linking.md) | The rule updated with external URL verification |
-| [/review](../../.cursor/commands/review.md) | The pre-commit command with external URL checking added |
+| [/review](../../.agents/skills/review/SKILL.md) | The pre-commit command with external URL checking added |
 | [Debugging Your AI Assistant's Judgment](debugging-ai-judgment.md) | Sibling case study — same pattern (notice → name → fix structurally) applied to prioritization bias |
 
 ---

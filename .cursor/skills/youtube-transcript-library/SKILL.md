@@ -19,13 +19,13 @@ It does **not** run citation verification, claims analysis, or multi-source pipe
 
 ### Script
 
-Use **`fetch-transcript.py`** — located at `.pi/skills/research-and-analyze/scripts/fetch-transcript.py`.
+Use **`fetch-transcript.py`** — located at `.cursor/skills/research-and-analyze/scripts/fetch-transcript.py`.
 
 Do **not** use `yt-dlp` directly for captions — the script handles format normalisation and saves structured markdown.
 
 ```bash
 # Single video
-python3 .pi/skills/research-and-analyze/scripts/fetch-transcript.py \
+python3 .cursor/skills/research-and-analyze/scripts/fetch-transcript.py \
   --url "https://www.youtube.com/watch?v=VIDEO_ID" \
   --out "research/{slug}/sources/"
 

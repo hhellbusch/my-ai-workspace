@@ -33,13 +33,13 @@ Both environments run the same behavioral framework. The differences are archite
 
 | Aspect | Cursor | Claude Code |
 |---|---|---|
-| Command location | `.cursor/commands/*.md` (project-level, ships with repo) | `~/.claude/commands/` (global, must be installed) |
-| Project-level commands | Supported natively | Not supported — no `.claude/commands/` project directory |
-| Installation | Automatic — Cursor picks up `.cursor/commands/` | Manual — copy `.claude/commands/*.md` to `~/.claude/commands/` |
-| Source of truth | `.cursor/commands/` | `.cursor/commands/` (adapted copies in `.claude/commands/`) |
-| Update workflow | Edit `.cursor/commands/` | Edit `.cursor/commands/`, re-adapt, re-copy to `.claude/commands/` |
+| Command location | `.agents/skills/<name>/SKILL.md` (AgentSkills; ships with repo) | `.agents/skills/<name>/SKILL.md` (same files) |
+| Project-level commands | Supported natively | Supported natively |
+| Installation | Automatic — native Agent Skills discovery | Automatic — native Agent Skills discovery |
+| Source of truth | `.agents/skills/` | `.agents/skills/` |
+| Update workflow | Edit `.agents/skills/<name>/SKILL.md` | Edit `.agents/skills/<name>/SKILL.md` |
 
-**Implication:** Claude Code commands must be manually installed into `~/.claude/commands/`. The workspace keeps adapted copies in `.claude/commands/` as the version-controlled source. When `.cursor/commands/` changes, `.claude/commands/` needs to be updated and re-copied.
+**Implication:** Slash commands are Agent Skills in `.agents/skills/`. Cursor, Claude Code, and Pi discover them natively — no manual copy step. See `.claude/README.md`.
 
 ---
 
@@ -77,14 +77,14 @@ The following behaviors are present in both environments:
 
 | Behavior | Cursor implementation | Claude Code implementation |
 |---|---|---|
-| Session orientation | `.cursor/commands/start.md` + `session-awareness.md` rule | `.claude/commands/start.md` + `CLAUDE.md` session orientation section |
+| Session orientation | `.agents/skills/start/SKILL.md` + `session-awareness.md` rule | `.agents/skills/start/SKILL.md` + `CLAUDE.md` session orientation section |
 | Shoshin | `.cursor/rules/shoshin.md` (always-on) | `CLAUDE.md` shoshin section |
-| Sparring | `.cursor/commands/spar.md` | `.claude/commands/spar.md` |
+| Sparring | `.agents/skills/spar/SKILL.md` | `.agents/skills/spar/SKILL.md` |
 | Feedback checkpoints | `.cursor/rules/feedback-checkpoints.md` (always-on) | `CLAUDE.md` feedback checkpoints section |
 | Review tracking | `.cursor/rules/review-tracking.md` (always-on) | `CLAUDE.md` review tracking section |
 | Backlog capture | `.cursor/rules/backlog-capture.md` (always-on) | `CLAUDE.md` backlog capture section |
 | Case study reflection | `.cursor/rules/case-study-reflection.md` (always-on) | `CLAUDE.md` case study section |
-| Pre-commit review | `.cursor/commands/review.md` | `.claude/commands/review.md` |
+| Pre-commit review | `.agents/skills/review/SKILL.md` | `.agents/skills/review/SKILL.md` |
 | Cross-linking | `.cursor/rules/cross-linking.md` (glob-scoped) | `CLAUDE.md` cross-linking section (always-on) |
 | Collaboration style | `.cursorrules` | `CLAUDE.md` |
 | Workspace identity | `.cursorrules` + `ABOUT.md` | `CLAUDE.md` + `ABOUT.md` |
@@ -97,9 +97,8 @@ The following behaviors are present in both environments:
 |---|---|---|
 | SemanticSearch in `/cross-link` | Workaround | Claude Code version uses Grep; lower recall for fuzzy topic matching. The command falls back to "check anchor relationships" for always-relevant docs. |
 | StrReplace precision | Degraded | Claude Code's `Write` rewrites the full file. For large files, this is more token-intensive than Cursor's `StrReplace` (partial edit). |
-| Project-level command discovery | Manual | Cursor picks up `.cursor/commands/` automatically. Claude Code requires manual copy to `~/.claude/commands/`. The `.claude/commands/` directory in this repo is the install source. |
 | Glob-scoped rule loading | Not available | Claude Code loads `CLAUDE.md` on every session regardless of what files are open. Cross-linking checks run even when not working on content. |
-| `framework-bootstrap.md` parity | Partial | The bootstrap doc acknowledges the Claude implementation lag. Now aligned as of 2026-04-21, but the bootstrap doc itself needs updating to remove that note. |
+| `framework-bootstrap.md` parity | Aligned | AgentSkills migration removed the manual Claude command-copy path; bootstrap reflects native `.agents/skills/` discovery. |
 
 ---
 
@@ -107,10 +106,9 @@ The following behaviors are present in both environments:
 
 When updating the framework:
 
-1. **Make the change in Cursor** (`.cursor/rules/`, `.cursor/commands/`, `.cursorrules`) — this is the primary environment.
+1. **Edit skills** — `.agents/skills/<name>/SKILL.md` is the shared source for slash-command behavior (Cursor, Claude Code, Pi).
 2. **Update `CLAUDE.md`** if the change is a behavioral rule.
-3. **Update `.claude/commands/`** if the change is a command, applying the tool adaptations from the table above.
-4. **Re-copy** to `~/.claude/commands/`: `cp .claude/commands/*.md ~/.claude/commands/`
-5. **Update this document** if the change introduces a new structural difference.
+3. **Update Cursor rules** (`.cursor/rules/`, `.cursorrules`) when the change is Cursor-specific.
+4. **Update this document** if the change introduces a new structural difference.
 
 *This document was created with AI assistance and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

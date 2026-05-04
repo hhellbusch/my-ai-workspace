@@ -28,7 +28,7 @@ Content in `docs/` is intended for public sharing via GitHub links. Write it for
 Practical implications:
 - **Relative links are preferred** — they resolve correctly when rendered on GitHub and let readers navigate the collection
 - **Write for external readability** — "this workspace" framing works for notes; `docs/` essays should make sense without knowing the repo structure
-- **When referencing workspace-specific tooling** (e.g. `/spar`, `.cursor/commands/`), explain the underlying concept in the prose so an external reader understands the practice even if they can't run the command
+- **When referencing workspace-specific tooling** (e.g. `/spar`, `.agents/skills/`), explain the underlying concept in the prose so an external reader understands the practice even if they can't run the command
 - **The `review:` frontmatter block is not visible in GitHub's rendered markdown** — it's safe to leave in `docs/` files; it's metadata for the author and agent, not part of the published text
 
 The goal is open-source craft: patterns and practices documented well enough that someone encountering them for the first time can understand, evaluate, and adapt them.

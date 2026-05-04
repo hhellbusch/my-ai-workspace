@@ -1,27 +1,28 @@
 ---
 name: create-slash-commands
-description: Expert guidance for creating Claude Code slash commands. Use when working with slash commands, creating custom commands, understanding command structure, or learning YAML configuration.
+description: Expert guidance for creating Agent Skills that back slash commands (`/command-name`). Use when adding or editing `.agents/skills/<name>/SKILL.md`, structuring skill content, or learning YAML frontmatter and XML bodies for discoverable commands.
 ---
 
 <objective>
-Create effective slash commands for Claude Code that enable users to trigger reusable prompts with `/command-name` syntax. Slash commands expand as prompts in the current conversation, allowing teams to standardize workflows and operations. This skill teaches you to structure commands with XML tags, YAML frontmatter, dynamic context loading, and intelligent argument handling.
+Create effective Agent Skills under `.agents/skills/<name>/SKILL.md` so users can trigger the same workflows with `/command-name` where the tool maps skills to slash syntax. Each skill is one directory with a `SKILL.md` file (Agent Skills convention). Content uses YAML frontmatter plus XML-tagged bodies, with optional dynamic context loading and intelligent argument handling—the same patterns as legacy single-file command markdown, expressed as Agent Skills in this workspace.
 </objective>
 
 <quick_start>
 
 <workflow>
-1. Create `.claude/commands/` directory (project) or use `~/.claude/commands/` (personal)
-2. Create `command-name.md` file
-3. Add YAML frontmatter (at minimum: `description`)
-4. Write command prompt
+1. Create `.agents/skills/command-name/` (project) or install under `~/.claude/skills/command-name/` for personal Claude Code skills
+2. Create `SKILL.md` inside that directory
+3. Add YAML frontmatter (at minimum: `name`, `description`)
+4. Write the skill body (XML tags recommended)
 5. Test with `/command-name [args]`
 </workflow>
 
 <example>
-**File**: `.claude/commands/optimize.md`
+**File**: `.agents/skills/optimize/SKILL.md`
 
 ```markdown
 ---
+name: optimize
 description: Analyze this code for performance issues and suggest optimizations
 ---
 
@@ -240,15 +241,14 @@ Review PR #$1 with priority $2 and assign to $3.
 
 <file_structure>
 
-**Project commands**: `.claude/commands/`
+**Project skills**: `.agents/skills/<name>/SKILL.md`
 - Shared with team via version control
-- Shows `(project)` in `/help` list
+- Discovered natively by Cursor, Claude Code, and Pi from the repo root
 
-**Personal commands**: `~/.claude/commands/`
-- Available across all your projects
-- Shows `(user)` in `/help` list
+**Personal skills (Claude Code)**: `~/.claude/skills/<name>/SKILL.md`
+- Available across all your projects when installed in the user skills directory
 
-**File naming**: `command-name.md` → invoked as `/command-name`
+**Layout**: Directory `command-name/` with `SKILL.md` inside → invoked as `/command-name` where the host maps Agent Skills to slash commands
 </file_structure>
 
 <yaml_frontmatter>
@@ -282,7 +282,7 @@ If omitted: All tools available
 <arguments>
 <all_arguments_string>
 
-**Command file**: `.claude/commands/fix-issue.md`
+**Skill file**: `.agents/skills/fix-issue/SKILL.md`
 ```markdown
 ---
 description: Fix issue following coding standards
@@ -298,7 +298,7 @@ Fix issue #$ARGUMENTS following our coding standards
 
 <positional_arguments_syntax>
 
-**Command file**: `.claude/commands/review-pr.md`
+**Skill file**: `.agents/skills/review-pr/SKILL.md`
 ```markdown
 ---
 description: Review PR with priority and assignee
@@ -593,8 +593,8 @@ See [references/patterns.md](references/patterns.md) for more examples.
    - Don't under-specify complex commands
 
 6. **Save the file**:
-   - Project: `.claude/commands/command-name.md`
-   - Personal: `~/.claude/commands/command-name.md`
+   - Project: `.agents/skills/command-name/SKILL.md`
+   - Personal: `~/.claude/skills/command-name/SKILL.md`
 </generation_protocol>
 
 <success_criteria>
@@ -617,7 +617,7 @@ A well-structured slash command meets these criteria:
 - No `$ARGUMENTS` reference for self-contained commands
 
 **Functionality**:
-- Command expands correctly when invoked
+- Skill expands correctly when invoked as a slash command
 - Dynamic context loads properly (bash commands, file references)
 - Tool restrictions prevent unauthorized operations
 - Command accomplishes intended purpose reliably

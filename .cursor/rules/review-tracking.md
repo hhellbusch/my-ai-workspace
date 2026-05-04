@@ -36,7 +36,7 @@ For files that already have frontmatter (commands, skills, rules), add `review:`
 | Essays / case studies | `docs/**` | `read`, `fact-checked`, `voice-approved` |
 | DevOps examples | `{product}/examples/**` | `read`, `tested` |
 | Troubleshooting guides | `{product}/troubleshooting/**` | `read`, `commands-verified` |
-| Meta-system | `.cursor/commands/`, `.cursor/skills/`, `.cursor/rules/` | `read`, `used-in-practice` |
+| Meta-system | `.agents/skills/`, `.cursor/skills/`, `.cursor/rules/` | `read`, `used-in-practice` |
 | Research / library | `research/**`, `library/**` | `read`, `sources-checked` |
 
 Additional types can be added per file when relevant.
@@ -62,7 +62,7 @@ Files with biographical content that have only `read` validation (not `voice-app
 
 ## Agent Behavior
 
-- **Add `status: unreviewed` frontmatter when generating new content files.** Every new `.md` file in `docs/`, `library/`, `research/`, or product directories (`{product}/examples/`, `{product}/troubleshooting/`) should open with a `review:` block. Do not add it to meta-system files (`.cursor/commands/`, `.cursor/skills/`, `.cursor/rules/`) that manage their own frontmatter schema.
+- **Add `status: unreviewed` frontmatter when generating new content files.** Every new `.md` file in `docs/`, `library/`, `research/`, or product directories (`{product}/examples/`, `{product}/troubleshooting/`) should open with a `review:` block. Do not add it to meta-system files (`.agents/skills/`, `.cursor/skills/`, `.cursor/rules/`) that manage their own frontmatter schema.
 
   Use a `notes` field that names the specific verifications the file needs, matched to its content category:
 

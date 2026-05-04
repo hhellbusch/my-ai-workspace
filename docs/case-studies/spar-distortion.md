@@ -2,7 +2,7 @@
 
 > **Audience:** Engineers and writers using adversarial review tools in AI-assisted workflows who want to understand how the tool itself can distort the output it was meant to improve.
 > **Purpose:** Documents how an adversarial review (spar #9) produced a new essay — and how the adversarial energy of the drafting process shaped that essay into an oppositional framing that misrepresented the author's actual position. The fix wasn't to soften the argument but to reframe it from "I disagree" to "I agree AND." A case study about tool-induced bias in the very tool designed to catch bias.
-> *Context:* This workspace includes an essay series connecting martial arts philosophy to AI-assisted engineering. [The Full Cup](../philosophy/the-full-cup.md) is one of those essays, arguing that organizations should create bandwidth for learning. Daniel Miessler (security researcher, author of 'AI WILL Replace Knowledge Workers') challenged the essay series' investment-in-people thesis with an economic argument. The [`/spar` command](../../.cursor/commands/spar.md) is an adversarial review tool that generates steel-manned counterarguments — documented fully in [Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md).
+> *Context:* This workspace includes an essay series connecting martial arts philosophy to AI-assisted engineering. [The Full Cup](../philosophy/the-full-cup.md) is one of those essays, arguing that organizations should create bandwidth for learning. Daniel Miessler (security researcher, author of 'AI WILL Replace Knowledge Workers') challenged the essay series' investment-in-people thesis with an economic argument. The [`/spar` command](../../.agents/skills/spar/SKILL.md) is an adversarial review tool that generates steel-manned counterarguments — documented fully in [Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md).
 
 ---
 
@@ -124,7 +124,7 @@ The author's observation — "I really like the Human 3.0 that the video explore
 | [When a Spar Argument Outgrows Its Essay](spar-to-essay-pipeline.md) | The predecessor case study documenting the productive pattern |
 | [Library entry — Miessler talk](../../library/daniel-miessler-ai-replace-knowledge-workers.md) | Updated: "counter-tension" → "shared direction" |
 | [Thread development — voice inputs #15-16](../../.planning/zen-karate/thread-development.md) | The author's actual position: agree AND, co-development loop |
-| [/spar command](../../.cursor/commands/spar.md) | The tool that both created and caught the distortion |
+| [/spar command](../../.agents/skills/spar/SKILL.md) | The tool that both created and caught the distortion |
 
 ---
 

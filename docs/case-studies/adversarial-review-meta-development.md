@@ -24,7 +24,7 @@ Three things, in one session:
 
 ### 1. A `/spar` slash command
 
-An [on-demand adversarial review command](../../.cursor/commands/spar.md) that can be pointed at any file, topic, or idea from a conversation. The process:
+An [on-demand adversarial review command](../../.agents/skills/spar/SKILL.md) that can be pointed at any file, topic, or idea from a conversation. The process:
 
 1. **Identify the target** — a file path, a topic keyword, or whatever the user was just discussing
 2. **Gather full context** — read the target, follow its internal links, check planning docs and research sources
@@ -48,7 +48,7 @@ The plan can't ignore the spar. It has to respond.
 
 ### 3. Zero-base de-biasing in backlog prioritization
 
-This one came from a related observation (covered in [Debugging Your AI Assistant's Judgment](debugging-ai-judgment.md)): the AI was anchoring on prior priorities when asked to re-prioritize. The fix was a [zero-base evaluation step](../../.cursor/commands/backlog.md) (re-scoring backlog items from scratch without anchoring on their previous section or order) in the [`/backlog prioritize`](../../.cursor/commands/backlog.md) command (project tracking) that strips section labels, scores every item on merits, and compares the fresh ranking against the current one. An "Anchoring risk" column forces the question: "Am I ranking this here because it was already here?"
+This one came from a related observation (covered in [Debugging Your AI Assistant's Judgment](debugging-ai-judgment.md)): the AI was anchoring on prior priorities when asked to re-prioritize. The fix was a [zero-base evaluation step](../../.agents/skills/backlog/SKILL.md) (re-scoring backlog items from scratch without anchoring on their previous section or order) in the [`/backlog prioritize`](../../.agents/skills/backlog/SKILL.md) command (project tracking) that strips section labels, scores every item on merits, and compares the fresh ranking against the current one. An "Anchoring risk" column forces the question: "Am I ranking this here because it was already here?"
 
 ---
 
@@ -95,7 +95,7 @@ The sparring output also validated the parts of the essay that held up under scr
 
 The research skill case study ([Building a Research and Verification Skill](building-a-research-skill.md)) followed the same loop: manual verification failed → skill built → skill validated against the same article. This case follows it again: essay published without pushback → sparring system built → essay immediately challenged → sparring notes feed back into the essay.
 
-**The adversarial review pattern works because it's structural, not behavioral.** You can tell an AI to "be critical" and it will produce criticism. But that criticism isn't anchored to anything — it's a persona shift, not a process change. The [`/spar` command](../../.cursor/commands/spar.md) is a process. It reads the full context, follows internal links, generates typed arguments, self-audits, and produces a persistent document that future sessions can find and build on. The [spar stage](../../.cursor/skills/create-meta-prompts/references/spar-patterns.md) in the meta-prompting pipeline is even more structural: the plan *cannot proceed* without addressing the counterarguments.
+**The adversarial review pattern works because it's structural, not behavioral.** You can tell an AI to "be critical" and it will produce criticism. But that criticism isn't anchored to anything — it's a persona shift, not a process change. The [`/spar` command](../../.agents/skills/spar/SKILL.md) is a process. It reads the full context, follows internal links, generates typed arguments, self-audits, and produces a persistent document that future sessions can find and build on. The [spar stage](../../.cursor/skills/create-meta-prompts/references/spar-patterns.md) in the meta-prompting pipeline is even more structural: the plan *cannot proceed* without addressing the counterarguments.
 
 **The self-referential nature is a feature, not a bug.** An AI building tools to challenge its own output is the "asking the AI to argue against your approach" mitigation from [The Shift](../ai-engineering/the-shift.md) (the foundational essay in this collection on engineering skills in the AI age) section 7, automated and made persistent. It doesn't replace human judgment — the sparring notes have blank response sections because the author's voice is what makes the essay real. But it ensures the human has something substantive to respond to.
 
@@ -109,11 +109,11 @@ The observation that the essay "read too well" was the human's. An AI reviewing 
 
 | Artifact | What it is |
 |---|---|
-| [/spar command](../../.cursor/commands/spar.md) | On-demand adversarial review — point at any file, topic, or idea |
+| [/spar command](../../.agents/skills/spar/SKILL.md) | On-demand adversarial review — point at any file, topic, or idea |
 | [spar-patterns.md](../../.cursor/skills/create-meta-prompts/references/spar-patterns.md) | Prompt template for spar stage in meta-prompting chains |
 | [Sparring notes (#1-7)](../../research/zen-karate-philosophy/sparring-notes.md#1-the-core-claim-is-unverified) | 7 counterarguments against the ego/AI essay, with blank response sections |
 | [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) | The essay that was both the catalyst and the first target |
-| [/backlog prioritize](../../.cursor/commands/backlog.md) | Zero-base de-biasing in priority ranking (related pattern) |
+| [/backlog prioritize](../../.agents/skills/backlog/SKILL.md) | Zero-base de-biasing in priority ranking (related pattern) |
 | [When a Spar Argument Outgrows Its Essay](spar-to-essay-pipeline.md) | Sequel: what happens when a spar argument produces a new essay instead of a revision |
 
 ---

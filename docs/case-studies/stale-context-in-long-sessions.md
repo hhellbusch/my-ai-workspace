@@ -8,7 +8,7 @@
 
 ## The Setup
 
-The project uses a persistent backlog ([`BACKLOG.md`](../../BACKLOG.md)) with a rolling cap: at most 15 completed items stay in the Done section, with older items archived to [`BACKLOG-ARCHIVE.md`](../../BACKLOG-ARCHIVE.md) (rolling archive of older Done items). This convention is documented in [`/backlog`](../../.cursor/commands/backlog.md) (project tracking command managing a persistent markdown-based task list) and referenced by several always-applied rules.
+The project uses a persistent backlog ([`BACKLOG.md`](../../BACKLOG.md)) with a rolling cap: at most 15 completed items stay in the Done section, with older items archived to [`BACKLOG-ARCHIVE.md`](../../BACKLOG-ARCHIVE.md) (rolling archive of older Done items). This convention is documented in [`/backlog`](../../.agents/skills/backlog/SKILL.md) (project tracking command managing a persistent markdown-based task list) and referenced by several always-applied rules.
 
 In an earlier part of the session, the AI decided to simplify the backlog system by removing the archive mechanism entirely. It committed the removal across 5 files — the backlog command, session start command, repo-structure rule, session-awareness rule, and README.
 
@@ -101,7 +101,7 @@ The user prompted the AI to re-read the system rules, noting that "they could ge
 |---|---|
 | [BACKLOG.md](../../BACKLOG.md) | The file edited based on stale context |
 | [BACKLOG-ARCHIVE.md](../../BACKLOG-ARCHIVE.md) | The archive file the AI was acting as if didn't exist |
-| [/backlog](../../.cursor/commands/backlog.md) | The command defining the rolling cap convention |
+| [/backlog](../../.agents/skills/backlog/SKILL.md) | The command defining the rolling cap convention |
 | [shoshin.md](../../.cursor/rules/shoshin.md) | The existing rule that already covered this — applied too narrowly |
 | [Debugging Your AI Assistant's Judgment](debugging-ai-judgment.md) | Sibling case study — anchoring on persisted artifacts vs. anchoring on session memory |
 

@@ -77,7 +77,7 @@ Current changes: ! `git status`
 
 **Source**: Official Claude Code documentation
 
-**File**: `.claude/commands/optimize.md`
+**File**: `.agents/skills/optimize/SKILL.md`
 ```markdown
 ---
 description: Analyze the performance of this code and suggest three specific optimizations
@@ -110,7 +110,7 @@ Claude analyzes code in the current conversation context.
 
 ### Pattern: Security Review
 
-**File**: `.claude/commands/security-review.md`
+**File**: `.agents/skills/security-review/SKILL.md`
 ```markdown
 ---
 description: Review this code for security vulnerabilities

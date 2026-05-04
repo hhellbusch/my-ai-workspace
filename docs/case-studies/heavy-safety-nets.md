@@ -123,9 +123,9 @@ The retrospective question — "did our review mechanisms kick in appropriately?
 |---|---|
 | [pre-commit-review.md](../../.cursor/rules/pre-commit-review.md) | Scaled from rigid "always full review" to proportional depth |
 | [review-tracking.md](../../.cursor/rules/review-tracking.md) | Added `at` SHA field and "flag when editing reviewed files" behavior |
-| [/review](../../.cursor/commands/review.md) | Added step 7: review staleness check with SHA-based diff commands |
-| [/validate](../../.cursor/commands/validate.md) | Now auto-records git SHA for precise "diff since last review" |
-| [/audit](../../.cursor/commands/audit.md) | Layer 5d updated with SHA-based diff hints |
+| [/review](../../.agents/skills/review/SKILL.md) | Added step 7: review staleness check with SHA-based diff commands |
+| [/validate](../../.agents/skills/validate/SKILL.md) | Now auto-records git SHA for precise "diff since last review" |
+| [/audit](../../.agents/skills/audit/SKILL.md) | Layer 5d updated with SHA-based diff hints |
 | [The Shift](../ai-engineering/the-shift.md) | The file whose silent staleness exposed the gap |
 
 ---

@@ -151,19 +151,9 @@ Check:
 - [ ] SKILL.md under 500 lines
 - [ ] XML tags properly closed
 
-## Step 9: Create Slash Command
+## Step 9: Discovery path
 
-```bash
-cat > ~/.claude/commands/{skill-name}.md << 'EOF'
----
-description: {Brief description}
-argument-hint: [{argument hint}]
-allowed-tools: Skill({skill-name})
----
-
-Invoke the {skill-name} skill for: $ARGUMENTS
-EOF
-```
+Ensure `SKILL.md` is at `.agents/skills/{skill-name}/SKILL.md` so Cursor, Claude Code, and Pi discover it natively.
 
 ## Step 10: Test
 
@@ -186,6 +176,6 @@ Skill is complete when:
 - [ ] Intake question routes to correct workflow
 - [ ] All workflows have required_reading + process + success_criteria
 - [ ] References contain reusable domain knowledge
-- [ ] Slash command exists and works
+- [ ] Skill is discoverable under `.agents/skills/` and works when invoked
 - [ ] Tested with real invocation
 </success_criteria>

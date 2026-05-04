@@ -197,7 +197,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### Framework: two-second hold — add a session-close pause ritual to /whats-next and /checkpoint
 - **Product:** meta (commands)
 - **Context:** From Saito Sensei's Aikido instruction: "hold your form for two seconds after the technique finishes. Don't relax. Don't look for confirmation. Remain connected." The framework equivalent: before running `/whats-next` or `/checkpoint`, a brief deliberate prompt — "what did this session actually produce?" — before documentation begins. Currently the commands go immediately to capturing; the trained layer of zanshin requires a moment of genuine reflection first. Implementation: add a Step 0 to both commands that prompts this pause before any writing begins. Small change, high leverage on the trained vs. instrumented distinction.
-- **Links:** `.cursor/commands/whats-next.md`, `.cursor/commands/checkpoint.md`, `docs/philosophy/zanshin.md` (instrumented/trained section)
+- **Links:** `.agents/skills/whats-next/SKILL.md`, `.agents/skills/checkpoint/SKILL.md`, `docs/philosophy/zanshin.md` (instrumented/trained section)
 - **Added:** 2026-04-20
 
 ### Framework: before/during/after organizing principle in session-framework.md
@@ -293,7 +293,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **What to index and what not to:**
   - **Index:** `docs/`, `research/`, `library/`, `BACKLOG.md` — factual content corpus
   - **System prompt only (slim variant):** `.cursor/rules/` — procedural instructions, not factual content; RAG retrieval of a rules file gives text, not behavior
-  - **Don't index:** `.cursor/skills/`, `.cursor/commands/` — too procedural; raw YAML configs — semantically thin
+  - **Don't index:** `.cursor/skills/`, `.agents/skills/` — too procedural; raw YAML configs — semantically thin
 - **Known limitations for this repo:** (1) Cross-links invisible to retrieval — RAG gets the chunk that *references* another file but not the linked content; (2) Frontmatter YAML noise — review blocks get indexed as chunks; consider stripping before indexing; (3) Index freshness — needs rebuilding as content grows; (4) Doesn't solve synthesis (holding source 3 + source 11 simultaneously to notice a tension) or voice consistency (needs more than retrieved examples).
 - **First experiment:** Index `research/zen-karate-philosophy/` + `library/` only. Ask: "Summarise Inoue's teaching philosophy and how Rika Usami's practice exemplifies it." Compare output against Sonnet drafting from same sources loaded manually. If quality is acceptable → expand index. If not → identify what the retrieval missed and whether the gap is chunking, embedding model quality, or fundamentally a synthesis problem RAG can't solve.
   ```bash
@@ -348,15 +348,15 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Product:** meta
 - **Status:** not sure if wanted yet
 - **Context:** Review frontmatter currently tracks verification status (`unreviewed`, `direction-reviewed`, `reviewed`) but has no boolean for document completeness. "Working draft" only appears as freetext in the `notes` field — readable by humans, invisible to `/audit` and the agent. Adding `draft: true` would make it queryable: `/audit` could separate "actively in progress" from "stable but unverified." Change is small: one field added to the frontmatter format in `.cursor/rules/review-tracking.md`, one category added to `/audit` Layer 5 scan. Evaluate when several working drafts are in flight simultaneously and the current notes-based approach becomes insufficient.
-- **Links:** `.cursor/rules/review-tracking.md`, `.cursor/commands/audit.md`
+- **Links:** `.cursor/rules/review-tracking.md`, `.agents/skills/audit/SKILL.md`
 - **Added:** 2026-04-19
 
 ### Case study: curated corpus bias — invisible orientation from what was never included
 - **Product:** docs
 - **Context:** When an AI assistant synthesizes from a pre-selected corpus (e.g. NotebookLM fed Red Hat docs + Lenovo whitepapers), the output is fluent and internally consistent but structurally oriented by what the curator chose to include. The bias isn't in what the model does with the sources — it's in what sources were *never* in the room. The model can't notice an absence. The Jared Burck article is the triggering instance: architecturally accurate (the corpus had good architecture docs), economically optimistic (the corpus had vendor marketing but not the Braincuber counter-argument), maturity-blind (the corpus mixed GA and Tech Preview docs without that distinction). **Distinct from** [case study 9](docs/case-studies/context-stripped-citations.md) (*When the Source Says the Opposite of the Claim*) — that case has the source present but the conclusion stripped; this case has the counter-evidence absent from the start. See also: `research/openshift-ai-llm-deployment/assessment.md` (Finding 2, Finding 3 as exemplars).
-  - **Self-referential concern:** This workspace is also a curated corpus. The library is hand-selected. Research workspaces fetch sources from articles that already have a POV. AI enriches what's present. If the initial selection is advocacy-skewed, enrichment amplifies it invisibly. The [`shoshin.md`](.cursor/rules/shoshin.md) rule and [`/spar`](.cursor/commands/spar.md) command are partial mitigations — but they operate *within* the corpus, not on its composition. The honest question for any research or essay here: **what did we not include, and why?** The case study should surface that question as a named practice, not just a risk.
+  - **Self-referential concern:** This workspace is also a curated corpus. The library is hand-selected. Research workspaces fetch sources from articles that already have a POV. AI enriches what's present. If the initial selection is advocacy-skewed, enrichment amplifies it invisibly. The [`shoshin.md`](.cursor/rules/shoshin.md) rule and [`/spar`](.agents/skills/spar/SKILL.md) command are partial mitigations — but they operate *within* the corpus, not on its composition. The honest question for any research or essay here: **what did we not include, and why?** The case study should surface that question as a named practice, not just a risk.
   - **Mitigation angle to document:** Adversarial corpus selection — deliberately sourcing opposing views before synthesis, not after; the "what is the strongest case against this?" prompt *before* drafting; the `/spar` command as post-hoc recovery vs. a pre-inclusion question as prevention.
-- **Links:** `docs/case-studies/context-stripped-citations.md`, `research/openshift-ai-llm-deployment/assessment.md`, `.cursor/rules/shoshin.md`, `.cursor/commands/spar.md`
+- **Links:** `docs/case-studies/context-stripped-citations.md`, `research/openshift-ai-llm-deployment/assessment.md`, `.cursor/rules/shoshin.md`, `.agents/skills/spar/SKILL.md`
 - **Added:** 2026-04-20
 
 ### Case study: performed honesty — AI self-labels as honest while making unverified claims
@@ -399,7 +399,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### Guiding stars as meta-framework concept
 - **Product:** meta
 - **Context:** Projects need explicit "guiding stars" — primary purposes that drive prioritization. When a project has multiple tracks (AI-engineering, philosophy, personal research), the guiding star determines what gets attention first and what supports vs. leads. Encode this into session orientation (`/start`), backlog prioritization (`/backlog`), and planning docs. Prevents supporting interests from consuming the budget meant for primary work. This session's shoshin review revealed the zen-karate track had been consuming attention disproportionate to its role as a supporting interest.
-- **Links:** `.planning/zen-karate/STYLE.md` (Guiding Stars section), `.cursor/commands/start.md`, `.cursor/commands/backlog.md`
+- **Links:** `.planning/zen-karate/STYLE.md` (Guiding Stars section), `.agents/skills/start/SKILL.md`, `.agents/skills/backlog/SKILL.md`
 - **Added:** 2026-04-18
 
 ### Research-to-essay pipeline — collect, sort, discard, rewrite loop
@@ -465,7 +465,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### Zen-essay slash command
 - **Product:** meta
 - **Context:** Dedicated slash command encoding the proven essay pipeline after 2-3 essays have been written manually. Pulls from shared research library and personal-notes.md, applies voice/style guide, enforces docs/ conventions, prompts for personal content at the right points.
-- **Links:** `.cursor/commands/`
+- **Links:** `.agents/skills/`
 - **Added:** 2026-04-17
 
 ### Explore Miessler's PAI/Kai architecture — learn, compare, integrate

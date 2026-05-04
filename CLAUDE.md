@@ -2,7 +2,7 @@
 
 > Loaded by Claude Code (as `CLAUDE.md`) and by pi and other agents (via `AGENTS.md → CLAUDE.md` symlink).
 > Encodes workspace-specific behavior that extends `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` — the kit is canonical; this file does not re-declare what the kit owns.
-> Commands: `.claude/commands/` (Claude Code) · `.cursor/commands/` (Cursor, also source of truth for `.pi/prompts/`).
+> Commands: `.agents/skills/<name>/SKILL.md` ([AgentSkills standard](https://agentskills.io/specification)) — discovered natively by Cursor, Claude Code, and Pi.
 > Workspace extension rules (Cursor auto-loads, Claude Code reads on demand): `.cursor/rules/`.
 
 ---
@@ -181,7 +181,7 @@ Three principles that govern how this workspace is built and maintained:
 3. Add an entry block to `library/README.md` (Enriched Entries table)
 4. Append a dated entry to `library/log.md`
 
-**YouTube / video URLs:** For `youtube.com`, `youtu.be`, or transcript/caption requests, follow **`.pi/skills/youtube-transcript-library/SKILL.md`** — use **`fetch-transcript.py`** under `.pi/skills/research-and-analyze/scripts/`, not `yt-dlp` alone for captions.
+**YouTube / video URLs:** For `youtube.com`, `youtu.be`, or transcript/caption requests, follow **`.cursor/skills/youtube-transcript-library/SKILL.md`** — use **`fetch-transcript.py`** under `.cursor/skills/research-and-analyze/scripts/`, not `yt-dlp` alone for captions.
 
 An orphaned transcript in `research/*/sources/` with no library entry is an incomplete ingest.
 
@@ -212,7 +212,7 @@ Workspace-specific extensions of the kit live in `.cursor/rules/` and are auto-l
 
 ## Commands
 
-**Shared command bodies** live in `.commands/` (repo root) — the single source of truth. Platform wrappers in `.cursor/commands/` and `.claude/commands/` add frontmatter (tool names differ between platforms) and splice the shared body via `<!-- body: ../.commands/foo.md -->`. After editing a shared body, run `scripts/sync-commands.sh` to update both wrappers. Cursor-only commands (no Claude Code counterpart) live directly in `.cursor/commands/` without a shared body.
+All commands are skills in `.agents/skills/<name>/SKILL.md` ([AgentSkills standard](https://agentskills.io/specification)). Cursor, Claude Code, and Pi all discover `.agents/skills/` natively — no sync or generated wrappers needed. Edit the SKILL.md directly.
 
 Key commands:
 

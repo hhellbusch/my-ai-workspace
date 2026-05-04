@@ -34,7 +34,7 @@ Different content requires different kinds of validation. Each category has a ba
 | Essays and case studies | `docs/**` | `read`, `fact-checked`, `voice-approved` |
 | DevOps examples | `{product}/examples/**` | `read`, `tested` |
 | Troubleshooting guides | `{product}/troubleshooting/**` | `read`, `commands-verified` |
-| Meta-system | `.cursor/commands/`, `.cursor/skills/`, `.cursor/rules/` | `read`, `used-in-practice` |
+| Meta-system | `.agents/skills/`, `.cursor/skills/`, `.cursor/rules/` | `read`, `used-in-practice` |
 | Research and library | `research/**`, `library/**` | `read`, `sources-checked` |
 
 Files can have additional validation types beyond what's listed for their category (e.g., a troubleshooting guide that's also been `tested`). Validation dates are tracked per type.

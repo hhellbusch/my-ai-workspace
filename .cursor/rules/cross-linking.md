@@ -1,6 +1,6 @@
 ---
 description: Maintain cross-references when creating or modifying content
-globs: ["**/*.md", ".cursorrules", ".cursor/commands/**", ".cursor/skills/**"]
+globs: ["**/*.md", ".cursorrules", ".agents/skills/**", ".cursor/skills/**"]
 alwaysApply: false
 ---
 
@@ -24,8 +24,7 @@ When `ABOUT.md` is updated, check: does `README.md` byline still link to it? Doe
 - **New file in `docs/`** — Place in the correct track subdirectory (`ai-engineering/`, `philosophy/`, or `case-studies/`). Add to that track's `README.md` reading list and to the master `docs/README.md` cross-track reading order. Add to the Related Reading section of related essays. For essays in the zen-karate series: include a **Sources and References** section linking to specific research sources, threads, and library entries that informed the essay, and an **Open Review** section linking to any sparring notes with a summary of unresolved counterarguments.
 - **New directory in `research/`** — Add to `research/README.md` contents table. If it relates to a docs/ essay, mention it there.
 - **New experiment journal in `research/`** — An experiment journal (e.g. `research/ai-tooling/local-llm-experiment-journal.md`) is a dated, append-only log of hands-on tries separate from the stable guide. When creating one: (1) add it to `research/README.md`; (2) link it from the related stable guide (e.g. `docs/ai-engineering/local-llm-setup.md`) with a one-line pointer; (3) add `review: status: unreviewed` frontmatter with notes `"Experiment log. Commands verified by author at runtime; outcomes may change with new software versions."` When promoting a journal finding into a stable guide, update the guide and note the promotion in the journal entry.
-- **New command in `.cursor/commands/`** — Consider whether `.cursorrules` TACHES section needs updating.
-- **New skill in `.cursor/skills/`** — Consider whether `.cursorrules` TACHES section needs updating.
+- **New skill in `.agents/skills/`** — No registry update needed; Cursor/Claude/Pi discover it automatically.
 - **New rule in `.cursor/rules/`** — No registry to update, but verify the rule doesn't conflict with existing rules.
 - **New planning project in `.planning/`** — Ensure a corresponding backlog item exists in `BACKLOG.md`.
 - **New library entry in `library/`** — Update `library/README.md` index. Check if the reference is relevant to any active project's curated reading list.
@@ -49,7 +48,7 @@ When adding external URLs (http/https) to any markdown file, **verify the link r
 When writing prose that mentions a specific file, command, script, rule, or skill by name, link it to the actual implementation on first mention. The reader should be able to follow the reference without searching.
 
 **Link these on first mention in a section or document:**
-- Commands: `` [`/spar`](path/to/spar.md) `` — link to `.cursor/commands/`
+- Commands/skills: `` [`/spar`](path/to/SKILL.md) `` — link to `.agents/skills/<name>/SKILL.md`
 - Rules: `` [`shoshin.md`](path/to/shoshin.md) `` — link to `.cursor/rules/`
 - Scripts: `` [`fetch-transcript.py`](path/to/script) `` — link to the script file
 - Skills: `` [`create-meta-prompts`](path/to/SKILL.md) `` — link to the skill's `SKILL.md`
@@ -73,9 +72,8 @@ These registries MUST be updated when their content changes. This is the most co
 | New file in `library/` | `library/README.md` enriched entries table, `library/catalog.md` |
 | New directory in `research/` | `research/README.md` contents table |
 | New experiment journal in `research/` | `research/README.md`, linked stable guide in `docs/` |
-| New command in `.cursor/commands/` | `.cursorrules` command count and list |
+| New skill in `.agents/skills/` | Auto-discovered; no registry needed |
 | New project in `.planning/` | `.cursorrules` planning section, `BACKLOG.md` |
-| New prompt in `.prompts/` | `.cursorrules` prompts description |
 
 ## `.cursorrules` is orientation, not inventory
 
