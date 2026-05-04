@@ -5,12 +5,6 @@
 
 ## In Progress
 
-### Zanshin Kit — portable working style (Phase 3: output format anchoring)
-- **Product:** meta / tooling
-- **Context:** Phase 1 and 2 complete. Phase 3 in progress: spar output templates added (Type/argument/why it matters/Strength + Self-Audit block) to anchor format consistency across tools; collaboration style section added (brevity, cut before adding). Root cause of Phase 3: same model (Claude), different output quality in Copilot Chat vs. Cursor — diagnosed as missing output templates, not model capability. Pending: close-out mode with real accumulated context still untested. Scope items deferred: cross-linking portable form, backlog capture, Copilot keyword registration. See `.planning/zanshin-kit/ROADMAP.md` for full findings.
-- **Links:** `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md`, `.planning/zanshin-kit/BRIEF.md`, `.planning/zanshin-kit/ROADMAP.md`
-- **Started:** 2026-04-20
-
 ### Upstream PR: `operators-installer` — `upgradeChain` (chart v3.5.0)
 - **Product:** argo (OpenShift / OLM GitOps)
 - **Context:** Contribution to [redhat-cop/helm-charts](https://github.com/redhat-cop/helm-charts) adding strict, list-position-based operator upgrade sequencing for non-semver CSV names and staged GitOps hops. Implementation lives on fork **`hhellbusch/redhat-cop-helm-charts`** (`main`); open the PR when ready (compare view sometimes times out on GitHub — use local `git diff upstream/main...HEAD` if needed).
@@ -47,29 +41,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md`, `.planning/zanshin-kit/BRIEF.md`, `.planning/zanshin-kit/ROADMAP.md`
 - **Added:** 2026-04-21
 
-### Zanshin Kit — assess spar output quality divergence
-- **Product:** meta / tooling
-- **Context:** Deferred train of thought from 2026-04-21. Symptom: spar output in the kit (Copilot Chat) may differ in quality from spar output in the source workspace (Cursor/Claude). Phase 1 ROADMAP noted spar mechanism transferred — vocabulary and discipline present. But the user wants to assess this more carefully. Key questions: is the divergence in argument classification, self-audit depth, steel-manning quality, or something else? Is it model-dependent (Copilot vs. Claude) or document-dependent (mechanism not fully encoded)? See `research/framework-efficacy/` for controlled comparison protocol.
-- **Links:** `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md`, `.planning/zanshin-kit/ROADMAP.md`, `research/framework-efficacy/`
-- **Added:** 2026-04-21
-
-
-### Source: fetch and analyze UHVFcUzAGlM (Paude/Claude autonomous mode video)
-- **Product:** research / paude-integration
-- **URL:** https://www.youtube.com/watch?v=UHVFcUzAGlM&t=1166s (timestamp 19:26 specifically flagged)
-- **Context:** User shared during April 29 session in the context of Paude/Claude exploration and the YOLO-mode / workspace-as-orchestration-layer vision. Not yet fetched. Likely demonstrates Claude Code in autonomous mode relevant to the grill-me → brief → Paude kick-off workflow. Should be fetched via transcript tool and added to `research/pai-kai-paude/` alongside existing Miessler analysis.
-- **Action:** Fetch transcript → analyze against `research/pai-kai-paude/assessment.md` → surface what's new for the orchestration design
-- **Added:** 2026-04-29
-
-### Zanshin-kit portability test and YOLO-mode design
-- **Product:** meta / tooling / research
-- **Context:** April 29 session surfaced a gap: the zanshin-kit has been embedded in the Field Notes workspace but hasn't been tested in a genuinely isolated context. The YOLO-mode vision (autonomous agents running on local compute, user observing and measuring results in an engineered way) requires the kit to work without the full workspace context. Key questions to explore:
-  - Does a reader have enough in the Zanshin kit (`submodules/zanshin-pi-extension/kit/`) to act on it without knowing this workspace?
-  - The framework-efficacy measurement system (`research/framework-efficacy/`) measures session outcomes but doesn't connect to the output layer — the case studies carry patterns but not evidence. Is that loop worth closing?
-  - The "teach others to fish" aspiration: case studies and patterns need to be self-contained enough that the author isn't required to interpret them. Are they?
-  - The YOLO-mode reader as an interesting secondary audience — someone designing agentic workflows who wants to know which failure modes require human intervention vs. which quality gates can be automated.
-- **Relates to:** `.planning/paude-integration/`, `research/framework-efficacy/`, `submodules/zanshin-pi-extension/` (submodule), `.planning/zanshin-kit/ROADMAP.md`
-- **Added:** 2026-04-29
 
 ## Up Next
 
@@ -94,11 +65,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `docs/ai-engineering/local-llm-setup.md`, `research/openshift-ai-llm-deployment/sources/ref-61.md`, `docs/ai-engineering/openshift-ai-llm-deployment-summary.md`
 - **Added:** 2026-04-19
 
-### Zen-karate personal knowledge base — experiential content
-- **Product:** docs
-- **Context:** Template and structural scaffolding complete. AI-enriched content in place: training history, lineage maps, teachers/influences (Shihan, Sensei, Inoue, Rika Usami), Athens club context, notes/fragments. **What remains is the experiential core that only the user can provide:** formative moments, philosophical anchors (what concepts mean through practice), life application examples, Shi Heng Yi connection, "what's hard to convey," and the crystallizing moments for Shihan and Sensei. This is the critical path to essay readiness — without it, drafting leans on research rather than practitioner voice.
-- **Links:** `research/zen-karate-philosophy/personal-notes.md`, `.planning/zen-karate/`
-- **Added:** 2026-04-17
 
 ### Essay: The Way Is in Training (first essay)
 - **Product:** docs
@@ -120,11 +86,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/zen-karate-philosophy/curated-reading.md`, `.planning/zen-karate/`
 - **Added:** 2026-04-17
 
-### Headless browser fallback for research fetcher
-- **Product:** meta
-- **Context:** The research skill's `fetch-sources.py` gets blocked by some sites (HTTP 403/429). A headless browser fallback was designed during the skill validation run but not implemented. Would improve source capture rate beyond the current ~85%.
-- **Links:** `.cursor/skills/research-and-analyze/`, `docs/case-studies/building-a-research-skill.md`
-- **Added:** 2026-04-10
 
 ### Low-content capture improvements for research skill
 - **Product:** meta
@@ -145,14 +106,11 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Idea:** Use AI agents to design and run structured experiments — factorial designs, controlled comparisons, hypothesis-driven testing. Starting point: identify a concrete problem in the workspace (performance, workflow efficiency, or technical evaluation) and have the agent design the experiment: define factors, levels, response variables, and run order. Build toward a repeatable DOE workflow that agents can execute with human review of design and interpretation.
 - **Context:** DOE is an existing practice skill (see `ABOUT.md`); the goal is extending it into agent-assisted work, not learning DOE from scratch.
 
-### ~~Normalize .gitmodules URLs to SSH~~ ✓
-- **Product:** meta
-- **Status:** Done — all submodules now use SSH URLs and live under `submodules/` (2026-05-03)
 
 ### Research: LID (Linked-Intent Development) — enterprise-validated agentic SDD methodology
 - **Product:** research / meta / devops
 - **Source:** https://github.com/jszmajda/lid
-- **Status:** Incorporated — lid-pi-extension scaffolded (2026-05-03). Non-code arrow adaptation written. Cursor rule and CLAUDE.md section added. Remaining: extract to own repo, open upstream discussion about non-code adaptation.
+- **Status:** Incorporated — lid-pi-extension scaffolded to a degree - want to revisit and expand (2026-05-03). Non-code arrow adaptation written. Cursor rule and CLAUDE.md section added. Remaining: extract to own repo, open upstream discussion about non-code adaptation.
 - **What it is:** A spec-driven development methodology purpose-built for agentic coding. Core claim: **code is output, not the artifact you maintain.** Intent is made explicit and traceable through a five-level chain: HLD → LLDs → EARS specs → Tests → Code. The design documents are the system; code is compiled from them. Done correctly, you can delete all tests and code and regenerate them from the documents alone.
 - **Three research angles worth pursuing:**
   1. **LID as Paude brief format.** The existing Paude assessment (Signal 3) asks: what level of task specification lets a fire-and-forget agent produce interactive-session quality? LID's HLD + LLD + EARS is a structured answer. A YOLO-mode agent given a LID-formatted spec has the why (HLD), the how (LLD), the what (EARS), and success criteria (specs). Code failures are recoverable — re-run from specs. Intent wasn't lost, only the output was.
@@ -185,15 +143,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** https://github.com/juliusbrussee/caveman
 - **Added:** 2026-04-29
 
-### Zanshin-kit as Pi extension
-- **Product:** meta / tooling / zanshin-kit
-- **Context:** Pi's extension API (since v0.59.0) exposes a `before_agent_start` hook that appends to the system prompt and an `input` hook for slash-command-style triggers. The caveman Pi port demonstrates the pattern. A zanshin extension would inject the always-on behavioral rules (re-read files before deciding, repo beats memory, no fabricated URLs, no review frontmatter) via `before_agent_start`, and wire `spar` / `shoshin` / `checkpoint` as input commands.
-- **Design constraint:** The always-on rules must be compact — the full `WORKING-STYLE.md` (259 lines) is too long to inject per-request. The distillation work (compact form, ~10-15 lines) is the real effort. The TypeScript wrapper is trivial once the prompt exists.
-- **Deployment:** **Standalone GitHub repo** + `pi install git:…` (normal distribution). L0 prompt lives in the extension; this workspace keeps **`.pi/SYSTEM.md`** repo-only (no duplicate L0 once installed). Author creates empty remote, push scaffold there — see `.planning/ai-context-architecture/ROADMAP.md` Phase 3.
-- **Headless note:** `input` hook commands only fire in interactive sessions; headless paude runs should bake spar/shoshin invocations into the spec file. The `before_agent_start` injection is what makes this valuable headlessly.
-- **Relationship to zanshin-kit roadmap:** Additive step after L0 text stabilizes. Execution plan: `.planning/ai-context-architecture/` (replaces vague “after Phase 3 closes”).
-- **Links:** `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md`, `docs/ai-engineering/session-framework.md`, https://github.com/habitssss/pi-caveman-mode (reference implementation)
-- **Added:** 2026-05-02
 
 ### Paude domain aliases and defaults.json setup
 - **Product:** paude / tooling
@@ -210,21 +159,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `.cursor/rules/shell-strict-mode.md`, `devops/argo/examples/scripts/`
 - **Added:** 2026-04-21
 
-### Claude Code plugin distribution for .claude/
-- **Product:** meta / tooling
-- **Context:** The `.claude-plugin/` directory (vestigial, Feb 2026) held metadata for a plugin marketplace concept that never shipped. Now that `.claude/commands/` is a version-controlled source of adapted workspace commands, explore whether a plugin distribution mechanism makes sense — packaging `.claude/commands/` + `CLAUDE.md` so others could install the Zanshin behavioral framework into their Claude Code environment without cloning the full workspace. Similar intent to the portable Zanshin kit (`submodules/zanshin-pi-extension/kit/`, submodule + `pi install`) but targeted at Claude Code specifically. Questions to explore: does Claude Code have a plugin/extension registry? Would a `package.json`-style manifest + install script be enough? Relationship to the same kit content — same audience (portable framework) different mechanism (CLI install vs. file copy).
-- **Links:** `.claude/`, `submodules/zanshin-pi-extension/kit/STANDALONE-KIT.md` (long-form kit setup doc), `.claude-plugin/` (reference only — vestigial)
-- **Added:** 2026-04-21
-
-### Meta system optimization — faster start, lower token usage
-- **Product:** meta / tooling
-- **Context:** Brainstorm from 2026-04-21. Willing to entertain trade-offs. Key tension: always-on rules exist because opt-in behaviors get missed; conditional loading trades recall precision for speed. Ideas by category:
-  - **Rule loading:** fold `cross-linking.md` into `/review` (only matters at commit time); merge `backlog-capture.md` + `case-study-reflection.md` into one rule; fold `feedback-checkpoints.md` into `session-awareness.md`; tiered model (lightweight label always loaded, full spec loaded on activation); audit `repo-structure.md` for always-on value
-  - **Context compression:** BACKLOG summary header (counts + recent Done) read first by `/start`, full detail on demand; `.cursorrules` TÂCHES section → pointer to `.cursor/README.md`; compressed whats-next.md variant (5 lines: in-progress, next step, key decision) as default
-  - **Session start:** minimum viable start = BACKLOG summary + git log, everything else deferred; session type detection (docs/writing → load style rules; technical → skip them); gate planning one-liners on whether session has planning relevance
-  - **Handoff/state:** whats-next staleness threshold — surface archive prompt if >N commits stale; SHA-anchored workspace state snapshot as single diff target; more aggressive Done rolling cap (3–5 items)
-  - **"Read before deciding" review:** The minimum viable load in `framework-bootstrap.md` includes "never trust in-context memory of a file; re-read it." This principle is defensive but may be driving heavy token usage — every decision triggers a file read. Worth examining whether a tiered version is better: re-read for high-stakes decisions (design choices, before committing) but not for routine orientation. Tension: the principle exists because compressed memory causes real errors; the cost is real too.
-- **Added:** 2026-04-21
 
 ### Source review: Zanshin — Traditional Aikido of Colorado Springs
 - **URL:** https://cos-aikido.com/2023/05/11/zanshin-remaining-mind-cultivating-a-budo-mindset-part-2/
@@ -272,17 +206,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `docs/ai-engineering/session-framework.md`, `docs/philosophy/zanshin.md`
 - **Added:** 2026-04-20
 
-### Framework: "natural state restored" framing in framework-bootstrap.md
-- **Product:** docs (ai-engineering)
-- **Context:** The bootstrap document is the single-file entry point for new users and other tools. Its current framing implies the framework installs something new. The zanshin natural-state framing is more accurate and more compelling for external readers: "You wouldn't forget what you decided yesterday if you were working with a human collaborator. The model forgets by design. The framework restores the conditions under which coherent work naturally happens." One sentence that makes the case without requiring background. Consider adding this to the opening or rationale section of `framework-bootstrap.md`.
-- **Links:** `docs/ai-engineering/framework-bootstrap.md`, `docs/philosophy/zanshin.md`
-- **Added:** 2026-04-20
 
-### Framework: "connection" framing in sparring-and-shoshin.md
-- **Product:** docs (ai-engineering)
-- **Context:** The Aikido source frames zanshin as *connection* — staying connected to the work and the opponent through the technique. This sharpens how the two practices relate: shoshin is about staying connected to what the work is actually about (not what you've assumed it's about); sparring is about staying connected to whether the work is doing what you think it's doing. Both are "maintained connection to what's real" — a framing that makes their complementary relationship clearer than the current "sparring challenges outputs, shoshin challenges starting frames" description. Worth adding a sentence or two to `sparring-and-shoshin.md` that names this shared root.
-- **Links:** `docs/ai-engineering/sparring-and-shoshin.md`, `docs/philosophy/zanshin.md`
-- **Added:** 2026-04-20
 
 ### Research avenue: AI agent memory and cross-session coherence
 - **Product:** research (new directory)
@@ -291,32 +215,17 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **First step:** Read the four backlog sources above; pull any worth keeping into `library/`; open a synthesis note on where the engineering solutions end and the practice gap begins
 - **Added:** 2026-04-20
 
-### ~~Case study: link depth drift — when a folder move silently breaks navigation~~ ✓ Done 2026-04-20
-- Published as `docs/case-studies/link-depth-drift.md`. Companion to the gitignore drift case: same directory reorganization, different failure surface. 23 links off by exactly one `../`, none signaled at commit time, found by audit months later. Covers the mechanism (relative upward links encode depth), the silence signature (uniformity), and the pre-commit check now in `repo-structure.md`. Registered in case studies README.
 
-### Case study: when the framework became tool-portable
-- **Product:** docs (case-studies)
-- **Context:** The peer parallel problem session (Ansible playbook from a manual procedure) showed that the Zanshin framework can be loaded into GitHub Copilot by cloning the repo alongside a project on the filesystem. First evidence the framework is tool-agnostic. The `framework-bootstrap.md` doc was built as a direct result — a single-file entry point designed for exactly this load pattern. Case study would cover: the accidental discovery, the bootstrap design decisions, what "minimum viable load" means, and the open question of which framework components drove the generation quality difference. Connects to the cross-tool portability claim in the framework efficacy track.
-- **Links:** `docs/ai-engineering/framework-bootstrap.md`, `research/framework-efficacy/intervention-log.md`
-- **Added:** 2026-04-20
 
-### Framework bootstrap: peer comparison follow-up
-- **Product:** research / meta
-- **Context:** In a parallel problem session, Henry loaded the framework into GitHub Copilot by cloning this repo alongside a private project and asking Copilot to read it. Peer used standard Copilot. Copilot compared both solutions; Henry's was preferred on first pass. First cross-practitioner, cross-tool comparative event — logged in `research/framework-efficacy/intervention-log.md`. **Follow-up needed:** (1) record what problem was being solved, (2) confirm exactly which files Copilot loaded, (3) repeat with the same or different peer, using `framework-bootstrap.md` as the explicit single-file load, (4) log the comparison in the counterfactual protocol. The bootstrap doc now exists — this is about repeating and instrumenting the experiment, not about building more infrastructure.
-- **Links:** `research/framework-efficacy/intervention-log.md`, `docs/ai-engineering/framework-bootstrap.md`
-- **Added:** 2026-04-20
 
-### ~~Essay: "Prompting is necessary but not sufficient — tackling state management"~~ ✓ Done 2026-04-20
-- Published as `docs/ai-engineering/prompting-and-state.md`. Argues the two failure modes (within-session quality vs. cross-session coherence) are independent and compound when both are addressed. Companion to `session-framework.md` (the how) — this argues the why it matters and what the gap is. Registered in `docs/ai-engineering/README.md` and `docs/README.md`.
+
+
 
 ### Essay / guide: crafting a public identity for an AI workspace — the ABOUT.md pattern
 - **Product:** docs (meta / AI-engineering)
 - **Context:** This session produced a real workflow: resume → collaborative ABOUT.md → person-first public context that the AI reads and humans can share. The process involved sparring on labels ("systems engineer" vs. "engineer" vs. "omni-competent"), shoshin on what an external reader actually needs, and two rounds of cuts (too wordy, too much lifted input). The output — a short, honest about page that describes the person rather than the current corpus — is a generalizable pattern for any AI workspace intended as a public record. Worth documenting: what makes a good ABOUT.md, why it's different from a resume, how it affects AI behavior, and the specific failure mode it prevents (corpus-to-identity conflation). Companion to the "When the Repository Becomes the Resume" case study.
 - **Links:** `docs/case-studies/when-the-repository-becomes-the-resume.md`, `ABOUT.md`, `.cursor/rules/cross-linking.md`
 - **Added:** 2026-04-20
-
-### ~~Case study: feedback from an AI is still a symptom report, not a diagnosis~~ ✓ Done 2026-04-20
-- Published as `docs/case-studies/ai-self-diagnosis-symptom-report.md`. Registered in `docs/case-studies/README.md` and `docs/README.md`.
 
 ### Case study: language precision matters — how /spar sharpened a framework artifact
 - **Product:** docs (case-studies)
@@ -335,24 +244,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Possible implementation:** One line in frontmatter. No UI needed — just a convention for cross-collection analysis later.
 - **Added:** 2026-04-20
 
-### ~~Case study: The Frictionless Entity~~ ✓ Done 2026-04-20
-- Published as `docs/case-studies/frictionless-entity.md`. Names the core failure mode sparring and shoshin defend against: AI is structurally optimized to be frictionless, and naive use atrophies the capacity for friction-dependent judgment in both professional and personal contexts. Cross-domain source: Kate Cassidy's analysis of AI in relationships. Registered in case studies README (#22). Linked from `sparring-and-shoshin.md` starting points table.
-
-### ~~Case study: When the System Boundary Is the Argument~~ ✓ Done 2026-04-20
-- Published as `docs/case-studies/spar-lifecycle-boundary.md`. Documents the lifecycle boundary question as a named sparring move: where you draw the system boundary determines what the number says, and the boundary choice is where the actual argument is often happening. Illustrated by Hank Green's AI water use analysis. Registered in case studies README (#23).
-
-### ~~Library entry: Hank Green — AI Water Use~~ ✓ Done 2026-04-20
-- Added `library/hank-green-ai-water-use.md` and catalog row. Models intellectual humility in technical discourse (shoshin applied publicly) and provides the worked example for the lifecycle boundary sparring methodology.
-
-### ~~Essay 2 planning: AI training attribution thread~~ ✓ Done 2026-04-20
-- Added sub-bullet to Thread 11 in `.planning/zen-karate/threads.md`. The attribution/compensation problem (AI companies building on expert communities without credit or payment) is a contemporary instantiation of the dojo's lineage obligation. Source: "The Mythos Situation" (TheStandup/PrimeTime, 2026).
-
-### ~~Intro page: sparring and shoshin (shareable with peers)~~ ✓ Done 2026-04-20
-- Published as `docs/ai-engineering/sparring-and-shoshin.md`. Covers both practices, how they complement each other, and links to the deeper case studies and philosophy essays. Added to `docs/README.md` index as a companion guide to the engineering track.
-
-### ~~Encode experiment journals in the meta framework~~ ✓ Done 2026-04-20
-- Added trigger + registry row to [`cross-linking.md`](.cursor/rules/cross-linking.md); bullet to [`session-awareness.md`](.cursor/rules/session-awareness.md); category row + notes default to [`review-tracking.md`](.cursor/rules/review-tracking.md); `review:` frontmatter to pilot journal.
-
 ### Hybrid local/cloud workflow — task routing and skill optimization
 - **Product:** meta
 - **Context:** Most workflow tasks fall into two categories: (1) bounded, atomic operations that fit in ~14k context (single-file edits, processing one source, drafting a section, targeted lookups) — these can run locally on `qwen3:30b-a3b` via RamaLama; (2) tasks requiring simultaneous access to many files or cross-corpus awareness (research synthesis across 10+ sources, corpus-level spar, cross-essay voice consistency, session planning) — these need Sonnet. The goal is an explicit routing convention and redesigned skills that work within local context constraints.
@@ -368,14 +259,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `.cursor/skills/research-and-analyze/`, `.cursor/skills/create-plans/`, `BACKLOG.md` (workspace architecture item below)
 - **Added:** 2026-04-20
 
-### ~~Case study: model self-report of runtime state~~ ✓ Done 2026-04-20
-- Published as `docs/case-studies/model-self-report-runtime-state.md`. Cross-linked from `local-llm-setup.md`. Source: experiment journal 2026-04-20 RamaLama entry.
-
-### ~~Case study: model self-report of runtime state — context window edition~~ ✓ Done 2026-04-20
-- Covered in `docs/case-studies/model-self-report-runtime-state.md` (the 32k self-report vs. 14k actual `n_ctx` is the central example of that case study). No separate document needed.
-
-### ~~Case study: survivorship bias in recommendations~~ ✓ Done 2026-04-20
-- Published as `docs/case-studies/survivorship-bias-recommendations.md`. Documents elimination-framing dressed as quality recommendation, with the local LLM failure sequence as the worked example. Registered in case studies README.
 
 ### Case study: the experiment that can't use its own findings
 - **Product:** docs
@@ -467,8 +350,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`, `research/ai-tooling/local-llm-setup-sparring-notes.md`, `docs/case-studies/README.md`, `BACKLOG.md` (electricity track), `.cursor/rules/workspace-ethos.md`
 - **Added:** 2026-04-20
 
-### ~~`/audit`: detect orphaned docs not referenced in master index~~ ✓ Done 2026-04-20
-- Implemented as a two-tier check in `/audit` Layer 2d: **true orphan** (not in any README — structural bug) vs. **curated omission** (in track README but not master index — intentional). Uses PCRE extraction for clean path parsing. Verified against current corpus: zero true orphans, zero stale master refs. Three files (`local-llm-setup.md`, `local-llm-vllm.md`, `youtube-video-analysis.md`) confirmed as intentional curated omissions from the master reading path. Also fixed Layer 1 link-check regex (was capturing link text + path; now captures path only via lookbehind).
 
 ### Index: surface review status as a trust signal (undecided)
 - **Product:** meta
@@ -476,8 +357,6 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Context:** Most docs are unreviewed or direction-reviewed; only 3 files have `status: reviewed` as of 2026-04-20. Surfacing review status in `docs/README.md` as a sorting key or trust signal was considered and deferred — too few reviewed files for it to be meaningful signal, and risks optimizing reviews for index position rather than quality. Revisit when reviewed coverage improves meaningfully (rough threshold: 30%+ of docs fully reviewed). Possible implementation: "(author reviewed)" parenthetical in descriptions of fully-reviewed pieces; not a sorting key.
 - **Added:** 2026-04-20
 
-### ~~docs/README.md — consider unordered lists for case study categories~~ ✓ Done 2026-04-20
-- Converted all three case study categories (Build / Failure / Workflow) to unordered lists. Essays (1–11 across AI-engineering and philosophy tracks) remain numbered — reading order matters there. The cross-ref audit found numeric references only in `BACKLOG.md` internal notes; those have been updated to use titles. Sparring-and-shoshin guide moved from awkward sub-bullet to a "Companion guides" unordered section after the AI-Engineering essays.
 
 ### Formalize draft status in review-tracking frontmatter
 - **Product:** meta
@@ -512,7 +391,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `docs/case-studies/README.md`
 - **Added:** 2026-04-19
 
-### Research: agile dojo movement — verified outcomes (Essay 2 blocker)
+### Research: agile dojo movement — verified outcomes
 - **Product:** docs / research
 - **Context:** Essay 2 (The Dojo, Open Source, and Ways of Working) cites Target, Ford, and Pivotal Labs as engineering dojo programs. The current framing assumes mixed or failed outcomes — that the programs borrowed vocabulary without philosophy. If research shows success, the essay thesis changes. Do not draft Essay 2 without verified outcomes. Research scope: What happened to Target's dojo program? Ford's dojo? Pivotal's pairing model? Were they continued, scaled, discontinued, or evolved? What do practitioners say about outcomes? Also covers code kata origins (Dave Thomas) and open source etiquette formalization (contributor guidelines history). See `.planning/zen-karate/essay-outlines.md` (Essay 2 outline, Research Needed section).
 - **Links:** `.planning/zen-karate/essay-outlines.md`, `BACKLOG.md` (Essay 2 Up Next entry)
@@ -633,7 +512,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Relates to:** `Local model as Paude inference backend`, `Explore Paude for containerized agent workflows`, `research/openshift-ai-llm-deployment/`, `devops/argo/examples/helm-component-pattern/`, `Zanshin-kit portability test and YOLO-mode design`
 - **Added:** 2026-04-29
 
-### Local model as Paude inference backend — home and OpenShift AI *(lower priority — POC on public models first)*
+### Local model as Paude inference backend — home and OpenShift AI 
 - **Product:** meta / research / devops (argo / OpenShift AI)
 - **Context:** Paude runs Claude Code / Gemini CLI / etc. inside containers and calls out to the cloud inference API. The question: can the inference call be pointed at a local model (Ollama at home, vLLM on OpenShift AI) instead — making agent orchestration fully on-premises or hybrid, with no cloud API dependency?
 - **Two deployment targets:**
@@ -662,27 +541,15 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** https://github.com/bbrowning/paude, `.planning/paude-integration/`, `research/pai-kai-paude/`, `devops/ocp/`
 - **Added:** 2026-04-17 · **Updated:** 2026-04-29
 
-### ~~Repo reorganization: move DevOps technical samples into a subfolder~~ ✓ Done 2026-04-20
-- Moved `ansible/`, `argo/`, `coreos/`, `ocp/`, `rhacm/`, `vault/` → `devops/{name}/`. Updated all cross-references in README, docs, .cursor/ commands/rules, .cursorrules, BACKLOG. Root directory now: `devops/ docs/ examples/ library/ research/`. Also produced a case study on the gitignore drift failure mode that emerged from the move.
 
-### Expand OCP troubleshooting guides
-- **Product:** ocp
-- **Context:** Several existing troubleshooting guides could be expanded with additional detail or new guides added for common issues encountered in the field. The troubleshooting section is one of the most practical parts of the repo for peers.
-- **Links:** `devops/ocp/troubleshooting/`
-- **Added:** 2026-04-17
 
 ### Expand RHACM troubleshooting guides
 - **Product:** rhacm
-- **Context:** Two guides created 2026-04-21 from a live ACM 2.15 EUS upgrade session: managed cluster lease not updated (registration agent stopped updating its lease) and MCH stuck in Pending during upgrade (including the frozen `Progressing: False` condition scenario, stale ClusterRole conflict, and KB 7116241). The frozen-condition case is unresolved — open support case with Red Hat engineering citing KB 7116241 for a production-safe remediation path that does not require MCH delete/recreate. Update guides with outcome once resolved.
+- **Context:** Two guides created 2026-04-21 from a live ACM 2.15 EUS upgrade session: managed cluster lease not updated (registration agent stopped updating its lease) and MCH stuck in Pending during upgrade (including the frozen `Progressing: False` condition scenario, stale ClusterRole conflict, and KB 7116241). The frozen-condition case is unresolved — open support case with Red Hat engineering citing KB 7116241 for a production-safe remediation path that does not require MCH delete/recreate. Update guides with outcome once resolved. RECENTLY LEARNED ABOUT THE BACKUP CAPABILITIES - could improve the kb with this.
 - **Links:** `devops/rhacm/troubleshooting/`
 - **Added:** 2026-04-21
 
 
-### CoreOS troubleshooting section
-- **Product:** coreos
-- **Context:** Currently only have `devops/coreos/examples/` with Butane configurations. No troubleshooting guides yet. Could document common ignition/butane issues encountered during deployments.
-- **Links:** `devops/coreos/examples/`
-- **Added:** 2026-04-17
 
 ### Paude as external executor for meta-prompting pipelines
 - **Product:** meta
@@ -690,123 +557,3 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** https://github.com/bbrowning/paude, `.planning/paude-integration/`, `.cursor/skills/create-subagents/references/orchestration-patterns.md`
 - **Blocked on:** Paude evaluation Phase 5 assessment
 - **Added:** 2026-04-17
-
-## Done
-
-Rolling cap: at most **15** items stay here (newest first). Older completions live in `BACKLOG-ARCHIVE.md` (see `/backlog` command — **Done retention**). Git history remains authoritative.
-
-### Case studies (helm-component-pattern retro) + grill-me + CLAUDE.md simplification ✓ Done 2026-04-29
-- Two case studies written: `docs/case-studies/technical-correctness-vs-communication.md` and `docs/case-studies/inherited-frame-shapes-solution.md`. Registered in `docs/case-studies/README.md`. `/grill-me` command created in `.cursor/commands/` and `.claude/commands/`. CLAUDE.md simplified from ~223 → 183 lines (Session Orientation, Context Compaction, Stack Tracking, Feedback Checkpoints compressed; Case Study Reflection removed from CLAUDE.md → relocated to `/checkpoint` Step 2.3). `alwaysApply: false` set on `feedback-checkpoints.md` and `case-study-reflection.md` Cursor rules. Three new backlog items logged (caveman, local model Paude, enterprise OCP AI agent platform).
-
-### Meta: full content audit + systemic link/registry fixes ✓ Done 2026-04-20
-- Ran `/audit` across 717 committed markdown files. Fixed 29 files: 23 `AI-DISCLOSURE.md` link depth errors (all caused by devops folder move — paths uniformly off by one `../`), 5 docs missing from `docs/README.md` (including `framework-bootstrap.md`), 3 research dirs missing from `research/README.md`, missing Zanshin anchor links in `the-shift.md`, 6 devops internal cross-links. Root-caused the false-positive problem (260/353 "broken links" were scraped web content + fenced code blocks). Applied three systemic fixes: audit Layer 1 exclusions, `/whats-next` registry sync check, `repo-structure.md` link-depth-drift guidance for directory moves.
-- **Links:** commits `624d386`, `d948f78`, `c9201fa`
-
-### Framework: spar trigger evaluation hook ✓ Done 2026-04-20
-- Added Step 2.4 to `/checkpoint` and Step 1.3 to `/whats-next`: evaluate six (seven at session close) spar trigger conditions and surface a recommendation if two or more fire. Distinguishes necessary (argumentative + external-facing, or load-bearing claim + trade-off decision) from beneficial (any two triggers) from skip (mechanical session). Never auto-runs — always asks first.
-- **Links:** `.cursor/commands/checkpoint.md`, `.cursor/commands/whats-next.md`
-
-### Framework: /start simplification audit ✓ Done 2026-04-20
-- Audited all `/start` steps against "does the user need this every session?" Steps 2.5 (brief alignment) and 4 (ROADMAP status) both load every planning project file on every session start — cost grows proportionally as the workspace grows. Made both opt-in: Step 2.5 now announces planning projects without reading BRIEFs; Step 4 only reads ROADMAPs when the user is resuming a specific project. Steps 0, 1, 2, 3, 5 stay always-on (ABOUT.md, backlog, handoff, git log, suggestions — all genuinely needed every session).
-- **Links:** `.cursor/commands/start.md`
-
-### Framework: stack-based conversation tracking ✓ Done 2026-04-20
-- Added push/pop posture to `.cursor/rules/session-awareness.md` — recognizes depth-first navigation as a conversational posture, not a state machine; agent surfaces "that feels resolved — want to return to X?" when a branch concludes. Added optional `**Open threads (stack):**` field to both `/checkpoint` and `/whats-next` formats.
-- **Links:** `.cursor/rules/session-awareness.md`, `.cursor/commands/checkpoint.md`, `.cursor/commands/whats-next.md`
-
-### Research: Miessler Single DA Thesis — transcript, full pipeline, Thread 21
-- **Product:** library / research / docs
-- **Context:** Fetched and fully analyzed Miessler's "We're All Building a Single Digital Assistant" (32 min, Unsupervised Learning). Ran complete research-and-analyze pipeline: proper directory structure (`research/miessler-single-da-thesis/`), manifest, transcript in `sources/`, batch findings (core thesis + workspace connections), assessment. Created library entry with confidence table and upstream cross-reference into PAI entry. Cross-linked into Dojo After the Automation essay (Sources + Related Reading). Added Thread 21 (The Amplification Line) to zen-karate threads — the question of when DA delegation amplifies vs. forecloses development. Also documented and remediated systematic skill compliance failures from the initial fetch session.
-- **Links:** `research/miessler-single-da-thesis/`, `library/daniel-miessler-single-da-thesis.md`, `library/catalog.md`, `docs/philosophy/the-dojo-after-the-automation.md`, `.planning/zen-karate/threads.md`
-- **Completed:** 2026-04-18
-
-### Case study: spar-distortion — when the sparring partner shapes the fighter
-- **Product:** docs
-- **Context:** Self-spar (#13-18) caught that the Dojo After the Automation essay's oppositional framing was a distortion created by the spar-driven drafting process. Essay revised from "I disagree" to "I agree AND." Case study documents tool-induced bias: the same tool that catches bias created it. Labeled `failure` — adversarial energy absorbed into structure. Registered in case studies README (failure category) and docs reading order.
-- **Links:** `docs/case-studies/spar-distortion.md`, `docs/philosophy/the-dojo-after-the-automation.md`, `research/zen-karate-philosophy/sparring-notes.md`
-- **Completed:** 2026-04-18
-
-### Dojo After the Automation — revised from opposition to extension
-- **Product:** docs
-- **Context:** Major reframe after self-spar: "Two Prescriptions" → "The Same Direction." Human 3.0 as shared destination; essay asks who builds the humans. Future A reattributed to cost-reduction CFO, not Miessler. Capability stack engaged directly. Federation/Borg replaced with middle-ground acknowledgment. Library entries updated: "counter-tension" → "shared direction." Sparring notes round 2 (#13-18) logged.
-- **Links:** `docs/philosophy/the-dojo-after-the-automation.md`, `library/daniel-miessler-ai-replace-knowledge-workers.md`, `library/daniel-miessler-pai.md`
-- **Completed:** 2026-04-18
-
-### Case study: spar-to-essay pipeline (spar #9 → Thread 20 → drafted essay)
-- **Product:** docs
-- **Context:** Published case study documenting how adversarial argument #9 escalated from counter-position through voice inputs to Thesis D, Thread 20, and a fully drafted essay in one session. Spar as generative pressure, not just quality gate. Registered in both READMEs.
-- **Links:** `docs/case-studies/spar-to-essay-pipeline.md`, `docs/philosophy/the-dojo-after-the-automation.md`, `research/zen-karate-philosophy/sparring-notes.md`
-- **Completed:** 2026-04-18
-
-### Enriched library entry for PAI (Personal AI Infrastructure)
-- **Product:** library
-- **Context:** Full seven-component architecture breakdown, The Algorithm's two-loop structure, convergent patterns with this workspace (skills, hooks, memory, review), key divergences (rating/signal capture, personality, formalized algorithm), mutual learning opportunities. Catalog updated with enriched link.
-- **Links:** `library/daniel-miessler-pai.md`, `library/catalog.md`
-- **Completed:** 2026-04-18
-
-### Session boundary anchoring — /start and /whats-next improvements
-- **Product:** meta
-- **Context:** Three fixes implemented: (1) `/start` reordered — backlog snapshot is now Step 1 before handoff check (Step 2), giving project-level context structural primacy over session-level continuity; (2) `/whats-next` now has a Step 0 gate that evaluates whether a handoff is genuinely needed — if work is fully committed and backlog is current, it skips handoff creation and offers to clean up stale files; (3) handoff staleness check — `/start` compares `whats-next.md` mtime against latest commit and cross-references against the backlog. Session-awareness rule updated with staleness warning.
-- **Links:** `.cursor/commands/start.md`, `.cursor/commands/whats-next.md`, `.cursor/rules/session-awareness.md`
-- **Completed:** 2026-04-18
-
-### Cross-link Dojo After the Automation into four essays
-- **Product:** docs
-- **Context:** Added the new essay to Related Reading in The Shift, The Full Cup, Ego/AI/Zen, and The Meta-Development Loop with tailored descriptions for each connection.
-- **Links:** `docs/ai-engineering/the-shift.md`, `docs/philosophy/the-full-cup.md`, `docs/philosophy/ego-ai-and-the-zen-antidote.md`, `docs/ai-engineering/the-meta-development-loop.md`
-- **Completed:** 2026-04-18
-
-### Essay draft: The Dojo After the Automation — what are we building people for? (Thread 20)
-- **Product:** docs (bridge: philosophy ↔ AI-engineering)
-- **Context:** Drafted `docs/philosophy/the-dojo-after-the-automation.md`. Philosophical position paper: AI will automate execution; learning investment determines liberation vs. disposal. The co-development loop as the strongest argument. Draws from voice inputs #5-16, spar #9 response, Miessler's PAI architecture, and the Full Cup predecessor. Evidence base (*Accelerate*, displacement data) builds over time. Updated philosophy README, docs README (renumbered 10→25), archived oldest Done item.
-- **Links:** `docs/philosophy/the-dojo-after-the-automation.md`, `.planning/zen-karate/threads.md` (thread 20)
-- **Completed:** 2026-04-18
-
-### Case study: landscape pass and corpus-level spar
-- **Product:** docs
-- **Context:** Two new case studies. (14) The thread development landscape pass: assessing all 16 essay threads before drafting any, revealing thread contradictions, the 20/80 ratio, and merge candidates invisible from inside any single thread. (15) The corpus-level spar: running `/spar` across all essays simultaneously, catching scope overclaims, conditional universals, and framing drift that per-document review missed.
-- **Links:** `docs/case-studies/landscape-before-depth.md`, `docs/case-studies/corpus-level-spar.md`
-- **Completed:** 2026-04-18
-
-### Workflows essay: spar follow-up and author validation
-- **Product:** docs
-- **Context:** Adversarial review follow-through on `ai-assisted-development-workflows.md`: clarified Purpose (transferable patterns vs. this repo as reference implementation), scope line for slash commands and files, collaborator metaphor + verification framing, removed unmeasured “80%” claim, product-version caveat on instruction paths, iteration sequencing for multi-constraint infra prompts, economics section reframed against cargo-cult breakeven numbers (Braincuber / assessment cross-check), illustrative branch-triage disclaimer, Argo CD naming. Recorded `read` + `fact-checked` review metadata and updated disclosure footer.
-- **Links:** `docs/ai-engineering/ai-assisted-development-workflows.md`
-- **Completed:** 2026-04-18
-
-### AI disclosure footer check and DevOps notice harmonization
-- **Product:** meta / docs
-- **Context:** Added AI disclosure footer check to pre-commit review (always-applied rule step 4, /review command step 9). Normalized 16 DevOps READMEs with inconsistent disclosure patterns to the standard italic footer linking to AI-DISCLOSURE.md. Added the footer to 6 top-level product READMEs that had none. Individual example READMEs without existing disclosure left as-is — top-level coverage is sufficient.
-- **Links:** `.cursor/rules/pre-commit-review.md`, `.cursor/commands/review.md`, `AI-DISCLOSURE.md`
-- **Completed:** 2026-04-18
-
-### Source recovery: ref-61 economics claim verification
-- **Product:** research
-- **Context:** Recovered the braincuber.com source (ref-61) that was previously unreachable (Vercel security checkpoint blocked automated fetching). User copied the article from their browser. Key finding: the 11B token/month breakeven is real, but the source argues API wins for 87% of cases — the Jared Burck article reversed the framing. Updated verification notes, assessment, and added inline caveats to the workflows essay and deployment summary.
-- **Links:** `research/openshift-ai-llm-deployment/sources/ref-61.md`, `research/openshift-ai-llm-deployment/assessment.md`, `docs/ai-engineering/ai-assisted-development-workflows.md`
-- **Completed:** 2026-04-18
-
-### Case study: heavy safety nets — when review processes are too rigid to follow
-- **Product:** docs
-- **Context:** The pre-commit review rule required full 11-step `/review` for every commit, which caused it to be skipped for small changes — silently invalidating `the-shift.md`'s review status across three commits. Fix: scaled review depth (full vs. quick), three-layer staleness detection (edit-time, commit-time, retroactive), and SHA tracking for precise "diff since last review."
-- **Links:** `docs/case-studies/heavy-safety-nets.md`, `.cursor/rules/pre-commit-review.md`, `.cursor/commands/review.md`
-- **Completed:** 2026-04-18
-
-### Review staleness detection and SHA tracking
-- **Product:** meta
-- **Context:** Scaled pre-commit review to be proportional (full for big changes, quick for small). Added three-layer staleness detection: agent warns at edit time, `/review` step 7 catches at commit time, `/audit` layer 5d catches retroactively. `/validate` now records git SHA (`at:` field) enabling `git diff SHA..HEAD -- file` for precise re-review.
-- **Links:** `.cursor/rules/pre-commit-review.md`, `.cursor/rules/review-tracking.md`, `.cursor/commands/review.md`, `.cursor/commands/validate.md`, `.cursor/commands/audit.md`
-- **Completed:** 2026-04-18
-
-### Case study: stale context in multi-agent sessions
-- **Product:** docs
-- **Context:** AI agent removed the backlog archive system, another session restored it, and the first agent continued editing based on stale assumptions — overwriting the rolling cap and exceeding the item limit. Documented as a case study exploring anchoring on session memory vs. repository state.
-- **Links:** `docs/case-studies/stale-context-in-long-sessions.md`, `.cursor/rules/shoshin.md`, `BACKLOG.md`
-- **Completed:** 2026-04-17
-
-### Framework efficacy measurement system
-- **Product:** meta / research
-- **Context:** Built `research/framework-efficacy/` research track: `intervention-log.md` (append-only log of intervention events, seeded with IPv8 session), `counterfactual-protocol.md` (5-dimension rubric for `/spar --measure` controlled comparison), `README.md` (what the track can and can't claim). Hooked into `/whats-next` (Step 1.5), `/checkpoint` (Step 2.5), and `/spar` (`--measure` flag for naive+structured comparison). Seeded with first entry from the IPv8 spar session.
-- **Links:** `research/framework-efficacy/`, `.cursor/commands/whats-next.md`, `.cursor/commands/checkpoint.md`, `.cursor/commands/spar.md`
-- **Completed:** 2026-04-20
-
