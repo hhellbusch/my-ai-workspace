@@ -10,6 +10,7 @@ allowed-tools:
   - Grep
 ---
 
+<!-- body: ../.commands/validate.md -->
 # Validate — Mark Content as Human-Reviewed
 
 <objective>
@@ -17,8 +18,8 @@ Record that the author has reviewed and validated specific files, tracking what 
 </objective>
 
 <context>
-- Read `.cursor/rules/review-tracking.md` — review tracking convention
-- Read `AI-DISCLOSURE.md` (Review Status and Validation Types sections) — disclosure policy
+- Review tracking convention: `.cursor/rules/review-tracking.md`
+- Disclosure policy: `AI-DISCLOSURE.md` (Review Status and Validation Types sections)
 </context>
 
 <process>

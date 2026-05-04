@@ -28,7 +28,7 @@ Include enough context that a fresh session can understand the item without the 
 
 **Every backlog update gets its own commit.** Don't let backlog changes sit uncommitted — they are part of the operational audit trail. The git log should show when ideas were captured, when items were prioritized, and when work was completed.
 
-Use the `backlog:` prefix for commit messages: `backlog: add [item description]` or `backlog: complete [item], move [item] to ideas`.
+Use the `backlog:` prefix for commit messages: `backlog: add [item description]` or `backlog: remove [item]`.
 
 ## Don't Over-Capture
 

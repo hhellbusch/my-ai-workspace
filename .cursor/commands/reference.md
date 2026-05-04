@@ -12,6 +12,7 @@ allowed-tools:
   - WebFetch
 ---
 
+<!-- body: ../.commands/reference.md -->
 # Reference — Personal Library Management
 
 <objective>
@@ -20,9 +21,9 @@ Manage the personal reference library in `library/`. This persistent collection 
 
 <context>
 - Library directory: `library/`
-- Library index: @library/README.md
-- Catalog (all references): @library/catalog.md
-- Current date: !`date "+%Y-%m-%d"`
+- Library index: `library/README.md`
+- Catalog (all references): `library/catalog.md`
+- Current date: `date "+%Y-%m-%d"`
 </context>
 
 <process>

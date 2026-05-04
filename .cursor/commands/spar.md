@@ -13,6 +13,7 @@ allowed-tools:
   - WebFetch
 ---
 
+<!-- body: ../.commands/spar.md -->
 # Spar — Adversarial Review
 
 <objective>
@@ -22,10 +23,10 @@ This is the sparring partner, not the sycophant.
 </objective>
 
 <context>
-- Repo conventions: @.cursor/rules/repo-structure.md
-- Planning context: @.planning/
-- Existing threads: !`ls .planning/zen-karate/threads.md 2>/dev/null`
-- Related docs: !`ls docs/*.md 2>/dev/null`
+- Repo conventions: `.cursor/rules/repo-structure.md`
+- Planning context: `.planning/`
+- Existing threads: `ls .planning/zen-karate/threads.md 2>/dev/null`
+- Related docs: `ls docs/*.md 2>/dev/null`
 </context>
 
 <process>

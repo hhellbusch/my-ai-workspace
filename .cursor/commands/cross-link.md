@@ -11,6 +11,7 @@ allowed-tools:
   - SemanticSearch
 ---
 
+<!-- body: ../.commands/cross-link.md -->
 # Cross-Link — Find and Fix Missing Inbound Links
 
 <objective>

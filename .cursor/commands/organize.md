@@ -7,6 +7,7 @@ allowed-tools:
   - Grep
 ---
 
+<!-- body: ../.commands/organize.md -->
 # Organize — Repo Structure Audit
 
 ## Instructions

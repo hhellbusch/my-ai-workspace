@@ -7,6 +7,7 @@ allowed-tools:
   - Grep
 ---
 
+<!-- body: ../.commands/review.md -->
 # Review — Pre-Commit Quality Gate
 
 <objective>
@@ -16,8 +17,8 @@ This command is read-only. It reports findings and asks for confirmation before 
 </objective>
 
 <context>
-- Read `.cursor/rules/repo-structure.md` — repo placement conventions
-- Read `.cursor/rules/cross-linking.md` — cross-reference and registry rules
+- Repo conventions: `.cursor/rules/repo-structure.md`
+- Cross-linking and registry rules: `.cursor/rules/cross-linking.md`
 - Current changes: `git status`
 - Staged diff: `git diff --cached --stat`
 - Unstaged diff: `git diff --stat`
@@ -40,9 +41,9 @@ This command is read-only. It reports findings and asks for confirmation before 
    - If new doc in `docs/`: is it in the track `README.md` and `docs/README.md` cross-track list?
    - If new file in `library/`: is it in `library/README.md` enriched entries table AND `library/catalog.md`?
    - If new research directory: is it listed in `research/README.md`?
-   - If new command in `.cursor/commands/` or `.claude/commands/`: is `CLAUDE.md` commands table and `.cursorrules` updated?
-   - If new project in `.planning/`: is it in `CLAUDE.md` and `.cursorrules` planning section?
-   - If new prompt: is it numbered correctly in `.prompts/` and listed in `CLAUDE.md`/`.cursorrules`?
+   - If new command in `.cursor/commands/`: is `.cursorrules` command count and list updated?
+   - If new project in `.planning/`: is it in `.cursorrules` planning section?
+   - If new prompt: is it numbered correctly in `.prompts/` and listed in `.cursorrules`?
    - If new backlog items: are dates and product tags present?
    - **Quick link spot-check**: For each new or modified markdown file, verify any internal links (relative paths) resolve to files that exist. Flag broken links.
    - **External URL verification**: For each new or modified markdown file, identify any new external URLs (http/https). Fetch each URL to confirm it resolves (not 404, not redirect to unrelated page). AI models fabricate plausible-looking URLs — this is a known failure mode, not an edge case. Flag any unverified or broken external links.
@@ -112,20 +113,49 @@ This command is read-only. It reports findings and asks for confirmation before 
 - Review status: N new files start as direction-reviewed (run `/validate` after reading)
 - AI disclosure footer: OK / N new docs files missing footer
 - Backlog alignment: tracked / untracked
+
+### Blind Spots to Consider
+- [work type] — [what was assumed but not verified]
+- [work type] — [observation]
+(or: No blind spots identified — change is mechanical with no conditional logic, variable inputs, or audience assumptions.)
 ```
 
-12. **Assumptions to challenge** (for documentation and essay commits) — If the changes include `docs/`, `research/`, or essay-type content, add 1-3 brief adversarial observations. These are not blockers — they surface things the author should have considered:
+12. **Blind spots by work type** — Classify the dominant type(s) of change from the diff, then surface 1-3 things that were likely assumed stable or known but not explicitly verified. This runs on every commit — the questions differ by type, but the underlying ask is always the same: *"What did you assume was already handled?"*
+
+Classify by dominant change type and apply the relevant questions:
+
+| Work type | Signals in diff | Ask |
+|---|---|---|
+| Template / config | `.yaml` in `templates/`, Helm charts, Jinja | What data shapes were assumed? Which weren't rendered against? What optional or runtime-injected fields were not tested absent? |
+| Documentation | `.md` in `docs/`, `research/`, essays | Who was written for? Who will also read this and find it confusing or misleading? |
+| Framework / convention | `.cursor/rules/`, `.cursor/commands/`, `CLAUDE.md`, `.cursorrules` | What inherits this convention? Are all downstream consumers consistent? |
+| Feature addition | New functions, new template blocks, new flags | What happens at the edges — empty input, disabled flag, wrong type, missing field? |
+| Refactor / deletion | Removed files, renamed paths, deleted blocks | What referenced the removed thing? Is anything broken silently? |
+| Mixed | Multiple types above | Apply 1 question from each dominant type |
+
+Produce observations as a new report section:
 
 ```
-### Assumptions to Challenge
+### Blind Spots to Consider
+- [work type] — [what was assumed but not verified] — e.g., "Template: groups entries tested as strings; object-shape entries (with targetRevision) not rendered separately"
+- [work type] — [observation] — e.g., "Documentation: written for engineers already familiar with ArgoCD; a first-time reader has no context for what a hub is"
+- [work type] — [observation] — e.g., "Deletion: option-b-applicationset.yaml removed; checked docs/ for references but not .planning/ files"
+```
+
+This section is never skipped. If the change is purely mechanical and no blind spots are apparent, say so explicitly: "No blind spots identified — change is mechanical with no conditional logic, variable inputs, or audience assumptions."
+
+13. **Content assumptions to challenge** (for documentation and essay commits) — If the changes include `docs/`, `research/`, or essay-type content, add 1-3 brief adversarial observations on the *claims* the content makes. These are not blockers — they surface things the author should have considered:
+
+```
+### Content Assumptions to Challenge
 - [observation] — e.g., "The central claim in section 3 is asserted without evidence"
 - [observation] — e.g., "This contradicts the framing in docs/ai-engineering/the-shift.md section 6"
 - [observation] — e.g., "The example assumes a single-region deployment"
 ```
 
-Skip this section entirely for purely mechanical changes (config files, tooling, scaffolding). This is only useful for content that makes claims.
+Skip this section for non-content changes (config files, tooling, scaffolding, templates). This is only useful for prose that makes claims.
 
-13. **Brief alignment check (shoshin)** — If the changes include files in `docs/` or `.planning/`, check for framing drift:
+14. **Brief alignment check (shoshin)** — If the changes include files in `docs/` or `.planning/`, check for framing drift:
 
 - Read the relevant project brief (`.planning/*/BRIEF.md`) for any planning project connected to the changed files
 - Compare the content being committed against the brief's stated scope and purpose
@@ -147,9 +177,9 @@ Skip for changes that don't touch docs or planning files. If no `.planning/` pro
 [READY TO COMMIT / FIX ISSUES FIRST]
 ```
 
-14. If issues are found, ask: "Want me to fix these before committing? Reply with numbers or 'all'."
+15. If issues are found, ask: "Want me to fix these before committing? Reply with numbers or 'all'."
 
-15. If clean, ask: "Ready to commit. Want me to proceed?"
+16. If clean, ask: "Ready to commit. Want me to proceed?"
 </process>
 
 <success_criteria>

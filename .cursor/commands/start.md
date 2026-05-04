@@ -7,6 +7,7 @@ allowed-tools:
   - Grep
 ---
 
+<!-- body: ../.commands/start.md -->
 # Start — Session Orientation
 
 <objective>
@@ -16,11 +17,11 @@ Run this at the beginning of a new session, or whenever you need to re-orient.
 </objective>
 
 <context>
-- Backlog summary: !`head -4 BACKLOG.md`
-- Recent commits: !`git log --oneline -10`
-- Handoff file: !`ls .planning/whats-next.md 2>/dev/null || echo "No handoff file"`
-- Planning projects: !`ls -d .planning/*/ 2>/dev/null || echo "No planning projects"`
-- Continue-here files: !`find .planning -name ".continue-here*.md" 2>/dev/null || echo "No continue-here files"`
+- Backlog summary: `head -4 BACKLOG.md`
+- Recent commits: `git log --oneline -10`
+- Handoff file: `ls .planning/whats-next.md 2>/dev/null || echo "No handoff file"`
+- Planning projects: `ls -d .planning/*/ 2>/dev/null || echo "No planning projects"`
+- Continue-here files: `find .planning -name ".continue-here*.md" 2>/dev/null || echo "No continue-here files"`
 </context>
 
 <process>
@@ -38,7 +39,7 @@ Present the summary header from `BACKLOG.md` (already loaded in context — the 
 ```
 ## Where Things Stand
 
-[State line from BACKLOG.md header — counts and last done]
+[State line from BACKLOG.md header — counts]
 [Last updated line]
 ```
 
@@ -53,7 +54,7 @@ If `.planning/whats-next.md` exists:
    - "There's a handoff from a previous session, but commits have been made since it was written. The handoff may be stale — read it with that in mind."
 2. Read it in full
 3. Present a summary: what was being worked on, what remains, any blockers or decisions pending
-4. Cross-reference against the backlog snapshot from Step 1. If the handoff references work that's now in Done, or if the backlog has changed significantly, note the discrepancy.
+4. Cross-reference against the backlog snapshot from Step 1. If the handoff references work that's no longer in the backlog (completed items are deleted, not archived), or if the backlog has changed significantly, note the discrepancy.
 5. Ask: "There's a handoff from a previous session. Want to pick up where you left off, or start fresh from the backlog?"
 
 If `.planning/whats-next.md` does **not** exist (crash, abrupt end, or `/whats-next` was skipped):
@@ -65,7 +66,7 @@ If `.planning/whats-next.md` does **not** exist (crash, abrupt end, or `/whats-n
 ## Reconstructed Session Context (no handoff file found)
 
 **Last session worked on:** [summary of recent commit cluster — what changed, what was built]
-**Likely in-flight:** [any backlog items that connect to recent commits but aren't yet Done]
+**Likely in-flight:** [any backlog items that connect to recent commits but are still in the backlog]
 **Possible next step:** [what the commit sequence suggests was coming next]
 
 ---

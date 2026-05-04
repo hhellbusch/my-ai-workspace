@@ -7,6 +7,7 @@ allowed-tools:
   - Grep
 ---
 
+<!-- body: ../.commands/review.md -->
 # Review — Pre-Commit Quality Gate
 
 <objective>
@@ -16,12 +17,12 @@ This command is read-only. It reports findings and asks for confirmation before 
 </objective>
 
 <context>
-- Repo conventions: @.cursor/rules/repo-structure.md
-- Cross-linking and registry rules: @.cursor/rules/cross-linking.md
-- Current changes: !`git status`
-- Staged diff: !`git diff --cached --stat`
-- Unstaged diff: !`git diff --stat`
-- Untracked files: !`git ls-files --others --exclude-standard`
+- Repo conventions: `.cursor/rules/repo-structure.md`
+- Cross-linking and registry rules: `.cursor/rules/cross-linking.md`
+- Current changes: `git status`
+- Staged diff: `git diff --cached --stat`
+- Unstaged diff: `git diff --stat`
+- Untracked files: `git ls-files --others --exclude-standard`
 </context>
 
 <process>

@@ -7,6 +7,7 @@ allowed-tools:
   - Grep
 ---
 
+<!-- body: ../.commands/audit.md -->
 # Audit — Content Health Check
 
 <objective>
@@ -16,12 +17,12 @@ This command is read-only. It reports findings organized by severity and asks wh
 </objective>
 
 <context>
-- Repo structure conventions: @.cursor/rules/repo-structure.md
-- Project description: @.cursorrules (Project Contents section)
-- Root README: @README.md (Directory Structure section)
-- Docs index: @docs/README.md
-- Research index: @research/README.md
-- Backlog: @BACKLOG.md
+- Repo structure conventions: `.cursor/rules/repo-structure.md`
+- Project description: `.cursorrules` (Project Contents section)
+- Root README: `README.md` (Directory Structure section)
+- Docs index: `docs/README.md`
+- Research index: `research/README.md`
+- Backlog: `BACKLOG.md`
 - Planning: scan .planning/ for active projects
 </context>
 

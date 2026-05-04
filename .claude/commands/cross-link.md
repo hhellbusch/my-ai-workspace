@@ -11,6 +11,7 @@ allowed-tools:
 
 ---
 
+<!-- body: ../.commands/cross-link.md -->
 # Cross-Link — Find and Fix Missing Inbound Links
 
 <objective>

@@ -7,6 +7,7 @@ allowed-tools:
   - Grep
 ---
 
+<!-- body: ../.commands/audit.md -->
 # Audit — Content Health Check
 
 <objective>
@@ -16,30 +17,16 @@ This command is read-only. It reports findings organized by severity and asks wh
 </objective>
 
 <context>
-- Read `.cursor/rules/repo-structure.md` — repo structure conventions
-- Read `CLAUDE.md` (Project Contents section) — project description
-- Read `README.md` (Directory Structure section)
-- Read `docs/README.md`
-- Read `research/README.md`
-- Read `BACKLOG.md`
+- Repo structure conventions: `.cursor/rules/repo-structure.md`
+- Project description: `.cursorrules` (Project Contents section)
+- Root README: `README.md` (Directory Structure section)
+- Docs index: `docs/README.md`
+- Research index: `research/README.md`
+- Backlog: `BACKLOG.md`
 - Planning: scan .planning/ for active projects
 </context>
 
 <process>
-
-## Layer 0: Library Gap Audit
-
-Run the structural gap check first — this is fast and catches orphaned research before the deeper layers.
-
-```bash
-bash scripts/audit-library-gaps.sh
-```
-
-Report the result:
-- Exit 0: "Library gap check: clean." — proceed to Layer 1.
-- Exit 1: List the gaps exactly as printed. These are **fix-before-proceeding** items — an orphaned transcript or missing log entry indicates the ingest workflow was skipped. Do not suppress or defer these.
-
-Use `--verbose` to see all entries including matched ones and exempt dirs.
 
 ## Layer 1: Link Integrity
 
@@ -83,8 +70,8 @@ Resolve each extracted path relative to the containing file's directory before c
 
 Compare documented inventories against what actually exists on disk.
 
-### 2a. Project Contents Registry
-- Read `CLAUDE.md` (Workspace Structure section) and `.cursorrules` (Project Contents section)
+### 2a. .cursorrules Project Contents
+- Parse the "Project Contents" section of `.cursorrules`
 - Compare against actual directories and their contents
 - Flag: directories or content on disk but missing from .cursorrules
 - Flag: entries in .cursorrules that don't match what's on disk
@@ -139,8 +126,8 @@ Identify content that exists but isn't linked from its natural parent or peers.
 ### 3a. Orphaned Content
 - **docs/ files**: covered by Layer 2d — any file not in docs/README.md is orphaned
 - **research/ directories**: directories in `research/` not linked from research/README.md
-- **Commands**: commands in `.cursor/commands/` and `.claude/commands/` not documented in `CLAUDE.md` or `.cursorrules`
-- **Skills**: skills in `.cursor/skills/` not documented in `CLAUDE.md` or `.cursorrules`
+- **Commands**: commands in `.cursor/commands/` not documented in .cursorrules
+- **Skills**: skills in `.cursor/skills/` not documented in .cursorrules
 - **Rules**: list what rules exist in `.cursor/rules/` (informational only)
 
 ### 3b. Missing Cross-Links

@@ -9,6 +9,7 @@ allowed-tools:
   - SemanticSearch
 ---
 
+<!-- body: ../.commands/grill-me.md -->
 # Grill Me — Design Interrogation
 
 <objective>

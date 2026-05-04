@@ -9,6 +9,7 @@ allowed-tools:
   - WebFetch
 ---
 
+<!-- body: ../.commands/whats-next.md -->
 Create a comprehensive, detailed handoff document that captures all context from the current conversation. This allows continuing the work in a fresh context with complete precision.
 
 ## Instructions
@@ -19,7 +20,7 @@ Create a comprehensive, detailed handoff document that captures all context from
 
 Before creating anything, check whether the session's work is already fully persisted:
 
-1. Read `BACKLOG.md` — are all completed items logged in Done? Are new ideas captured?
+1. Read `BACKLOG.md` — are new ideas captured? Should any completed items be deleted?
 2. Check `git status` and `git log --oneline -5` — is the working tree clean? Are all changes committed?
 3. Review any `.planning/` files touched this session — are they up to date?
 
@@ -188,7 +189,7 @@ If any assumptions are worth surfacing, include an `<assumptions_carried>` secti
 
 ### Step 2: Update the backlog if needed
 
-If work completed in this session resolved a backlog item, move it to Done in `BACKLOG.md`. If new ideas or follow-up work emerged, add them to Ideas. Update the `Last updated` date.
+If work completed in this session resolved a backlog item, delete it from `BACKLOG.md` (git history is the record). If new ideas or follow-up work emerged, add them to Ideas. Update the `> State:` header and `Last updated` date.
 
 ## Output Format
 

@@ -212,14 +212,16 @@ Workspace-specific extensions of the kit live in `.cursor/rules/` and are auto-l
 
 ## Commands
 
-Full command set: `.cursor/commands/` (Cursor) and `.claude/commands/` (Claude Code). Key commands:
+**Shared command bodies** live in `.commands/` (repo root) — the single source of truth. Platform wrappers in `.cursor/commands/` and `.claude/commands/` add frontmatter (tool names differ between platforms) and splice the shared body via `<!-- body: ../.commands/foo.md -->`. After editing a shared body, run `scripts/sync-commands.sh` to update both wrappers. Cursor-only commands (no Claude Code counterpart) live directly in `.cursor/commands/` without a shared body.
+
+Key commands:
 
 | Command | Purpose |
 |---|---|
 | `/start` | Session orientation — ABOUT.md, backlog summary, handoff, git log, focus suggestions |
 | `/checkpoint` | Mid-session state save — fast crash recovery |
 | `/whats-next` | Full session handoff |
-| `/backlog [add\|pick\|done\|review\|prioritize]` | Backlog management |
+| `/backlog [add\|pick\|done\|review\|prioritize]` | Backlog management (done = delete; git is the record) |
 | `/spar [target]` | Adversarial review |
 | `/grill-me [plan\|design]` | Relentless design interrogation — walk the decision tree before building |
 | `/review` | Pre-commit quality gate |

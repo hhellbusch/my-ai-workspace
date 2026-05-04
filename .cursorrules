@@ -168,7 +168,7 @@ Review status is tracked per-file via YAML frontmatter (`review:` block). Files 
 
 ## Tool Resources
 
-Commands: `.cursor/commands/` (Cursor, source of truth) · `.claude/commands/` (Claude Code) · `.pi/prompts/` → symlink to `.cursor/commands/`.
+Commands: shared bodies in `.commands/` (source of truth) · platform wrappers in `.cursor/commands/` and `.claude/commands/` add frontmatter · `.pi/prompts/` → symlink to `.cursor/commands/` · after editing `.commands/*.md`, run `scripts/sync-commands.sh`.
 Skills: `.cursor/skills/` (source of truth) · `.pi/skills/` → symlink to `.cursor/skills/`.
 Workspace context: `CLAUDE.md` (= `AGENTS.md` via symlink) — loaded by Claude Code, pi, and any AGENTS.md-honoring tool.
 Full reference: `.cursor/README.md`.

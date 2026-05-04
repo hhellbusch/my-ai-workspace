@@ -6,6 +6,7 @@ allowed-tools:
   - Bash
 ---
 
+<!-- body: ../.commands/checkpoint.md -->
 # Checkpoint — Mid-Session State Save
 
 <objective>
@@ -22,8 +23,8 @@ Run this:
 - Last commits: `git log --oneline -5`
 - Git state: `git status --short`
 - Last commit hash: `git rev-parse --short HEAD`
-- Read `BACKLOG.md` (In Progress section only)
-- Read `.planning/whats-next.md` if it exists
+- Backlog In Progress: `BACKLOG.md` (In Progress section only)
+- Existing handoff (if any): `.planning/whats-next.md`
 </context>
 
 <process>

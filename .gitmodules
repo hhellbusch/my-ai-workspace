@@ -1,24 +1,32 @@
 [submodule "zanshin-pi-extension"]
 	path = submodules/zanshin-pi-extension
 	url = git@github.com:hhellbusch/zanshin-pi-extension.git
+	ignore = all
 [submodule "lid-pi-extension"]
 	path = submodules/lid-pi-extension
 	url = git@github.com:hhellbusch/lid-pi-extension.git
+	ignore = all
 [submodule "submodules/paude"]
 	path = submodules/paude
 	url = git@github.com:hhellbusch/paude.git
+	ignore = all
 [submodule "submodules/argocd-diff-preview"]
 	path = submodules/argocd-diff-preview
 	url = git@github.com:hhellbusch/argocd-diff-preview.git
+	ignore = all
 [submodule "submodules/helm-charts"]
 	path = submodules/helm-charts
 	url = git@github.com:hhellbusch/redhat-cop-helm-charts.git
+	ignore = all
 [submodule "submodules/paude-pi-extension"]
 	path = submodules/paude-pi-extension
 	url = git@github.com:hhellbusch/paude-pi-extension.git
+	ignore = all
 [submodule "submodules/pi-anthropic-vertex"]
 	path = submodules/pi-anthropic-vertex
 	url = git@github.com:hhellbusch/pi-anthropic-vertex.git
+	ignore = all
 [submodule "submodules/pi-openai-compat"]
 	path = submodules/pi-openai-compat
 	url = git@github.com:hhellbusch/pi-openai-compat.git
+	ignore = all

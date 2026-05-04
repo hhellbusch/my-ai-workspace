@@ -7,6 +7,7 @@ allowed-tools:
   - Grep
 ---
 
+<!-- body: ../.commands/organize.md -->
 # Organize — Repo Structure Audit
 
 ## Instructions
@@ -20,7 +21,7 @@ Read `.cursor/rules/repo-structure.md` to load the directory map, placement rule
 ### Step 2: Scan the repo root
 
 List all files in the repo root (not directories). Compare against the allowed root files:
-- `README.md`, `AI-DISCLOSURE.md`, `.gitignore`, `.cursorrules`, `.actrc`, `.actrc.example`, `.secrets`
+- `README.md`, `AI-DISCLOSURE.md`, `BACKLOG.md`, `BACKLOG-ARCHIVE.md`, `CLAUDE.md`, `STYLE.md`, `.gitignore`, `.cursorrules`, `.actrc`, `.actrc.example`, `.secrets`
 
 Flag anything else as **"Misplaced root file"** with a suggested destination based on the directory map.
 
@@ -39,9 +40,9 @@ Read the root `README.md` and find the "Directory Structure" section. Compare th
 - Directories on disk but missing from README as **"README out of date — missing entry"**
 - Directories in README but not on disk as **"README out of date — stale entry"**
 
-### Step 5: Check project contents registry
+### Step 5: Check .cursorrules project contents
 
-Read `CLAUDE.md` and find the "Workspace Structure" section. Also read `.cursorrules` and find the "Project Contents" section. Compare both against actual directories on disk. Flag mismatches the same way as Step 4 — flag in the document where the entry is missing.
+Read `.cursorrules` and find the "Project Contents" section. Compare against actual directories. Flag mismatches the same way as Step 4.
 
 ### Step 6: Spot-check placement rules
 
@@ -66,7 +67,7 @@ Present findings organized by severity:
 
 ### Stale References
 - [ ] `README.md` directory map missing: `{dir}/`
-- [ ] `CLAUDE.md` / `.cursorrules` project contents missing: `{dir}/`
+- [ ] `.cursorrules` project contents missing: `{dir}/`
 
 ### Convention Violations
 - [ ] `Directory_Name/` — should be lowercase-hyphenated
