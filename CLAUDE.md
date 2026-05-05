@@ -214,6 +214,8 @@ Workspace-specific extensions of the kit live in `.cursor/rules/` and are auto-l
 
 All commands are skills in `.agents/skills/<name>/SKILL.md` ([AgentSkills standard](https://agentskills.io/specification)). Cursor, Claude Code, and Pi all discover `.agents/skills/` natively — no sync or generated wrappers needed. Edit the SKILL.md directly.
 
+**External indexing:** Red Hat SkillsHub scans this repository and indexes skills from `.agents/skills/`. The `description:` field in each skill's frontmatter is what gets surfaced externally — keep descriptions accurate and self-contained since external users may invoke a skill without workspace context. See `.agents/skills/README.md` for the full skill index.
+
 Key commands:
 
 | Command | Purpose |

@@ -39,7 +39,7 @@ The gap is never "we need a tool." It's "this specific piece of work is harder t
 
 ### Step 2: Build a tool
 
-With AI, building the tool is fast. A [`/spar` command](../../.agents/skills/spar/SKILL.md) went from idea to working implementation in one exchange. A [`fetch-transcript.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-transcript.py) script was written, tested, and integrated in three exchanges. A [zero-base evaluation step](../../.agents/skills/backlog/SKILL.md) was designed and added to an existing command in minutes.
+With AI, building the tool is fast. A [`/spar` command](../../.agents/skills/spar/SKILL.md) went from idea to working implementation in one exchange. A [`fetch-transcript.py`](../../.agents/skills/research-and-analyze/scripts/fetch-transcript.py) script was written, tested, and integrated in three exchanges. A [zero-base evaluation step](../../.agents/skills/backlog/SKILL.md) was designed and added to an existing command in minutes.
 
 The key constraint: the tool should fit the existing workflow, not require a new one. The transcript fetcher won over an MCP server because it produced files on disk — the format everything downstream already expected. The `/spar` command followed the same invocation pattern as existing slash commands. The zero-base evaluation was added *inside* the existing prioritize subcommand, not as a separate tool.
 
@@ -53,7 +53,7 @@ This is the step most people skip, and it's the step that matters most. If you b
 2. **Output** — the work that was blocked is now unblocked
 3. **Refinement signal** — the tool's behavior against real input shows what to adjust
 
-The [`/spar` command](../../.agents/skills/spar/SKILL.md) was applied to the essay it was built to challenge *in the same session*. It produced [7 counterarguments](../../research/zen-karate-philosophy/sparring-notes.md#1-the-core-claim-is-unverified), several of which identified genuine structural weaknesses. The [research skill](../../.cursor/skills/research-and-analyze/SKILL.md) was validated against the same article whose manual verification had failed. The [zero-base evaluation](../../.agents/skills/backlog/SKILL.md) was used to re-prioritize the backlog that had exposed the anchoring problem.
+The [`/spar` command](../../.agents/skills/spar/SKILL.md) was applied to the essay it was built to challenge *in the same session*. It produced [7 counterarguments](../../research/zen-karate-philosophy/sparring-notes.md#1-the-core-claim-is-unverified), several of which identified genuine structural weaknesses. The [research skill](../../.agents/skills/research-and-analyze/SKILL.md) was validated against the same article whose manual verification had failed. The [zero-base evaluation](../../.agents/skills/backlog/SKILL.md) was used to re-prioritize the backlog that had exposed the anchoring problem.
 
 In each case, the tool's first real use was against the problem that created it.
 
@@ -154,8 +154,8 @@ The table below covers eight case studies that most directly trace the full loop
 
 | Case Study | Gap | Tool | Immediate application |
 |---|---|---|---|
-| [Building a Research Skill](../case-studies/building-a-research-skill.md) | Manual verification failed — URLs blocked, context overflowed, nothing persisted | [Research automation skill](../../.cursor/skills/research-and-analyze/SKILL.md) | Validated against the same article whose manual verification had failed |
-| [Adversarial Review](../case-studies/adversarial-review-meta-development.md) | No pushback anywhere in the essay pipeline | [`/spar` command](../../.agents/skills/spar/SKILL.md), [spar pipeline stage](../../.cursor/skills/create-meta-prompts/references/spar-patterns.md) | 7 counterarguments against the essay that prompted the build |
+| [Building a Research Skill](../case-studies/building-a-research-skill.md) | Manual verification failed — URLs blocked, context overflowed, nothing persisted | [Research automation skill](../../.agents/skills/research-and-analyze/SKILL.md) | Validated against the same article whose manual verification had failed |
+| [Adversarial Review](../case-studies/adversarial-review-meta-development.md) | No pushback anywhere in the essay pipeline | [`/spar` command](../../.agents/skills/spar/SKILL.md), [spar pipeline stage](../../.agents/skills/create-meta-prompt/references/spar-patterns.md) | 7 counterarguments against the essay that prompted the build |
 | [Debugging AI Judgment](../case-studies/debugging-ai-judgment.md) | Re-prioritization always confirmed existing priorities | [Zero-base evaluation](../../.agents/skills/backlog/SKILL.md) | Re-prioritized the backlog that had exposed the anchoring pattern |
 | [Building Knowledge Management](../case-studies/building-knowledge-management-with-ai.md) | New sessions started from scratch — no persistent context, tracking, or orientation | 6 interlocking tools | Populated and tested in the same session they were built |
 | [Case Studies as Discovery](../case-studies/case-studies-as-discovery.md) | Writing a case study surfaced three gaps with no existing fix | [Shoshin rule](../../.cursor/rules/shoshin.mdc), [CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md), `/start` step 2.5, others | Filled the gaps the case study named — the same session |
