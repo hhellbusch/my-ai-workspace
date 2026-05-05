@@ -1,6 +1,11 @@
 ---
 description: Enforce strict mode in shell/bash scripts and CI inline scripts with set -euo pipefail
-globs: **/*.sh,**/*.bash,**/*.yml,**/*.yaml,**/Makefile
+globs:
+  - "**/*.sh"
+  - "**/*.bash"
+  - "**/*.yml"
+  - "**/*.yaml"
+  - "**/Makefile"
 alwaysApply: false
 ---
 

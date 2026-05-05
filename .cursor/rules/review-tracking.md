@@ -27,7 +27,7 @@ Fields:
 - `at` — short git SHA of HEAD at validation time, auto-recorded by `/validate`. Enables `git diff <sha>..HEAD -- <file>` to see exactly what changed since the last review.
 - `notes` — optional free-text context
 
-For files that already have frontmatter (commands, skills, rules), add `review:` to the existing block. For files without frontmatter, add a new `---` block at the top of the file.
+For files that already have frontmatter (skills, rules), add `review:` to the existing block. For files without frontmatter, add a new `---` block at the top of the file.
 
 ## Validation Types by Content Category
 

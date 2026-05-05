@@ -35,13 +35,6 @@ Describe your task. Claude creates a prompt optimized for its purpose.
 /create-meta-prompt implement JWT authentication
 ```
 
-## Installation
-
-**Install skill** (workspace):
-```bash
-cp -r skills/* .agents/skills/
-```
-
 ## Example Workflow
 
 **Full research → plan → implement chain:**
@@ -103,17 +96,18 @@ Claude: [Executes implementation following the plan]
 ```
 create-meta-prompts/
 ├── README.md
-├── commands/
-│   └── create-meta-prompt.md
-└── skills/
-    └── create-meta-prompts/
-        ├── SKILL.md
-        └── references/
-            ├── do-patterns.md
-            ├── plan-patterns.md
-            ├── research-patterns.md
-            ├── question-bank.md
-            └── intelligence-rules.md
+├── SKILL.md
+└── references/
+    ├── do-patterns.md
+    ├── intelligence-rules.md
+    ├── metadata-guidelines.md
+    ├── plan-patterns.md
+    ├── question-bank.md
+    ├── refine-patterns.md
+    ├── research-patterns.md
+    ├── research-pitfalls.md
+    ├── spar-patterns.md
+    └── summary-template.md
 ```
 
 **Generated prompts structure:**
@@ -150,6 +144,4 @@ create-meta-prompts/
 
 ---
 
-**Questions or improvements?** Open an issue or submit a PR.
-
-—TÂCHES
+The slash command lives at `.agents/skills/create-meta-prompt/SKILL.md`; this skill provides the deep methodology and reference material.

@@ -1,3 +1,9 @@
+---
+description: Where content belongs in this repository — directory map and placement rules
+globs:
+alwaysApply: false
+---
+
 # Repository Structure Conventions
 
 This rule defines where content belongs in this repository. Follow these conventions when creating new files, moving existing files, or suggesting organizational changes.
@@ -28,6 +34,7 @@ All product-specific technical reference material lives under `devops/`. This ke
 
 | Directory | Purpose | Convention |
 |---|---|---|
+| `.agents/skills/` | All slash commands as AgentSkills — discovered natively by Cursor, Claude Code, and Pi | One dir per skill: `.agents/skills/<name>/SKILL.md` with AgentSkills frontmatter (`name`, `description`, `allowed-tools`, `argument-hint`) |
 | `docs/` | Essays and guides organized by track | Three subdirs: `ai-engineering/`, `philosophy/`, `case-studies/`, each with its own `README.md`; master index at `docs/README.md` |
 | `library/` | Personal reference library — books, talks, articles with AI-enriched summaries | One `.md` per reference, indexed in `library/README.md`; managed via `/reference` |
 | `examples/` | Standalone scripts and artifacts referenced by docs | Named dirs: `topic-slug/` (e.g., `gif-recoloring/`) |
@@ -42,7 +49,7 @@ All product-specific technical reference material lives under `devops/`. This ke
 2. **Product-specific examples** go in `devops/{product}/examples/`, not in the top-level `examples/` directory.
 3. **Research and analysis output** goes in `research/{topic}/`, never in `docs/` or a standalone `analyses/` directory.
 4. **Scripts that support a doc or example** live alongside that doc or example, not in the repo root.
-5. **The repo root** should only contain repo-level files and the top-level content directories: `README.md`, `AI-DISCLOSURE.md`, `BACKLOG.md`, `BACKLOG-ARCHIVE.md`, `CLAUDE.md`, `STYLE.md`, `.gitignore`, `.cursorrules`, `.actrc`, `.actrc.example`, `.secrets`, plus `docs/`, `research/`, `library/`, `devops/`, `examples/`, `.cursor/`, `.claude/`, `.planning/`, `submodules/` *(git submodules — Pi extensions, forked projects, and bundled `kit/` markdown)*. Note: `git-projects/` and `devops/ocp/install/` exist locally but are gitignored.
+5. **The repo root** should only contain repo-level files and the top-level content directories: `README.md`, `AGENTS.md` (symlink to `CLAUDE.md`), `AI-DISCLOSURE.md`, `BACKLOG.md`, `CLAUDE.md`, `STYLE.md`, `.gitignore`, `.cursorrules`, `.actrc`, `.actrc.example`, `.secrets`, plus `.agents/` (AgentSkills), `docs/`, `research/`, `library/`, `devops/`, `examples/`, `.cursor/`, `.claude/`, `.pi/`, `.planning/`, `submodules/` *(git submodules — Pi extensions, forked projects, and bundled `kit/` markdown)*. Note: `git-projects/` and `devops/ocp/install/` exist locally but are gitignored.
 6. **New products/technologies** go under `devops/{product}/` with appropriate content type subdirectories. For cross-cutting content, prefer fitting into the existing structure.
 7. **The `docs/` folder** contains curated essay tracks organized into subdirectories: `ai-engineering/` (skills, workflows, risks), `philosophy/` (martial arts, Zen, applied practice), and `case-studies/` (documented meta-development patterns). Each track has its own `README.md` with a reading order. `docs/README.md` is the master index linking into all tracks. New essays go in their track directory, not in `docs/` root.
 8. **The top-level `examples/` folder** is for doc-supporting artifacts (e.g., scripts referenced by essays in `docs/`), not for product-specific examples.

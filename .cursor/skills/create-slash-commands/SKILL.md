@@ -140,7 +140,7 @@ Files: @ relevant/files
 
 **Simple commands** (single operation, no artifacts):
 - Required: `<objective>`, `<process>`, `<success_criteria>`
-- Example: `/check-todos`, `/first-principles`
+- Example: `/checkpoint`, `/consider-first-principles`
 
 **Complex commands** (multi-step, produces artifacts):
 - Required: `<objective>`, `<process>`, `<success_criteria>`
@@ -181,8 +181,8 @@ Include `argument-hint: [description]` in frontmatter and reference `$ARGUMENTS`
 <commands_without_arguments>
 
 **Self-contained procedures:**
-- `/check-todos` - Operates on known file (TO-DOS.md)
-- `/first-principles` - Operates on current conversation
+- `/checkpoint` - Operates on known files (BACKLOG.md, git state)
+- `/consider-first-principles` - Operates on current conversation
 - `/whats-next` - Analyzes current context
 
 **Pattern:** Task operates on implicit context (current conversation, known files, project state)

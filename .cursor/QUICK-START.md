@@ -1,8 +1,8 @@
-# TÂCHES Quick Start for Cursor
+# Quick Start for Cursor
 
 **Get started in 2 minutes with native slash commands!**
 
-## ✅ Slash Commands Work Natively!
+## Slash Commands Work Natively!
 
 Cursor auto-discovers agent skills in `.agents/skills/<name>/SKILL.md`. Just type `/` and they appear!
 
@@ -29,7 +29,7 @@ My OpenShift pod keeps crashing with CrashLoopBackOff but logs show nothing obvi
 ### Example 3: Think Through a Decision
 
 ```
-/consider:first-principles
+/consider-first-principles
 
 Should we use Kubernetes or Docker Swarm for deployment?
 ```
@@ -53,26 +53,29 @@ Should we use Kubernetes or Docker Swarm for deployment?
 | `/create-plan [desc]` | Plan projects systematically |
 | `/debug` | Systematic debugging |
 | `/whats-next` | Create handoff doc |
+| `/start` | Session orientation |
+| `/checkpoint` | Mid-session state save |
 | `/create-agent-skill [desc]` | Document procedures |
 
 ### Thinking Frameworks
 
 | Command | Framework |
 |---------|-----------|
-| `/consider:first-principles` | Break to fundamentals |
-| `/consider:5-whys` | Find root cause |
-| `/consider:pareto` | Apply 80/20 rule |
-| `/consider:inversion` | Avoid failure |
-| `/consider:second-order` | Think consequences |
-| `/consider:swot` | Strategic analysis |
+| `/consider-first-principles` | Break to fundamentals |
+| `/consider-5-whys` | Find root cause |
+| `/consider-pareto` | Apply 80/20 rule |
+| `/consider-inversion` | Avoid failure |
+| `/consider-second-order` | Think consequences |
+| `/consider-swot` | Strategic analysis |
 
-### Context Management
+### Session & Context
 
 | Command | Purpose |
 |---------|---------|
+| `/start` | Session orientation |
 | `/whats-next` | Create handoff |
-| `/add-to-todos [task]` | Capture ideas |
-| `/check-todos` | Review tasks |
+| `/checkpoint` | Save session state |
+| `/backlog` | Backlog management |
 
 ### Meta-Development
 
@@ -117,15 +120,13 @@ When you need the full methodology, load skills:
 
 ## Tips
 
-1. **Use slash commands for quick actions** - They're fastest
-2. **Load skills for complex guidance** - When you need full methodology
-3. **Combine both** - Start with command, load skill if you need more depth
+1. **Use slash commands for quick actions** — They're fastest
+2. **Load skills for complex guidance** — When you need full methodology
+3. **Combine both** — Start with command, load skill if you need more depth
 
 ## Full Documentation
 
 - Complete guide: `@.cursor/README.md`
-- Integration plan: `@TACHES-INTEGRATION-PLAN.md`
-- Installation summary: `@TACHES-INSTALLATION-COMPLETE.md`
 
 ---
 

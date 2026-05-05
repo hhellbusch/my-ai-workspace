@@ -20,7 +20,7 @@ and cascade.
 Intent lives in the commit message. One sentence: what problem does this solve?
 If you can't write it, the scope is larger than it appears.
 
-**Change** (3–5 files, OR any new command / skill / rule / configuration)
+**Change** (3–5 files, OR any new skill / rule / configuration)
 Write a one-paragraph Intent Note before touching any files.
 State the problem, not the solution. Stop for acknowledgment before proceeding.
 Template: `submodules/lid-pi-extension/kit/templates/INTENT.md`

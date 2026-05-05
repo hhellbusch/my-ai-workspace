@@ -1,16 +1,14 @@
 # Resources for Cursor
 
-**Original Source of many of these:** [TÂCHES Claude Code Resources](https://github.com/glittercowboy/taches-cc-resources)  
-**Platform:** Cursor IDE (Native Slash Commands + Skills)  
-**Date:** February 3, 2026
+**Platform:** Cursor IDE (Native Slash Commands + Skills)
 
-## ✅ Cursor Native Support
+## Cursor Native Support
 
-This directory contains TÂCHES resources properly integrated with Cursor's native features:
+This directory contains resources integrated with Cursor's native features:
 
-- **Agent skills (slash commands)** - `.agents/skills/<name>/SKILL.md` (repo root) → Auto-discovered by Cursor, Claude Code, and Pi
-- **Skills** - `.cursor/skills/` → Reference with `@.cursor/skills/`
-- **Agents** - `.cursor/agents/` → Reference with `@.cursor/agents/`
+- **Agent skills (slash commands)** — `.agents/skills/<name>/SKILL.md` (repo root) → Auto-discovered by Cursor, Claude Code, and Pi
+- **Skills** — `.cursor/skills/` → Reference with `@.cursor/skills/`
+- **Agents** — `.cursor/agents/` → Reference with `@.cursor/agents/`
 
 ## How to Use
 
@@ -27,24 +25,24 @@ This workspace keeps reusable slash workflows as [Agent Skills](https://agentski
 
 **Thinking Frameworks:**
 ```
-/consider:first-principles
-/consider:5-whys
-/consider:pareto
-/consider:inversion
+/consider-first-principles
+/consider-5-whys
+/consider-pareto
+/consider-inversion
 ```
 
 **Research Templates:**
 ```
-/research:technical
-/research:feasibility
-/research:options
+/research-technical
+/research-feasibility
+/research-options
 ```
 
 **Context Management:**
 ```
 /whats-next
-/add-to-todos
-/check-todos
+/checkpoint
+/start
 ```
 
 ### 2. Skills (Reference with @)
@@ -76,12 +74,12 @@ Agent guides provide evaluation checklists:
 
 ```
 <repo-root>/
-├── .agents/skills/        # ✅ Agent Skills — slash commands (SKILL.md per skill)
+├── .agents/skills/        # Agent Skills — slash commands (SKILL.md per skill)
 │   ├── create-plan/
 │   │   └── SKILL.md
 │   ├── debug/
 │   ├── whats-next/
-│   └── …
+│   └── … (48 total)
 └── .cursor/
     ├── README.md          # This file
     ├── skills/            # Reference with @.cursor/skills/
@@ -93,10 +91,10 @@ Agent guides provide evaluation checklists:
     │   ├── create-hooks/
     │   ├── create-mcp-servers/
     │   ├── debug-like-expert/
+    │   ├── research-and-analyze/
     │   ├── setup-ralph/
+    │   ├── youtube-transcript-library/
     │   └── expertise/
-    │       ├── iphone-apps/
-    │       ├── macos-apps/
     │       └── n8n-automations/
     └── agents/            # Reference with @.cursor/agents/
         ├── skill-auditor.md
@@ -137,7 +135,7 @@ My pod keeps crashing with CrashLoopBackOff but logs don't show obvious errors.
 ### Example 4: Think Through a Decision
 
 ```
-/consider:first-principles
+/consider-first-principles
 
 Should we migrate from manual certificate management to cert-manager?
 ```
@@ -147,75 +145,84 @@ Should we migrate from manual certificate management to cert-manager?
 ## Available Slash Commands
 
 ### Project & Planning
-- `/create-plan` - Create hierarchical project plans
-- `/create-prompt` - Generate optimized prompts
-- `/run-prompt` - Execute saved prompts
+- `/create-plan` — Create hierarchical project plans
+- `/create-prompt` — Generate optimized prompts
+- `/run-prompt` — Execute saved prompts
+- `/run-plan` — Execute an existing plan
 
 ### Meta-Development
-- `/create-agent-skill` - Create new skills
-- `/create-slash-command` - Create new commands
-- `/create-subagent` - Create specialized agents
-- `/create-meta-prompt` - Create workflow prompts
-- `/create-hook` - Create event hooks
+- `/create-agent-skill` — Create new skills
+- `/create-slash-command` — Create new commands
+- `/create-subagent` — Create specialized agents
+- `/create-meta-prompt` — Create workflow prompts
+- `/create-hook` — Create event hooks
 
 ### Debugging & Analysis
-- `/debug` - Systematic debugging methodology
+- `/debug` — Systematic debugging methodology
 
-### Context Management
-- `/whats-next` - Create handoff documents
-- `/add-to-todos` - Capture tasks
-- `/check-todos` - Review tasks
+### Session & Context
+- `/start` — Session orientation
+- `/whats-next` — Create handoff documents
+- `/checkpoint` — Mid-session state save
+- `/backlog` — Backlog management
+
+### Review & Quality
+- `/review` — Pre-commit quality gate
+- `/validate` — Mark content as reviewed
+- `/audit` — Content health check
+- `/spar` — Adversarial review
+- `/grill-me` — Design interrogation
 
 ### Auditing
-- `/audit-skill` - Audit skill files
-- `/audit-slash-command` - Audit commands
-- `/audit-subagent` - Audit agents
-- `/heal-skill` - Fix skill issues
+- `/audit-skill` — Audit skill files
+- `/audit-slash-command` — Audit commands
+- `/audit-subagent` — Audit agents
+- `/heal-skill` — Fix skill issues
 
 ### Thinking Frameworks (12 total)
-All accessible via `/consider:` prefix:
-- `first-principles` - Break down to fundamentals
-- `5-whys` - Drill to root cause
-- `pareto` - Apply 80/20 rule
-- `inversion` - Think backwards
-- `second-order` - Consider consequences
-- `occams-razor` - Find simplest explanation
-- `one-thing` - Identify highest leverage
-- `swot` - Strategic analysis
-- `eisenhower-matrix` - Prioritize tasks
-- `10-10-10` - Evaluate across time
-- `opportunity-cost` - Analyze tradeoffs
-- `via-negativa` - Improve by removing
+All accessible via `/consider-` prefix:
+- `first-principles` — Break down to fundamentals
+- `5-whys` — Drill to root cause
+- `pareto` — Apply 80/20 rule
+- `inversion` — Think backwards
+- `second-order` — Consider consequences
+- `occams-razor` — Find simplest explanation
+- `one-thing` — Identify highest leverage
+- `swot` — Strategic analysis
+- `eisenhower-matrix` — Prioritize tasks
+- `10-10-10` — Evaluate across time
+- `opportunity-cost` — Analyze tradeoffs
+- `via-negativa` — Improve by removing
 
 ## Key Skills Overview
 
 ### create-plans
-**Purpose:** Hierarchical project planning  
-**Command:** `/create-plan [description]`  
-**Direct:** `@.cursor/skills/create-plans/SKILL.md`  
+**Purpose:** Hierarchical project planning
+**Command:** `/create-plan [description]`
+**Direct:** `@.cursor/skills/create-plans/SKILL.md`
 **Outputs:** BRIEF.md, ROADMAP.md, phase plans
 
 ### debug-like-expert
-**Purpose:** Systematic debugging methodology  
-**Command:** `/debug`  
-**Direct:** `@.cursor/skills/debug-like-expert/SKILL.md`  
+**Purpose:** Systematic debugging methodology
+**Command:** `/debug`
+**Direct:** `@.cursor/skills/debug-like-expert/SKILL.md`
 **Approach:** Evidence gathering, hypothesis testing, verification
 
 ### create-agent-skills
-**Purpose:** Creating structured documentation  
-**Command:** `/create-agent-skill [description]`  
-**Direct:** `@.cursor/skills/create-agent-skills/SKILL.md`  
+**Purpose:** Creating structured documentation
+**Command:** `/create-agent-skill [description]`
+**Direct:** `@.cursor/skills/create-agent-skills/SKILL.md`
 **Outputs:** SKILL.md files with workflows
 
 ### create-meta-prompts
-**Purpose:** Building staged workflows  
-**Command:** `/create-meta-prompt [description]`  
-**Direct:** `@.cursor/skills/create-meta-prompts/SKILL.md`  
+**Purpose:** Building staged workflows
+**Command:** `/create-meta-prompt [description]`
+**Direct:** `@.cursor/skills/create-meta-prompts/SKILL.md`
 **Outputs:** Structured prompts
 
 ### create-mcp-servers
-**Purpose:** Building MCP servers  
-**Direct:** `@.cursor/skills/create-mcp-servers/SKILL.md`  
+**Purpose:** Building MCP servers
+**Direct:** `@.cursor/skills/create-mcp-servers/SKILL.md`
 **Supports:** Python and TypeScript
 
 ## Integration with Your Work
@@ -246,11 +253,11 @@ My OpenShift cluster has [describe issue]
 
 | Feature | Claude Code | Cursor |
 |---------|-------------|--------|
-| **Agent skills / commands** | ✅ `~/.claude/skills/` (and project `.agents/skills/`) | ✅ `.agents/skills/` |
-| **Slash Syntax** | ✅ `/command` | ✅ `/command` |
-| **Skills** | ✅ `Skill()` invocation | ⚠️ `@.cursor/skills/` |
-| **Agents** | ✅ Spawn subagents | ⚠️ `@.cursor/agents/` |
-| **Auto-discovery** | ✅ Yes | ✅ Yes (`.agents/skills/`) |
+| **Agent skills / commands** | `.agents/skills/` | `.agents/skills/` |
+| **Slash Syntax** | `/command` | `/command` |
+| **Skills** | `Skill()` invocation | `@.cursor/skills/` |
+| **Agents** | Spawn subagents | `@.cursor/agents/` |
+| **Auto-discovery** | Yes | Yes |
 
 **Bottom line:** Slash workflows use the same `SKILL.md` layout; deep methodology still loads with `@` in Cursor.
 
@@ -259,15 +266,10 @@ My OpenShift cluster has [describe issue]
 ### 1. Use Slash Commands for Quick Actions
 
 ```
-✅ Quick:
 /create-plan Build a REST API
-
-vs
-
-❌ Slower:
-@.cursor/skills/create-plans/SKILL.md
-I need to plan a REST API
 ```
+
+vs loading the full skill with `@.cursor/skills/create-plans/SKILL.md` when you need deeper methodology guidance.
 
 ### 2. Load Skills for Deep Guidance
 
@@ -275,7 +277,6 @@ When you need the full methodology and context:
 
 ```
 @.cursor/skills/debug-like-expert/SKILL.md
-@.cursor/skills/debug-like-expert/references/hypothesis-testing.md
 
 [Complex debugging scenario]
 ```
@@ -291,28 +292,9 @@ When you need the full methodology and context:
 
 ## Maintenance
 
-Update from TÂCHES repository:
-
-```bash
-cd /path/to/repo
-git clone https://github.com/glittercowboy/taches-cc-resources.git .taches-update
-cp -r .taches-update/skills/* .cursor/skills/
-cp -r .taches-update/agents/* .cursor/agents/
-rm -rf .taches-update
-```
-
-Port new slash workflows into `.agents/skills/<name>/SKILL.md` separately when adopting upstream command ideas.
+Agent skills live in `.agents/skills/<name>/SKILL.md` and are auto-discovered — no sync or copy step needed. Rich skills with scripts and reference material live in `.cursor/skills/`.
 
 ## Resources
 
-- **TÂCHES Repository:** https://github.com/glittercowboy/taches-cc-resources
-- **TÂCHES YouTube:** youtube.com/tachesteaches
+- **AgentSkills Specification:** https://agentskills.io/specification
 - **Cursor Docs:** https://cursor.com/docs/context/commands
-- **Integration Plan:** `@TACHES-INTEGRATION-PLAN.md`
-
----
-
-**Installation Date:** February 3, 2026  
-**TÂCHES Version:** Latest from main branch  
-**Platform:** Cursor IDE (Native Commands + Skill References)  
-**Status:** ✅ Fully integrated with native slash command support
