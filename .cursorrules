@@ -74,7 +74,7 @@ Structured AI prompt templates for repeatable tasks (run with `/run-prompt`):
 #### Library (`library/`)
 Personal reference library — books, talks, articles, videos, and other sources with AI-enriched summaries. Managed via `/reference add`, each entry combines personal notes with cached context (summaries, reviews, key themes) so any session can draw from the source without re-explaining it.
 
-**YouTube / video URLs:** When the user pastes `youtube.com`, `youtu.be`, or `watch?v=` and wants a transcript, captions, or a durable library reference, read **`.cursor/skills/youtube-transcript-library/SKILL.md`** and run **`fetch-transcript.py`** from **`research-and-analyze`** (not `yt-dlp` alone for captions). Complete catalog + log + `library/README.md` enriched table when adding an entry file.
+**YouTube / video URLs:** When the user pastes `youtube.com`, `youtu.be`, or `watch?v=` and wants a transcript, captions, or a durable library reference, read **`.agents/skills/youtube-transcript-library/SKILL.md`** and run **`fetch-transcript.py`** from **`.agents/skills/research-and-analyze/scripts/`** (not `yt-dlp` alone for captions). Complete catalog + log + `library/README.md` enriched table when adding an entry file.
 
 #### Research (`research/`)
 Research workspaces with fetched sources, analysis findings, and assessments:

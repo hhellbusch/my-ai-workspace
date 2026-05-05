@@ -181,7 +181,7 @@ Three principles that govern how this workspace is built and maintained:
 3. Add an entry block to `library/README.md` (Enriched Entries table)
 4. Append a dated entry to `library/log.md`
 
-**YouTube / video URLs:** For `youtube.com`, `youtu.be`, or transcript/caption requests, follow **`.cursor/skills/youtube-transcript-library/SKILL.md`** — use **`fetch-transcript.py`** under `.cursor/skills/research-and-analyze/scripts/`, not `yt-dlp` alone for captions.
+**YouTube / video URLs:** For `youtube.com`, `youtu.be`, or transcript/caption requests, follow **`.agents/skills/youtube-transcript-library/SKILL.md`** — use **`fetch-transcript.py`** under `.agents/skills/research-and-analyze/scripts/`, not `yt-dlp` alone for captions.
 
 An orphaned transcript in `research/*/sources/` with no library entry is an incomplete ingest.
 
