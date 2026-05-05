@@ -10,12 +10,12 @@ The motivating posture behind this project: **use AI tools heavily on real probl
 
 This is the *why*. Each behavioral area has an authoritative home:
 
-- **Verification and cross-linking** — [`.cursor/rules/cross-linking.md`](cross-linking.md)
-- **Voice, biography, review status** — [`.cursor/rules/review-tracking.md`](review-tracking.md)
-- **Session orientation and context loading** — [`.cursor/rules/session-awareness.md`](session-awareness.md)
+- **Verification and cross-linking** — [`.cursor/rules/cross-linking.mdc`](cross-linking.mdc)
+- **Voice, biography, review status** — [`.cursor/rules/review-tracking.mdc`](review-tracking.mdc)
+- **Session orientation and context loading** — [`.cursor/rules/session-awareness.mdc`](session-awareness.mdc)
 - **Workspace writing defaults** — `STYLE.md` (repo root): voice, structure, content track purposes, cross-track priority
 - **Project priorities (zen-karate series)** — `.planning/zen-karate/STYLE.md` (*Guiding Stars* section)
-- **Scope drift and framing** — [`.cursor/rules/shoshin.md`](shoshin.md)
+- **Scope drift and framing** — [`.cursor/rules/shoshin.mdc`](shoshin.mdc)
 
 ## Tooling preferences
 

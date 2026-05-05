@@ -78,14 +78,14 @@ The following behaviors are present in both environments:
 | Behavior | Cursor implementation | Claude Code implementation |
 |---|---|---|
 | Session orientation | `.agents/skills/start/SKILL.md` + `session-awareness.md` rule | `.agents/skills/start/SKILL.md` + `CLAUDE.md` session orientation section |
-| Shoshin | `.cursor/rules/shoshin.md` (always-on) | `CLAUDE.md` shoshin section |
+| Shoshin | `.cursor/rules/shoshin.mdc` (always-on) | `CLAUDE.md` shoshin section |
 | Sparring | `.agents/skills/spar/SKILL.md` | `.agents/skills/spar/SKILL.md` |
 | Feedback checkpoints | `.cursor/rules/feedback-checkpoints.md` (always-on) | `CLAUDE.md` feedback checkpoints section |
-| Review tracking | `.cursor/rules/review-tracking.md` (always-on) | `CLAUDE.md` review tracking section |
-| Backlog capture | `.cursor/rules/backlog-capture.md` (always-on) | `CLAUDE.md` backlog capture section |
+| Review tracking | `.cursor/rules/review-tracking.mdc` (always-on) | `CLAUDE.md` review tracking section |
+| Backlog capture | `.cursor/rules/backlog-capture.mdc` (always-on) | `CLAUDE.md` backlog capture section |
 | Case study reflection | `.cursor/rules/case-study-reflection.md` (always-on) | `CLAUDE.md` case study section |
 | Pre-commit review | `.agents/skills/review/SKILL.md` | `.agents/skills/review/SKILL.md` |
-| Cross-linking | `.cursor/rules/cross-linking.md` (glob-scoped) | `CLAUDE.md` cross-linking section (always-on) |
+| Cross-linking | `.cursor/rules/cross-linking.mdc` (glob-scoped) | `CLAUDE.md` cross-linking section (always-on) |
 | Collaboration style | `.cursorrules` | `CLAUDE.md` |
 | Workspace identity | `.cursorrules` + `ABOUT.md` | `CLAUDE.md` + `ABOUT.md` |
 

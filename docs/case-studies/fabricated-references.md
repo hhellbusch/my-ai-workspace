@@ -47,7 +47,7 @@ A web search found the correct paper — Anthropic's ["Towards Understanding Syc
 
 ### Systemic: external URL verification rule
 
-The project already had a [`cross-linking.md`](../../.cursor/rules/cross-linking.md) rule (an always-applied AI instruction file that maintains internal references between documents). External links had no equivalent protection. Two changes:
+The project already had a [`cross-linking.md`](../../.cursor/rules/cross-linking.mdc) rule (an always-applied AI instruction file that maintains internal references between documents). External links had no equivalent protection. Two changes:
 
 1. **Always-applied rule** — Added an "External Links — Verify Before Committing" section to the cross-linking rule. The rule states plainly: AI models fabricate plausible-looking URLs. Every new external URL must be fetched before inclusion.
 
@@ -87,7 +87,7 @@ The author clicked the link. No automated system, linter, or review process woul
 | Artifact | What it is |
 |---|---|
 | [The Shift — Design thinking at scale](../ai-engineering/the-shift.md) | The essay section where the fabricated URL was introduced and corrected |
-| [cross-linking.md](../../.cursor/rules/cross-linking.md) | The rule updated with external URL verification |
+| [cross-linking.md](../../.cursor/rules/cross-linking.mdc) | The rule updated with external URL verification |
 | [/review](../../.agents/skills/review/SKILL.md) | The pre-commit command with external URL checking added |
 | [Debugging Your AI Assistant's Judgment](debugging-ai-judgment.md) | Sibling case study — same pattern (notice → name → fix structurally) applied to prioritization bias |
 

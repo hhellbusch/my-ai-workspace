@@ -10,7 +10,7 @@ review:
 
 > Two complementary practices for AI-assisted work — adversarial review (sparring) and assumption-checking (shoshin). Covers what each is, how to run one, and where they fit in a workflow.
 >
-> The working implementations are in [`.cursor/rules/shoshin.md`](../../.cursor/rules/shoshin.md) and [`.cursor/commands/spar.md`](../../.agents/skills/spar/SKILL.md) — worth reading alongside this essay. They show the gap between describing a practice for humans and specifying it for an AI. One example: this essay uses "prior documents" (readable, general); the rule uses "handoff" with a specific file path (`.planning/whats-next.md`) because the AI needs to know exactly what to open. Same practice, different vocabulary, different job to do.
+> The working implementations are in [`.cursor/rules/shoshin.mdc`](../../.cursor/rules/shoshin.mdc) and [`.cursor/commands/spar.md`](../../.agents/skills/spar/SKILL.md) — worth reading alongside this essay. They show the gap between describing a practice for humans and specifying it for an AI. One example: this essay uses "prior documents" (readable, general); the rule uses "handoff" with a specific file path (`.planning/whats-next.md`) because the AI needs to know exactly what to open. Same practice, different vocabulary, different job to do.
 
 ## The Two Problems
 
@@ -97,7 +97,7 @@ If you're new to these ideas and want to go further:
 
 | For | Read |
 |---|---|
-| The shoshin rule as implemented in this workspace | [`.cursor/rules/shoshin.md`](../../.cursor/rules/shoshin.md) |
+| The shoshin rule as implemented in this workspace | [`.cursor/rules/shoshin.mdc`](../../.cursor/rules/shoshin.mdc) |
 | The `/spar` command definition | [`.cursor/commands/spar.md`](../../.agents/skills/spar/SKILL.md) |
 | A real instance of sparring finding an assumption, not just a bug | [When Sparring Finds the Assumption, Not Just the Bug](../case-studies/spar-finds-the-assumption.md) |
 | A real instance of AI operating on stale context mid-session | [When AI Ignores Changes Made by Other Sessions](../case-studies/stale-context-in-long-sessions.md) |

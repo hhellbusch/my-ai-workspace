@@ -76,7 +76,7 @@ The track README is where the catalog lives. `.cursorrules` now points there rat
 
 **2. Encode the principle in cross-linking conventions**
 
-Added a section to `.cursor/rules/cross-linking.md`: "`.cursorrules` is orientation, not inventory." This makes the design intent explicit for future sessions — the agent can read the rule and understand why `.cursorrules` should not enumerate document lists.
+Added a section to `.cursor/rules/cross-linking.mdc`: "`.cursorrules` is orientation, not inventory." This makes the design intent explicit for future sessions — the agent can read the rule and understand why `.cursorrules` should not enumerate document lists.
 
 ---
 
@@ -117,7 +117,7 @@ In each case, the temptation is to add synchronization reminders: "remember to u
 | Artifact | What it is |
 |---|---|
 | [`.cursorrules`](../../.cursorrules) | Orientation file — now description-only, no inventory |
-| [`.cursor/rules/cross-linking.md`](../../.cursor/rules/cross-linking.md) | Added "orientation, not inventory" principle |
+| [`.cursor/rules/cross-linking.mdc`](../../.cursor/rules/cross-linking.mdc) | Added "orientation, not inventory" principle |
 | [`docs/case-studies/README.md`](README.md) | Authoritative catalog — canonical index, not `.cursorrules` |
 
 ---

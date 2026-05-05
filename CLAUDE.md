@@ -201,11 +201,11 @@ Workspace-specific extensions of the kit live in `.cursor/rules/` and are auto-l
 
 | Rule | Read when |
 |---|---|
-| `.cursor/rules/session-awareness.md` | Session start, or when context sources need refreshing |
-| `.cursor/rules/shoshin.md` | Before inheriting a brief's framing, or at scope shifts |
-| `.cursor/rules/review-tracking.md` | Generating or editing content files |
-| `.cursor/rules/pre-commit-review.md` | Before committing |
-| `.cursor/rules/cross-linking.md` | Creating or moving files |
+| `.cursor/rules/session-awareness.mdc` | Session start, or when context sources need refreshing |
+| `.cursor/rules/shoshin.mdc` | Before inheriting a brief's framing, or at scope shifts |
+| `.cursor/rules/review-tracking.mdc` | Generating or editing content files |
+| `.cursor/rules/pre-commit-review.mdc` | Before committing |
+| `.cursor/rules/cross-linking.mdc` | Creating or moving files |
 | `.cursor/rules/repo-structure.md` | Placing new content |
 
 ---
