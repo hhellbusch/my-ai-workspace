@@ -1,7 +1,7 @@
 [submodule "zanshin-pi-extension"]
 	path = submodules/zanshin-pi-extension
 	url = git@github.com:hhellbusch/zanshin-pi-extension.git
-	ignore = all
+	ignore = dirty
 [submodule "lid-pi-extension"]
 	path = submodules/lid-pi-extension
 	url = git@github.com:hhellbusch/lid-pi-extension.git
