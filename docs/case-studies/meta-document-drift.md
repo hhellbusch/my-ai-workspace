@@ -6,8 +6,8 @@ review:
 # When the Meta-Document Tries to Be the Catalog
 
 > **Audience:** Engineers managing documentation-heavy projects with structured registries, indexes, or meta-files that describe the project's own contents.
-> **Purpose:** Documents how a workspace meta-file (`.cursorrules`) accumulated stale inventory by duplicating what other documents authoritatively tracked — and how recognizing the root cause led to a structural fix that eliminated the drift source rather than demanding better update discipline.
-> *Context:* This workspace uses `.cursorrules` as a high-level orientation file for the AI assistant (Cursor with Claude). It describes the repository's purpose, structure, and active tracks. The workspace also maintains three content tracks (`docs/ai-engineering/`, `docs/philosophy/`, `docs/case-studies/`) each with their own `README.md` as the authoritative index for that track.
+> **Purpose:** Documents how a workspace meta-file (`.cursorrules`) accumulated stale inventory by duplicating what other documents authoritatively tracked — and how recognizing the root cause led to a structural fix that eliminated the drift source rather than demanding better update discipline. Later, the file itself was removed entirely when its broader role was consolidated into `.agents/skills/` and `CLAUDE.md`.
+> *Context:* This workspace originally used `.cursorrules` as a high-level orientation file for the AI assistant (Cursor with Claude). It described the repository's purpose, structure, and active tracks. The workspace also maintains three content tracks (`docs/ai-engineering/`, `docs/philosophy/`, `docs/case-studies/`) each with their own `README.md` as the authoritative index for that track.
 
 ---
 
@@ -72,11 +72,17 @@ how AI-assisted workflows succeed, fail, and generate their own tooling. See
 docs/case-studies/README.md for the full catalog.
 ```
 
-The track README is where the catalog lives. `.cursorrules` now points there rather than duplicating it.
+The track README is where the catalog lives. `.cursorrules` was trimmed to description-only.
 
 **2. Encode the principle in cross-linking conventions**
 
 Added a section to `.cursor/rules/cross-linking.mdc`: "`.cursorrules` is orientation, not inventory." This makes the design intent explicit for future sessions — the agent can read the rule and understand why `.cursorrules` should not enumerate document lists.
+
+**3. Delete the file entirely (later)**
+
+`.cursorrules` served two broader roles beyond orientation: it carried workspace ethos, collaboration style, and cross-linking rules that Cursor loaded automatically on every request. As the workspace evolved, these roles were consolidated into `.agents/skills/` (AgentSkills-discovered skills), `.cursor/rules/` (Cursor rules), and `CLAUDE.md` (Claude Code workspace config). The file was deleted because all its content had a proper home — the "orientation, not inventory" principle that prevented it from ever re-acquiring stale lists.
+
+This is the full arc: detect duplication → remove the duplicated content → realize the whole document is vestigial → remove the document. The lesson applies regardless of whether you trim or delete: if a file is duplicating authoritative sources, remove the duplication first, then evaluate whether the file still serves a purpose.
 
 ---
 
@@ -116,9 +122,10 @@ In each case, the temptation is to add synchronization reminders: "remember to u
 
 | Artifact | What it is |
 |---|---|
-| `.cursorrules` | Orientation file — now removed (see [meta-document-drift](meta-document-drift.md) for why) |
-| [`.cursor/rules/cross-linking.mdc`](../../.cursor/rules/cross-linking.mdc) | Added "orientation, not inventory" principle |
+| `.cursor/rules/cross-linking.mdc` | Added "orientation, not inventory" principle |
 | [`docs/case-studies/README.md`](README.md) | Authoritative catalog — canonical index, not `.cursorrules` |
+| `.agents/skills/` | Consolidated the broader roles `.cursorrules` once served |
+| `CLAUDE.md` | Consolidated the broader roles `.cursorrules` once served |
 
 ---
 
