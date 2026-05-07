@@ -107,7 +107,7 @@ In each case: the move succeeds, `git add .` stages everything, the commit looks
 |---|---|
 | [`devops/ocp/.gitignore`](../../devops/ocp/.gitignore) | Local `.gitignore` — travels with the directory on moves |
 | [`.gitignore`](../../.gitignore) | Root rule updated to `devops/ocp/install/` — secondary layer |
-| [`.cursor/rules/repo-structure.md`](../../.cursor/rules/repo-structure.md) | Convention for directory moves and gitignore coverage |
+| [`.cursor/rules/repo-structure.mdc`](../../.cursor/rules/repo-structure.mdc) | Convention for directory moves and gitignore coverage |
 
 ---
 

@@ -127,7 +127,7 @@ More broadly: when an AI assistant executes a structural reorganization, the sco
 
 | Artifact | What it is |
 |---|---|
-| [`.cursor/rules/repo-structure.md`](../../.cursor/rules/repo-structure.md) | "When Moving Directories" section — link-depth drift pattern and pre-commit check |
+| [`.cursor/rules/repo-structure.mdc`](../../.cursor/rules/repo-structure.mdc) | "When Moving Directories" section — link-depth drift pattern and pre-commit check |
 | [`.cursor/commands/audit.md`](../../.agents/skills/audit/SKILL.md) | Layer 1 link integrity check — updated to skip scraped content dirs and fenced code blocks (noise reduction from the same audit run) |
 
 ---

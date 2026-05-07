@@ -33,5 +33,5 @@
 ## Related workspace material
 
 - [`docs/ai-engineering/ai-assisted-development-workflows.md`](../../docs/ai-engineering/ai-assisted-development-workflows.md) — full workflow guide. The *Six patterns at a glance* table (§ Core Mental Shift) uses the vocabulary from this file with section-level coverage pointers.
-- [`.cursor/rules/workspace-ethos.md`](../../.cursor/rules/workspace-ethos.md) — default collaboration posture.
+- [`.cursor/rules/workspace-ethos.mdc`](../../.cursor/rules/workspace-ethos.mdc) — default collaboration posture.
 - [`library/dan-walsh-devconf-2025-career-lessons.md`](../../library/dan-walsh-devconf-2025-career-lessons.md) — **public** primary narrative (talk transcript); complementary to this pattern list, not the same provenance.

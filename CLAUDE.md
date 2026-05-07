@@ -206,7 +206,7 @@ Workspace-specific extensions of the kit live in `.cursor/rules/` and are auto-l
 | `.cursor/rules/review-tracking.mdc` | Generating or editing content files |
 | `.cursor/rules/pre-commit-review.mdc` | Before committing |
 | `.cursor/rules/cross-linking.mdc` | Creating or moving files |
-| `.cursor/rules/repo-structure.md` | Placing new content |
+| `.cursor/rules/repo-structure.mdc` | Placing new content |
 
 ---
 
