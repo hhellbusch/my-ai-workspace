@@ -25,7 +25,7 @@ This is the sparring partner, not the sycophant.
 </objective>
 
 <context>
-- Repo conventions: `.cursor/rules/repo-structure.md`
+- Repo conventions: `.cursor/rules/repo-structure.mdc`
 - Planning context: `.planning/`
 - Existing threads: `ls .planning/zen-karate/threads.md 2>/dev/null`
 - Related docs: `ls docs/*.md 2>/dev/null`

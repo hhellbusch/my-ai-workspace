@@ -12,7 +12,7 @@ This command is **read-only**. It reports findings but does not move or modify f
 
 ### Step 1: Load conventions
 
-Read `.cursor/rules/repo-structure.md` to load the directory map, placement rules, and naming conventions.
+Read `.cursor/rules/repo-structure.mdc` to load the directory map, placement rules, and naming conventions.
 
 ### Step 2: Scan the repo root
 

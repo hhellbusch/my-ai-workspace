@@ -13,7 +13,7 @@ This command is read-only. It reports findings and asks for confirmation before 
 </objective>
 
 <context>
-- Repo conventions: `.cursor/rules/repo-structure.md`
+- Repo conventions: `.cursor/rules/repo-structure.mdc`
 - Cross-linking and registry rules: `.cursor/rules/cross-linking.md`
 - Current changes: `git status`
 - Staged diff: `git diff --cached --stat`
