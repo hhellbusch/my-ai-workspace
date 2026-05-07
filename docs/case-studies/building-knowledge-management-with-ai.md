@@ -8,7 +8,7 @@
 
 ## The Starting Point
 
-The workspace had content — essays, troubleshooting guides, research, examples — spread across product directories. It had a [`.cursorrules`](../../.cursorrules) file describing the structure and a [`repo-structure.md`](../../.cursor/rules/repo-structure.mdc) rule defining conventions. What it didn't have was any system for tracking work across sessions, managing references, orienting new conversations, or catching drift as content evolved.
+The workspace had content — essays, troubleshooting guides, research, examples — spread across product directories. It had a `.cursorrules` file (now removed — see [meta-document-drift.md](meta-document-drift.md)) describing the structure and a [`repo-structure.md`](../../.cursor/rules/repo-structure.mdc) rule defining conventions. What it didn't have was any system for tracking work across sessions, managing references, orienting new conversations, or catching drift as content evolved.
 
 Each session started from scratch. The AI would read what it could find, make reasonable guesses about priorities, and the user would redirect as needed. Context was rebuilt from the filesystem every time. Ideas mentioned in conversation vanished when the session ended. There was no way to say "what were we working on?" and get a coherent answer.
 

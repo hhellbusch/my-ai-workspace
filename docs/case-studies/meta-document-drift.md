@@ -116,7 +116,7 @@ In each case, the temptation is to add synchronization reminders: "remember to u
 
 | Artifact | What it is |
 |---|---|
-| [`.cursorrules`](../../.cursorrules) | Orientation file — now description-only, no inventory |
+| `.cursorrules` | Orientation file — now removed (see [meta-document-drift](meta-document-drift.md) for why) |
 | [`.cursor/rules/cross-linking.mdc`](../../.cursor/rules/cross-linking.mdc) | Added "orientation, not inventory" principle |
 | [`docs/case-studies/README.md`](README.md) | Authoritative catalog — canonical index, not `.cursorrules` |
 
