@@ -95,6 +95,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### RHOAI LiteLLM: enable `reasoning_content` in streaming for Qwen3
+- **Product:** paude / pi-openai-compat / RHOAI
+- **Context:** Qwen3.6-35B-A3B thinking mode works in non-streaming (full `reasoning_content` returned) but LiteLLM strips it from streaming responses entirely — the model reasons (visible as a delay before first token), but Pi never sees the chain because Pi uses streaming exclusively. Root cause: LiteLLM can't extract `<think>...</think>` tags mid-stream and discards them rather than buffering. Newer LiteLLM versions (post ~1.67) support `stream_options: {"include_reasoning": true}`. Pi's thinking panel **will work** as soon as the RHOAI LiteLLM instance is upgraded and this option is exposed. The pi-openai-compat extension already sends `thinkingFormat: "qwen-chat-template"` correctly — no extension changes needed.
+- **Action:** File a request with the RHOAI/LiteMaaS team to (a) confirm LiteLLM version and (b) enable streaming `reasoning_content` for Qwen3 models. Reference: `submodules/pi-openai-compat/index.ts` (thinkingFormat), `git-projects/pi-mono/packages/ai/src/providers/openai-completions.ts` (stream parser lines 258–299).
+- **Added:** 2026-05-08
+
 ### Paude push gate — explicit SSH key grant/revoke
 - **Product:** meta / paude / security
 - **Idea:** Control when the agent can push to GitHub by gating SSH key access. Two approaches worth evaluating: (1) socat proxy — host forwards `$SSH_AUTH_SOCK` into container via a shared socket file, kills the process to revoke; (2) fine-grained GitHub PAT in a host-controlled file — host writes/deletes the credential, agent can only push when file exists. Combine with branch-based pushes so review happens as a GitHub PR rather than a worktree diff. Wrap in two host scripts: `paude-grant` and `paude-revoke`.
