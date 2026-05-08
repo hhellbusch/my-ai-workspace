@@ -27,6 +27,8 @@ At session start, prefer `/start`. Without it: read `ABOUT.md`, the `> State:` l
 
 **For complex implementation tasks**, consider delegating execution to a sub-agent: keep analysis and planning in the main context, pass a clean specification to a fresh sub-agent for implementation. This preserves context quality and prevents exploration from polluting the implementation window.
 
+**Pi session logs:** Pi stores every session as a JSONL file at `/home/paude/.pi/agent/sessions/--pvc-workspace--/`. Files are named `<ISO-timestamp>_<uuid>.jsonl`. Each line is a JSON event — `session`, `model_change`, `message`, `tool_result`, etc. When the user asks what was covered in a previous session, read the relevant file(s) from that directory. Do not reconstruct session history from memory — read the files.
+
 ---
 
 ## In-Session Context Compaction
