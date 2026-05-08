@@ -29,7 +29,14 @@ At session start, prefer `/start`. Without it: read `ABOUT.md`, the `> State:` l
 
 **Pi session logs:** Pi stores every session as a JSONL file at `/home/paude/.pi/agent/sessions/--pvc-workspace--/`. Files are named `<ISO-timestamp>_<uuid>.jsonl`. Each line is a JSON event — `session`, `model_change`, `message`, `tool_result`, etc. When the user asks what was covered in a previous session, read the relevant file(s) from that directory. Do not reconstruct session history from memory — read the files.
 
-**Session extracts (pending extension update):** The zanshin extension will automatically write a human-readable markdown extract to `sessions/` in this workspace at every session shutdown. Once that patch lands (`git push` to `hhellbusch/zanshin-pi-extension` + `pi update`), prefer reading `sessions/<timestamp>.md` over raw JSONL. Run `/summarize-session` to append an LLM narrative to the most recent extract.
+**Session extracts (pending extension update):** The zanshin extension will automatically write a human-readable markdown extract to `sessions/` in this workspace at every session shutdown. Once that patch lands (edit `submodules/zanshin-pi-extension/extensions/zanshin.ts`, commit, push, `pi update`), prefer reading `sessions/<timestamp>.md` over raw JSONL. Run `/summarize-session` to append an LLM narrative to the most recent extract.
+
+**Extension source code:** All pi extension repos are checked out as git submodules in `submodules/`. To edit an extension: work directly in `submodules/<name>/`, commit, and push from there. If a submodule directory is empty, run `git submodule update --init submodules/<name>` (requires SSH keys). Current extensions:
+- `submodules/zanshin-pi-extension/` — working discipline L0, commands (/spar, /shoshin, /checkpoint, /summarize-session, stack)
+- `submodules/paude-pi-extension/` — Paude container awareness injected into system prompt
+- `submodules/pi-openai-compat/` — OpenAI-compatible provider
+- `submodules/pi-anthropic-vertex/` — Anthropic Vertex provider
+- `submodules/lid-pi-extension/` — LID extension
 
 ---
 

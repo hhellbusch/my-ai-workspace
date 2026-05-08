@@ -26,16 +26,27 @@ Two new behaviours in `extensions/zanshin.ts`:
 
 ## How to apply
 
+The source lives in the workspace submodule — edit it directly:
+
 ```bash
-# From the zanshin-pi-extension repo root
-cp /path/to/this/zanshin.ts extensions/zanshin.ts
+# Initialize the submodule if empty (requires SSH keys)
+git submodule update --init submodules/zanshin-pi-extension
+
+# Copy the patch in
+cp .planning/zanshin-session-logging/zanshin.ts submodules/zanshin-pi-extension/extensions/zanshin.ts
+
+# Commit and push from inside the submodule
+cd submodules/zanshin-pi-extension
 git add extensions/zanshin.ts
 git commit -m "feat: session extract at shutdown + /summarize-session command"
 git push
-```
+cd ../..
 
-Then update pi:
-```bash
+# Update the submodule pointer in the parent repo
+git add submodules/zanshin-pi-extension
+git commit -m "chore: update zanshin-pi-extension submodule (session logging)"
+
+# Pull the update into pi
 pi update
 ```
 
