@@ -111,14 +111,25 @@ Omit the field if there's only one active thread. See `/checkpoint` and `/whats-
 
 Bookkeeping at session end is not enough. Crashes, context loss, and abrupt endings happen mid-session. The goal is: at any point in the session, the repository state + `.planning/whats-next.md` should be accurate enough that a new session can recover without re-litigating decisions.
 
+**Commit authorization mode (resolve safety vs bookkeeping):**
+- Platform safety requires explicit user authorization before committing.
+- Workspace discipline expects logical checkpoint commits for recoverability.
+- Reconcile these by setting a session-level mode at start (or before first commit-worthy change):
+  - `manual` — ask every time before committing.
+  - `milestone` — one-time standing authorization for logical checkpoint commits in this session.
+- If mode is not explicitly set, default to `manual`.
+- Mode can be changed anytime by user instruction.
+
 **BACKLOG.md — update in real time, not in batch:**
 - When starting a backlog item: immediately move it to `## In Progress` — don't wait until end-of-session
 - When completing a backlog item: immediately delete it from the backlog — don't batch completions. Git history is the record.
 
-**Commit frequently — small and logical:**
+**Commit frequently — small and logical (when mode permits):**
 - Each logical unit of work gets its own commit
 - Do not accumulate multiple completed units before committing
 - A clean working tree is the cheapest form of crash recovery — uncommitted work is unrecoverable
+- In `manual` mode: ask at each commit boundary.
+- In `milestone` mode: announce the checkpoint boundary, then commit unless redirected.
 
 **Tests-pass trigger:** After running a test suite that passes (full or partial), immediately evaluate: "Is there uncommitted work that this test run validates?" If yes, commit before chasing the next issue. This is especially critical during debugging chains where each fix surfaces a new error — the passing tests prove the current fix works and that's a commit boundary. Debugging momentum is not a reason to skip this.
 
