@@ -204,8 +204,8 @@ Hardware buys RAM; **harness** buys effective context. Workspace pointers:
 
 **Pi monorepo (local clone) — `models.json` vs real `n_ctx`**
 
-- **Path:** [`git-projects/pi-mono`](../../git-projects/pi-mono) — upstream [badlogic/pi-mono](https://github.com/badlogic/pi-mono); coding agent under **`packages/coding-agent`**.
-- **Custom models file:** `~/.pi/agent/models.json` — see **[`packages/coding-agent/docs/models.md`](../../git-projects/pi-mono/packages/coding-agent/docs/models.md)** (Ollama, vLLM, LM Studio, `baseUrl`, `api: "openai-completions"`, **`contextWindow`** / **`maxTokens`**, **`modelOverrides`** for built-ins).
+- **Path:** [`git-projects/pi`](../../git-projects/pi) — upstream [earendil-works/pi](https://github.com/earendil-works/pi); coding agent under **`packages/coding-agent`**.
+- **Custom models file:** `~/.pi/agent/models.json` — see **[`packages/coding-agent/docs/models.md`](../../git-projects/pi/packages/coding-agent/docs/models.md)** (Ollama, vLLM, LM Studio, `baseUrl`, `api: "openai-completions"`, **`contextWindow`** / **`maxTokens`**, **`modelOverrides`** for built-ins).
 - **Registry behavior:** `ModelDefinitionSchema` allows per-model **`contextWindow`**; `parseModels` defaults **`contextWindow` → 128000** and **`maxTokens` → 16384** when omitted (`model-registry.ts`). **`applyModelOverride`** can lower **`contextWindow`** on a built-in model via **`modelOverrides`**.
 - **Important:** Pi’s **`contextWindow`** is the **client / harness budget** (compaction, UI, “how much history to plan for”) — it does **not** increase llama.cpp **`n_ctx`**. If **`contextWindow` ≫ server `n_ctx`**, Pi may **assume** more headroom than the server has → tune **`contextWindow` ≈ measured `n_ctx`** (e.g. **~14_500** for **`qwen3:30b-a3b`**) so characterization matches reality.
 - **Larger *real* context on same GPU** → usually **smaller / leaner weights** (more KV headroom): e.g. **`qwen2.5-coder:7b`**, **`gemma3:12b`**, **`gpt-oss:20b`**, or **lower quant** (journal backlog: **qwen2.5:32b Q3_K_M**) — each needs a **fresh `n_ctx` readout** from serve logs after pull.
