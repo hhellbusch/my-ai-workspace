@@ -111,23 +111,26 @@ Omit the field if there's only one active thread. See `/checkpoint` and `/whats-
 
 Bookkeeping at session end is not enough. Crashes, context loss, and abrupt endings happen mid-session. The goal is: at any point in the session, the repository state + `.planning/whats-next.md` should be accurate enough that a new session can recover without re-litigating decisions.
 
-**Commit authorization mode (resolve safety vs bookkeeping):**
-- Platform safety requires explicit user authorization before committing.
+**Commit authorization mode (branch-aware checkpoints):**
 - Workspace discipline expects logical checkpoint commits for recoverability.
-- Reconcile these by setting a session-level mode at start (or before first commit-worthy change):
+- Default behavior is branch-aware:
+  - On non-protected branches (anything except `main`/`master`), commits at logical checkpoints are allowed without per-commit confirmation.
+  - On protected branches (`main`/`master`), explicit user authorization is required before committing.
+- Users can override mode at any time:
   - `manual` — ask every time before committing.
-  - `milestone` — one-time standing authorization for logical checkpoint commits in this session.
-- If mode is not explicitly set, default to `manual`.
-- Mode can be changed anytime by user instruction.
+  - `milestone` — standing authorization for logical checkpoint commits in this session.
+- If branch state is unclear, default to `manual`.
 
 **BACKLOG.md — update in real time, not in batch:**
 - When starting a backlog item: immediately move it to `## In Progress` — don't wait until end-of-session
 - When completing a backlog item: immediately delete it from the backlog — don't batch completions. Git history is the record.
 
-**Commit frequently — small and logical (when mode permits):**
+**Commit frequently — small and logical:**
 - Each logical unit of work gets its own commit
 - Do not accumulate multiple completed units before committing
 - A clean working tree is the cheapest form of crash recovery — uncommitted work is unrecoverable
+- On non-protected branches: commit at logical checkpoint boundaries and report what was committed.
+- On protected branches: ask before each commit unless the user has explicitly granted milestone mode.
 - In `manual` mode: ask at each commit boundary.
 - In `milestone` mode: announce the checkpoint boundary, then commit unless redirected.
 

@@ -45,14 +45,14 @@ If the user asks "what's in progress?" or "show me up next" or similar, then rea
 
 **Review coverage** is opt-in — skip unless the user asks. `/audit` has the detailed breakdown.
 
-### Step 1.5: Commit mode handshake
+### Step 1.5: Branch-aware commit mode
 
-Before proposing substantive execution work, ask which commit mode should apply for this session:
+Before proposing substantive execution work, detect the current branch and set the default commit mode:
 
-- `manual` — ask for confirmation before each commit
-- `milestone` — user grants standing authorization for logical checkpoint commits this session
+- On `main`/`master`: default to `manual` (ask before each commit)
+- On other branches: default to `milestone` (allow logical checkpoint commits without per-commit confirmation)
 
-If the user does not choose, default to `manual`. Note the selected mode in the orientation output so both sides share the same expectation.
+Always state the selected mode in the orientation output so both sides share the same expectation. The user can switch modes at any time.
 
 ### Step 2: Check for handoff
 
@@ -188,7 +188,7 @@ What would you like to work on? Pick a number or tell me something else.
 - Brief alignment checked — drift surfaced if present
 - Recent activity summarized from git log
 - Planning project status checked
-- Commit mode explicitly confirmed (or defaulted to manual and stated)
+- Commit mode is branch-derived and stated clearly (with override path)
 - 2-3 actionable suggestions presented
 - User chooses direction, not the agent
 </success_criteria>
