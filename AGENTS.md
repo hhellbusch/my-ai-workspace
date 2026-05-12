@@ -17,6 +17,17 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 
 ---
 
+## Workspace Extensions
+
+Pi extensions live in `submodules/`. Key repos:
+- `zanshin-pi-extension/` — working discipline L0, commands (/spar, /shoshin, /checkpoint, /summarize-session, stack)
+- `paude-pi-extension/` — Paude container awareness injected into system prompt
+- `pi-openai-compat/` — OpenAI-compatible provider
+- `pi-anthropic-vertex/` — Anthropic Vertex provider
+- `lid-pi-extension/` — LID extension
+
+To edit an extension: work directly in the submodule directory, commit, and push. If a submodule directory is empty, run `git submodule update --init submodules/<name>` (requires SSH keys).
+
 ## Context Memory
 
 Maintain a brief engineering journal for decisions and context that matter across sessions. Log when you: choose an approach or tool, change scope mid-task, make an architectural decision, or encounter a non-obvious constraint. Keep it short — one paragraph is enough. A research spike is pending to design the right form factor and integration with BACKLOG.md and the library wiki.
