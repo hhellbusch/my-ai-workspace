@@ -28,6 +28,12 @@ Butane / Ignition configurations for first-boot automation.
 
 - **`examples/`** — ISO ejection after installation, first-boot configuration automation
 
+### [Git](git/)
+
+Learning guide for developers who want to understand what git does, not just memorize commands.
+
+- **`git-learning-guide.md`** — Content-addressable filesystem model, the staging area mental model, four core commands, branching strategy, undo/restore patterns, search and find, remote workflows, cheat sheet
+
 ### [Learning paths](learning-path/)
 
 Curated multi-topic curricula (may span OpenShift, GitOps, and labs in this repo).
