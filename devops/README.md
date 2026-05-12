@@ -49,6 +49,12 @@ Red Hat Advanced Cluster Management patterns for multi-cluster environments.
 
 - **`examples/`** — Secret management patterns, cluster import with Ansible, ArgoCD RBAC integration, GitOps cluster integration, OCM subscription automation
 
+### [Paude Proxy](paude-proxy/)
+
+Reverse proxy configuration, CA certificate management, and PAT (Personal Access Token) documentation for the workspace environment.
+
+- **`README.md`** — Proxy architecture, environment variables, GitHub PAT scopes, TLS certificate details, and troubleshooting
+
 ### [Vault](vault/)
 
 HashiCorp Vault integration patterns.
