@@ -57,6 +57,19 @@ An empty submodule directory means you cannot inspect its code, understand its b
 
 **Requirements:** Submodule clone requires SSH keys or HTTPS access. If `git submodule update --init` fails, check that SSH keys are available on the host or that the workspace was cloned with `--recurse-submodules`.
 
+**Branching in submodules:** Always branch from the upstream default branch, not the pinned commit the submodule currently points to. Before creating a branch:
+
+```bash
+# Find the upstream default branch
+git -C submodules/<name> remote show origin | grep 'HEAD branch'
+
+# Fetch and branch from it
+git -C submodules/<name> fetch origin
+git -C submodules/<name> checkout -b <branch> origin/<default-branch>
+```
+
+For forks like `paude`, the default branch is `develop`. Branching off the pinned commit instead creates a PR with a bad base and a merge conflict.
+
 ## Context Memory
 
 Maintain a brief engineering journal for decisions and context that matter across sessions. Log when you: choose an approach or tool, change scope mid-task, make an architectural decision, or encounter a non-obvious constraint. Keep it short — one paragraph is enough. A research spike is pending to design the right form factor and integration with BACKLOG.md and the library wiki.
