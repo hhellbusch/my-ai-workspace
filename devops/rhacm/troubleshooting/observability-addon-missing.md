@@ -1,7 +1,7 @@
 ---
 review:
   status: unreviewed
-  notes: "AI-generated from live diagnostic session 2026-04-29. Diagnostic flow (Steps 1–4) walked in session; operator restart as fix confirmed. Root cause (firewall blocking initial reconcile) is speculative — no logs confirmed it. Step 3 (operator logs) and Step 5 (cluster label gating) not exercised in this session. Red Hat docs URLs verified via WebFetch during session; not verified by curl. ACM 2.15.1."
+  notes: "AI-generated from live diagnostic session 2026-04-29. Diagnostic flow (Steps 1–4) walked in session; operator restart as fix confirmed. Root cause updated 2026-05-12: matches ACM-27834 (platform-type timing race condition, fixed in ACM 2.14.2 errata; status in 2.15.x unclear from release notes). KCS 7081429 covers this symptom for ACM 2.10/2.11. Step 3 (operator logs) and Step 5 (cluster label gating) not exercised in the original session. Red Hat docs URLs verified via WebFetch during session; not verified by curl. ACM 2.15.1."
 ---
 
 # Troubleshooting: Observability Addon Missing for Some Clusters
@@ -106,8 +106,10 @@ Common log signatures:
 |---|---|
 | Cluster name with `skip` / `skipping` | Cluster excluded by condition or annotation |
 | `not available` | Cluster not in Available state at time of reconcile |
-| Cluster name absent entirely | Operator did not reconcile this cluster at all |
+| **Cluster name absent entirely** | **See Step 6 — timing race condition (ACM-27834)** |
 | Permission / RBAC errors | Operator can't create resources in the cluster namespace |
+
+**Cluster name completely absent from logs is the primary indicator of ACM-27834.** When the operator runs its platform-type check before the cluster's labels and conditions are fully settled after import, it can misidentify the cluster as non-OCP and skip it without logging anything for that cluster. A restart forces re-evaluation after state is stable.
 
 ---
 
@@ -127,7 +129,7 @@ If the namespace is missing or in a bad state, the operator cannot create the `M
 
 ## Step 5 — Check Cluster Labels
 
-Some versions of the MCO operator gate on `vendor` or platform labels. Clusters missing expected labels may be silently skipped. *This step is unverified — not exercised in the session that produced this guide. Treat as a candidate cause if all other steps are clear.*
+The MCO operator gates on `vendor` and platform labels to determine whether a cluster is OCP. A known race condition (ACM-27834, fixed in ACM 2.14.2 errata) caused the operator to run this check too early — before the cluster's labels were fully populated after import — and incorrectly classify the cluster as non-OCP, silently skipping addon deployment. If the cluster is clearly Available and shows correct labels now, the operator simply needs to re-evaluate. *Label check not exercised in the session that produced this guide — treat as confirmation step before Step 6.*
 
 ```bash
 oc get managedcluster $CLUSTER \
@@ -143,9 +145,9 @@ oc get managedcluster $CLUSTER \
 
 ## Step 6 — Recovery: Restart the Operator
 
-If the cluster is `Available`, has no skip annotation, and the operator logs show no activity for it, the most likely explanation is that the operator failed to reconcile this cluster at initial import (possibly because the firewall was blocking the spoke's connection at that moment) and did not retry.
+If the cluster is `Available`, has no skip annotation, and the operator logs show no activity for it, the documented root cause is a timing race condition in the platform-type check (ACM-27834): the operator evaluated the cluster before its labels and conditions were fully settled after import, misidentified it as non-OCP, and silently skipped it without retrying. This is a known Red Hat issue — see [KCS 7081429](https://access.redhat.com/solutions/7081429) (subscriber access required) and [ACM-27834](https://issues.redhat.com/browse/ACM-27834). ACM-27834 was fixed in the ACM 2.14.2 errata; its status in 2.15.x is unclear from the public release notes — the fix may not have been included in 2.15.0 GA.
 
-Restarting the operator triggers a full reconcile across all managed clusters:
+Restarting the operator triggers a full reconcile across all managed clusters, re-evaluating each cluster after its state is stable:
 
 ```bash
 oc rollout restart deploy/multicluster-observability-operator \
@@ -219,6 +221,13 @@ oc get managedclusteraddon -n $CLUSTER observability-controller -o yaml
 
 - [ACM 2.15 — Observability](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.15/html/observability/observing-environments-intro)
 - [ACM 2.15 — Enabling the Observability service](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.15/html/observability/observing-environments-intro#enabling-observability-service)
+
+**Known issues and bugs covering this symptom:**
+
+- [KCS 7081429](https://access.redhat.com/solutions/7081429) — "RHACM Observability components are absent from some of my spoke clusters" (ACM 2.10/2.11; subscriber access required for resolution)
+- [ACM-27834](https://issues.redhat.com/browse/ACM-27834) — Platform-type timing race condition causes operator to skip cluster at import; fixed in ACM 2.14.2 errata
+- [ACM-27304](https://issues.redhat.com/browse/ACM-27304) — Watcher controller OOM/CPU overconsumption; fixed in ACM 2.15.1 errata (can compound reconcile reliability issues)
+- [ACM-27632](https://issues.redhat.com/browse/ACM-27632) — `observability=disabled` label fails to remove all addon resources; fixed in ACM 2.15.1 errata
 
 ---
 
