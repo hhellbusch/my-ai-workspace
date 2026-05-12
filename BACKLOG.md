@@ -95,6 +95,12 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### Context Memory System — research spike
+- **Product:** workspace
+- **Context:** Session context and engineering decisions drift across sessions. The current `Context Integrity` section is a placeholder. Need to design a memory system — decision journal, cross-session handoff, knowledge persistence — that fits with `BACKLOG.md` as the unified tracker, the library wiki, and briefs/handoffs. Should inform AGENTS.md context section after design.
+
+
+
 ### RHOAI LiteLLM: enable `reasoning_content` in streaming for Qwen3
 - **Product:** paude / pi-openai-compat / RHOAI
 - **Context:** Qwen3.6-35B-A3B thinking mode works in non-streaming (full `reasoning_content` returned) but LiteLLM strips it from streaming responses entirely — the model reasons (visible as a delay before first token), but Pi never sees the chain because Pi uses streaming exclusively. Root cause: LiteLLM can't extract `<think>...</think>` tags mid-stream and discards them rather than buffering. Newer LiteLLM versions (post ~1.67) support `stream_options: {"include_reasoning": true}`. Pi's thinking panel **will work** as soon as the RHOAI LiteLLM instance is upgraded and this option is exposed. The pi-openai-compat extension already sends `thinkingFormat: "qwen-chat-template"` correctly — no extension changes needed.
