@@ -19,3 +19,6 @@
 [submodule "submodules/pi-openai-compat"]
 	path = submodules/pi-openai-compat
 	url = https://github.com/hhellbusch/pi-openai-compat.git
+[submodule "submodules/paude-proxy"]
+	path = submodules/paude-proxy
+	url = https://github.com/hhellbusch/paude-proxy.git
