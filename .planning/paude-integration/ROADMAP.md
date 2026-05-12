@@ -124,8 +124,10 @@ The following were built and validated before moving to Phase 3 proper:
 
 ## Pi agent added to fork (2026-05-02)
 
-`--agent pi` is now available in the fork (`feature/wait-and-prompt-file`). Supports four providers: `vertex` (Claude via `basnijholt/pi-anthropic-vertex` extension + Gemini natively), `anthropic`, `google`, `github`. Vertex+ADC auth uses the same proxy mechanism as Claude Code and OpenClaw — no new infrastructure needed.
+`--agent pi` is now available in the fork (`feature/wait-and-prompt-file`). Supports four providers: `vertex` (Claude via `hhellbusch/pi-anthropic-vertex` extension + Gemini natively), `anthropic`, `google`, `github`. Vertex+ADC auth uses the same direct ADC pattern as Claude Code and OpenClaw.
 
 Implication for Phase 4: multi-agent comparison now has three viable agents (claude, gemini, pi) with the same Vertex backend. Pi is the current primary interactive agent for this workspace.
 
 Pi docs: `paude/docs/PI.md`.
+
+Architecture decisions log (container-first usage, paude-pi extension opt-in, proxy/relay follow-up): `.planning/paude-integration/findings/2026-05-10-pi-container-architecture-decisions.md`.

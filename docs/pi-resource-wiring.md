@@ -42,15 +42,20 @@ Ignore rules: pi reads `.gitignore`, `.ignore`, `.fdignore` from each directory 
 
 ## Installed packages (`~/.pi/agent/settings.json`)
 
-Three packages are installed at user scope. Each provides **extensions only** — no skills or prompts from packages.
+Two packages are installed at user scope by default. Each provides **extensions only** — no skills or prompts from packages.
 
 | Package | What it provides |
 |---------|-----------------|
-| `paude-pi-extension` | Extension: injects Paude container awareness into system prompt (activates only when `PAUDE_SUPPRESS_PROMPTS=1`) |
 | `zanshin-pi-extension` | Extension: injects Zanshin L0 into system prompt; registers `/spar`, `/shoshin`, `/checkpoint`, `/push`, `/pop`, `/stack` commands |
 | `pi-openai-compat` | Extension: registers an OpenAI-compatible model provider (reads `OPENAI_COMPAT_BASE_URL`) |
 
 Package extensions live at: `~/.pi/agent/git/github.com/hhellbusch/<name>/extensions/`
+
+Optional package (not auto-loaded by paude):
+
+| Package | What it provides |
+|---------|-----------------|
+| `paude-pi-extension` | Extension: injects Paude container-awareness context when `PAUDE_SUPPRESS_PROMPTS=1` |
 
 One additional extension is installed directly:
 - `~/.pi/agent/extensions/pi-anthropic-vertex/` — Anthropic Vertex AI provider
@@ -64,7 +69,7 @@ At startup pi renders these sections into the chat area — **section only appea
 ```
 [Context]     CLAUDE.md (walked up from cwd)
 [Skills]      from .agents/skills/<name>/SKILL.md
-[Extensions]  from installed packages (paude, zanshin, openai-compat, vertex)
+[Extensions]  from installed packages (zanshin, openai-compat, vertex, and any opt-in extras)
 [Themes]      none configured
 ```
 

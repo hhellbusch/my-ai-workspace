@@ -104,7 +104,7 @@ Point Cursor at the vLLM server: Settings → Models → OpenAI Base URL → `ht
 
 ### Pi + paude (OpenAI-compatible server on the LAN)
 
-**[paude](https://github.com/bbrowning/paude)** (this workspace’s fork) can run **[Pi](https://github.com/badlogic/pi-mono)** against any **OpenAI-compatible** HTTP API — including **RamaLama** / **llama.cpp** on the same machine or on a **dedicated LLM host** (flat home LAN, DHCP reservation + DNS such as `llm.lan`, host firewall allowing only the LAN CIDR). See the [experiment journal](../../research/ai-tooling/local-llm-experiment-journal.md) (**2026-05-03**, **2026-05-08**) for image / `n_ctx` notes.
+**[paude](https://github.com/bbrowning/paude)** (this workspace’s fork) can run **[Pi](https://github.com/earendil-works/pi)** against any **OpenAI-compatible** HTTP API — including **RamaLama** / **llama.cpp** on the same machine or on a **dedicated LLM host** (flat home LAN, DHCP reservation + DNS such as `llm.lan`, host firewall allowing only the LAN CIDR). See the [experiment journal](../../research/ai-tooling/local-llm-experiment-journal.md) (**2026-05-03**, **2026-05-08**) for image / `n_ctx` notes.
 
 1. **Serve** the model (example: RamaLama with a ROCm image that matches host libc — journal).
 2. **On the host** (same shell you use for `paude create`):
@@ -114,7 +114,7 @@ Point Cursor at the vLLM server: Settings → Models → OpenAI Base URL → `ht
    export OPENAI_API_KEY=sk-local-placeholder        # if the server does not enforce keys
    ```
 
-   **Pi detail:** Pi’s OpenAI client uses each model’s **`baseUrl`** from its catalog (built-ins default to **`https://api.openai.com/v1`**). Setting **`OPENAI_BASE_URL`** alone does not change that. Pi expects **`providers.openai.baseUrl`** in **`~/.pi/agent/models.json`** (see Pi [models.md](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/models.md) — *Overriding built-in providers*). **paude** injects that merge from **`OPENAI_BASE_URL`** when you use **`--agent pi --provider openai`** (first container start / sandbox script).
+   **Pi detail:** Pi’s OpenAI client uses each model’s **`baseUrl`** from its catalog (built-ins default to **`https://api.openai.com/v1`**). Setting **`OPENAI_BASE_URL`** alone does not change that. Pi expects **`providers.openai.baseUrl`** in **`~/.pi/agent/models.json`** (see Pi [models.md](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/models.md) — *Overriding built-in providers*). **paude** injects that merge from **`OPENAI_BASE_URL`** when you use **`--agent pi --provider openai`** (first container start / sandbox script).
 
 3. **Create a session** (Podman/Docker backend):
 

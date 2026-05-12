@@ -19,6 +19,7 @@ Run this at the beginning of a new session, or whenever you need to re-orient.
 - Handoff file: `ls .planning/whats-next.md 2>/dev/null || echo "No handoff file"`
 - Planning projects: `ls -d .planning/*/ 2>/dev/null || echo "No planning projects"`
 - Continue-here files: `find .planning -name ".continue-here*.md" 2>/dev/null || echo "No continue-here files"`
+- Environment readiness (optional): `./scripts/env-check.sh` (if present)
 </context>
 
 <process>
@@ -43,6 +44,15 @@ Present the summary header from `BACKLOG.md` (already loaded in context — the 
 If the user asks "what's in progress?" or "show me up next" or similar, then read the relevant section of `BACKLOG.md`. Otherwise, the summary is sufficient to orient the session and suggest focus.
 
 **Review coverage** is opt-in — skip unless the user asks. `/audit` has the detailed breakdown.
+
+### Step 1.5: Branch-aware commit mode
+
+Before proposing substantive execution work, detect the current branch and set the default commit mode:
+
+- On `main`/`master`: default to `manual` (ask before each commit)
+- On other branches: default to `milestone` (allow logical checkpoint commits without per-commit confirmation)
+
+Always state the selected mode in the orientation output so both sides share the same expectation. The user can switch modes at any time.
 
 ### Step 2: Check for handoff
 
@@ -124,6 +134,21 @@ From the git log, identify:
 - Any uncommitted changes (`git status`)
 - Present as: "Last session you worked on: [summary of recent commits]"
 
+### Step 3.5: Environment readiness (if script exists)
+
+If `scripts/env-check.sh` exists, run it and include only non-green items in the orientation output.
+
+Use this as a fast bootstrap gate when the user is in a new machine/container:
+
+```
+## Environment Readiness
+- [ERR]/[WARN] item — [what is missing] → [next command]
+```
+
+If all checks pass, one line is enough:
+
+`Environment readiness: all checks green.`
+
 ### Step 4: Planning project status — on request only
 
 Do **not** read ROADMAPs automatically. The planning projects were listed in Step 2.5. Reading every ROADMAP on every session start scales poorly.
@@ -163,6 +188,7 @@ What would you like to work on? Pick a number or tell me something else.
 - Brief alignment checked — drift surfaced if present
 - Recent activity summarized from git log
 - Planning project status checked
+- Commit mode is branch-derived and stated clearly (with override path)
 - 2-3 actionable suggestions presented
 - User chooses direction, not the agent
 </success_criteria>

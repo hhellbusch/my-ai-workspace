@@ -1,0 +1,25 @@
+---
+description: When working on paude, prefer delete/recreate over live in-session fixes
+globs: "{submodules/paude/**,.planning/paude-integration/**,docs/ai-engineering/paude-*.md}"
+alwaysApply: false
+---
+
+# Paude Session Recreate Policy
+
+When the task involves paude (`submodules/paude` or active paude sessions):
+
+- Do not apply live workaround fixes inside currently running sessions/containers.
+- Use running sessions for diagnostics only (logs, status, env inspection, process checks).
+- Implement fixes in source, then validate by deleting and recreating the session.
+
+## Default workflow
+
+1. Capture evidence from logs/status.
+2. Patch source code.
+3. Rebuild/restart paude artifacts as needed.
+4. Delete and recreate the target paude session.
+5. Re-test in the fresh session.
+
+## Exception
+
+Only do an in-place live fix if the user explicitly asks for a temporary workaround in the running session.

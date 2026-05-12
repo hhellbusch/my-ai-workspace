@@ -27,6 +27,30 @@ Pi is the day-to-day agent in this workspace. It runs against Vertex AI (Claude 
 
 **Project context in Pi:** After `--git`, your tree is under `/pvc/workspace/`. Pi loads **`.pi/SYSTEM.md`** as project-local system prompt material for that repo. It does **not** automatically ingest large files such as the full `BACKLOG.md` or `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` unless you or `.pi/SYSTEM.md` direct a read. Keep `.pi/SYSTEM.md` small. For the split between always-on vs on-demand context (and a future portable Pi extension), see `.planning/ai-context-architecture/`.
 
+## Pi prompt injection model (what is injected)
+
+Three layers can affect Pi's prompt/context in a paude session:
+
+1. **Pi core system prompt** (from Pi itself)
+2. **Project-local `.pi/SYSTEM.md`** (from your workspace)
+3. **Optional Pi extensions** (via `before_agent_start` hooks)
+
+**Current paude behavior in this workspace:**
+- `pi-anthropic-vertex` is baked into the image for Vertex Claude models.
+- `paude-pi-extension` is **not auto-installed** by paude; opt in with `--pi-extension` if desired.
+- Zanshin/LID are intentionally not baked into the base image; peers can choose their own extension stack.
+
+**Best practices for useful injections:**
+- Keep always-on injections short and behavioral (constraints, priorities, failure modes).
+- Keep domain/project depth in files the agent reads on demand (`.pi/SYSTEM.md`, `WORKING-STYLE.md`, etc.).
+- Treat extension prompt blocks as "policy and posture", not as a place to preload large context.
+- If two extensions inject overlapping guidance, consolidate them or make one conditional to reduce prompt drag.
+
+**Credential boundary reality check:**
+- API keys for OpenAI/Anthropic providers should stay proxy-only.
+- Vertex AI follows paude's standard model: ADC credentials are available in the container for Vertex auth, while network egress remains proxy-filtered.
+- For stricter boundaries, treat this as an optional fork direction rather than default behavior.
+
 ---
 
 ## Prerequisites
@@ -45,7 +69,57 @@ uv tool install paude
 paude --version
 ```
 
-Paude pulls container images from `quay.io/bbrowning` on first use. Image pull happens at session creation — cache it once and subsequent sessions start fast.
+By default, Paude pulls container images from `quay.io/bbrowning` on first use. Pull happens at session creation — cache it once and subsequent sessions start fast.
+
+## Fork development mode (local image builds)
+
+If you're developing a fork that is not publishing images yet, use local builds:
+
+```bash
+cd submodules/paude
+make build
+
+# from your workspace root
+PAUDE_DEV=1 paude create --agent pi --provider vertex --yolo --git my-session
+```
+
+Notes:
+- `PAUDE_DEV=1` makes paude use locally built images (`paude-base-centos10:latest[-arch]`) instead of pulling from registry.
+- Re-run `make build` after Dockerfile/container-layer changes.
+- You can export `PAUDE_DEV=1` in your shell while actively developing, then unset it for normal registry-backed runs.
+
+---
+
+## New Environment Bootstrap (Fast Path)
+
+When you move to a new machine, run the workspace bootstrap check first:
+
+```bash
+./scripts/env-check.sh
+```
+
+This prints missing dependencies and exact next steps (for this workspace): `uv`, `paude`, `gcloud`, submodule state, and ADC readiness.
+
+Recommended order:
+
+1. Initialize extension/tool submodules:
+   ```bash
+   git submodule update --init
+   ```
+2. Install `uv` (if missing), then install paude from your fork source:
+   ```bash
+   uv tool install --editable submodules/paude
+   ```
+3. Install/auth Google Cloud CLI for Vertex:
+   ```bash
+   gcloud auth application-default login
+   ```
+4. Re-run bootstrap check and proceed only when the required items are green:
+   ```bash
+   ./scripts/env-check.sh
+   ```
+
+If you also run Pi directly on the host (outside paude), install Pi separately. For paude sessions, the agent tooling is installed in-container automatically.
 
 ---
 

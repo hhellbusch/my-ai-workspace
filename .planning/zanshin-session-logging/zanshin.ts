@@ -12,7 +12,7 @@
  * Distilled Zanshin L0 — always injected. Full markdown ships in this package
  * under ../kit/ (WORKING-STYLE.md, STYLE.md, STYLE.template.md).
  */
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import {
 	existsSync,
 	mkdirSync,
