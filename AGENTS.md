@@ -26,7 +26,36 @@ Pi extensions live in `submodules/`. Key repos:
 - `pi-anthropic-vertex/` — Anthropic Vertex provider
 - `lid-pi-extension/` — LID extension
 
-To edit an extension: work directly in the submodule directory, commit, and push. If a submodule directory is empty, run `git submodule update --init submodules/<name>` (requires SSH keys).
+To edit an extension: work directly in the submodule directory, commit, and push.
+
+**Submodule initialization:**
+
+Submodule directories may be empty (git placeholders without cloned content). Before working with a submodule, always check:
+
+```bash
+# Fast check — shows state with prefix indicators:
+# - empty (not initialized) | + modified | U merge conflict
+ls submodules/
+git -C . submodule status | head -10
+
+# Initialize a specific one:
+git submodule update --init submodules/<name>
+
+# Initialize all at once:
+git submodule update --init --recursive
+```
+
+The paude container is supposed to auto-init submodules on session start via `entrypoint-session.sh`, but this can fail silently if the container image wasn't rebuilt after changes to the init hook. If a submodule is empty, **assume it needs manual init** — don't assume the code exists just because the directory is listed.
+
+An empty submodule directory means you cannot inspect its code, understand its behavior, or debug issues inside it. When debugging a workspace problem, submodule state is often the first thing to check.
+
+**Troubleshooting:**
+- Empty directory + `git submodule status` shows `-<hash>` → not initialized, run `git submodule update --init`
+- `git submodule status` shows `+<hash>` → initialized but pointing to different commit than recorded
+- `git ls-remote <url> HEAD` → check if the repo is reachable (useful for network/permission issues)
+- Empty directory that should have been auto-initialized → likely the container image needs rebuilding (the init hook exists in code but isn't baked into the running image)
+
+**Requirements:** Submodule clone requires SSH keys or HTTPS access. If `git submodule update --init` fails, check that SSH keys are available on the host or that the workspace was cloned with `--recurse-submodules`.
 
 ## Context Memory
 
