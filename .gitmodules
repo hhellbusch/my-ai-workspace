@@ -7,6 +7,7 @@
 [submodule "submodules/paude"]
 	path = submodules/paude
 	url = https://github.com/hhellbusch/paude.git
+	branch = develop
 [submodule "submodules/helm-charts"]
 	path = submodules/helm-charts
 	url = https://github.com/redhat-cop/helm-charts.git
