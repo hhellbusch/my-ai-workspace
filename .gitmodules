@@ -1,24 +1,24 @@
 [submodule "zanshin-pi-extension"]
 	path = submodules/zanshin-pi-extension
-	url = git@github.com:hhellbusch/zanshin-pi-extension.git
+	url = https://github.com/hhellbusch/zanshin-pi-extension.git
 [submodule "lid-pi-extension"]
 	path = submodules/lid-pi-extension
-	url = git@github.com:hhellbusch/lid-pi-extension.git
+	url = https://github.com/hhellbusch/lid-pi-extension.git
 [submodule "submodules/paude"]
 	path = submodules/paude
-	url = git@github.com:hhellbusch/paude.git
+	url = https://github.com/hhellbusch/paude.git
 [submodule "submodules/helm-charts"]
 	path = submodules/helm-charts
-	url = git@github.com:hhellbusch/redhat-cop-helm-charts.git
+	url = https://github.com/redhat-cop/helm-charts.git
 [submodule "submodules/paude-pi-extension"]
 	path = submodules/paude-pi-extension
-	url = git@github.com:hhellbusch/paude-pi-extension.git
+	url = https://github.com/hhellbusch/paude-pi-extension.git
 [submodule "submodules/pi-anthropic-vertex"]
 	path = submodules/pi-anthropic-vertex
-	url = git@github.com:hhellbusch/pi-anthropic-vertex.git
+	url = https://github.com/hhellbusch/pi-anthropic-vertex.git
 [submodule "submodules/pi-openai-compat"]
 	path = submodules/pi-openai-compat
-	url = git@github.com:hhellbusch/pi-openai-compat.git
+	url = https://github.com/hhellbusch/pi-openai-compat.git
 [submodule "submodules/paude-proxy"]
 	path = submodules/paude-proxy
-	url = git@github.com:hhellbusch/paude-proxy.git
+	url = https://github.com/hhellbusch/paude-proxy.git
