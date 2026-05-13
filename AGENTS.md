@@ -26,7 +26,7 @@ Key repos:
 - `paude-pi-extension/` — Paude container awareness injected into system prompt
 - `lid-pi-extension/` — linked-intent development workflow
 
-Submodules may need manual init in a new container: `git submodule update --init --recursive`. See `rules/submodule-workflow.md` for troubleshooting.
+ See `rules/submodule-workflow.md` for troubleshooting.
 
 ---
 
