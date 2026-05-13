@@ -85,17 +85,68 @@ Controlled by `getQuietStartup()`. If quiet mode is on, sections are suppressed 
 
 The zanshin-pi-extension bundles four `.ts` extensions under `extensions/`, all auto-discovered via the package.json `"extensions"` field. They follow two architectural patterns.
 
-### Pattern 1: Session lifecycle hooks (zanshin.ts)
+### Pattern 1: Session lifecycle hooks
 
-Subscribes to pi event hooks for state management and behavioral posture:
+Subscribes to pi event hooks for state management, behavioral posture, and context injection. This is the pattern for anything that lives in the agent's operational loop rather than just intercepting output.
 
-- **`before_agent_start`** — Injects L0 discipline text into the system prompt
-- **`session_start`** — Restores stack state from prior sessions; auto-notifies shoshin when a project brief is detected
-- **`tool_result`** — Tracks `write`/`edit` calls for progressive bookkeeping (checkpoint counter)
-- **`session_shutdown`** — Warns if uncommitted changes exist without a checkpoint
-- **Command registration** — `/spar`, `/shoshin`, `/checkpoint`, `/push`, `/pop`, `/stack` are registered as slash commands with handlers that delegate to the LLM
+**Key hooks and when they fire:**
 
-Key API: `pi.appendEntry("zanshin-changes", { count })` for cross-session state persistence.
+| Hook | When | Mutable? | Common use |
+|------|------|----------|------------|
+| `session_start` | Session created, loaded, or resumed | State only | Restore in-memory state, notify on project detection |
+| `session_shutdown` | Session ending (quit, reload, switch) | Cleanup only | Warn about uncommitted changes, persist state |
+| `before_agent_start` | User submits prompt, before agent loop | System prompt + message | Inject context, modify instructions for this turn |
+| `tool_result` | After tool execution, before result message | Can modify result | Enrich output, track file changes, send external hooks |
+| `turn_start` / `turn_end` | Each LLM response + tool call cycle | State only | Per-turn bookkeeping, git stashes, counters |
+| `session_before_compact` | Before context compaction | Can cancel or provide custom summary | Custom compaction logic, checkpoint triggers |
+| `agent_end` | After the LLM has no more tool calls | State only | Clear per-turn state, trigger follow-up actions |
+
+**Key API for persistence:**
+
+```typescript
+// Store state that survives restarts (does NOT enter LLM context)
+pi.appendEntry("my-state", { count: 42 });
+
+// Restore on session start
+pi.on("session_start", async (_event, ctx) => {
+  for (const entry of ctx.sessionManager.getEntries()) {
+    if (entry.type === "custom" && entry.customType === "my-state") {
+      state = entry.data;
+    }
+  }
+});
+```
+
+**Practical use cases from pi's examples:**
+
+1. **Git checkpoint (git-checkpoint.ts)** — Creates a `git stash create` before each turn, then when the user forks, offers to restore code state to that checkpoint. Uses `tool_result` to track the current entry ID, `turn_start` to stash, `session_before_fork` to offer restore.
+
+2. **Dirty repo guard (dirty-repo-guard.ts)** — Blocks session switches and forks when uncommitted changes exist. Uses `session_before_switch` and `session_before_fork` with `git status --porcelain`. Shows the pattern for guarding state transitions.
+
+3. **Auto-compact on token threshold (trigger-compact.ts)** — Monitors `ctx.getContextUsage()` in `turn_end` and triggers compaction when the token count crosses a threshold. Shows the pattern for cross-session threshold tracking (stores `previousTokens` in module state). Also exposes a manual `/trigger-compact` command.
+
+4. **Session name management (session-name.ts)** — Sets the session display name based on prompt content. Uses `before_agent_start` to analyze the prompt and `pi.setSessionName()` to tag the session for easier navigation.
+
+**The zanshin hooks (in this workspace):**
+
+| Hook | What it does | Why |
+|------|-------------|-----|
+| `before_agent_start` | Injects L0 discipline text into system prompt | Ensures working discipline is present each turn without bloating the initial prompt |
+| `session_start` | Restores stack state from `zanshin-stack` entries; auto-notifies `/shoshin` when project brief exists | Survives context compaction; surfaces assumptions on project re-entry |
+| `tool_result` | Counts `write`/`edit` calls, persists to `zanshin-changes` | Drives the 5-write checkpoint reminder |
+| `session_shutdown` | Warns if uncommitted changes exist without checkpoint | Prevents lost work from context loss |
+
+**When to use this pattern vs. command interception:**
+
+- **Lifecycle hooks** — when you need to observe or modify the agent's state, context, or flow. The agent is still doing the work; you're adjusting conditions around it.
+- **Bash interception** — when you need to block or confirm specific commands before they execute. The agent never runs if you block it.
+- These are not mutually exclusive. A robust guard like `risky-ops-guard` might also track stats in `turn_end` for reporting.
+
+**Footguns (from pi docs):**
+
+- Captured `ctx.sessionManager` is stale after session replacement. Use only the `ctx` passed to replacement callbacks.
+- After `ctx.reload()`, code in the old call frame still runs — don't assume in-memory state survived.
+- `ctx.signal` is `undefined` outside active turn events. Check before using with `fetch()` or other abort-aware calls.
 
 ### Pattern 2: Bash command interception (risky-ops-guard, process-guard, git-force-push-guard)
 
