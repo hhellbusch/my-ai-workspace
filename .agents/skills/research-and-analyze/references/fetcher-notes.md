@@ -33,16 +33,12 @@ from 403 at the proxy layer.
 
 | Domain | Behavior | Workaround |
 |--------|----------|------------|
-| `docs.redhat.com` | HEAD → 200, GET → "Access Denied" (WAF, not proxy) | No reliable workaround without a real browser session; reference the URL directly in docs and note WAF-blocked in the manifest |
+| `docs.redhat.com` | ✅ Accessible — Nuxt.js SPA with SSR; use `#main-content` selector | Use `--stealth` + single-page format (`/html-single/...`) for best results |
 | `developers.redhat.com` | 403 at request layer | `--stealth` sometimes helps; otherwise headless browser or manual copy-paste |
 | `medium.com` | JS-rendered behind bot check | Headless browser fallback |
 | `access.redhat.com` | Usually accessible (200 OK) | N/A |
 
-**docs.redhat.com is a known hard block.** The server accepts the TCP connection
-and TLS handshake (hence 200 HEAD) but inspects the request headers or session
-state and returns an Access Denied HTML page. The `--stealth` flag does not bypass
-this. Record it in the manifest as `failed` with `notes: WAF-blocked` and reference
-the URL directly in any article that cites it.
+**docs.redhat.com is accessible.** It serves a Nuxt.js SPA with server-side rendering — the full document content is in the initial HTML. Use the `/html-single/` URL format (single-page) rather than `/html/` (multi-page). The `#main-content` selector in the fetcher targets the correct section. Strip `<nav>`, `<header>`, `<footer>`, and `<aside>` tags to remove boilerplate.
 </known_blocked_domains>
 
 <anti_bot>

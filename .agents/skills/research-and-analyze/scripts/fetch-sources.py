@@ -88,7 +88,7 @@ DOMAIN_SELECTORS = {
     "developers.redhat.com": [".assembly", ".rh-article", '[data-analytics-category="article"]'],
     "medium.com": [".meteredContent", "article"],
     "arxiv.org": [".ltx_document", "#content"],
-    "docs.redhat.com": [".doc-content", "#doc-content", "main"],
+    "docs.redhat.com": ["#main-content"],
     "learn.microsoft.com": [".content", "main"],
     "ai-on-openshift.io": [".md-content", "article"],
 }
