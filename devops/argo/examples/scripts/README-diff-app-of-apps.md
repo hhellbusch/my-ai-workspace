@@ -476,7 +476,7 @@ git push origin main v1.2.4
 - [App of Apps Pattern](../docs/patterns/APP-OF-APPS-PATTERN.md)
 - [Multiple Sources Pattern](../docs/patterns/MULTIPLE-SOURCES-PATTERN.md) - Using multiple sources in ArgoCD
 - [GitHub Diff Workflow](../github-workflows/README.md)
-- [Test Diff Locally](./test-diff-locally.sh) - Single app comparison
+- Test Diff Locally (script no longer in repo) - Single app comparison
 
 ## Contributing
 

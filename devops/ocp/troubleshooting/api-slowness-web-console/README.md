@@ -994,7 +994,7 @@ Include must-gather output, performance metrics, and all collected logs with the
 
 ## See Also
 
-- [etcd Troubleshooting](../etcd-issues/) (when created)
+- etcd Troubleshooting (planned, not yet created)
 - [Control Plane Kubeconfigs](../control-plane-kubeconfigs/README.md)
 - [kube-controller-manager Crash Loop](../kube-controller-manager-crashloop/README.md)
 

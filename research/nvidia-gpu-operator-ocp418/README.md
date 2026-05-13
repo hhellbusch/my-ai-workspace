@@ -8,4 +8,4 @@ Production impact analysis of the NVIDIA GPU Operator on OpenShift Container Pla
 
 ## Related
 
-- [NVIDIA GPU analysis prompt](../../prompts/004-nvidia-gpu-operator-production-impact-analysis.md) — Prompt template used for this analysis
+- NVIDIA GPU analysis prompt — Prompt template used for this analysis (file no longer in repo)

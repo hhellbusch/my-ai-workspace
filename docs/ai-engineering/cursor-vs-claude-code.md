@@ -121,7 +121,7 @@ The following behaviors are present in Cursor and Claude Code. Copilot CLI picks
 |---|---|---|
 | Session orientation | `.agents/skills/start/SKILL.md` + `session-awareness.mdc` | `.agents/skills/start/SKILL.md` + `CLAUDE.md` section |
 | Shoshin | `.cursor/rules/shoshin.mdc` (always-on) | `CLAUDE.md` shoshin section |
-| Sparring | `.agents/skills/spar/SKILL.md` | `.agents/skills/spar/SKILL.md` |
+| Sparring | `submodules/zanshin-pi-extension/skills/spar/SKILL.md` | `submodules/zanshin-pi-extension/skills/spar/SKILL.md` |
 | Feedback checkpoints | `.cursor/rules/feedback-checkpoints.mdc` (reference doc) | `CLAUDE.md` feedback checkpoints section |
 | Review tracking | `.cursor/rules/review-tracking.mdc` (always-on) | `CLAUDE.md` review tracking section |
 | Backlog capture | `.cursor/rules/backlog-capture.mdc` (always-on) | `CLAUDE.md` backlog capture section |

@@ -454,7 +454,7 @@ applications:
 - [ArgoCD Documentation](https://argo-cd.readthedocs.io/)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Helm Documentation](https://helm.sh/docs/)
-- [App of Apps Pattern](../APP-OF-APPS-PATTERN.md)
+- [App of Apps Pattern](../docs/patterns/APP-OF-APPS-PATTERN.md)
 
 ---
 

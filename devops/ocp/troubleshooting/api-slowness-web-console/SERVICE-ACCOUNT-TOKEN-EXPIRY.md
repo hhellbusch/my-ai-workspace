@@ -568,7 +568,7 @@ done
 
 - See [Certificate Verification Issues](README.md#6-certificate-verification-issues) in main guide
 - See [kube-controller-manager Crash Loop](../kube-controller-manager-crashloop/README.md)
-- See [Authentication failures](../authentication-failures/README.md) (when created)
+- Authentication failures guide (planned, not yet created)
 
 ## Quick Reference Commands
 

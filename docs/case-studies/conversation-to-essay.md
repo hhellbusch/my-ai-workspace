@@ -40,8 +40,8 @@ The idea became [thread 14](../../.planning/zen-karate/threads.md) (an ideation 
 
 The essay drew from material already cached in the repository:
 
-- **[Shi Heng Yi transcript](../../research/zen-karate-philosophy/sources/they-betrayed-me---master-shi-heng-yi-explains-the-true-cost-of-success-shaolin-.md)** — fetched via [`fetch-transcript.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-transcript.py) in an earlier session. Provided the ego-as-thoughts framework, the antenna/hooking metaphor, and the teaching on identity and letting go.
-- **[Jesse Enkamp on mushin](../../research/zen-karate-philosophy/sources/karatebyjesse-mushin-mindfulness.md)** — fetched via [`fetch-sources.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-sources.py). Provided Funakoshi's "empty of selfishness" quote and the framing of mushin as readiness, not vacancy.
+- **[Shi Heng Yi transcript](../../research/zen-karate-philosophy/sources/they-betrayed-me---master-shi-heng-yi-explains-the-true-cost-of-success-shaolin-.md)** — fetched via the research skill's transcript fetcher in an earlier session. Provided the ego-as-thoughts framework, the antenna/hooking metaphor, and the teaching on identity and letting go.
+- **[Jesse Enkamp on mushin](../../research/zen-karate-philosophy/sources/karatebyjesse-mushin-mindfulness.md)** — fetched via the research skill's source fetcher. Provided Funakoshi's "empty of selfishness" quote and the framing of mushin as readiness, not vacancy.
 - **[The Shift sections 5-7](../ai-engineering/the-shift.md)** — the essay track's own content. Provided the sycophancy problem statement, the ego reinforcement mechanism, and the practical mitigations table.
 
 No new research was needed. The sources were on disk, cached and organized from prior sessions. The file-based research workflow meant the AI could read the full source text, not rely on recall or web search.
@@ -64,7 +64,7 @@ These conventions came from the [style guide](../../.planning/zen-karate/STYLE.m
 
 ### 5. Adversarial review
 
-The [`/spar`](../../.agents/skills/spar/SKILL.md) (an adversarial review tool that generates steel-manned counterarguments against any file or idea) command was built and applied to the essay in the same session (documented in [Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md) — building the `/spar` command and applying it to this essay immediately). Seven counterarguments were generated, including the structural criticism that the essay's core claim is unverified and the meta-observation that an AI wrote an essay about resisting AI.
+The [`/spar`](../../submodules/zanshin-pi-extension/skills/spar/SKILL.md) (an adversarial review tool that generates steel-manned counterarguments against any file or idea) command was built and applied to the essay in the same session (documented in [Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md) — building the `/spar` command and applying it to this essay immediately). Seven counterarguments were generated, including the structural criticism that the essay's core claim is unverified and the meta-observation that an AI wrote an essay about resisting AI.
 
 The sparring notes were saved with blank response sections for the author. The essay's Open Review section links to them. The counterarguments are not resolved — they're surfaced.
 
@@ -110,7 +110,7 @@ The roadmap was updated rather than followed rigidly. The plan is a tool, not a 
 | Thread | Idea captured as thread 14 | [`threads.md`](../../.planning/zen-karate/threads.md) in `.planning/zen-karate/` |
 | Draft | Essay written from cached sources and existing essays | [Style guide](../../.planning/zen-karate/STYLE.md), source cache, [cross-linking conventions](../../.cursor/rules/cross-linking.mdc) |
 | Provenance | Sources and References table added | [Cross-linking rule](../../.cursor/rules/cross-linking.mdc), file-based research workflow |
-| Challenge | [`/spar`](../../.agents/skills/spar/SKILL.md) applied, 7 counterarguments generated | `/spar` command (built same session) |
+| Challenge | [`/spar`](../../submodules/zanshin-pi-extension/skills/spar/SKILL.md) applied, 7 counterarguments generated | `/spar` command (built same session) |
 | Capture | Sparring notes saved with blank response sections | [Sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#1-the-core-claim-is-unverified) convention |
 | Integration | Essay published, cross-linked, backlog updated | docs/ track structure, [`BACKLOG.md`](../../BACKLOG.md), [roadmap](../../.planning/zen-karate/ROADMAP.md) |
 

@@ -12,7 +12,7 @@ Transcripts and other **fetched public** material that support the `docs/ai-engi
 **Fetch command** (replay):
 
 ```bash
-python3 .cursor/skills/research-and-analyze/scripts/fetch-transcript.py \
+python3 .agents/skills/research-and-analyze/scripts/fetch-transcript.py \
   "https://www.youtube.com/watch?v=YKDi-ePTmRA" \
   research/ai-engineering-public/sources/youtube-YKDi-ePTmRA-transcript.md
 ```

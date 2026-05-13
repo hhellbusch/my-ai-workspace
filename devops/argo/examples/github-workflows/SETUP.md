@@ -364,7 +364,7 @@ If you encounter issues:
    ```
 
 4. **Review README:**
-   - [Full documentation](.github/workflows/README.md)
+   - Full documentation (no longer in separate README)
 
 ---
 

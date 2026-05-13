@@ -84,7 +84,7 @@ The key architectural decisions:
    - v1: Sequential, basic requests, single User-Agent
    - v2: Concurrent (ThreadPoolExecutor), rotating User-Agents, stealth browser-mimicry headers, per-domain rate limiting, proxy support, PDF extraction via pdfplumber
 
-**Output:** The complete skill at `.cursor/skills/research-and-analyze/` (this is a [Cursor IDE](https://cursor.sh/) AI skill — a structured set of instructions, workflows, and scripts that the IDE's AI agent follows when performing research tasks)
+**Output:** The complete skill at `.agents/skills/research-and-analyze/` (this is a [Cursor IDE](https://cursor.sh/) AI skill — a structured set of instructions, workflows, and scripts that the IDE's AI agent follows when performing research tasks)
 
 ### Phase 4: Validation Run
 
@@ -148,7 +148,7 @@ The article verification exercise is a concrete example of what [The Shift](../a
 
 ## Remaining Gaps
 
-- **`developers.redhat.com` bot protection:** 7 of the 9 unfetched sources were blocked by Cloudflare on this domain. A headless browser fallback (Playwright) is designed but not yet implemented. The architecture and approach are documented in [`references/fetcher-notes.md`](../../.cursor/skills/research-and-analyze/references/fetcher-notes.md).
+- **`developers.redhat.com` bot protection:** 7 of the 9 unfetched sources were blocked by Cloudflare on this domain. A headless browser fallback (Playwright) is designed but not yet implemented. The architecture and approach are documented in [`references/fetcher-notes.md`](../../.agents/skills/research-and-analyze/references/fetcher-notes.md).
 
 - **Low-content captures:** Some pages returned minimal content (46-75 characters) where the content extraction missed the main article body. The domain-specific selector system can be extended for these cases.
 
@@ -170,17 +170,17 @@ The article verification exercise is a concrete example of what [The Shift](../a
 
 ### Research and Analysis Skill
 
-> **Note:** These files live under `.cursor/skills/` — the convention for [Cursor IDE](https://cursor.sh/) AI agent skills. They are structured Markdown instructions and Python scripts that the AI agent follows during research tasks. The scripts (e.g., [`fetch-sources.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-sources.py)) are standard Python and can be used independently of Cursor.
+> **Note:** These files live under `.cursor/skills/` — the convention for [Cursor IDE](https://cursor.sh/) AI agent skills. They are structured Markdown instructions and Python scripts that the AI agent follows during research tasks. The scripts (e.g., [`fetch-sources.py`](../../.agents/skills/research-and-analyze/scripts/fetch-sources.py)) are standard Python and can be used independently of Cursor.
 
 | File | Purpose |
 | --- | --- |
-| [`SKILL.md`](../../.cursor/skills/research-and-analyze/SKILL.md) | Skill router — intake, routing, principles |
-| [`gather-sources.md`](../../.cursor/skills/research-and-analyze/workflows/gather-sources.md) | Fetch all URLs to disk |
-| [`analyze-claims.md`](../../.cursor/skills/research-and-analyze/workflows/analyze-claims.md) | Parallel batch claim verification |
-| [`synthesize-findings.md`](../../.cursor/skills/research-and-analyze/workflows/synthesize-findings.md) | Compile assessment from findings |
-| [`fetch-sources.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-sources.py) | Concurrent batch fetcher (stealth, proxy, PDF) |
-| [`verification-patterns.md`](../../.cursor/skills/research-and-analyze/references/verification-patterns.md) | Claim types and verification approaches |
-| [`fetcher-notes.md`](../../.cursor/skills/research-and-analyze/references/fetcher-notes.md) | Architecture, anti-bot notes, browser fallback plan |
+| [`SKILL.md`](../../.agents/skills/research-and-analyze/SKILL.md) | Skill router — intake, routing, principles |
+| [`gather-sources.md`](../../.agents/skills/research-and-analyze/workflows/gather-sources.md) | Fetch all URLs to disk |
+| [`analyze-claims.md`](../../.agents/skills/research-and-analyze/workflows/analyze-claims.md) | Parallel batch claim verification |
+| [`synthesize-findings.md`](../../.agents/skills/research-and-analyze/workflows/synthesize-findings.md) | Compile assessment from findings |
+| [`fetch-sources.py`](../../.agents/skills/research-and-analyze/scripts/fetch-sources.py) | Concurrent batch fetcher (stealth, proxy, PDF) |
+| [`verification-patterns.md`](../../.agents/skills/research-and-analyze/references/verification-patterns.md) | Claim types and verification approaches |
+| [`fetcher-notes.md`](../../.agents/skills/research-and-analyze/references/fetcher-notes.md) | Architecture, anti-bot notes, browser fallback plan |
 | `templates/*.md` | Manifest, batch findings, and assessment templates |
 
 ### Research Workspace (Validation Run)

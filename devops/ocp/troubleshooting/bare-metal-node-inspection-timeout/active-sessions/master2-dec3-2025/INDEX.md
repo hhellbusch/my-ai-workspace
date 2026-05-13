@@ -125,7 +125,7 @@
 
 1. **Read:** [FINAL-SESSION-SUMMARY.md](FINAL-SESSION-SUMMARY.md) (complete read)
 2. **Deep dive:** [ETCD-RECOVERY-SUCCESS.md](ETCD-RECOVERY-SUCCESS.md) (successful recovery)
-3. **Examples:** [../../csr-management/REAL-WORLD-EXAMPLES.md](../../csr-management/REAL-WORLD-EXAMPLES.md)
+3. **Examples:** ../../csr-management/REAL-WORLD-EXAMPLES.md
 
 ### If You Have Similar Issues
 

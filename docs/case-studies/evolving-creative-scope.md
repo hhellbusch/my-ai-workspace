@@ -100,7 +100,7 @@ Every scope change in this case study originated from the author: the broadening
 
 ## What Happened Next
 
-The gaps identified in "What Conventions Are Missing" above led directly to the [shoshin meta-system integration](../../.cursor/rules/shoshin.mdc) — an always-applied rule, fresh-eyes checks in [`/start`](../../.agents/skills/start/SKILL.md), assumptions tracking in [`/whats-next`](../../.agents/skills/whats-next/SKILL.md), and brief-alignment drift detection in [`/review`](../../.agents/skills/review/SKILL.md). The full story of how this case study produced the system improvements it was documenting the absence of is in [When Case Studies Generate System Improvements](case-studies-as-discovery.md).
+The gaps identified in "What Conventions Are Missing" above led directly to the [shoshin meta-system integration](../../.cursor/rules/shoshin.mdc) — an always-applied rule, fresh-eyes checks in [`/start`](../../.agents/skills/start/SKILL.md), assumptions tracking in [`/whats-next`](../../submodules/zanshin-pi-extension/skills/whats-next/SKILL.md), and brief-alignment drift detection in [`/review`](../../.agents/skills/review/SKILL.md). The full story of how this case study produced the system improvements it was documenting the absence of is in [When Case Studies Generate System Improvements](case-studies-as-discovery.md).
 
 The coverage-vs-frame distinction surfaced later — documented in the [shoshin rule update](../../.cursor/rules/shoshin.mdc) under "When the Document Itself May Be Wrong."
 

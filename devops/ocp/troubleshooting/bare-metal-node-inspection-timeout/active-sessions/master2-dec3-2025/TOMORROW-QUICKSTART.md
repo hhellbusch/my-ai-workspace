@@ -136,7 +136,7 @@ crictl logs -f $IRONIC | grep -i master-2
 For complete details, see:
 - **[SESSION-SUMMARY-master2-inspection.md](SESSION-SUMMARY-master2-inspection.md)** - Complete session history
 - **[README.md](README.md)** - Full troubleshooting guide
-- **[QUICK-REFERENCE.md](QUICK-REFERENCE.md)** - Command reference
+- **QUICK-REFERENCE.md** - Command reference
 
 ---
 

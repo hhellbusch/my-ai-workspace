@@ -38,7 +38,7 @@ That question led to a plan with five integration points:
 
 - **[`shoshin.md` rule](../../.cursor/rules/shoshin.mdc)** — Always-applied. Verify project claims against source documents (brief, roadmap, style guide) rather than relying on conversation summaries. Detect scope-shift language and trigger set-based document updates.
 - **[`/start`](../../.agents/skills/start/SKILL.md) (session orientation command) step 2.5** — Fresh-eyes check comparing brief goals against current backlog work.
-- **[`/whats-next`](../../.agents/skills/whats-next/SKILL.md) (session handoff command) assumptions section** — Capture framing decisions the next session should question.
+- **[`/whats-next`](../../submodules/zanshin-pi-extension/skills/whats-next/SKILL.md) (session handoff command) assumptions section** — Capture framing decisions the next session should question.
 - **[`/review`](../../.agents/skills/review/SKILL.md) (pre-commit quality gate) step 8.5** — Brief-alignment drift check for docs/planning commits.
 - **[CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md) (evolution log for planning projects) convention** — Evolution log for `.planning/` projects capturing *why* scope changed.
 
@@ -79,7 +79,7 @@ The other case studies document gaps that were noticed during work. This one doc
 
 ## The Recursive Observation
 
-This case study is itself an example of the pattern it describes. Writing the evolving-scope case study surfaced the shoshin integration opportunity. Now writing *this* case study surfaces the observation that structured reflection is a discovery mechanism. If the pattern holds, this observation should eventually produce something too — perhaps a convention for "reflection prompts" in the case study template, or a step in the [`/whats-next`](../../.agents/skills/whats-next/SKILL.md) command that asks "what would a case study about this session reveal?"
+This case study is itself an example of the pattern it describes. Writing the evolving-scope case study surfaced the shoshin integration opportunity. Now writing *this* case study surfaces the observation that structured reflection is a discovery mechanism. If the pattern holds, this observation should eventually produce something too — perhaps a convention for "reflection prompts" in the case study template, or a step in the [`/whats-next`](../../submodules/zanshin-pi-extension/skills/whats-next/SKILL.md) command that asks "what would a case study about this session reveal?"
 
 Whether that's genuinely useful or just recursive navel-gazing is an open question. The [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#4-meta-infrastructure-outweighs-output) argument #4 — "meta-infrastructure outweighs output" — applies here. At some point the system for reflecting on the system should produce essays, not more system.
 
@@ -99,7 +99,7 @@ The leap from observation to design principle was the user's. The case study not
 | [shoshin.md rule](../../.cursor/rules/shoshin.mdc) | The always-applied rule that resulted |
 | [CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md) | The evolution log that the case study identified as missing |
 | [/start — step 2.5](../../.agents/skills/start/SKILL.md) | Fresh-eyes check comparing briefs against current work |
-| [/whats-next — assumptions section](../../.agents/skills/whats-next/SKILL.md) | Captures framing decisions for the next session to question |
+| [/whats-next — assumptions section](../../submodules/zanshin-pi-extension/skills/whats-next/SKILL.md) | Captures framing decisions for the next session to question |
 | [/review — step 8.5](../../.agents/skills/review/SKILL.md) | Brief-alignment drift check for docs/planning commits |
 
 ---

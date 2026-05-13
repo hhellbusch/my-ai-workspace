@@ -1,6 +1,6 @@
 # Research
 
-Research workspaces containing fetched sources, analysis findings, and assessments. Each directory is a self-contained research exercise created using the [research-and-analyze skill](../.cursor/skills/research-and-analyze/SKILL.md).
+Research workspaces containing fetched sources, analysis findings, and assessments. Each directory is a self-contained research exercise created using the [research-and-analyze skill](../.agents/skills/research-and-analyze/SKILL.md).
 
 ## Contents
 

@@ -49,7 +49,7 @@ See: [REMOVE-WEBHOOK.md](./REMOVE-WEBHOOK.md)
 
 For temporary testing, you can disable the webhook but this is NOT recommended for production.
 
-See: [DISABLE-WEBHOOK-TEMP.md](./DISABLE-WEBHOOK-TEMP.md)
+See: DISABLE-WEBHOOK-TEMP.md (completed, no longer needed)
 
 ## Quick Fix Script
 

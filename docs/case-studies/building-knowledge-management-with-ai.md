@@ -28,7 +28,7 @@ The backlog replaced an earlier TACHES TO-DOS.md pattern that wasn't being used.
 
 A [directory](../../library/) with a master catalog of 50+ references (books, courses, training from 2010–present) and enriched entries for sources that need deep context. The [`/reference`](../../.agents/skills/reference/SKILL.md) (library management command for books, courses, and video references) handles adding, searching, enriching (with AI-researched summaries, key themes, cached sources), and linking references to active projects.
 
-The enrichment workflow is the key feature. When adding a video reference, the command calls [`fetch-transcript.py`](../../.cursor/skills/research-and-analyze/scripts/fetch-transcript.py) to cache the transcript, then searches the web for reviews and analyses, synthesizes the findings into the entry's Key Themes and Notable Ideas sections, and caches the source URLs. A future session can read the enriched entry and understand the source without re-researching it.
+The enrichment workflow is the key feature. When adding a video reference, the command calls [`fetch-transcript.py`](../../.agents/skills/research-and-analyze/scripts/fetch-transcript.py) to cache the transcript, then searches the web for reviews and analyses, synthesizes the findings into the entry's Key Themes and Notable Ideas sections, and caches the source URLs. A future session can read the enriched entry and understand the source without re-researching it.
 
 ### 3. Session orientation (`/start` + session-awareness rule)
 

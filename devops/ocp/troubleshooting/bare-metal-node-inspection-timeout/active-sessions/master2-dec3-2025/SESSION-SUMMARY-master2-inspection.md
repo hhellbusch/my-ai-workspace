@@ -436,12 +436,12 @@ diff <(oc get bmh master-0 -n openshift-machine-api -o yaml | grep -A 40 "^spec:
 Full troubleshooting guides created:
 
 1. **[README.md](README.md)** - Complete bare metal inspection troubleshooting guide
-2. **[QUICK-REFERENCE.md](QUICK-REFERENCE.md)** - Fast command reference
-3. **[YOUR-ISSUE-SUMMARY.md](YOUR-ISSUE-SUMMARY.md)** - Specific to "2 working, 1 failing" scenario
-4. **[diagnose-bmh.sh](diagnose-bmh.sh)** - Automated diagnostic script
+2. **QUICK-REFERENCE.md** - Fast command reference
+3. **YOUR-ISSUE-SUMMARY.md** - Specific to "2 working, 1 failing" scenario
+4. **diagnose-bmh.sh** - Automated diagnostic script
 
 Related guides:
-- **[kube-controller-manager troubleshooting](../kube-controller-manager-crashloop/README.md)** - For other cluster issues
+- **[kube-controller-manager troubleshooting](../../../../../../devops/ocp/troubleshooting/kube-controller-manager-crashloop/README.md)** - For other cluster issues
 
 ---
 

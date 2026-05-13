@@ -78,7 +78,7 @@ The user sees both orderings and decides what to act on. The AI presents the ana
 
 The anchoring problem isn't unique to backlog management. It appears anywhere the AI reads its own prior outputs as input:
 
-- **Session handoffs** — [`/whats-next`](../../.agents/skills/whats-next/SKILL.md) (session handoff command that captures in-flight state for future sessions) creates a handoff document. The next session's [`/start`](../../.agents/skills/start/SKILL.md) (session orientation command that reads the backlog, handoffs, and recent git activity) reads it. If the handoff emphasizes certain priorities, the next session inherits that emphasis. The AI's framing of "where we left off" becomes the frame for "what to do next."
+- **Session handoffs** — [`/whats-next`](../../submodules/zanshin-pi-extension/skills/whats-next/SKILL.md) (session handoff command that captures in-flight state for future sessions) creates a handoff document. The next session's [`/start`](../../.agents/skills/start/SKILL.md) (session orientation command that reads the backlog, handoffs, and recent git activity) reads it. If the handoff emphasizes certain priorities, the next session inherits that emphasis. The AI's framing of "where we left off" becomes the frame for "what to do next."
 
 - **Planning documents** — A roadmap written by AI in session 1 becomes authoritative context for session 2. If the roadmap's phase ordering was a guess, session 2 treats it as a decision.
 
@@ -127,7 +127,7 @@ The user noticed the anchoring pattern and named it precisely before any fix was
 | [/backlog prioritize](../../.agents/skills/backlog/SKILL.md) | The command with zero-base de-biasing integrated |
 | [The Shift — section 6](../ai-engineering/the-shift.md) | The sycophancy problem this case study extends |
 | [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) | The philosophical lens connecting non-attachment to workflow design |
-| [Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md) | Sibling case study — the [`/spar`](../../.agents/skills/spar/SKILL.md) system built in the same session |
+| [Adversarial Review as a Meta-Development Pattern](adversarial-review-meta-development.md) | Sibling case study — the [`/spar`](../../submodules/zanshin-pi-extension/skills/spar/SKILL.md) system built in the same session |
 
 ---
 

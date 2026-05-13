@@ -81,7 +81,7 @@ The [workflows essay](../ai-engineering/ai-assisted-development-workflows.md) an
 
 ### Systemic: what this suggests
 
-There's no simple rule that prevents context stripping. Unlike fabricated URLs (which can be caught by fetching), reversed framing requires reading and understanding the cited source. The existing [research and verification skill](../../.cursor/skills/research-and-analyze/) (a reusable AI instruction set that automates source fetching and claim comparison) already fetches sources and analyzes claims against them — but it can only do that when the sources are reachable.
+There's no simple rule that prevents context stripping. Unlike fabricated URLs (which can be caught by fetching), reversed framing requires reading and understanding the cited source. The existing [research and verification skill](../../.agents/skills/research-and-analyze/) (a reusable AI instruction set that automates source fetching and claim comparison) already fetches sources and analyzes claims against them — but it can only do that when the sources are reachable.
 
 The practical takeaway: when a source can't be fetched, mark the claim as unverifiable and *keep it marked*. Don't let the claim age into implicit trust. The "unverifiable" label is what prompted the author to revisit this months later.
 

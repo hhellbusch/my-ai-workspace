@@ -71,7 +71,7 @@ This command is read-only. It reports findings and asks for confirmation before 
 
 9. **AI disclosure footer check** — For each **new** markdown file under `docs/` (excluding README.md files), check that it includes the standard AI disclosure footer:
    - The footer should be an italic line at the end of the file linking to `AI-DISCLOSURE.md`
-   - Standard text: *This document was created with AI assistance (Cursor) and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
+   - Standard text: *This document was created with AI assistance (Cursor) and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
    - The relative path to `AI-DISCLOSURE.md` depends on file depth (e.g., `../../` for files two levels below repo root)
    - Flag missing footers: "**Missing AI disclosure**: `file.md` — new docs file without standard footer"
    - This is a quick fix (add the footer) but easy to forget when creating new essays or case studies

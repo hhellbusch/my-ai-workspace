@@ -38,4 +38,4 @@ Detailed project brief, roadmap, voice/style guide, and phase plans live in [`.p
 ## Related
 
 - [docs/README.md](../../docs/README.md) — Where published essays will appear
-- [.cursor/skills/research-and-analyze/](../../.cursor/skills/research-and-analyze/) — Research skill used for source fetching and analysis
+- [.agents/skills/research-and-analyze/](../../.agents/skills/research-and-analyze/) — Research skill used for source fetching and analysis
