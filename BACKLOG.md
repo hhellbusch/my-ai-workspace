@@ -115,13 +115,11 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Product:** zanshin-pi-extension
 - **Context:** When the guard blocks on a broken URL, the only way to diagnose is to manually curl the URL. Include the HTTP status code in the per-URL report line (e.g. `❌ 404 https://...`) so no manual verification step is needed.
 
-### Guard status footer indicator
-- **Product:** zanshin-pi-extension
-- **Context:** No visible indicator of which guards are active. `ctx.ui.setStatus()` could show a compact "🛡 N guards" in the footer. Useful for confirming guards loaded after /reload.
+### ~~Guard status footer indicator~~ ✅ done 2026-05-13
+- Implemented in `zanshin.ts` `session_start` — counts `*-guard.ts` files in `extensions/` dynamically, shows `🛡 N guards` via `ctx.ui.setStatus("zanshin-guards", ...)`.
 
-### commit-guard: false positive on bash heredocs containing "git commit" text
-- **Product:** zanshin-pi-extension
-- **Context:** The commit-guard regex `/\bgit\s+commit\b/` matches against the entire bash command string, including heredoc content and string literals. A Python heredoc that embeds the text "git add ... && git commit" in a comment was incorrectly blocked. Fix: match `git commit` only at the start of a pipeline stage, not inside quoted strings. This requires more precise shell parsing or a heuristic (e.g. skip if `git commit` appears inside quotes or after `echo`/`cat`).
+### ~~commit-guard: false positive on bash heredocs~~ ✅ done 2026-05-13
+- Replaced `GIT_COMMIT_RE` with `containsGitCommit()`: splits on `&&`, `||`, `;`, `|` and checks whether any stage *starts with* `git commit`. Excludes stages starting with `echo`, `printf`, `cat`, `python`, `node`, `bash -c`.
 
 ### commit-guard: compound `git add && git commit` blocked entirely
 - **Product:** zanshin-pi-extension
@@ -195,14 +193,9 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Added:** 2026-04-29
 
 
-### Paude domain aliases and defaults.json setup
-- **Product:** paude / tooling
-- **Context:** Pending setup deferred after the Pi agent work:
-  1. **`youtube` and `research` domain aliases** in `paude/src/paude/domains.py`. `youtube` needs `www.youtube.com` and `youtubei.googleapis.com` (for `youtube-transcript-api`). `research` needs DuckDuckGo, Wikipedia, arXiv, Stack Overflow, HN, MDN. Once added these unlock `--allowed-domains "default youtube research"` as a useful preset for research sessions.
-  2. **`~/.config/paude/defaults.json`** — optional personal setup (`git`, `agent`, etc.); documented in `paude/docs/CONFIGURATION.md` and `docs/ai-engineering/paude-getting-started.md`, **not** tracked in `.planning/ai-context-architecture/`.
-- **Then:** also install the Pi caveman mode extension for headless token efficiency in YOLO sessions.
-- **Links:** `paude/src/paude/domains.py`, `paude/docs/CONFIGURATION.md`, `paude/docs/PI.md`
-- **Added:** 2026-05-02
+### ~~Paude domain aliases~~ ✅ done 2026-05-13 (partial)
+- `youtube` and `research` aliases added to `paude/src/paude/domains.py` and declared in workspace `paude.json`.
+- Remaining: `~/.config/paude/defaults.json` personal setup (`git`, `agent`) — separate concern, low urgency.
 
 ### Shell strict mode — retrofit existing scripts
 - **Product:** devops / tooling
