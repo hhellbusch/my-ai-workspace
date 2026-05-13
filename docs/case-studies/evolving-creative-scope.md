@@ -64,7 +64,7 @@ The project started as **"Zen and Karate"** — a series of essays connecting Ze
 
 | Gap | Status | Why it matters |
 |---|---|---|
-| No distinction between coverage expansion and frame dissolution | **Addressed** — [`shoshin.md`](../../.cursor/rules/shoshin.mdc) "When the Document Itself May Be Wrong" names the triggers and the diagnostic question | Without the distinction named, AI treats all scope changes as coverage changes and misses the frame question entirely |
+| No distinction between coverage expansion and frame dissolution | **Addressed** — [`shoshin` principles](../../AGENTS.md) (Session Awareness / Shoshin sections) "When the Document Itself May Be Wrong" names the triggers and the diagnostic question | Without the distinction named, AI treats all scope changes as coverage changes and misses the frame question entirely |
 | No "project evolution" log | **Already existed** — [`.planning/zen-karate/CHANGELOG.md`](../../.planning/zen-karate/CHANGELOG.md) captures *why* scope shifted, not just what changed | Git history has the diffs; the reasoning doesn't survive without an explicit log |
 | No cross-session tonal drift detection | **Still missing** — `/audit` checks links, registries, and biographical content but not whether prose framing has drifted from the author's current understanding | Structural changes cascade; tonal shifts don't — they only surface when the AI writes prose and the author reads it feeling slightly off |
 
@@ -96,13 +96,13 @@ Every scope change in this case study originated from the author: the broadening
 | [STYLE.md](../../.planning/zen-karate/STYLE.md) | Voice and style guide — "Terminology from Source Traditions" (was "Japanese Terminology") |
 | [personal-notes.md](../../research/zen-karate-philosophy/personal-notes.md) | Personal knowledge base — training history, tradition distinctions |
 | [threads.md](../../.planning/zen-karate/threads.md) | Ideation threads — scope note added, 14 threads spanning the broadened scope |
-| [cross-linking rule](../../.cursor/rules/cross-linking.mdc) | Convention that caught the cascade of scope changes |
+| [cross-linking rule](../../AGENTS.md) (Cross-Linking section) | Convention that caught the cascade of scope changes |
 
 ## What Happened Next
 
-The gaps identified in "What Conventions Are Missing" above led directly to the [shoshin meta-system integration](../../.cursor/rules/shoshin.mdc) — an always-applied rule, fresh-eyes checks in [`/start`](../../.agents/skills/start/SKILL.md), assumptions tracking in [`/whats-next`](../../submodules/zanshin-pi-extension/skills/whats-next/SKILL.md), and brief-alignment drift detection in [`/review`](../../.agents/skills/review/SKILL.md). The full story of how this case study produced the system improvements it was documenting the absence of is in [When Case Studies Generate System Improvements](case-studies-as-discovery.md).
+The gaps identified in "What Conventions Are Missing" above led directly to the [shoshin meta-system integration](../../AGENTS.md) — an always-applied rule, fresh-eyes checks in [`/start`](../../.agents/skills/start/SKILL.md), assumptions tracking in [`/whats-next`](../../submodules/zanshin-pi-extension/skills/whats-next/SKILL.md), and brief-alignment drift detection in [`/review`](../../.agents/skills/review/SKILL.md). The full story of how this case study produced the system improvements it was documenting the absence of is in [When Case Studies Generate System Improvements](case-studies-as-discovery.md).
 
-The coverage-vs-frame distinction surfaced later — documented in the [shoshin rule update](../../.cursor/rules/shoshin.mdc) under "When the Document Itself May Be Wrong."
+The coverage-vs-frame distinction surfaced later — documented in the [shoshin principles](../../AGENTS.md) under "When the Document Itself May Be Wrong."
 
 ---
 

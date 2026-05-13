@@ -36,7 +36,7 @@ The user's words: "the shoshin connection is an interesting one. how could we us
 
 That question led to a plan with five integration points:
 
-- **[`shoshin.md` rule](../../.cursor/rules/shoshin.mdc)** — Always-applied. Verify project claims against source documents (brief, roadmap, style guide) rather than relying on conversation summaries. Detect scope-shift language and trigger set-based document updates.
+- **[`shoshin` principles](../../AGENTS.md) (Session Awareness / Shoshin sections)** — Always-applied. Verify project claims against source documents (brief, roadmap, style guide) rather than relying on conversation summaries. Detect scope-shift language and trigger set-based document updates.
 - **[`/start`](../../.agents/skills/start/SKILL.md) (session orientation command) step 2.5** — Fresh-eyes check comparing brief goals against current backlog work.
 - **[`/whats-next`](../../submodules/zanshin-pi-extension/skills/whats-next/SKILL.md) (session handoff command) assumptions section** — Capture framing decisions the next session should question.
 - **[`/review`](../../.agents/skills/review/SKILL.md) (pre-commit quality gate) step 8.5** — Brief-alignment drift check for docs/planning commits.
@@ -46,7 +46,7 @@ All five were implemented in one pass. The zen-karate project got a backfilled c
 
 ### 5. The circle closed
 
-The case study documented the absence of an evolution log. The shoshin integration created the [evolution log](../../.planning/zen-karate/CHANGELOG.md). The case study documented the absence of tonal drift detection. The shoshin integration added brief-alignment checking to [`/review`](../../.agents/skills/review/SKILL.md). The case study documented the absence of nuance propagation. The [shoshin rule](../../.cursor/rules/shoshin.mdc) addresses this by triggering set-based document updates when scope language appears.
+The case study documented the absence of an evolution log. The shoshin integration created the [evolution log](../../.planning/zen-karate/CHANGELOG.md). The case study documented the absence of tonal drift detection. The shoshin integration added brief-alignment checking to [`/review`](../../.agents/skills/review/SKILL.md). The case study documented the absence of nuance propagation. The [shoshin principles](../../AGENTS.md) (Session Awareness / Shoshin sections) address this by triggering set-based document updates when scope language appears.
 
 The case study *produced* the system improvements it was documenting the need for.
 
@@ -96,7 +96,7 @@ The leap from observation to design principle was the user's. The case study not
 | Artifact | What it is |
 |---|---|
 | [Evolving Creative Scope](evolving-creative-scope.md) | The case study that surfaced the gaps |
-| [shoshin.md rule](../../.cursor/rules/shoshin.mdc) | The always-applied rule that resulted |
+| [shoshin principles](../../AGENTS.md) (Session Awareness / Shoshin sections) | The always-applied rule that resulted |
 | [CHANGELOG.md](../../.planning/zen-karate/CHANGELOG.md) | The evolution log that the case study identified as missing |
 | [/start — step 2.5](../../.agents/skills/start/SKILL.md) | Fresh-eyes check comparing briefs against current work |
 | [/whats-next — assumptions section](../../submodules/zanshin-pi-extension/skills/whats-next/SKILL.md) | Captures framing decisions for the next session to question |

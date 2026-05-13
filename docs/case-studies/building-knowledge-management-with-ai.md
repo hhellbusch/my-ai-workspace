@@ -8,7 +8,7 @@
 
 ## The Starting Point
 
-The workspace had content — essays, troubleshooting guides, research, examples — spread across product directories. It had a `.cursorrules` file (now removed — see [meta-document-drift.md](meta-document-drift.md)) describing the structure and a [`repo-structure.md`](../../.cursor/rules/repo-structure.mdc) rule defining conventions. What it didn't have was any system for tracking work across sessions, managing references, orienting new conversations, or catching drift as content evolved.
+The workspace had content — essays, troubleshooting guides, research, examples — spread across product directories. It had a `.cursorrules` file (now removed — see [meta-document-drift.md](meta-document-drift.md)) describing the structure and workspace structure conventions in [AGENTS.md](../../AGENTS.md). What it didn't have was any system for tracking work across sessions, managing references, orienting new conversations, or catching drift as content evolved.
 
 Each session started from scratch. The AI would read what it could find, make reasonable guesses about priorities, and the user would redirect as needed. Context was rebuilt from the filesystem every time. Ideas mentioned in conversation vanished when the session ended. There was no way to say "what were we working on?" and get a coherent answer.
 
@@ -32,13 +32,13 @@ The enrichment workflow is the key feature. When adding a video reference, the c
 
 ### 3. Session orientation (`/start` + session-awareness rule)
 
-A [`/start`](../../.agents/skills/start/SKILL.md) (session orientation command that reads the backlog, handoffs, and recent git activity) that checks for handoff files, reads the backlog, summarizes recent git activity, checks planning project status, and suggests 2-3 focus options. Complemented by a [session-awareness rule](../../.cursor/rules/session-awareness.mdc) (always-on reminders to load backlog, handoffs, planning, library, and git context) that passively reminds the AI about persistent context sources (backlog, handoffs, planning, library, git log).
+A [`/start`](../../.agents/skills/start/SKILL.md) (session orientation command that reads the backlog, handoffs, and recent git activity) that checks for handoff files, reads the backlog, summarizes recent git activity, checks planning project status, and suggests 2-3 focus options. Complemented by [session-awareness principles](../../AGENTS.md) (Session Awareness section) that passively reminds the AI about persistent context sources (backlog, handoffs, planning, library, git log).
 
 Together, these mean a new session can orient itself without the user explaining where things stand.
 
 ### 4. Pre-commit review (`/review` + `pre-commit-review` rule)
 
-A [`/review`](../../.agents/skills/review/SKILL.md) (a pre-commit quality gate that checks links, cross-references, and conventions) that acts as a quality gate before commits — checks for broken links, missing cross-references, registry drift, convention violations, and (for essays) an optional "Assumptions to challenge" section. An [always-applied rule](../../.cursor/rules/pre-commit-review.mdc) reminds the AI to run this before committing.
+A [`/review`](../../.agents/skills/review/SKILL.md) (a pre-commit quality gate that checks links, cross-references, and conventions) that acts as a quality gate before commits — checks for broken links, missing cross-references, registry drift, convention violations, and (for essays) an optional "Assumptions to challenge" section.
 
 ### 5. Content audit (`/audit`)
 
@@ -46,7 +46,7 @@ A [`/audit`](../../.agents/skills/audit/SKILL.md) (periodic content health check
 
 ### 6. Cross-linking conventions
 
-A [cross-linking rule](../../.cursor/rules/cross-linking.mdc) (keeps docs, research, and library indexes aligned when files are added, moved, or renamed) defining triggers: new file in docs/ triggers README updates, new research directory triggers research index updates, new library entry triggers catalog updates, renamed files trigger link searches. Plus a [backlog-capture rule](../../.cursor/rules/backlog-capture.mdc) (nudges immediate capture of deferred ideas) so nothing is lost when the session ends.
+A [cross-linking rule](../../AGENTS.md) (keeps docs, research, and library indexes aligned when files are added, moved, or renaming files) defining triggers: new file in docs/ triggers README updates, new research directory triggers research index updates, new library entry triggers catalog updates, renamed files trigger link searches. Plus a [backlog capture convention](../../AGENTS.md) (nudges immediate capture of deferred ideas) so nothing is lost when the session ends.
 
 ---
 
@@ -104,9 +104,9 @@ The counterargument: every essay written after this session benefits from the in
 | [/start](../../.agents/skills/start/SKILL.md) | Orient new sessions | Reads backlog, handoffs, planning, git log |
 | [/review](../../.agents/skills/review/SKILL.md) | Pre-commit quality gate | Links, cross-refs, conventions, assumptions |
 | [/audit](../../.agents/skills/audit/SKILL.md) | Content health check | Full workspace integrity scan |
-| [session-awareness](../../.cursor/rules/session-awareness.mdc) | Passive context loading | Always-applied rule pointing to persistent state |
-| [cross-linking](../../.cursor/rules/cross-linking.mdc) | Maintain connections | Triggers for new/moved/deleted content |
-| [backlog-capture](../../.cursor/rules/backlog-capture.mdc) | Don't lose ideas | Always-applied rule for immediate capture |
+| [session-awareness](../../AGENTS.md) (Session Awareness section) | Passive context loading | Always-applied rule pointing to persistent state |
+| [cross-linking](../../AGENTS.md) (Cross-Linking section) | Maintain connections | Triggers for new/moved/deleted content |
+| [backlog-capture](../../AGENTS.md) (BACKLOG.md convention) | Don't lose ideas | Always-applied rule for immediate capture |
 
 ---
 

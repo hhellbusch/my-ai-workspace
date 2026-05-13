@@ -38,7 +38,7 @@ The fix was a new validation type — `voice-approved` — with elevated priorit
 
 ### At generation time
 
-The [review tracking rule](../../.cursor/rules/review-tracking.mdc) and the [project style guide](../../.planning/zen-karate/STYLE.md) now instruct the AI to:
+The [review tracking principles](../../AGENTS.md) (Review Coverage section) and the [project style guide](../../.planning/zen-karate/STYLE.md) now instruct the AI to:
 
 - Avoid fabricating biographical details about the author
 - Use general framing ("a practitioner might notice...") when personal voice is needed but the author hasn't provided the specific detail
@@ -98,7 +98,7 @@ The concern was the author's — triggered by a single sentence that claimed a p
 
 | Artifact | What it is |
 |---|---|
-| [review-tracking.md](../../.cursor/rules/review-tracking.mdc) | The rule defining `voice-approved` and biographical content patterns |
+| [AGENTS.md](../../AGENTS.md) (Review Coverage section) | The principles defining `voice-approved` and biographical content patterns |
 | [/review](../../.agents/skills/review/SKILL.md) | Pre-commit command with biographical/voice check (step 6) |
 | [/audit](../../.agents/skills/audit/SKILL.md) | Content audit with Layer 5b biographical scan |
 | [/validate](../../.agents/skills/validate/SKILL.md) | Validation command with `voice-approved` type and prompting |

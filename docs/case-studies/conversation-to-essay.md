@@ -60,7 +60,7 @@ This is where the conventions earned their keep. The essay included two sections
 
 **Open Review** — a section listing unresolved counterarguments and next steps, linking to the [sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#1-the-core-claim-is-unverified) with a summary of those counterarguments. This didn't exist when the essay was first drafted. It was added after the adversarial review (step 5) and signals that the thesis has been challenged.
 
-These conventions came from the [style guide](../../.planning/zen-karate/STYLE.md) and the [cross-linking rule](../../.cursor/rules/cross-linking.mdc), both built in earlier sessions. The essay didn't invent its own provenance system — it followed one that was already in place.
+These conventions came from the [style guide](../../.planning/zen-karate/STYLE.md) and the [cross-linking rule](../../AGENTS.md), both built in earlier sessions. The essay didn't invent its own provenance system — it followed one that was already in place.
 
 ### 5. Adversarial review
 
@@ -108,8 +108,8 @@ The roadmap was updated rather than followed rigidly. The plan is a tool, not a 
 |---|---|---|
 | Observation | User noticed connection between sycophancy section and Zen research | Cached sources, existing essays |
 | Thread | Idea captured as thread 14 | [`threads.md`](../../.planning/zen-karate/threads.md) in `.planning/zen-karate/` |
-| Draft | Essay written from cached sources and existing essays | [Style guide](../../.planning/zen-karate/STYLE.md), source cache, [cross-linking conventions](../../.cursor/rules/cross-linking.mdc) |
-| Provenance | Sources and References table added | [Cross-linking rule](../../.cursor/rules/cross-linking.mdc), file-based research workflow |
+| Draft | Essay written from cached sources and existing essays | [Style guide](../../.planning/zen-karate/STYLE.md), source cache, [cross-linking conventions](../../AGENTS.md) (Cross-Linking section) |
+| Provenance | Sources and References table added | [Cross-linking rule](../../AGENTS.md) (Cross-Linking section), file-based research workflow |
 | Challenge | [`/spar`](../../submodules/zanshin-pi-extension/skills/spar/SKILL.md) applied, 7 counterarguments generated | `/spar` command (built same session) |
 | Capture | Sparring notes saved with blank response sections | [Sparring notes](../../research/zen-karate-philosophy/sparring-notes.md#1-the-core-claim-is-unverified) convention |
 | Integration | Essay published, cross-linked, backlog updated | docs/ track structure, [`BACKLOG.md`](../../BACKLOG.md), [roadmap](../../.planning/zen-karate/ROADMAP.md) |
@@ -141,7 +141,7 @@ The seed observation — "one idea or thread i guess is the concept of ego and t
 | [Sparring notes (#1-7)](../../research/zen-karate-philosophy/sparring-notes.md#1-the-core-claim-is-unverified) | 7 counterarguments with blank response sections |
 | [Shi Heng Yi transcript](../../research/zen-karate-philosophy/sources/they-betrayed-me---master-shi-heng-yi-explains-the-true-cost-of-success-shaolin-.md) | Primary philosophical source |
 | [Voice and style guide](../../.planning/zen-karate/STYLE.md) | Conventions the essay followed |
-| [Cross-linking rule](../../.cursor/rules/cross-linking.mdc) | Rule that triggered provenance sections |
+| [Cross-linking rule](../../AGENTS.md) (Cross-Linking section) | Rule that triggered provenance sections |
 
 ---
 

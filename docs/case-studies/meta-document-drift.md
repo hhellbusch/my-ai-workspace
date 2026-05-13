@@ -76,7 +76,7 @@ The track README is where the catalog lives. `.cursorrules` was trimmed to descr
 
 **2. Encode the principle in cross-linking conventions**
 
-Added a section to `.cursor/rules/cross-linking.mdc`: "`.cursorrules` is orientation, not inventory." This makes the design intent explicit for future sessions — the agent can read the rule and understand why `.cursorrules` should not enumerate document lists.
+Added to the [cross-linking conventions](../../AGENTS.md): "`.cursorrules` is orientation, not inventory." This makes the design intent explicit for future sessions — the agent can read the convention and understand why `.cursorrules` should not enumerate document lists.
 
 **3. Delete the file entirely (later)**
 
@@ -122,7 +122,7 @@ In each case, the temptation is to add synchronization reminders: "remember to u
 
 | Artifact | What it is |
 |---|---|
-| `.cursor/rules/cross-linking.mdc` | Added "orientation, not inventory" principle |
+| [AGENTS.md](../../AGENTS.md) (Cross-Linking section) | Added "orientation, not inventory" principle |
 | [`docs/case-studies/README.md`](README.md) | Authoritative catalog — canonical index, not `.cursorrules` |
 | `.agents/skills/` | Consolidated the broader roles `.cursorrules` once served |
 | `CLAUDE.md` | Consolidated the broader roles `.cursorrules` once served |

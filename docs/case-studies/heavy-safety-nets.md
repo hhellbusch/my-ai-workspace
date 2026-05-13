@@ -8,7 +8,7 @@
 
 ## The Setup
 
-This repository uses a pre-commit review rule (`.cursor/rules/pre-commit-review.mdc`) that requires running a structured review process before every commit. The review checks file placement, README coverage, cross-references, content quality, secrets, biographical content, and backlog alignment. It was designed to be comprehensive — the `/review` (a pre-commit quality gate that checks links, cross-references, and conventions) process runs 11+ steps and produces a structured report.
+This repository uses a pre-commit review process (`/review` skill) that requires running a structured review before every commit. The review checks file placement, README coverage, cross-references, content quality, secrets, biographical content, and backlog alignment. It was designed to be comprehensive — the `/review` (a pre-commit quality gate that checks links, cross-references, and conventions) process runs 11+ steps and produces a structured report.
 
 The system also tracks review status via YAML frontmatter. When the author reads and approves a file, `/validate` (stamps files with the author's review status) writes `status: reviewed` and validation dates to frontmatter. The intent: if a reviewed file gets modified later, the system should flag the staleness.
 
@@ -121,8 +121,8 @@ The retrospective question — "did our review mechanisms kick in appropriately?
 
 | Artifact | What it is |
 |---|---|
-| [pre-commit-review.md](../../.cursor/rules/pre-commit-review.mdc) | Scaled from rigid "always full review" to proportional depth |
-| [review-tracking.md](../../.cursor/rules/review-tracking.mdc) | Added `at` SHA field and "flag when editing reviewed files" behavior |
+| [AGENTS.md](../../AGENTS.md) (Feedback Checkpoints section) | Scaled from rigid "always full review" to proportional depth |
+| [AGENTS.md](../../AGENTS.md) (Review Coverage section) | Added `at` SHA field and "flag when editing reviewed files" behavior |
 | [/review](../../.agents/skills/review/SKILL.md) | Added step 7: review staleness check with SHA-based diff commands |
 | [/validate](../../.agents/skills/validate/SKILL.md) | Now auto-records git SHA for precise "diff since last review" |
 | [/audit](../../.agents/skills/audit/SKILL.md) | Layer 5d updated with SHA-based diff hints |

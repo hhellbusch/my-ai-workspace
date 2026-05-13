@@ -71,7 +71,7 @@ The git log told the story: commit `fe01773` (removal) followed by commit `7b0a1
 
 ### Systemic: the shoshin rule already existed
 
-The project already has a [`shoshin.md`](../../.cursor/rules/shoshin.mdc) rule — *shoshin* (beginner's mind — approaching a familiar subject as if seeing it for the first time): "approach project context as if encountering it for the first time." The rule says: don't trust handoffs alone, read the brief, check whether framing aligns with source documents before inheriting assumptions.
+The project already has shoshin principles encoded in [AGENTS.md](../../AGENTS.md) — *shoshin* (beginner's mind — approaching a familiar subject as if seeing it for the first time): "approach project context as if encountering it for the first time." The principle says: don't trust handoffs alone, read the brief, check whether framing aligns with source documents before inheriting assumptions.
 
 The rule was designed for *cross-session* context loading — reading handoff documents and planning files at session start. But the principle applies *within* a session too: when you're about to edit a file governed by a convention, re-read the convention. Your memory of what the convention says may be stale.
 
@@ -102,7 +102,7 @@ The user prompted the AI to re-read the system rules, noting that "they could ge
 | [BACKLOG.md](../../BACKLOG.md) | The file edited based on stale context |
 | `BACKLOG-ARCHIVE.md` | The archive file the AI was acting as if didn't exist |
 | [/backlog](../../.agents/skills/backlog/SKILL.md) | The command defining the rolling cap convention |
-| [shoshin.md](../../.cursor/rules/shoshin.mdc) | The existing rule that already covered this — applied too narrowly |
+| [AGENTS.md](../../AGENTS.md) (Session Awareness / Shoshin sections) | The existing principles that already covered this — applied too narrowly |
 | [Debugging Your AI Assistant's Judgment](debugging-ai-judgment.md) | Sibling case study — anchoring on persisted artifacts vs. anchoring on session memory |
 
 ---

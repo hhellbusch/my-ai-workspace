@@ -120,14 +120,14 @@ The following behaviors are present in Cursor and Claude Code. Copilot CLI picks
 | Behavior | Cursor | Claude Code |
 |---|---|---|
 | Session orientation | `.agents/skills/start/SKILL.md` + `session-awareness.mdc` | `.agents/skills/start/SKILL.md` + `CLAUDE.md` section |
-| Shoshin | `.cursor/rules/shoshin.mdc` (always-on) | `CLAUDE.md` shoshin section |
+| Shoshin | `AGENTS.md` (Session Awareness / Shoshin sections) | N/A — manual discipline |
 | Sparring | `submodules/zanshin-pi-extension/skills/spar/SKILL.md` | `submodules/zanshin-pi-extension/skills/spar/SKILL.md` |
 | Feedback checkpoints | `.cursor/rules/feedback-checkpoints.mdc` (reference doc) | `CLAUDE.md` feedback checkpoints section |
-| Review tracking | `.cursor/rules/review-tracking.mdc` (always-on) | `CLAUDE.md` review tracking section |
-| Backlog capture | `.cursor/rules/backlog-capture.mdc` (always-on) | `CLAUDE.md` backlog capture section |
+| Review tracking | `AGENTS.md` (Review Coverage section) | N/A — manual discipline |
+| Backlog capture | `AGENTS.md` (BACKLOG.md convention) | N/A — manual discipline |
 | Case study reflection | `.cursor/rules/case-study-reflection.mdc` (reference doc) | `CLAUDE.md` case study section |
 | Pre-commit review | `.agents/skills/review/SKILL.md` | `.agents/skills/review/SKILL.md` |
-| Cross-linking | `.cursor/rules/cross-linking.mdc` (glob-scoped to `.md` files) | `CLAUDE.md` cross-linking section (always-on) |
+| Cross-linking | `AGENTS.md` (Cross-Linking section) | N/A — manual discipline |
 | Collaboration style | `.cursorrules` | `CLAUDE.md` |
 | Workspace identity | `.cursorrules` + `ABOUT.md` | `CLAUDE.md` + `ABOUT.md` |
 

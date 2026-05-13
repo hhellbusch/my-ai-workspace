@@ -290,7 +290,7 @@ The same mechanism applies to:
 - **Planning documents** — a roadmap written by AI in session 1 becomes authoritative context for session 2, even if the phase ordering was a guess
 - **Scope framing** — the AI updates documents to reflect a scope change but treats the updated documents as equally authoritative as the original, losing the *evolution* (see [How AI Handles Evolving Creative Scope](../case-studies/evolving-creative-scope.md))
 
-The behavioral instruction "don't anchor on existing priorities" doesn't work — the structural cues are in the context window regardless of the instruction. Effective mitigations are structural: strip the cues before analysis, compare fresh-evaluation against current state, or [verify claims against source documents](../../.cursor/rules/shoshin.mdc) rather than inheriting them from prior session artifacts.
+The behavioral instruction "don't anchor on existing priorities" doesn't work — the structural cues are in the context window regardless of the instruction. Effective mitigations are structural: strip the cues before analysis, compare fresh-evaluation against current state, or [verify claims against source documents](../../AGENTS.md) (Shoshin section) rather than inheriting them from prior session artifacts.
 
 ### Self-reinforcing infrastructure
 
