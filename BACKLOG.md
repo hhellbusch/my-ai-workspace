@@ -119,6 +119,10 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Product:** zanshin-pi-extension
 - **Context:** No visible indicator of which guards are active. `ctx.ui.setStatus()` could show a compact "🛡 N guards" in the footer. Useful for confirming guards loaded after /reload.
 
+### commit-guard: false positive on bash heredocs containing "git commit" text
+- **Product:** zanshin-pi-extension
+- **Context:** The commit-guard regex `/\bgit\s+commit\b/` matches against the entire bash command string, including heredoc content and string literals. A Python heredoc that embeds the text "git add ... && git commit" in a comment was incorrectly blocked. Fix: match `git commit` only at the start of a pipeline stage, not inside quoted strings. This requires more precise shell parsing or a heuristic (e.g. skip if `git commit` appears inside quotes or after `echo`/`cat`).
+
 ### commit-guard: compound `git add && git commit` blocked entirely
 - **Product:** zanshin-pi-extension
 - **Context:** When the review gate fires on a compound `git add && git commit` command, the entire command is blocked — `git add` never runs. The block reason doesn't explain this, so the model may try to re-add. Add a note to the block reason: "Note: the git add in this command did not execute — re-stage files before retrying."
