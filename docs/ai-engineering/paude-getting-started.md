@@ -160,7 +160,7 @@ Key flags on `paude create`:
 | Flag | Purpose |
 |---|---|
 | `--git` | Push your workspace into the container, set as origin |
-| `--yolo` | Skip all permission prompts — agent runs without asking |
+| `--yolo` | Skip all permission prompts — needed for agents with built-in permission systems (Claude Code, Gemini CLI, Cursor CLI). **Not needed for Pi**, which has no permission system (Zanshin practices provide guardrails instead). |
 | `--prompt-file <path>` | Read initial prompt from a file on the host — no shell quoting issues |
 | `-a '-p "..."'` | Inline prompt (fragile for multi-line — prefer `--prompt-file`) |
 | `--agent` | Choose agent: `claude` (default), `gemini`, `cursor`, `openclaw`, `pi`, `copilot` |
@@ -420,11 +420,11 @@ Example `~/.config/paude/defaults.json`:
 
 `"git": true` wires `paude remote add` + `git push` on every `paude create`, so `/pvc/workspace/` is populated without a separate manual step (matches the resolver default of `git: false` if omitted).
 
-With this, `paude create --yolo my-session` runs Pi on Vertex (Claude Sonnet) with workspace sync — no `--git` flag needed each time. Override at create time as needed:
+With this, `paude create my-session` runs Pi on Vertex (Claude Sonnet) with workspace sync — no `--git` or `--yolo` flag needed each time. (Pi has no permission system, so `--yolo` is unnecessary. You only need it for agents with built-in permission prompts — Claude Code, Gemini CLI, Cursor CLI, etc.) Override at create time as needed:
 
 ```bash
-paude create --agent claude my-session           # Claude Code instead of Pi
-paude create --allowed-domains "default youtube" # add domains for this session
+paude create --agent claude --yolo my-session    # Claude Code instead of Pi (needs --yolo)
+paude create --agent claude --allowed-domains "default youtube" my-session  # add domains for this session
 ```
 
 ---

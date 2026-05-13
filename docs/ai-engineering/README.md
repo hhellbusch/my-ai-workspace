@@ -33,6 +33,8 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 ## Practitioner Guides
 
+- **[A Portable AI Toolkit — My Agent, Anywhere](portable-ai-toolkit.md)** — How Paude + Pi + Zanshin form a portable AI agent toolkit: containerize the runtime, containerize the working discipline, push accumulated context into the container. Three-layer architecture (runtime → discipline → workspace) that enables compounding AI-assisted work across sessions and projects. *(Essay + architecture guide.)*
+
 - **[Getting Started with Paude — Autonomous Agent Sessions](paude-getting-started.md)** — How to run AI coding agents (Claude Code, Gemini CLI, Cursor CLI) in isolated containers using Paude: install, smoke test, writing task specs, the AGENT-NOTES self-assessment pattern, multi-agent comparison, and measurement via OpenTelemetry. Written from first-hand exploration and updated as new phases are completed. *(In progress — sections marked pending are being populated from hands-on runs.)*
 
 ## Companion Guides
