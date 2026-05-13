@@ -429,8 +429,7 @@ If VMs can't see the GPU after vGPU configuration:
 - [NVIDIA GPU Operator ClusterPolicy](../../research/openshift-gpu/resources/clusterpolicy-baremetal.yaml) — Full ClusterPolicy CRD template
 - [NVIDIA GPU Operator values.yaml](../../research/openshift-gpu/resources/nvidia-gpu-operator-values.yaml) — Complete Helm values reference
 - [NFD Node Feature Rules](../../research/openshift-gpu/resources/nodefeaturerules-baremetal.yaml) — GPU detection rules for NFD
-- [OpenShift GPU Installation](../../research/openshift-gpu/resources/openshift-gpu-install-latest.txt) — OpenShift-specific GPU operator installation guide
-- [GCP GKE GPU Nodes](../../research/openshift-gpu/resources/gcp-gke-gpu-nodes.txt) — GPU node management patterns (reference)
+- [NVIDIA GPU Operator on OpenShift](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/openshift/contents.html) — Official NVIDIA documentation for OCP-specific installation and management (live upstream)
 
 ---
 
