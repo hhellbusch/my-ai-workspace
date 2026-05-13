@@ -1,5 +1,5 @@
 ---
-review: status: unreviewed
+review: [status: unreviewed]
 created: 2026-05-12
 tags: proxy, paude, github, PAT, TLS, certificates
 ---
