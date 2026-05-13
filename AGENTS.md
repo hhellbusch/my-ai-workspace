@@ -22,7 +22,7 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 Pi extensions live in `submodules/`. When a task requires working with extension code, check the appropriate submodule.
 
 Key repos:
-- `zanshin-pi-extension/` — working discipline L0, commands (`/spar`, `/shoshin`, `/checkpoint`, stack)
+- `zanshin-pi-extension/` — working discipline L0, commands (`/spar`, `/shoshin`, `/checkpoint`, stack); dev workflow at `docs/PI-EXT-DEV.md`
 - `paude-pi-extension/` — Paude container awareness injected into system prompt
 - `lid-pi-extension/` — linked-intent development workflow
 

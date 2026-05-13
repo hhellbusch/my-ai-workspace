@@ -52,8 +52,6 @@ These are workspace-specific skills — unique to this project.
 | `/whats-next` | Full session handoff — create comprehensive continuation doc |
 | `/checkpoint` | Mid-session state save — lightweight crash recovery snapshot |
 | `/review` | Pre-commit quality gate — verify against repo conventions |
-| `/pi-ext` | Pi extension development — cache verification, validation, publish |
-
 ### Quality & content governance
 
 | Skill | Purpose |
