@@ -1,8 +1,8 @@
 ---
 name: pi-ext
 description: Pi extension development workflow — cache verification, validation, and push discipline
-argument-hint: "[validate | cache-check | publish | review | new <name>]"
-allowed-tools: Read Write StrReplace Shell
+argument-hint: "[validate | cache-check | quick-pull | publish | review | new <name>]"
+allowed-tools: Read Write StrReplace Shell Bash
 ---
 
 # Pi Extension Development Workflow
@@ -32,6 +32,35 @@ submodules/<name>/
 │   └── guard-ui.ts           # shared helpers used by extensions
 └── README.md                 # documentation
 ```
+
+## Guard extensions vs regular extensions
+
+Pi loads every `.ts` file in `extensions/` as an extension. There are two categories:
+
+**Regular extensions** — fire on events to do useful work (sessions, notifications, system prompt injection). Defined by `before_agent_start`, `session_start`, `notification`.
+
+**Guard extensions** — intercept tool calls to validate, confirm, or hard-block. Defined by `tool_call` and `tool_result`.
+
+A single file can be both. Guard extensions use the same factory pattern:
+
+```typescript
+export default function (pi: ExtensionAPI) {
+    pi.on("tool_call", async (event, ctx) => {
+        // Before execution: intercept, validate, block
+    });
+    pi.on("tool_result", async (event, ctx) => {
+        // After execution: inspect, reset state, update flags
+    });
+}
+```
+
+Key guard patterns:
+- **`tool_call` + `return { block: true, reason: "..." }`** — hard block, no confirm
+- **`pi.sendUserMessage("...")` + `return { block: true, reason: "..." }`** — soft block with context (model sees why)
+- **`pi.appendEntry("key", { value })`** — store state across tool calls (flags, counters, hashes)
+- **`tool_result`** — reset flags after successful commits, detect review commands
+
+---
 
 ## Critical rules
 
@@ -70,6 +99,22 @@ Reports:
 - Missing exports or invalid factory functions from `validate-extensions.mjs`
 
 If either fails, **do not push**. Fix the errors and re-run.
+
+---
+
+### `quick-pull [name]` — pull into cache and reload
+
+The most common post-pull flow: fetch updates into the Pi cache and reload.
+
+```bash
+# Quick pull — defaults to zanshin-pi-extension
+git -C ~/.pi/agent/git/github.com/hellbusch/<name> pull origin main
+
+# Verify it's current
+log --oneline -1
+```
+
+The user then runs `/reload` to activate. If the runtime is serving stale content despite the cache being current, see "Cache is stale but cache-check says it's in sync" in the failure modes.
 
 ---
 
@@ -164,6 +209,26 @@ Quick audit without running tests:
 ---
 
 ## Common failure modes
+
+### "Cache is stale but cache-check says it's in sync"
+
+The `cache-check` command compares HEAD commits between the submodule and the Pi cache. But the Pi runtime may be loading a **different version** — from a previous package install or a stale node_modules cache.
+
+If `cache-check` shows both repos at the same commit but the Pi runtime still shows an old error (e.g., `stagedReviewedDiffHash is not defined` when the file on disk has `reviewedDiffHash`), the runtime is loading from a cached/compiled version. In that case:
+
+```bash
+# Force Pi to reload by reinstalling the package
+pi uninstall git:https://github.com/hhellbusch/zanshin-pi-extension.git
+pi install git:https://github.com/hhellbusch/zanshin-pi-extension.git
+```
+
+Or try a simpler reload first — sometimes Pi just needs the signal:
+
+```bash
+/reload
+```
+
+If `/reload` doesn't work and the error message references a variable or function that no longer exists on disk, the runtime is serving stale content.
 
 ### "Changes don't appear after /reload"
 
