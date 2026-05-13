@@ -17,6 +17,42 @@ This guide covers bare-metal GPU management on Red Hat OpenShift Container Platf
 
 ---
 
+## On this page
+
+- [Scope](#scope)
+- [Installation — What Actually Happens](#installation---what-actually-happens)
+  - [The components](#the-components)
+  - [Order of operations](#order-of-operations)
+  - [The IOMMU consideration](#the-iommu-consideration)
+  - [Canary deployment pattern](#canary-deployment-pattern)
+  - [Pre-installation prerequisites](#pre-installation-prerequisites)
+- [GPU Scheduling](#gpu-scheduling)
+  - [ClusterPolicy — the central configuration object](#clusterpolicy---the-central-configuration-object)
+  - [GPU modes of operation](#gpu-modes-of-operation)
+  - [Time-slicing](#time-slicing)
+  - [MIG (Multi-Instance GPU)](#mig-multi-instance-gpu)
+  - [Device plugin configuration](#device-plugin-configuration)
+  - [vGPU for VMs](#vgpu-for-vms)
+- [GPU Driver Upgrades](#gpu-driver-upgrades)
+  - [The upgrade state machine](#the-upgrade-state-machine)
+  - [Upgrade controller configuration](#upgrade-controller-configuration)
+  - [Updating the driver version](#updating-the-driver-version)
+  - [Monitoring upgrade progress](#monitoring-upgrade-progress)
+  - [Pausing and skipping upgrades](#pausing-and-skipping-upgrades)
+  - [Failing an upgrade](#failing-an-upgrade)
+- [Monitoring](#monitoring)
+  - [DCGM Exporter](#dcgm-exporter)
+  - [Node Status Exporter](#node-status-exporter)
+  - [Prometheus integration](#prometheus-integration)
+- [Troubleshooting](#troubleshooting)
+  - [Node states](#node-states)
+  - [Driver pod won't start](#driver-pod-wont-start)
+  - [Driver not loading after pod restart](#driver-not-loading-after-pod-restart)
+  - [VM GPU passthrough not working](#vm-gpu-passthrough-not-working)
+- [References](#references)
+
+---
+
 ## Installation — What Actually Happens
 
 ### The components
@@ -390,4 +426,4 @@ If VMs can't see the GPU after vGPU configuration:
 
 ---
 
-*This document was created with AI assistance (Cursor) and has not been fully reviewed by the author.*
+*This document was created with AI assistance (Cursor) and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
