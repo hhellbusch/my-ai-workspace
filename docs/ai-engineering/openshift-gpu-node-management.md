@@ -424,13 +424,13 @@ If VMs can't see the GPU after vGPU configuration:
 
 ## References
 
-- [NVIDIA GPU Driver Upgrades](resources/nvidia-gpu-driver-upgrades.md) — Full upgrade state machine, all configuration options, metrics, and troubleshooting
-- [NVIDIA vGPU Passthrough](resources/nvidia-vgpu-passthrough.md) — vGPU installation for VMs
-- [NVIDIA GPU Operator ClusterPolicy](resources/clusterpolicy-baremetal.yaml) — Full ClusterPolicy CRD template
-- [NVIDIA GPU Operator values.yaml](resources/nvidia-gpu-operator-values.yaml) — Complete Helm values reference
-- [NFD Node Feature Rules](resources/nodefeaturerules-baremetal.yaml) — GPU detection rules for NFD
-- [OpenShift GPU Installation](resources/openshift-gpu-install-latest.txt) — OpenShift-specific GPU operator installation guide
-- [GCP GKE GPU Nodes](resources/gcp-gke-gpu-nodes.txt) — GPU node management patterns (reference)
+- [NVIDIA GPU Driver Upgrades](../../research/openshift-gpu/resources/nvidia-gpu-driver-upgrades.md) — Full upgrade state machine, all configuration options, metrics, and troubleshooting
+- [NVIDIA vGPU Passthrough](../../research/openshift-gpu/resources/nvidia-vgpu-passthrough.md) — vGPU installation for VMs
+- [NVIDIA GPU Operator ClusterPolicy](../../research/openshift-gpu/resources/clusterpolicy-baremetal.yaml) — Full ClusterPolicy CRD template
+- [NVIDIA GPU Operator values.yaml](../../research/openshift-gpu/resources/nvidia-gpu-operator-values.yaml) — Complete Helm values reference
+- [NFD Node Feature Rules](../../research/openshift-gpu/resources/nodefeaturerules-baremetal.yaml) — GPU detection rules for NFD
+- [OpenShift GPU Installation](../../research/openshift-gpu/resources/openshift-gpu-install-latest.txt) — OpenShift-specific GPU operator installation guide
+- [GCP GKE GPU Nodes](../../research/openshift-gpu/resources/gcp-gke-gpu-nodes.txt) — GPU node management patterns (reference)
 
 ---
 
