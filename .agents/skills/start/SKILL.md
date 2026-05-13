@@ -16,7 +16,7 @@ Run this at the beginning of a new session, or whenever you need to re-orient.
 <context>
 - Backlog summary: `head -4 BACKLOG.md`
 - Recent commits: `git log --oneline -10`
-- Handoff file: `ls .planning/whats-next.md 2>/dev/null || echo "No handoff file"`
+- Handoff file: `ls .planning/<project>/whats-next.md (resolved via .planning/*/BRIEF.md mtime; falls back to .planning/<project>/whats-next.md (resolved via .planning/*/BRIEF.md mtime; falls back to .planning/whats-next.md)) 2>/dev/null || echo "No handoff file"`
 - Planning projects: `ls -d .planning/*/ 2>/dev/null || echo "No planning projects"`
 - Continue-here files: `find .planning -name ".continue-here*.md" 2>/dev/null || echo "No continue-here files"`
 - Environment readiness (optional): `./scripts/env-check.sh` (if present)
@@ -56,15 +56,15 @@ Always state the selected mode in the orientation output so both sides share the
 
 ### Step 2: Check for handoff
 
-If `.planning/whats-next.md` exists:
-1. Check staleness: run `stat -c %Y .planning/whats-next.md` and compare against the timestamp of the most recent commit (`git log -1 --format=%ct`). If the handoff is older than the most recent commit, flag it:
+If `.planning/<project>/whats-next.md (resolved via .planning/*/BRIEF.md mtime; falls back to .planning/<project>/whats-next.md (resolved via .planning/*/BRIEF.md mtime; falls back to .planning/whats-next.md))` exists:
+1. Check staleness: run `stat -c %Y .planning/<project>/whats-next.md (resolved via .planning/*/BRIEF.md mtime; falls back to .planning/<project>/whats-next.md (resolved via .planning/*/BRIEF.md mtime; falls back to .planning/whats-next.md))` and compare against the timestamp of the most recent commit (`git log -1 --format=%ct`). If the handoff is older than the most recent commit, flag it:
    - "There's a handoff from a previous session, but commits have been made since it was written. The handoff may be stale — read it with that in mind."
 2. Read it in full
 3. Present a summary: what was being worked on, what remains, any blockers or decisions pending
 4. Cross-reference against the backlog snapshot from Step 1. If the handoff references work that's no longer in the backlog (completed items are deleted, not archived), or if the backlog has changed significantly, note the discrepancy.
 5. Ask: "There's a handoff from a previous session. Want to pick up where you left off, or start fresh from the backlog?"
 
-If `.planning/whats-next.md` does **not** exist (crash, abrupt end, or `/whats-next` was skipped):
+If `.planning/<project>/whats-next.md (resolved via .planning/*/BRIEF.md mtime; falls back to .planning/<project>/whats-next.md (resolved via .planning/*/BRIEF.md mtime; falls back to .planning/whats-next.md))` does **not** exist (crash, abrupt end, or `/whats-next` was skipped):
 1. Use the git log as a synthetic handoff — it is the next best thing
 2. From `git log --oneline -10`, identify the cluster of commits from the last session (grouped by time proximity and subject)
 3. Synthesize and present:

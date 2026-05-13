@@ -44,7 +44,7 @@ This workspace has persistent project state that survives across sessions. When 
 
 - **`ABOUT.md`** — Read first. The workspace owner's self-description; takes precedence over corpus inferences.
 - **`BACKLOG.md`** — In-progress work, what's coming next. The `/start` skill provides a structured orientation.
-- **`.planning/whats-next.md`** — Handoff from a previous session. Staleness-check: if commits have been made since this was written, cross-reference against the backlog and git log.
+- **`.planning/<project>/whats-next.md`** — Handoff from a previous session. The project dir is the one with the most recently modified `BRIEF.md`. If no project BRIEF exists, falls back to root `.planning/`. Staleness-check: if commits have been made since it was written, cross-reference against the backlog and git log.
 - **`STYLE.md`** (repo root) — Workspace-level writing defaults. Check before writing any `docs/` content.
 - **`.planning/`** — Project briefs, roadmaps, style supplements.
 - **`library/`** — Personal reference library.
@@ -72,7 +72,7 @@ Approach project context as if encountering it for the first time. This counters
 
 **Read the brief**, not just the backlog or handoff. The brief is the authoritative statement of scope and purpose. If the backlog says one thing and the brief says another, surface the conflict.
 
-**Don't trust the handoff alone.** `.planning/whats-next.md` captures one session's framing. It may carry assumptions that have drifted from the brief.
+**Don't trust the handoff alone.** `.planning/<project>/whats-next.md` captures one session's framing. It may carry assumptions that have drifted from the brief.
 
 **When scope language appears** — "actually, let's broaden this to...", "I've been rethinking..." — acknowledge the shift explicitly, surface which documents need updating, and update as a set. If a `.planning/*/CHANGELOG.md` exists, add an entry capturing what changed and why.
 
