@@ -59,12 +59,14 @@ Practical, runnable examples and troubleshooting guides for infrastructure and p
 
 - **[Ansible](devops/ansible/)** — Playbooks, retry patterns, parallel execution, BMC operations, AAP 2.5+ troubleshooting
 - **[OpenShift](devops/ocp/)** — 20+ troubleshooting guides: API slowness, bare metal, CSR management, namespace termination, OVN-Kubernetes. SNO lab setup.
+- **[Local LLM Setup](devops/llm/)** — Ollama, RamaLama, LM Studio, LiteLLM proxy, vLLM. Consumer inference for Cursor/Claude Code.
 - **[Learning paths](devops/learning-path/)** — Curated curricula (for example VMware admins → OpenShift / Virt, with Git and GitHub onboarding)
 - **[ArgoCD](devops/argo/)** — App-of-apps patterns, Helm charts, multi-environment GitOps, GitHub Actions workflows
 - **[CoreOS](devops/coreos/)** — Ignition/Butane configurations
 - **[RHACM](devops/rhacm/)** — Multi-cluster management, policy and governance
 - **[Vault](devops/vault/)** — HashiCorp Vault integration patterns
 - **[Git](devops/git/)** — Learning guide for developers: content-addressable filesystems, object model, reflog, bisect
+- **[Pi Agent Config](devops/pi/)** — How pi discovers skills, extensions, and workspace resources. Startup behavior, troubleshooting.
 - **[Paude Proxy](devops/paude-proxy/)** — Reverse proxy for TLS inspection, certificate management, and API access control
 
 ---
@@ -83,7 +85,7 @@ git submodule update --init --recursive
 
 **Use as a template** — the workspace structure (`.agents/skills/`, `rules/`, `AGENTS.md`, `.planning/`) is designed to be portable. Clone this repo alongside a project and reference these files in your AI tool's context to load the workflow patterns. [Zanshin — Portable Session Context](docs/ai-engineering/framework-bootstrap.md) is the single-file entry point: point your AI at that file and it operates with the framework's posture immediately. [The Session Framework](docs/ai-engineering/session-framework.md) has the full behavioral map and reasoning behind each practice.
 
-Details and structure in [.cursor/README.md](.cursor/README.md). The [backlog](BACKLOG.md) shows what's actively in progress.
+Structure and discipline in [AGENTS.md](AGENTS.md). The [backlog](BACKLOG.md) shows what's actively in progress.
 
 ---
 
