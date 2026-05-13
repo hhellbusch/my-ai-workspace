@@ -32,7 +32,16 @@ This guide covers bare-metal GPU management on Red Hat OpenShift Container Platf
   - [Time-slicing](#time-slicing)
   - [MIG (Multi-Instance GPU)](#mig-multi-instance-gpu)
   - [Device plugin configuration](#device-plugin-configuration)
-  - [vGPU for VMs](#vgpu-for-vms)
+  - [vGPU and GPU passthrough for VMs](#vgpu-and-gpu-passthrough-for-vms)
+    - [Two approaches](#two-approaches)
+    - [Node workload types](#node-workload-types)
+    - [High-level workflow](#high-level-workflow)
+    - [Prerequisites](#prerequisites-virt)
+    - [Building the vGPU Manager image](#building-the-vgpu-manager-image)
+    - [ClusterPolicy for VM workloads](#clusterpolicy-for-vm-workloads)
+    - [HyperConverged CR configuration](#hyperconverged-cr-configuration)
+    - [Assigning GPUs to a VirtualMachine](#assigning-gpus-to-a-virtualmachine)
+    - [vGPU profile selection](#vgpu-profile-selection)
 - [GPU Driver Upgrades](#gpu-driver-upgrades)
   - [The upgrade state machine](#the-upgrade-state-machine)
   - [Upgrade controller configuration](#upgrade-controller-configuration)
@@ -48,7 +57,7 @@ This guide covers bare-metal GPU management on Red Hat OpenShift Container Platf
   - [Node states](#node-states)
   - [Driver pod won't start](#driver-pod-wont-start)
   - [Driver not loading after pod restart](#driver-not-loading-after-pod-restart)
-  - [VM GPU passthrough not working](#vm-gpu-passthrough-not-working)
+  - [VM GPU passthrough or vGPU not working](#vm-gpu-passthrough-or-vgpu-not-working)
 - [References](#references)
 
 ---
@@ -203,19 +212,228 @@ devicePlugin:
     default: ""       # Default GPU type to expose
 ```
 
-### vGPU for VMs
+### vGPU and GPU passthrough for VMs
 
-For GPU passthrough to VMs (OpenShift Virtualization / KubeVirt), you need vGPU support. This requires:
+OpenShift Virtualization (KubeVirt) supports two ways to give a VM direct GPU access: **GPU passthrough** (the whole physical GPU is assigned to one VM) and **vGPU** (the GPU is partitioned into virtual GPU slices, each assignable to a different VM). Both require IOMMU — and therefore a node reboot — as described in [The IOMMU consideration](#the-iommu-consideration).
 
-1. **NVIDIA vGPU host driver** (12.0+) installed on all hypervisors
-2. **NVIDIA License Service** — Cloud License Service (CLS) or Delegated License Service (DLS)
-3. **Custom driver container image** built from the vGPU guest driver
+#### Two approaches {#two-approaches}
 
-The vGPU driver container image is **not** public — it requires an NVIDIA Enterprise license and must be built from source using the `gpu-driver-container` repository.
+There are two distinct approaches for configuring GPU access for OCP Virt VMs. They are **mutually exclusive per node** — pick one and disable the other on that node.
 
-**EULA note:** Uploading the vGPU driver to a public repository violates the NVIDIA vGPU EULA.
+| | GPU Operator approach | OCP Virt native approach |
+|---|---|---|
+| **Who configures GPU components** | GPU Operator DaemonSets | OCP Virtualization's built-in mediated device support |
+| **Supports passthrough** | Yes (VFIO Manager) | Yes (OCP Virt PCI passthrough) |
+| **Supports vGPU** | Yes (vGPU Manager + vGPU Device Manager) | Yes (OCP Virt configures mdev directly) |
+| **Driver install** | GPU Operator handles via vGPU Manager DaemonSet | Manual or OCP Virt-managed |
+| **When to use** | When you already have GPU Operator managing the cluster | When your workload is primarily OCP Virt and Red Hat support coverage is the priority |
 
-See the [NVIDIA GPU Operator vGPU documentation](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/openshift/nvaie-with-ocp.html) for the full installation flow.
+> **Mixing is not supported.** If you use the OCP Virt native approach, the GPU Operator's operands must be **disabled** on that node to avoid conflicts. If you use the GPU Operator approach on a node, OCP Virt will not configure mediated devices on it.
+
+This guide covers the **GPU Operator approach**. For the OCP Virt native approach, see the [Red Hat OCP 4.18 Virtualization documentation — Configuring virtual GPUs](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html-single/virtualization/index#virt-configuring-virtual-gpus).
+
+#### Node workload types {#node-workload-types}
+
+The GPU Operator uses the label `nvidia.com/gpu.workload.config` on each worker node to decide which operands to deploy. **A node can only run one workload type** — container, VM passthrough, or VM vGPU, not a combination.
+
+| Label value | What the node runs | Operands deployed |
+|---|---|---|
+| `container` (default) | GPU-accelerated containers | Datacenter Driver, Container Toolkit, Device Plugin, DCGM |
+| `vm-passthrough` | VMs with direct GPU passthrough | VFIO Manager, Sandbox Device Plugin, Sandbox Validator |
+| `vm-vgpu` | VMs with vGPU slices | vGPU Manager, vGPU Device Manager, Sandbox Device Plugin, Sandbox Validator |
+
+If the label is absent, the node is treated as `container`. To change the default cluster-wide, set `sandboxWorkloads.defaultWorkload` in ClusterPolicy.
+
+Label a node:
+
+```bash
+# GPU passthrough
+oc label node <node-name> --overwrite nvidia.com/gpu.workload.config=vm-passthrough
+
+# vGPU
+oc label node <node-name> --overwrite nvidia.com/gpu.workload.config=vm-vgpu
+```
+
+#### High-level workflow {#high-level-workflow}
+
+**For GPU passthrough:**
+
+1. Enable IOMMU via MachineConfig (triggers reboot — see [The IOMMU consideration](#the-iommu-consideration))
+2. Label nodes: `nvidia.com/gpu.workload.config=vm-passthrough`
+3. Install GPU Operator with `sandboxWorkloads.enabled=true`
+4. Add GPU passthrough resources to HyperConverged CR
+5. Create VirtualMachine with GPU device spec
+
+**For vGPU:**
+
+1. Enable IOMMU via MachineConfig (triggers reboot)
+2. Build the vGPU Manager image and push to a private registry
+3. Label nodes: `nvidia.com/gpu.workload.config=vm-vgpu`
+4. Install GPU Operator with `sandboxWorkloads.enabled=true` and vGPU Manager image reference
+5. Add vGPU resources to HyperConverged CR
+6. (Optional) Set per-node vGPU profile via `nvidia.com/vgpu.config` label
+7. Create VirtualMachine with vGPU device spec
+
+#### Prerequisites {#prerequisites-virt}
+
+- OpenShift Virtualization Operator installed
+- `virtctl` client installed
+- Starting with OCP Virtualization 4.12.3 / 4.13.0, enable the `disableMDevConfiguration` feature gate:
+
+  ```bash
+  oc patch hyperconverged -n openshift-cnv kubevirt-hyperconverged \
+    --type='json' \
+    -p='[{"op": "add", "path": "/spec/featureGates/disableMDevConfiguration", "value": true}]'
+  ```
+
+- **For vGPU on Ampere-architecture GPUs (A100, A10, etc.):** SR-IOV must be enabled in the BIOS. Check the [NVIDIA vGPU prerequisites](https://docs.nvidia.com/grid/latest/grid-vgpu-user-guide/index.html#prereqs-vgpu).
+
+- **For vGPU:** An NVIDIA AI Enterprise license (or NVIDIA vGPU Software license) — the vGPU Manager image is not public.
+
+#### Building the vGPU Manager image {#building-the-vgpu-manager-image}
+
+Required for `vm-vgpu` only. Skip this section if you are using GPU passthrough.
+
+The vGPU Manager image packages the NVIDIA vGPU kernel module (`vgpu-kvm.run`) into a container that the GPU Operator DaemonSet installs on each vGPU node. The run file is not publicly distributable.
+
+1. Download the Linux KVM vGPU driver (`.run` file) from the [NVIDIA Licensing Portal](https://nvid.nvidia.com/dashboard/). NVIDIA AI Enterprise customers use the `aie` variant; rename it to `NVIDIA-Linux-x86_64-<version>-vgpu-kvm.run`.
+2. Build the vGPU Manager container image using the build instructions in the [NVIDIA vGPU Software documentation](https://docs.nvidia.com/grid/latest/grid-vgpu-user-guide/index.html).
+3. Push the image to your private registry.
+4. Reference the image in your ClusterPolicy `vgpuManager.driver.repository` and `tag`.
+
+> **EULA:** Uploading the vGPU driver or Manager image to a public registry violates the NVIDIA vGPU EULA.
+
+#### ClusterPolicy for VM workloads {#clusterpolicy-for-vm-workloads}
+
+To enable the GPU Operator to manage VM workloads, set `sandboxWorkloads.enabled=true` in the ClusterPolicy:
+
+```yaml
+spec:
+  sandboxWorkloads:
+    enabled: true
+    defaultWorkload: container  # cluster-wide default; override per node with the label
+  vgpuManager:
+    enabled: true
+    driver:
+      repository: <your-private-registry>
+      image: vgpu-manager
+      tag: "<version>"
+    driverManager:
+      repository: nvcr.io/nvidia/cloud-native
+      image: k8s-driver-manager
+```
+
+For passthrough-only clusters, `vgpuManager.enabled` can be `false`; only the VFIO Manager and Sandbox Device Plugin are needed.
+
+#### HyperConverged CR configuration {#hyperconverged-cr-configuration}
+
+The `HyperConverged` CR (in the `openshift-cnv` namespace) must be updated to permit GPU devices before VMs can use them.
+
+**GPU passthrough:**
+
+```bash
+# Discover the resource name on the node
+oc get node <node-name> -o json | \
+  jq '.status.allocatable | with_entries(select(.key | startswith("nvidia.com/"))) | with_entries(select(.value != "0"))'
+# Example output: { "nvidia.com/GA102GL_A10": "1" }
+
+# Discover the PCI device ID
+lspci -nnk -d 10de:
+# Example: 65:00.0 3D controller [0302]: NVIDIA Corporation GA102GL [A10] [10de:2236]
+```
+
+```yaml
+# kubectl patch hyperconverged kubevirt-hyperconverged -n openshift-cnv --type merge --patch:
+spec:
+  featureGates:
+    disableMDevConfiguration: true
+  permittedHostDevices:
+    pciHostDevices:
+    - pciDeviceSelector: "10DE:2236"       # replace with your GPU's PCI ID
+      resourceName: nvidia.com/GA102GL_A10  # replace with your resource name
+      externalResourceProvider: true        # device is managed by sandbox-device-plugin
+```
+
+**vGPU:**
+
+```bash
+# Discover vGPU resource names (after GPU Operator has created the devices)
+oc get node <node-name> -o json | \
+  jq '.status.allocatable | with_entries(select(.key | startswith("nvidia.com/"))) | with_entries(select(.value != "0"))'
+# Example output: { "nvidia.com/NVIDIA_A10-12Q": "4" }
+```
+
+```yaml
+spec:
+  featureGates:
+    disableMDevConfiguration: true
+  permittedHostDevices:
+    mediatedDevices:
+    - mdevNameSelector: "NVIDIA A10-12Q"          # replace with your vGPU type
+      resourceName: nvidia.com/NVIDIA_A10-12Q     # replace with your resource name
+      externalResourceProvider: true
+```
+
+#### Assigning GPUs to a VirtualMachine {#assigning-gpus-to-a-virtualmachine}
+
+Once permitted in HyperConverged, GPU devices can be assigned in the `VirtualMachine` or `VirtualMachineInstance` spec:
+
+```yaml
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+spec:
+  template:
+    spec:
+      domain:
+        devices:
+          gpus:
+          - name: gpu1
+            deviceName: nvidia.com/GA102GL_A10    # passthrough
+          # or for vGPU:
+          # - name: gpu1
+          #   deviceName: nvidia.com/NVIDIA_A10-12Q
+```
+
+#### vGPU profile selection {#vgpu-profile-selection}
+
+The **vGPU Device Manager** controls which vGPU profile (size and type) is created on each node. It reads a ConfigMap and applies it based on a per-node label.
+
+**Default behavior:** If the node has no `nvidia.com/vgpu.config` label, the default configuration creates Q-series vGPU devices with half the physical GPU memory. On an A10 (24 GB), the default produces two **A10-12Q** devices per GPU.
+
+**Override per node:**
+
+```bash
+# Create A10-4Q devices instead (6 per A10 GPU)
+oc label node <node-name> --overwrite nvidia.com/vgpu.config=A10-4Q
+```
+
+After the vGPU Device Manager applies the new configuration, the Sandbox Device Plugin and Sandbox Validator pods restart. Verify with:
+
+```bash
+oc get node <node-name> -o json | \
+  jq '.status.allocatable | with_entries(select(.key | startswith("nvidia.com/"))) | with_entries(select(.value != "0"))'
+```
+
+> **Changing profiles requires VM shutdown.** If any VM is using a vGPU on the node, it must be stopped or live-migrated before changing the `nvidia.com/vgpu.config` label. The vGPU Device Manager will wait for devices to be free before applying the new profile.
+
+**Custom profiles:** Create a ConfigMap with your configuration and set `vgpuDeviceManager.config.name` in ClusterPolicy:
+
+```yaml
+# ConfigMap format
+version: v1
+vgpu-configs:
+  custom-A10-config:
+    - devices: all
+      vgpu-devices:
+        "A10-4Q": 3
+        "A10-6Q": 2
+```
+
+```bash
+oc create configmap custom-vgpu-config -n gpu-operator --from-file=config.yaml=/path/to/file
+```
+
+On GPUs that support MIG, you can also select MIG-backed vGPU profiles — label the node with the MIG-backed profile name (e.g., `nvidia.com/vgpu.config=A100-4-40C`).
 
 ---
 
@@ -410,22 +628,38 @@ The driver kernel modules must be unloaded and reloaded when the driver pod rest
 3. Check dmesg for kernel module load errors
 4. Ensure no other GPU driver (e.g., `nouveau`) is loaded and blocking
 
-### VM GPU passthrough not working
+### VM GPU passthrough or vGPU not working
 
-If VMs can't see the GPU after vGPU configuration:
+**GPU Operator approach — check operator pods first:**
 
-1. Verify the vGPU host driver is installed on all hypervisors
-2. Check that the licensing service is reachable
-3. Verify the custom vGPU driver container image is in your private registry
-4. Confirm SR-IOV is enabled on the NICs and IOMMU is active
-5. Check the VM's virt-launcher pod for GPU device injection errors
+```bash
+# Verify workload-specific pods are running on the node
+oc get pods -n gpu-operator -o wide | grep <node-name>
+# vm-passthrough nodes should show: nvidia-vfio-manager, nvidia-sandbox-device-plugin, nvidia-sandbox-validator
+# vm-vgpu nodes should show: nvidia-vgpu-manager-daemonset, nvidia-vgpu-device-manager, nvidia-sandbox-device-plugin
+```
+
+**Common causes:**
+
+1. **Wrong node label** — confirm `nvidia.com/gpu.workload.config` is set to `vm-passthrough` or `vm-vgpu` (not `container`, not absent)
+2. **IOMMU not active** — reboot happened but IOMMU not confirmed: check `dmesg | grep -i iommu` on the node
+3. **`sandboxWorkloads.enabled` not set** — the GPU Operator won't deploy VM-specific operands without it
+4. **HyperConverged CR not updated** — devices must be listed in `permittedHostDevices` before the kubevirt scheduler will offer them to VMs
+5. **`disableMDevConfiguration` not patched** — for OCP Virt 4.12.3+, this feature gate must be enabled or OCP Virt and the GPU Operator conflict on mdev configuration
+6. **SR-IOV not enabled in BIOS** — required for vGPU on Ampere and later architectures; check BIOS settings, not just kernel modules
+7. **vGPU Manager image missing or wrong version** — check the vGPU Manager DaemonSet pod logs: `oc logs -n gpu-operator -l app=nvidia-vgpu-manager-daemonset`
+8. **Licensing service unreachable** — vGPU requires an active NVIDIA license; check connectivity to your CLS or DLS endpoint from the node
+9. **VirtualMachine spec uses wrong `deviceName`** — must match the exact resource name from `oc get node -o json | jq '.status.allocatable'`
+10. **Profile change with running VMs** — changing `nvidia.com/vgpu.config` while VMs are running leaves vGPU Device Manager blocked; stop/migrate VMs first
 
 ---
 
 ## References
 
 - [NVIDIA GPU Driver Upgrades](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-driver-upgrades.html) — Full upgrade state machine, all configuration options, metrics, and troubleshooting
-- [NVIDIA GPU Operator vGPU](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/openshift/nvaie-with-ocp.html) — vGPU installation for VMs
+- [NVIDIA GPU Operator with OpenShift Virtualization](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/openshift-virtualization.html) — GPU Operator approach for vGPU and passthrough: node workload types, HyperConverged CR configuration, vGPU profile management
+- [Red Hat OCP 4.18 Virtualization — Configuring virtual GPUs](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html-single/virtualization/index#virt-configuring-virtual-gpus) — OCP Virt native approach (alternative to GPU Operator approach)
+- [NVIDIA GPU Operator vGPU / NVAIE](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/openshift/nvaie-with-ocp.html) — vGPU installation for VMs with NVIDIA AI Enterprise
 - [NVIDIA GPU Operator ClusterPolicy](../../devops/ocp/gpu/clusterpolicy-baremetal.yaml) — Full ClusterPolicy CRD template
 - [NVIDIA GPU Operator values.yaml](../../devops/ocp/gpu/nvidia-gpu-operator-values.yaml) — Complete Helm values reference
 - [NFD Node Feature Rules](../../devops/ocp/gpu/nodefeaturerules-baremetal.yaml) — GPU detection rules for NFD
