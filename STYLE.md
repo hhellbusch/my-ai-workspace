@@ -26,6 +26,7 @@ All essays, case studies, and guides in `docs/` follow this structure:
 - **Front matter:** Blockquote with bold **Audience:** and **Purpose:** lines
 - **Section breaks:** Horizontal rules `---` between major thematic blocks
 - **Hierarchy:** `##` for main sections, `###` for subtopics
+- **Table of contents:** Guides longer than ~500 lines may include an `## On this page` section immediately after the front-matter separator. Essays and short guides do not need one.
 - **AI Disclosure footer:** Every new file in `docs/` (excluding READMEs) includes the standard footer:
   *This document was created with AI assistance (Cursor) and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
   Adjust relative path based on file depth. If the author has reviewed: update to "has been reviewed by the author."

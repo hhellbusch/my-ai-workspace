@@ -16,6 +16,12 @@ Full vLLM install (NVIDIA CUDA + AMD ROCm), serve commands, Docker/Podman contai
 
 ---
 
+## Troubleshooting
+
+- **[LiteMaaS / LiteLLM — Streaming Limitations with Thinking Models](litemaas-streaming-limitations.md)** — Qwen3 reasoning content is stripped from streaming responses by LiteLLM; the model reasons but Pi never sees the chain. Documents the workaround, the upstream fix path, and why reasoning visibility matters for diagnosing behavioral failures.
+
+---
+
 ## Related
 
 - [What a Context Window Actually Is](../../docs/ai-engineering/what-a-context-window-actually-is.md) — why the model's self-reported context window and the actual runtime allocation are usually different numbers

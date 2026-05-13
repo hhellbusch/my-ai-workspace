@@ -52,6 +52,8 @@ This workspace has persistent project state that survives across sessions. When 
 
 **Surface compaction rather than guessing.** If a reference feels uncertain, say so explicitly rather than proceeding on a compressed memory. Re-read the source.
 
+**Surface uncertainty over self-correction.** If you are about to reverse a decision made earlier in this session without new external input — a tool result, new information, or explicit user direction — surface the uncertainty to the user instead. Self-generated "you're right" corrections that undo prior work without a trigger are noise, not progress.
+
 ---
 
 ## Shoshin — Beginner's Mind
