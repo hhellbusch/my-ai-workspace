@@ -106,7 +106,7 @@ Each AI tool has a way to inject standing context into every conversation automa
 |---|---|---|
 | **GitHub Copilot (VS Code)** | `.github/copilot-instructions.md` | Loaded for every chat session in that workspace |
 | **Cursor** | `.cursorrules` | Loaded automatically from workspace root |
-| **Claude Code** | `AGENTS.md` | Loaded at session start |
+| **Claude Code** | `CLAUDE.md` | Loaded at session start |
 
 Names, default paths, and what loads automatically **change by product and version** — confirm behavior in your vendor’s documentation before relying on a path.
 
@@ -352,9 +352,9 @@ The Day 2 concerns in that article — rate limiting, auth governance, observabi
 
 | Resource | Where |
 |---|---|
-| The Shift — engineering skills in the age of AI | `docs/ai-engineering/the-shift.md` |
-| Using AI outside your expertise — case study | `docs/ai-engineering/ai-for-unfamiliar-domains.md` |
-| AI-assisted upstream contributions — responsible open source workflow | `docs/ai-engineering/ai-assisted-upstream-contributions.md` |
+| The Shift — engineering skills in the age of AI | `the-shift.md` |
+| Using AI outside your expertise — case study | `ai-for-unfamiliar-domains.md` |
+| AI-assisted upstream contributions — responsible open source workflow | `ai-assisted-upstream-contributions.md` |
 | Enterprise LLM deployment on OpenShift AI | [jaredburck.me](https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/) |
 | Ansible playbook examples | `devops/ansible/examples/` |
 | Argo CD / GitOps patterns | `devops/argo/examples/` |
@@ -362,20 +362,20 @@ The Day 2 concerns in that article — rate limiting, auth governance, observabi
 | AAP 2.5 token 404 root cause write-up | `devops/ansible/troubleshooting/aap-controller-token-404/` |
 | External project clones for upstream contribution | `git-projects/` |
 | Cursor commands | `.agents/skills/` |
-| Cursor skills | `.cursor/skills/` |
-| The Meta-Development Loop — building tools that build your workflow | [docs/ai-engineering/the-meta-development-loop.md](the-meta-development-loop.md) |
-| Zanshin — the session framework behind the multi-session patterns in this guide | [docs/ai-engineering/session-framework.md](session-framework.md) |
-| Zanshin bootstrap — load the framework into Copilot, Claude Code, or any AI tool | [docs/ai-engineering/framework-bootstrap.md](framework-bootstrap.md) |
-| From Conversation to Essay in One Session — case study | [docs/case-studies/conversation-to-essay.md](../case-studies/conversation-to-essay.md) |
-| Adversarial Review as a Meta-Development Pattern — case study | [docs/case-studies/adversarial-review-meta-development.md](../case-studies/adversarial-review-meta-development.md) |
-| Debugging Your AI Assistant's Judgment — case study | [docs/case-studies/debugging-ai-judgment.md](../case-studies/debugging-ai-judgment.md) |
-| How AI Handles Evolving Creative Scope — case study | [docs/case-studies/evolving-creative-scope.md](../case-studies/evolving-creative-scope.md) |
-| Building Knowledge Management with AI — case study | [docs/case-studies/building-knowledge-management-with-ai.md](../case-studies/building-knowledge-management-with-ai.md) |
-| When AI Fabricates the Evidence — case study | [docs/case-studies/fabricated-references.md](../case-studies/fabricated-references.md) |
-| Who Is Speaking? When AI Writes in Your Voice — case study | [docs/case-studies/who-is-speaking.md](../case-studies/who-is-speaking.md) |
-| When AI Ignores Changes Made by Other Sessions — case study | [docs/case-studies/stale-context-in-long-sessions.md](../case-studies/stale-context-in-long-sessions.md) |
-| When the Safety Net Is Too Heavy to Use — case study | [docs/case-studies/heavy-safety-nets.md](../case-studies/heavy-safety-nets.md) |
-| When the Source Says the Opposite of the Claim — case study | [docs/case-studies/context-stripped-citations.md](../case-studies/context-stripped-citations.md) |
+| Cursor skills | `.cursor/agents/` (agent definitions) |
+| The Meta-Development Loop — building tools that build your workflow | `the-meta-development-loop.md` |
+| Zanshin — the session framework behind the multi-session patterns in this guide | `session-framework.md` |
+| Zanshin bootstrap — load the framework into Copilot, Claude Code, or any AI tool | `framework-bootstrap.md` |
+| From Conversation to Essay in One Session — case study | `../case-studies/conversation-to-essay.md` |
+| Adversarial Review as a Meta-Development Pattern — case study | `../case-studies/adversarial-review-meta-development.md` |
+| Debugging Your AI Assistant's Judgment — case study | `../case-studies/debugging-ai-judgment.md` |
+| How AI Handles Evolving Creative Scope — case study | `../case-studies/evolving-creative-scope.md` |
+| Building Knowledge Management with AI — case study | `../case-studies/building-knowledge-management-with-ai.md` |
+| When AI Fabricates the Evidence — case study | `../case-studies/fabricated-references.md` |
+| Who Is Speaking? When AI Writes in Your Voice — case study | `../case-studies/who-is-speaking.md` |
+| When AI Ignores Changes Made by Other Sessions — case study | `../case-studies/stale-context-in-long-sessions.md` |
+| When the Safety Net Is Too Heavy to Use — case study | `../case-studies/heavy-safety-nets.md` |
+| When the Source Says the Opposite of the Claim — case study | `../case-studies/context-stripped-citations.md` |
 
 ---
 

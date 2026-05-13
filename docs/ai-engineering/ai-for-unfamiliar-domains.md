@@ -184,7 +184,7 @@ This is **quality assurance thinking** in practice: defining acceptance criteria
 | The Shift — engineering skills in the age of AI | `docs/ai-engineering/the-shift.md` |
 | The recolor script | [`examples/gif-recoloring/recolor-gif.py`](../../examples/gif-recoloring/recolor-gif.py) |
 | AI-Assisted Development Workflows (general guide) | `docs/ai-engineering/ai-assisted-development-workflows.md` |
-| Cursor skills and commands | `.cursor/skills/`, `.agents/skills/` |
+| Skills | `.agents/skills/` |
 
 ---
 

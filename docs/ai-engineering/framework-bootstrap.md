@@ -84,7 +84,7 @@ For a more comprehensive portable option, see `submodules/zanshin-pi-extension/k
 
 **Claude Code:** The repo no longer carries a vendor-specific config file (`.claude/` and `CLAUDE.md` were removed as part of the vendor-agnostic migration). Behavioral rules live in AGENTS.md at the repo root, and slash commands are skills in `.agents/skills/<name>/SKILL.md` ([AgentSkills](https://agentskills.io/specification)); Claude Code discovers them natively.
 
-**Cursor:** Rules in `.cursor/rules/` load automatically. The same `.agents/skills/<name>/SKILL.md` definitions are discovered natively as Agent Skills. `.cursorrules` carries the workspace identity and collaboration style. No setup required.
+**Cursor:** The same `.agents/skills/<name>/SKILL.md` definitions are discovered natively as Agent Skills. `.cursorrules` carries the workspace identity and collaboration style. The workspace's `rules/` directory holds lightweight procedural reference files that can be referenced as needed.
 
 **Any chat-based AI:** Paste the contents of this file as a system message or opening context.
 
@@ -109,11 +109,11 @@ If loading the full file is too large for your context budget, load these in pri
 |---|---|
 | `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` | Portable working discipline — the full behavioral kit (submodule + Pi package) |
 | `submodules/zanshin-pi-extension/kit/STYLE.md` | Style guide defaults (voice, structure, ADRs, technical resources) — alongside WORKING-STYLE.md |
-| | Removed — vendor comparison doc deleted as part of vendor-agnostic migration |
-| `docs/ai-engineering/session-framework.md` | Full Zanshin behavioral map — what each behavior defends against and how they fit together |
-| `docs/ai-engineering/the-shift.md` | Why the bottleneck in AI-assisted work has moved from implementation to verification |
-| `docs/ai-engineering/sparring-and-shoshin.md` | Adversarial pressure and framing verification in depth |
-| `docs/case-studies/` | 30+ documented instances of failure modes caught and patterns validated |
+| 
+| `session-framework.md` | Full Zanshin behavioral map — what each behavior defends against and how they fit together |
+| `the-shift.md` | Why the bottleneck in AI-assisted work has moved from implementation to verification |
+| `sparring-and-shoshin.md` | Adversarial pressure and framing verification in depth |
+| `case-studies/` | 30+ documented instances of failure modes caught and patterns validated |
 | `research/framework-efficacy/` | Systematic measurement of whether Zanshin produces better outcomes than baseline AI use |
 
 ---
