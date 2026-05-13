@@ -79,31 +79,4 @@ For most use cases, `repo` is sufficient.
 
 ---
 
-## Troubleshooting
-
-### GitHub API returns 401
-
-```
-{"message":"Bad credentials","documentation_url":"https://docs.github.com/rest"}
-```
-
-This is likely a proxy-level authentication boundary, not an issue with the PAT itself. The token works for git protocol operations. If API access is needed, check:
-1. Whether the proxy forwards the `Authorization` header for `/api/github.com/*` paths
-2. Whether a separate API-scoped PAT is needed (some proxies split git-auth from API-auth)
-
-### TLS handshake failures
-
-Ensure `NODE_EXTRA_CA_CERTS` is set for Node.js-based tools (git, curl, and Python trust the system store automatically).
-
-### Submodules not cloning
-
-```
-$ git submodule update --init --recursive
-fatal: unable to access 'https://github.com/...': ...
-```
-
-This usually means SSH keys aren't configured. Run `ssh -T git@github.com` first to verify SSH access, or confirm the proxy allows git SSH (`git@github.com:22`) through.
-
----
-
 *This document was created with AI assistance and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
