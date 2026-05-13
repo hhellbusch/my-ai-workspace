@@ -23,7 +23,7 @@ What if they did?
 Containerize the agent runtime, containerize the working discipline, and push your accumulated knowledge into the container as the workspace context. One command:
 
 ```bash
-paude create workspace --agent pi --provider vertex --yolo --git
+paude create workspace --agent pi --provider vertex --git
 ```
 
 Now you have an agent in a container with:
@@ -107,6 +107,8 @@ Paude:
 3. Sets up network filtering (allows only the domains the agent needs)
 4. Injects Zanshin practices via the installed extension
 5. Points the agent at the provider (Vertex AI, API key, etc.)
+
+Pi has no built-in permission system — it doesn't ask before running commands. Zanshin's behavioral contract (adversarial review, verification discipline) provides the guardrails, not a yolo flag.
 
 The agent now has access to:
 - The full workspace — essays, case studies, skills, library, troubleshooting guides
