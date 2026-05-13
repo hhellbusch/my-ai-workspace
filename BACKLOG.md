@@ -562,3 +562,21 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** https://github.com/bbrowning/paude, `.planning/paude-integration/`, `.cursor/skills/create-subagents/references/orchestration-patterns.md`
 - **Blocked on:** Paude evaluation Phase 5 assessment
 - **Added:** 2026-04-17
+
+### Skill: Pi extension development workflow
+- **Product:** meta / tooling
+- **Context:** Pi extension development has a critical gap between the workspace (where code lives and changes) and the installed runtime (what Pi actually executes). The pattern that bites: commit changes in the workspace submodule → test in Pi → the footer/session-stats code is "right there" → but Pi loads from `~/.pi/agent/git/github.com/hhellbusch/<name>/`, a separate clone that may be behind. This is not just an openai-compat problem; any extension developer will hit it. Need a documented workflow and preferably a tool that detects staleness automatically.
+- **Key facts (learned 2026-05-13):**
+  - Pi discovers extensions from installed packages via `PackageManager.resolve()` (clones to `~/.pi/agent/git/`)
+  - Workspace submodules are **never** loaded by Pi — they're dev workspace only
+  - An extension loads from its installed clone, not from wherever the latest code sits
+  - If the installed clone is behind HEAD, all extension changes are invisible to Pi
+  - Fix: `pi update <name>` or `pi update source` pulls latest into the git cache
+- **Ideal solution:** A Pi skill or command that checks `git log` of the workspace submodule against the installed clone and flags staleness on session start. Or better: a `pi install` variant that symlinks to the workspace instead of cloning fresh (useful for development). Alternatively, `pi install --local path` could link an existing directory instead of cloning.
+- **Quick manual check for now:**
+  ```bash
+  git -C ~/.pi/agent/git/github.com/hhellbusch/<name> log --oneline -3
+  git -C submodules/<name> log --oneline -3
+  ```
+- **Links:** `docs/pi-resource-wiring.md`, `.agents/skills/review/SKILL.md`
+- **Added:** 2026-05-13

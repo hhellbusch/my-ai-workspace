@@ -84,3 +84,11 @@ Controlled by `getQuietStartup()`. If quiet mode is on, sections are suppressed 
 1. **`! ls .agents/skills/`** — confirm skill directories are present with `SKILL.md` inside
 2. **No `.pi/settings.json`** should exist — if it does, check for `skills: [...]` override entries that might be disabling resources
 3. **Quiet startup** — if pi was started with quiet mode, no sections show; check `~/.pi/agent/settings.json` for `"quietStartup": true`
+4. **Extension not loading?** — Pi discovers from installed packages (git clone → `PackageManager.resolve()`), **not** from workspace submodules. The installed clone lives at `~/.pi/agent/git/github.com/hhellbusch/<name>/`. If you're developing in a workspace submodule, check whether the installed clone is stale:
+   ```bash
+   git -C ~/.pi/agent/git/github.com/hhellbusch/<name> log --oneline -3
+   # vs
+   git -C submodules/<name> log --oneline -3
+   ```
+   If the installed clone is behind, update it: `pi update <name>` (or `pi update source` for the global source).
+5. **`ls` shows directory but `stat`/`read`/`cat` fail** — likely a git submodule that's not checked out (empty commit). Run `git submodule update --init <name>` in the workspace or `git submodule status` to check. The paude container's auto-init can fail silently if the container image predates the init hook.
