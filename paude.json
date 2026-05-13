@@ -1,0 +1,7 @@
+{
+  "setup": "pip install requests beautifulsoup4 markdownify pdfplumber youtube-transcript-api",
+  "create": {
+    "allowed-domains": ["default", "research", "youtube"],
+    "agent": "pi"
+  }
+}

@@ -68,6 +68,12 @@ Reference for how pi discovers and displays resources in this workspace — skil
 
 - **`README.md`** — Directory layout, discovery rules, installed packages, startup display behavior, troubleshooting checklist
 
+### [Paude](paude/)
+
+Container tooling layering model for paude workspaces — where tools belong, how workspace config works, and this workspace's specific setup.
+
+- **`README.md`** — Three-layer model (base image / workspace / runtime), decision guide, `paude.json` reference, domain aliases, mid-session domain unblocking
+
 ### [Paude Proxy](paude-proxy/)
 
 Reverse proxy configuration, CA certificate management, and PAT (Personal Access Token) documentation for the workspace environment.
