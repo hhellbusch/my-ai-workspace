@@ -1,0 +1,14 @@
+Source: deployments/gpu-operator/templates/mig_config.yaml
+Date: 2026-05-13
+============================================================
+
+{{- if and (.Values.migManager.config.create) (not (empty .Values.migManager.config.data)) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.migManager.config.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gpu-operator.labels" . | nindent 4 }}
+data: {{ toYaml .Values.migManager.config.data | nindent 2 }}
+{{- end }}

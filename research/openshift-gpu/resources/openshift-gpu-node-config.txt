@@ -1,0 +1,304 @@
+Source: https://docs.openshift.com/container-platform/latest/scalability_and_resource/gpu-node-configuration.html
+Date: 2026-05-13
+============================================================
+
+Home
+Products
+OpenShift Container Platform
+4.18
+OpenShift Container Platform 4.18
+Discover
+About
+What's New
+Disconnected Environments
+Install
+Update and migrate
+Configure
+Networking
+Support
+Develop
+Security
+Virtualization
+AI
+Edge Computing
+Extend
+CI/CD
+Observability
+Integration
+API Reference
+Left Navigation
+Version
+4.21
+4.20
+4.19
+4.18
+4.17
+4.16
+4.15
+4.14
+4.13
+4.12
+4.11
+4.10
+4.9
+4.8
+4.7
+4.6
+4.5
+4.4
+4.3
+4.2
+4.1
+3.11
+3.10
+3.9
+3.7
+3.6
+3.5
+3.4
+3.3
+3.2
+3.1
+3.0
+2
+Jump to category
+Discover
+About
+What's New
+Disconnected Environments
+Install
+Update and migrate
+Configure
+Networking
+Support
+Develop
+Security
+Virtualization
+AI
+Edge Computing
+Extend
+CI/CD
+Observability
+Integration
+API Reference
+Discover
+About
+Introduction to OpenShift Container Platform
+Architecture
+An overview of the architecture for OpenShift Container Platform
+OpenShift essentials
+Access the tools and guidance you need to get the most out of Red Hat® OpenShift®. Resources are organized by environment and role.
+About
+Getting started
+Getting started in OpenShift Container Platform
+What's New
+Release notes
+Highlights of what is new and what has changed with this OpenShift Container Platform release
+Disconnected Environments
+Disconnected environments
+Managing OpenShift Container Platform clusters in a disconnected environment
+Install
+Installation overview
+Overview content for installing OpenShift Container Platform
+Installing on Alibaba Cloud
+Installing OpenShift Container Platform on Alibaba Cloud
+Installing on AWS
+Installing OpenShift Container Platform on Amazon Web Services
+Installing on Azure
+Installing OpenShift Container Platform on Azure
+Installing on Azure Stack Hub
+Installing OpenShift Container Platform on Azure Stack Hub
+Installing on Google Cloud
+Installing OpenShift Container Platform on Google Cloud
+Installing on IBM Cloud
+Installing OpenShift Container Platform on IBM Cloud Bare Metal (Classic)
+Installing on Nutanix
+Installing OpenShift Container Platform on Nutanix
+Installing on-premise with Assisted Installer
+Installing OpenShift Container Platform on-premise with the Assisted Installer
+Installing an on-premise cluster with the Agent-based Installer
+Installing an on-premise OpenShift Container Platform cluster with the Agent-based Installer
+Installing on a single node
+Installing OpenShift Container Platform on a single node
+Installing on bare metal
+Installing OpenShift Container Platform on bare metal
+Installing IBM Cloud Bare Metal (Classic)
+Installing OpenShift Container Platform on IBM Cloud Bare Metal (Classic)
+Installing on IBM Z and IBM LinuxONE
+Installing OpenShift Container Platform on IBM Z and IBM LinuxONE
+Installing on IBM Power
+Installing OpenShift Container Platform on IBM Power
+Installing on IBM Power Virtual Server
+Installing OpenShift Container Platform on IBM Power Virtual Server
+Installing on OpenStack
+Installing OpenShift Container Platform on OpenStack
+Installing on OCI
+Installing OpenShift Container Platform on Oracle Cloud Infrastructure
+Installing on VMware vSphere
+Installing OpenShift Container Platform on vSphere
+Installing on any platform
+Installing OpenShift Container Platform on any platform
+Installation configuration
+Cluster-wide configuration during installations
+Validation and troubleshooting
+Validating and troubleshooting an OpenShift Container Platform installation
+Update and migrate
+Updating clusters
+Updating OpenShift Container Platform clusters
+Migrating from version 3 to 4
+Migrating to OpenShift Container Platform 4
+Migration Toolkit for Containers
+Migrating to OpenShift Container Platform 4
+Configure
+Postinstallation configuration
+Day 2 operations for OpenShift Container Platform
+Backup and restore
+Backing up and restoring your OpenShift Container Platform cluster
+Hosted control planes
+Using hosted control planes with OpenShift Container Platform
+Storage
+Configuring and managing storage in OpenShift Container Platform
+Nodes
+Configuring and managing nodes in OpenShift Container Platform
+Machine management
+Adding and maintaining cluster machines
+Machine configuration
+Managing and applying configuration and updates of the base operating system and container runtimes in OpenShift Container Platform
+CLI tools
+Learning how to use the command-line tools for OpenShift Container Platform
+Web console
+Getting started with the web console in OpenShift Container Platform
+Specialized hardware and driver enablement
+Learn about hardware enablement on OpenShift Container Platform
+Scalability and performance
+Scaling your OpenShift Container Platform cluster and tuning performance in production environments
+Networking
+Networking overview
+Understanding fundamental networking concepts and general tasks in OpenShift Container Platform
+Networking Operators
+Managing networking-specific Operators in OpenShift Container Platform
+Network security
+Securing network traffic and enforcing network policies in OpenShift Container Platform
+Multiple networks
+Configuring and managing multiple network interfaces and virtual routing in OpenShift Container Platform
+Hardware networks
+Configuring hardware-specific networking features in OpenShift Container Platform
+OVN-Kubernetes network plugin
+In-depth configuration and troubleshooting for the OVN-Kubernetes network plugin in OpenShift Container Platform
+Ingress and load balancing
+Exposing services and managing external traffic in OpenShift Container Platform
+Configuring network settings
+General networking configuration processes in OpenShift Container Platform
+Advanced networking
+Installing and configuring OpenShift Container Platform clusters
+Kubernetes NMState
+Observing and updating node network state and configuration using Kubernetes NMState in OpenShift Container Platform
+Support
+Getting support for OpenShift Container Platform
+Develop
+Building applications
+Creating and managing applications on OpenShift Container Platform
+Registry
+Configuring registries for OpenShift Container Platform
+Images
+Creating and managing images and imagestreams in OpenShift Container Platform
+Serverless
+OpenShift Serverless installation, usage, and release notes
+OpenShift sandboxed containers
+OpenShift sandboxed containers guide
+Security
+Security and compliance
+Learning about and managing security for OpenShift Container Platform
+Authentication and authorization
+Configuring user authentication and access controls for users and services
+Virtualization
+Release Notes
+Highlights of new and changed features in this release
+Introduction to Virtualization
+Learn about using OpenShift Virtualization in OpenShift Container Platform
+AI
+AI workloads
+Running AI workloads on OpenShift Container Platform
+Edge Computing
+Edge computing
+Configure and deploy OpenShift Container Platform clusters at the network edge
+Hardware accelerators
+Extend
+Extensions
+Working with extensions in OpenShift Container Platform using Operator Lifecycle Manager (OLM) v1.
+Operators
+Working with Operators in OpenShift Container Platform
+CI/CD
+CI/CD overview
+Contains information about CI/CD for OpenShift Container Platform
+Builds using Shipwright
+An extensible build framework to build container images on an OpenShift cluster
+Builds using BuildConfig
+Builds
+GitOps
+A declarative way to implement continuous deployment for cloud native applications.
+Pipelines
+Contains information about Pipelines for OpenShift Container Platform
+Jenkins
+Observability
+Observability overview
+Contains information about observability for OpenShift Container Platform
+Monitoring
+Configuring and using the monitoring stack in OpenShift Container Platform
+Power Monitoring
+Configuring and using power monitoring for OpenShift Container Platform
+Network Observability
+Configuring and using the Network Observability Operator in OpenShift Container Platform
+Logging
+Configuring and using logging in OpenShift Container Platform
+Cluster Observability Operator
+Configuring and using the Cluster Observability Operator in OpenShift Container Platform
+Red Hat build of OpenTelemetry
+Configuring and using the Red Hat build of OpenTelemetry in OpenShift Container Platform
+Distributed Tracing
+Configuring and using distributed tracing in OpenShift Container Platform
+Integration
+Lightspeed
+About Lightspeed
+Service Mesh
+Service Mesh installation, usage, and release notes
+Windows Container Support for OpenShift
+Red Hat OpenShift for Windows Containers Guide
+API Reference
+API overview
+Overview content for the OpenShift Container Platform API
+Common object reference
+Reference guide common API objects
+Authorization APIs
+Reference guide for authorization APIs
+Autoscale APIs
+Reference guide for autoscale APIs
+Cluster APIs
+Reference guide for cluster APIs
+Config APIs
+Reference guide for config APIs
+Console APIs
+Reference guide for console APIs
+Extension APIs
+Reference guide for extension APIs
+Image APIs
+Reference guide for image APIs
+Machine APIs
+Reference guide for machine APIs
+Metadata APIs
+Reference guide for metadata APIs
+Monitoring APIs
+Reference guide for monitoring APIs
+Network APIs
+Reference guide for network APIs
+Node APIs
+Reference guide for node APIs
+OAuth APIs
+Reference guide for Oauth APIs
+Operator APIs
+Reference guide for Operator APIs
+OperatorHub APIs
+Reference guide for OperatorHub APIs
+Policy APIs
+Reference guide for policy APIs
+Project APIs

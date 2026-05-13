@@ -1,0 +1,104 @@
+Source: https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html
+Date: 2026-05-13
+============================================================
+
+About the NVIDIA GPU Operator #
+[img: ]
+Kubernetes provides access to special hardware resources such as NVIDIA GPUs, NICs, Infiniband adapters and other devices
+through the  device plugin framework
+.
+However, configuring and managing nodes with these hardware resources requires
+configuration of multiple software components such as drivers, container runtimes or other libraries which are difficult
+and prone to errors. The NVIDIA GPU Operator uses the  operator framework
+within Kubernetes to automate the management of all NVIDIA software components needed to provision GPU. These components include the NVIDIA drivers (to enable CUDA),
+Kubernetes device plugin for GPUs, the  NVIDIA Container Toolkit
+,
+automatic node labeling using  GFD
+,  DCGM
+based monitoring and others.
+About This Documentation #
+Browse through the following documents for getting started, platform support and release notes for the NVIDIA GPU Operator.
+Red Hat OpenShift Container Platform
+Refer to
+NVIDIA GPU Operator on Red Hat OpenShift Container Platform
+for information about installing, managing, and upgrading the Operator on Red Hat OpenShift Container Platform.
+Getting Started #
+The
+Installing the NVIDIA GPU Operator
+guide includes information on installing the GPU Operator in a Kubernetes cluster.
+Release Notes #
+Refer to
+Release Notes
+for information about releases.
+Platform Support #
+The
+Platform Support
+describes the supported platform configurations.
+Licenses and Contributing #
+The NVIDIA GPU Operator source code is licensed under  Apache 2.0
+and
+contributions are accepted with a DCO. Refer to the  contributing
+document for
+more information on how to contribute and the release artifacts.
+The base images used by the software might include software that is licensed under open-source licenses such as GPL.
+The source code for these components is archived on the CUDA opensource  index
+.
+The following table identifieis the licenses for the Operator and software components.
+By installing and using the GPU Operator, you accept the terms and conditions of these licenses.
+Component
+Artifact Type
+Artifact Licenses
+NVIDIA GPU Operator
+Helm Chart
+Apache 2.0
+NVIDIA GPU Operator
+Image
+Product-Specific Terms for NVIDIA AI Products
+NVIDIA GPU Feature Discovery
+Image
+Product-Specific Terms for NVIDIA AI Products
+NVIDIA GPU Driver
+Image
+License for Customer Use of NVIDIA Software
+Product-Specific Terms for NVIDIA AI Products
+NVIDIA Container Toolkit
+Image
+Product-Specific Terms for NVIDIA AI Products
+NVIDIA Kubernetes Device Plugin
+Image
+Product-Specific Terms for NVIDIA AI Products
+NVIDIA MIG Manager for Kubernetes
+Image
+Product-Specific Terms for NVIDIA AI Products
+Validator for NVIDIA GPU Operator
+Image
+Product-Specific Terms for NVIDIA AI Products
+NVIDIA DCGM
+Image
+Product-Specific Terms for NVIDIA AI Products
+NVIDIA DCGM Exporter
+Image
+Product-Specific Terms for NVIDIA AI Products
+NVIDIA Driver Manager for Kubernetes
+Image
+Product-Specific Terms for NVIDIA AI Products
+NVIDIA KubeVirt GPU Device Plugin
+Image
+Product-Specific Terms for NVIDIA AI Products
+NVIDIA vGPU Device Manager
+Image
+Product-Specific Terms for NVIDIA AI Products
+NVIDIA GDS Driver
+Image
+License for Customer Use of NVIDIA Software
+Product-Specific Terms for NVIDIA AI Products
+NVIDIA Confidential Computing
+Manager for Kubernetes
+Image
+Product-Specific Terms for NVIDIA AI Products
+NVIDIA Kata Manager for Kubernetes
+Image
+Product-Specific Terms for NVIDIA AI Products
+NVIDIA GDRCopy Driver
+Image
+Product-Specific Terms for NVIDIA AI Products

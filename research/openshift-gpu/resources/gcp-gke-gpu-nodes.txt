@@ -1,0 +1,504 @@
+Source: https://cloud.google.com/kubernetes-engine/docs/how-to/gpus
+Date: 2026-05-13
+============================================================
+
+->
+Home
+->
+Documentation
+->
+Application hosting
+->
+Google Kubernetes Engine (GKE)
+->
+GKE AI/ML
+->
+Guides
+Send feedback
+Run GPUs in GKE Standard node pools
+Stay organized with collections
+Save and categorize content based on your preferences.
+->
+Standard
+This page shows you how to run and optimize your compute-intensive workloads,
+such as artificial intelligence (AI) and graphics processing, by attaching and
+using NVIDIA® graphics processing unit (GPU) hardware accelerators in your
+Google Kubernetes Engine (GKE) Standard clusters'  -> nodes
+. If you are using
+Autopilot Pods instead, refer to
+-> Deploy GPU workloads in Autopilot
+.
+If you want to deploy clusters with NVIDIA B200 or NVIDIA H200 141GB GPUs, see
+the following resources instead:
+To create GKE clusters, see
+-> Create an AI-optimized Google Kubernetes Engine cluster with default configuration
+.
+To create Slurm clusters, see the following:
+-> Create a fully managed Slurm cluster
+.
+-> Create a self-managed Slurm cluster
+.
+Overview
+With GKE, you can create  -> node pools
+equipped with  -> GPUs
+. GPUs provide compute power to drive deep-learning tasks such as image
+recognition, natural language processing, as well as other compute-intensive
+tasks such as video transcoding and image processing. In GKE Standard mode, you can
+attach GPU hardware to nodes in your clusters, and then allocate GPU resources to
+containerized workloads running on those nodes.
+To learn more about use cases for GPUs, refer to Google Cloud's
+-> GPUs
+page. For more information about GPUs in GKE and the differences between Standard mode and Autopilot mode, refer to
+-> About GPUs in GKE
+.
+You can also use GPUs with  -> Spot VMs
+if your workloads can tolerate
+frequent node disruptions. Using Spot VMs reduces the price of running
+GPUs. To learn more, refer to  -> Using Spot VMs with GPU node pools
+.
+As of version 1.29.2-gke.1108000, you can now create GPU node pools on
+GKE Sandbox. For more information, see  -> GKE Sandbox
+and  -> GKE Sandbox Configuration
+.
+Before you begin
+Before you start, make sure that you have performed the following tasks:
+Enable
+the Google Kubernetes Engine API.
+->
+Enable Google Kubernetes Engine API
+If you want to use the Google Cloud CLI for this task,
+-> install
+and then
+-> initialize
+the
+gcloud CLI. If you previously installed the gcloud CLI, get the latest
+version by running the
+gcloud components update
+command. Earlier gcloud CLI versions might not support running the commands in this document.
+->
+Note:
+For existing gcloud CLI
+installations, make sure to set the
+compute/region
+-> property
+. If you use primarily zonal clusters,  set the
+compute/zone
+instead. By setting a default location,
+you can avoid errors in the gcloud CLI like the following:
+One of [--zone, --region] must be supplied: Please specify location
+. You might need to specify the location in certain commands if the location of your cluster differs from the default that you set.
+Requirements for GPUs on GKE
+GPUs on GKE have the following requirements:
+GPU quota
+: You must have  -> Compute Engine GPU quota
+in your selected
+zone before you can create GPU nodes. To ensure that you have enough GPU quota
+in your project, refer to  -> Quotas
+in the Google Cloud console.
+If you require additional GPU quota, you must  -> request GPU quota
+in the Google Cloud console. If you have an established billing account, your
+project automatically receives quota after you submit the quota request.
+By default, Free Trial accounts don't receive GPU quota.
+NVIDIA GPU drivers
+: When creating
+a cluster or a node pool, you can tell GKE to automatically
+install a driver version based on your GKE version.
+If you don't tell GKE to automatically install GPU drivers, you
+must
+-> manually install the drivers
+.
+Machine series
+: The GPU type you can use depends on the machine series, as follows:
+-> A4X Max machine series
+: GB300 GPUs.
+-> A4X machine series
+: GB200 GPUs.
+-> A4 machine series
+: B200 GPUs.
+-> A3 machine series
+: H200 GPUs ( -> A3
+Ultra
+), and
+H100 GPUs (A3 Mega, High, Edge).
+-> A2 machine series
+: A100 GPUs.
+-> G4 machine series
+: RTX PRO 6000 GPUs.
+-> G2 machine series
+: L4 GPUs.
+-> N1 machine series
+: NVIDIA T4 GPUs, NVIDIA V100 GPUs, NVIDIA P100 GPUs, or NVIDIA P4 GPUs.
+You should ensure that you have enough quota in your project for the machine
+series that corresponds to your selected GPU type and quantity.
+GKE versions
+: You must use specific GKE
+versions for certain machine series and shapes:
+-> Accelerator-optimized A series
+: See the
+respective cluster creation guides for version requirements.
+G4 machine series
+:
+Machine types that have one or more GPUs
+: 1.34.0-gke.1662000 or
+later
+Machine types that have less than one GPU
+( -> Preview
+)
+: Use one of the following
+patch versions or later, based on the GKE minor version:
+1.34
+: 1.34.5-gke.1153000
+1.35 or later
+: 1.35.2-gke.1485000
+GPUs on Ubuntu nodes
+: If you use GPUs with Ubuntu nodes, the following
+requirements apply:
+Ubuntu driver compatibility
+:
+L4 GPUs
+and
+H100 GPUs
+: NVIDIA driver version 535 or later
+H200 GPUs
+: NVIDIA driver version 550 or later
+B200 GPUs
+: NVIDIA driver version 570 or later
+RTX PRO 6000 GPUs
+: NVIDIA driver version 580 or later. This version
+compatibility excludes G4 machine types that have less than one GPU
+( -> Preview
+) because they don't support
+Ubuntu node images.
+If a required driver version or a later version isn't the default version in
+your GKE version, you must  -> manually install
+a supported driver on your nodes.
+Ubuntu version compatibility
+:
+When you use A4 machine series on Ubuntu node pools, you must use a
+GKE version that includes the
+ubuntu-gke-2404-1-32-amd64-v20250730
+image or a later version of the
+node image. The minimum GKE versions are the following:
+1.32.7-gke.1067000 or later for GKE version 1.32
+1.33.3-gke.1247000 or later for GKE version 1.33
+Best practice
+:
+Use Container-Optimized OS for GPU nodes. Container-Optimized OS
+includes the required drivers to support the specific GKE version
+for GPU nodes.
+Limitations of using GPUs on GKE
+Before you use GPUs on GKE, keep in mind the following
+limitations:
+You can't add GPUs to existing node pools.
+GPU nodes can't be  -> live migrated
+during maintenance events.
+Machine series
+: The GPU type you can use depends on the machine series, as follows:
+-> A4X Max machine series
+: GB300 GPUs.
+-> A4X machine series
+: GB200 GPUs.
+-> A4 machine series
+: B200 GPUs.
+-> A3 machine series
+: H200 GPUs ( -> A3
+Ultra
+), and
+H100 GPUs (A3 Mega, High, Edge).
+-> A2 machine series
+: A100 GPUs.
+-> G4 machine series
+: RTX PRO 6000 GPUs.
+-> G2 machine series
+: L4 GPUs.
+-> N1 machine series
+: NVIDIA T4 GPUs, NVIDIA V100 GPUs, NVIDIA P100 GPUs, or NVIDIA P4 GPUs.
+You should ensure that you have enough quota in your project for the machine
+series that corresponds to your selected GPU type and quantity.
+GPUs are not supported in Windows Server node pools.
+GKE Standard clusters running versions earlier than
+1.34.1-gke.1279000 don't support  -> node
+auto-provisioning
+creating node pools with RTX PRO 6000 GPUs. However, clusters running
+earlier versions support  -> cluster
+autoscaler
+scaling
+existing node pools.
+GKE Standard clusters running version
+1.28.2-gke.1098000 or earlier don't support  -> node
+auto-provisioning
+creating node pools with L4 GPUs. However, clusters running earlier versions
+support  -> cluster
+autoscaler
+scaling
+existing node pools.
+G4 machine types that have less than one GPU
+( -> Preview
+) have the following additional
+limitations:
+You can't use  -> Autopilot
+mode
+.
+You can't use  -> Ubuntu node
+images
+.
+You must  -> prepare your workloads
+to run on these machine types.
+You can't use  -> multi-instance
+GPUs
+,  -> NVIDIA
+MPS
+, or  -> GPU
+time-sharing
+.
+Availability of GPUs by regions and zones
+GPUs are available in specific  -> regions and zones
+. When you  -> request
+GPU quota
+, consider the regions in which you intend to run your
+clusters.
+For a complete list of applicable regions and zones, refer to
+-> GPUs on Compute Engine
+.
+You can also see GPUs available in your zone using the Google Cloud CLI. To see a
+list of all GPU accelerator types supported in each zone, run the following
+command:
+gcloud
+compute
+accelerator-types
+list
+Pricing
+For GPU pricing information, refer to the  -> pricing table
+on the Google Cloud GPU page.
+Ensure sufficient GPU quota
+Your GPU quota is the total number of GPUs that can run in your  -> Google Cloud project
+.
+To create clusters with GPUs, your project must have sufficient GPU quota.
+Your GPU quota should be at least equivalent to the total number of GPUs you
+intend to run in your cluster. If you enable  -> cluster autoscaling
+, you
+should request GPU quota at least equivalent to the number of GPUs per node multiplied by your cluster's maximum number of
+nodes.
+For example, if you create a cluster with three nodes that runs two GPUs
+per node, your project requires at least six GPU quota.
+Requesting GPU quota
+To request GPU quota, use the Google Cloud console. For more information about
+requesting quotas, refer to  -> GPU quotas
+in the
+Compute Engine documentation.
+To search for GPU quota and submit a quota request, use the Google Cloud console:
+Go to the IAM & Admin
+Quotas
+page in the Google Cloud console.
+-> Go to Quotas
+In the
+Filter
+box, do the following:
+Select the
+Quota
+property, enter the name of the  -> GPU model
+, and press
+Enter
+.
+(Optional) To apply more advanced filters to narrow the results, select
+the
+Dimensions (for example, locations)
+property, add the name of the
+-> region or zone you are using
+, and
+press
+Enter
+.
+From the list of GPU quotas, select the quota you want to change.
+Click
+Edit Quotas
+. A request form opens.
+Fill the
+New quota limit
+field for each quota request.
+Fill the
+Request description
+field with details about your request.
+Click
+Next
+.
+In the
+Override confirmation
+dialog, click
+Confirm
+.
+In the
+Contact details
+screen, enter your name and a phone number that the approvers might use to complete your quota change request.
+Click
+Submit request
+.
+You receive a confirmation email to track the quota change.
+Running GPUs in GKE Standard clusters
+To run GPUs in GKE Standard clusters, create a node
+pool with attached GPUs.
+Best practice
+:
+To improve cost-efficiency, reliability, and availability of GPUs on
+GKE, perform the following actions:
+Create separate GPU node pools. For each node pool, limit the node location to
+the zones where the GPUs you want are available.
+Enable autoscaling in each node pool.
+Use regional clusters to improve availability by replicating the Kubernetes
+control plane across zones in the region.
+Configure GKE to automatically install either the default or latest
+GPU drivers on the node pools so that you don't need to manually install and
+manage your driver versions.
+As described in the following sections, GKE uses node taints and tolerations to
+ensure that Pods are not scheduled onto inappropriate nodes.
+Taint a GPU node pool to avoid scheduling it inappropriately
+A node taint lets you mark a node so that the scheduler avoids or prevents
+using it for certain Pods. Based on the following scenarios, GKE
+automatically adds the
+nvidia.com/gpu=present:NoSchedule
+taint, or you can
+manually add it:
+When you add a GPU node pool to an existing cluster that already runs a
+non-GPU node pool, GKE automatically  -> taints
+the GPU nodes
+with the following node taint:
+Key
+:
+nvidia.com/gpu
+Value
+:
+present
+Effect
+:
+NoSchedule
+GKE only adds this taint if there is at least one non-GPU
+node pool in the cluster.
+When you add a GPU node pool to a cluster that has only GPU node pools, or
+if you create a new cluster where the default node pool has GPUs attached,
+you can  -> manually set taints to the new node
+pool
+with the following values:
+Key
+:
+nvidia.com/gpu
+Value
+:
+present
+Effect
+:
+NoSchedule
+When you add a non-GPU node pool to the cluster in the future,
+GKE does
+not
+retroactively apply this taint to existing
+GPU nodes. You need to  -> manually set taints to the new node
+pool
+.
+Automatically restricting scheduling with a toleration
+Tolerations let you designate Pods that can be used on "tainted" nodes.
+GKE automatically applies a toleration so only Pods
+requesting GPUs are scheduled on GPU nodes. This
+enables more efficient autoscaling as your GPU nodes can quickly scale down if
+there are not enough Pods requesting GPUs. To do this GKE
+runs the
+-> ExtendedResourceToleration
+admission controller.
+Create a GPU node pool
+To create a separate GPU node pool in an existing cluster, you can use the
+Google Cloud console or the Google Cloud CLI. You can also use Terraform for
+provisioning your GKE clusters and GPU node pool.
+GKE supports automatic installation of NVIDIA drivers in the
+following scenarios:
+For GKE clusters with control plane version
+1.32.2-gke.1297000 and later, GKE automatically installs the
+default NVIDIA driver version for all GPU nodes, including those created
+with node auto-provisioning.
+For GKE clusters with control plane version
+1.30.1-gke.1156000 to 1.32.2-gke.1297000, GKE automatically
+installs the default NVIDIA driver version for nodes not created with node
+auto-provisioning.
+You can optionally choose the latest available driver version or explicitly
+disable automatic driver installation. In versions earlier than
+1.30.1-gke.1156000, GKE doesn't install a driver by default
+if you don't specify a driver version when you create or update the node
+pool.
+->
+Caution:
+If you use
+-> automatic node upgrades
+, a
+GKE version upgrade might install a newer GPU driver version on
+the nodes. If your workloads require a specific NVIDIA driver version, you might
+experience disruptions due to incompatibilities. Test new GKE
+versions for compatibility in a staging environment before automatic upgrades
+change the version on your production GPU nodes, or disable automatic upgrades
+in those node pools.
+gcloud
+To create a node pool with GPUs in a cluster, run the following command:
+gcloud
+container
+node-pools
+create
+POOL_NAME
+\
+--accelerator
+type
+=
+GPU_TYPE
+,count
+=
+AMOUNT
+,gpu-driver-version
+=
+DRIVER_VERSION
+\
+--machine-type
+MACHINE_TYPE
+\
+--cluster
+CLUSTER_NAME
+\
+--location
+CONTROL_PLANE_LOCATION
+\
+--node-locations
+COMPUTE_ZONE1
+[
+,
+COMPUTE_ZONE2
+]
+\
+[
+--sandbox
+=
+type
+=
+gvisor
+]
+[
+--enable-autoscaling
+\
+--min-nodes
+MIN_NODES
+\
+--max-nodes
+MAX_NODES
+]
+\
+[
+--scopes
+=
+SCOPES
+]
+\
+[
+--service-account
+=
+SERVICE_ACCOUNT
+]
+\
+[
+--reservation-affinity
+=
+specific
+--reservation
