@@ -32,7 +32,7 @@ Now you have an agent in a container with:
 - Your accumulated context (the workspace itself — essays, case studies, troubleshooting guides, library entries)
 - Your provider auth (Vertex AI, API keys, whatever backend you use)
 
-Wherever you can run Podman and reach your inference provider, you have the same toolkit. Not a clone of the repo and hope you wired it right. Not a prompt template that works once and degrades. A containerized environment with everything configured, tested, and ready to use on a new problem.
+Wherever you can run Linux containers (Docker, Podman, or OpenShift/Kubernetes) and reach your inference provider, you have the same toolkit. Not a clone of the repo and hope you wired it right. Not a prompt template that works once and degrades. A containerized environment with everything configured, tested, and ready to use on a new problem.
 
 This is what the architecture below is for.
 
@@ -44,7 +44,7 @@ The toolkit is three layers, each solving a different problem:
 
 ### Layer 1: Runtime (Paude + Pi)
 
-**Paude** is a container orchestrator for AI coding agents. It runs agents in isolated, network-filtered containers with git-based sync. You push your code in, assign a task, disconnect, and pull the output back as a branch when the agent is done.
+**Paude** is a container orchestrator for AI coding agents. It runs agents in isolated, network-filtered containers (Linux containers — Docker, Podman, or OpenShift/Kubernetes) with git-based sync. You push your code in, assign a task, disconnect, and pull the output back as a branch when the agent is done.
 
 **Pi** is a minimal terminal coding agent — no built-in permission system, designed to run in containers. It's the day-to-day agent in this workspace. Paude installs it automatically inside containers; no local Pi installation is needed. Unlike most coding agents locked to one provider, Pi supports multiple LLM backends: Vertex AI (Claude + Gemini), Anthropic API, Google AI, GitHub Copilot. Switch backends with a flag; no config rebuild.
 
