@@ -26,7 +26,15 @@ Key repos:
 - `paude-pi-extension/` — Paude container awareness injected into system prompt
 - `lid-pi-extension/` — linked-intent development workflow
 
- See `rules/submodule-workflow.md` for troubleshooting.
+See `rules/submodule-workflow.md` for troubleshooting.
+
+**After pushing changes to a Pi extension submodule**, pull the update into the Pi package cache so the user can `/reload` to test immediately:
+
+```bash
+git -C ~/.pi/agent/git/github.com/hhellbusch/<repo-name> pull origin main
+```
+
+Which submodules are registered as Pi packages: check `~/.pi/agent/settings.json` → `packages`. The cache lives at `~/.pi/agent/git/github.com/<org>/<name>/`. See `devops/pi/README.md` for the full dev workflow.
 
 ---
 

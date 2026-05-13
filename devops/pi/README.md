@@ -191,6 +191,45 @@ Extensions are auto-discovered from any package that declares `"extensions": [".
 
 ---
 
+## Extension development workflow
+
+Extensions are developed in `submodules/<name>/` but Pi loads them from the package cache at `~/.pi/agent/git/github.com/hhellbusch/<name>/`. These are two different copies. After pushing changes to the submodule, the cache must be updated before `/reload` will pick them up.
+
+**Full workflow:**
+
+```bash
+# 1. Edit extension code in the workspace submodule
+#    submodules/pi-openai-compat/index.ts
+
+# 2. Commit and push the submodule
+cd submodules/pi-openai-compat
+git add index.ts && git commit -m "feat: ..."
+git push origin main
+
+# 3. Bump the submodule pointer in the parent repo
+cd /pvc/workspace
+git add submodules/pi-openai-compat
+git commit -m "deps: bump pi-openai-compat"
+git push
+
+# 4. Pull into the Pi package cache
+git -C ~/.pi/agent/git/github.com/hhellbusch/pi-openai-compat pull origin main
+
+# 5. /reload in Pi — extension is now live
+```
+
+Step 4 is the one that's easy to forget. It's equivalent to what `pi update git:github.com/hhellbusch/pi-openai-compat` does, but without needing `pi` on the PATH inside the container.
+
+To check whether the cache is stale:
+
+```bash
+git -C ~/.pi/agent/git/github.com/hhellbusch/pi-openai-compat log --oneline -1
+git -C /pvc/workspace/submodules/pi-openai-compat log --oneline -1
+# These should match after step 4
+```
+
+---
+
 ## Troubleshooting checklist
 
 1. **`! ls .agents/skills/`** — confirm skill directories are present with `SKILL.md` inside
