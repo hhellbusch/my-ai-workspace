@@ -48,6 +48,26 @@ Documented examples from real sessions: tools built, failure modes caught, workf
 
 ---
 
+## AI Engineering — Portable Session Context
+
+This repo is also a project: building tools and practices that make AI-assisted work portable across sessions and platforms. Three layers:
+
+**Paude** — Containerized runtime that isolates each agent session from the host. Push accumulated context into a session; harvest the output. The container boundary is what makes cross-session persistence possible.
+
+**Pi** — The coding agent. Runs inside Paude, discovers skills and working discipline from the workspace. OpenAI-compatible — swap the model without changing the workflow.
+
+**Zanshin** — The working discipline. Named after the karate concept of "remaining mind" — what carries over after the technique. A `SKILL.md` file (one line in Cursor, one in Claude Code, one in Pi) that defines the behavioral posture: statelessness defense, context compaction discipline, and the friction-to-truth principle.
+
+The skills system (`/spar`, `/shoshin`, `/checkpoint`, `/start`, `/stack`) and the directory structure (`docs/`, `devops/`, `library/`, `.planning/`, `rules/`) are all built to solve three problems:
+
+1. **Cross-session statelessness** — commit decisions to files, use the repo as truth
+2. **Context compaction** — re-read before depending on summaries
+3. **Fluent-but-wrong** — challenge outputs; never let confidence stand for correctness
+
+**For practitioners who want to adopt this:** [Zanshin — Portable Session Context](docs/ai-engineering/framework-bootstrap.md) is the single-file entry point. [The Session Framework](docs/ai-engineering/session-framework.md) has the full behavioral map. [A Portable AI Toolkit](docs/ai-engineering/portable-ai-toolkit.md) explains the three-layer architecture.
+
+---
+
 ## Technical Reference
 
 Practical, runnable examples and troubleshooting guides for infrastructure and platform tooling. *Skip this section if you're here for the essays — it's independent.*
@@ -80,7 +100,7 @@ git submodule update --init --recursive
 
 **Share specific pieces** — individual `docs/` files are the primary sharing unit. Sharing a direct GitHub link to an essay or case study is the intended workflow.
 
-**Use as a template** — the workspace structure (`.agents/skills/`, `rules/`, `AGENTS.md`, `.planning/`) is designed to be portable. Clone this repo alongside a project and reference these files in your AI tool's context to load the workflow patterns. [Zanshin — Portable Session Context](docs/ai-engineering/framework-bootstrap.md) is the single-file entry point: point your AI at that file and it operates with the framework's posture immediately. [The Session Framework](docs/ai-engineering/session-framework.md) has the full behavioral map and reasoning behind each practice.
+**Use as a template** — the workspace structure (`.agents/skills/`, `rules/`, `AGENTS.md`, `.planning/`) is designed to be portable. See the [AI Engineering](#ai-engineering---portable-session-context) section for how to adopt it. Clone alongside a project and reference these files in your AI tool's context to load the workflow patterns.
 
 Structure and discipline in [AGENTS.md](AGENTS.md). The [backlog](BACKLOG.md) shows what's actively in progress.
 
