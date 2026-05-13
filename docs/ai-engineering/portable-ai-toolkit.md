@@ -46,12 +46,12 @@ The toolkit is three layers, each solving a different problem:
 
 **Paude** is a container orchestrator for AI coding agents. It runs agents in isolated, network-filtered containers with git-based sync. You push your code in, assign a task, disconnect, and pull the output back as a branch when the agent is done.
 
-**Pi** is a minimal terminal coding agent — no built-in permission system, designed to run in containers. It's the day-to-day agent in this workspace. Paude installs it automatically inside containers; no local Pi installation is needed.
+**Pi** is a minimal terminal coding agent — no built-in permission system, designed to run in containers. It's the day-to-day agent in this workspace. Paude installs it automatically inside containers; no local Pi installation is needed. Unlike most coding agents locked to one provider, Pi supports multiple LLM backends: Vertex AI (Claude + Gemini), Anthropic API, Google AI, GitHub Copilot. Switch backends with a flag; no config rebuild.
 
 Together they provide:
 - **Isolation** — the agent runs without your files exposed to the host network; container-level boundaries replace permission dialogs
 - **Git-based sync** — workspace is pushed into the container, agent commits to git, you harvest back as a branch
-- **Agent flexibility** — swap between Claude, Gemini, Cursor, GitHub Copilot, or Pi without rebuilding anything
+- **Provider flexibility** — swap between Vertex AI, Anthropic, Google AI, GitHub Copilot without rebuilding anything; each backend can be selected at session creation time
 - **Fire-and-forget** — assign a task, disconnect, harvest later. No session tied up waiting
 
 The runtime layer solves the "where does the agent live and how do I get its output" problem. It doesn't solve "how do I make the agent actually good at this work."
@@ -160,8 +160,8 @@ Practical benefits, not abstract ones:
 - **Reusable skills** — research pipelines, adversarial review, backlog management, YouTube analysis. Skills that work the same way in every workspace
 - **Cross-session continuity** — the agent knows what's been tried, what's failed, what practices you follow. It doesn't start from zero
 - **Fire-and-forget** — assign a task, disconnect, harvest later. No session tied up waiting
-- **Agent flexibility** — swap between Claude, Gemini, Cursor, GitHub Copilot, or Pi. Same container, same workspace, different agent
-- **Provider flexibility** — Vertex AI, Anthropic API, Google AI, GitHub Copilot. Pick the backend that fits your situation
+- **Agent flexibility** — swap between Claude Code, Gemini CLI, Cursor CLI, GitHub Copilot CLI, or Pi. Same container, same workspace, different agent
+- **LLM backend flexibility** — swap between Vertex AI (Claude + Gemini), Anthropic API, Google AI, GitHub Copilot. Pi supports multiple backends natively; switch with a flag, no config rebuild needed
 
 None of these are impossible without this architecture. They're all harder, more fragile, and require rebuilding for each new project.
 
