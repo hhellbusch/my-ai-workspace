@@ -40,11 +40,28 @@ directory, declare its purpose, and say where the output went.
 
 | Subdir | Contents |
 |--------|----------|
-| `sources/` | Raw fetched content — scraped pages, transcripts, downloaded docs. Used to inform writing. **Not linked from articles or library entries.** |
+| `sources/` | Raw fetched content — scraped pages, transcripts, downloaded docs. Used to inform writing. **Not linked from articles or library entries.** Save as `.txt`, not `.md` (see below). |
 | `findings/` | Intermediate analysis — notes, excerpts, structured summaries from sources. |
 
 Do not use `resources/` — that name is ambiguous between "things I read" and
 "things a reader would use." Use `sources/` for raw material.
+
+### Save fetched sources as `.txt`, not `.md`
+
+The `fetch-sources.py` script saves fetched content as `.md` by default. **Rename
+fetched files to `.txt` before committing.** This prevents the `relative-link-guard`
+from scanning web-relative URLs in scraped content (e.g. `/en/products`,
+`install-guide.html`) and generating false positives.
+
+```bash
+# After fetching
+cd research/<topic>/sources/
+for f in *.md; do mv "$f" "${f%.md}.txt"; done
+```
+
+The `.txt` extension signals clearly that this is raw scraped material, not
+authored markdown. Internal links in scraped content are relative to the source
+website's domain — they are not repository-relative paths.
 
 ---
 

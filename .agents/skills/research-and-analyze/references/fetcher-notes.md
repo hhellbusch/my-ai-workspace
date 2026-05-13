@@ -24,6 +24,27 @@ manifest.md (updated with status, file paths, notes)
 **Domain-aware throttling:** Each domain has a threading lock and a timestamp. Before fetching, a thread acquires the lock for its domain and sleeps if the last request to that domain was less than `--delay` seconds ago. This means requests to *different* domains run in parallel while requests to the *same* domain are serialized with the configured delay.
 </architecture>
 
+<known_blocked_domains>
+## Known WAF-Blocked and Access-Restricted Domains
+
+Some domains return 200 OK on HEAD requests but serve "Access Denied" body content
+on GET, or block non-browser clients at the application layer. These are distinct
+from 403 at the proxy layer.
+
+| Domain | Behavior | Workaround |
+|--------|----------|------------|
+| `docs.redhat.com` | HEAD → 200, GET → "Access Denied" (WAF, not proxy) | No reliable workaround without a real browser session; reference the URL directly in docs and note WAF-blocked in the manifest |
+| `developers.redhat.com` | 403 at request layer | `--stealth` sometimes helps; otherwise headless browser or manual copy-paste |
+| `medium.com` | JS-rendered behind bot check | Headless browser fallback |
+| `access.redhat.com` | Usually accessible (200 OK) | N/A |
+
+**docs.redhat.com is a known hard block.** The server accepts the TCP connection
+and TLS handshake (hence 200 HEAD) but inspects the request headers or session
+state and returns an Access Denied HTML page. The `--stealth` flag does not bypass
+this. Record it in the manifest as `failed` with `notes: WAF-blocked` and reference
+the URL directly in any article that cites it.
+</known_blocked_domains>
+
 <anti_bot>
 ## Why Sources Return 403
 

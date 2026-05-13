@@ -77,6 +77,11 @@ Fill in the preamble with:
 
 Fill in the table with one row per reference, all marked `pending`.
 
+> **Column name warning:** The fetcher identifies entries by the `ref_id` column.
+> Do **not** rename this column to `slug`, `id`, or anything else — the fetcher
+> will silently fall back to `unknown` and all output files will collide as
+> `unknown.md`. The template is correct; copy it as-is.
+
 ## Step 4: Install Dependencies (if needed)
 
 Check if the Python dependencies are available:
@@ -96,7 +101,7 @@ pip install requests beautifulsoup4 markdownify
 Execute the fetch script:
 
 ```bash
-python3 .cursor/skills/research-and-analyze/scripts/fetch-sources.py research/{subject}/ --stealth
+python3 .agents/skills/research-and-analyze/scripts/fetch-sources.py research/{subject}/ --stealth
 ```
 
 **Available flags:**
@@ -118,6 +123,20 @@ python3 .cursor/skills/research-and-analyze/scripts/fetch-sources.py research/{s
 # Conservative: single-threaded, longer delays
 python3 .cursor/skills/research-and-analyze/scripts/fetch-sources.py research/{subject}/ --stealth --workers 1 --delay 3.0
 ```
+
+## Step 5b: Rename Fetched Files to `.txt`
+
+The fetcher saves content as `.md` files. Rename them to `.txt` before committing:
+
+```bash
+cd research/{subject}/sources/
+for f in *.md; do mv "$f" "${f%.md}.txt"; done
+```
+
+This prevents `relative-link-guard` false positives on web-relative URLs
+(e.g. `/en/products`, `some-page.html`) that appear in scraped content but
+are not repository-relative paths. Update the manifest `file` column to
+reflect the `.txt` extension if the fetcher has already written `.md` paths.
 
 ## Step 6: Review the Manifest
 

@@ -99,6 +99,18 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Product:** zanshin-pi-extension
 - **Context:** Guard scans all new `+` diff lines including content inside fenced code blocks. This causes false positives when a rules doc shows a "don't do this" example with a relative path. Fix: track when we're inside ``` fences while scanning the diff and skip link extraction for those lines.
 
+### relative-link-guard: skip `research/*/sources/` directories
+- **Product:** zanshin-pi-extension
+- **Context:** Fetched source files stored in `research/*/sources/` contain web-relative URLs (e.g. `/en/products`, `install-guide.html`) that are relative to the source website's domain, not the repo. The guard flags these as broken relative paths. Current workaround is saving sources as `.txt` instead of `.md`. The proper fix is for the guard to skip any `.md` file whose path matches `research/*/sources/*` (or a configurable exclude pattern).
+
+### commit-guard and all guards: add re-stage reminder to block reasons
+- **Product:** zanshin-pi-extension
+- **Context:** After a blocked commit (url-commit-guard, relative-link-guard, etc.), the model fixes the issue and retries. But if the fix was made after staging (`git add`), the fix isn't captured in the staged diff. The block reason for all guards should include: "After fixing, re-run `git add` on affected files before retrying the commit."
+
+### url-commit-guard: add 404 recovery guidance to block reason
+- **Product:** zanshin-pi-extension
+- **Context:** When a 404 fires, the model's first instinct may be to find an alternative URL rather than verify the path actually exists. Block reason should say: "Verify the path exists — for GitHub URLs, browse the repository rather than guessing the directory structure."
+
 ### url-commit-guard: show HTTP status in report
 - **Product:** zanshin-pi-extension
 - **Context:** When the guard blocks on a broken URL, the only way to diagnose is to manually curl the URL. Include the HTTP status code in the per-URL report line (e.g. `❌ 404 https://...`) so no manual verification step is needed.
