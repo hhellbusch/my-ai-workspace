@@ -99,6 +99,18 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Product:** zanshin-pi-extension
 - **Context:** Guard scans all new `+` diff lines including content inside fenced code blocks. This causes false positives when a rules doc shows a "don't do this" example with a relative path. Fix: track when we're inside ``` fences while scanning the diff and skip link extraction for those lines.
 
+### url-commit-guard: show HTTP status in report
+- **Product:** zanshin-pi-extension
+- **Context:** When the guard blocks on a broken URL, the only way to diagnose is to manually curl the URL. Include the HTTP status code in the per-URL report line (e.g. `❌ 404 https://...`) so no manual verification step is needed.
+
+### Guard status footer indicator
+- **Product:** zanshin-pi-extension
+- **Context:** No visible indicator of which guards are active. `ctx.ui.setStatus()` could show a compact "🛡 N guards" in the footer. Useful for confirming guards loaded after /reload.
+
+### commit-guard: compound `git add && git commit` blocked entirely
+- **Product:** zanshin-pi-extension
+- **Context:** When the review gate fires on a compound `git add && git commit` command, the entire command is blocked — `git add` never runs. The block reason doesn't explain this, so the model may try to re-add. Add a note to the block reason: "Note: the git add in this command did not execute — re-stage files before retrying."
+
 ### Context Memory System — research spike
 - **Product:** workspace
 - **Context:** Session context and engineering decisions drift across sessions. The current `Context Integrity` section is a placeholder. Need to design a memory system — decision journal, cross-session handoff, knowledge persistence — that fits with `BACKLOG.md` as the unified tracker, the library wiki, and briefs/handoffs. Should inform AGENTS.md context section after design.
