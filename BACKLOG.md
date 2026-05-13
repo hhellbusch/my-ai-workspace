@@ -95,6 +95,10 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### relative-link-guard: skip code block content
+- **Product:** zanshin-pi-extension
+- **Context:** Guard scans all new `+` diff lines including content inside fenced code blocks. This causes false positives when a rules doc shows a "don't do this" example with a relative path. Fix: track when we're inside ``` fences while scanning the diff and skip link extraction for those lines.
+
 ### Context Memory System — research spike
 - **Product:** workspace
 - **Context:** Session context and engineering decisions drift across sessions. The current `Context Integrity` section is a placeholder. Need to design a memory system — decision journal, cross-session handoff, knowledge persistence — that fits with `BACKLOG.md` as the unified tracker, the library wiki, and briefs/handoffs. Should inform AGENTS.md context section after design.

@@ -215,7 +215,7 @@ The vGPU driver container image is **not** public — it requires an NVIDIA Ente
 
 **EULA note:** Uploading the vGPU driver to a public repository violates the NVIDIA vGPU EULA.
 
-See the [NVIDIA vGPU Passthrough reference](resources/nvidia-vgpu-passthrough.md) for the full installation flow.
+See the [NVIDIA GPU Operator vGPU documentation](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/openshift/nvaie-with-ocp.html) for the full installation flow.
 
 ---
 
@@ -424,11 +424,11 @@ If VMs can't see the GPU after vGPU configuration:
 
 ## References
 
-- [NVIDIA GPU Driver Upgrades](../../research/openshift-gpu/resources/nvidia-gpu-driver-upgrades.md) — Full upgrade state machine, all configuration options, metrics, and troubleshooting
-- [NVIDIA vGPU Passthrough](../../research/openshift-gpu/resources/nvidia-vgpu-passthrough.md) — vGPU installation for VMs
-- [NVIDIA GPU Operator ClusterPolicy](../../research/openshift-gpu/resources/clusterpolicy-baremetal.yaml) — Full ClusterPolicy CRD template
-- [NVIDIA GPU Operator values.yaml](../../research/openshift-gpu/resources/nvidia-gpu-operator-values.yaml) — Complete Helm values reference
-- [NFD Node Feature Rules](../../research/openshift-gpu/resources/nodefeaturerules-baremetal.yaml) — GPU detection rules for NFD
+- [NVIDIA GPU Driver Upgrades](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-driver-upgrades.html) — Full upgrade state machine, all configuration options, metrics, and troubleshooting
+- [NVIDIA GPU Operator vGPU](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/openshift/nvaie-with-ocp.html) — vGPU installation for VMs
+- [NVIDIA GPU Operator ClusterPolicy](../../devops/ocp/gpu/clusterpolicy-baremetal.yaml) — Full ClusterPolicy CRD template
+- [NVIDIA GPU Operator values.yaml](../../devops/ocp/gpu/nvidia-gpu-operator-values.yaml) — Complete Helm values reference
+- [NFD Node Feature Rules](../../devops/ocp/gpu/nodefeaturerules-baremetal.yaml) — GPU detection rules for NFD
 - [NVIDIA GPU Operator on OpenShift](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/openshift/contents.html) — Official NVIDIA documentation for OCP-specific installation and management (live upstream)
 
 ---

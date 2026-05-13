@@ -8,6 +8,7 @@ Research workspaces containing fetched sources, analysis findings, and assessmen
 |---|---|---|---|
 | `openshift-ai-llm-deployment/` | Verification of Jared Burck's enterprise LLM deployment article | 53 of 62 references fetched | [assessment.md](openshift-ai-llm-deployment/assessment.md) |
 | `nvidia-gpu-operator-ocp418/` | NVIDIA GPU Operator production impact on OCP 4.18 | Single analysis | [analysis.md](nvidia-gpu-operator-ocp418/analysis.md) |
+| `openshift-gpu/` | GPU node management on bare-metal OpenShift | Complete — sources cleaned up | [docs/ai-engineering/openshift-gpu-node-management.md](../docs/ai-engineering/openshift-gpu-node-management.md) |
 | `zen-karate-philosophy/` | Zen Buddhism, karate, and applied philosophy for life and work | In progress | [personal-notes.md](zen-karate-philosophy/personal-notes.md), [curated-reading.md](zen-karate-philosophy/curated-reading.md) |
 | `3blue1brown/` | Deep Learning series transcripts (neural networks, transformers, attention, LLMs) | 5 videos fetched | [README.md](3blue1brown/README.md) |
 | `ai-engineering-public/` | Public talks supporting the AI-engineering essay track | Transcript(s) on disk | [README.md](ai-engineering-public/README.md) |
