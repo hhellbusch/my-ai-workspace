@@ -169,7 +169,7 @@ The inverse is also true. Local is the wrong choice when the task requires broad
 
 ## Related Reading
 
-- [Running a Local LLM: Setup, Tradeoffs, and Real Electricity Cost](local-llm-setup.md) — how to get a local model running, which tools to use, and when the hardware investment makes sense
+- [Running a Local LLM: Setup, Tradeoffs, and Real Electricity Cost](../../devops/llm/local-llm-setup.md) — how to get a local model running, which tools to use, and when the hardware investment makes sense
 - [Using AI to Work Outside Your Expertise](ai-for-unfamiliar-domains.md) — a case study of the same iterative describe-observe-correct loop applied to image processing
 - [The Meta-Development Loop](the-meta-development-loop.md) — on noticing where AI fits into a workflow and building lightweight tooling around it
 

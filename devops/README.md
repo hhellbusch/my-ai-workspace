@@ -2,7 +2,7 @@
 
 Practical, runnable examples and references for infrastructure, platform, and operational tooling — built from real work and accumulated over time. Currently weighted toward enterprise Kubernetes and OpenShift environments; will grow as work and interests do.
 
-**What belongs here:** Runnable examples, troubleshooting guides, lab exercises, and integration patterns for any infrastructure, platform, or operational tool. Not essays or case studies (those live in [`docs/`](../docs/)) and not research workspaces ([`research/`](../research/)).
+**What belongs here:** Runnable examples, troubleshooting guides, lab exercises, and integration patterns for any infrastructure, platform, or operational tool. Not essays or case studies (those live in [`docs/`](../docs/)) and not research workspaces ([`research/`](../research/)). Local LLM inference setup for consumer hardware lives here rather than in docs/ since it's practical reference, not essay.
 
 ---
 
@@ -54,6 +54,19 @@ The deepest product section — install, operations, and troubleshooting for ent
 Red Hat Advanced Cluster Management patterns for multi-cluster environments.
 
 - **`examples/`** — Secret management patterns, cluster import with Ansible, ArgoCD RBAC integration, GitOps cluster integration, OCM subscription automation
+
+### [Local LLM Setup](llm/)
+
+Consumer inference setup guides: Ollama, RamaLama, LM Studio, LiteLLM proxy, and vLLM for maximum serving throughput.
+
+- **`local-llm-setup.md`** — Hardware requirements, model selection with measured tok/s, Cursor/Claude Code integration, electricity measurement methodology
+- **`local-llm-vllm.md`** — Full vLLM install (CUDA + ROCm), serve commands, container setup, context limits, cluster topology
+
+### [Pi Agent Configuration](pi/)
+
+Reference for how pi discovers and displays resources in this workspace — skills, extensions, startup behavior, and troubleshooting.
+
+- **`README.md`** — Directory layout, discovery rules, installed packages, startup display behavior, troubleshooting checklist
 
 ### [Paude Proxy](paude-proxy/)
 

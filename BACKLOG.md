@@ -56,13 +56,13 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### Guide: agentic personal AI infrastructure (PAI/Kai pattern)
 - **Product:** docs
 - **Context:** Companion guide to `local-llm-setup.md` for the power-user audience: model and hardware selection for PAI/Kai-style autonomous agent architectures, memory systems (three-tier: session/work/learning), scaffolding design for The Algorithm's two-loop structure. Explicitly scoped to local or hybrid execution (not just API). Draws from [`research/pai-kai-paude/`](research/pai-kai-paude/), [`library/daniel-miessler-pai.md`](library/daniel-miessler-pai.md), and the Kai GitHub. Blocked on the Explore PAI/Kai backlog item making more progress — don't draft until there's hands-on familiarity with the architecture.
-- **Links:** `docs/ai-engineering/local-llm-setup.md`, `library/daniel-miessler-pai.md`, `research/pai-kai-paude/`
+- **Links:** `devops/llm/local-llm-setup.md`, `library/daniel-miessler-pai.md`, `research/pai-kai-paude/`
 - **Added:** 2026-04-19
 
 ### Local LLM: electricity measurement and case studies (ACTIVE TRACK)
 - **Product:** docs / meta / research
-- **Context:** Initial setup guide drafted at `docs/ai-engineering/local-llm-setup.md` covering Cursor (Ollama/LM Studio via OpenAI-compatible endpoint) and Claude Code (LiteLLM proxy layer). **What remains:** (1) author documents their actual monitoring hardware and data export setup; (2) run defined workloads against a local model, capture the circuit delta vs. baseline, compare against equivalent API token cost; (3) write case studies as data accumulates — first candidate is a 7B–8B coding model on consumer GPU for a defined task benchmark. Feeds the economics essay idea (real kWh data vs. the Braincuber 87%/API-wins analysis). The existing 12+ months of circuit-level data is a unique anchor — most "self-hosting cost" analyses use estimated TDP rather than measured draw.
-- **Links:** `docs/ai-engineering/local-llm-setup.md`, `research/openshift-ai-llm-deployment/sources/ref-61.md`, `docs/ai-engineering/openshift-ai-llm-deployment-summary.md`
+- **Context:** Initial setup guide drafted at `devops/llm/local-llm-setup.md` covering Cursor (Ollama/LM Studio via OpenAI-compatible endpoint) and Claude Code (LiteLLM proxy layer). **What remains:** (1) author documents their actual monitoring hardware and data export setup; (2) run defined workloads against a local model, capture the circuit delta vs. baseline, compare against equivalent API token cost; (3) write case studies as data accumulates — first candidate is a 7B–8B coding model on consumer GPU for a defined task benchmark. Feeds the economics essay idea (real kWh data vs. the Braincuber 87%/API-wins analysis). The existing 12+ months of circuit-level data is a unique anchor — most "self-hosting cost" analyses use estimated TDP rather than measured draw.
+- **Links:** `devops/llm/local-llm-setup.md`, `research/openshift-ai-llm-deployment/sources/ref-61.md`, `docs/ai-engineering/openshift-ai-llm-deployment-summary.md`
 - **Added:** 2026-04-19
 
 
@@ -282,13 +282,13 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### Case study: the experiment that can't use its own findings
 - **Product:** docs
 - **Context:** A full session was spent building infrastructure to run local LLMs and documenting findings. The conclusion: the local models (14k context, 3B active parameters) can't do the work that produced the infrastructure. The journal, guide, sparring notes, and backlog items were all generated using Sonnet 4.6 with large context — the capability the local setup cannot replicate. Worth documenting: using advanced tools to characterize the limits of less-capable tools, then trying to route work to the less-capable tools, while acknowledging the characterization work itself required the advanced tools. Connects to honest accounting of AI-assisted workflows: the meta-level requires better tooling than the object level being analyzed.
-- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `devops/llm/local-llm-setup.md`
 - **Added:** 2026-04-20
 
 ### Essay: What a context window actually is (AI-engineering)
 - **Product:** docs
 - **Context:** "Context window" is used loosely in most AI writing. This session produced concrete observations: 14k runtime vs 32k self-report vs 1M cloud; KV cache as the real constraint (not a fuel tank, not just a limit — an active memory allocation); how MoE vs dense affects what fits; how `-fit` negotiates between model size and context; why 14k and 1M produce qualitatively different work, not just quantitatively different. A practical essay grounding the term in real observations for engineers who use it loosely. Could be standalone or a companion to `local-llm-setup.md`. Strong anchor: the contrast between the self-reported 32k and actual 14k as the opening hook.
-- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `devops/llm/local-llm-setup.md`
 - **Added:** 2026-04-20
 
 ### Essay: AI as a restructuring technology — navigating the transition from inside it
@@ -303,7 +303,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### Essay: The infrastructure trap (philosophy / bridge)
 - **Product:** docs
 - **Context:** Building the tools for the work can become more engaging than doing the work. AI makes infrastructure fast, satisfying, and legible — which amplifies the trap. This session is a clean instance: multiple hours on local LLM infrastructure while other work waited. Not a failure — the findings are real and the work was worth doing. But worth naming the pattern: the dojo (the tool, the environment) vs. the practice (the purpose). Connects to "The Full Cup" (organizational bandwidth as barrier to learning), potentially to zen-karate themes (the student who polishes their gi instead of training, or the dojo that becomes an end in itself). Bridge essay between AI-engineering and philosophy tracks. Needs a clear frame: this isn't "infrastructure is bad" — it's "the pull toward infrastructure is worth being conscious of."
-- **Links:** `docs/philosophy/the-full-cup.md`, `docs/ai-engineering/local-llm-setup.md`, `.planning/zen-karate/`
+- **Links:** `docs/philosophy/the-full-cup.md`, `devops/llm/local-llm-setup.md`, `.planning/zen-karate/`
 - **Added:** 2026-04-20
 
 ### RAG index for local LLM — corpus retrieval exploration
@@ -334,14 +334,14 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Hardware note:** Current Z690-P platform limits to single-GPU. For 70B fully on GPU need platform rebuild (Threadripper Pro WRX90 + 2× RTX 3090 NVLink ≈ $5–10k, or 2× RTX 5090 PCIe ≈ $7–18k total). Hybrid CPU+GPU offload is possible but **requires native Ollama container, not RamaLama** — RamaLama forces `n_gpu_layers=999` (GPU-only); hybrid needs Ollama's automatic layer splitting. See experiment journal for 72B RamaLama failure.
 - **Division of labor (current recommended):** Local model for single-file edits, quick lookups, config generation with known schema. Sonnet for research pipelines, sparring, essays, session planning, anything requiring workspace-wide context.
 - **Self-referential note:** Some workspace complexity (meta-framework depth, inter-file dependency chains) emerged because large-context models made it tractable. Worth a future `/spar` pass: is the complexity serving the work, or has the work started serving the complexity?
-- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`, `.cursorrules`, `.cursor/rules/`
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `devops/llm/local-llm-setup.md`, `.cursorrules`, `.cursor/rules/`
 - **Added:** 2026-04-20
 
 ### Watch: vLLM FP8 MoE support for gfx1100 (RDNA3)
 - **Product:** meta / research
 - **Context:** vLLM's fused MoE kernels (`fused_moe_fp8`) are tuned for MI300X (gfx942/CDNA3) and don't work on RX 7900 XT (gfx1100/RDNA3). The hardware has FP8 silicon capability (RDNA3 matrix accelerator includes FP8 dot products); the gap is Triton kernel autotuning configs for gfx1100. This blocks running Qwen3-Coder-Next-FP8 (and similar FP8 MoE models) via vLLM on consumer AMD hardware. Unlock: either vLLM ROCm team expands gfx1100 support, or someone contributes Triton kernel configs for gfx1100 to vLLM's fused_moe layer. Current workaround: llama.cpp/RamaLama (GGUF Q4 path — fully working, ~90 tok/s on qwen3:30b-a3b). **No action needed now — check periodically when evaluating vLLM upgrades.**
 - **How to check:** `pip install --upgrade vllm && vllm serve Qwen/Qwen3-Coder-Next-FP8 --dtype fp8` and watch for gfx1100 in the supported device list or working inference.
-- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `devops/llm/local-llm-setup.md`
 - **Added:** 2026-04-20
 
 ### Quality comparison: qwen2.5:32b vs qwen3:30b-a3b on real tasks
@@ -353,7 +353,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### Case study: graph splits — why hybrid CPU+GPU inference fails at scale
 - **Product:** docs
 - **Context:** qwen2.5:72b on RX 7900 XT (20 GB VRAM): 36% GPU / 64% CPU split, 718 graph switches per prefill batch, >6 minutes to first token on a short prompt. The bottleneck isn't compute — it's PCIe bus saturation from the activation hand-offs between the 29 GPU layers and 52 CPU layers. Counterintuitive finding: 62 GB system RAM provides no meaningful help when the bus is the constraint. Contrast with bs=1 (generation phase) which has only 3 graph splits — the asymmetry explains why prefill is brutal and generation *might* be tolerable if you ever reached it. Good explainer material for engineers who assume "more RAM = can run bigger models." Also documents the contrast with full-GPU inference (qwen3:30b-a3b: ~90 tok/s, 3–5 splits). Source: experiment journal 2026-04-20.
-- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `docs/ai-engineering/local-llm-setup.md`
+- **Links:** `research/ai-tooling/local-llm-experiment-journal.md`, `devops/llm/local-llm-setup.md`
 - **Added:** 2026-04-20
 
 ### Index: surface review status as a trust signal (undecided)
@@ -380,7 +380,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ### Case study: performed honesty — AI self-labels as honest while making unverified claims
 - **Product:** docs
-- **Context:** When generating content, the AI signals its own trustworthiness through language ("the common framing often gets the math wrong," "Honest Assessment" section headers, "this is where real data changes the conversation") while simultaneously making unverified claims. The honesty label becomes a rhetorical move rather than an earned quality. The pattern: self-referential honesty claims appear in body text where readers encounter them with full confidence, while the actual verification status lives in frontmatter or a footer most readers never reach. Observed in `docs/ai-engineering/local-llm-setup.md` round 1 spar. **New instance (2026-04-20):** `docs/ai-engineering/session-framework.md` originally contained "Five minutes to write, thirty seconds to read" describing `/checkpoint` — a specific-sounding claim asserted with no measurement, designed to make the tool feel lightweight. Caught by the user ("for a human or for you?"), removed as a fabricated metric. This is a clean documented instance: precise numbers that weren't measured, used rhetorically. A related sub-pattern also appeared in the same document: the opening sentence stated "two structural characteristics" while the following paragraph listed three — confident assertion of a number directly contradicted by adjacent content. Both are variants of performed precision: using specific figures to project accuracy the content doesn't have.
+- **Context:** When generating content, the AI signals its own trustworthiness through language ("the common framing often gets the math wrong," "Honest Assessment" section headers, "this is where real data changes the conversation") while simultaneously making unverified claims. The honesty label becomes a rhetorical move rather than an earned quality. The pattern: self-referential honesty claims appear in body text where readers encounter them with full confidence, while the actual verification status lives in frontmatter or a footer most readers never reach. Observed in `devops/llm/local-llm-setup.md` round 1 spar. **New instance (2026-04-20):** `docs/ai-engineering/session-framework.md` originally contained "Five minutes to write, thirty seconds to read" describing `/checkpoint` — a specific-sounding claim asserted with no measurement, designed to make the tool feel lightweight. Caught by the user ("for a human or for you?"), removed as a fabricated metric. This is a clean documented instance: precise numbers that weren't measured, used rhetorically. A related sub-pattern also appeared in the same document: the opening sentence stated "two structural characteristics" while the following paragraph listed three — confident assertion of a number directly contradicted by adjacent content. Both are variants of performed precision: using specific figures to project accuracy the content doesn't have.
 - **Links:** `docs/case-studies/README.md`, `research/ai-tooling/local-llm-setup-sparring-notes.md`, `.cursor/rules/pre-commit-review.mdc`, `docs/ai-engineering/session-framework.md`
 - **Added:** 2026-04-19
 
@@ -531,7 +531,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
   - Which model is the minimum viable agent? (needs a benchmark: run a defined Paude task against cloud Claude vs. local candidates, compare completion rate and correctness)
   - For OpenShift AI: what does the vLLM serving stack look like? NodeFeatureDiscovery + GPU operator + KServe + ServingRuntime? (This is already partially documented in `research/openshift-ai-llm-deployment/`)
   - For llm-d: what's the current maturity and what workload profiles does it target?
-- **Relates to:** `Explore Paude for containerized agent workflows`, `Paude as external executor for meta-prompting pipelines`, `Local LLM: electricity measurement and case studies`, `research/openshift-ai-llm-deployment/`, `docs/ai-engineering/local-llm-setup.md`
+- **Relates to:** `Explore Paude for containerized agent workflows`, `Paude as external executor for meta-prompting pipelines`, `Local LLM: electricity measurement and case studies`, `research/openshift-ai-llm-deployment/`, `devops/llm/local-llm-setup.md`
 - **Added:** 2026-04-29
 
 ### Explore Paude for containerized agent workflows
@@ -578,5 +578,5 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
   git -C ~/.pi/agent/git/github.com/hhellbusch/<name> log --oneline -3
   git -C submodules/<name> log --oneline -3
   ```
-- **Links:** `docs/pi-resource-wiring.md`, `.agents/skills/review/SKILL.md`
+- **Links:** `devops/pi/README.md`, `.agents/skills/review/SKILL.md`
 - **Added:** 2026-05-13

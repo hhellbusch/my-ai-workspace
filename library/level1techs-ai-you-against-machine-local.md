@@ -37,7 +37,7 @@ Walkthrough of running a **very large MoE reasoning model** (DeepSeek-class, **~
 ## Connections to This Workspace
 
 - **Experiment journal:** [`research/ai-tooling/local-llm-experiment-journal.md`](../research/ai-tooling/local-llm-experiment-journal.md) — same problem domain (local Qwen/MoE, **vLLM FP8 MoE** dead end on **gfx1100**, **RamaLama** working path). The video’s **AMD quant gap** rhymes with our **vLLM kernel gap**: different layer of the stack, same lesson (**pick tooling that matches the weights and the GPU**).
-- **Stable setup doc:** [`docs/ai-engineering/local-llm-setup.md`](../docs/ai-engineering/local-llm-setup.md) — Ollama/RamaLama/vLLM framing; this video argues a **fourth lane** (custom llama.cpp fork + forum quants) when Ollama/LM Studio caps context or weight format.
+- **Stable setup doc:** [`devops/llm/local-llm-setup.md`](../devops/llm/local-llm-setup.md) — Ollama/RamaLama/vLLM framing; this video argues a **fourth lane** (custom llama.cpp fork + forum quants) when Ollama/LM Studio caps context or weight format.
 - **Hardware delta:** Demo is **128 GB RAM + 24 GB VRAM**; this workspace baseline is **20 GB VRAM** — anything that **spills to CPU** or needs **huge KV** should be scaled with skepticism.
 
 ## Personal “Why” (placeholder)

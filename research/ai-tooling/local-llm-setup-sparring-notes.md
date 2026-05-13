@@ -6,7 +6,7 @@ review:
 
 # Sparring Notes — local-llm-setup.md
 
-**Source document:** [`docs/ai-engineering/local-llm-setup.md`](../../docs/ai-engineering/local-llm-setup.md)
+**Source document:** [`devops/llm/local-llm-setup.md`](../../devops/llm/local-llm-setup.md)
 **Sparred:** 2026-04-19
 **Round:** 1
 

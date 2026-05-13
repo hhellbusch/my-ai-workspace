@@ -8,7 +8,7 @@ review:
 
 Hands-on log: what was tried, what worked, and what failed. Complements the general setup guide, which stays stable; **this file is meant to grow** as you test new stacks, models, and images.
 
-**Linked guide:** [`docs/ai-engineering/local-llm-setup.md`](../../docs/ai-engineering/local-llm-setup.md)
+**Linked guide:** [`devops/llm/local-llm-setup.md`](../../devops/llm/local-llm-setup.md)
 
 ---
 
@@ -200,7 +200,7 @@ Hardware buys RAM; **harness** buys effective context. Workspace pointers:
 
 - **Serve:** `ramalama serve ollama://qwen3:30b-a3b` → **`http://127.0.0.1:8080/v1`** (use **127.0.0.1**, not `localhost`). **Model id:** `library/qwen3` (per Apr log).
 - **Characterization goal:** sweep **prompt sizes** (e.g. 2k / 6k / 12k / 14k tokens of filler + one task) and log **latency, truncation, tool errors** — effective **agent** context is min(**harness budget**, **`n_ctx`**).
-- **Wiring:** Any OpenAI-compatible client needs **`OPENAI_BASE_URL`** (or product-specific equivalent) **+** a placeholder **`OPENAI_API_KEY`** if the server ignores it. **LiteLLM** proxy pattern in [`docs/ai-engineering/local-llm-setup.md`](../../docs/ai-engineering/local-llm-setup.md) if the agent stack expects Anthropic-shaped traffic. *Exact Pi / OpenClaw env names — confirm in product docs when wiring;* append a row here after first successful run.
+- **Wiring:** Any OpenAI-compatible client needs **`OPENAI_BASE_URL`** (or product-specific equivalent) **+** a placeholder **`OPENAI_API_KEY`** if the server ignores it. **LiteLLM** proxy pattern in [`devops/llm/local-llm-setup.md`](../../devops/llm/local-llm-setup.md) if the agent stack expects Anthropic-shaped traffic. *Exact Pi / OpenClaw env names — confirm in product docs when wiring;* append a row here after first successful run.
 
 **Pi monorepo (local clone) — `models.json` vs real `n_ctx`**
 
@@ -607,7 +607,7 @@ Write or install a targeted SELinux policy module that grants `container_t` acce
   (Without `--enforce-eager`: **Inductor autotune HIP OOM**; without tight context/utilization: **KV cache negative** at 4k+.)
 - **Observed at runtime:** weights **`~18.26 GiB`**; **`Available KV cache memory: 0.3 GiB`**; **GPU KV cache ~1,232 tokens**; **~1.20×** concurrency at **1,024** tokens/request; **`Application startup complete`**, server **`http://0.0.0.0:8000`**.
 - **Tradeoff:** **32B AWQ on 20 GB** leaves **very little KV** — practical **context ceiling ~1k** unless smaller model / more VRAM / future quant KV. For longer context at similar quality, **Ollama `qwen3:30b-a3b`** remains the easier path on this GPU.
-- **Lesson (IDE):** **Cursor + cloud** = large managed context per turn; **Cursor + this vLLM** = only what fits **`max_model_len`** / KV — not comparable for long repo sessions. Communicated in [`local-llm-setup.md`](../../docs/ai-engineering/local-llm-setup.md) (*Local context vs Cursor chat*).
+- **Lesson (IDE):** **Cursor + cloud** = large managed context per turn; **Cursor + this vLLM** = only what fits **`max_model_len`** / KV — not comparable for long repo sessions. Communicated in [`devops/llm/local-llm-setup.md`](../../devops/llm/local-llm-setup.md) (*Local context vs Cursor chat*).
 - **Lesson (frontier comparison):** **Claude Sonnet 4.6 (1M token context, in beta as of early 2026) with adaptive thinking** is not a quantitative step up from this setup — it's a different category. Local 32B AWQ at ~1k context = **privacy, no cost, offline**. Frontier model at 1M context + dynamic reasoning budget = **capability**. Neither replaces the other; they're complementary. Note: 1M context is specific to Sonnet 4.6 beta; earlier Sonnet versions max at ~200k. Documented in guide (*Local context vs Cursor chat*).
 - **Lesson (1M context self-hosting):** Theoretically achievable on a consumer GPU cluster (OpenShift / vLLM tensor parallel), but **PCIe bandwidth** — not VRAM count — is the real blocker for interactive use. 7B model at 1M tokens needs ~128 GB KV cache across ~6–8× RTX 4090; throughput is painful over PCIe. Practical consumer cluster target: **32k–128k context**. True 1M at speed needs NVLink/InfiniBand (datacenter) or a single AMD MI300X (192 GB HBM3, enterprise-only, ~$10–15k, not consumer-purchasable). H100 nodes ~$200k+. **Frontier API is the practical path for 1M context today.**
 - **Lesson (latest gen cluster, 2026):** If buying new, **RTX 5090** (32 GB GDDR7, ~$2–4.5k) is the single-GPU ceiling — runs 70B Q4 comfortably, no NVLink (dropped after RTX 3090; multi-GPU = PCIe tensor parallel only). Dual 5090 ~27 tok/s on 70B Q4. **Sweet spot**: single node 1–2× RTX 5090 + lightweight K8s control plane. 4× 5090 (128 GB) still ~8× short of 1M context on 70B. Datacenter hardware (MI300X, H100) required for true long context — business/institutional purchase territory. Documented in guide (*Building a cluster — cost vs. context sweet spot*).
