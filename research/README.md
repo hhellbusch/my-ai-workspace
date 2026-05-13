@@ -17,6 +17,8 @@ Research workspaces containing fetched sources, analysis findings, and assessmen
 | `enkamp-shi-heng-yi-mastery/` | Jesse Enkamp × Shi Heng Yi — mastery, discipline, and martial arts philosophy (YouTube transcript) | 1 transcript | [assessment.md](enkamp-shi-heng-yi-mastery/assessment.md) |
 | `framework-efficacy/` | Zanshin framework efficacy measurement — intervention log, counterfactual comparisons, and research protocol | Ongoing | [README.md](framework-efficacy/README.md), [intervention-log.md](framework-efficacy/intervention-log.md) |
 | `youtube-sources-apr2026/` | YouTube source transcripts collected April 2026 | Raw sources | `sources/` |
+| `ai-engineering-talks-apr-2026/` | April 2026 AI engineering talks — transcripts and analysis | Transcripts on disk | [README.md](ai-engineering-talks-apr-2026/README.md) |
+| `devops/` | DevOps research — transcripts and analysis | Sources on disk | [README.md](devops/README.md) |
 
 ## Structure Convention
 
