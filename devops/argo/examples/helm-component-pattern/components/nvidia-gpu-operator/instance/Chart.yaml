@@ -1,0 +1,13 @@
+apiVersion: v2
+name: nvidia-gpu-operator-instance
+description: |
+  Creates the ClusterPolicy CR for the NVIDIA GPU Operator.
+
+  Configures the GPU driver, device plugin, DCGM exporter, upgrade safety,
+  and GPU modes of operation (time-slicing, MIG, vGPU). The ClusterPolicy
+  is the central control object for the operator — it lives in the
+  nvidia-gpu-operator namespace and governs the operator's behavior cluster-wide.
+
+  This chart is the instance configuration half of the GPU operator pair.
+type: application
+version: 0.1.0

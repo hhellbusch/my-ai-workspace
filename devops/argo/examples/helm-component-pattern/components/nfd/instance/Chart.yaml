@@ -1,0 +1,13 @@
+apiVersion: v2
+name: nfd-instance
+description: |
+  Creates the NodeFeatureDiscovery CR with GPU PCI whitelist configuration.
+
+  Configures NFD to detect NVIDIA GPUs by whitelisting PCI vendor ID 10de
+  and device classes 0300 (VGA) and 0302 (3D controller). Nodes with
+  detected GPUs receive the nvidia.com/gpu.present=true label, which the
+  GPU operator uses to target driver installation.
+
+  This chart is the instance configuration half of the NFD component pair.
+type: application
+version: 0.1.0

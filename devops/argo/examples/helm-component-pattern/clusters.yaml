@@ -66,6 +66,7 @@ clusters:
     groups:
       - all
       - virt-enabled
+      - gpu-enabled   # bare-metal cluster with NVIDIA A100 GPU workers
     # Shared attributes — pushed into every component Application's cluster: block.
     # Component charts use .Values.cluster.vault, .Values.cluster.monitoring, etc.
     vault:
@@ -108,6 +109,24 @@ clusters:
       clusterSecretStoreName: vault-backend
     monitoring:
       remoteWriteEndpoint: https://mimir.prod-b.example.com/api/v1/push
+
+  # ── prod-a: GPU-only cluster (no Virt) ─────────────────────────────────────
+  # Example: bare-metal HPC cluster — only GPU workloads, no VM scheduling.
+  # Enables gpu-enabled group; does not include virt-enabled.
+
+  - name: site-gpu-1
+    hub: prod-a
+    environment: production
+    region: us-east
+    server: https://api.site-gpu-1.example.com:6443
+    groups:
+      - all
+      - gpu-enabled
+    vault:
+      server: https://vault.prod-a.example.com
+      clusterSecretStoreName: vault-backend
+    monitoring:
+      remoteWriteEndpoint: https://mimir.prod-a.example.com/api/v1/push
 
   # ── dev hub ────────────────────────────────────────────────────────────────
 

@@ -69,6 +69,40 @@ componentRegistry:
     syncWave: "0"
     description: "OpenShift Virtualization Operator"
 
+  # ── GPU stack ───────────────────────────────────────────────────────────────
+  # Four-component split: NFD (operator + instance) → GPU operator + ClusterPolicy.
+  # Wave ordering ensures each layer is ready before the next applies:
+  #   wave 0: NFD operator (OLM subscription)
+  #   wave 5: NFD NodeFeatureDiscovery CR (labels GPU nodes)
+  #   wave 10: GPU operator (OLM subscription — only targets labeled nodes)
+  #   wave 15: ClusterPolicy (driver, device plugin, DCGM, upgrade policy)
+  #
+  # All four are opt-in — disabled in component-all, enabled via gpu-enabled group.
+  nfd-operator:
+    path: components/nfd/operator
+    syncWave: "0"
+    description: "Node Feature Discovery Operator via OLM — detects and labels GPU nodes"
+
+  nfd-instance:
+    path: components/nfd/instance
+    syncWave: "5"
+    description: "NodeFeatureDiscovery CR — activates hardware detection with GPU PCI whitelist"
+
+  nvidia-gpu-operator:
+    path: components/nvidia-gpu-operator/operator
+    syncWave: "10"
+    description: "NVIDIA GPU Operator via OLM — manages driver lifecycle on labeled GPU nodes"
+    # The GPU operator manages live driver state on nodes. Disabling prune prevents
+    # accidental driver teardown if a sync misconfiguration removes the subscription.
+    syncPolicy:
+      automated:
+        prune: false
+
+  nvidia-gpu-operator-instance:
+    path: components/nvidia-gpu-operator/instance
+    syncWave: "15"
+    description: "ClusterPolicy CR — driver version, upgrade safety, DCGM, device plugin, GPU modes"
+
 # ── ArgoCD sync defaults ────────────────────────────────────────────────────────
 #
 # Applied to every generated Application's syncPolicy.

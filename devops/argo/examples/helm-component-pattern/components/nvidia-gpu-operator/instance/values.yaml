@@ -1,0 +1,48 @@
+# nvidia-gpu-operator/instance — default values
+#
+# These set the base defaults for the ClusterPolicy. Groups and clusters
+# override specific fields. GPU mode (time-slicing, MIG, vGPU) is opt-in
+# and requires explicit group/cluster configuration.
+#
+# MIG support in OpenShift requires OCP 4.20+ — clusters on 4.18 and earlier
+# cannot use MIG strategy and will fail validation if mig.strategy is set.
+# See docs/gpu-mig-opc-version.md for version compatibility details.
+
+clusterPolicy:
+  namespace: nvidia-gpu-operator
+
+  driver:
+    enabled: true
+    useOpenKernelModules: true
+    # Precompiled driver — recommended for OCP (no entitlement needed)
+    usePrecompiled: true
+    # Version is overridden per-cluster via operators-installer
+    version: "550.90.07"
+    rdma:
+      enabled: false
+    upgradePolicy:
+      autoUpgrade: true
+      maxParallelUpgrades: 1
+      maxUnavailable: "25%"
+      waitForCompletion:
+        timeoutSeconds: 0
+
+  toolkit:
+    enabled: true
+
+  devicePlugin:
+    enabled: true
+
+  dcgmExporter:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+  gfd:
+    enabled: true
+
+  nodeStatusExporter:
+    enabled: true
+
+  sandboxWorkloads:
+    enabled: false

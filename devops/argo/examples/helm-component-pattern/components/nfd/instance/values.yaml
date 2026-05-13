@@ -1,0 +1,26 @@
+# nfd/instance — default values
+#
+# The NodeFeatureDiscovery CR is deployed into the openshift-nfd namespace.
+# PCI whitelist and sleep interval are configurable for tuning detection
+# frequency and device coverage.
+
+clusterPolicy:
+  namespace: openshift-nfd
+  operand:
+    image: registry.redhat.io/openshift4/ose-node-feature-discovery:latest
+    servicePort: 12000
+  workerConfig:
+    sleepInterval: 60s
+    # PCI whitelist for GPU detection
+    # NVIDIA GPUs have vendor 10de; device classes 0300 (VGA) and 0302 (3D controller)
+    pci:
+      deviceClassWhitelist:
+        - "0300"
+        - "0302"
+      deviceLabelFields:
+        - vendor
+        - device
+  # GFD (GPU Feature Discovery) — labels nodes with GPU model info
+  # Requires GFD operator to be available in the catalog
+  gfd:
+    enabled: true

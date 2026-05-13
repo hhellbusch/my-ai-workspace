@@ -56,6 +56,21 @@ component-all:
     # ── OpenShift Virtualization: disabled by default ───────────────────────────
     kubevirt-hyperconverged:
       enabled: false
+
+    # ── GPU stack: disabled by default ─────────────────────────────────────────
+    # All four components are opt-in. Enable via the gpu-enabled group or per
+    # cluster. See groups/gpu-enabled/values.yaml for the full configuration.
+    nfd-operator:
+      enabled: false
+
+    nfd-instance:
+      enabled: false
+
+    nvidia-gpu-operator:
+      enabled: false
+
+    nvidia-gpu-operator-instance:
+      enabled: false
       operators-installer:
         operators:
           - name: kubevirt-hyperconverged

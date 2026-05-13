@@ -1,0 +1,22 @@
+# nvidia-gpu-operator/operator — default values
+#
+# Dynamic fields (channel, installPlanApproval, csv) are set in group and
+# cluster values files and injected by hub-clusters into spec.source.helm.values.
+
+operators-installer:
+  operators:
+    - name: gpu-operator-certified
+      source: certified-operators
+      sourceNamespace: openshift-marketplace
+      namespace: nvidia-gpu-operator
+      # --- overridden by group/cluster values ---
+      channel: v24.3
+      installPlanApproval: Automatic
+      csv: ""
+  operatorGroups:
+    - name: nvidia-gpu-operator-group
+      createNamespace: true
+      targetOwnNamespace: true
+
+  approveManualInstallPlanViaHook: true
+  installRequiredPythonLibraries: true

@@ -174,14 +174,22 @@ This splits each GPU into 4 equal pieces. Pods requesting `nvidia.com/gpu: 0.25`
 
 #### MIG (Multi-Instance GPU)
 
+> **OCP version requirement:** MIG support in OpenShift requires **OCP 4.20+**.
+Clusters running OCP 4.18 or earlier will fail ClusterPolicy validation if `mig.strategy` is set.
+Do not enable MIG on pre-4.20 clusters.
+
 Available on A100 and H100 GPUs. Splits a GPU into up to 7 isolated instances. Each instance has dedicated memory and compute:
 
 ```yaml
 mig:
-  strategy: all
+  strategy: single   # single | mixed
 ```
 
-MIG profiles define how the GPU is partitioned. NVIDIA ships with predefined profiles; you can also create custom profiles.
+- `single` — all GPU partitions on a node use the same MIG profile (simpler scheduling)
+- `mixed` — partitions on a node can use different profiles (more flexible, requires explicit pod resource requests)
+
+MIG profiles define how the GPU is partitioned. NVIDIA ships with predefined profiles (e.g. `1g.10gb`, `2g.20gb`, `4g.40gb` for A100 80GB); you can also create custom profiles.
+Per-node partition configuration is managed by the `nvidia-mig-manager` DaemonSet after the ClusterPolicy is applied.
 
 ### Device plugin configuration
 

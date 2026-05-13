@@ -1,0 +1,119 @@
+# Group: gpu-enabled
+# Bare-metal clusters with NVIDIA GPU worker nodes.
+#
+# Key convention: component-gpu-enabled
+#
+# Enables the four-component GPU stack in the correct wave order:
+#   wave 0:  nfd-operator        — NFD subscription via OLM
+#   wave 5:  nfd-instance        — NodeFeatureDiscovery CR (labels GPU nodes)
+#   wave 10: nvidia-gpu-operator — GPU operator subscription via OLM
+#   wave 15: nvidia-gpu-operator-instance — ClusterPolicy (driver, DCGM, upgrade policy)
+#
+# Design notes:
+# - NFD must be running and labeling nodes before the GPU operator subscription
+#   is applied. The wave ordering enforces this within a single ArgoCD sync.
+# - The GPU operator targets ONLY nodes labeled nvidia.com/gpu.present=true by NFD.
+#   Non-GPU worker nodes are unaffected by the operator installation.
+# - The operator does NOT trigger rolling node reboots on its own. Only host-level
+#   kernel parameter changes (e.g. IOMMU via MachineConfig) cause reboots.
+# - Upgrade safety: autoUpgrade=true with maxParallelUpgrades=1 ensures driver
+#   upgrades drain one node at a time. Do not set maxParallelUpgrades > 1 without
+#   explicit testing.
+#
+# MIG (Multi-Instance GPU) support:
+# - MIG is NOT enabled by default. Enabling it changes GPU scheduling semantics
+#   cluster-wide — only do this on clusters where all GPU workloads are designed
+#   for MIG partitioning.
+# - MIG strategy requires OCP 4.20+. Clusters on OCP 4.18 and earlier will fail
+#   ClusterPolicy validation if mig.strategy is set. See components/nvidia-gpu-
+#   operator/instance/values.yaml for details.
+# - To enable MIG on a 4.20+ cluster, add at the cluster layer:
+#     component-<clusterName>:
+#       apps:
+#         nvidia-gpu-operator-instance:
+#           clusterPolicy:
+#             mig:
+#               enabled: true
+#               strategy: single   # single | mixed
+#
+# vGPU / SR-IOV / IOMMU:
+# - vGPU and SR-IOV require IOMMU to be enabled via MachineConfig. This is a
+#   host-level kernel parameter change that triggers a rolling node reboot.
+#   Apply IOMMU MachineConfig during a maintenance window before enabling vGPU.
+# - sandboxWorkloads is disabled by default. Enable per-cluster for vGPU use.
+
+component-gpu-enabled:
+  apps:
+    # ── NFD: operator + instance split ────────────────────────────────────────
+    nfd-operator:
+      enabled: true
+      operators-installer:
+        operators:
+          - name: nfd
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            namespace: openshift-nfd
+            channel: stable
+            installPlanApproval: Automatic
+            csv: ""
+        operatorGroups:
+          - name: openshift-nfd
+            createNamespace: true
+            targetOwnNamespace: true
+
+    nfd-instance:
+      enabled: true
+      namespace: openshift-nfd
+
+    # ── NVIDIA GPU Operator: operator + instance split ─────────────────────────
+    nvidia-gpu-operator:
+      enabled: true
+      operators-installer:
+        operators:
+          - name: gpu-operator-certified
+            source: certified-operators
+            sourceNamespace: openshift-marketplace
+            namespace: nvidia-gpu-operator
+            channel: v24.3
+            installPlanApproval: Automatic
+            csv: ""
+        operatorGroups:
+          - name: nvidia-gpu-operator-group
+            createNamespace: true
+            targetOwnNamespace: true
+
+    nvidia-gpu-operator-instance:
+      enabled: true
+      namespace: nvidia-gpu-operator
+      clusterPolicy:
+        namespace: nvidia-gpu-operator
+        driver:
+          enabled: true
+          useOpenKernelModules: true
+          usePrecompiled: true
+          version: "550.90.07"
+          rdma:
+            enabled: false
+          upgradePolicy:
+            autoUpgrade: true
+            maxParallelUpgrades: 1
+            maxUnavailable: "25%"
+            waitForCompletion:
+              timeoutSeconds: 0
+        toolkit:
+          enabled: true
+        devicePlugin:
+          enabled: true
+        dcgmExporter:
+          enabled: true
+          serviceMonitor:
+            enabled: true
+        gfd:
+          enabled: true
+        nodeStatusExporter:
+          enabled: true
+        sandboxWorkloads:
+          enabled: false
+        # MIG: disabled — requires OCP 4.20+, explicit opt-in per cluster
+        mig:
+          enabled: false

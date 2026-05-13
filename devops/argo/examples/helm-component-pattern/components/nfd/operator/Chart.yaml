@@ -1,0 +1,17 @@
+apiVersion: v2
+name: nfd-operator
+description: |
+  Installs the Node Feature Discovery (NFD) Operator via OLM using the
+  operators-installer Helm chart.
+
+  NFD detects hardware features (GPUs, NICs, etc.) and labels nodes.
+  Required by the GPU operator to auto-discover GPU nodes on bare metal.
+
+  This chart is the operator installation half of the NFD component pair.
+  The instance half (components/nfd/instance/) manages the NodeFeatureDiscovery CR.
+type: application
+version: 0.1.0
+dependencies:
+  - name: operators-installer
+    version: ">=3.4.0"
+    repository: "https://redhat-cop.github.io/helm-charts"

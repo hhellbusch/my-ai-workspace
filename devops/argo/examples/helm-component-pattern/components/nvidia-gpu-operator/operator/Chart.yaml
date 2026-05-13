@@ -1,0 +1,20 @@
+apiVersion: v2
+name: nvidia-gpu-operator
+description: |
+  Installs the NVIDIA GPU Operator via OLM using the operators-installer
+  Helm chart.
+
+  The GPU Operator manages the NVIDIA driver, device plugin, DCGM exporter,
+  and NVIDIA Container Toolkit on GPU-capable nodes. It only targets nodes
+  labeled nvidia.com/gpu.present=true (set by NFD).
+
+  This chart is the operator installation half of the GPU operator pair.
+  The instance half (components/nvidia-gpu-operator/instance/) manages the
+  ClusterPolicy CR that configures driver version, upgrade safety, and GPU
+  modes (time-slicing, MIG, vGPU).
+type: application
+version: 0.1.0
+dependencies:
+  - name: operators-installer
+    version: ">=3.4.0"
+    repository: "https://redhat-cop.github.io/helm-charts"

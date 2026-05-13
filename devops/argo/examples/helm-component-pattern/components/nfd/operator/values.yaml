@@ -1,0 +1,28 @@
+# nfd/operator — default values
+#
+# These are the static, rarely-changing fields for the NFD operator installation.
+# Dynamic fields (channel, installPlanApproval) are set in group and cluster
+# values files and injected by hub-clusters into spec.source.helm.values.
+#
+# hub-clusters injects the resolved app entry values at the top level of this chart's
+# values alongside the cluster: block.
+
+operators-installer:
+  operators:
+    - name: nfd
+      source: redhat-operators
+      sourceNamespace: openshift-marketplace
+      namespace: openshift-nfd
+      # --- overridden by group/cluster values ---
+      channel: stable
+      installPlanApproval: Automatic
+      csv: ""
+  operatorGroups:
+    - name: openshift-nfd
+      createNamespace: true
+      targetOwnNamespace: true
+
+  # Use hook-based approval to avoid lingering resources.
+  approveManualInstallPlanViaHook: true
+
+  installRequiredPythonLibraries: true

@@ -1,0 +1,62 @@
+# Cluster: site-gpu-1
+# Component overrides only — identity and groups live in clusters.yaml.
+#
+# Production HPC cluster on OCP 4.20 with NVIDIA A100 GPU workers.
+# Overrides from the gpu-enabled group:
+#   - Manual installPlanApproval (production change control)
+#   - Driver version pinned to the A100-validated build
+#   - MIG enabled (OCP 4.20+ required — see note in groups/gpu-enabled/values.yaml)
+#   - maxParallelUpgrades: 1 (inherited from gpu-enabled group — explicit here for clarity)
+
+component-site-gpu-1:
+  apps:
+    # ── NFD operator: pin to Manual approval in production ─────────────────────
+    nfd-operator:
+      operators-installer:
+        operators:
+          - name: nfd
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            namespace: openshift-nfd
+            channel: stable
+            installPlanApproval: Manual
+            csv: "nfd.4.16.0"
+        operatorGroups:
+          - name: openshift-nfd
+            createNamespace: true
+            targetOwnNamespace: true
+
+    # ── GPU operator: pin channel and require manual approval ──────────────────
+    nvidia-gpu-operator:
+      operators-installer:
+        operators:
+          - name: gpu-operator-certified
+            source: certified-operators
+            sourceNamespace: openshift-marketplace
+            namespace: nvidia-gpu-operator
+            channel: v24.9
+            installPlanApproval: Manual
+            csv: "gpu-operator-certified.v24.9.1"
+        operatorGroups:
+          - name: nvidia-gpu-operator-group
+            createNamespace: true
+            targetOwnNamespace: true
+
+    # ── ClusterPolicy: A100-validated driver, MIG enabled (OCP 4.20+) ──────────
+    # MIG strategy: single — all GPU partitions are the same size.
+    # Valid MIG profiles for A100 80GB: 1g.10gb, 2g.20gb, 3g.40gb, 4g.40gb, 7g.80gb
+    # Configure per-node profiles via the nvidia-mig-manager DaemonSet after
+    # the ClusterPolicy is applied.
+    nvidia-gpu-operator-instance:
+      clusterPolicy:
+        driver:
+          version: "550.90.07"    # validated for A100 on RHCOS
+          upgradePolicy:
+            autoUpgrade: true
+            maxParallelUpgrades: 1
+            maxUnavailable: "25%"
+            waitForCompletion:
+              timeoutSeconds: 0
+        mig:
+          enabled: true
+          strategy: single        # OCP 4.20+ required

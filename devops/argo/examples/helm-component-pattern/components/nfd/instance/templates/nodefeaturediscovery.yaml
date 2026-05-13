@@ -1,0 +1,30 @@
+apiVersion: nfd.openshift.io/v1
+kind: NodeFeatureDiscovery
+metadata:
+  name: nfd-instance
+  namespace: {{ .Values.clusterPolicy.namespace }}
+  labels:
+    app.kubernetes.io/name: nfd
+    app.kubernetes.io/part-of: nfd
+spec:
+  operand:
+    image: {{ .Values.clusterPolicy.operand.image }}
+    servicePort: {{ .Values.clusterPolicy.operand.servicePort }}
+  workerConfig:
+    configData: |
+      core:
+        sleepInterval: {{ .Values.clusterPolicy.workerConfig.sleepInterval }}
+      sources:
+        pci:
+          deviceClassWhitelist:
+            {{- range .Values.clusterPolicy.workerConfig.pci.deviceClassWhitelist }}
+            - "{{ . }}"
+            {{- end }}
+          deviceLabelFields:
+            {{- range .Values.clusterPolicy.workerConfig.pci.deviceLabelFields }}
+            - {{ . }}
+            {{- end }}
+  {{- if .Values.clusterPolicy.gfd.enabled }}
+  gfd:
+    enabled: true
+  {{- end }}

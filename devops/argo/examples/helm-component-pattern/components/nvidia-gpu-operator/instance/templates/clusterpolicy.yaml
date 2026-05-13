@@ -1,0 +1,57 @@
+apiVersion: nvidia.com/v1
+kind: ClusterPolicy
+metadata:
+  name: gpu-cluster-policy
+  namespace: {{ .Values.clusterPolicy.namespace }}
+  labels:
+    app.kubernetes.io/name: nvidia-gpu-operator
+    app.kubernetes.io/part-of: nvidia-gpu-operator
+spec:
+  operator:
+    defaultRuntime: crio
+    use_ocp_driver_toolkit: true
+
+  driver:
+    enabled: {{ .Values.clusterPolicy.driver.enabled }}
+    useOpenKernelModules: {{ .Values.clusterPolicy.driver.useOpenKernelModules }}
+    {{- if .Values.clusterPolicy.driver.usePrecompiled }}
+    usePrecompiled: true
+    {{- end }}
+    {{- with .Values.clusterPolicy.driver.version }}
+    version: {{ . | quote }}
+    {{- end }}
+    rdma:
+      enabled: {{ .Values.clusterPolicy.driver.rdma.enabled }}
+    upgradePolicy:
+      autoUpgrade: {{ .Values.clusterPolicy.driver.upgradePolicy.autoUpgrade }}
+      maxParallelUpgrades: {{ .Values.clusterPolicy.driver.upgradePolicy.maxParallelUpgrades }}
+      maxUnavailable: {{ .Values.clusterPolicy.driver.upgradePolicy.maxUnavailable | quote }}
+      waitForCompletion:
+        timeoutSeconds: {{ .Values.clusterPolicy.driver.upgradePolicy.waitForCompletion.timeoutSeconds }}
+
+  toolkit:
+    enabled: {{ .Values.clusterPolicy.toolkit.enabled }}
+
+  devicePlugin:
+    enabled: {{ .Values.clusterPolicy.devicePlugin.enabled }}
+
+  dcgmExporter:
+    enabled: {{ .Values.clusterPolicy.dcgmExporter.enabled }}
+    {{- if .Values.clusterPolicy.dcgmExporter.serviceMonitor.enabled }}
+    serviceMonitor:
+      enabled: true
+    {{- end }}
+
+  gfd:
+    enabled: {{ .Values.clusterPolicy.gfd.enabled }}
+
+  nodeStatusExporter:
+    enabled: {{ .Values.clusterPolicy.nodeStatusExporter.enabled }}
+
+  sandboxWorkloads:
+    enabled: {{ .Values.clusterPolicy.sandboxWorkloads.enabled }}
+
+  {{- if .Values.clusterPolicy.mig.enabled }}
+  mig:
+    strategy: {{ .Values.clusterPolicy.mig.strategy }}
+  {{- end }}
