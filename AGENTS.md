@@ -19,60 +19,66 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 
 ## Workspace Extensions
 
-Pi extensions live in `submodules/`. Key repos:
-- `zanshin-pi-extension/` — working discipline L0, commands (/spar, /shoshin, /checkpoint, /summarize-session, stack)
+Pi extensions live in `submodules/`. When a task requires working with extension code, check the appropriate submodule.
+
+Key repos:
+- `zanshin-pi-extension/` — working discipline L0, commands (`/spar`, `/shoshin`, `/checkpoint`, stack)
 - `paude-pi-extension/` — Paude container awareness injected into system prompt
-- `pi-openai-compat/` — OpenAI-compatible provider
-- `pi-anthropic-vertex/` — Anthropic Vertex provider
-- `lid-pi-extension/` — LID extension
+- `lid-pi-extension/` — linked-intent development workflow
 
-To edit an extension: work directly in the submodule directory, commit, and push.
+Submodules may need manual init in a new container: `git submodule update --init --recursive`. See `rules/submodule-workflow.md` for troubleshooting.
 
-**Submodule initialization:**
+---
 
-Submodule directories may be empty (git placeholders without cloned content). Before working with a submodule, always check:
+## Session Awareness
 
-```bash
-# Fast check — shows state with prefix indicators:
-# - empty (not initialized) | + modified | U merge conflict
-ls submodules/
-git -C . submodule status | head -10
+This workspace has persistent project state that survives across sessions. When starting work or when the user's intent is unclear, check these context sources before asking questions:
 
-# Initialize a specific one:
-git submodule update --init submodules/<name>
+- **`ABOUT.md`** — Read first. The workspace owner's self-description; takes precedence over corpus inferences.
+- **`BACKLOG.md`** — In-progress work, what's coming next. The `/start` skill provides a structured orientation.
+- **`.planning/whats-next.md`** — Handoff from a previous session. Staleness-check: if commits have been made since this was written, cross-reference against the backlog and git log.
+- **`STYLE.md`** (repo root) — Workspace-level writing defaults. Check before writing any `docs/` content.
+- **`.planning/`** — Project briefs, roadmaps, style supplements.
+- **`library/`** — Personal reference library.
+- **Recent git log** — When there is no handoff file, the git log *is* the handoff.
 
-# Initialize all at once:
-git submodule update --init --recursive
-```
+---
 
-The paude container is supposed to auto-init submodules on session start via `entrypoint-session.sh`, but this can fail silently if the container image wasn't rebuilt after changes to the init hook. If a submodule is empty, **assume it needs manual init** — don't assume the code exists just because the directory is listed.
+## In-Session Context Awareness
 
-An empty submodule directory means you cannot inspect its code, understand its behavior, or debug issues inside it. When debugging a workspace problem, submodule state is often the first thing to check.
+**Re-read before deciding.** If a decision depends on the contents of a specific file, read it before deciding, even if you read it earlier in the session. Don't rely on summarized memory of what it said. Committed files are always accurate; in-context memory may not be after compaction.
 
-**Troubleshooting:**
-- Empty directory + `git submodule status` shows `-<hash>` → not initialized, run `git submodule update --init`
-- `git submodule status` shows `+<hash>` → initialized but pointing to different commit than recorded
-- `git ls-remote <url> HEAD` → check if the repo is reachable (useful for network/permission issues)
-- Empty directory that should have been auto-initialized → likely the container image needs rebuilding (the init hook exists in code but isn't baked into the running image)
+**Commits are the truth anchor.** The committed state of the repo is reliable regardless of context state. When in doubt about what a file contains, read it. When in doubt about what decisions were made, check the git log.
 
-**Requirements:** Submodule clone requires SSH keys or HTTPS access. If `git submodule update --init` fails, check that SSH keys are available on the host or that the workspace was cloned with `--recurse-submodules`.
+**Surface compaction rather than guessing.** If a reference feels uncertain, say so explicitly rather than proceeding on a compressed memory. Re-read the source.
 
-**Branching in submodules:** Always branch from the upstream default branch, not the pinned commit the submodule currently points to. Before creating a branch:
+---
 
-```bash
-# Find the upstream default branch
-git -C submodules/<name> remote show origin | grep 'HEAD branch'
+## Shoshin — Beginner's Mind
 
-# Fetch and branch from it
-git -C submodules/<name> fetch origin
-git -C submodules/<name> checkout -b <branch> origin/<default-branch>
-```
+> Extends `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` — workspace-specific depth.
 
-For forks like `paude`, the default branch is `develop`. Branching off the pinned commit instead creates a PR with a bad base and a merge conflict.
+Approach project context as if encountering it for the first time. This counters the tendency to inherit framing from prior sessions or handoff documents without verifying against source documents.
 
-## Context Memory
+**Read the brief**, not just the backlog or handoff. The brief is the authoritative statement of scope and purpose. If the backlog says one thing and the brief says another, surface the conflict.
 
-Maintain a brief engineering journal for decisions and context that matter across sessions. Log when you: choose an approach or tool, change scope mid-task, make an architectural decision, or encounter a non-obvious constraint. Keep it short — one paragraph is enough. A research spike is pending to design the right form factor and integration with BACKLOG.md and the library wiki.
+**Don't trust the handoff alone.** `.planning/whats-next.md` captures one session's framing. It may carry assumptions that have drifted from the brief.
+
+**When scope language appears** — "actually, let's broaden this to...", "I've been rethinking..." — acknowledge the shift explicitly, surface which documents need updating, and update as a set. If a `.planning/*/CHANGELOG.md` exists, add an entry capturing what changed and why.
+
+---
+
+## Case Study Reflection
+
+When completing a non-trivial piece of work — building a tool, solving a multi-step problem, creating a new workflow pattern — briefly consider:
+
+1. Does this work demonstrate a pattern that connects to an existing essay in `docs/`?
+2. Could this work become its own case study?
+3. Does this work validate or challenge a claim made in an existing doc?
+
+When yes, add a seed to `BACKLOG.md` under **Ideas** with the `Case study:` prefix, then commit immediately with a `backlog:` prefix. Mention it briefly to the user.
+
+**Not for trivial work** — don't capture every config change or file rename.
 
 ---
 
@@ -82,55 +88,14 @@ After producing substantive output — especially content in the author's voice,
 
 ---
 
-## Review Tracking
-
-New files must have `review: status: unreviewed` added by the agent.
-
-**Flag biographical content at generation time.** When new content contains first-person biographical claims, note: "This draft contains biographical statements on lines N–M that need voice-approved review."
-
-**Flag when editing a reviewed file.** Before editing any file with `review: status: reviewed`, note: "This file has been reviewed (read: DATE). This edit will make the review stale." Proceed, but make the staleness visible.
-
-**AI disclosure footer** on new files: *This document was created with AI assistance and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
-
----
-
-## Backlog Capture
-
-Capture ideas and deferred tasks immediately — don't batch to session end.
-
-**When to capture:**
-- User says "we should also..." / "another thought..." / "later we could..."
-- A follow-up task emerges from current work
-- Current work reveals a gap or improvement opportunity out of scope right now
-
-**How:** Add to `BACKLOG.md` `## Ideas` section with product tag, context, links. Every backlog update gets its own commit with `backlog:` prefix. Include enough context that a fresh session understands the item without the original conversation.
-
----
-
-## Pre-Commit Review
-
-Scale review depth to the change. **Always**, regardless of scale:
-
-1. Check for reviewed files — flag any file with `review: status: reviewed`.
-2. Verify new http/https links. AI fabricates URLs.
-3. Scan for secrets, credentials, tokens.
-
-**Full `/review` — required for:** new files, changes touching 5+ files, structural changes, directory moves.
-
-**Quick review — sufficient for:** small edits to 1-3 files, backlog updates, frontmatter changes, typo fixes.
-
----
-
 ## Cross-Linking
 
-When creating or modifying content:
+When creating or modifying content, see the `/cross-link` skill for the full process. The key principle: every new doc needs a home in the appropriate README's table of contents.
 
 - **New file in `docs/`** — add to track `README.md` and `docs/README.md`. Add to Related Reading of related essays.
-- **New file in `library/`** — follow the 4-step ingest checklist below.
-- **New directory in `research/`** — add to `research/README.md`. Add `.library-exempt` if internal infrastructure.
-- **New planning project** — ensure a corresponding backlog item exists.
+- **New file in `library/`** — follow the 4-step ingest checklist in the Library section.
+- **New directory in `research/`** — add to `research/README.md`.
 - **Renamed or moved file** — search for and update markdown links pointing to the old path.
-- **Inline links** — when mentioning a specific file, command, rule, or skill by name in prose, link it on first mention in that section.
 
 ---
 
@@ -138,9 +103,10 @@ When creating or modifying content:
 
 - `devops/` — product-specific technical reference (`ansible/`, `argo/`, `coreos/`, `ocp/`, `rhacm/`, `vault/`)
 - `docs/` — essays and guides: `ai-engineering/`, `philosophy/`, `case-studies/` — each with `README.md`; master index at `docs/README.md`
-- `library/` — **wiki layer**: enriched entries indexed in `library/README.md` and `library/catalog.md`; every ingest logged in `library/log.md`
+- `library/` — **wiki layer**: enriched entries indexed in `library/README.md` and `library/catalog.md`
 - `research/` — **workshop/drawer layer**: raw sources and transcripts that feed the library wiki; indexed in `research/README.md`
 - `.planning/` — project briefs, roadmaps, style supplements
+- `rules/` — technical reference rules (branching, shell strict mode, structured edits, worktrees, submodules). Referenced by AGENTS.md, not embedded.
 - `STYLE.md` — workspace-level writing defaults
 - `ABOUT.md` — workspace owner identity
 - `BACKLOG.md` — project tracking (`> State:` line)
@@ -167,6 +133,14 @@ An orphaned transcript in `research/*/sources/` with no library entry is an inco
 
 ---
 
-## Workspace Changes — Intent First
+## Context Memory
+
+Maintain a brief engineering journal for decisions and context that matter across sessions. Log when you: choose an approach or tool, change scope mid-task, make an architectural decision, or encounter a non-obvious constraint. Keep it short — one paragraph is enough.
+
+---
+
+## Intent First
 
 Before touching 3+ files or adding commands, skills, or rules: write a one-paragraph intent note in `.planning/` or the commit message that answers *why* — not just *what*. This prevents the pattern where a future agent can't tell why something exists and refactors it away.
+
+For structured changes: see the `/lid` skill for touch/change/restructure scaling.

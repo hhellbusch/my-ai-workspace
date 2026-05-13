@@ -1,10 +1,4 @@
----
-description: Use git worktrees to isolate parallel agent tasks — each agent or long-running task gets its own working directory and branch
-globs:
-alwaysApply: true
----
-
-# Git worktrees for parallel agent work
+# Git Worktrees for Parallel Agent Work
 
 When multiple agents (or an agent and a human session) are working on the same repo simultaneously, each must have its own git worktree. A shared working tree means competing staging areas, dirty-state collisions, and work landing on the wrong branch.
 
@@ -19,8 +13,8 @@ When multiple agents (or an agent and a human session) are working on the same r
 Worktrees live **inside** the main workspace under `worktrees/`:
 
 ```
-~/gemini-workspace/                        ← main worktree (main branch)
-~/gemini-workspace/worktrees/{slug}/       ← agent task worktree
+~/workspace/                          ← main worktree (main branch)
+~/workspace/worktrees/{slug}/         ← agent task worktree
 ```
 
 `worktrees/` is gitignored — git tracks the branch, not the working directory on disk.
@@ -31,13 +25,13 @@ Worktrees live **inside** the main workspace under `worktrees/`:
 
 ```bash
 # New branch (most common — new task)
-git -C ~/gemini-workspace worktree add worktrees/{slug} -b {slug}
+git -C ~/workspace worktree add worktrees/{slug} -b {slug}
 
 # Existing branch (resuming or handing off)
-git -C ~/gemini-workspace worktree add worktrees/{slug} {branch-name}
+git -C ~/workspace worktree add worktrees/{slug} {branch-name}
 ```
 
-The agent or task then runs inside `~/gemini-workspace/worktrees/{slug}/`. It has its own index and staging area. Both share the same `.git` object store — no repo duplication.
+The agent or task then runs inside `~/workspace/worktrees/{slug}/`. It has its own index and staging area. Both share the same `.git` object store — no repo duplication.
 
 ## Listing and removing
 
@@ -46,7 +40,7 @@ The agent or task then runs inside `~/gemini-workspace/worktrees/{slug}/`. It ha
 git worktree list
 
 # Remove after branch is merged
-git worktree remove ~/gemini-workspace/worktrees/{slug}
+git worktree remove ~/workspace/worktrees/{slug}
 git branch -d {slug}
 ```
 
@@ -55,9 +49,9 @@ git branch -d {slug}
 `cd` into the worktree before running `paude create` — it infers the workspace from `cwd`. The agent commits to its isolated branch; harvest the diff and open a PR to main when done.
 
 ```bash
-git -C ~/gemini-workspace worktree add worktrees/{slug} -b {slug}
-cd ~/gemini-workspace/worktrees/{slug}
-paude create {slug} --git --yolo --prompt-file ~/gemini-workspace/.planning/.../spec.md
+git -C ~/workspace worktree add worktrees/{slug} -b {slug}
+cd ~/workspace/worktrees/{slug}
+paude create {slug} --git --yolo --prompt-file ~/workspace/.planning/.../spec.md
 ```
 
 > `--git` is a boolean flag, not a path. The workspace is always the current directory.
@@ -68,4 +62,4 @@ paude create {slug} --git --yolo --prompt-file ~/gemini-workspace/.planning/.../
 - Never run two agents against the same worktree simultaneously
 - Keep worktree slug and branch name identical — reduces confusion
 - Remove worktrees promptly after merge — stale worktrees lock the branch
-- The main workspace (`~/gemini-workspace`) stays on `main` or a stable base; task branches live in sibling worktrees
+- The main workspace stays on `main` or a stable base; task branches live in sibling worktrees

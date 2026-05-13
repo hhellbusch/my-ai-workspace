@@ -1,9 +1,3 @@
----
-description: Discipline for insertion-vs-replacement edits in structured files (Python and others)
-globs:
-alwaysApply: true
----
-
 # Structured Edit Discipline
 
 Applies to any edit where the goal is **inserting** code before or after an existing block — not replacing it.

@@ -1,9 +1,3 @@
----
-description: Keep main stable by doing experiments and drafts on branches, then merge reviewed work
-globs:
-alwaysApply: true
----
-
 # Branching Strategy — Stable Main, Branched Work
 
 `main` is the checkpointed, stable line of work in this repository.
@@ -44,7 +38,7 @@ If uncertain, branch.
 
 ## Worktrees and branches
 
-This rule complements `git-worktrees.mdc`:
+This rule complements `git-worktrees.md`:
 - Worktrees isolate concurrent tasks
 - Branches isolate units of change
 
