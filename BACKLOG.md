@@ -46,11 +46,11 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ### Distributed agent methodology: git worktrees → paude → OpenShift
 - **Product:** meta / tooling / paude-integration
-- **Context:** Near-term parallel agent work is unblocked via git worktrees (rule added: `.cursor/rules/git-worktrees.mdc`, section in `CLAUDE.md`). Convention: each agent task gets its own working directory and branch at `~/gemini-workspace-{slug}/`. Medium-term: paude replaces manual worktree management with containerized isolation + git sync. Long-term: paude on OpenShift provides proper distributed orchestration with shared memory (Level 6 / OpenBrain pattern from Simon Scrapes taxonomy). Each stage subsumes the previous. See memory architecture synthesis in `research/pai-kai-paude/findings/ref-02-memory-systems.md` for the three-layer memory model that should accompany this (session brief / working memory / long-term recall).
-- **Stage 1 — done:** `.cursor/rules/git-worktrees.mdc` + `CLAUDE.md` section. Manual worktree-per-task convention.
+- **Context:** Near-term parallel agent work is unblocked via git worktrees (rule added: `rules/git-worktrees.md`, section in `AGENTS.md`). Convention: each agent task gets its own working directory and branch at `~/gemini-workspace-{slug}/`. Medium-term: paude replaces manual worktree management with containerized isolation + git sync. Long-term: paude on OpenShift provides proper distributed orchestration with shared memory (Level 6 / OpenBrain pattern from Simon Scrapes taxonomy). Each stage subsumes the previous. See memory architecture synthesis in `research/pai-kai-paude/findings/ref-02-memory-systems.md` for the three-layer memory model that should accompany this (session brief / working memory / long-term recall).
+- **Stage 1 — done:** `rules/git-worktrees.md` + `AGENTS.md` section. Manual worktree-per-task convention.
 - **Stage 2 — next:** Paude as the worktree manager. Task specs drive container create/assign/harvest; human reviews diffs. Relates to `.planning/paude-integration/phases/04-multi-agent/`.
 - **Stage 3 — later:** OpenShift + shared agent memory (OpenBrain / Mem0 / MemPalace). Multiple Paude containers sharing a memory layer. MemPalace's MCP interface (29 tools, wings/rooms/drawers) is the leading candidate for the verbatim/retrieval layer. Evaluate whether it integrates cleanly with Paude's container isolation model. See `library/mempalace.md`.
-- **Links:** `.cursor/rules/git-worktrees.mdc`, `.planning/paude-integration/phases/04-multi-agent/`, `research/pai-kai-paude/findings/ref-02-memory-systems.md`, `library/simon-scrapes-claude-code-memory-systems.md`, `library/mempalace.md`, `library/karpathy-llm-wiki.md`
+- **Links:** `rules/git-worktrees.md`, `.planning/paude-integration/phases/04-multi-agent/`, `research/pai-kai-paude/findings/ref-02-memory-systems.md`, `library/simon-scrapes-claude-code-memory-systems.md`, `library/mempalace.md`, `library/karpathy-llm-wiki.md`
 - **Added:** 2026-04-30
 
 ### Guide: agentic personal AI infrastructure (PAI/Kai pattern)
@@ -129,7 +129,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### Research: LID (Linked-Intent Development) — enterprise-validated agentic SDD methodology
 - **Product:** research / meta / devops
 - **Source:** https://github.com/jszmajda/lid
-- **Status:** Incorporated — lid-pi-extension scaffolded to a degree - want to revisit and expand (2026-05-03). Non-code arrow adaptation written. Cursor rule and CLAUDE.md section added. Remaining: extract to own repo, open upstream discussion about non-code adaptation.
+- **Status:** Incorporated — lid-pi-extension scaffolded to a degree - want to revisit and expand (2026-05-03). Non-code arrow adaptation written. Rules and AGENTS.md section added. Remaining: extract to own repo, open upstream discussion about non-code adaptation.
 - **What it is:** A spec-driven development methodology purpose-built for agentic coding. Core claim: **code is output, not the artifact you maintain.** Intent is made explicit and traceable through a five-level chain: HLD → LLDs → EARS specs → Tests → Code. The design documents are the system; code is compiled from them. Done correctly, you can delete all tests and code and regenerate them from the documents alone.
 - **Three research angles worth pursuing:**
   1. **LID as Paude brief format.** The existing Paude assessment (Signal 3) asks: what level of task specification lets a fire-and-forget agent produce interactive-session quality? LID's HLD + LLD + EARS is a structured answer. A YOLO-mode agent given a LID-formatted spec has the why (HLD), the how (LLD), the what (EARS), and success criteria (specs). Code failures are recoverable — re-run from specs. Intent wasn't lost, only the output was.
@@ -149,16 +149,16 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** https://github.com/jszmajda/lid, https://linked-intent.dev/, `.planning/paude-integration/`, `research/pai-kai-paude/`
 - **Added:** 2026-04-29
 
-### Evaluate caveman for token savings (output compression + CLAUDE.md compress)
+### Evaluate caveman for token savings (output compression + AGENTS.md compress)
 - **Product:** meta / tooling
 - **Context:** [caveman](https://github.com/JuliusBrussee/caveman) (50k stars, now 52.5k) is a Claude Code skill/plugin that instructs the agent to respond in telegraphic "caveman speak" — dropping articles, filler, pleasantries — while keeping full technical accuracy. Benchmarks claim ~65% average output token savings (range 22–87%). Two distinct capabilities worth evaluating separately:
   1. **Output compression (caveman mode):** makes agent responses terser. Potential conflict: the workspace writing style is practitioner voice (direct, not telegraphic). Useful in YOLO/Paude sessions where no human reads responses directly; less appropriate for sessions producing docs or essays.
-  2. **`caveman-compress`:** rewrites memory files (CLAUDE.md, etc.) into compressed form for AI reading while keeping a human-readable `.original.md` backup. Claims ~46% average input token savings on prose files. More workspace-compatible — CLAUDE.md simplification just done would compound with this. Try: `/caveman:compress CLAUDE.md`.
+  2. **`caveman-compress`:** rewrites memory files into compressed form for AI reading while keeping a human-readable `.original.md` backup. Claims ~46% average input token savings on prose files.
 - **Pi extension:** A community Pi port exists at [habitssss/pi-caveman-mode](https://github.com/habitssss/pi-caveman-mode) — installs via `pi install git:github.com/habitssss/pi-caveman-mode`. Caveman mode most useful in headless paude sessions where no human reads agent output directly.
 - **Ecosystem:** also ships `cavemem` (SQLite cross-agent memory) and `cavekit` (spec-driven autonomous build loop) — both relevant to Paude orchestration thread.
 - **Install (Claude Code):** `claude plugin marketplace add JuliusBrussee/caveman && claude plugin install caveman@caveman`
 - **Install (Cursor):** `npx skills add JuliusBrussee/caveman -a cursor`
-- **Key question:** does caveman-compress on CLAUDE.md survive round-trip? Human edits the `.original.md`, re-runs compress — does it degrade? Check before adopting.
+- **Key question:** does caveman-compress survive round-trip? Human edits the `.original.md`, re-runs compress — does it degrade? Check before adopting.
 - **Links:** https://github.com/juliusbrussee/caveman
 - **Added:** 2026-04-29
 
@@ -174,8 +174,8 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ### Shell strict mode — retrofit existing scripts
 - **Product:** devops / tooling
-- **Context:** `.cursor/rules/shell-strict-mode.mdc` was added (2026-04-21) enforcing `#!/usr/bin/env bash` + `set -euo pipefail` on all `.sh`/`.bash` files. 7 existing scripts in `devops/argo/examples/scripts/` do not yet comply (pre-rule). Additional scripts in `devops/ansible/examples/` and `.cursor/skills/` also unchecked. Retrofit is low-risk but needs per-script review — some may be candidate for the intentional-exception pattern. No urgency; new scripts are covered by the rule.
-- **Links:** `.cursor/rules/shell-strict-mode.mdc`, `devops/argo/examples/scripts/`
+- **Context:** `rules/shell-strict-mode.md` was added (2026-04-21) enforcing `#!/usr/bin/env bash` + `set -euo pipefail` on all `.sh`/`.bash` files. 7 existing scripts in `devops/argo/examples/scripts/` do not yet comply (pre-rule). Additional scripts also unchecked. Retrofit is low-risk but needs per-script review — some may be candidate for the intentional-exception pattern. No urgency; new scripts are covered by the rule.
+- **Links:** `rules/shell-strict-mode.md`, `devops/argo/examples/scripts/`
 - **Added:** 2026-04-21
 
 
@@ -524,7 +524,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
   1. **Home / local:** Ollama exposing an OpenAI-compatible endpoint (`http://localhost:11434/v1`). Paude containers would need to reach the host network. The binding question is model capability: agentic work (tool use, long context, multi-step planning) requires a model that follows system prompts precisely and handles function-calling reliably. Candidates worth benchmarking: Qwen2.5-Coder-32B, Devstral, Gemma3. Hardware constraint: see existing case study "When the Bus Is the Bottleneck" — PCIe bandwidth is the ceiling for large models in hybrid RAM/GPU inference.
   2. **OpenShift AI + vLLM:** OpenShift AI provides vLLM as a model-serving runtime (single-model serving via KServe). Exposes an OpenAI-compatible `/v1` endpoint that Paude could target by setting `ANTHROPIC_BASE_URL` (if Claude Code supports it) or via LiteLLM as a translation proxy. This is the more scalable path — dedicated GPU nodes, model pinned, inference isolated from the Paude containers. Also where **llm-d** becomes relevant: Red Hat's disaggregated inference project, designed for large models that exceed a single node's GPU capacity. Worth watching maturity before adopting; vLLM is the production-ready choice today.
 - **The unsolved problem — tool use fidelity:** Cloud models (Claude Sonnet) are significantly ahead of local models on the tool-calling / agentic behavior that Paude depends on. The risk: a local model that "works" for chatting fails at the multi-step agent loop because it hallucinates tool calls or ignores system prompt constraints. The measurement question: what does a passing vs. failing agent run look like, and can you detect failure without watching every step?
-- **Interesting intersection:** caveman-compress reduces input tokens per session (see caveman backlog item). If running on a local model with a smaller context window, this compounds — a compressed CLAUDE.md matters more when you're at 8k context than at 200k.
+- **Interesting intersection:** caveman-compress reduces input tokens per session (see caveman backlog item). If running on a local model with a smaller context window, this compounds — a compressed workspace config matters more when you're at 8k context than at 200k.
 - **Key questions for a scoping session (grill-me candidate):**
   - Does Paude support `ANTHROPIC_BASE_URL` or `OPENAI_BASE_URL` overrides to point at a local endpoint?
   - Is LiteLLM required as a translation layer, or does vLLM's OpenAI compatibility cover Claude Code's API calls directly?
