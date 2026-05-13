@@ -64,6 +64,8 @@ Practical, runnable examples and troubleshooting guides for infrastructure and p
 - **[CoreOS](devops/coreos/)** — Ignition/Butane configurations
 - **[RHACM](devops/rhacm/)** — Multi-cluster management, policy and governance
 - **[Vault](devops/vault/)** — HashiCorp Vault integration patterns
+- **[Git](devops/git/)** — Learning guide for developers: content-addressable filesystems, object model, reflog, bisect
+- **[Paude Proxy](devops/paude-proxy/)** — Reverse proxy for TLS inspection, certificate management, and API access control
 
 ---
 
@@ -79,7 +81,7 @@ git submodule update --init --recursive
 
 **Share specific pieces** — individual `docs/` files are the primary sharing unit. Sharing a direct GitHub link to an essay or case study is the intended workflow.
 
-**Use as a template** — the `.cursor/` directory (slash commands, skills, rules) is designed to be portable. Clone the repo and add it as a reference folder in Copilot, VS Code, Cursor, or similar tools to load the workflow patterns into your own context. [Zanshin — Portable Session Context](docs/ai-engineering/framework-bootstrap.md) is the single-file entry point: point your AI at that file and it operates with the framework's posture immediately. [The Session Framework](docs/ai-engineering/session-framework.md) has the full behavioral map and reasoning behind each practice.
+**Use as a template** — the workspace structure (`.agents/skills/`, `rules/`, `AGENTS.md`, `.planning/`) is designed to be portable. Clone this repo alongside a project and reference these files in your AI tool's context to load the workflow patterns. [Zanshin — Portable Session Context](docs/ai-engineering/framework-bootstrap.md) is the single-file entry point: point your AI at that file and it operates with the framework's posture immediately. [The Session Framework](docs/ai-engineering/session-framework.md) has the full behavioral map and reasoning behind each practice.
 
 Details and structure in [.cursor/README.md](.cursor/README.md). The [backlog](BACKLOG.md) shows what's actively in progress.
 
