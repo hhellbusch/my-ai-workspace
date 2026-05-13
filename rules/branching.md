@@ -30,6 +30,16 @@ Use short kebab-case slugs.
 
 If uncertain, branch.
 
+## Force-push discipline
+
+**Never force-push to `main`.** Ever.
+
+Force-push rewrites history that other sessions (and paude harvest cycles) depend on. It breaks the repo as truth anchor — a fresh session fetching from origin will silently discard commits it hasn't seen.
+
+Force-push is allowed only on feature/experiment branches you own, and only before those branches are merged to main.
+
+If you need a clean history on a branch, rebase or squash locally before merging. If you've already force-pushed to main (you shouldn't have), the fix is to recover: check the reflog, identify the lost commits, and reconstruct.
+
 ## Merge discipline
 
 - Prefer `git merge --no-ff` to preserve branch boundaries in history
