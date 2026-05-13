@@ -26,9 +26,6 @@ Four entry points. Each works standalone.
 **Curious about how AI shapes how we think — ego, agreement, sycophancy:**
 [Ego, AI, and the Zen Antidote](docs/philosophy/ego-ai-and-the-zen-antidote.md) — AI assistants are trained to agree with you. This essay traces why that's a structural problem (not just a behavior to watch for), and what Zen practices offer as a structural — not just behavioral — response.
 
-**Want to adopt the collaboration framework in your own work:**
-[Zanshin — Portable Session Context](docs/ai-engineering/framework-bootstrap.md) — the single-file bootstrap for loading the Zanshin framework into any AI tool. Clone this repo alongside a project, point your AI at this file, and get the framework's behavioral posture without Cursor-specific setup. Covers the core dispositions, minimum viable load, and tool-specific instructions (Copilot, Claude Code, chat-based AI).
-
 ---
 
 ## Essays and Case Studies
