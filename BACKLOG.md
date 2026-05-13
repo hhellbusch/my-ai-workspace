@@ -95,6 +95,11 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### Case study: command execution ≠ comprehension — how a guard learned to embed rather than delegate
+- **Product:** docs (case-studies)
+- **Context:** The commit-guard review gate went through three designs in one session: (1) human dialog — asks the user to proceed or cancel; (2) `sendUserMessage` telling the agent to run `git diff --cached` — mechanical compliance, the agent runs the command and retries without reasoning; (3) guard fetches the diff itself and embeds it in the message with a checklist — the agent must engage with actual content to formulate a response. The progression names a general failure mode in AI guardrails: a guard that enforces *a behavior* (command was run) is weaker than one that enforces *engagement with content* (diff is in the conversation). The session also revealed that `stagedReviewed` tracking command execution is the wrong signal — tracking whether the content is in the conversation is better. Connects to: prompt engineering as precision engineering; the difference between compliance and comprehension in automated review.
+- **Added:** 2026-05-13
+
 ### relative-link-guard: skip code block content
 - **Product:** zanshin-pi-extension
 - **Context:** Guard scans all new `+` diff lines including content inside fenced code blocks. This causes false positives when a rules doc shows a "don't do this" example with a relative path. Fix: track when we're inside ``` fences while scanning the diff and skip link extraction for those lines.
