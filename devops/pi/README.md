@@ -79,6 +79,67 @@ Controlled by `getQuietStartup()`. If quiet mode is on, sections are suppressed 
 
 ---
 
+---
+
+## Extension Patterns
+
+The zanshin-pi-extension bundles four `.ts` extensions under `extensions/`, all auto-discovered via the package.json `"extensions"` field. They follow two architectural patterns.
+
+### Pattern 1: Session lifecycle hooks (zanshin.ts)
+
+Subscribes to pi event hooks for state management and behavioral posture:
+
+- **`before_agent_start`** — Injects L0 discipline text into the system prompt
+- **`session_start`** — Restores stack state from prior sessions; auto-notifies shoshin when a project brief is detected
+- **`tool_result`** — Tracks `write`/`edit` calls for progressive bookkeeping (checkpoint counter)
+- **`session_shutdown`** — Warns if uncommitted changes exist without a checkpoint
+- **Command registration** — `/spar`, `/shoshin`, `/checkpoint`, `/push`, `/pop`, `/stack` are registered as slash commands with handlers that delegate to the LLM
+
+Key API: `pi.appendEntry("zanshin-changes", { count })` for cross-session state persistence.
+
+### Pattern 2: Bash command interception (risky-ops-guard, process-guard, git-force-push-guard)
+
+Intercepts `tool_call` events on bash commands, detects specific patterns via regex, and requires user confirmation before proceeding.
+
+```typescript
+export default function (pi: ExtensionAPI) {
+  pi.on("tool_call", async (event, ctx) => {
+    if (!isToolCallEventType("bash", event)) return;
+    const command = event.input.command ?? "";
+    const match = detectRiskyOp(command);
+    if (!match) return;
+
+    const ok = await ctx.ui.confirm("Risky operation detected", `
+This command may cause irreversible data loss (${match}):
+
+  ${command}
+
+Proceed?
+`);
+
+    if (!ok) {
+      return { block: true, reason: `Blocked: user declined (${match}).` };
+    }
+  });
+}
+```
+
+This pattern is the reuse mechanism — the same scaffolding (detect → confirm → block-or-allow) is applied to three different domains:
+
+| Extension | What it blocks | Scope |
+|-----------|---------------|-------|
+| `risky-ops-guard.ts` | `rm -rf`, `chmod -R`, `shred`, `dd of=/dev/`, `mkfs`, `truncate -s 0` | Irreversible file operations |
+| `process-guard.ts` | `pkill`, `killall`, `kill -9`, `kill -SIGKILL`, `fuser -k`, `lsof | xargs kill` | Process termination |
+| `git-force-push-guard.ts` | `git push --force`, `git push -f` to main/master/develop | History rewriting |
+
+The guard pattern is designed to be copy-pasted and customized: change the regex patterns, change the confirmation message, and it works. No new scaffolding needed.
+
+### Extension loading
+
+Extensions are auto-discovered from any package that declares `"extensions": ["./extensions"]` in its `package.json`. They live at `~/.pi/agent/git/github.com/hhellbusch/<name>/extensions/` for installed packages, or at `~/.pi/agent/extensions/` for direct installs. No manual wiring or config updates needed — pi scans the directory on load.
+
+---
+
 ## Troubleshooting checklist
 
 1. **`! ls .agents/skills/`** — confirm skill directories are present with `SKILL.md` inside
