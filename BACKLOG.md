@@ -432,6 +432,18 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Links:** `.planning/zen-karate/essay-outlines.md`, `BACKLOG.md` (Essay 2 Up Next entry)
 - **Added:** 2026-04-19
 
+### Case study: the three-context gap — when locally correct solves the wrong problem
+- **Product:** docs
+- **Context:** Reconstructed from git forensics on the paude fork (May 2026). When operator context, project context, and agent context are each internally consistent but misaligned at the seams, the agent solves the local problem correctly while the operator lacks the upstream context to know it's the wrong problem. Concrete instance: fork created after upstream had already solved credential isolation via paude-proxy; operator's mental model was anchored on evaluation-era paude (v0.15); agent was tasked with "make Vertex auth work" and produced a coherent, tested solution — which reimplemented what upstream had shipped four weeks earlier. All three contexts were coherent; the gap was between them. Key insight: the gap widens exactly when the task feels clear enough to skip reconnaissance. Mitigation shape: explicit "does this problem already have an upstream solution?" before implementation, or a research-first step scoped to upstream changelog. Connects to `ai-assisted-upstream-contributions.md` (reading upstream before building) and `the-full-cup.md` (stale mental model as full cup). Also connects to `interaction-patterns.md` — the meta-prompt pipeline's research stage is the structural answer.
+- **Links:** `.planning/paude-integration/findings/2026-05-13-adc-proxy-migration-scope.md`, `docs/ai-engineering/ai-assisted-upstream-contributions.md`, `docs/ai-engineering/interaction-patterns.md`, `docs/philosophy/the-full-cup.md`
+- **Added:** 2026-05-14
+
+### Case study: git as memory — agent detective work on a forked codebase
+- **Product:** docs
+- **Context:** Same session as the three-context gap case study (paude fork, May 2026). The task was "trace how we got here" — understanding why a workaround existed, whether it was deliberate, and what the correct path forward was. The agent used git log, git show, git stash, GitHub API calls, and cross-referencing across submodules to reconstruct a full causal chain: fork creation date, upstream changelog during the gap period, the specific commit that introduced the workaround, the co-authorship signal, and the one-day timing gap between the workaround and upstream's real fix. The operator described this as "detective work." Worth documenting as a distinct use case: AI-assisted forensic archaeology on a codebase, where the value isn't generating new code but reconstructing context that no single human held. The git log is a form of persistent memory that survives context compaction; the agent can read it cold and reconstruct intent from evidence. Pairs naturally with the three-context gap case study.
+- **Links:** `.planning/paude-integration/findings/2026-05-13-adc-proxy-migration-scope.md`, `docs/ai-engineering/what-a-context-window-actually-is.md`
+- **Added:** 2026-05-14
+
 ### Case study: genuine net loss — no recovery
 - **Product:** docs
 - **Context:** The case study collection has survivorship bias: every documented example was noticed, named, and addressed. A case study about a session that produced a net loss without useful recovery — a tool built and abandoned, work that had to be redone, an AI-assisted approach that made things worse — would make the collection more honest. Needs real material when it presents itself; don't construct one. The survivorship note is now in the case studies README and docs/README.md evidence scope block.
