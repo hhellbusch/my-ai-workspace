@@ -8,22 +8,24 @@
 
 ## A40 Profile Mapping
 
-The A40 has 48 GB VRAM. The Q-series naming convention uses the **number of slices** (not VRAM), so the profile name is `A40-<slices>Q`.
+The A40 has 48 GB VRAM. The Q-series naming convention uses the **framebuffer size in GB** (not the slice count), so the profile name is `A40-<GB_per_slice>Q`.
 
-| Profile | VRAM/slice | VMs per GPU | Notes |
+Source: [NVIDIA Grid vGPU User Guide — Virtual GPU Types for NVIDIA A40](https://docs.nvidia.com/vgpu/latest/grid-vgpu-user-guide/#virtual-gpu-types-grid)
+
+| Profile | Framebuffer | VMs per GPU | Notes |
 |---------|-----------|-------------|-------|
-| `A40-1Q` | 48 GB | 1 | Full GPU |
-| `A40-2Q` | 24 GB | 2 | |
-| `A40-3Q` | 16 GB | 3 | |
-| `A40-4Q` | 12 GB | 4 | |
-| **`A40-6Q`** | **8 GB** | **6** | ← target |
-| `A40-8Q` | 6 GB | 8 | |
-| `A40-12Q` | 4 GB | 12 | |
-| `A40-16Q` | 3 GB | 16 | |
-| `A40-24Q` | 2 GB | 24 | |
-| `A40-48Q` | 1 GB | 48 | |
+| `A40-48Q` | 48 GB | 1 | Full GPU |
+| `A40-24Q` | 24 GB | 2 | |
+| `A40-16Q` | 16 GB | 3 | |
+| `A40-12Q` | 12 GB | 4 | |
+| **`A40-8Q`** | **8 GB** | **6** | ← target |
+| `A40-6Q` | 6 GB | 8 | |
+| `A40-4Q` | 4 GB | 12 | |
+| `A40-3Q` | 3 GB | 16 | |
+| `A40-2Q` | 2 GB | 24 | |
+| `A40-1Q` | 1 GB | 32 | |
 
-**An 8 GB vGPU slice = `A40-6Q` (48 GB / 6 = 8 GB per slice).**
+**An 8 GB vGPU slice = `A40-8Q` (6 VMs per A40 GPU).**
 
 ---
 
@@ -42,8 +44,8 @@ The A40 has 48 GB VRAM. The Q-series naming convention uses the **number of slic
 One node, quick to validate:
 
 ```bash
-# Label the node — changes profile to 8 GB slices (A40-6Q)
-oc label node <gpu-node> --overwrite nvidia.com/vgpu.config=A40-6Q
+# Label the node — changes profile to 8 GB slices (A40-8Q)
+oc label node <gpu-node> --overwrite nvidia.com/vgpu.config=A40-8Q
 
 # Verify vGPU Device Manager is applying the change
 oc logs -n nvidia-gpu-operator -l app=nvidia-vgpu-device-manager --tail=50
@@ -65,24 +67,24 @@ Explicit, auditable, scales to many nodes:
 ### Step 1: Create ConfigMap
 
 ```yaml
-# vgpu-a40-6q-config.yaml
+# vgpu-a40-8q-config.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: a40-6q-config
+  name: a40-8q-config
   namespace: nvidia-gpu-operator
 data:
   config.yaml: |
     version: v1
     vgpu-configs:
-      a40-6q:
+      a40-8q:
         - devices: all
           vgpu-devices:
-            "A40-6Q": 6
+            "A40-8Q": 6
 ```
 
 ```bash
-oc create -f vgpu-a40-6q-config.yaml
+oc create -f vgpu-a40-8q-config.yaml
 ```
 
 ### Step 2: Reference in ClusterPolicy
@@ -103,19 +105,19 @@ spec:
   vgpuDeviceManager:
     enabled: true
     config:
-      name: a40-6q-config
-      default: "a40-6q"
+      name: a40-8q-config
+      default: "a40-8q"
 ```
 
 ### Step 3: Label Nodes
 
 ```bash
 # Apply the label — the value is the config key from the ConfigMap
-oc label node <gpu-node> --overwrite nvidia.com/vgpu.config=a40-6q
+oc label node <gpu-node> --overwrite nvidia.com/vgpu.config=a40-8q
 
 # Or apply to multiple nodes at once
 for node in $(oc get nodes -l nvidia.com/gpu-node=true --no-headers -o name); do
-  oc label node "$node" --overwrite nvidia.com/vgpu.config=a40-6q
+  oc label node "$node" --overwrite nvidia.com/vgpu.config=a40-8q
 done
 ```
 
@@ -127,7 +129,7 @@ done
 
 ```bash
 oc describe node <gpu-node> | grep -A2 "Allocatable"
-# Should show: nvidia.com/A40-6Q: 6
+# Should show: nvidia.com/A40-8Q: 6
 ```
 
 ### Check vGPU Device Manager logs
@@ -168,11 +170,11 @@ spec:
   template:
     spec:
       nodeSelector:
-        nvidia.com/vgpu.config: a40-6q
+        nvidia.com/vgpu.config: a40-8q
       domain:
         devices:
           gpus:
-            - deviceName: nvidia.com/A40-6Q
+            - deviceName: nvidia.com/A40-8Q
               name: gpu1
         resources:
           requests:
@@ -206,7 +208,7 @@ oc get vmi -A -o wide | grep <gpu-node>
 virtctl stop <vm-name> -n <namespace>
 
 # Then retry the profile change
-oc label node <gpu-node> --overwrite nvidia.com/vgpu.config=A40-6Q
+oc label node <gpu-node> --overwrite nvidia.com/vgpu.config=A40-8Q
 ```
 
 ### NLS licensing not configured
