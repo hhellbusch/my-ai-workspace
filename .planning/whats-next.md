@@ -1,39 +1,39 @@
 # Checkpoint — 2026-05-18
 
-**In progress:** OpenShift + NVIDIA vGPU GitOps framework — building out
-the full automation stack for A40 vGPU management on bare-metal OCP with
-ArgoCD, ESO/Vault, and OpenShift Virtualization.
+**In progress:** OpenShift + NVIDIA vGPU GitOps framework — complete for
+first iteration. One known deploy-blocking gap remains.
 
 **Just completed (this session):**
-- `vgpu-drain-check.yaml` — ArgoCD PreSync hook that blocks sync if any VMI
-  has a GPU device attached; SA + ClusterRole + CRB at wave -2, Job at wave -1;
-  all `BeforeHookCreation`; gated by `vgpu.drainCheck.enabled` (default true)
-- `vgpu-best-practices.md` — 11-section best practices doc (WIP); §6/8/9 are
-  TODO placeholders; §11 covers VM drain gate options and Windows guest driver
-  installation approaches
-- `machineconfig-iommu-intel.yaml` / `machineconfig-iommu-amd.yaml` — reference
-  MachineConfigs for IOMMU enablement; include BIOS prerequisites, MachineConfigPool
-  targeting guidance, verification commands
-- `components/nvidia-gpu-operator/README.md` — component-level docs for the
-  operator/instance split, all templates, GPU modes, vGPU group/cluster split
-- All prior session work: ClusterPolicy vGPU fields, profile ConfigMap, ESO license,
-  NFD rule, node labels, example cluster (site-a40-vgpu-1), group defaults,
-  A40 profile runbook, node labeling reference
 
-**Git state:** 72e8556 — clean, pushed to origin/main
+*vGPU framework:*
+- `vgpu-drain-check.yaml` — ArgoCD PreSync hook blocking sync when VMIs have GPU devices
+- `vgpu-best-practices.md` — 11-section doc (WIP); §11 covers drain gate options and Windows guest driver approaches
+- `machineconfig-iommu-intel.yaml` / `machineconfig-iommu-amd.yaml` — IOMMU prereq artifacts
+- `components/nvidia-gpu-operator/README.md` — component-level docs
+
+*Meta / harness:*
+- `AGENTS.md` — Project Brief Threshold rule (5+ files, multi-session, new dir, scope expansion)
+- `.agents/skills/brief/SKILL.md` — new skill scaffolding BRIEF.md + whats-next.md
+- `.agents/skills/start/SKILL.md` — brief gap check added to minimal mode
+- Zanshin extension — checkpoint threshold now nudges for missing brief alongside checkpoint reminder
+- Commit-guard redesigned — diff embedded in `block.reason` (no user-visible messages); Gate 0 blocks `git add && git commit` compound calls with a clear split instruction
+
+**Git state:** 039df3b — clean, pushed to origin/main
 
 ---
 
 ## One known gap remaining
 
-**NGC pull secret** — `vgpuManager` pulls its image from `nvcr.io/nvidia`, which
-requires authentication. The values schema has the image reference but nothing
-handles the pull secret. This will fail on first deploy with an ImagePullBackOff.
+**NGC pull secret** — `vgpuManager` pulls from `nvcr.io/nvidia`, which
+requires authentication. No pull secret mechanism exists in the templates.
+First deploy will fail with ImagePullBackOff.
 
-Recommended approach: same ESO pattern as the NLS license —
-`secret/fleet/ngc/<cluster-name>` in Vault, ExternalSecret creates a
-`kubernetes.io/dockerconfigjson` Secret, referenced in ClusterPolicy
-`imagePullSecrets`. New template: `vgpu-ngc-pullsecret.yaml`.
+Recommended approach: same ESO pattern as the NLS license.
+- Vault path: `secret/fleet/ngc/<cluster-name>` (or a shared `secret/fleet/ngc/shared`)
+- Keys: `username` (typically `$oauthtoken`), `password` (NGC API key)
+- ExternalSecret creates a `kubernetes.io/dockerconfigjson` Secret
+- ClusterPolicy references it via `imagePullSecrets`
+- New template: `vgpu-ngc-pullsecret.yaml`, gated by `vgpu.vgpuManager.enabled`
 
 ---
 
@@ -57,21 +57,18 @@ the `devops/ocp/gpu/` files which are at repo root.
 
 ---
 
-## Key decisions made
+## Key decisions
 
 - **Profile naming**: A40 number = framebuffer GB (A40-8Q = 8 GB, 6 VMs per GPU)
-- **vGPU at group layer**: Infrastructure components safe to enable group-wide;
-  `vgpuManager` stays false at group (NGC image is cluster-specific)
+- **vGPU at group layer**: Infrastructure components safe to enable group-wide; `vgpuManager` stays false (NGC image is cluster-specific)
 - **Licensing via ESO**: `secret/fleet/nls/<cluster-name>` in Vault
-- **Drain gate**: Option B (PreSync hook) implemented as default; cluster-wide check,
-  not node-specific — blocks if any VMI has GPU device attached
-- **IOMMU**: Apply MachineConfig before GPU Operator vGPU components; triggers
-  rolling node reboot via MCO — this is a pre-GitOps maintenance window step
-- **Windows guest driver**: Four approaches documented (golden image, cloudbase-init,
-  Ansible+WinRM, SCCM/Intune); none selected — deferred to later
+- **Drain gate**: PreSync hook (Option B) implemented; cluster-wide VMI check; disable via `vgpu.drainCheck.enabled: false` for non-profile syncs
+- **IOMMU**: MachineConfig is a pre-GitOps maintenance window step — triggers rolling node reboot
+- **Windows guest driver**: Four approaches documented in §11.2; none selected — deferred
+- **Commit-guard**: Diff in block.reason (agent-space only); Gate 0 enforces split add/commit calls
 
 ## Still TODO in best practices
 
 - §6 Capacity planning — needs real hardware data
-- §8 Monitoring/DCGM — needs ops experience with the stack
-- §9 Security — vGPU isolation guarantees; needs NVIDIA security doc review
+- §8 Monitoring/DCGM — needs ops experience
+- §9 Security — vGPU isolation guarantees
