@@ -7,7 +7,7 @@ For the full guide, see:
 [`docs/ai-engineering/openshift-gpu-node-management.md`](../../../docs/ai-engineering/openshift-gpu-node-management.md)
 
 For the ArgoCD/GitOps deployment pattern (helm-component-pattern),
-see `devops/argo/examples/helm-component-pattern/components/nvidia-gpu-operator/`.
+see [`devops/argo/examples/helm-component-pattern/components/nvidia-gpu-operator/`](../../argo/examples/helm-component-pattern/components/nvidia-gpu-operator/README.md).
 
 ---
 
@@ -20,6 +20,7 @@ see `devops/argo/examples/helm-component-pattern/components/nvidia-gpu-operator/
 | `nodefeaturerules-baremetal.yaml` | NFD NodeFeatureRule — GPU hardware detection labels |
 | `nvidiadriver-baremetal.yaml` | NVIDIADriver CR template — per-node driver configuration |
 | `vgpu-a40-profiles.md` | Runbook: vGPU profile configuration for A40 (48 GB) |
+| `vgpu-node-labeling.md` | Reference: all methods for applying `nvidia.com/vgpu.config` node labels |
 
 These files are derived from the [NVIDIA GPU Operator](https://github.com/NVIDIA/gpu-operator)
 Helm chart at v24.9.1. Review against current upstream before applying.
