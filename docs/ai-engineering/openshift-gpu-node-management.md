@@ -433,6 +433,8 @@ vgpu-configs:
 oc create configmap custom-vgpu-config -n gpu-operator --from-file=config.yaml=/path/to/file
 ```
 
+For concrete A40 (48 GB) examples with full configuration files and verification steps, see the [A40 vGPU profile runbook](../../devops/ocp/gpu/vgpu-a40-profiles.md).
+
 On GPUs that support MIG, you can also select MIG-backed vGPU profiles — label the node with the MIG-backed profile name (e.g., `nvidia.com/vgpu.config=A100-4-40C`).
 
 ---
