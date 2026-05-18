@@ -19,6 +19,7 @@ see `devops/argo/examples/helm-component-pattern/components/nvidia-gpu-operator/
 | `nvidia-gpu-operator-values.yaml` | Complete Helm values reference for the GPU Operator chart |
 | `nodefeaturerules-baremetal.yaml` | NFD NodeFeatureRule — GPU hardware detection labels |
 | `nvidiadriver-baremetal.yaml` | NVIDIADriver CR template — per-node driver configuration |
+| `vgpu-a40-profiles.md` | Runbook: vGPU profile configuration for A40 (48 GB) |
 
 These files are derived from the [NVIDIA GPU Operator](https://github.com/NVIDIA/gpu-operator)
 Helm chart at v24.9.1. Review against current upstream before applying.
@@ -29,3 +30,5 @@ Helm chart at v24.9.1. Review against current upstream before applying.
 
 - Upstream: [NVIDIA GPU Operator on OpenShift](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/openshift/contents.html)
 - Upgrade procedure: [GPU Driver Upgrades](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-driver-upgrades.html)
+- NVIDIA vGPU User Guide: [Grid vGPU](https://docs.nvidia.com/grid/latest/grid-vgpu-user-guide/index.html)
+- NVIDIA GPU Operator + OpenShift Virtualization: [virt-gpu docs](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/openshift-virtualization.html)
