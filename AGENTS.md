@@ -154,3 +154,16 @@ Maintain a brief engineering journal for decisions and context that matter acros
 Before touching 3+ files or adding commands, skills, or rules: write a one-paragraph intent note in `.planning/` or the commit message that answers *why* — not just *what*. This prevents the pattern where a future agent can't tell why something exists and refactors it away.
 
 For structured changes: see the `/lid` skill for touch/change/restructure scaling.
+
+## Project Brief Threshold
+
+Work that crosses any of these thresholds warrants a `BRIEF.md` — create it before continuing, not at the end:
+
+- Task touches **5+ files** across a session
+- Work **spans multiple sessions** (context was compacted)
+- A **new directory** is created under `devops/`, `docs/`, `research/`, or `library/`
+- Scope language appears mid-task: "actually, let's also...", "while we're here..."
+
+Use the `/brief` skill to scaffold `.planning/<project>/BRIEF.md` and an initial `whats-next.md`. The brief is the anchor — handoff files reference it, they don't replace it.
+
+If a brief is missing for active work, surface it at the next natural pause rather than waiting until session end.

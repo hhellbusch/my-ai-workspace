@@ -60,6 +60,22 @@ What are you working on?
 
 If no handoff exists: skip the Handoff section entirely. The user can run `--detail` for git-log reconstruction if they need it.
 
+**Brief gap check (always run in minimal mode):**
+
+After reading the handoff, check whether a BRIEF exists for the active work area:
+
+```bash
+ls .planning/*/BRIEF.md 2>/dev/null
+```
+
+If the handoff references a project or directory but no matching BRIEF exists, surface it concisely at the bottom of the minimal output:
+
+```
+⚠ No project brief found for this work. Run `/brief <name>` to create one.
+```
+
+Do not block on this — surface and move on. One line only.
+
 ---
 
 ### `--detail` — include brief alignment
