@@ -22,6 +22,8 @@ see [`devops/argo/examples/helm-component-pattern/components/nvidia-gpu-operator
 | `vgpu-a40-profiles.md` | Runbook: vGPU profile configuration for A40 (48 GB) |
 | `vgpu-node-labeling.md` | Reference: all methods for applying `nvidia.com/vgpu.config` node labels |
 | `vgpu-best-practices.md` | Best practices for OpenShift + NVIDIA vGPU management (WIP) |
+| `machineconfig-iommu-intel.yaml` | MachineConfig: IOMMU kernel args for Intel nodes (VT-d) |
+| `machineconfig-iommu-amd.yaml` | MachineConfig: IOMMU kernel args for AMD nodes (AMD-Vi) |
 
 These files are derived from the [NVIDIA GPU Operator](https://github.com/NVIDIA/gpu-operator)
 Helm chart at v24.9.1. Review against current upstream before applying.

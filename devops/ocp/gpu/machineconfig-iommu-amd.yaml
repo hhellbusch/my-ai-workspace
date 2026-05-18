@@ -1,0 +1,93 @@
+# machineconfig-iommu-amd.yaml
+#
+# Enables IOMMU on AMD bare-metal OpenShift worker nodes.
+# Required before enabling vGPU or GPU passthrough via OpenShift Virtualization.
+#
+# WHEN TO APPLY
+#   Apply this MachineConfig in a dedicated maintenance window BEFORE enabling
+#   vGPU in the ClusterPolicy. The MachineConfigOperator (MCO) will drain each
+#   target node, apply the configuration, and reboot it. All VMs on the affected
+#   nodes must be stopped first.
+#
+#   Reboot order for initial vGPU enablement:
+#     1. Apply this MachineConfig → rolling node reboot (MCO-managed)
+#     2. Verify IOMMU active (see Verification below)
+#     3. Enable vGPU in GPU Operator ClusterPolicy
+#     4. Apply node labels (nvidia.com/gpu.workload.config, nvidia.com/vgpu.config)
+#
+# TARGETING
+#   The label 'machineconfiguration.openshift.io/role: worker' applies this to
+#   all worker nodes. For clusters with mixed node types, create a dedicated
+#   MachineConfigPool for GPU worker nodes and change the label to match:
+#
+#     machineconfiguration.openshift.io/role: gpu-worker
+#
+#   GPU-only MachineConfigPool example:
+#
+#     apiVersion: machineconfiguration.openshift.io/v1
+#     kind: MachineConfigPool
+#     metadata:
+#       name: gpu-worker
+#     spec:
+#       machineConfigSelector:
+#         matchExpressions:
+#           - key: machineconfiguration.openshift.io/role
+#             operator: In
+#             values: [worker, gpu-worker]
+#       nodeSelector:
+#         matchLabels:
+#           node-role.kubernetes.io/gpu-worker: ""
+#
+# KERNEL ARGUMENTS
+#   amd_iommu=on     — enables AMD-Vi IOMMU
+#   iommu=pt         — passthrough mode: only maps devices that need IOMMU
+#                      isolation; reduces overhead on non-passthrough devices
+#   rd.driver.blacklist=nouveau  — blacklist nouveau during initrd
+#   modprobe.blacklist=nouveau   — blacklist nouveau after boot
+#   Nouveau must not load before the NVIDIA vGPU driver. The GPU Operator
+#   also handles driver exclusion, but kernel-level blacklist is belt-and-suspenders.
+#
+# AMD-SPECIFIC NOTES
+#   AMD EPYC (Zen 2+) enables IOMMU by default in most server BIOSes.
+#   'amd_iommu=on' forces it on even if the BIOS default differs.
+#
+#   AMD platforms may need 'pci=realloc' if PCIe BAR space is exhausted when
+#   SR-IOV virtual functions are created. Add it to kernelArguments if GPU VFs
+#   fail to initialize with resource allocation errors:
+#
+#     - pci=realloc
+#
+# BIOS PREREQUISITES (cannot be set via MachineConfig)
+#   - AMD-Vi (AMD IOMMU): Enabled
+#   - SR-IOV: Enabled  (required for Ampere/A40 vGPU — uses SR-IOV, not legacy mdev)
+#   - Above 4G Decoding: Enabled  (required for SR-IOV on many systems)
+#
+# VERIFICATION (after reboot)
+#   Check IOMMU is active:
+#     oc debug node/<node-name> -- chroot /host dmesg | grep -i iommu | head -5
+#     oc debug node/<node-name> -- chroot /host cat /proc/cmdline
+#
+#   Expect to see: amd_iommu=on iommu=pt in /proc/cmdline
+#   Expect to see: AMD-Vi: AMD IOMMUv2 loaded in dmesg
+#
+#   Check IOMMU groups (should show GPU in its own group):
+#     oc debug node/<node-name> -- chroot /host ls /sys/kernel/iommu_groups/
+#
+# SEE ALSO
+#   machineconfig-iommu-intel.yaml  — Intel equivalent (Xeon / Core)
+#   vgpu-best-practices.md §2       — Node architecture and workload segregation
+#   vgpu-a40-profiles.md            — A40 profile reference
+#
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 99-worker-iommu-amd
+spec:
+  kernelArguments:
+    - amd_iommu=on
+    - iommu=pt
+    - rd.driver.blacklist=nouveau
+    - modprobe.blacklist=nouveau

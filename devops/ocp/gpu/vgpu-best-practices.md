@@ -112,6 +112,10 @@ this is done via a MachineConfig, which triggers a rolling node reboot.
 ClusterPolicy.** The reboot order matters: IOMMU → GPU Operator vGPU components →
 node labels → vGPU profile ConfigMap.
 
+Reference MachineConfigs:
+- Intel (VT-d): [`machineconfig-iommu-intel.yaml`](machineconfig-iommu-intel.yaml)
+- AMD (AMD-Vi): [`machineconfig-iommu-amd.yaml`](machineconfig-iommu-amd.yaml)
+
 ### SR-IOV for Ampere and later
 
 A40 and newer GPUs use SR-IOV for vGPU (not legacy mediated device framework).
@@ -178,6 +182,7 @@ These steps cannot all happen in a single ArgoCD sync:
 External (pre-GitOps):
   1. BIOS: enable IOMMU + SR-IOV
   2. MachineConfig: apply IOMMU kernel parameters → rolling node reboot
+       Intel: `machineconfig-iommu-intel.yaml` / AMD: `machineconfig-iommu-amd.yaml`
   3. Vault: pre-provision NLS license secret
 
 ArgoCD sync wave 0:   NFD operator
