@@ -1,4 +1,42 @@
-# Checkpoint — 2026-05-18
+# Checkpoint — 2026-05-14
+
+**In progress:** paude fork — ADC→proxy migration implemented, needs a real session build to verify.
+
+**Just completed (this session):**
+
+*paude fork (`hhellbusch/paude` `develop`):*
+- Removed `PAUDE_VERTEX_AUTH_MODE` machinery (direct/proxy toggle, three functions, constants) from `shared.py`
+- Replaced the old Vertex bearer-relay block in `containers/proxy/entrypoint.sh` with `GCP_ADC_JSON` handling — writes ADC to `/tmp/gcp-adc.json`, adds gcloud injector entry for `.googleapis.com`, exports `GOOGLE_APPLICATION_CREDENTIALS` for paude-proxy
+- Updated `agents/pi.py` comments to reflect stub ADC model
+- Removed corresponding tests from `test_shared.py`
+- Pushed to `hhellbusch/paude` `develop`, submodule pointer updated
+
+*zanshin-pi-extension:*
+- Fixed commit-guard `sendUserMessage` mid-turn race — added `{ deliverAs: "followUp" }` to avoid "Agent is already processing" runtime error
+- Pi package cache updated; `/reload` in next session picks it up
+
+*Planning / backlog:*
+- Scoping doc: `.planning/paude-integration/findings/2026-05-13-adc-proxy-migration-scope.md`
+- Two backlog seeds added: "three-context gap" case study and "git as memory / detective work" case study
+
+**Git state:** 99d9494 — clean, pushed to origin/main
+
+---
+
+## One thing needed from you
+
+**Test the paude ADC migration** — requires a host-side build and new Pi+vertex session:
+1. `cd` into your paude fork, `git pull` (or it's already at `develop` tip)
+2. Build the paude image (`make build` or equivalent)
+3. Launch a Pi+vertex session: `paude create --agent pi --provider vertex <name>`
+4. Watch proxy logs for: `GCP ADC credential injection: ENABLED (.googleapis.com)` and `TOKEN_VEND host=oauth2.googleapis.com`
+5. Confirm Vertex AI calls succeed (try a simple prompt in Pi)
+
+If the proxy log shows the injection line but calls fail, check that `GOOGLE_CLOUD_LOCATION=global` resolves correctly — the endpoint will be `global-aiplatform.googleapis.com` which the `.googleapis.com` suffix pattern covers.
+
+---
+
+# Previous checkpoint — 2026-05-18
 
 **In progress:** OpenShift + NVIDIA vGPU GitOps framework — complete for
 first iteration. One known deploy-blocking gap remains.
