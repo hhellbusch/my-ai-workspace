@@ -21,6 +21,7 @@ see [`devops/argo/examples/helm-component-pattern/components/nvidia-gpu-operator
 | `nvidiadriver-baremetal.yaml` | NVIDIADriver CR template — per-node driver configuration |
 | `vgpu-a40-profiles.md` | Runbook: vGPU profile configuration for A40 (48 GB) |
 | `vgpu-node-labeling.md` | Reference: all methods for applying `nvidia.com/vgpu.config` node labels |
+| `vgpu-best-practices.md` | Best practices for OpenShift + NVIDIA vGPU management (WIP) |
 
 These files are derived from the [NVIDIA GPU Operator](https://github.com/NVIDIA/gpu-operator)
 Helm chart at v24.9.1. Review against current upstream before applying.

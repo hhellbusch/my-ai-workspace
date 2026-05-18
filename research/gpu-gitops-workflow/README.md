@@ -3,7 +3,7 @@
 **Purpose:** Assess current state of GPU management in the GitOps framework, identify gaps between deployed infrastructure and operational realities (vGPU profiles, licensing, VM specs, node labeling). Feeds a future best-practices document for OpenShift + NVIDIA vGPU management.
 
 **Status:** In progress
-**Output:** (pending — this assessment feeds the best-practices doc)
+**Output:** [`devops/ocp/gpu/vgpu-best-practices.md`](../../devops/ocp/gpu/vgpu-best-practices.md) — best practices doc (WIP, fed by this assessment)
 
 ---
 
