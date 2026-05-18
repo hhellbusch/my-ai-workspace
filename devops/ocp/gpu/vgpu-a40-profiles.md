@@ -60,6 +60,8 @@ Source: [NVIDIA Grid vGPU User Guide — Virtual GPU Types Reference](https://do
 
 ## Method 1: Per-Node Label (Quick Test)
 
+**Why a label?** The vGPU Device Manager is a DaemonSet (one pod per node). It scans each node's `nvidia.com/vgpu.config` label, reads the matching entry from the ConfigMap, and creates vGPU devices on that node. Labels provide per-node targeting without ClusterPolicy changes or DaemonSet restarts. The same ConfigMap can serve many nodes, each with a different profile — just change the label.
+
 One node, quick to validate:
 
 ```bash
