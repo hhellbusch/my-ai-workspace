@@ -128,8 +128,8 @@ done
 ### Check node allocatable resources
 
 ```bash
-oc describe node <gpu-node> | grep -A2 "Allocatable"
-# Should show: nvidia.com/A40-8Q: 6
+oc get node <gpu-node> -o json | jq '.status.allocatable | to_entries[] | select(.key | startswith("nvidia.com/"))'
+# Should show: "nvidia.com/A40-8Q": "6"
 ```
 
 ### Check vGPU Device Manager logs
