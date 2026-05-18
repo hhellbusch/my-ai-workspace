@@ -25,6 +25,7 @@
 8. [Monitoring and Observability](#8-monitoring-and-observability)
 9. [Security](#9-security)
 10. [Known Gaps and Open Questions](#10-known-gaps-and-open-questions)
+11. [VM Lifecycle Automation](#11-vm-lifecycle-automation)
 
 ---
 
@@ -342,10 +343,7 @@ They feed the next iteration of this document.
 
 ### Operations
 
-- **VM drain gate in GitOps**: There is no native ArgoCD mechanism to pause a sync
-  until "no VMs are using vGPU on this node." Options under consideration: pre-sync
-  hook Job that checks VMI status, manual approval gate in the ApplicationSet, or
-  accepting that this step is always Ansible-mediated.
+- **VM drain gate in GitOps**: Approaches documented in [Section 11](#11-vm-lifecycle-automation). No approach selected yet; the pre-sync hook is viable but requires careful scoping to avoid blocking unrelated syncs.
 
 - **Mixed-size mode**: Running A40-8Q and A40-6Q devices on the same GPU simultaneously.
   NVIDIA supports this but the vGPU Device Manager ConfigMap format and node label
@@ -371,9 +369,253 @@ They feed the next iteration of this document.
   instance, driver reservation, or the practical upper limit on vGPU density before
   scheduling latency degrades.
 
-- **Guest driver installation**: The in-VM NVIDIA vGPU guest driver installation is
-  documented as a manual step. A standard mechanism for automating this (e.g., cloud-init,
-  Ansible, a custom VM image) is not yet defined.
+- **Guest driver installation**: Approaches documented in [Section 11](#11-vm-lifecycle-automation). No approach selected yet; depends on VM provisioning model.
+
+---
+
+## 11. VM Lifecycle Automation [DRAFT]
+
+Two automation problems arise at the VM layer that GitOps alone does not solve:
+safely draining VMs before a profile change, and ensuring the correct vGPU guest
+driver is installed inside Windows VMs.
+
+---
+
+### 11.1 Profile Change Gate — VM Drain
+
+The vGPU Device Manager silently blocks profile changes while any VM holds a vGPU
+device. The challenge for GitOps: ArgoCD does not natively know about running VMIs,
+and there is no built-in sync gate tied to VM state.
+
+Four approaches, from least to most automation:
+
+#### Option A: Accept Ansible mediation (simplest)
+
+The profile change PR is merged, ArgoCD syncs the ConfigMap, and the Device Manager
+waits silently. An Ansible playbook (run manually or via AWX/AAP) handles the drain:
+
+```
+1. Read target nodes from vgpu-node-profiles ConfigMap
+2. For each target node: oc get vmi --field-selector spec.nodeName=<node>
+3. Stop/migrate each VMI (oc patch vmi ... or oc virtctl stop)
+4. Wait for VMIs to reach Stopped state
+5. Verify Device Manager applied new profile (oc logs, oc get node allocatable)
+6. Signal readiness for VM restart
+```
+
+**Trade-off**: Operationally sound but the GitOps sync and the actual profile change
+are decoupled. The ConfigMap in Git says one thing while the node may still be running
+the old profile. Acceptable if teams understand the two-phase nature.
+
+#### Option B: ArgoCD pre-sync hook Job
+
+A `PreSync` hook Job runs before ArgoCD applies the ConfigMap. It checks for running
+VMIs on affected nodes and fails if any are found, blocking the sync until the
+operator drains manually.
+
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vgpu-profile-drain-check
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  template:
+    spec:
+      serviceAccountName: vgpu-drain-checker  # needs get/list on VMI
+      containers:
+        - name: check
+          image: quay.io/openshift/origin-cli:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # Fail if any VMI has a GPU device on a vGPU node
+              VMI_COUNT=$(oc get vmi -A -o json | \
+                jq '[.items[] | select(.spec.domain.devices.gpus != null)] | length')
+              if [ "$VMI_COUNT" -gt 0 ]; then
+                echo "ERROR: $VMI_COUNT VMIs with GPU devices running. Drain before syncing."
+                exit 1
+              fi
+              echo "OK: no VMIs with GPU devices found."
+      restartPolicy: Never
+```
+
+**Limitation**: The hook checks cluster-wide — it blocks the sync if *any* VM has a
+GPU, even if the profile change only affects one node. Narrowing to specific nodes
+requires the hook to read the current vs desired profile diff, which is complex.
+
+**Trade-off**: Automatic guard against accidental profile changes with live VMs.
+Requires a ServiceAccount with VMI list permissions and adds a Job to every sync cycle
+(or only when the ConfigMap hash changes — more complex).
+
+#### Option C: Ansible-first, then sync (inverse of Option A)
+
+Instead of merging the PR and then draining, the operator:
+1. Runs an Ansible playbook that drains target nodes
+2. Playbook triggers an ArgoCD sync via the ArgoCD API on success
+3. ArgoCD applies the new ConfigMap; Device Manager picks it up immediately
+
+This keeps Git as the source of truth while making Ansible the sequencer.
+Requires ArgoCD API access from the Ansible control node (or AWX/AAP).
+
+**Trade-off**: Tighter operational coupling — Ansible drives the full change, not
+just the drain. Harder to reason about "what's deployed" from Git alone.
+
+#### Option D: Manual gate + SyncPolicy pause
+
+For low-frequency profile changes, accept the manual process:
+1. Set the target Application's `syncPolicy.automated` to `false` before merging
+2. Drain VMs manually
+3. Trigger sync manually from ArgoCD UI / CLI
+4. Re-enable automated sync
+
+**Trade-off**: Simplest to implement, highest operator touch. Appropriate when profile
+changes are rare (quarterly) and team discipline is high.
+
+#### Recommendation
+
+Start with **Option A** (Ansible mediation). It requires no cluster RBAC additions
+or ArgoCD hook plumbing, and the two-phase nature is transparent. Move to **Option B**
+if accidental syncs with live VMs become a real risk.
+
+---
+
+### 11.2 Windows Guest Driver Installation
+
+Windows VMs require the **NVIDIA vGPU guest driver** to see and use the vGPU device.
+This driver:
+- Is separate from the host vGPU manager — it runs *inside* the VM
+- Must match the host vGPU manager version (minor version compatibility applies)
+- Is distributed via NVIDIA's licensing portal / NGC, not via standard driver channels
+- Is a standard Windows `.exe` installer
+
+When the host vGPU manager is upgraded, guest drivers must follow. This is the
+primary version coupling concern in a fleet of Windows VMs.
+
+#### Approach A: Golden image with pre-baked driver
+
+Maintain a Windows base image (DataVolume source) with the vGPU guest driver
+already installed. VMs cloned from this image are driver-ready at boot.
+
+```
+Windows base image
+  └── NVIDIA vGPU guest driver vX.Y installed
+  └── cloudbase-init installed (optional, for post-boot config)
+  └── VirtIO drivers installed
+  └── Sysprep'd and ready for cloning
+```
+
+**Version management**: When the host driver upgrades, build a new base image,
+update the DataSource reference in VM templates, and roll VMs forward on next
+reprovisioning cycle.
+
+**Trade-off**: Cleanest runtime experience — no network dependency at boot. Requires
+an image build pipeline and discipline around image versioning. Driver updates do
+not automatically reach running VMs; they land on reprovisioned VMs only.
+
+**Best fit**: Stable fleets where VMs are occasionally reprovisioned, driver changes
+are infrequent, and there is an existing image build process.
+
+#### Approach B: cloudbase-init PowerShell script at first boot
+
+[cloudbase-init](https://cloudbase-init.readthedocs.io/) is the Windows equivalent
+of cloud-init. OpenShift Virtualization can inject a `cloudbase-init` userdata script
+via the VirtualMachine's `cloudInitNoCloud` volume.
+
+```yaml
+# In VirtualMachine spec:
+volumes:
+  - name: cloudinitdisk
+    cloudInitNoCloud:
+      userData: |
+        #ps1_sysnative
+        # Download and install NVIDIA vGPU guest driver
+        $DriverUrl = "http://artifact-repo.internal/nvidia/vgpu/27.1/nvidia-vgpu-driver.exe"
+        $Installer = "C:\\Temp\\nvidia-vgpu-driver.exe"
+        Invoke-WebRequest -Uri $DriverUrl -OutFile $Installer
+        Start-Process -FilePath $Installer -ArgumentList "/s /noreboot" -Wait
+        Remove-Item $Installer
+```
+
+**Prerequisites**: cloudbase-init must be installed in the base Windows image.
+Driver installer must be accessible from the VM network at boot time (internal
+artifact repo, S3-compatible storage, or network share).
+
+**Trade-off**: GitOps-native — the driver version is declared in the VM spec or a
+ConfigMap that the spec references. Driver updates can be rolled out by updating
+the URL/version and reprovisioning VMs. Requires an artifact repository and adds
+boot time for the install (can be significant for large driver packages).
+
+**Best fit**: Fleets that already use cloudbase-init for Windows VM configuration,
+or where driver version pinning in Git is a hard requirement.
+
+#### Approach C: Ansible + WinRM post-provisioning
+
+An Ansible playbook connects to each Windows VM via WinRM and installs the driver
+after the VM is running.
+
+```yaml
+# Ansible task excerpt
+- name: Copy NVIDIA vGPU guest driver
+  win_copy:
+    src: nvidia-vgpu-driver.exe
+    dest: C:\Temp\nvidia-vgpu-driver.exe
+
+- name: Install NVIDIA vGPU guest driver
+  win_package:
+    path: C:\Temp\nvidia-vgpu-driver.exe
+    arguments: /s /noreboot
+    state: present
+
+- name: Reboot to complete installation
+  win_reboot:
+```
+
+**Prerequisites**: WinRM enabled and reachable from the Ansible control node (or
+AWX/AAP). Windows Firewall configured to allow WinRM. Domain join or local admin
+credentials available to Ansible.
+
+**Trade-off**: Most flexible — can target specific VMs, handle reboots gracefully,
+and run idempotently. Does not require image rebuild on driver update. Adds an
+external management plane dependency.
+
+**Best fit**: Environments with existing Ansible/AWX infrastructure and Windows
+automation patterns already in place.
+
+#### Approach D: Enterprise software delivery (SCCM / Intune)
+
+If Windows VMs are domain-joined and managed via SCCM or Intune, the vGPU guest
+driver can be delivered as a standard application package through those channels.
+
+**Trade-off**: Zero additional automation to build, but adds dependency on the
+enterprise management plane. Driver deployment timing is controlled by SCCM/Intune
+cycles, not by the VM provisioning event. Only viable if this management plane is
+already present.
+
+#### Version coupling summary
+
+Regardless of approach, the host→guest driver version relationship must be tracked:
+
+| Host vGPU manager version | Compatible guest driver versions |
+|--------------------------|--------------------------------|
+| Managed in cluster values | Must be documented alongside |
+
+A practical pattern: store the expected guest driver version as an annotation on
+the vGPU profile ConfigMap or as a key in the cluster values file. This makes the
+expected version discoverable from Git, even if the installation mechanism is external.
+
+```yaml
+# In cluster values:
+vgpu:
+  vgpuManager:
+    version: "550.90.05"          # host driver
+  guestDriver:
+    version: "550.90.05.0"        # expected guest driver (informational)
+    artifactUrl: "http://artifact-repo.internal/nvidia/vgpu/550.90.05.0/"
+```
 
 ---
 
