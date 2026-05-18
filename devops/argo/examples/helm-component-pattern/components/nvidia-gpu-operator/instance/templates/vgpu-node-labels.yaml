@@ -1,0 +1,45 @@
+{{- if .Values.clusterPolicy.vgpu.enabled }}
+{{- if .Values.clusterPolicy.vgpu.nodeProfiles }}
+---
+# vGPU Node Label ConfigMap
+#
+# Declares the intended vGPU profile assignment per node. This ConfigMap is
+# informational — it does NOT automatically apply node labels. Use it as:
+#   1. Documentation of intended per-node profile assignments
+#   2. Input to an Ansible playbook or external labeler that reads this map
+#      and runs: oc label node <name> --overwrite nvidia.com/vgpu.config=<profile>
+#
+# Why not apply labels directly from ArgoCD?
+# ArgoCD manages Kubernetes resources, not node metadata directly. Node labels
+# applied via ArgoCD would require a custom resource or a Job/hook with
+# cluster-admin access. The safer operational pattern is:
+#   - GitOps owns this ConfigMap (desired state)
+#   - Ansible/a pre-sync hook reads it and applies the label
+#   - Profile changes are gated behind VM drain (manual or pre-sync hook)
+#
+# To apply labels manually from this ConfigMap:
+#   oc get cm {{ .Values.clusterPolicy.vgpu.nodeProfiles.configMapName }} \
+#     -n {{ .Values.clusterPolicy.namespace }} -o yaml | \
+#     yq '.data.nodes | to_entries[] | "oc label node \(.key) --overwrite nvidia.com/vgpu.config=\(.value)"' | \
+#     sh
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.clusterPolicy.vgpu.nodeProfiles.configMapName }}
+  namespace: {{ .Values.clusterPolicy.namespace }}
+  labels:
+    app.kubernetes.io/name: nvidia-gpu-operator
+    app.kubernetes.io/component: vgpu-node-profiles
+    app.kubernetes.io/part-of: nvidia-gpu-operator
+  annotations:
+    # This ConfigMap is informational. Labels are applied externally.
+    gpu-operator.nvidia.com/node-profiles: "declared"
+data:
+  # Node → profile assignments for this cluster.
+  # Format: <node-name>: <config-key-from-vgpu-configmap>
+  nodes: |
+    {{- range $node, $profile := .Values.clusterPolicy.vgpu.nodeProfiles.assignments }}
+    {{ $node }}: {{ $profile }}
+    {{- end }}
+{{- end }}
+{{- end }}

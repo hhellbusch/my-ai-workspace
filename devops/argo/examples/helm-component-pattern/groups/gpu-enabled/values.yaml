@@ -41,6 +41,17 @@
 #   host-level kernel parameter change that triggers a rolling node reboot.
 #   Apply IOMMU MachineConfig during a maintenance window before enabling vGPU.
 # - sandboxWorkloads is disabled by default. Enable per-cluster for vGPU use.
+# - vGPU is NOT enabled at the group layer. It requires per-cluster planning:
+#   GPU model, profile selection, NLS license server, node assignments. Enable
+#   at the cluster layer only. See components/nvidia-gpu-operator/instance/values.yaml
+#   for the full vGPU schema and component/instance/templates/vgpu-configmap.yaml
+#   for the ConfigMap template.
+#
+# vGPU wave ordering (add to cluster values when enabling):
+#   wave 15: nvidia-gpu-operator-instance — ClusterPolicy with vGPU fields
+#   wave 20: (external) IOMMU MachineConfig must already be applied
+#   wave 25: (external/Ansible) node labels: nvidia.com/gpu.workload.config=vm-vgpu
+#                                            nvidia.com/vgpu.config=<profile>
 
 component-gpu-enabled:
   apps:
@@ -116,4 +127,9 @@ component-gpu-enabled:
           enabled: false
         # MIG: disabled — requires OCP 4.20+, explicit opt-in per cluster
         mig:
+          enabled: false
+
+        # vGPU: disabled at group layer — enable per-cluster only
+        # See components/nvidia-gpu-operator/instance/values.yaml for schema
+        vgpu:
           enabled: false

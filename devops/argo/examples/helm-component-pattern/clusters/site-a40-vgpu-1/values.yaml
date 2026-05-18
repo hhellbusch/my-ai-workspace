@@ -1,0 +1,115 @@
+# Cluster: site-a40-vgpu-1
+# Example production cluster with NVIDIA A40 GPUs configured for vGPU workloads.
+#
+# GPU: NVIDIA A40 (48 GB VRAM per card)
+# vGPU profile: A40-8Q (8 GB framebuffer, 6 VMs per physical GPU)
+#
+# Prerequisites before enabling vGPU in this values file:
+#   1. IOMMU MachineConfig applied (triggers rolling node reboot)
+#   2. Nodes labeled: nvidia.com/gpu.workload.config=vm-vgpu
+#   3. vgpuManager image uploaded to internal registry or NGC pull secret configured
+#   4. NLS license ConfigMap pre-provisioned in nvidia-gpu-operator namespace
+#   5. OCP version 4.18.24+ (see analysis: 4.18.22/23 have known crun incompatibility)
+#
+# Profile change procedure:
+#   1. Stop/migrate VMs using vGPU on the target node
+#   2. Update nodeProfiles.assignments and/or profiles in this file
+#   3. Merge/PR → ArgoCD syncs the ConfigMap change
+#   4. vGPU Device Manager applies the new profile once devices are free
+#   5. Restart VMs
+#
+# See: devops/ocp/gpu/vgpu-a40-profiles.md for the full A40 profile runbook
+
+component-site-a40-vgpu-1:
+  apps:
+    # ── NFD operator: manual approval in production ────────────────────────────
+    nfd-operator:
+      operators-installer:
+        operators:
+          - name: nfd
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            namespace: openshift-nfd
+            channel: stable
+            installPlanApproval: Manual
+            csv: "nfd.4.18.0"
+
+    # ── GPU operator: pin to v24.9, manual approval ────────────────────────────
+    nvidia-gpu-operator:
+      operators-installer:
+        operators:
+          - name: gpu-operator-certified
+            source: certified-operators
+            sourceNamespace: openshift-marketplace
+            namespace: nvidia-gpu-operator
+            channel: v24.9
+            installPlanApproval: Manual
+            csv: "gpu-operator-certified.v24.9.1"
+
+    # ── ClusterPolicy: A40 vGPU, 8Q profile ───────────────────────────────────
+    nvidia-gpu-operator-instance:
+      clusterPolicy:
+        driver:
+          version: "550.90.07"
+          upgradePolicy:
+            autoUpgrade: true
+            maxParallelUpgrades: 1
+            maxUnavailable: "25%"
+            waitForCompletion:
+              timeoutSeconds: 0
+
+        # sandboxWorkloads must be enabled for vGPU VM workloads
+        sandboxWorkloads:
+          enabled: true
+
+        vgpu:
+          enabled: true
+
+          vgpuManager:
+            enabled: true
+            # vGPU Manager image — must match the vGPU driver version from NVIDIA portal
+            # Download from: https://nvid.nvidia.com/dashboard/
+            # Build and push to your internal registry per NVIDIA docs:
+            # https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/openshift/openshift-virtualization.html
+            repository: "registry.example.com/nvidia"
+            version: "570.133.10"
+
+          vgpuDeviceManager:
+            enabled: true
+
+          # ConfigMap read by the vGPU Device Manager — rendered by vgpu-configmap.yaml
+          configMap:
+            name: a40-vgpu-config
+            default: "a40-8q"
+
+          # vGPU profiles available on this cluster
+          # A40 profile naming: A40-<GB>Q where GB = framebuffer per vGPU slice
+          # Full profile table: devops/ocp/gpu/vgpu-a40-profiles.md
+          profiles:
+            a40-8q:
+              type: A40-8Q    # 8 GB framebuffer, 6 VMs per A40
+              count: 6
+            a40-6q:
+              type: A40-6Q    # 6 GB framebuffer, 8 VMs per A40
+              count: 8
+
+          # Node → profile assignments
+          # Rendered into vgpu-node-profiles ConfigMap (informational — applied externally)
+          nodeProfiles:
+            configMapName: a40-vgpu-node-profiles
+            assignments:
+              gpu-node-1: a40-8q
+              gpu-node-2: a40-8q
+              gpu-node-3: a40-6q
+
+          # NLS license ConfigMap — pre-provisioned, not managed by this chart
+          # Must exist in nvidia-gpu-operator namespace before sync
+          licensingConfig:
+            configMapName: nls-license-config
+
+          # VFIO Manager — disabled; this cluster uses vGPU, not passthrough
+          vfioManager:
+            enabled: false
+
+          sandboxDevicePlugin:
+            enabled: true

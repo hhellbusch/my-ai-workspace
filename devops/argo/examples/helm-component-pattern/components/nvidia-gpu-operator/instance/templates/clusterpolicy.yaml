@@ -55,3 +55,39 @@ spec:
   mig:
     strategy: {{ .Values.clusterPolicy.mig.strategy }}
   {{- end }}
+
+  {{- if .Values.clusterPolicy.vgpu.enabled }}
+  # ── vGPU configuration ────────────────────────────────────────────────────
+  # Requires: IOMMU enabled on host, node labeled nvidia.com/gpu.workload.config=vm-vgpu
+  # workload.config label and IOMMU MachineConfig must be applied before enabling.
+
+  vgpuManager:
+    enabled: {{ .Values.clusterPolicy.vgpu.vgpuManager.enabled }}
+    {{- with .Values.clusterPolicy.vgpu.vgpuManager.repository }}
+    repository: {{ . }}
+    {{- end }}
+    {{- with .Values.clusterPolicy.vgpu.vgpuManager.version }}
+    version: {{ . | quote }}
+    {{- end }}
+    {{- with .Values.clusterPolicy.vgpu.licensingConfig.configMapName }}
+    driverManager:
+      env:
+        - name: NLS_LICENSE_SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: {{ . }}
+              key: server
+    {{- end }}
+
+  vgpuDeviceManager:
+    enabled: {{ .Values.clusterPolicy.vgpu.vgpuDeviceManager.enabled }}
+    config:
+      name: {{ .Values.clusterPolicy.vgpu.configMap.name }}
+      default: {{ .Values.clusterPolicy.vgpu.configMap.default | quote }}
+
+  vfioManager:
+    enabled: {{ .Values.clusterPolicy.vgpu.vfioManager.enabled }}
+
+  sandboxDevicePlugin:
+    enabled: {{ .Values.clusterPolicy.vgpu.sandboxDevicePlugin.enabled }}
+  {{- end }}

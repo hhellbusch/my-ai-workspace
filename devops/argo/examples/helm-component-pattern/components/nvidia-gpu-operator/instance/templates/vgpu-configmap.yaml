@@ -1,0 +1,36 @@
+{{- if .Values.clusterPolicy.vgpu.enabled }}
+{{- if .Values.clusterPolicy.vgpu.profiles }}
+---
+# vGPU Device Manager ConfigMap
+#
+# Defines which vGPU profiles are available on this cluster and maps config
+# keys to physical vGPU types. The vGPU Device Manager reads this ConfigMap
+# and creates mediated devices on nodes based on their nvidia.com/vgpu.config label.
+#
+# Profile changes take effect when the node label is updated. VMs using vGPU
+# on the node must be stopped before the profile change can apply — the Device
+# Manager will block until devices are free.
+#
+# Profile naming: A40-8Q = 8 GB framebuffer, 6 VMs per A40 GPU
+# See: https://docs.nvidia.com/vgpu/latest/grid-vgpu-user-guide/#virtual-gpu-types-grid
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.clusterPolicy.vgpu.configMap.name }}
+  namespace: {{ .Values.clusterPolicy.namespace }}
+  labels:
+    app.kubernetes.io/name: nvidia-gpu-operator
+    app.kubernetes.io/component: vgpu-device-manager-config
+    app.kubernetes.io/part-of: nvidia-gpu-operator
+data:
+  config.yaml: |
+    version: v1
+    vgpu-configs:
+    {{- range $configKey, $profile := .Values.clusterPolicy.vgpu.profiles }}
+      {{ $configKey }}:
+        - devices: all
+          vgpu-devices:
+            "{{ $profile.type }}": {{ $profile.count }}
+    {{- end }}
+{{- end }}
+{{- end }}

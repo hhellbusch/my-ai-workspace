@@ -46,3 +46,65 @@ clusterPolicy:
 
   sandboxWorkloads:
     enabled: false
+
+  # ── vGPU configuration (opt-in) ─────────────────────────────────────────────
+  # vGPU requires:
+  #   1. IOMMU enabled on host via MachineConfig (triggers node reboot)
+  #   2. Node labeled: nvidia.com/gpu.workload.config=vm-vgpu
+  #   3. vgpuManager image pulled from NVIDIA NGC (requires NGC credentials)
+  #   4. NLS license server accessible from the cluster
+  #
+  # Enable at the cluster layer with explicit profile and node assignments.
+  # Do NOT enable at the group layer — vGPU requires per-cluster planning.
+  vgpu:
+    enabled: false
+
+    vgpuManager:
+      enabled: false
+      # NGC image — set repository and version at cluster layer
+      # registry: nvcr.io/nvidia
+      # image: vgpu-manager
+      # version: "570.133.10"  # must match vGPU driver version from NVIDIA portal
+      repository: ""
+      version: ""
+
+    vgpuDeviceManager:
+      enabled: false
+
+    # Profile ConfigMap — read by vGPU Device Manager
+    configMap:
+      name: vgpu-device-config
+      default: "default"
+
+    # profiles: map of config-key → vGPU type and count per GPU
+    # Set at the cluster layer for the specific GPU model installed.
+    # Example for A40:
+    #   a40-8q:
+    #     type: A40-8Q    # 8 GB framebuffer, 6 VMs per A40
+    #     count: 6
+    #   a40-6q:
+    #     type: A40-6Q    # 6 GB framebuffer, 8 VMs per A40
+    #     count: 8
+    profiles: {}
+
+    # Node → profile assignments. Informational ConfigMap applied externally.
+    nodeProfiles:
+      configMapName: vgpu-node-profiles
+      # assignments: map of node-name → config-key
+      # Example:
+      #   gpu-node-1: a40-8q
+      #   gpu-node-2: a40-8q
+      #   gpu-node-3: a40-6q
+      assignments: {}
+
+    # NLS license server ConfigMap — pre-provisioned, not managed by this chart
+    licensingConfig:
+      configMapName: ""
+
+    # VFIO Manager — enable for GPU passthrough VMs (mutually exclusive with vGPU)
+    vfioManager:
+      enabled: false
+
+    # Sandbox Device Plugin — required for both vGPU and passthrough VM workloads
+    sandboxDevicePlugin:
+      enabled: false
