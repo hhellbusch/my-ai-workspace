@@ -1,0 +1,126 @@
+{{- if and .Values.clusterPolicy.vgpu.enabled .Values.clusterPolicy.vgpu.drainCheck.enabled }}
+# vgpu-drain-check.yaml
+#
+# ArgoCD PreSync hook: blocks sync if any VirtualMachineInstance has a GPU device
+# attached. Protects against vGPU profile changes landing while VMs are running —
+# the vGPU Device Manager silently blocks profile changes on occupied nodes, which
+# can leave the cluster in an indeterminate state.
+#
+# Resources in wave -2 (RBAC) are created/refreshed before the check Job in wave -1.
+# Both are PreSync hooks so they run before ArgoCD applies any regular resources.
+#
+# hook-delete-policy: BeforeHookCreation ensures the RBAC and Job are replaced on
+# each sync rather than accumulating. The Job is also deleted on success to keep the
+# namespace clean; failed Jobs are retained for log inspection.
+#
+# See devops/ocp/gpu/vgpu-best-practices.md §11.1 for drain gate options and context.
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vgpu-drain-checker
+  namespace: {{ .Values.clusterPolicy.namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: "-2"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: vgpu-drain-checker-{{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: "-2"
+rules:
+  - apiGroups: ["kubevirt.io"]
+    resources: ["virtualmachineinstances"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vgpu-drain-checker-{{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: "-2"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: vgpu-drain-checker-{{ .Release.Namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: vgpu-drain-checker
+    namespace: {{ .Values.clusterPolicy.namespace }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vgpu-drain-check
+  namespace: {{ .Values.clusterPolicy.namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 120
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: vgpu-drain-checker
+      restartPolicy: Never
+      containers:
+        - name: check
+          image: {{ .Values.clusterPolicy.vgpu.drainCheck.image }}
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -euo pipefail
+
+              echo "=== vGPU drain check ==="
+              echo "Checking for VirtualMachineInstances with GPU devices attached..."
+              echo ""
+
+              # List all VMIs that have a gpus entry in their spec.
+              # jsonpath filter ?(@.spec.domain.devices.gpus) matches any VMI where
+              # the gpus field is present and non-null.
+              GPU_VMIS=$(oc get vmi \
+                --all-namespaces \
+                -o jsonpath='{range .items[?(@.spec.domain.devices.gpus)]}{.metadata.namespace}{"/"}{.metadata.name}{"\n"}{end}' \
+                2>/dev/null || true)
+
+              if [ -n "$GPU_VMIS" ]; then
+                echo "BLOCKED: The following VMIs have GPU devices attached."
+                echo "Stop or migrate these VMs before syncing a vGPU profile change."
+                echo ""
+                echo "$GPU_VMIS"
+                echo ""
+                echo "Once the VMs are stopped, re-trigger the ArgoCD sync."
+                echo "To bypass this check (non-profile syncs only), set:"
+                echo "  clusterPolicy.vgpu.drainCheck.enabled: false"
+                echo "in the cluster values, sync, then re-enable."
+                exit 1
+              fi
+
+              echo "OK: No VMIs with GPU devices found."
+              echo "Sync may proceed."
+{{- end }}

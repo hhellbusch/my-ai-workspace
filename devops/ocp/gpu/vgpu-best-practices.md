@@ -343,7 +343,7 @@ They feed the next iteration of this document.
 
 ### Operations
 
-- **VM drain gate in GitOps**: Approaches documented in [Section 11](#11-vm-lifecycle-automation). No approach selected yet; the pre-sync hook is viable but requires careful scoping to avoid blocking unrelated syncs.
+- **VM drain gate in GitOps**: Pre-sync hook (Option B) implemented in `vgpu-drain-check.yaml`. Active by default when `vgpu.enabled: true`. Disable via `vgpu.drainCheck.enabled: false` for non-profile syncs.
 
 - **Mixed-size mode**: Running A40-8Q and A40-6Q devices on the same GPU simultaneously.
   NVIDIA supports this but the vGPU Device Manager ConfigMap format and node label
@@ -407,11 +407,14 @@ waits silently. An Ansible playbook (run manually or via AWX/AAP) handles the dr
 are decoupled. The ConfigMap in Git says one thing while the node may still be running
 the old profile. Acceptable if teams understand the two-phase nature.
 
-#### Option B: ArgoCD pre-sync hook Job
+#### Option B: ArgoCD pre-sync hook Job ✅ implemented
 
 A `PreSync` hook Job runs before ArgoCD applies the ConfigMap. It checks for running
 VMIs on affected nodes and fails if any are found, blocking the sync until the
 operator drains manually.
+
+Implemented in `instance/templates/vgpu-drain-check.yaml`. Active when both
+`vgpu.enabled` and `vgpu.drainCheck.enabled` are true (default when vGPU is on).
 
 ```yaml
 apiVersion: batch/v1

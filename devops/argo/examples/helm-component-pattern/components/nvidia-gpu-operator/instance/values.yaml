@@ -127,3 +127,12 @@ clusterPolicy:
     # Sandbox Device Plugin — required for both vGPU and passthrough VM workloads
     sandboxDevicePlugin:
       enabled: true
+
+    # Pre-sync drain check — blocks ArgoCD sync if any VMI has a GPU device attached.
+    # Protects against vGPU profile changes landing while VMs are running.
+    # Active on every sync when vgpu.enabled is true. Set enabled: false to bypass
+    # for syncs that do not touch the profile ConfigMap (e.g., driver version bumps).
+    drainCheck:
+      enabled: true
+      # image must have oc and basic shell utilities (bash, grep)
+      image: quay.io/openshift/origin-cli:latest
