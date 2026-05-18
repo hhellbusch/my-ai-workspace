@@ -97,9 +97,28 @@ clusterPolicy:
       #   gpu-node-3: a40-6q
       assignments: {}
 
-    # NLS license server ConfigMap — pre-provisioned, not managed by this chart
-    licensingConfig:
-      configMapName: ""
+    # NLS licensing — credentials pulled from Vault via ESO.
+    # Set vaultPath at the cluster layer. Vault path convention:
+    #   secret/fleet/nls/<cluster-name>
+    # Expected Vault keys: server, token
+    # See templates/vgpu-license.yaml for the ExternalSecret definition.
+    licensing:
+      vaultPath: ""
+      secretStoreName: vault-backend
+
+    # NFD NodeFeatureRule — auto-label nodes based on PCI hardware detection.
+    # Applies nvidia.com/vgpu.config = defaultProfile to all nodes with
+    # matching GPU hardware. Disabled by default — enable at group or cluster
+    # layer and define gpuProfiles for your hardware.
+    # See templates/vgpu-nfd-rule.yaml and devops/ocp/gpu/vgpu-node-labeling.md.
+    nfdRule:
+      enabled: false
+      # gpuProfiles: list of GPU models with PCI device IDs and default profiles
+      # Example:
+      #   - name: nvidia-a40-default
+      #     pciDeviceIds: ["2235"]   # A40
+      #     defaultProfile: a40-8q
+      gpuProfiles: []
 
     # VFIO Manager — enable for GPU passthrough VMs (mutually exclusive with vGPU)
     vfioManager:
@@ -107,4 +126,4 @@ clusterPolicy:
 
     # Sandbox Device Plugin — required for both vGPU and passthrough VM workloads
     sandboxDevicePlugin:
-      enabled: false
+      enabled: true

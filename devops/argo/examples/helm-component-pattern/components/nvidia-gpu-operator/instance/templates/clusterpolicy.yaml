@@ -69,14 +69,11 @@ spec:
     {{- with .Values.clusterPolicy.vgpu.vgpuManager.version }}
     version: {{ . | quote }}
     {{- end }}
-    {{- with .Values.clusterPolicy.vgpu.licensingConfig.configMapName }}
-    driverManager:
-      env:
-        - name: NLS_LICENSE_SERVER
-          valueFrom:
-            configMapKeyRef:
-              name: {{ . }}
-              key: server
+    {{- if .Values.clusterPolicy.vgpu.licensing.vaultPath }}
+    # NLS license Secret created by ESO (see vgpu-license.yaml)
+    licensingConfig:
+      configMapName: nls-license-config
+      nlsEnabled: true
     {{- end }}
 
   vgpuDeviceManager:

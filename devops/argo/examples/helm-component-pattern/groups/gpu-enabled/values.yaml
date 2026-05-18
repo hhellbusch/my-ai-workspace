@@ -129,7 +129,22 @@ component-gpu-enabled:
         mig:
           enabled: false
 
-        # vGPU: disabled at group layer — enable per-cluster only
-        # See components/nvidia-gpu-operator/instance/values.yaml for schema
+        # vGPU: infrastructure components enabled at group layer.
+        # profiles, licensing, and nodeProfiles MUST be set at the cluster layer.
+        # vgpuManager is disabled here — it requires an NGC image and NLS license
+        # that are cluster-specific. Enable and configure at cluster layer.
         vgpu:
-          enabled: false
+          enabled: true
+          vgpuManager:
+            enabled: false       # enable at cluster layer with image + licensing
+          vgpuDeviceManager:
+            enabled: true        # safe to enable; does nothing without profiles
+          sandboxWorkloads:
+            enabled: true
+          sandboxDevicePlugin:
+            enabled: true
+          vfioManager:
+            enabled: false       # passthrough is more specialized; opt-in per cluster
+          profiles: {}           # set at cluster layer (hardware-specific)
+          nodeProfiles:
+            assignments: {}      # set at cluster layer (node-specific)

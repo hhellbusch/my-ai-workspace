@@ -1,0 +1,57 @@
+{{- if .Values.clusterPolicy.vgpu.enabled }}
+{{- with .Values.clusterPolicy.vgpu.licensing }}
+{{- if .vaultPath }}
+---
+# NLS License Secret (via External Secrets Operator)
+#
+# Pulls the NVIDIA License Server (NLS) client token from Vault and creates
+# a Secret in the nvidia-gpu-operator namespace. The GPU Operator driver
+# mounts this Secret to authenticate with the NLS license server.
+#
+# Vault path convention: secret/fleet/nls/<cluster-name>
+# Expected Vault keys:
+#   server: "https://nls.example.com"
+#   token:  "<base64-encoded NLS client configuration token>"
+#
+# The Ansible onboarding playbook pre-provisions these Vault secrets
+# during cluster onboarding. The token is downloaded from the NVIDIA
+# Licensing Portal (https://nvid.nvidia.com/dashboard/) as a .tok file.
+#
+# Note: The GPU Operator ClusterPolicy references this Secret via
+# driver.licensingConfig.configMapName. If your GPU Operator version
+# supports secretName instead of configMapName, update accordingly.
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: nls-license-config
+  namespace: {{ $.Values.clusterPolicy.namespace }}
+  labels:
+    app.kubernetes.io/name: nvidia-gpu-operator
+    app.kubernetes.io/component: nls-license
+    app.kubernetes.io/part-of: nvidia-gpu-operator
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: {{ .secretStoreName | default "vault-backend" }}
+    kind: ClusterSecretStore
+  target:
+    name: nls-license-config
+    creationPolicy: Owner
+    template:
+      type: Opaque
+      data:
+        # GPU Operator expects the token as a .tok file mounted by the driver
+        client_configuration_token.tok: "{{ "{{ .token }}" }}"
+        server: "{{ "{{ .server }}" }}"
+  data:
+    - secretKey: token
+      remoteRef:
+        key: {{ .vaultPath }}
+        property: token
+    - secretKey: server
+      remoteRef:
+        key: {{ .vaultPath }}
+        property: server
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,57 @@
+{{- if .Values.clusterPolicy.vgpu.enabled }}
+{{- if .Values.clusterPolicy.vgpu.nfdRule.enabled }}
+---
+# NFD NodeFeatureRule — vGPU Profile Auto-Labeling
+#
+# Detects specific GPU hardware via PCI vendor/device IDs (already scanned by
+# NFD) and applies nvidia.com/vgpu.config labels automatically. This provides
+# continuous, GitOps-native node labeling without Ansible or hooks.
+#
+# How it works:
+#   NFD DaemonSet scans PCI bus → publishes features to NodeFeature API
+#   → NodeFeatureRule matches PCI device IDs → applies labels to Node
+#
+# Limitation: one default profile per GPU model. All nodes with the same GPU
+# hardware get the same label. To assign different profiles to nodes with
+# identical hardware, use BMH nodeLabels (at provision time) or Ansible
+# (post-provision override). See devops/ocp/gpu/vgpu-node-labeling.md.
+#
+# PCI device IDs for common NVIDIA datacenter GPUs:
+#   A40:  10de:2235
+#   A100: 10de:20b5 (SXM4 80GB), 10de:20b2 (PCIe 80GB), 10de:20b3 (PCIe 40GB)
+#   A10:  10de:2236
+#   L40:  10de:26b5
+#   L40S: 10de:26b9
+#   H100: 10de:2330 (SXM5 80GB), 10de:2331 (PCIe 80GB)
+apiVersion: nfd.k8s-sigs.io/v1alpha1
+kind: NodeFeatureRule
+metadata:
+  name: vgpu-profile-defaults
+  namespace: {{ .Values.clusterPolicy.namespace }}
+  labels:
+    app.kubernetes.io/name: nvidia-gpu-operator
+    app.kubernetes.io/component: vgpu-nfd-rule
+    app.kubernetes.io/part-of: nvidia-gpu-operator
+spec:
+  rules:
+  {{- range .Values.clusterPolicy.vgpu.nfdRule.gpuProfiles }}
+    - name: {{ .name }}
+      labels:
+        nvidia.com/vgpu.config: {{ .defaultProfile }}
+        nvidia.com/gpu.workload.config: vm-vgpu
+      matchFeatures:
+        - feature: pci.device
+          matchExpressions:
+            id:
+              op: In
+              value:
+              {{- range .pciDeviceIds }}
+                - {{ . | quote }}
+              {{- end }}
+            vendor:
+              op: In
+              value:
+                - "10de"
+  {{- end }}
+{{- end }}
+{{- end }}

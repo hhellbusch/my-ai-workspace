@@ -1,28 +1,33 @@
 # Cluster: site-a40-vgpu-1
-# Example production cluster with NVIDIA A40 GPUs configured for vGPU workloads.
+# Production cluster — NVIDIA A40 (48 GB) GPUs, vGPU workloads.
 #
-# GPU: NVIDIA A40 (48 GB VRAM per card)
-# vGPU profile: A40-8Q (8 GB framebuffer, 6 VMs per physical GPU)
+# GPU: NVIDIA A40 (48 GB VRAM per card, 4 cards per node)
+# Default vGPU profile: A40-8Q (8 GB framebuffer, 6 VMs per physical GPU = 24 per node)
+# Node label method: BMH nodeLabels (applied at provision time)
+#   — see devops/ocp/gpu/vgpu-node-labeling.md for alternatives
 #
-# Prerequisites before enabling vGPU in this values file:
-#   1. IOMMU MachineConfig applied (triggers rolling node reboot)
-#   2. Nodes labeled: nvidia.com/gpu.workload.config=vm-vgpu
-#   3. vgpuManager image uploaded to internal registry or NGC pull secret configured
-#   4. NLS license ConfigMap pre-provisioned in nvidia-gpu-operator namespace
-#   5. OCP version 4.18.24+ (see analysis: 4.18.22/23 have known crun incompatibility)
+# Prerequisites before syncing this cluster:
+#   1. IOMMU MachineConfig applied and nodes rebooted
+#   2. NLS token uploaded to Vault at secret/fleet/nls/site-a40-vgpu-1
+#   3. vGPU Manager image built and pushed to internal registry
+#      (download from NVIDIA portal, build per:
+#       https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/openshift/openshift-virtualization.html)
+#   4. OCP 4.18.24+ (avoid 4.18.22/23 — known crun incompatibility)
 #
 # Profile change procedure:
-#   1. Stop/migrate VMs using vGPU on the target node
-#   2. Update nodeProfiles.assignments and/or profiles in this file
-#   3. Merge/PR → ArgoCD syncs the ConfigMap change
-#   4. vGPU Device Manager applies the new profile once devices are free
-#   5. Restart VMs
+#   1. Stop/migrate VMs on target node using old profile
+#   2. Update nodeProfiles.assignments and/or profiles below
+#   3. PR → merge → ArgoCD syncs ConfigMap change
+#   4. vGPU Device Manager applies new profile once devices are free
+#   5. Update BMH labels for next provisioning cycle (if reprovisioning)
 #
-# See: devops/ocp/gpu/vgpu-a40-profiles.md for the full A40 profile runbook
+# Related:
+#   devops/ocp/gpu/vgpu-a40-profiles.md     — A40 profile reference
+#   devops/ocp/gpu/vgpu-node-labeling.md    — node label method comparison
 
 component-site-a40-vgpu-1:
   apps:
-    # ── NFD operator: manual approval in production ────────────────────────────
+    # ── NFD operator: manual approval in production ───────────────────────────
     nfd-operator:
       operators-installer:
         operators:
@@ -34,7 +39,7 @@ component-site-a40-vgpu-1:
             installPlanApproval: Manual
             csv: "nfd.4.18.0"
 
-    # ── GPU operator: pin to v24.9, manual approval ────────────────────────────
+    # ── GPU operator: pin channel and require manual approval ─────────────────
     nvidia-gpu-operator:
       operators-installer:
         operators:
@@ -46,7 +51,7 @@ component-site-a40-vgpu-1:
             installPlanApproval: Manual
             csv: "gpu-operator-certified.v24.9.1"
 
-    # ── ClusterPolicy: A40 vGPU, 8Q profile ───────────────────────────────────
+    # ── ClusterPolicy: A40 vGPU ───────────────────────────────────────────────
     nvidia-gpu-operator-instance:
       clusterPolicy:
         driver:
@@ -58,33 +63,21 @@ component-site-a40-vgpu-1:
             waitForCompletion:
               timeoutSeconds: 0
 
-        # sandboxWorkloads must be enabled for vGPU VM workloads
-        sandboxWorkloads:
-          enabled: true
-
         vgpu:
-          enabled: true
-
+          # vgpuManager: cluster-specific — image must match NVIDIA portal download
           vgpuManager:
             enabled: true
-            # vGPU Manager image — must match the vGPU driver version from NVIDIA portal
-            # Download from: https://nvid.nvidia.com/dashboard/
-            # Build and push to your internal registry per NVIDIA docs:
-            # https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/openshift/openshift-virtualization.html
             repository: "registry.example.com/nvidia"
             version: "570.133.10"
 
-          vgpuDeviceManager:
-            enabled: true
-
-          # ConfigMap read by the vGPU Device Manager — rendered by vgpu-configmap.yaml
+          # vGPU profile ConfigMap — consumed by vGPU Device Manager
           configMap:
             name: a40-vgpu-config
             default: "a40-8q"
 
-          # vGPU profiles available on this cluster
-          # A40 profile naming: A40-<GB>Q where GB = framebuffer per vGPU slice
-          # Full profile table: devops/ocp/gpu/vgpu-a40-profiles.md
+          # Available profiles on this cluster
+          # A40 profile naming: A40-<GB>Q (framebuffer per vGPU slice)
+          # Full table: devops/ocp/gpu/vgpu-a40-profiles.md
           profiles:
             a40-8q:
               type: A40-8Q    # 8 GB framebuffer, 6 VMs per A40
@@ -93,23 +86,78 @@ component-site-a40-vgpu-1:
               type: A40-6Q    # 6 GB framebuffer, 8 VMs per A40
               count: 8
 
-          # Node → profile assignments
-          # Rendered into vgpu-node-profiles ConfigMap (informational — applied externally)
+          # Informational ConfigMap: node → profile assignments
+          # Applied externally — see devops/ocp/gpu/vgpu-node-labeling.md
           nodeProfiles:
             configMapName: a40-vgpu-node-profiles
             assignments:
-              gpu-node-1: a40-8q
-              gpu-node-2: a40-8q
-              gpu-node-3: a40-6q
+              site-a40-vgpu-1-gpu-node-1: a40-8q
+              site-a40-vgpu-1-gpu-node-2: a40-8q
+              site-a40-vgpu-1-gpu-node-3: a40-6q
 
-          # NLS license ConfigMap — pre-provisioned, not managed by this chart
-          # Must exist in nvidia-gpu-operator namespace before sync
-          licensingConfig:
-            configMapName: nls-license-config
+          # NLS licensing — token pulled from Vault via ESO
+          # Vault path: secret/fleet/nls/site-a40-vgpu-1
+          # Keys: server (NLS URL), token (client config .tok content)
+          licensing:
+            vaultPath: "secret/fleet/nls/site-a40-vgpu-1"
+            secretStoreName: vault-backend
 
-          # VFIO Manager — disabled; this cluster uses vGPU, not passthrough
-          vfioManager:
-            enabled: false
-
-          sandboxDevicePlugin:
+          # NFD auto-label rule for A40 hardware
+          # Labels ALL A40 nodes with a40-8q by default.
+          # Override specific nodes via BMH labels or Ansible.
+          nfdRule:
             enabled: true
+            gpuProfiles:
+              - name: nvidia-a40-default-profile
+                pciDeviceIds: ["2235"]    # NVIDIA A40
+                defaultProfile: a40-8q
+
+    # ── BareMetalHost: GPU worker nodes ──────────────────────────────────────
+    # Node labels applied at provision time via BMH spec.
+    # nvidia.com/vgpu.config overrides the NFD rule for specific nodes.
+    # nvidia.com/gpu.workload.config is also set here and by the NFD rule.
+    baremetal-hosts:
+      cluster:
+        features:
+          baremetalHosts:
+            enabled: true
+        baremetal:
+          workers:
+            - name: gpu-node-1
+              role: gpu
+              bmc:
+                address: "192.168.1.101"
+              bootMACAddress: "AA:BB:CC:DD:EE:01"
+              hardwareProfile: dell-r750xa
+              labels:
+                nvidia.com/gpu.workload.config: vm-vgpu
+                nvidia.com/vgpu.config: a40-8q
+              taints:
+                - key: nvidia.com/gpu
+                  effect: NoSchedule
+
+            - name: gpu-node-2
+              role: gpu
+              bmc:
+                address: "192.168.1.102"
+              bootMACAddress: "AA:BB:CC:DD:EE:02"
+              hardwareProfile: dell-r750xa
+              labels:
+                nvidia.com/gpu.workload.config: vm-vgpu
+                nvidia.com/vgpu.config: a40-8q
+              taints:
+                - key: nvidia.com/gpu
+                  effect: NoSchedule
+
+            - name: gpu-node-3
+              role: gpu
+              bmc:
+                address: "192.168.1.103"
+              bootMACAddress: "AA:BB:CC:DD:EE:03"
+              hardwareProfile: dell-r750xa
+              labels:
+                nvidia.com/gpu.workload.config: vm-vgpu
+                nvidia.com/vgpu.config: a40-6q   # 6 GB slices, 8 VMs per GPU
+              taints:
+                - key: nvidia.com/gpu
+                  effect: NoSchedule
