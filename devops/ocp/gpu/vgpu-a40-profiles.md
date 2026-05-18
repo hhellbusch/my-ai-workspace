@@ -27,6 +27,25 @@ Source: [NVIDIA Grid vGPU User Guide — Virtual GPU Types for NVIDIA A40](https
 
 **An 8 GB vGPU slice = `A40-8Q` (6 VMs per A40 GPU).**
 
+### vGPU Series
+
+Each A40 is available in multiple **series** (Q, B, A, C), each optimized for a different workload and requiring a different license. The series letter is the **last character** of the profile name (`A40-8Q`, `A40-8B`, etc.).
+
+| Series | Letter | Purpose | Max FPS | License | Display |
+|--------|--------|---------|---------|---------|--------|
+| **Q-series** | Q | Virtual workstations (CAD, video, design) | 60 FPS | vWS | Full |
+| **B-series** | B | Virtual desktops (office, business) | 45 FPS | vPC | Full |
+| **A-series** | A | App streaming / session-based (RDSH, Citrix) | 60 FPS | vApps | Single low-res console |
+| **C-series** | C | Compute only — no display | — | vCS | None |
+
+**Key differences:**
+
+- **Same framebuffer, different license** — `A40-8Q`, `A40-8B`, `A40-8A`, and `A40-8C` all have 8 GB/framebuffer and fit 6 VMs per GPU, but require different license editions.
+- **Q-series is the default** — the GPU Operator only enables Q and C profiles out of the box. B and A series may require additional DRM/license configuration.
+- **C-series has no display** — use this for VMs that are pure CUDA/ML compute workloads with no graphical output.
+
+Source: [NVIDIA Grid vGPU User Guide — Virtual GPU Types Reference](https://docs.nvidia.com/vgpu/latest/grid-vgpu-user-guide/#virtual-gpu-types-grid)
+
 ---
 
 ## Prerequisites
