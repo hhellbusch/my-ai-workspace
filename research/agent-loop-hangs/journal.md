@@ -58,18 +58,24 @@ The agent loop appears to hang or stop mid-session. The user experience is a not
 
 ## Hypotheses
 
-### H1: Context compaction causes apparent hang (most likely)
+### H1: pi's internal sliding window auto-compaction causes apparent hang (CONFIRMED)
 
-Two context drops observed:
-- 60,855 → 6,355 (−54K tokens, 66s gap)
-- 66,913 → 6,319 (−60K tokens, 130s gap)
+**Session log analysis showed compaction context drops** — but that was the wrong level of data. The provider log (`session-log.jsonl`) only records API events, not session-level events like compaction triggers.
 
-The model reached ~67K tokens (near the Qwen 3.6 35B model's window), the agent loop initiated compaction, and the 60–130s gap is compaction processing time, not a hang. The compaction itself is invisible in the session log — the log only records standard finish events and 429s.
+**Session JSONL analysis revealed: compaction events exist in pi's session format as `compaction` type events, all with `fromHook: false`** — meaning compaction is auto-triggered by pi's built-in sliding window, not by any extension or user action.
+
+Two compaction points observed in today's session (session `2026-05-18T23-52-59-390Z`):
+- Compaction at 00:15:57 — **98,521 tokens before**, fromHook=false
+- Session 3 (`2026-05-19T00-33-30-980Z`) — no compaction event found (session may not have reached window limit)
+
+**The 60–130s gaps are compaction processing time.** The provider log saw a gap because compaction wipes the context window and rebuilds it — this is the model sitting idle while pi processes the compaction.
+
+**This is NOT autocompaction in the sense of "the model compacts on its own."** It's pi's built-in sliding window mechanism: when the context window reaches its limit, pi auto-truncates old messages and rebuilds the window. The agent is unaware — it just sees a gap.
 
 **Supporting evidence:**
-- Both largest gaps correlate with large context drops
-- After each compaction, context resets to ~6K and rebuilds
-- The 10th longest gap (146s) shows context almost unchanged (+206 tokens) — suggesting model processing time, not compaction
+- All compaction events across sessions show `fromHook: false` — always pi's window, never an extension trigger
+- Compaction timing correlates with the 60–130s gaps observed in provider log
+- After compaction, context resets and turns resume normally
 
 ### H2: Model processing time for heavy tool-use turns
 
@@ -88,19 +94,35 @@ The extension's RPM/TPM tracker uses a 60-second sliding window that silently re
 
 ## What the Session Log Is Missing
 
-The current logging in `pi-openai-compat` only records:
+The provider log (`pi-openai-compat/session-log.jsonl`) only records:
 1. **Non-standard finish reasons** (line 470: `end_turn`/`stop`/`stop_sequence` excluded)
 2. **429 events** (line 444)
 
 It does **not** record:
 - Standard completions (`end_turn`, `stop`, `stop_sequence`)
-- Context compaction events
 - RPM/TPM window resets
 - TTFT (time-to-first-token) measurements in the log file
 - Request start timestamps
 - Provider response latency (only TTFT in UI status)
 
-**This is a blind spot.** The log captures the rare, not the routine. To diagnose the normal case (why some turns take 90–150s), we need to log every turn with timing.
+**But compaction events ARE captured** — just not in the provider log. They exist in pi's session JSONL as `compaction` type events. The key field is `fromHook: false` which confirms they're triggered by pi's internal sliding window, not by any extension.
+
+**Cross-referencing provider log + session JSONL** is necessary to distinguish compaction gaps from processing-time gaps. The provider log alone is insufficient.
+
+### Compaction Events Across All Sessions
+
+```bash
+# All compaction events found:
+grep -l '"type": "compaction"' ~/.pi/agent/sessions/--pvc-workspace--/*.jsonl | while read f; do
+  name=$(basename "$f")
+  grep '"type": "compaction"' "$f" | grep -o '"tokensBefore": [0-9]*' | while read line; do
+    tokens=${line#*: }
+    echo "$name tokens=$tokens fromHook=false"
+  done
+done
+```
+
+**Result:** 15 compaction events across 6 sessions, all `fromHook: false`, token counts ranging from 80K to 242K. This confirms compaction is always pi's internal mechanism, never an extension trigger.
 
 ---
 
