@@ -18,16 +18,16 @@ The agent loop appears to hang or stop mid-session. The user experience is a not
 
 | Source | Finding | Verified by user? |
 |--------|---------|-------------------|
-| Provider log (`session-log.jsonl`) | 157 finish events, 17 gaps >30s | **Yes** — user experienced the gaps |
+| Provider log (`session-log.jsonl`) | 165 finish events (up to 00:48), 17 gaps >30s | **Yes** — user experienced the gaps |
 | Session JSONL | 2 compaction events in session `2026-05-18T23-52-59` | **No** — user never saw compaction happen |
 | Source code (`interactive-mode.js`) | Auto-compaction on overflow at line 2315 | Theoretical — pi's auto-compaction has no user-visible notification |
 | `compaction` events across all sessions | 15 events, all `fromHook: false` | Log evidence only |
 
-**Key insight: the compaction events are real in the logs but never user-visible.** When `fromHook: false`, pi's auto-compaction is completely silent — no dialog, no notification, no warning. The context window just gets rebuilt. The user experiences only a gap (the model sits idle while pi processes the truncation), not a compaction event.
+**Correction: auto-compaction is NOT silent.** Source code at `interactive-mode.js` line 2315 shows a visible spinner with text "Context overflow detected, Auto-compacting... (Ctrl+C to cancel)". Both manual and auto compaction show a loader — manual says "Compacting context..." and auto says "Context overflow detected, Auto-compacting...". If compaction happened and the user didn't notice it, they may have missed the notification, or the session ended before rendering. The context window just gets rebuilt. The user experiences only a gap (the model sits idle while pi processes the truncation), not a compaction event.
 
 **Therefore the journal's "compaction caused the hang" claim is inferred, not observed.** The 60–130s gaps the user experiences **could be compaction or heavy model processing** — we can't tell from provider logs alone. Some gaps correlate with context drops (compaction), but others don't. The only thing confirmed is: the user sees unexplained pauses. Whether they're compaction or processing time is a separate question.
 
-**User-verified finding:** The user does not recall seeing pi's auto-compaction. This is consistent with pi's design — auto-compaction (`fromHook: false`) has no notification, while the manual `/compact` command shows a progress dialog. If auto-compaction happened during the session, the user would not have noticed it as a distinct event, only as a gap.
+**Open question:** The user does not recall seeing auto-compaction. But the source shows it displays a visible spinner. Either the user missed it, it happened between sessions (new session starts post-compaction), or the source behaviour differs from what was deployed. This needs direct observation to resolve.
 
 ---
 
@@ -37,13 +37,13 @@ The agent loop appears to hang or stop mid-session. The user experience is a not
 
 | Metric | Value |
 |--------|-------|
-| Total events | 167 |
-| Time span | 32m 15s |
+| Total events | 165 (up to 00:48; log has grown since) |
+| Time span | 32m 0s |
 | Finish reason | 100% `toolUse` (standard completion) |
 | 429 events | 0 |
 | Non-standard finishes | 0 |
-| Avg context tokens | 45,499 |
-| Max context tokens | 72,735 |
+| Avg context tokens | 46,947 |
+| Max context tokens | 81,127 |
 | Min context tokens | 6,319 |
 
 ### Gap Distribution
@@ -93,9 +93,10 @@ Two compaction points observed in today's session (session `2026-05-18T23-52-59-
 - All 15 compaction events across 6 sessions show `fromHook: false` — always auto-compaction, never manual
 - Compaction timing correlates with the 60–130s gaps observed in provider log
 - After compaction, context resets and turns resume normally
-- pi has two compaction triggers (verified in `interactive-mode.js`): **manual `/compact`** and **auto on overflow**. All 15 observed events were auto-triggered
+- pi has two compaction triggers (verified in `interactive-mode.js`): **manual `/compact`** (reason=`manual`) and **auto on overflow** (reason=`overflow`). Both set `fromHook: false` unless an extension overrides.
+- The 15 observed events cannot be confirmed as auto vs manual from `fromHook` alone — a different field (`reason` in the `compaction_start` event) would be needed, but that isn't stored in the session JSONL compaction entry.
 
-**Limitation:** The user never observed auto-compaction directly. pi's auto-compaction is silent (no notification). The gaps could include heavy model processing turns that look identical to the user.
+**Limitation:** The journal cannot distinguish manual `/compact` from auto-overflow compaction from session JSONL data alone. The `fromHook` field is a red herring for this question.
 
 ### H2: Model processing time for heavy tool-use turns
 
@@ -142,7 +143,9 @@ grep -l '"type": "compaction"' ~/.pi/agent/sessions/--pvc-workspace--/*.jsonl | 
 done
 ```
 
-**Result:** 15 compaction events across 6 sessions, all `fromHook: false`, token counts ranging from 80K to 242K. Two compaction triggers exist in pi: (1) the `/compact` slash command (user-initiated), (2) auto-compaction on context overflow (pi-internal, triggered when the session exceeds the sliding window limit). All 15 observed events were auto-triggered, not manual.
+**Result:** 15 compaction events across **7** sessions (not 6 as previously stated), all `fromHook: false`, token counts ranging from 80K to 242K.
+
+**Critical correction on `fromHook` interpretation:** `fromHook: false` does NOT mean auto-compaction vs manual. It means pi generated the compaction summary itself, as opposed to an extension hook providing a custom summary via the `session_before_compact` event. Both manual `/compact` and auto-overflow compaction set `fromHook: false` unless an extension overrides the summary. The field cannot distinguish manual from auto triggers.
 
 ---
 
