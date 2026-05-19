@@ -58,6 +58,7 @@ These are workspace-specific skills — unique to this project.
 |---|---|
 | `/audit` | Content health check — links, registry alignment, cross-refs, freshness |
 | `/audit-skill` | Audit a skill against AgentSkills best practices (scored report) |
+| `/release-tags` | Tag and analyze day-based releases — backfill, diff, summarize sessions |
 | `/validate` | Mark content as human-reviewed with specific validation types |
 | `/cross-link` | Find and fix missing cross-links for a file or all new files |
 | `/organize` | Repository structure audit — flag misplaced files, convention violations |
