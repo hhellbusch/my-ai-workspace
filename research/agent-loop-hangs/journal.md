@@ -151,6 +151,61 @@ done
 
 ---
 
+## Max Tokens Cap — Hardcoded in pi-openai-compat
+
+**Discovered:** 2026-05-19 during validation of the commit-guard loop-break changes.
+
+### Finding
+
+The `max_tokens` output cap is **NOT** set by the model. It is hardcoded in `pi-openai-compat/index.ts` line 133:
+
+```ts
+maxTokens: reasoning ? Math.min(16384, contextWindow) : Math.min(4096, contextWindow),
+```
+
+- Non-reasoning models → **capped at 4096** output tokens
+- Reasoning models → **capped at 16384** output tokens
+
+Both also clamp to `contextWindow` (the model's advertised total context), but 4096/16384 is always the effective limit since context windows are 32768+.
+
+### What this means
+
+When you see `"event":"finish","details":{"reason":"max_tokens"}` in the session log, it does NOT mean the model hit its own output capacity. It means the extension hit a self-imposed ceiling. The extension already reads `entry.max_tokens` from the API model spec (line 97) but doesn't use it for the output cap.
+
+Models that support >4096 output tokens (many do) are being truncated mid-flow by the extension. The model stops generating with `max_tokens` — visible in logs but no pre-warning is given to the user.
+
+### Current monitoring gaps
+
+| Gap | Detail |
+|-----|--------|
+| No pre-warning | Model hits cap mid-thought with no indication |
+| No max_tokens history | One log entry per hit, no counter or trend visibility |
+| Context % confuses input vs output | The 40%/75% context warnings fire on total tokens / context window, not output budget. A 32K-context model at 40% context still has full 4096 output tokens, but the warning fires anyway |
+| No per-turn max_tokens tracking | Loops that burn 4096 tokens/turn x N turns show no incremental signal |
+| No user-visible cap | Status bar shows finish reason briefly but no persistent indicator |
+
+### Current log capture
+
+The `message_end` handler (`index.ts` line 466-470) captures `stop_reason` from the API and logs non-normal reasons:
+
+```ts
+const reason = msg.stop_reason ?? msg.stopReason ?? msg.finish_reason;
+if (reason && reason !== "end_turn" && reason !== "stop" && reason !== "stop_sequence") {
+    logEvent(ctx, { ts: new Date().toISOString(), event: "finish", details: { reason, tokens: usage?.tokens } });
+}
+```
+
+Normal completions (`end_turn`, `stop`, `stop_sequence`) are excluded from the log. Only `max_tokens`/`length` and `error` show up.
+
+### Source
+
+- `submodules/pi-openai-compat/index.ts` line 133 (hardcoded cap)
+- `submodules/pi-openai-compat/index.ts` line 466-470 (finish reason capture)
+- `submodules/pi-openai-compat/index.ts` line 298-299 (FINISH_REASON_MAP: `max_tokens` → ✂ icon, `length` → ✂ icon)
+- `submodules/pi-openai-compat/index.ts` line 97, 115 (context_window resolution — reads API spec but not used for output cap)
+
+---
+
 ## Open Questions
 
 1. What is the actual model's context window for `Qwen3.6-35B-A3B`? (The extension auto-discovers it — is it correct?)
