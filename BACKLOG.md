@@ -95,6 +95,17 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### Case study: Qwen vs Sonnet 4-6 — fluent-but-wrong as a model quality signal
+- **Product:** docs (case-studies)
+- **Context:** In the agent-loop-hangs investigation (`research/agent-loop-hangs/journal.md`), the initial analysis was written by Qwen3.6-35B-A3B across 3 commits. It produced confident, well-structured claims that were wrong in multiple verifiable ways: wrong event counts, wrong session count, and a fundamental misinterpretation of what `fromHook` means in pi's source. The fact-check (claude-sonnet-4-6) caught all of them by verifying against raw data and source code. This is a concrete example of the "fluent-but-wrong" Zanshin failure mode — and a seed for broader benchmarking design.
+- **Added:** 2026-05-19
+
+### Design of experiments: agent harness + model benchmarking
+- **Product:** research / devops
+- **Context:** The Qwen vs Sonnet quality difference (above) surfaced the need for a principled way to evaluate model choice against real tasks in this stack (pi + paude + local LLM endpoint). Ad-hoc observation is insufficient. A proper DoE would define tasks, metrics, and evaluation criteria reproducibly. Open source standards to explore: **SWE-bench** (real GitHub issues as tasks — closest analog to this use case), **Inspect** (UK AISI — open-source eval framework designed for custom task definitions), **PromptFoo** (open-source model comparison across prompts, easy setup), **AgentBench** (multi-task agent benchmarking). Internal angle: the session JSONL + provider log infrastructure already captures timing, token usage, and finish reasons — foundation for task-level scoring without external tooling.
+- **Scope questions to resolve:** What tasks matter? (verification accuracy, code correctness, multi-step coherence) What metrics? (correctness, token cost, latency, compaction frequency) What is the unit of comparison? (model alone, or full stack: model + system prompt + extensions)
+- **Added:** 2026-05-19
+
 ### Case study: command execution ≠ comprehension — how a guard learned to embed rather than delegate
 - **Product:** docs (case-studies)
 - **Context:** The commit-guard review gate went through three designs in one session: (1) human dialog — asks the user to proceed or cancel; (2) `sendUserMessage` telling the agent to run `git diff --cached` — mechanical compliance, the agent runs the command and retries without reasoning; (3) guard fetches the diff itself and embeds it in the message with a checklist — the agent must engage with actual content to formulate a response. The progression names a general failure mode in AI guardrails: a guard that enforces *a behavior* (command was run) is weaker than one that enforces *engagement with content* (diff is in the conversation). The session also revealed that `stagedReviewed` tracking command execution is the wrong signal — tracking whether the content is in the conversation is better. Connects to: prompt engineering as precision engineering; the difference between compliance and comprehension in automated review.

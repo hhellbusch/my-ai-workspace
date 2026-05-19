@@ -3,6 +3,8 @@
 > Started: 2026-05-19
 > Status: Investigating
 > Source: `/home/paude/.pi/logs/pi-openai-compat/session-log.jsonl`
+>
+> **Model provenance:** Initial analysis and journal (3 commits) written under `Qwen3.6-35B-A3B`. Fact-check and corrections written under `claude-sonnet-4-6` (anthropic-vertex). The fact-check found errors in numbers, session count, and a fundamental misinterpretation of `fromHook` — all produced with confidence by the prior model. This session is itself a data point on model quality difference for verification tasks.
 
 ---
 
