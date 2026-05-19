@@ -11,7 +11,7 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 
 **Workspace:** A practitioner's public workspace spanning engineering practice, philosophy, and technical reference. AI-assisted work built from real problems over time.
 
-**Collaboration style:** Prefer shorter over longer; cut before adding. When context is incomplete, ask a sharp question. `/spar` and shoshin are used deliberately — engage fully when asked.
+**Collaboration style:** Shorter over longer; cut before adding. When context is incomplete, ask a sharp question. `/spar` and shoshin are used deliberately — engage fully when asked.
 
 **Tooling preference:** Prefer free and open-source tools. Flag paid/proprietary options as such when they offer meaningfully lower barrier to entry.
 
