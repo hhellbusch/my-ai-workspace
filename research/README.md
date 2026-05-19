@@ -6,6 +6,7 @@ Research workspaces containing fetched sources, analysis findings, and assessmen
 
 | Directory | Topic | Sources | Key output |
 |---|---|---|---|
+| `agent-loop-hangs/` | Agent loop hang/stop symptom investigation — session log analysis | 1 session log | [journal.md](agent-loop-hangs/journal.md) |
 | `openshift-ai-llm-deployment/` | Verification of Jared Burck's enterprise LLM deployment article | 53 of 62 references fetched | [assessment.md](openshift-ai-llm-deployment/assessment.md) |
 | `nvidia-gpu-operator-ocp418/` | NVIDIA GPU Operator production impact on OCP 4.18 | Single analysis | [analysis.md](nvidia-gpu-operator-ocp418/analysis.md) |
 | `openshift-gpu/` | GPU node management on bare-metal OpenShift | Complete — sources cleaned up | [docs/ai-engineering/openshift-gpu-node-management.md](../docs/ai-engineering/openshift-gpu-node-management.md) |
