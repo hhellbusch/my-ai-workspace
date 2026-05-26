@@ -986,6 +986,41 @@ pip install jmespath
 - Disaster recovery verification
 ```
 
+### 14. Create a Confluence Page from an Ansible Playbook ⭐
+
+Publish structured content to Confluence via REST API — no extra collections
+required. The primary use case is creating a **permanent validation record**
+after a play runs: which checks executed, which hosts were targeted, and what
+the outcome was.
+
+**Key concepts:**
+- `ansible.builtin.uri` for authenticated REST API calls
+- Composing Confluence Storage Format (XHTML) from Jinja2 templates
+- Idempotency via title lookup: create on first run, update on re-runs
+- `no_log: true` to prevent credentials leaking into output
+- Works with Confluence Cloud (API token) and Data Center/Server (PAT)
+
+```bash
+cd 014_create_confluence_page
+
+# Minimal example
+ansible-playbook simple_playbook.yml \
+  -e confluence_base_url=https://yourorg.atlassian.net \
+  -e confluence_username=you@example.com \
+  -e confluence_api_token=ATATT... \
+  -e confluence_space_key=OPS
+
+# Full validation-record example
+ansible-playbook playbook.yml -e @vault.yml --ask-vault-pass
+```
+
+**See the [README.md](014_create_confluence_page/README.md) for:**
+- Authentication setup (Cloud vs Data Center/Server)
+- Storage Format reference and macro examples
+- How to wire real validation tasks into the results table
+- Nesting pages under a parent
+- Troubleshooting guide
+
 ---
 
 *This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

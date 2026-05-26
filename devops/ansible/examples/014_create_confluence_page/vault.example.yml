@@ -1,0 +1,21 @@
+---
+# Credential template for 014_create_confluence_page.
+#
+# Copy to vault.yml, fill in real values, then encrypt:
+#   cp vault.example.yml vault.yml
+#   ansible-vault encrypt vault.yml
+#
+# Usage:
+#   ansible-playbook playbook.yml -e @vault.yml --ask-vault-pass
+
+# ── Confluence Cloud ────────────────────────────────────────────────────────
+# Username is the Atlassian account email address.
+# API token: https://id.atlassian.com/manage-profile/security/api-tokens
+vault_confluence_username: "you@example.com"
+vault_confluence_api_token: "ATATT3xFfGF0..."
+
+# ── Confluence Data Center / Server ─────────────────────────────────────────
+# Use a Personal Access Token (PAT) as the api_token field, or a password.
+# PAT docs: https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html
+# vault_confluence_username: "svc-ansible"
+# vault_confluence_api_token: "<personal-access-token>"

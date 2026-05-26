@@ -1,0 +1,275 @@
+---
+# Create a permanent validation record in Confluence after an Ansible play.
+#
+# This playbook demonstrates two phases:
+#   1. Run validation checks (stubbed here — replace with your real tasks)
+#   2. Publish results as a Confluence page with a structured table and timestamp
+#
+# The page is idempotent: if a page with the same title already exists in the
+# space, the playbook updates it (version bump) rather than creating a duplicate.
+#
+# Prerequisites:
+#   - No extra collections required; uses ansible.builtin.uri (built-in)
+#   - Confluence Cloud: Atlassian account email + API token
+#   - Confluence Data Center/Server: username + password or PAT
+#
+# Usage:
+#   # Load credentials from an encrypted vars file (recommended)
+#   ansible-playbook playbook.yml -e @vault.yml --ask-vault-pass
+#
+#   # Inline (quick testing only — credentials visible in process list)
+#   ansible-playbook playbook.yml \
+#     -e confluence_base_url=https://yourorg.atlassian.net \
+#     -e confluence_username=you@example.com \
+#     -e confluence_api_token=ATATT... \
+#     -e confluence_space_key=OPS
+
+- name: Run validations and publish results to Confluence
+  hosts: localhost
+  gather_facts: true   # Provides ansible_date_time for the page header
+
+  vars:
+    # ── Confluence connection ──────────────────────────────────────────────────
+    confluence_base_url: "https://yourorg.atlassian.net"
+    confluence_username: "{{ vault_confluence_username }}"
+    confluence_api_token: "{{ vault_confluence_api_token }}"
+    confluence_validate_certs: true
+
+    # ── Page placement ─────────────────────────────────────────────────────────
+    confluence_space_key: "OPS"
+    # Title is used as the idempotency key — same title = update existing page
+    confluence_page_title: "Validation Record — {{ ansible_date_time.date }}"
+    # Optional parent page ID (empty = space root)
+    confluence_parent_page_id: ""
+
+    # ── Validation definitions ─────────────────────────────────────────────────
+    # Replace these stubs with your real checks.  Each item must have:
+    #   name        - Human-readable check description
+    #   host        - Target host / system (can be a variable)
+    #   result      - "PASS" | "FAIL" | "SKIP"
+    #   detail      - One-line detail shown in the table
+    validation_checks:
+      - name: "Network reachability"
+        host: "app-server-01"
+        result: "PASS"
+        detail: "Responded to ping within 200 ms"
+      - name: "Service health endpoint"
+        host: "app-server-01"
+        result: "PASS"
+        detail: "HTTP 200 on /healthz"
+      - name: "Disk utilisation < 80%"
+        host: "app-server-01"
+        result: "FAIL"
+        detail: "/var at 87% — threshold exceeded"
+      - name: "NTP sync status"
+        host: "app-server-02"
+        result: "PASS"
+        detail: "Offset within ±50 ms"
+      - name: "Certificate expiry > 30 days"
+        host: "lb-01"
+        result: "SKIP"
+        detail: "Cert check skipped — host unreachable"
+
+  tasks:
+    # ═══════════════════════════════════════════════════════════════════════════
+    # PHASE 1: Run validations (stub)
+    # Replace this section with your real validation tasks.
+    # Populate validation_results with the same schema as validation_checks.
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    - name: Execute validation checks (stub — replace with real tasks)
+      ansible.builtin.set_fact:
+        # In a real play, build this list from registered task results.
+        # Here we use the static definitions above as-is.
+        validation_results: "{{ validation_checks }}"
+
+    - name: Summarise results
+      ansible.builtin.set_fact:
+        result_pass: "{{ validation_results | selectattr('result', 'equalto', 'PASS') | list | length }}"
+        result_fail: "{{ validation_results | selectattr('result', 'equalto', 'FAIL') | list | length }}"
+        result_skip: "{{ validation_results | selectattr('result', 'equalto', 'SKIP') | list | length }}"
+
+    - name: Display summary in the Ansible console
+      ansible.builtin.debug:
+        msg:
+          - "Validation summary — PASS: {{ result_pass }}  FAIL: {{ result_fail }}  SKIP: {{ result_skip }}"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # PHASE 2: Compose the Confluence page body
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    - name: Build page body in Confluence Storage Format
+      ansible.builtin.set_fact:
+        # Confluence Storage Format is XHTML-like.
+        # ac:structured-macro provides native Confluence components (status, info boxes).
+        confluence_page_body: |
+          <h2>Validation Record</h2>
+
+          <p>
+            <strong>Date:</strong> {{ ansible_date_time.iso8601 }}<br/>
+            <strong>Orchestrated by:</strong> Ansible playbook — {{ playbook_dir | basename }}<br/>
+            <strong>Controller host:</strong> {{ ansible_hostname }}
+          </p>
+
+          <h3>Summary</h3>
+          <table>
+            <tbody>
+              <tr>
+                <th>PASS</th>
+                <th>FAIL</th>
+                <th>SKIP</th>
+                <th>Total</th>
+              </tr>
+              <tr>
+                <td style="color: green; font-weight: bold;">{{ result_pass }}</td>
+                <td style="color: red;   font-weight: bold;">{{ result_fail }}</td>
+                <td style="color: grey;  font-weight: bold;">{{ result_skip }}</td>
+                <td>{{ validation_results | length }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          {% if result_fail | int > 0 %}
+          <ac:structured-macro ac:name="warning">
+            <ac:rich-text-body>
+              <p>{{ result_fail }} check(s) failed. Review the details table below.</p>
+            </ac:rich-text-body>
+          </ac:structured-macro>
+          {% else %}
+          <ac:structured-macro ac:name="info">
+            <ac:rich-text-body>
+              <p>All checks passed ({{ result_skip }} skipped).</p>
+            </ac:rich-text-body>
+          </ac:structured-macro>
+          {% endif %}
+
+          <h3>Check Details</h3>
+          <table>
+            <tbody>
+              <tr>
+                <th>Check</th>
+                <th>Host / System</th>
+                <th>Result</th>
+                <th>Detail</th>
+              </tr>
+              {% for check in validation_results %}
+              <tr>
+                <td>{{ check.name }}</td>
+                <td><code>{{ check.host }}</code></td>
+                <td style="font-weight: bold;
+                  {% if check.result == 'PASS' %}color: green;
+                  {% elif check.result == 'FAIL' %}color: red;
+                  {% else %}color: grey;{% endif %}">
+                  {{ check.result }}
+                </td>
+                <td>{{ check.detail }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # PHASE 3: Publish to Confluence (create or update)
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    - name: Check whether the page already exists
+      ansible.builtin.uri:
+        url: >-
+          {{ confluence_base_url }}/wiki/rest/api/content
+          ?title={{ confluence_page_title | urlencode }}
+          &spaceKey={{ confluence_space_key }}
+          &expand=version
+        method: GET
+        url_username: "{{ confluence_username }}"
+        url_password: "{{ confluence_api_token }}"
+        force_basic_auth: true
+        validate_certs: "{{ confluence_validate_certs }}"
+        headers:
+          Accept: "application/json"
+        status_code: 200
+      no_log: true
+      register: existing_page_query
+
+    - name: Create or update the Confluence page
+      block:
+        # ── Branch A: page does not yet exist → create ───────────────────────
+        - name: Create new page
+          ansible.builtin.uri:
+            url: "{{ confluence_base_url }}/wiki/rest/api/content"
+            method: POST
+            url_username: "{{ confluence_username }}"
+            url_password: "{{ confluence_api_token }}"
+            force_basic_auth: true
+            validate_certs: "{{ confluence_validate_certs }}"
+            headers:
+              Content-Type: "application/json"
+              Accept: "application/json"
+            body_format: json
+            body:
+              type: page
+              title: "{{ confluence_page_title }}"
+              space:
+                key: "{{ confluence_space_key }}"
+              ancestors: >-
+                {{ [{"id": confluence_parent_page_id}] if confluence_parent_page_id else [] }}
+              body:
+                storage:
+                  value: "{{ confluence_page_body }}"
+                  representation: storage
+            status_code: 200
+          no_log: true
+          register: create_result
+          when: existing_page_query.json.results | length == 0
+
+        # ── Branch B: page already exists → update (increment version) ───────
+        - name: Update existing page
+          vars:
+            existing_page: "{{ existing_page_query.json.results[0] }}"
+            next_version: "{{ (existing_page.version.number | int) + 1 }}"
+          ansible.builtin.uri:
+            url: "{{ confluence_base_url }}/wiki/rest/api/content/{{ existing_page.id }}"
+            method: PUT
+            url_username: "{{ confluence_username }}"
+            url_password: "{{ confluence_api_token }}"
+            force_basic_auth: true
+            validate_certs: "{{ confluence_validate_certs }}"
+            headers:
+              Content-Type: "application/json"
+              Accept: "application/json"
+            body_format: json
+            body:
+              type: page
+              title: "{{ confluence_page_title }}"
+              version:
+                number: "{{ next_version }}"
+              body:
+                storage:
+                  value: "{{ confluence_page_body }}"
+                  representation: storage
+            status_code: 200
+          no_log: true
+          register: update_result
+          when: existing_page_query.json.results | length > 0
+
+      rescue:
+        - name: Report publish failure
+          ansible.builtin.fail:
+            msg: >-
+              Failed to publish to Confluence:
+              {{ ansible_failed_task.name }} —
+              {{ ansible_failed_result.json.message
+                 | default(ansible_failed_result.msg
+                 | default('unknown error')) }}
+
+    # ── Report page URL ───────────────────────────────────────────────────────
+    - name: Report published page URL
+      vars:
+        page_result: "{{ create_result if (existing_page_query.json.results | length == 0) else update_result }}"
+        action: "{{ 'Created' if (existing_page_query.json.results | length == 0) else 'Updated' }}"
+      ansible.builtin.debug:
+        msg:
+          - "{{ action }} Confluence page successfully."
+          - "Title  : {{ page_result.json.title }}"
+          - "URL    : {{ confluence_base_url }}/wiki{{ page_result.json._links.webui }}"
+          - "ID     : {{ page_result.json.id }}"
+          - "Version: {{ page_result.json.version.number }}"

@@ -1,0 +1,81 @@
+---
+# Minimal example: create a static page in Confluence via REST API.
+#
+# Uses only ansible.builtin.uri — no additional collections required.
+#
+# Confluence Cloud auth: use your Atlassian account email + an API token.
+#   Generate a token at: https://id.atlassian.com/manage-profile/security/api-tokens
+#
+# Confluence Data Center / Server auth: use username + password or a
+#   personal access token (PAT) as the password field.
+#
+# Usage:
+#   ansible-playbook simple_playbook.yml \
+#     -e confluence_base_url=https://yourorg.atlassian.net \
+#     -e confluence_username=you@example.com \
+#     -e confluence_api_token=ATATT... \
+#     -e confluence_space_key=OPS \
+#     -e confluence_page_title="My New Page"
+#
+#   Or load credentials from an encrypted vars file:
+#   ansible-playbook simple_playbook.yml -e @vault.yml --ask-vault-pass
+
+- name: Create a Confluence page
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    # ── Confluence connection ──────────────────────────────────────────────────
+    confluence_base_url: "https://yourorg.atlassian.net"
+    confluence_username: "{{ vault_confluence_username }}"     # Loaded from vault.yml
+    confluence_api_token: "{{ vault_confluence_api_token }}"  # Loaded from vault.yml
+    confluence_validate_certs: true
+
+    # ── Page location ──────────────────────────────────────────────────────────
+    confluence_space_key: "OPS"
+    confluence_page_title: "My Ansible-Created Page"
+    # Optional: set to a page ID to nest this page under a parent.
+    # Leave empty to create at the space root.
+    confluence_parent_page_id: ""
+
+    # ── Page content (Confluence Storage Format — XHTML-like) ─────────────────
+    confluence_page_body: |
+      <h2>Hello from Ansible</h2>
+      <p>This page was created by an Ansible playbook.</p>
+      <p>Edit the <code>confluence_page_body</code> variable to change the content.</p>
+
+  tasks:
+    - name: Create page in Confluence
+      ansible.builtin.uri:
+        url: "{{ confluence_base_url }}/wiki/rest/api/content"
+        method: POST
+        url_username: "{{ confluence_username }}"
+        url_password: "{{ confluence_api_token }}"
+        force_basic_auth: true
+        validate_certs: "{{ confluence_validate_certs }}"
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body_format: json
+        body:
+          type: page
+          title: "{{ confluence_page_title }}"
+          space:
+            key: "{{ confluence_space_key }}"
+          ancestors: >-
+            {{ [{"id": confluence_parent_page_id}] if confluence_parent_page_id else [] }}
+          body:
+            storage:
+              value: "{{ confluence_page_body }}"
+              representation: storage
+        status_code: 200
+      no_log: true   # Prevents credentials appearing in output
+      register: create_result
+
+    - name: Report new page URL
+      ansible.builtin.debug:
+        msg:
+          - "Page created successfully."
+          - "Title : {{ create_result.json.title }}"
+          - "URL   : {{ confluence_base_url }}/wiki{{ create_result.json._links.webui }}"
+          - "ID    : {{ create_result.json.id }}"
