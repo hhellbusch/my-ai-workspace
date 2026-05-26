@@ -95,78 +95,18 @@
           - "Validation summary — PASS: {{ result_pass }}  FAIL: {{ result_fail }}  SKIP: {{ result_skip }}"
 
     # ═══════════════════════════════════════════════════════════════════════════
-    # PHASE 2: Compose the Confluence page body
+    # PHASE 2: Compose the Confluence page body from a Jinja2 template
     # ═══════════════════════════════════════════════════════════════════════════
 
     - name: Build page body in Confluence Storage Format
       ansible.builtin.set_fact:
-        # Confluence Storage Format is XHTML-like.
-        # ac:structured-macro provides native Confluence components (status, info boxes).
-        confluence_page_body: |
-          <h2>Validation Record</h2>
-
-          <p>
-            <strong>Date:</strong> {{ ansible_date_time.iso8601 }}<br/>
-            <strong>Orchestrated by:</strong> Ansible playbook — {{ playbook_dir | basename }}<br/>
-            <strong>Controller host:</strong> {{ ansible_hostname }}
-          </p>
-
-          <h3>Summary</h3>
-          <table>
-            <tbody>
-              <tr>
-                <th>PASS</th>
-                <th>FAIL</th>
-                <th>SKIP</th>
-                <th>Total</th>
-              </tr>
-              <tr>
-                <td style="color: green; font-weight: bold;">{{ result_pass }}</td>
-                <td style="color: red;   font-weight: bold;">{{ result_fail }}</td>
-                <td style="color: grey;  font-weight: bold;">{{ result_skip }}</td>
-                <td>{{ validation_results | length }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          {% if result_fail | int > 0 %}
-          <ac:structured-macro ac:name="warning">
-            <ac:rich-text-body>
-              <p>{{ result_fail }} check(s) failed. Review the details table below.</p>
-            </ac:rich-text-body>
-          </ac:structured-macro>
-          {% else %}
-          <ac:structured-macro ac:name="info">
-            <ac:rich-text-body>
-              <p>All checks passed ({{ result_skip }} skipped).</p>
-            </ac:rich-text-body>
-          </ac:structured-macro>
-          {% endif %}
-
-          <h3>Check Details</h3>
-          <table>
-            <tbody>
-              <tr>
-                <th>Check</th>
-                <th>Host / System</th>
-                <th>Result</th>
-                <th>Detail</th>
-              </tr>
-              {% for check in validation_results %}
-              <tr>
-                <td>{{ check.name }}</td>
-                <td><code>{{ check.host }}</code></td>
-                <td style="font-weight: bold;
-                  {% if check.result == 'PASS' %}color: green;
-                  {% elif check.result == 'FAIL' %}color: red;
-                  {% else %}color: grey;{% endif %}">
-                  {{ check.result }}
-                </td>
-                <td>{{ check.detail }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+        # Render validation_record.j2 (in the same directory) using current vars.
+        # The template uses Confluence Storage Format (XHTML) with:
+        #   • Summary table with PASS/FAIL/SKIP counts
+        #   • Native info/warning macro (conditional on failures)
+        #   • Detailed per-check table
+        confluence_page_body: >-
+          {{ lookup('template', 'validation_record.j2') }}
 
     # ═══════════════════════════════════════════════════════════════════════════
     # PHASE 3: Publish to Confluence (create or update)
