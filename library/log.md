@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Mo Bitar — Joe Rogan accidentally exposed AI in four words
+- **Entry:** [mo-bitar-token-mania.md](mo-bitar-token-mania.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/joe-rogan-accidentally-exposed-ai-in-four-words.md
+- **Note:** Token mania critique — slot machine prompt loop, Jason Fried camera shutter analogy, enterprise sales pitch narrative, "token refinery" framing. 11 min.
+
 ## [2026-05-30] ingest | Chris Parsons — Ralph Loops: Build Dumb AI Loops That Ship (AI Engineer)
 - **Entry:** [chris-parsons-ralph-loops.md](chris-parsons-ralph-loops.md)
 - **Wing:** ai-engineering

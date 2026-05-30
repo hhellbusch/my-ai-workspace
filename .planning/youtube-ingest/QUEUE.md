@@ -7,7 +7,7 @@
 | # | URL | Video ID | Status | Library slug |
 |---|---|---|---|---|
 | 1 | https://www.youtube.com/watch?v=2TLXsxkz0zI | `2TLXsxkz0zI` | done | `chris-parsons-ralph-loops` |
-| 2 | https://www.youtube.com/watch?v=waFl4uBfXRA | `waFl4uBfXRA` | pending | |
+| 2 | https://www.youtube.com/watch?v=waFl4uBfXRA | `waFl4uBfXRA` | done | `mo-bitar-token-mania` |
 | 3 | https://www.youtube.com/watch?v=kR64LOqBBCU | `kR64LOqBBCU` | pending | |
 | 4 | https://www.youtube.com/watch?v=RjfbvDXpFls | `RjfbvDXpFls` | pending | |
 | 5 | https://www.youtube.com/watch?v=fdbXNWkpPMY | `fdbXNWkpPMY` | pending | |

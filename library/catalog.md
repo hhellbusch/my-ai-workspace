@@ -116,6 +116,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Principles for Autonomous System Design: OpenClaw Deep Dive | Alex Krentsel | 2026 | https://www.youtube.com/watch?v=sxX8BMscce0 | openclaw, autonomous-agents, gateway, heartbeat, cron, skills, memory, harness | [enriched](alex-krentsel-openclaw-deep-dive.md) |
 | Harnesses in AI: A Deep Dive | Tejas Kumar (IBM) / AI Engineer | 2026 | https://www.youtube.com/watch?v=C_GG5g38vLU | ai-engineering, harness, agent-loop, verify-step, guardrails, gpt-3.5, ibm | [enriched](tejas-kumar-harnesses-in-ai.md) |
 | Ralph Loops: Build Dumb AI Loops That Ship | Chris Parsons (Cherrypick) / AI Engineer | 2026 | https://www.youtube.com/watch?v=2TLXsxkz0zI | ai-engineering, agentic-loops, harness, skills, ticket-driven, self-improving | [enriched](chris-parsons-ralph-loops.md) |
+| Joe Rogan accidentally exposed AI in four words | Mo Bitar | 2026 | https://www.youtube.com/watch?v=waFl4uBfXRA | ai-engineering, epistemics, token-mania, productivity, leadership-org | [enriched](mo-bitar-token-mania.md) |
 
 ## Other Training
 
