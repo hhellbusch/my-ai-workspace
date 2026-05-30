@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | ThePrimeagen — I was a 10x engineer. Now I'm useless.
+- **Entry:** [primeagen-10x-engineer-useless.md](primeagen-10x-engineer-useless.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/i-was-a-10x-engineer-now-im-useless-prime-reacts.md
+- **Note:** Comprehension debt spiral. Two types of easy buttons (good/bad). Code review impossibility (agrees honestly). Vibe coding evolution analogy + broken feedback loop response.
+
 ## [2026-05-30] ingest | Anthropic — Build Agents That Run for Hours
 - **Entry:** [anthropic-agents-run-for-hours.md](anthropic-agents-run-for-hours.md)
 - **Wing:** ai-engineering

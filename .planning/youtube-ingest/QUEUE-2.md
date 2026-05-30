@@ -17,7 +17,7 @@
 | 10 | https://www.youtube.com/watch?v=zFslvuvYifQ | `zFslvuvYifQ` | skip — transcripts disabled | — ("Coding is no longer the constraint" — Spotify, Claude channel) |
 | 11 | https://www.youtube.com/watch?v=fLUtUkqYHnQ&t=29s | `fLUtUkqYHnQ` | done | `maxime-labonne-frontier-small-models` |
 | 12 | https://www.youtube.com/watch?v=mR-WAvEPRwE&t=1797s | `mR-WAvEPRwE` | done | `anthropic-agents-run-for-hours` |
-| 13 | https://www.youtube.com/watch?v=_vB0PDzaa7I&t=201s | `_vB0PDzaa7I` | pending | |
+| 13 | https://www.youtube.com/watch?v=_vB0PDzaa7I&t=201s | `_vB0PDzaa7I` | done | `primeagen-10x-engineer-useless` |
 | 14 | https://www.youtube.com/watch?v=ZugX7a99dLk | `ZugX7a99dLk` | pending | |
 | 15 | https://www.youtube.com/watch?v=gJgb9b0CcMo | `gJgb9b0CcMo` | pending | |
 | 16 | https://www.youtube.com/watch?v=C_GG5g38vLU | `C_GG5g38vLU` | skip — duplicate (batch 1 / prev session) | `tejas-kumar-harnesses-in-ai` |

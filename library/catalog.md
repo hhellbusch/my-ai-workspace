@@ -138,6 +138,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Industry Wide AI Psychosis | ThePrimeagen / Mitchell Hashimoto | 2026 | https://www.youtube.com/watch?v=zdXsGF1hiZk | ai-engineering, ai-psychosis, mttr-mtbf, systems-thinking, wisdom, architecture-decay | [enriched](primeagen-industry-ai-psychosis.md) |
 | Everything I Learned Training Frontier Small Models | Maxime Labonne (Liquid AI) / AI Engineer | 2026 | https://www.youtube.com/watch?v=fLUtUkqYHnQ | ai-engineering, small-models, edge-inference, training, rl, tool-use, local-llm, specialization | [enriched](maxime-labonne-frontier-small-models.md) |
 | Build Agents That Run for Hours | Ash Prabaker & Andrew Wilson (Anthropic) / AI Engineer | 2026 | https://www.youtube.com/watch?v=mR-WAvEPRwE | ai-engineering, long-running-agents, harness, gan-evaluator, context-anxiety, ralph-loop, verification, multi-agent | [enriched](anthropic-agents-run-for-hours.md) |
+| I was a 10x engineer. Now I'm useless. | ThePrimeagen | 2026 | https://www.youtube.com/watch?v=_vB0PDzaa7I | ai-engineering, comprehension-debt, vibe-coding, easy-button, code-review, self-deskilling | [enriched](primeagen-10x-engineer-useless.md) |
 
 ## Other Training
 

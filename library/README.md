@@ -96,6 +96,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [ThePrimeagen — Industry wide AI psychosis](primeagen-industry-ai-psychosis.md) | AI psychosis / MTTR-MTBF analogy / architecture decay / typing cheap wisdom expensive | 2026-05-30 |
 | [Maxime Labonne — Frontier small models](maxime-labonne-frontier-small-models.md) | embedding layer overhead / overtraining works / RL at small scale / tool-use targets | 2026-05-30 |
 | [Anthropic — Build agents that run for hours](anthropic-agents-run-for-hours.md) | context anxiety / GAN evaluator / generator-evaluator contract / harness co-evolves with model | 2026-05-30 |
+| [ThePrimeagen — 10x engineer now useless](primeagen-10x-engineer-useless.md) | comprehension debt spiral / two easy buttons / code review impossibility / vibe coding evolution | 2026-05-30 |
 
 ### `philosophy-practice`
 
