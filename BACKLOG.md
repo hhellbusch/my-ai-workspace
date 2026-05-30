@@ -1,7 +1,7 @@
 # Backlog
 
-> **State:** 2 in progress · 8 up next · 58 ideas
-> Last updated: 2026-05-29
+> **State:** 2 in progress · 8 up next · 59 ideas
+> Last updated: 2026-05-30
 
 ## In Progress
 
@@ -542,6 +542,14 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Context:** Shoshin (beginner's mind) as the essential posture for working with AI. The core shoshin concept is now a key section in the in-progress ego/AI essay. May still emerge as a standalone essay if there's enough material beyond the ego angle — e.g., shoshin applied to learning new domains with AI, approaching unfamiliar codebases.
 - **Links:** `.planning/zen-karate/`, `docs/ai-engineering/the-shift.md`
 - **Added:** 2026-04-17
+
+### YouTube watch history: API-based theme filtering (weekly/monthly)
+- **Product:** meta / tooling
+- **Context:** During the 2026-05-30 video ingest session, the user expressed interest in automating discovery from YouTube watch history — pulling videos by channel or theme (AI engineering, physical fitness/modern work health, general engineering, philosophy, martial arts). Prefers the YouTube Data API v3 approach over Google Takeout. Use cases: weekly or monthly pass to surface new relevant videos for library ingestion. OAuth scope `youtube.readonly`; fetch `activities` or `playlistItems` for watch history playlist. Could connect to an MCP server to let the agent query by channel ID or keyword.
+- **Themes of interest:** AI-engineering; physical fitness / sedentary-work health; engineering in general; philosophy; martial arts
+- **Approaches:** (1) YouTube Data API v3 — OAuth2, `youtube.readonly` scope, `activities` list or watch history playlist; (2) wrap as an MCP server for in-session querying; (3) scheduled script producing a QUEUE-style file for manual review
+- **Links:** `.planning/youtube-ingest/QUEUE.md`, `.agents/skills/youtube-transcript-library/SKILL.md`
+- **Added:** 2026-05-30
 
 ### YouTube transcript MCP server
 - **Product:** meta
