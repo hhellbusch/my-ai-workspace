@@ -6,20 +6,23 @@ alwaysApply: false
 
 # Presentations — slide discipline
 
-Read [`presentations/SLIDE-RULES.md`](../../presentations/SLIDE-RULES.md) before editing or adding slides.
+Full cheat-sheet: [`presentations/SLIDE-RULES.md`](../../presentations/SLIDE-RULES.md)
 
 ## One-slide budget
 
-Each `##` slide: **one** primary block (≤4 bullets, or ≤3-row table, or ≤5-line code) + **≤2** supporting lines. No stacking table + bullets + blockquote + citations.
+Each `##` slide: **one** primary block (≤ 4 bullets, or ≤ 3-row table, or ≤ 5-line code/ASCII) plus **≤ 2** supporting lines. No stacking blocks.
 
-## Overflow
+## Anti-patterns that cause overflow
 
-Split slides (`continued`, `— diagram`). Move qualifications and long paths to HTML speaker notes. Never delete concepts to fit.
+- **Missing `---` between slides** — next `##` silently merges into previous slide
+- **Standalone bold intro line before the list** — the `##` heading names the topic; drop the preamble
+- **Preamble paragraph before primary block** — move to speaker notes
+- **4+ appendix entries on one slide** — 2 per slide, use `(continued)` for more
 
-## Appendix
+## Split, never shrink
 
-Reading-map slides: **2 entries** each (path + one-line why).
+Move overflow to a `(continued)` slide, speaker notes `<!-- ... -->`, or the appendix. Never delete a concept to fit.
 
 ## After edits
 
-Remind author to Marp-preview and PDF-export; flag slides that likely exceed budget before claiming done.
+Run `marp presentations/<deck>.md --pdf -o /tmp/check.pdf` and scroll every slide. Any clip → split.

@@ -26,11 +26,11 @@ Self-paced deck. Concepts stack — later slides assume earlier ones. Appendix =
 
 ## How this deck is organized
 
-1. **Agents & the shift** — harness thesis, how to build one, what's underneath
-2. **Memory & state** — chat limits, artifacts, memory taxonomy
-3. **Knowledge systems** — PKM, pipeline, honest limits
-4. **Discipline** — verify, spar, shoshin, habits
-5. **Field Notes** — repo map, toolkit, proactive runtime
+- **Foundations** — harness thesis, context, mechanism, epistemics, the shift
+- **Memory & State** — chat limits, artifacts, memory taxonomy
+- **Knowledge Systems** — PKM, pipeline, honest limits
+- **Practice** — verify, spar, shoshin, the long game
+- **The Workspace** — repo map, toolkit, proactive runtime
 
 **Appendix = reading map.** Through-line: trust, but verify.
 
@@ -62,9 +62,7 @@ Act time estimates: Act I ~20 min · Act II ~8 min · Act III ~12 min · Act IV 
 
 <!-- _class: lead -->
 
-# Act I
-
-### Agents and the shift
+# Foundations
 
 ---
 
@@ -482,9 +480,7 @@ Same habits as good troubleshooting — different substrate.
 
 <!-- _class: lead -->
 
-# Act II
-
-### Memory and state
+# Memory & State
 
 ---
 
@@ -553,9 +549,7 @@ Start manual. Automate when friction is real.
 
 <!-- _class: lead -->
 
-# Act III
-
-### Knowledge systems
+# Knowledge Systems
 
 ---
 
@@ -664,9 +658,7 @@ Add vector/graph/Postgres when *find-it-again* or *multi-agent recall* hurts mor
 
 <!-- _class: lead -->
 
-# Act IV
-
-### Discipline and multi-session work
+# Practice
 
 ---
 
@@ -767,9 +759,7 @@ Teams adopting AI: draft throughput can exceed verify capacity.
 
 <!-- _class: lead -->
 
-# Act V
-
-### Field Notes — one implementation
+# The Workspace
 
 ---
 
@@ -879,7 +869,7 @@ library/, docs/, rules         cron, heartbeat, channels
 
 # Thanks
 
-Walk the acts in order, or jump to what you need.
+Start anywhere — each section stands alone.
 
 1. One place for things worth finding again
 2. One bounded AI task — **trust, but verify**
