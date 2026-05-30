@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Anthropic — Build Agents That Run for Hours
+- **Entry:** [anthropic-agents-run-for-hours.md](anthropic-agents-run-for-hours.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/anthropic-workshop-build-agents-that-run-for-hours-ash-prabaker-andrew-wilson.md
+- **Note:** Context anxiety. GAN-style generator/evaluator. Contract negotiation pattern. 3-role arch (PM/IC/QA). Skills progressive disclosure. Harness co-evolves with model. 1h → 12h over 1 year.
+
 ## [2026-05-30] ingest | Maxime Labonne — Everything I Learned Training Frontier Small Models
 - **Entry:** [maxime-labonne-frontier-small-models.md](maxime-labonne-frontier-small-models.md)
 - **Wing:** ai-engineering
