@@ -6,7 +6,7 @@
 - **URL:** https://www.youtube.com/watch?v=UHVFcUzAGlM
 - **Duration:** 41:21
 - **Published:** 2026-04-23
-- **Transcript:** [cached](../research/pai-kai-paude/sources/ref-02-transcript.md)
+- **Transcript:** [cached](../research/pai-kai-paude/sources/ref-02-transcript.md) · [ingest copy](../research/ingest-queue/sources/every-claude-code-memory-system-compared-so-you-dont-have-to.md)
 - **Findings:** [full analysis](../research/pai-kai-paude/findings/ref-02-memory-systems.md) — analyzed 2026-04-29
 
 ## About the Source
