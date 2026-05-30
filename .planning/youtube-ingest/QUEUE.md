@@ -11,7 +11,7 @@
 | 3 | https://www.youtube.com/watch?v=kR64LOqBBCU | `kR64LOqBBCU` | done | `ido-salomon-agentcraft-orchestration` |
 | 4 | https://www.youtube.com/watch?v=RjfbvDXpFls | `RjfbvDXpFls` | done | `mario-zechner-pi-world-of-slop` |
 | 5 | https://www.youtube.com/watch?v=fdbXNWkpPMY | `fdbXNWkpPMY` | done | `lucas-meijer-love-letter-to-pi` |
-| 6 | https://www.youtube.com/watch?v=WnzR5aOElvw | `WnzR5aOElvw` | pending | |
+| 6 | https://www.youtube.com/watch?v=WnzR5aOElvw | `WnzR5aOElvw` | done | `hannah-fry-ai-agents-best-or-worst` |
 | 7 | https://www.youtube.com/watch?v=UHVFcUzAGlM | `UHVFcUzAGlM` | pending | |
 | 8 | https://www.youtube.com/watch?v=JOA5x89MjRc | `JOA5x89MjRc` | pending | |
 | 9 | https://www.youtube.com/watch?v=_Zcw_sVF6hU | `_Zcw_sVF6hU` | pending | |

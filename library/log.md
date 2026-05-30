@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Hannah Fry — Why AI Agents are either the best or worst thing we've ever built
+- **Entry:** [hannah-fry-ai-agents-best-or-worst.md](hannah-fry-ai-agents-best-or-worst.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/why-ai-agents-are-either-the-best-or-worst-thing-weve-ever-built.md
+- **Note:** Popular science documentary. Nicklas Lundblad on agency scarcity; lethal trifecta; "George" prompt injection; Summer Yu loses control of OpenClaw. Broader-audience bridge for non-technical peers.
+
 ## [2026-05-30] ingest | Lucas Meijer — A love letter to Pi (Build Monumental)
 - **Entry:** [lucas-meijer-love-letter-to-pi.md](lucas-meijer-love-letter-to-pi.md)
 - **Wing:** ai-engineering
