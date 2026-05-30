@@ -87,6 +87,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Strength Side — Fix your hips (ground)](strength-side-fix-your-hips-ground.md) | 5 ground positions / Katy Bowman / orca whale analogy / progressive accumulation | 2026-05-30 |
 | [Hak — Is this the only skill left?](hak-systems-thinking-only-skill-left.md) | systems thinking / Peter Naur / code is the shadow / conductor / LLM ≠ compiler | 2026-05-30 |
 | [IBM Technology — Zero trust at the last mile](ibm-ai-agents-break-zero-trust-last-mile.md) | last mile identity problem / zero trust breaks at legacy boundary / vault + ABAC fix | 2026-05-30 |
+| [Dex Horthy — Everything wrong about RPI](dex-horthy-everything-wrong-rpi.md) | dumb zone / instruction budget / design concept / don't outsource thinking / read the code | 2026-05-30 |
 
 ### `philosophy-practice`
 

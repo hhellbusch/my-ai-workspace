@@ -7,7 +7,7 @@
 |---|---|---|---|---|
 | 1 | https://www.youtube.com/watch?v=7zCsfe57tpU | `7zCsfe57tpU` | done | `hak-systems-thinking-only-skill-left` |
 | 2 | https://www.youtube.com/watch?v=SbrEk_tXZaE&t=322s | `SbrEk_tXZaE` | done | `ibm-ai-agents-break-zero-trust-last-mile` |
-| 3 | https://www.youtube.com/watch?v=YwZR6tc7qYg&t=1257s | `YwZR6tc7qYg` | pending | |
+| 3 | https://www.youtube.com/watch?v=YwZR6tc7qYg&t=1257s | `YwZR6tc7qYg` | done | `dex-horthy-everything-wrong-rpi` |
 | 4 | https://www.youtube.com/watch?v=XSxki8gaWHk | `XSxki8gaWHk` | pending | |
 | 5 | https://www.youtube.com/watch?v=dtAJ2dOd3ko&t=14s | `dtAJ2dOd3ko` | pending | |
 | 6 | https://www.youtube.com/watch?v=bNKRiN86cho | `bNKRiN86cho` | pending | |

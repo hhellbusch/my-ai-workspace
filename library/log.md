@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Dex Horthy — Everything We Got Wrong About Research-Plan-Implement
+- **Entry:** [dex-horthy-everything-wrong-rpi.md](dex-horthy-everything-wrong-rpi.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/everything-we-got-wrong-about-research-plan-implement---dexter-horthy.md
+- **Note:** Primary source for the "dumb zone" concept. Instruction budget (150-200 max). RPI post-mortem. Design concept artifact. "Do not outsource the thinking." Read the code.
+
 ## [2026-05-30] ingest | IBM Technology — Why AI Agents Break Zero Trust at the Last Mile
 - **Entry:** [ibm-ai-agents-break-zero-trust-last-mile.md](ibm-ai-agents-break-zero-trust-last-mile.md)
 - **Wing:** ai-engineering
