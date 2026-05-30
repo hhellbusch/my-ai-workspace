@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Mo Bitar — Ex-Google CEO just exposed the whole AI sh*tshow
+- **Entry:** [mo-bitar-ex-google-ceo-ai-shtshow.md](mo-bitar-ex-google-ceo-ai-shtshow.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/ex-google-ceo-just-exposed-the-whole-ai-shtshow.md
+- **Note:** Two pricing charts deception. Token costs rising for capable models. AI psychosis (Mitchell Hashimoto). Eric Schmidt boo moment. Companion to token-mania entry.
+
 ## [2026-05-30] ingest | Dex Horthy — Everything We Got Wrong About Research-Plan-Implement
 - **Entry:** [dex-horthy-everything-wrong-rpi.md](dex-horthy-everything-wrong-rpi.md)
 - **Wing:** ai-engineering

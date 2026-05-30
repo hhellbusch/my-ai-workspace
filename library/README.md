@@ -88,6 +88,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Hak — Is this the only skill left?](hak-systems-thinking-only-skill-left.md) | systems thinking / Peter Naur / code is the shadow / conductor / LLM ≠ compiler | 2026-05-30 |
 | [IBM Technology — Zero trust at the last mile](ibm-ai-agents-break-zero-trust-last-mile.md) | last mile identity problem / zero trust breaks at legacy boundary / vault + ABAC fix | 2026-05-30 |
 | [Dex Horthy — Everything wrong about RPI](dex-horthy-everything-wrong-rpi.md) | dumb zone / instruction budget / design concept / don't outsource thinking / read the code | 2026-05-30 |
+| [Mo Bitar — Ex-Google CEO AI sh*tshow](mo-bitar-ex-google-ceo-ai-shtshow.md) | two pricing charts / token costs rising / AI psychosis / access gap | 2026-05-30 |
 
 ### `philosophy-practice`
 
