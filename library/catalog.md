@@ -126,6 +126,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Context Is the New Code | Patrick Debois / AI Engineer | 2026 | https://www.youtube.com/watch?v=bSG9wUYaHWU | context-engineering, devops, software-3.0, skills, testing, harness | [enriched](patrick-debois-context-is-the-new-code.md) |
 | I'm begging you to sit on the floor | Natasha Theresa | 2026 | https://www.youtube.com/watch?v=Fsh1NAuAXfc | health, mobility, sedentary-work, longevity, floor-sitting | [enriched](natasha-theresa-sit-on-the-floor.md) |
 | We Tried Sitting on the Floor for 5 Years | Thoughtworthy Co | 2026 | https://www.youtube.com/watch?v=L_9oU88UH_I | health, mobility, sedentary-work, floor-sitting, longterm | [enriched](thoughtworthy-co-floor-sitting-5-years.md) |
+| Give me 5 minutes. I'll Fix your Hips. | Strength Side | 2026 | https://www.youtube.com/watch?v=2Fmx-iHsKYg | health, mobility, hips, floor-sitting, ground-work, practical | [enriched](strength-side-fix-your-hips-ground.md) |
 
 ## Other Training
 

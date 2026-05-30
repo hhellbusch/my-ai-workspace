@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Strength Side — Give me 5 minutes. I'll Fix your Hips.
+- **Entry:** [strength-side-fix-your-hips-ground.md](strength-side-fix-your-hips-ground.md)
+- **Wing:** health
+- **Source:** YouTube / research/ingest-queue/sources/give-me-5-minutes-ill-fix-your-hips-5-simple-steps.md
+- **Note:** 5 ground-based mobility positions (tailor, seiza, deep squat, pigeon, gorilla). Katy Bowman orca analogy. Completes floor-sitting cluster.
+
 ## [2026-05-30] ingest | Thoughtworthy Co — We Tried Sitting on the Floor for 5 Years
 - **Entry:** [thoughtworthy-co-floor-sitting-5-years.md](thoughtworthy-co-floor-sitting-5-years.md)
 - **Wing:** health

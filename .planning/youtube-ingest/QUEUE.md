@@ -18,7 +18,7 @@
 | 10 | https://www.youtube.com/watch?v=bSG9wUYaHWU | `bSG9wUYaHWU` | done | `patrick-debois-context-is-the-new-code` |
 | 11 | https://www.youtube.com/watch?v=Fsh1NAuAXfc | `Fsh1NAuAXfc` | done | `natasha-theresa-sit-on-the-floor` |
 | 12 | https://www.youtube.com/watch?v=L_9oU88UH_I | `L_9oU88UH_I` | done | `thoughtworthy-co-floor-sitting-5-years` |
-| 13 | https://www.youtube.com/watch?v=2Fmx-iHsKYg | `2Fmx-iHsKYg` | pending | |
+| 13 | https://www.youtube.com/watch?v=2Fmx-iHsKYg | `2Fmx-iHsKYg` | done | `strength-side-fix-your-hips-ground` |
 | 14 | https://www.youtube.com/watch?v=UHVFcUzAGlM&t=1166s | duplicate of #7 | skip | |
 
 ---
