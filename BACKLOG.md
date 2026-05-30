@@ -1,7 +1,7 @@
 # Backlog
 
-> **State:** 2 in progress · 7 up next · 55 ideas
-> Last updated: 2026-05-03
+> **State:** 2 in progress · 8 up next · 58 ideas
+> Last updated: 2026-05-29
 
 ## In Progress
 
@@ -43,6 +43,18 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 
 ## Up Next
+
+### Peer deck: Field Notes presentation — iterative passes
+- **Product:** presentations / meta
+- **Context:** Slide deck for sharing workspace with peers (`presentations/field-notes-for-peers.md`). Pass 3 (2026-05-29): restructured for engineers new to coding agents — basics first, Field Notes as example, reading map levels 0–5. Capture doc: `.planning/field-notes-peer-deck/NOTES.md`. Remaining: optional live-demo appendix, voice-approved title, export check.
+- **Links:** `presentations/field-notes-for-peers.md`, `.planning/field-notes-peer-deck/NOTES.md`, `library/alex-krentsel-openclaw-deep-dive.md`
+- **Added:** 2026-05-29
+
+### Evaluate Field Notes + clanker runtime conjunction (OpenClaw / Paude+Pi)
+- **Product:** meta / tooling / research
+- **Context:** Field Notes as git-backed brain (library, rules, skills, backlog); OpenClaw-class runtime as proactive executor (cron, heartbeat, channels). Not two competing memory systems — canonical truth in git, ephemeral recall in agent memory, promotion rule for durable learnings. Minimum experiment sketched in `.planning/field-notes-peer-deck/NOTES.md`. Containerize (Paude or Docker). Relates to distributed agent backlog Stage 2 and Simon Scrapes Level 3 (memsearch/OpenClaw-style).
+- **Links:** `.planning/field-notes-peer-deck/NOTES.md`, `library/alex-krentsel-openclaw-deep-dive.md`, `library/simon-scrapes-claude-code-memory-systems.md`, `docs/ai-engineering/portable-ai-toolkit.md`, `docs/ai-engineering/paude-getting-started.md`
+- **Added:** 2026-05-29
 
 ### Distributed agent methodology: git worktrees → paude → OpenShift
 - **Product:** meta / tooling / paude-integration
@@ -94,6 +106,16 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 - **Added:** 2026-04-10
 
 ## Ideas
+
+### Doc or deck appendix: Field Notes in the PKM / agent-memory landscape
+- **Product:** docs / presentations
+- **Context:** Synthesis from 2026-05-29 peer-deck conversation: map Field Notes to second brain, PARA, Zettelkasten (articulate-before-automate), Karpathy LLM Wiki, Simon Scrapes memory levels, OpenClaw, MemPalace, OpenBrain. Could be a short `docs/ai-engineering/` essay or `presentations/` speaker appendix — not a full essay unless author wants it. Source material in `.planning/field-notes-peer-deck/NOTES.md` and library entries listed there.
+- **Added:** 2026-05-29
+
+### Optional atomic-note layer (Zettelkasten-adjacent) in Field Notes
+- **Product:** meta / library
+- **Context:** Current grain is essays + case studies + enriched library entries. Sascha's Zettelkasten pattern (central "machine" note, atomic background notes, structure notes) could complement synthesis if articulation-before-automation becomes a pain point. Don't replace `library/` — add e.g. `notes/` or structure notes per library wing if needed. See zettelkasten.de "How To Build Your Zettelkasten to Master AI."
+- **Added:** 2026-05-29
 
 ### Case study: Qwen vs Sonnet 4-6 — fluent-but-wrong as a model quality signal
 - **Product:** docs (case-studies)
