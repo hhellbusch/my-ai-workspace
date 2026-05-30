@@ -729,11 +729,39 @@ The compounding argument is the ROI case for Act IV habits. The diff is visible 
 
 ---
 
+## The framing problem
+
+AI can't see the frame it's inside.
+
+- You bring context → model builds on it, including stale assumptions
+- Confident output ≠ accurate starting point
+- **Shoshin:** check the current state before inheriting its description
+
+*Not "pretend you don't know things" — don't let prior framing block what's there.*
+
+---
+
+## Sparring — how to run one
+
+"Be more critical" → persona shift. Not the same thing.
+
+- Generate 3–5 **steel-manned** counterarguments — strongest version, not easiest to dismiss
+- Type each: structural flaw · evidence gap · scope · consistency
+- **The author's reply is the work** — the arguments just open the space
+
+*Essay:* `docs/ai-engineering/sparring-and-shoshin.md`
+
+---
+
 ## Sparring and shoshin — the bracket
 
 ```
 shoshin → draft → spar → revise → share
 ```
+
+Shoshin: *"Am I starting from an accurate picture?"*
+
+Sparring: *"Does what I produced hold up?"*
 
 ---
 
