@@ -107,6 +107,11 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### Essay seed: documentation as cognitive offload and async multiplier
+- **Product:** docs/ai-engineering (or docs/philosophy)
+- **Context:** Three-part model surfaced 2026-05-30 peer-deck session: (1) write it down → safely flush working memory; (2) peer can self-onboard without requiring your presence — you're not the bottleneck; (3) when issues arise your time goes to troubleshooting and judgment, not first-contact procedure transfer. The claim: documentation isn't about completeness, it's about *shifting what requires a human* to a higher layer. Connects to "Saved artifacts are memory" in the deck (that's the solo/cross-session version; this is the team/social version). Could pair with the full-cup essay.
+- **Added:** 2026-05-30
+
 ### Doc or deck appendix: Field Notes in the PKM / agent-memory landscape
 - **Product:** docs / presentations
 - **Context:** Synthesis from 2026-05-29 peer-deck conversation: map Field Notes to second brain, PARA, Zettelkasten (articulate-before-automate), Karpathy LLM Wiki, Simon Scrapes memory levels, OpenClaw, MemPalace, OpenBrain. Could be a short `docs/ai-engineering/` essay or `presentations/` speaker appendix — not a full essay unless author wants it. Source material in `.planning/field-notes-peer-deck/NOTES.md` and library entries listed there.
