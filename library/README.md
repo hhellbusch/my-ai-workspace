@@ -79,6 +79,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Mario Zechner — Pi in a World of Slop](mario-zechner-pi-world-of-slop.md) | context ownership / minimal harness / agents compound errors / slow down | 2026-05-30 |
 | [Lucas Meijer — Love letter to Pi](lucas-meijer-love-letter-to-pi.md) | Marble Madness model / evaluation packs / Barbapapa software / dumb zone | 2026-05-30 |
 | [Hannah Fry — AI Agents best or worst](hannah-fry-ai-agents-best-or-worst.md) | agency scarcity / lethal trifecta / prompt injection demo / liability | 2026-05-30 |
+| [Gergely Orosz — AI for Software Engineers](gergely-orosz-ai-means-for-software-engineers.md) | AI grief / expert-novice gap / leap of abstraction / Boris Cherny | 2026-05-30 |
 
 ### `philosophy-practice`
 

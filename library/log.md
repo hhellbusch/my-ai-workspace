@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Gergely Orosz — What AI Actually Means for Software Engineers (Jean Lee)
+- **Entry:** [gergely-orosz-ai-means-for-software-engineers.md](gergely-orosz-ai-means-for-software-engineers.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/what-ai-actually-means-for-software-engineers.md
+- **Note:** Pragmatic Engineer interview. AI grief; expert/novice gap (legal advice example); product-minded engineers; leap of abstraction (compiler history); Boris Cherny as radical adaptability model.
+
 ## [2026-05-30] ingest | Hannah Fry — Why AI Agents are either the best or worst thing we've ever built
 - **Entry:** [hannah-fry-ai-agents-best-or-worst.md](hannah-fry-ai-agents-best-or-worst.md)
 - **Wing:** ai-engineering
