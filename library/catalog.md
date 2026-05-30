@@ -119,6 +119,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Joe Rogan accidentally exposed AI in four words | Mo Bitar | 2026 | https://www.youtube.com/watch?v=waFl4uBfXRA | ai-engineering, epistemics, token-mania, productivity, leadership-org | [enriched](mo-bitar-token-mania.md) |
 | AgentCraft: Putting the Orc in Orchestration | Ido Salomon / AI Engineer | 2026 | https://www.youtube.com/watch?v=kR64LOqBBCU | ai-engineering, multi-agent, orchestration, visibility, gaming-metaphor | [enriched](ido-salomon-agentcraft-orchestration.md) |
 | Building pi in a World of Slop | Mario Zechner / AI Engineer | 2026 | https://www.youtube.com/watch?v=RjfbvDXpFls | ai-engineering, harness, context, minimal-agent, pi, verification, slop | [enriched](mario-zechner-pi-world-of-slop.md) |
+| A love letter to Pi | Lucas Meijer / Build Monumental | 2026 | https://www.youtube.com/watch?v=fdbXNWkpPMY | ai-engineering, pi, harness, evaluation, context-management, agent-workflow | [enriched](lucas-meijer-love-letter-to-pi.md) |
 
 ## Other Training
 
