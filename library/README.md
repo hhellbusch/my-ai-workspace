@@ -93,6 +93,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [The Serious CTO — Senior devs shipping slow](serious-cto-senior-devs-shipping-slow.md) | architect's ego / over-engineering / 7 patterns / scale = result of simplicity | 2026-05-30 |
 | [Mo Bitar — I'm done (AGI rant)](mo-bitar-done-agi-rant.md) | AGI skepticism / specialization > generality / mechanism matters / anti-extrapolation | 2026-05-30 |
 | [IBM — Five AI risks that get you fired](ibm-five-ai-risks-get-fired.md) | shadow AI / hallucination laundering / prompt injection / zombie agents / governance | 2026-05-30 |
+| [ThePrimeagen — Industry wide AI psychosis](primeagen-industry-ai-psychosis.md) | AI psychosis / MTTR-MTBF analogy / architecture decay / typing cheap wisdom expensive | 2026-05-30 |
 
 ### `philosophy-practice`
 

@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | ThePrimeagen — Industry Wide AI Psychosis
+- **Entry:** [primeagen-industry-ai-psychosis.md](primeagen-industry-ai-psychosis.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/industry-wide-ai-psychosis.md
+- **Note:** ThePrimeagen + Mitchell Hashimoto's AI psychosis tweet. MTTR/MTBF infrastructure analogy. Architecture decay invisible to local metrics. "Typing cheap, wisdom expensive." Mature codebase fallacy.
+
 ## [2026-05-30] ingest | IBM Technology — Five AI Risks That Can Get You Fired
 - **Entry:** [ibm-five-ai-risks-get-fired.md](ibm-five-ai-risks-get-fired.md)
 - **Wing:** ai-engineering

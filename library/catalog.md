@@ -135,6 +135,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Why Senior Devs Keep Shipping Slow | The Serious CTO | 2026 | https://www.youtube.com/watch?v=bNKRiN86cho | engineering, architecture, over-engineering, simplicity, architects-ego | [enriched](serious-cto-senior-devs-shipping-slow.md) |
 | I'm done. I'm f***ing done. | Mo Bitar | 2026 | https://www.youtube.com/watch?v=VucjurQUHO8 | ai-engineering, agi-skepticism, epistemics, llm-limits, present-state, david-deutsch, mechanism-matters | [enriched](mo-bitar-done-agi-rant.md) |
 | Five AI Risks That Can Get You Fired | IBM Technology | 2026 | https://www.youtube.com/watch?v=1m55T8xST9s | ai-engineering, security, governance, shadow-ai, hallucination, prompt-injection, agentic-ai, enterprise | [enriched](ibm-five-ai-risks-get-fired.md) |
+| Industry Wide AI Psychosis | ThePrimeagen / Mitchell Hashimoto | 2026 | https://www.youtube.com/watch?v=zdXsGF1hiZk | ai-engineering, ai-psychosis, mttr-mtbf, systems-thinking, wisdom, architecture-decay | [enriched](primeagen-industry-ai-psychosis.md) |
 
 ## Other Training
 
