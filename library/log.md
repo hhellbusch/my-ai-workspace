@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Armin Ronacher — The Friction is Your Judgment (AI Engineer)
+- **Entry:** [armin-ronacher-friction-is-your-judgment.md](armin-ronacher-friction-is-your-judgment.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/the-friction-is-your-judgment-armin-ronacher-cristina-poncela-cubeiro-earendil.md
+- **Note:** Flask/Jinja creator. Friction is judgment; productivity trap; production/review ratio; agents optimize locally; agent-legible codebases; Pi review extension with human callouts. AI Engineer London 2026.
+
 ## [2026-05-30] ingest | Gergely Orosz — What AI Actually Means for Software Engineers (Jean Lee)
 - **Entry:** [gergely-orosz-ai-means-for-software-engineers.md](gergely-orosz-ai-means-for-software-engineers.md)
 - **Wing:** ai-engineering
