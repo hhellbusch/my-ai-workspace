@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Thoughtworthy Co — We Tried Sitting on the Floor for 5 Years
+- **Entry:** [thoughtworthy-co-floor-sitting-5-years.md](thoughtworthy-co-floor-sitting-5-years.md)
+- **Wing:** health
+- **Source:** YouTube / research/ingest-queue/sources/we-tried-sitting-on-the-floor-for-5-years-heres-what-really-happened.md
+- **Note:** 5-year longitudinal floor desk experience. "Stronger over weaker"; interrupt prolonged sitting; don't make setup so comfortable it becomes sedentary. Companion to Natasha Theresa's video.
+
 ## [2026-05-30] ingest | Natasha Theresa — I'm begging you to sit on the floor
 - **Entry:** [natasha-theresa-sit-on-the-floor.md](natasha-theresa-sit-on-the-floor.md)
 - **Wing:** health

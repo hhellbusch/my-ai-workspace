@@ -83,6 +83,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Armin Ronacher — Friction is Your Judgment](armin-ronacher-friction-is-your-judgment.md) | friction = judgment / productivity trap / agent-legible codebases / human callouts | 2026-05-30 |
 | [Patrick Debois — Context Is the New Code](patrick-debois-context-is-the-new-code.md) | CDLC / evals / context as fuel / skills as packages / organizational flywheel | 2026-05-30 |
 | [Natasha Theresa — Sit on the floor](natasha-theresa-sit-on-the-floor.md) | sitting-rising test / chairs as mobility constraint / floor sitting as passive training | 2026-05-30 |
+| [Thoughtworthy Co — Floor sitting 5 years](thoughtworthy-co-floor-sitting-5-years.md) | 5-year retrospective / stronger over weaker / interrupt prolonged sitting | 2026-05-30 |
 
 ### `philosophy-practice`
 

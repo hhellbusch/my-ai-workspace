@@ -125,6 +125,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | The Friction is Your Judgment | Armin Ronacher & Cristina Poncela Cubeiro / AI Engineer | 2026 | https://www.youtube.com/watch?v=_Zcw_sVF6hU | ai-engineering, harness, verification, friction, judgment, agent-legibility, slop | [enriched](armin-ronacher-friction-is-your-judgment.md) |
 | Context Is the New Code | Patrick Debois / AI Engineer | 2026 | https://www.youtube.com/watch?v=bSG9wUYaHWU | context-engineering, devops, software-3.0, skills, testing, harness | [enriched](patrick-debois-context-is-the-new-code.md) |
 | I'm begging you to sit on the floor | Natasha Theresa | 2026 | https://www.youtube.com/watch?v=Fsh1NAuAXfc | health, mobility, sedentary-work, longevity, floor-sitting | [enriched](natasha-theresa-sit-on-the-floor.md) |
+| We Tried Sitting on the Floor for 5 Years | Thoughtworthy Co | 2026 | https://www.youtube.com/watch?v=L_9oU88UH_I | health, mobility, sedentary-work, floor-sitting, longterm | [enriched](thoughtworthy-co-floor-sitting-5-years.md) |
 
 ## Other Training
 
