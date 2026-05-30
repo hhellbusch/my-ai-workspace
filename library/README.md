@@ -86,6 +86,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Thoughtworthy Co — Floor sitting 5 years](thoughtworthy-co-floor-sitting-5-years.md) | 5-year retrospective / stronger over weaker / interrupt prolonged sitting | 2026-05-30 |
 | [Strength Side — Fix your hips (ground)](strength-side-fix-your-hips-ground.md) | 5 ground positions / Katy Bowman / orca whale analogy / progressive accumulation | 2026-05-30 |
 | [Hak — Is this the only skill left?](hak-systems-thinking-only-skill-left.md) | systems thinking / Peter Naur / code is the shadow / conductor / LLM ≠ compiler | 2026-05-30 |
+| [IBM Technology — Zero trust at the last mile](ibm-ai-agents-break-zero-trust-last-mile.md) | last mile identity problem / zero trust breaks at legacy boundary / vault + ABAC fix | 2026-05-30 |
 
 ### `philosophy-practice`
 

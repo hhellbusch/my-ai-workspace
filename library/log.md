@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | IBM Technology — Why AI Agents Break Zero Trust at the Last Mile
+- **Entry:** [ibm-ai-agents-break-zero-trust-last-mile.md](ibm-ai-agents-break-zero-trust-last-mile.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/why-ai-agents-break-zero-trust-at-the-last-mile.md
+- **Note:** Last mile identity problem. Zero trust breaks when agent connects to legacy backend via API key — loses user identity, intent, context, delegation. Fix: ABAC/PBAC + vault intermediary.
+
 ## [2026-05-30] ingest | Hak — Is this the only skill left?
 - **Entry:** [hak-systems-thinking-only-skill-left.md](hak-systems-thinking-only-skill-left.md)
 - **Wing:** ai-engineering
