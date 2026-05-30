@@ -1,0 +1,25 @@
+---
+description: Marp slide discipline for presentations/ — one-slide budget, split-not-shrink, export verification
+globs: presentations/**
+alwaysApply: false
+---
+
+# Presentations — slide discipline
+
+Read [`presentations/SLIDE-RULES.md`](../../presentations/SLIDE-RULES.md) before editing or adding slides.
+
+## One-slide budget
+
+Each `##` slide: **one** primary block (≤4 bullets, or ≤3-row table, or ≤5-line code) + **≤2** supporting lines. No stacking table + bullets + blockquote + citations.
+
+## Overflow
+
+Split slides (`continued`, `— diagram`). Move qualifications and long paths to HTML speaker notes. Never delete concepts to fit.
+
+## Appendix
+
+Reading-map slides: **2 entries** each (path + one-line why).
+
+## After edits
+
+Remind author to Marp-preview and PDF-export; flag slides that likely exceed budget before claiming done.

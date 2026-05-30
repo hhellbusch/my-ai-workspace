@@ -1,0 +1,71 @@
+/* @theme field-notes-dark */
+
+@import 'gaia';
+
+:root {
+  --color-background: #0d1117;
+  --color-foreground: #e6edf3;
+  --color-highlight: #58a6ff;
+  --color-dimmed: #8b949e;
+  --color-code-bg: #161b22;
+  --color-border: #30363d;
+}
+
+section {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+strong {
+  color: var(--color-foreground);
+}
+
+h1 {
+  color: var(--color-highlight);
+}
+
+a {
+  color: var(--color-highlight);
+}
+
+code {
+  background-color: var(--color-code-bg);
+  color: #f0883e;
+}
+
+pre {
+  background-color: var(--color-code-bg);
+  border: 1px solid var(--color-border);
+}
+
+blockquote {
+  border-left: 4px solid var(--color-highlight);
+  color: var(--color-dimmed);
+}
+
+table th,
+table td {
+  border-color: var(--color-border);
+}
+
+table th {
+  background-color: var(--color-code-bg);
+}
+
+header,
+footer {
+  color: var(--color-dimmed);
+}
+
+section.lead h1 {
+  color: var(--color-foreground);
+}
+
+section.lead p,
+section.lead h3 {
+  color: var(--color-dimmed);
+}
