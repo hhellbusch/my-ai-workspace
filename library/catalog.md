@@ -124,6 +124,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | What AI Actually Means for Software Engineers | Gergely Orosz / Jean Lee | 2026 | https://www.youtube.com/watch?v=JOA5x89MjRc | ai-engineering, career, epistemics, expert-novice-gap, jagged-intelligence, adaptability | [enriched](gergely-orosz-ai-means-for-software-engineers.md) |
 | The Friction is Your Judgment | Armin Ronacher & Cristina Poncela Cubeiro / AI Engineer | 2026 | https://www.youtube.com/watch?v=_Zcw_sVF6hU | ai-engineering, harness, verification, friction, judgment, agent-legibility, slop | [enriched](armin-ronacher-friction-is-your-judgment.md) |
 | Context Is the New Code | Patrick Debois / AI Engineer | 2026 | https://www.youtube.com/watch?v=bSG9wUYaHWU | context-engineering, devops, software-3.0, skills, testing, harness | [enriched](patrick-debois-context-is-the-new-code.md) |
+| I'm begging you to sit on the floor | Natasha Theresa | 2026 | https://www.youtube.com/watch?v=Fsh1NAuAXfc | health, mobility, sedentary-work, longevity, floor-sitting | [enriched](natasha-theresa-sit-on-the-floor.md) |
 
 ## Other Training
 

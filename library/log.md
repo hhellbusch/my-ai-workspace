@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Natasha Theresa — I'm begging you to sit on the floor
+- **Entry:** [natasha-theresa-sit-on-the-floor.md](natasha-theresa-sit-on-the-floor.md)
+- **Wing:** health
+- **Source:** YouTube / research/ingest-queue/sources/im-begging-you-to-sit-on-the-floor.md
+- **Note:** Sitting-rising test as longevity signal; chairs lock hips at 90°; floor sitting as passive mobility training; Okinawa blue zone; ergonomic chairs counterproductive.
+
 ## [2026-05-30] ingest | Patrick Debois — Context Is the New Code (AI Engineer)
 - **Entry:** [patrick-debois-context-is-the-new-code.md](patrick-debois-context-is-the-new-code.md)
 - **Wing:** ai-engineering
