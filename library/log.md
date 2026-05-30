@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | The Serious CTO — Why Senior Devs Keep Shipping Slow
+- **Entry:** [serious-cto-senior-devs-shipping-slow.md](serious-cto-senior-devs-shipping-slow.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/why-senior-devs-keep-shipping-slow-and-how-to-stop.md
+- **Note:** Architect's ego. 7 architecture patterns (use/avoid). "Scale is a result of simplicity." Connects to infrastructure trap essay seed.
+
 ## [2026-05-30] ingest | Matt Pocock — /handoff is my new favourite skill
 - **Entry:** [matt-pocock-handoff-skill.md](matt-pocock-handoff-skill.md)
 - **Wing:** ai-engineering
