@@ -14,8 +14,8 @@
 | 7 | https://www.youtube.com/watch?v=VucjurQUHO8 | `VucjurQUHO8` | done | `mo-bitar-done-agi-rant` |
 | 8 | https://www.youtube.com/watch?v=1m55T8xST9s&t=193s | `1m55T8xST9s` | done | `ibm-five-ai-risks-get-fired` |
 | 9 | https://www.youtube.com/watch?v=zdXsGF1hiZk | `zdXsGF1hiZk` | done | `primeagen-industry-ai-psychosis` |
-| 10 | https://www.youtube.com/watch?v=zFslvuvYifQ | `zFslvuvYifQ` | pending | |
-| 11 | https://www.youtube.com/watch?v=fLUtUkqYHnQ&t=29s | `fLUtUkqYHnQ` | pending | |
+| 10 | https://www.youtube.com/watch?v=zFslvuvYifQ | `zFslvuvYifQ` | skip — transcripts disabled | — ("Coding is no longer the constraint" — Spotify, Claude channel) |
+| 11 | https://www.youtube.com/watch?v=fLUtUkqYHnQ&t=29s | `fLUtUkqYHnQ` | done | `maxime-labonne-frontier-small-models` |
 | 12 | https://www.youtube.com/watch?v=mR-WAvEPRwE&t=1797s | `mR-WAvEPRwE` | pending | |
 | 13 | https://www.youtube.com/watch?v=_vB0PDzaa7I&t=201s | `_vB0PDzaa7I` | pending | |
 | 14 | https://www.youtube.com/watch?v=ZugX7a99dLk | `ZugX7a99dLk` | pending | |

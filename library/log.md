@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Maxime Labonne — Everything I Learned Training Frontier Small Models
+- **Entry:** [maxime-labonne-frontier-small-models.md](maxime-labonne-frontier-small-models.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/everything-i-learned-training-frontier-small-models-maxime-labonne-liquid-ai.md
+- **Note:** Small models: memory bound, task-specialized. Embedding layer overhead. Over-training works. RL effective at small scale. Tool use / data extraction are the right targets.
+
 ## [2026-05-30] ingest | ThePrimeagen — Industry Wide AI Psychosis
 - **Entry:** [primeagen-industry-ai-psychosis.md](primeagen-industry-ai-psychosis.md)
 - **Wing:** ai-engineering

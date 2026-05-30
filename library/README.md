@@ -94,6 +94,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Mo Bitar — I'm done (AGI rant)](mo-bitar-done-agi-rant.md) | AGI skepticism / specialization > generality / mechanism matters / anti-extrapolation | 2026-05-30 |
 | [IBM — Five AI risks that get you fired](ibm-five-ai-risks-get-fired.md) | shadow AI / hallucination laundering / prompt injection / zombie agents / governance | 2026-05-30 |
 | [ThePrimeagen — Industry wide AI psychosis](primeagen-industry-ai-psychosis.md) | AI psychosis / MTTR-MTBF analogy / architecture decay / typing cheap wisdom expensive | 2026-05-30 |
+| [Maxime Labonne — Frontier small models](maxime-labonne-frontier-small-models.md) | embedding layer overhead / overtraining works / RL at small scale / tool-use targets | 2026-05-30 |
 
 ### `philosophy-practice`
 
