@@ -91,6 +91,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Mo Bitar — Ex-Google CEO AI sh*tshow](mo-bitar-ex-google-ceo-ai-shtshow.md) | two pricing charts / token costs rising / AI psychosis / access gap | 2026-05-30 |
 | [Matt Pocock — /handoff skill](matt-pocock-handoff-skill.md) | handoff vs compact / dumb zone (120k) / DIY sub-agent / scope isolation / cross-agent portability | 2026-05-30 |
 | [The Serious CTO — Senior devs shipping slow](serious-cto-senior-devs-shipping-slow.md) | architect's ego / over-engineering / 7 patterns / scale = result of simplicity | 2026-05-30 |
+| [Mo Bitar — I'm done (AGI rant)](mo-bitar-done-agi-rant.md) | AGI skepticism / specialization > generality / mechanism matters / anti-extrapolation | 2026-05-30 |
 
 ### `philosophy-practice`
 

@@ -11,7 +11,7 @@
 | 4 | https://www.youtube.com/watch?v=XSxki8gaWHk | `XSxki8gaWHk` | done | `mo-bitar-ex-google-ceo-ai-shtshow` |
 | 5 | https://www.youtube.com/watch?v=dtAJ2dOd3ko&t=14s | `dtAJ2dOd3ko` | done | `matt-pocock-handoff-skill` |
 | 6 | https://www.youtube.com/watch?v=bNKRiN86cho | `bNKRiN86cho` | done | `serious-cto-senior-devs-shipping-slow` |
-| 7 | https://www.youtube.com/watch?v=VucjurQUHO8 | `VucjurQUHO8` | pending | |
+| 7 | https://www.youtube.com/watch?v=VucjurQUHO8 | `VucjurQUHO8` | done | `mo-bitar-done-agi-rant` |
 | 8 | https://www.youtube.com/watch?v=1m55T8xST9s&t=193s | `1m55T8xST9s` | pending | |
 | 9 | https://www.youtube.com/watch?v=zdXsGF1hiZk | `zdXsGF1hiZk` | pending | |
 | 10 | https://www.youtube.com/watch?v=zFslvuvYifQ | `zFslvuvYifQ` | pending | |

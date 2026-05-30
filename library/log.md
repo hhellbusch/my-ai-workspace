@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Mo Bitar — I'm done. I'm f***ing done.
+- **Entry:** [mo-bitar-done-agi-rant.md](mo-bitar-done-agi-rant.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/im-done-im-fing-done.md
+- **Note:** AGI skepticism. Specialization beats generality for coding. Context is the real gap. David Deutsch — mechanism matters. Anti-extrapolation posture. Third Mo Bitar entry.
+
 ## [2026-05-30] ingest | The Serious CTO — Why Senior Devs Keep Shipping Slow
 - **Entry:** [serious-cto-senior-devs-shipping-slow.md](serious-cto-senior-devs-shipping-slow.md)
 - **Wing:** ai-engineering

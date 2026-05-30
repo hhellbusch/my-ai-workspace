@@ -133,6 +133,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Ex-Google CEO just exposed the whole AI sh*tshow | Mo Bitar | 2026 | https://www.youtube.com/watch?v=XSxki8gaWHk | ai-engineering, economics, token-cost, access-gap, ai-psychosis, two-pricing-charts | [enriched](mo-bitar-ex-google-ceo-ai-shtshow.md) |
 | /handoff is my new favourite skill | Matt Pocock | 2026 | https://www.youtube.com/watch?v=dtAJ2dOd3ko | ai-engineering, context-engineering, handoff, dumb-zone, session-continuity, skills, multi-agent | [enriched](matt-pocock-handoff-skill.md) |
 | Why Senior Devs Keep Shipping Slow | The Serious CTO | 2026 | https://www.youtube.com/watch?v=bNKRiN86cho | engineering, architecture, over-engineering, simplicity, architects-ego | [enriched](serious-cto-senior-devs-shipping-slow.md) |
+| I'm done. I'm f***ing done. | Mo Bitar | 2026 | https://www.youtube.com/watch?v=VucjurQUHO8 | ai-engineering, agi-skepticism, epistemics, llm-limits, present-state, david-deutsch, mechanism-matters | [enriched](mo-bitar-done-agi-rant.md) |
 
 ## Other Training
 
