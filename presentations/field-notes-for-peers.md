@@ -518,6 +518,16 @@ A folder works to start.
 
 ---
 
+## Artifacts as async multiplier
+
+- **Cognitive offload** — write it → safely flush working memory → recall on demand
+- **Async self-service** — peer reads the doc; you're not the bottleneck for first contact
+- **Teaching economy** — your time goes to judgment and troubleshooting, not procedure transfer
+
+*The doc handles the rote. You handle what can't be documented.*
+
+---
+
 ## Two kinds of memory (Simon Scrapes)
 
 | Kind | Question | Field Notes |
