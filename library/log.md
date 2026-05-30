@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | IBM Technology — Five AI Risks That Can Get You Fired
+- **Entry:** [ibm-five-ai-risks-get-fired.md](ibm-five-ai-risks-get-fired.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/five-ai-risks-that-can-get-you-firedand-how-to-avoid-them.md
+- **Note:** Shadow AI, data leakage, hallucination laundering, prompt injection, zombie agents. Enterprise governance framing.
+
 ## [2026-05-30] ingest | Mo Bitar — I'm done. I'm f***ing done.
 - **Entry:** [mo-bitar-done-agi-rant.md](mo-bitar-done-agi-rant.md)
 - **Wing:** ai-engineering
