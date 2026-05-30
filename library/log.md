@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Hak — Is this the only skill left?
+- **Entry:** [hak-systems-thinking-only-skill-left.md](hak-systems-thinking-only-skill-left.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/is-this-the-only-skill-left.md
+- **Note:** Systems thinking as the remaining non-automated skill. Peter Naur "code is the shadow." LLM ≠ compiler abstraction. Three-question test. Jagged frontier / comprehension debt connections.
+
 ## [2026-05-30] ingest | Strength Side — Give me 5 minutes. I'll Fix your Hips.
 - **Entry:** [strength-side-fix-your-hips-ground.md](strength-side-fix-your-hips-ground.md)
 - **Wing:** health

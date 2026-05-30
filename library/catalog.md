@@ -127,6 +127,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | I'm begging you to sit on the floor | Natasha Theresa | 2026 | https://www.youtube.com/watch?v=Fsh1NAuAXfc | health, mobility, sedentary-work, longevity, floor-sitting | [enriched](natasha-theresa-sit-on-the-floor.md) |
 | We Tried Sitting on the Floor for 5 Years | Thoughtworthy Co | 2026 | https://www.youtube.com/watch?v=L_9oU88UH_I | health, mobility, sedentary-work, floor-sitting, longterm | [enriched](thoughtworthy-co-floor-sitting-5-years.md) |
 | Give me 5 minutes. I'll Fix your Hips. | Strength Side | 2026 | https://www.youtube.com/watch?v=2Fmx-iHsKYg | health, mobility, hips, floor-sitting, ground-work, practical | [enriched](strength-side-fix-your-hips-ground.md) |
+| Is this the only skill left? | Hak (AgentiveStack) | 2026 | https://www.youtube.com/watch?v=7zCsfe57tpU | ai-engineering, systems-thinking, jagged-frontier, comprehension-debt, peter-naur, abstraction, conductor | [enriched](hak-systems-thinking-only-skill-left.md) |
 
 ## Other Training
 

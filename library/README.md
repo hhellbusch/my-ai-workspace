@@ -85,6 +85,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Natasha Theresa — Sit on the floor](natasha-theresa-sit-on-the-floor.md) | sitting-rising test / chairs as mobility constraint / floor sitting as passive training | 2026-05-30 |
 | [Thoughtworthy Co — Floor sitting 5 years](thoughtworthy-co-floor-sitting-5-years.md) | 5-year retrospective / stronger over weaker / interrupt prolonged sitting | 2026-05-30 |
 | [Strength Side — Fix your hips (ground)](strength-side-fix-your-hips-ground.md) | 5 ground positions / Katy Bowman / orca whale analogy / progressive accumulation | 2026-05-30 |
+| [Hak — Is this the only skill left?](hak-systems-thinking-only-skill-left.md) | systems thinking / Peter Naur / code is the shadow / conductor / LLM ≠ compiler | 2026-05-30 |
 
 ### `philosophy-practice`
 
