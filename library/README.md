@@ -75,6 +75,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Tejas Kumar — Harnesses in AI](tejas-kumar-harnesses-in-ai.md) | harness / verify-step / first-principles | 2026-05-29 |
 | [Chris Parsons — Ralph Loops](chris-parsons-ralph-loops.md) | Ralph loop / ticket-driven / self-improving skills | 2026-05-30 |
 | [Mo Bitar — Token mania](mo-bitar-token-mania.md) | slot machine trap / token refinery / business objectives | 2026-05-30 |
+| [Ido Salomon — AgentCraft](ido-salomon-agentcraft-orchestration.md) | human bottleneck / gaming mental model / multi-agent visibility | 2026-05-30 |
 
 ### `philosophy-practice`
 

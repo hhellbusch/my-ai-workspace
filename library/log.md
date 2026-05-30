@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Ido Salomon — AgentCraft: Putting the Orc in Orchestration (AI Engineer)
+- **Entry:** [ido-salomon-agentcraft-orchestration.md](ido-salomon-agentcraft-orchestration.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/agentcraft-putting-the-orc-in-orchestration-ido-salomon.md
+- **Note:** Human-as-bottleneck in multi-agent orchestration; gaming (RTS) as mental model; AgentCraft product demo — file system map, collision heatmap, campaign feature. AI Engineer London 2026.
+
 ## [2026-05-30] ingest | Mo Bitar — Joe Rogan accidentally exposed AI in four words
 - **Entry:** [mo-bitar-token-mania.md](mo-bitar-token-mania.md)
 - **Wing:** ai-engineering
