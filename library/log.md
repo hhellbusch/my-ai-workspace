@@ -147,3 +147,15 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Wing:** ai-engineering
 - **Source:** YouTube / research/youtube-sources-apr2026/sources/youtube-T17bpGItqXw-transcript.md
 - **Note:** Enriched entry added 2026-05-03 — themes, quotes, links to experiment journal + `local-llm-setup.md`. **Personal “Why”** section in entry still a short placeholder for author fill-in.
+
+## [2026-05-29] ingest | Alex Krentsel — Principles for Autonomous System Design: OpenClaw Deep Dive
+- **Entry:** [alex-krentsel-openclaw-deep-dive.md](alex-krentsel-openclaw-deep-dive.md)
+- **Wing:** ai-engineering / agents / memory
+- **Source:** YouTube / research/openclaw/sources/openclaw-video-sxX8BMscce0.md
+- **Note:** Architecture deep dive — gateway, cron/heartbeat proactivity, markdown config, skills vs MCP; maps to Simon Scrapes Level 3 and Field Notes gaps.
+
+## [2026-05-29] ingest | Tejas Kumar — Harnesses in AI: A Deep Dive (AI Engineer)
+- **Entry:** [tejas-kumar-harnesses-in-ai.md](tejas-kumar-harnesses-in-ai.md)
+- **Wing:** ai-engineering / harness
+- **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
+- **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.

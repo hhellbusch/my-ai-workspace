@@ -75,5 +75,6 @@ Without the schema, the LLM drifts — it forgets to cross-link, creates duplica
 ## Sources
 
 - Gist: https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
-- Related: [Simon Scrapes — Claude Code Memory Systems](simon-scrapes-claude-code-memory-systems.md) (Level 5: Knowledge Base tier)
+- Related: [Simon Scrapes — Claude Code Memory Systems](simon-scrapes-claude-code-memory-systems.md) (Level 5: Knowledge Base tier; Level 3 OpenClaw-style)
+- Related: [Alex Krentsel — OpenClaw Deep Dive](alex-krentsel-openclaw-deep-dive.md) (OpenClaw architecture from source code)
 - Related: [Andrej Karpathy — Vibe Coding to Agentic Engineering](andrej-karpathy-vibe-coding-to-agentic-engineering.md)

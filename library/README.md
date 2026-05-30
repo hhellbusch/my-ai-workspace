@@ -38,6 +38,8 @@ These references have deep AI-researched context (summaries, key themes, notable
 | [Alberta Tech — Why Devs Are OBSESSED with Claude Code](alberta-tech-why-devs-obsessed-claude-code.md) | YouTube | ai-engineering, claude-code, form-factor, developer-psychology, adoption, agent-harness, terminal-bench | 2026-04-30 |
 | [Jared Burck — Enterprise Generative AI: LLMs on Red Hat OpenShift](jared-burck-openshift-ai-llm-deployment.md) | Article | devops, openshift, openshift-ai, llm, enterprise, kserve, vllm, rhoai | 2026-04-30 |
 | [Level1Techs — AI and You Against the Machine (local / Big AI)](level1techs-ai-you-against-machine-local.md) | YouTube | local-llm, quantization, moe, deepseek, context-window, consumer-gpu | 2026-05-03 |
+| [Alex Krentsel — OpenClaw Deep Dive](alex-krentsel-openclaw-deep-dive.md) | YouTube | openclaw, autonomous-agents, gateway, heartbeat, cron, skills, memory, harness | 2026-05-29 |
+| [Tejas Kumar — Harnesses in AI (AI Engineer)](tejas-kumar-harnesses-in-ai.md) | YouTube | ai-engineering, harness, agent-loop, verify-step, guardrails, gpt-3.5, ibm | 2026-05-29 |
 
 See [`catalog.md`](catalog.md) for the complete reference list (50+ books, courses, and training).
 
@@ -67,6 +69,8 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Daniel Miessler — Single Digital Assistant](daniel-miessler-single-da-thesis.md) | agentic / orchestration | 2026-04-18 |
 | [Alberta Tech — Why Devs Are OBSESSED with Claude Code](alberta-tech-why-devs-obsessed-claude-code.md) | claude-code / form-factor / developer-psychology | 2026-04-30 |
 | [Level1Techs — AI and You Against the Machine](level1techs-ai-you-against-machine-local.md) | local-llm / quantization / MoE / consumer GPU | 2026-05-03 |
+| [Alex Krentsel — OpenClaw Deep Dive](alex-krentsel-openclaw-deep-dive.md) | openclaw / gateway / proactivity / harness | 2026-05-29 |
+| [Tejas Kumar — Harnesses in AI](tejas-kumar-harnesses-in-ai.md) | harness / verify-step / first-principles | 2026-05-29 |
 
 ### `philosophy-practice`
 

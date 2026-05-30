@@ -21,6 +21,8 @@ Research workspaces containing fetched sources, analysis findings, and assessmen
 | `youtube-sources-apr2026/` | YouTube source transcripts collected April 2026 | Raw sources | `sources/` |
 | `ai-engineering-talks-apr-2026/` | April 2026 AI engineering talks — transcripts and analysis | Transcripts on disk | [README.md](ai-engineering-talks-apr-2026/README.md) |
 | `devops/` | DevOps research — transcripts and analysis | Sources on disk | [README.md](devops/README.md) |
+| `openclaw/` | OpenClaw architecture — gateway, memory, proactivity | 1 transcript | [README.md](openclaw/README.md) · [library entry](../library/alex-krentsel-openclaw-deep-dive.md) |
+| `harness-engineering/` | Agent harness first principles (Tejas Kumar) | 1 transcript | [README.md](harness-engineering/README.md) · [library entry](../library/tejas-kumar-harnesses-in-ai.md) |
 
 ## Structure Convention
 

@@ -113,6 +113,8 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Alberta Tech — Why Devs Are OBSESSED with Claude Code | Alberta Tech | 2026 | https://www.youtube.com/watch?v=LACyqdAfnaw | ai-engineering, claude-code, form-factor, developer-psychology, adoption, agent-harness, terminal-bench, leaked-source | [enriched](alberta-tech-why-devs-obsessed-claude-code.md) |
 | Enterprise Generative AI: LLMs on Red Hat OpenShift | Jared Burck | 2026 | https://jaredburck.me/blog/openshift-ai-llm-enterprise-deployment/ | devops, openshift, openshift-ai, llm, enterprise, kserve, vllm, rhoai, knative, service-mesh, mlops | [enriched](jared-burck-openshift-ai-llm-deployment.md) |
 | AI and You Against the Machine: own Big AI and Run Local | Level1Techs | 2026 | https://www.youtube.com/watch?v=T17bpGItqXw | local-llm, quantization, moe, deepseek, context-window, consumer-gpu, level1techs | [enriched](level1techs-ai-you-against-machine-local.md) |
+| Principles for Autonomous System Design: OpenClaw Deep Dive | Alex Krentsel | 2026 | https://www.youtube.com/watch?v=sxX8BMscce0 | openclaw, autonomous-agents, gateway, heartbeat, cron, skills, memory, harness | [enriched](alex-krentsel-openclaw-deep-dive.md) |
+| Harnesses in AI: A Deep Dive | Tejas Kumar (IBM) / AI Engineer | 2026 | https://www.youtube.com/watch?v=C_GG5g38vLU | ai-engineering, harness, agent-loop, verify-step, guardrails, gpt-3.5, ibm | [enriched](tejas-kumar-harnesses-in-ai.md) |
 
 ## Other Training
 
