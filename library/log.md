@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Mo Bitar — OpenAI founder admits AI isn't working
+- **Entry:** [mo-bitar-openai-founder-admits.md](mo-bitar-openai-founder-admits.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/openai-founder-admits-ai-isnt-working.md
+- **Note:** Karpathy contradiction (stopped checking + heart attack code). RL limits = jagged intelligence mechanism. Spec-writing as the new practice skill. 4th Mo Bitar entry.
+
 ## [2026-05-30] ingest | ThePrimeagen — I was a 10x engineer. Now I'm useless.
 - **Entry:** [primeagen-10x-engineer-useless.md](primeagen-10x-engineer-useless.md)
 - **Wing:** ai-engineering
