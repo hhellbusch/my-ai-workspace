@@ -159,3 +159,9 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Wing:** ai-engineering / harness
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
+
+## [2026-05-30] ingest | Chris Parsons — Ralph Loops: Build Dumb AI Loops That Ship (AI Engineer)
+- **Entry:** [chris-parsons-ralph-loops.md](chris-parsons-ralph-loops.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/ralph-loops-build-dumb-ai-loops-that-ship-chris-parsons-cherrypick.md
+- **Note:** Workshop. Ralph loop = re-run prompt after completion to catch gaps. Simple loops > n8n orchestration. Self-improving skills. Ticket-driven loops. AI Engineer channel.

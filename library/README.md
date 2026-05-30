@@ -40,6 +40,7 @@ These references have deep AI-researched context (summaries, key themes, notable
 | [Level1Techs — AI and You Against the Machine (local / Big AI)](level1techs-ai-you-against-machine-local.md) | YouTube | local-llm, quantization, moe, deepseek, context-window, consumer-gpu | 2026-05-03 |
 | [Alex Krentsel — OpenClaw Deep Dive](alex-krentsel-openclaw-deep-dive.md) | YouTube | openclaw, autonomous-agents, gateway, heartbeat, cron, skills, memory, harness | 2026-05-29 |
 | [Tejas Kumar — Harnesses in AI (AI Engineer)](tejas-kumar-harnesses-in-ai.md) | YouTube | ai-engineering, harness, agent-loop, verify-step, guardrails, gpt-3.5, ibm | 2026-05-29 |
+| [Chris Parsons — Ralph Loops: Build Dumb AI Loops That Ship (AI Engineer)](chris-parsons-ralph-loops.md) | YouTube | ai-engineering, agentic-loops, harness, skills, ticket-driven, self-improving | 2026-05-30 |
 
 See [`catalog.md`](catalog.md) for the complete reference list (50+ books, courses, and training).
 
@@ -71,6 +72,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Level1Techs — AI and You Against the Machine](level1techs-ai-you-against-machine-local.md) | local-llm / quantization / MoE / consumer GPU | 2026-05-03 |
 | [Alex Krentsel — OpenClaw Deep Dive](alex-krentsel-openclaw-deep-dive.md) | openclaw / gateway / proactivity / harness | 2026-05-29 |
 | [Tejas Kumar — Harnesses in AI](tejas-kumar-harnesses-in-ai.md) | harness / verify-step / first-principles | 2026-05-29 |
+| [Chris Parsons — Ralph Loops](chris-parsons-ralph-loops.md) | Ralph loop / ticket-driven / self-improving skills | 2026-05-30 |
 
 ### `philosophy-practice`
 
