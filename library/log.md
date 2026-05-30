@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Mario Zechner — Building pi in a World of Slop (AI Engineer)
+- **Entry:** [mario-zechner-pi-world-of-slop.md](mario-zechner-pi-world-of-slop.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/building-pi-in-a-world-of-slop-mario-zechner.md
+- **Note:** Creator of Pi (used in this workspace). Context ownership; minimal harness thesis; agents compound errors; clankers destroying OSS; "slow the f*** down." AI Engineer London 2026.
+
 ## [2026-05-30] ingest | Ido Salomon — AgentCraft: Putting the Orc in Orchestration (AI Engineer)
 - **Entry:** [ido-salomon-agentcraft-orchestration.md](ido-salomon-agentcraft-orchestration.md)
 - **Wing:** ai-engineering

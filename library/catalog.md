@@ -118,6 +118,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Ralph Loops: Build Dumb AI Loops That Ship | Chris Parsons (Cherrypick) / AI Engineer | 2026 | https://www.youtube.com/watch?v=2TLXsxkz0zI | ai-engineering, agentic-loops, harness, skills, ticket-driven, self-improving | [enriched](chris-parsons-ralph-loops.md) |
 | Joe Rogan accidentally exposed AI in four words | Mo Bitar | 2026 | https://www.youtube.com/watch?v=waFl4uBfXRA | ai-engineering, epistemics, token-mania, productivity, leadership-org | [enriched](mo-bitar-token-mania.md) |
 | AgentCraft: Putting the Orc in Orchestration | Ido Salomon / AI Engineer | 2026 | https://www.youtube.com/watch?v=kR64LOqBBCU | ai-engineering, multi-agent, orchestration, visibility, gaming-metaphor | [enriched](ido-salomon-agentcraft-orchestration.md) |
+| Building pi in a World of Slop | Mario Zechner / AI Engineer | 2026 | https://www.youtube.com/watch?v=RjfbvDXpFls | ai-engineering, harness, context, minimal-agent, pi, verification, slop | [enriched](mario-zechner-pi-world-of-slop.md) |
 
 ## Other Training
 
