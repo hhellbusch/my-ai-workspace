@@ -729,6 +729,16 @@ The compounding argument is the ROI case for Act IV habits. The diff is visible 
 
 ---
 
+## Shoshin — beginner's mind
+
+**Shoshin** (初心): approach every situation **as if for the first time**.
+
+In the beginner's mind there are many possibilities. In the expert's mind, few.
+
+*Essay:* `docs/ai-engineering/sparring-and-shoshin.md`
+
+---
+
 ## The framing problem
 
 AI can't see the frame it's inside.
