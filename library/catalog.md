@@ -123,6 +123,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Why AI Agents are either the best or worst thing we've ever built | Hannah Fry | 2026 | https://www.youtube.com/watch?v=WnzR5aOElvw | ai-engineering, epistemics, safety, agency, society, philosophy, security | [enriched](hannah-fry-ai-agents-best-or-worst.md) |
 | What AI Actually Means for Software Engineers | Gergely Orosz / Jean Lee | 2026 | https://www.youtube.com/watch?v=JOA5x89MjRc | ai-engineering, career, epistemics, expert-novice-gap, jagged-intelligence, adaptability | [enriched](gergely-orosz-ai-means-for-software-engineers.md) |
 | The Friction is Your Judgment | Armin Ronacher & Cristina Poncela Cubeiro / AI Engineer | 2026 | https://www.youtube.com/watch?v=_Zcw_sVF6hU | ai-engineering, harness, verification, friction, judgment, agent-legibility, slop | [enriched](armin-ronacher-friction-is-your-judgment.md) |
+| Context Is the New Code | Patrick Debois / AI Engineer | 2026 | https://www.youtube.com/watch?v=bSG9wUYaHWU | context-engineering, devops, software-3.0, skills, testing, harness | [enriched](patrick-debois-context-is-the-new-code.md) |
 
 ## Other Training
 

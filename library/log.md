@@ -160,6 +160,12 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/harness-engineering/sources/harnesses-in-ai-a-deep-dive-tejas-kumar-ibm.md
 - **Note:** First-principles harness anatomy + live demo (GPT-3.5); verify step without prompt changes. AI Engineer channel.
 
+## [2026-05-30] ingest | Patrick Debois — Context Is the New Code (AI Engineer)
+- **Entry:** [patrick-debois-context-is-the-new-code.md](patrick-debois-context-is-the-new-code.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/ingest-queue/sources/context-is-the-new-code-patrick-debois-tessl.md
+- **Note:** DevOps inventor. CDLC (Context Development Life Cycle); evals and error budgets; skills as packages/registries; "LLMs are just the engine; context is the fuel." AI Engineer London 2026.
+
 ## [2026-05-30] ingest | Armin Ronacher — The Friction is Your Judgment (AI Engineer)
 - **Entry:** [armin-ronacher-friction-is-your-judgment.md](armin-ronacher-friction-is-your-judgment.md)
 - **Wing:** ai-engineering

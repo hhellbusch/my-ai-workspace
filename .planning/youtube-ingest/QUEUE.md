@@ -15,7 +15,7 @@
 | 7 | https://www.youtube.com/watch?v=UHVFcUzAGlM | `UHVFcUzAGlM` | done | `simon-scrapes-claude-code-memory-systems` (pre-existing entry; transcript added to ingest-queue) |
 | 8 | https://www.youtube.com/watch?v=JOA5x89MjRc | `JOA5x89MjRc` | done | `gergely-orosz-ai-means-for-software-engineers` |
 | 9 | https://www.youtube.com/watch?v=_Zcw_sVF6hU | `_Zcw_sVF6hU` | done | `armin-ronacher-friction-is-your-judgment` |
-| 10 | https://www.youtube.com/watch?v=bSG9wUYaHWU | `bSG9wUYaHWU` | pending | |
+| 10 | https://www.youtube.com/watch?v=bSG9wUYaHWU | `bSG9wUYaHWU` | done | `patrick-debois-context-is-the-new-code` |
 | 11 | https://www.youtube.com/watch?v=Fsh1NAuAXfc | `Fsh1NAuAXfc` | pending | |
 | 12 | https://www.youtube.com/watch?v=L_9oU88UH_I | `L_9oU88UH_I` | pending | |
 | 13 | https://www.youtube.com/watch?v=2Fmx-iHsKYg | `2Fmx-iHsKYg` | pending | |
