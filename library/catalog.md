@@ -131,6 +131,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Why AI Agents Break Zero Trust at the Last Mile | IBM Technology | 2026 | https://www.youtube.com/watch?v=SbrEk_tXZaE | ai-engineering, security, zero-trust, identity, agent-harness, enterprise, mcp, abac, vault | [enriched](ibm-ai-agents-break-zero-trust-last-mile.md) |
 | Everything We Got Wrong About Research-Plan-Implement | Dexter Horthy (Hatchet) / MLOps.community | 2026 | https://www.youtube.com/watch?v=YwZR6tc7qYg | ai-engineering, context-engineering, dumb-zone, instruction-budget, rpi, coding-agents, planning, harness | [enriched](dex-horthy-everything-wrong-rpi.md) |
 | Ex-Google CEO just exposed the whole AI sh*tshow | Mo Bitar | 2026 | https://www.youtube.com/watch?v=XSxki8gaWHk | ai-engineering, economics, token-cost, access-gap, ai-psychosis, two-pricing-charts | [enriched](mo-bitar-ex-google-ceo-ai-shtshow.md) |
+| /handoff is my new favourite skill | Matt Pocock | 2026 | https://www.youtube.com/watch?v=dtAJ2dOd3ko | ai-engineering, context-engineering, handoff, dumb-zone, session-continuity, skills, multi-agent | [enriched](matt-pocock-handoff-skill.md) |
 
 ## Other Training
 
