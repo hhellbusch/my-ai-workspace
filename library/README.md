@@ -98,6 +98,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Anthropic — Build agents that run for hours](anthropic-agents-run-for-hours.md) | context anxiety / GAN evaluator / generator-evaluator contract / harness co-evolves with model | 2026-05-30 |
 | [ThePrimeagen — 10x engineer now useless](primeagen-10x-engineer-useless.md) | comprehension debt spiral / two easy buttons / code review impossibility / vibe coding evolution | 2026-05-30 |
 | [Mo Bitar — OpenAI founder admits](mo-bitar-openai-founder-admits.md) | Karpathy contradiction / heart-attack code / RL limits / spec-writing is the new practice skill | 2026-05-30 |
+| [Mo Bitar — AI coding minimum wage job](mo-bitar-ai-coding-minimum-wage.md) | prompt ceiling / doctor vs MRI tech / FOMO critique / durable vs temporary skill | 2026-05-30 |
 
 ### `philosophy-practice`
 

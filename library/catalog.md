@@ -140,6 +140,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Build Agents That Run for Hours | Ash Prabaker & Andrew Wilson (Anthropic) / AI Engineer | 2026 | https://www.youtube.com/watch?v=mR-WAvEPRwE | ai-engineering, long-running-agents, harness, gan-evaluator, context-anxiety, ralph-loop, verification, multi-agent | [enriched](anthropic-agents-run-for-hours.md) |
 | I was a 10x engineer. Now I'm useless. | ThePrimeagen | 2026 | https://www.youtube.com/watch?v=_vB0PDzaa7I | ai-engineering, comprehension-debt, vibe-coding, easy-button, code-review, self-deskilling | [enriched](primeagen-10x-engineer-useless.md) |
 | OpenAI founder admits AI isn't working | Mo Bitar (on Karpathy) | 2026 | https://www.youtube.com/watch?v=ZugX7a99dLk | ai-engineering, karpathy, vibe-coding, spec-writing, rl-limits, heart-attack-code, jagged-intelligence | [enriched](mo-bitar-openai-founder-admits.md) |
+| AI coding will be a minimum wage job | Mo Bitar | 2026 | https://www.youtube.com/watch?v=gJgb9b0CcMo | ai-engineering, career, skills, vibe-coding, doctor-vs-xray-tech, prompt-ceiling, fomo | [enriched](mo-bitar-ai-coding-minimum-wage.md) |
 
 ## Other Training
 
