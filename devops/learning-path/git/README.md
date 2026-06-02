@@ -16,10 +16,12 @@ The Schwern talk in Stage 0 teaches the model first. Do it before anything else.
 
 ---
 
-### Git replaces (and improves on) your traditional review process
+### Git as the tool for change management
 
-| Your current process | Git / GitHub equivalent |
-|----------------------|-------------------------|
+Git itself doesn't create governance — the workflows built on top of it do. The table below maps traditional change management to the Git/GitHub workflow. Git is the system that records, enforces, and makes that workflow traceable.
+
+| Your current process | Git / GitHub workflow equivalent |
+|----------------------|----------------------------------|
 | Change ticket describing the change | **Pull request** — the change *is* the diff; the description is the PR body |
 | Peer review / approval | **PR review** — named approvers, required reviewers enforced by branch protection |
 | Approval record | **Merge commit** — named, timestamped, traceable to the PR and the approvers |
