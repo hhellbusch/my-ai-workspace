@@ -1,8 +1,8 @@
 # Git and GitHub Learning Path
 
-**Audience:** Infrastructure and platform engineers who have not used source control day to day — or who use it occasionally but have not internalized *why* the model works the way it does.
+**Audience:** Anyone learning Git for the first time — whether you're a developer, a writer, a researcher, or an infrastructure engineer. If you've used Git but not internalized *why* the model works the way it does, this path is for you.
 
-**Outcomes:** Understand how Git stores history (the inside-out mental model); use the daily workflow (clone → branch → commit → push → PR → merge) without looking up commands; reason about `git log`, `git diff`, and `git revert`; operate comfortably in a GitHub-centric organization with branch protection, CODEOWNERS, and SSO/SAML; explain how Git and pull requests replace (and improve on) a traditional CAB/change-ticket process.
+**Outcomes:** Understand how Git stores history (the inside-out mental model); use the daily workflow (clone → branch → commit → push → PR → merge) without looking up commands; reason about `git log`, `git diff`, and `git revert`; operate comfortably in a GitHub-centric organization with branch protection, CODEOWNERS, and SSO/SAML; explain how Git and pull requests create accountability and review that goes beyond ad-hoc file sharing.
 
 **Prerequisite:** None. A basic comfort with the command line helps for Stage 2 onward.
 
@@ -16,34 +16,19 @@ The Schwern talk in Stage 0 teaches the model first. Do it before anything else.
 
 ---
 
-## Why Git matters for infrastructure engineers
-
-Git and GitOps are not just a new tool for doing what you already do. They are a different accountability and change management model.
-
-**Infrastructure as Code** means infrastructure is defined in text files, stored in Git, reviewed before applying, and applied automatically when approved.
-
-| Principle | What it replaces or improves |
-|-----------|------------------------------|
-| **Version control** | "Who changed this and when?" is answered by `git log`, not by asking around or trawling change tickets. |
-| **Auditability** | Every change has an author, a timestamp, a diff, a PR discussion, and an approver. This is your audit trail. |
-| **Accountability** | A merge commit to the production branch is a named, timestamped, peer-reviewed action. Drift from that state is detectable. |
-| **Consistency** | The same manifest applied to dev, staging, and prod produces the same result. Snowflake configs are a Git diff, not a mystery. |
-| **Speed and efficiency** | Approved changes apply automatically. No maintenance window required for config changes the team has already reviewed. |
-| **Security and compliance** | Branch protection, required reviewers, CODEOWNERS, and signed commits are enforceable controls — comparable to CAB gates but with a full diff attached. |
-| **Scalability** | One repo can drive hundreds of clusters. ClickOps does not scale. |
-| **Declarative by nature** | You describe the desired state; the system reconciles. Stop writing runbooks for "how to apply this," start writing manifests for "what this should be." |
-
-### Git replaces (and improves on) your change management process
+### Git replaces (and improves on) your traditional review process
 
 | Your current process | Git / GitHub equivalent |
 |----------------------|-------------------------|
 | Change ticket describing the change | **Pull request** — the change *is* the diff; the description is the PR body |
-| CAB review / approval | **PR review** — named approvers, required reviewers enforced by branch protection |
+| Peer review / approval | **PR review** — named approvers, required reviewers enforced by branch protection |
 | Approval record | **Merge commit** — named, timestamped, traceable to the PR and the approvers |
-| Maintenance window | Not required for config-only changes managed by GitOps (still applies to changes that cause rolling restarts, storage migrations, or network disruptions) |
+| Manual update process | Not required when changes flow through a pipeline (still applies to changes that affect other systems) |
 | "Who changed this?" investigation | `git log`, `git blame`, PR history |
 | Emergency change / break-glass | Emergency PR with post-hoc review; audit trail preserved |
 | Rollback | `git revert` creates a new commit undoing the change — history of both the change and the rollback is preserved |
+
+*For infrastructure and platform teams:* when Git stores configuration files, this model extends into **GitOps** — infrastructure as code, where the same PR/review/merge pattern controls cluster state, deployment pipelines, and automation rules. See the **VMware admins → Kubernetes / OpenShift path** for how Git drives platform operations.
 
 Git does not eliminate governance. It makes governance faster, more traceable, and automatable at the enforcement layer rather than the process layer.
 
