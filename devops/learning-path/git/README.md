@@ -101,36 +101,6 @@ All include exercises and knowledge checks. Free with a Microsoft account.
 
 ---
 
-## Stage 3 — Paid / subscription courses (if available through your org)
-
-These are worthwhile if your organization has a subscription or if you prefer a structured video format.
-
-### Udemy (one-time purchase, frequently on sale for ~$15)
-
-| Course | Instructor | Rating | Length | Link |
-|--------|-----------|--------|--------|------|
-| **The Git & GitHub Bootcamp** | Colt Steele | 4.7/5 (41k+ ratings) | 17 hrs | [udemy.com](https://www.udemy.com/course/git-and-github-bootcamp/) |
-
-Colt Steele's bootcamp is the most-rated Git course on Udemy and covers beginner through advanced (rebasing, squashing, reflogs, Git internals). Updated January 2026.
-
-### LinkedIn Learning (subscription)
-
-| Course | Level | Length |
-|--------|-------|--------|
-| Git Essential Training | Beginner | 1h 42m |
-| Learning Git and GitHub | Beginner | 3h 42m |
-
-Good option if your organization already has a LinkedIn Learning subscription.
-
-### Pluralsight (subscription)
-
-| Course | Level |
-|--------|-------|
-| Git: The Big Picture | Beginner / overview |
-| Mastering Git | Intermediate–Advanced |
-
----
-
 ## Mechanics checklist
 
 Work through this checklist as you progress through Stages 1–2. Everything here will come up in day-to-day GitOps work.
@@ -157,26 +127,6 @@ If your organization uses SSO or SAML with GitHub Enterprise:
 - Complete IT's device and token onboarding *before* trying to push — personal access tokens often require SSO authorization once before they work with org repos.
 - Fine-grained personal access tokens are the recommended auth method for scripting and automation (avoid classic tokens scoped to "repo" where possible).
 - If you are cloning internal repos from a CI/CD context (Argo CD, GitHub Actions, Tekton), use a deploy key or a service account token, not a personal token.
-
----
-
-## Optional: GitHub Foundations certification
-
-If you want a shareable credential tied to this learning:
-
-### GitHub Foundations (GH-900)
-
-| Detail | Value |
-|--------|-------|
-| Cost | $99 USD |
-| Duration | 100-minute exam |
-| Delivery | Pearson VUE — in-person testing center or online proctored |
-| Valid for | 24 months |
-| Git/GitHub basics | ~25–30% of exam content |
-| Prep resources | Free study guide + practice assessment on Microsoft Learn |
-| Registration | [examregistration.github.com](https://examregistration.github.com/certification/GHF) |
-
-The exam covers Git and GitHub basics, repositories, collaboration, GitHub Actions, Copilot, projects, security, and administration. It is a reasonable milestone after completing Stages 1–2 of this path.
 
 ---
 
