@@ -17,7 +17,7 @@ Most teams do not run a single cluster in production. Whether you are managing t
 
 ACM is not required to get value from this path. Phases 0–4 stand alone with the existing lab. Phase 5 (fleet management) and Phase 6 (ZTP) require additional infrastructure.
 
-**Disclaimer:** This is a curated study guide, not Red Hat training or support. Official product behavior, course numbers, and doc URLs change — verify against [Red Hat Documentation](https://docs.redhat.com/) and your subscription entitlements before production decisions. *Red Hat*, *OpenShift*, and related marks are trademarks of Red Hat, Inc. *Portworx* and *Pure Storage* content is third-party; see the supplementary section for scope.
+**Disclaimer:** This is a curated study guide, not Red Hat training, certification prep, or support. Official product behavior, course numbers, and doc URLs change — verify against [Red Hat Documentation](https://docs.redhat.com/) and your subscription entitlements before production decisions. *Red Hat*, *OpenShift*, and related marks are trademarks of Red Hat, Inc. *Portworx* and *Pure Storage* content is third-party; see the supplementary section for scope.
 
 ---
 
@@ -159,7 +159,7 @@ Pure Storage / Portworx publishes a 10-part series (also bundled as an [ebook](h
 - [OpenShift learning (Red Hat Developer)](https://developers.redhat.com/learn/openshift) — no-cost tutorials; use as the hub entry (URLs change).
 - [An introduction to GitOps](https://www.redhat.com/en/blog/an-introduction-to-gitops) — read once here so Phase 4 does not feel disconnected.
 
-
+**Formal course option:** [DO180 — Containers, Kubernetes, and Red Hat OpenShift](https://www.redhat.com/en/services/training/do180-introduction-containers-kubernetes-red-hat-openshift)
 
 **Verification (scenario-based)**
 
@@ -197,7 +197,7 @@ Pure Storage / Portworx publishes a 10-part series (also bundled as an [ebook](h
 - [OADP (OpenShift API for Data Protection)](https://docs.redhat.com/en/documentation/openshift_api_data_protection/)
 - [Monitoring overview](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/monitoring/)
 
-
+**Formal course option:** [DO280 — OpenShift Administration II](https://www.redhat.com/en/services/training/Red-Hat-OpenShift-Administration-II-Operating-a-Production-Kubernetes-Cluster-DO280) (confirm current title on this page — Red Hat renames offerings).
 
 **Verification (scenario-based)**
 
@@ -303,7 +303,10 @@ The shift from vSAN/VMFS datastores to the Kubernetes storage model is as signif
 - [Virtual machines as code with OpenShift GitOps and OpenShift Virtualization](https://cloud.redhat.com/blog/virtual-machines-as-code-with-openshift-gitops-and-openshift-virtualization)
 - [Using RHACM and OpenShift GitOps to manage OpenShift Virtualization](https://www.redhat.com/en/blog/using-red-hat-advanced-cluster-management-and-openshift-gitops-to-manage-openshift-virtualization)
 
+**Formal course options**
 
+- [DO316 — Managing virtual machines with OpenShift Virtualization](https://www.redhat.com/en/services/training/do316-managing-virtual-machines-red-hat-openshift-virtualization) — broad VM-on-OCP operations.
+- [DO156 — OpenShift Virtualization Administration I](https://www.redhat.com/en/services/training/do156-red-hat-openshift-virtualization-administration-i-operating-virtual-machines) and [DO256 — OpenShift Virtualization Administration II](https://www.redhat.com/en/services/training/do256-red-hat-openshift-virtualization-administration-ii-configuring-production-virtual-machines) — confirm prerequisites in the current catalog.
 
 **Verification (scenario-based)**
 
@@ -527,7 +530,9 @@ When a mandate genuinely cannot be expressed as a policy template — for exampl
 - [Automate OpenShift Cluster Deployment with RHACM and AAP (DevConf.US 2024)](https://www.youtube.com/watch?v=mi1z5H4VL3Q) — 31-minute practitioner talk; real customer engagement (hundreds of clusters, two-week deadline); shows `PolicyAutomation`, the Ansible+ACM bridge pattern, blue-green cluster upgrades, and disconnected environment operation. Library entry: [`library/automate-ocp-cluster-deployment-rhacm-aap.md`](../../../library/automate-ocp-cluster-deployment-rhacm-aap.md)
 - [Implement zero-touch provisioning for OpenShift with GitOps](https://developers.redhat.com/articles/2025/07/29/implement-zero-touch-provisioning-openshift-gitops) — read **Policy management** and **Best practices** now; return for ZTP Day 1 content in Phase 6
 
+**Formal course option**
 
+- [DO480 — Multicluster Management with Red Hat OpenShift Platform Plus](https://www.redhat.com/en/services/training/do480-multicluster-management-red-hat-openshift-platform-plus) — ACM, policy management, RHACS, Quay; requires DO280 and DO380. Preparation for EX480.
 
 **This repo**
 
@@ -732,6 +737,17 @@ policies/
 
 ---
 
+## Phase 7 — Certification (optional)
+
+| Exam | After which phase | Notes |
+|------|------------------|-------|
+| [EX280 — Red Hat Certified OpenShift Administrator](https://www.redhat.com/en/services/training/ex280-red-hat-certified-openshift-administrator-exam) | Phase 2 depth | Core cluster admin skills |
+| [EX480 — Red Hat Certified Specialist in MultiCluster Management](https://www.redhat.com/en/services/training/ex480-red-hat-certified-specialist-multicluster-management-exam) | Phase 5 depth | ACM, policy management, fleet governance; prepare with DO480 |
+
+Virt-focused exams follow product announcements — check [Red Hat Certification](https://www.redhat.com/en/services/certifications) for current names and prerequisites.
+
+---
+
 ## Appendix: Disconnected and air-gapped environments
 
 Many enterprise, government, and telco OCP deployments run without direct internet access — nodes cannot reach `registry.redhat.io`, `quay.io`, or the default OperatorHub catalogs. All phases above assume internet-connected infrastructure. This appendix covers the additional layers required when your environment is partially or fully disconnected.
@@ -811,6 +827,7 @@ After this, `oc get packagemanifests` shows only the operators you have mirrored
 ## Maintaining this path
 
 - Add internal runbook links or org-specific standards under each phase as they develop.
+- When Red Hat renumbers courses, update **Formal course option** lines only — keep phases and verification stable.
 - OpenShift GitOps docs live under `red_hat_openshift_gitops` on docs.redhat.com, not the older `openshift_gitops` path.
 - Third-party URLs (Portworx blog, ebook) change when campaigns refresh — spot-check periodically.
 - **GitHub** UI and GitHub Skills URLs move — refresh the prerequisite section when onboarding feedback reports broken links.
