@@ -55,7 +55,7 @@ Git does not eliminate governance. It makes governance faster, more traceable, a
 
 **[Git For Ages 4 And Up — Michael Schwern (linux.conf.au 2013)](https://www.youtube.com/watch?v=1ffBJ4sVUb4)** (~1h 40m)
 
-The best single introduction to *how Git actually works*. Schwern teaches the inside-out mental model — objects → commits → labels → staging area → remotes — using physical props on a table. He does not say "Git is like Subversion but better." He says throw out what you know and build the model from scratch.
+A standout introduction to *how Git actually works*. Schwern teaches the inside-out mental model — objects → commits → labels → staging area → remotes — using physical props on a table. He does not say "Git is like Subversion but better." He says throw out what you know and build the model from scratch.
 
 After this talk, "detached HEAD," merge vs rebase, and `git reset` all become logical consequences of the model rather than mysterious commands. Library entry: [`library/git-for-ages-4-and-up.md`](../../../library/git-for-ages-4-and-up.md).
 
