@@ -2,7 +2,7 @@
 
 **Audience:** Infrastructure and platform engineers who already know vSphere — across storage, networking, and compute/VM management — and want to operate **OpenShift (OCP)** and **OpenShift Virtualization** confidently. Application development is not the primary goal; understanding Kubernetes deeply enough to administer the platform — and to automate its full lifecycle — is.
 
-**Outcomes:** Understand Kubernetes internals well enough to reason about cluster state; use `oc` and `kubectl`; operate networking (OVN-Kubernetes, Multus, NAD, MetalLB, NMState, SR-IOV) and storage (StorageClass, PVC, ODF, DataVolume, VolumeSnapshot) at a platform level; run and migrate VMs with OpenShift Virtualization; back up and recover clusters with etcd backup and OADP; use Git and GitHub as an accountability and change management system, including structured GitOps repo layout and secrets handling; diagnose SCCs, OLM failures, and Argo CD sync errors. At fleet scale: manage configuration and compliance across many clusters with ACM and, for very large environments, automate the full cluster lifecycle with the ZTP GitOps pipeline. In disconnected environments: mirror images and operator catalogs, configure IDMS, and operate OperatorHub without internet access.
+**Outcomes:** Understand Kubernetes internals well enough to reason about cluster state; use `oc` and `kubectl`; operate networking (OVN-Kubernetes, Multus, NAD, MetalLB, NMState, SR-IOV) and storage (StorageClass, PVC, ODF, DataVolume, VolumeSnapshot) at a platform level; run and migrate VMs with OpenShift Virtualization; back up and recover clusters with etcd backup and OADP; use Git as an accountability and change management system, including structured GitOps repo layout and secrets handling; diagnose SCCs, OLM failures, and Argo CD sync errors. At fleet scale: manage configuration and compliance across many clusters with ACM and, for very large environments, automate the full cluster lifecycle with the ZTP GitOps pipeline. In disconnected environments: mirror images and operator catalogs, configure IDMS, and operate OperatorHub without internet access.
 
 **Scale and topology — which phases apply to you**
 
@@ -24,7 +24,7 @@ ACM is not required to get value from this path. Phases 0–4 stand alone with t
 ## How to use this path
 
 1. **Start fresh.** See Phase 0. The biggest obstacle is not a missing skill — it is a mental model that needs to be rebuilt, not extended.
-2. If you are **new to Git**, complete the **[Prerequisite: Git and GitHub](#prerequisite-git-and-github)** section before Phase 4; doing it before Phase 1 makes lab and "edit YAML in repo" workflows much easier.
+2. If you are **new to Git**, complete the **[Prerequisite: Git](#prerequisite-git)** section before Phase 4; doing it before Phase 1 makes lab and "edit YAML in repo" workflows much easier.
 3. **Phases 1 and 2 can run in parallel** — Phase 1 covers application-layer Kubernetes (Pods, Deployments, Services); Phase 2 covers cluster-level operations (cluster operators, MachineConfig, node management). They are distinct enough that an experienced infrastructure engineer can move through both simultaneously. **Both must be substantially complete before Phase 3.** OpenShift Virtualization runs on top of Kubernetes; understanding the substrate first is not optional.
 4. Each phase has **verification** — scenario-based, not definition-recall. If you cannot do the check without notes, that phase is not done.
 5. Pair **reading** with a **single lab cluster** (workshop, cloud trial, or home lab) so every concept maps to something you can inspect in the console **or** from the CLI. Note the lab requirements per phase in the scale table above — Phases 5 and 6 need infrastructure beyond a single SNO.
@@ -87,11 +87,11 @@ Use this as a **temporary scaffold only**. The right column is the destination; 
 
 ---
 
-## Prerequisite: Git and GitHub
+## Prerequisite: Git
 
 **Who needs this:** Anyone who has not used source control day to day. If you already commit and open PRs regularly, skim the change-management reframe below — even experienced Git users often miss why GitOps replaces their existing CAB process.
 
-**Full path:** See the dedicated **[Git and GitHub Learning Path](../git/README.md)** for the complete staged curriculum (mental model → hands-on basics → internals).
+**Full path:** See the dedicated **[Git, GitHub, and GitLab Learning Path](../git/README.md)** for the complete staged curriculum (mental model → hands-on basics → internals).
 
 ### The one reframe that matters before you start
 
@@ -119,7 +119,7 @@ Before Phase 1 you need: clone, branch, commit, push, open a PR, read `git log` 
 - [GitHub Skills](https://skills.github.com/) — interactive in-repo exercises (Introduction to Git, Introduction to GitHub).
 - [Microsoft Learn — Introduction to Git](https://learn.microsoft.com/en-us/training/modules/intro-to-git/) — structured free module with knowledge checks (~1h 26m).
 
-See the **[Git and GitHub Learning Path](../git/README.md)** for the full staged curriculum including [learngitbranching.js.org](https://learngitbranching.js.org/), the Pro Git book, and enterprise GitHub notes.
+See the **[Git, GitHub, and GitLab Learning Path](../git/README.md)** for the full staged curriculum including [learngitbranching.js.org](https://learngitbranching.js.org/), the Pro Git book, and enterprise hosting notes.
 
 **Verification:** Clone a team repo, create a branch, edit one file, commit, push, open a PR. Write the PR description as a change ticket: what changed, why, what the risk is, how to verify. Explain without notes: what is the difference between `git commit` and `git push`? Between `git pull` and merging a PR?
 
@@ -328,7 +328,7 @@ The shift from vSAN/VMFS datastores to the Kubernetes storage model is as signif
 
 **Lab:** The [SNO KVM lab](../../ocp/examples/sno-kvm-lab/README.md) in this repo is sufficient for this entire phase — you need one cluster and a Git repo.
 
-**Depends on:** [Prerequisite: Git and GitHub](#prerequisite-git-and-github).
+**Depends on:** [Prerequisite: Git](#prerequisite-git).
 
 **Topics**
 
