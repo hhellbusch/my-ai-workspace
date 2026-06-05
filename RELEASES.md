@@ -20,21 +20,21 @@ git log v2026-04-20..v2026-04-21 --oneline --author-date-order
 | Tag | Date | Commits | New Files | Theme |
 |---|---|---|---|---|
 | v2026-04-20 | 2026-04-20 | 69 | 674 | Field Notes branding, identity, local LLM benchmarks, essay writing |
-| v2026-04-21 | 2026-04-21 | 75 | 67 | Zanshin kit created, session brief, framework naming and solidification |
-| v2026-04-29 | 2026-04-29 | 31 | 64 | Helm component pattern, learning path, ArgoCD work (48d716c) |
-| v2026-04-30 | 2026-04-30 | 36 | 68 | Paude phases, worktrees, LID research, audit script |
-| v2026-05-02 | 2026-05-02 | 6 | 26 | Cursor → Pi migration, zanshin structured edits |
-| v2026-05-03 | 2026-05-03 | 37 | 381 | **Major reorg:** skills migration, submodule consolidation, kit extraction |
-| v2026-05-05 | 2026-05-05 | 12 | 270 | AgentSkills migration, skill implementations |
-| v2026-05-08 | 2026-05-08 | 8 | 8 | Session logging, push-all.sh, submodule URL standardization |
-| v2026-05-12 | 2026-05-12 | 36 | 121 | Architecture docs, paude-proxy, submodule sync, AGENTS.md distillation |
-| v2026-05-13 | 2026-05-13 | 77 | 212 | **commit-guard deep dive**, zanshin extension, rules/ migration |
-| v2026-05-18 | 2026-05-18 | 32 | 26 | vGPU docs/research dump, commit-guard fixes |
-| v2026-05-19 | 2026-05-19 | 5 | 1 | commit-guard loop-break |
+| [v2026-04-21](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-04-20...v2026-04-21) | 2026-04-21 | 75 | 67 | Zanshin kit created, session brief, framework naming and solidification |
+| [v2026-04-29](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-04-21...v2026-04-29) | 2026-04-29 | 31 | 64 | Helm component pattern, learning path, ArgoCD work (48d716c) |
+| [v2026-04-30](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-04-29...v2026-04-30) | 2026-04-30 | 36 | 68 | Paude phases, worktrees, LID research, audit script |
+| [v2026-05-02](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-04-30...v2026-05-02) | 2026-05-02 | 6 | 26 | Cursor → Pi migration, zanshin structured edits |
+| [v2026-05-03](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-05-02...v2026-05-03) | 2026-05-03 | 37 | 381 | **Major reorg:** skills migration, submodule consolidation, kit extraction |
+| [v2026-05-05](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-05-03...v2026-05-05) | 2026-05-05 | 12 | 270 | AgentSkills migration, skill implementations |
+| [v2026-05-08](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-05-05...v2026-05-08) | 2026-05-08 | 8 | 8 | Session logging, push-all.sh, submodule URL standardization |
+| [v2026-05-12](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-05-08...v2026-05-12) | 2026-05-12 | 36 | 121 | Architecture docs, paude-proxy, submodule sync, AGENTS.md distillation |
+| [v2026-05-13](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-05-12...v2026-05-13) | 2026-05-13 | 77 | 212 | **commit-guard deep dive**, zanshin extension, rules/ migration |
+| [v2026-05-18](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-05-13...v2026-05-18) | 2026-05-18 | 32 | 26 | vGPU docs/research dump, commit-guard fixes |
+| [v2026-05-19](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-05-18...v2026-05-19) | 2026-05-19 | 5 | 1 | commit-guard loop-break |
 
 ## Releases
 
-### v2026-05-19
+### [v2026-05-19](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-05-18...v2026-05-19)
 
 > **Commit:** `0d01c5b` · 5 commits · 1 file
 
@@ -45,7 +45,7 @@ git log v2026-04-20..v2026-04-21 --oneline --author-date-order
 
 ---
 
-### v2026-05-18
+### [v2026-05-18](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-05-13...v2026-05-18)
 
 > **Commit:** `4413db7` · 32 commits · 26 files
 
@@ -68,7 +68,7 @@ git log v2026-04-20..v2026-04-21 --oneline --author-date-order
 
 ---
 
-### v2026-05-13
+### [v2026-05-13](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-05-12...v2026-05-13)
 
 > **Commit:** `2c72fc9` · 77 commits · 212 files · **Largest session**
 
@@ -110,7 +110,7 @@ git log v2026-04-20..v2026-04-21 --oneline --author-date-order
 
 ---
 
-### v2026-05-12
+### [v2026-05-12](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-05-08...v2026-05-12)
 
 > **Commit:** `ee97960` · 36 commits · 121 files
 
@@ -140,7 +140,7 @@ git log v2026-04-20..v2026-04-21 --oneline --author-date-order
 
 ---
 
-### v2026-05-08
+### [v2026-05-08](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-05-05...v2026-05-08)
 
 > **Commit:** `c00dbeb` · 8 commits · 8 files
 
@@ -157,7 +157,7 @@ git log v2026-04-20..v2026-04-21 --oneline --author-date-order
 
 ---
 
-### v2026-05-05
+### [v2026-05-05](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-05-03...v2026-05-05)
 
 > **Commit:** `3e8bb45` · 12 commits · 270 files
 
@@ -177,7 +177,7 @@ git log v2026-04-20..v2026-04-21 --oneline --author-date-order
 
 ---
 
-### v2026-05-03
+### [v2026-05-03](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-05-02...v2026-05-03)
 
 > **Commit:** `d49fcaa` · 37 commits · 381 files · **Major reorg**
 
@@ -210,7 +210,7 @@ git log v2026-04-20..v2026-04-21 --oneline --author-date-order
 
 ---
 
-### v2026-05-02
+### [v2026-05-02](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-04-30...v2026-05-02)
 
 > **Commit:** `c8712cd` · 6 commits · 26 files
 
@@ -228,7 +228,7 @@ git log v2026-04-20..v2026-04-21 --oneline --author-date-order
 
 ---
 
-### v2026-04-30
+### [v2026-04-30](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-04-29...v2026-04-30)
 
 > **Commit:** `46da469` · 36 commits · 68 files
 
@@ -264,7 +264,7 @@ git log v2026-04-20..v2026-04-21 --oneline --author-date-order
 
 ---
 
-### v2026-04-29
+### [v2026-04-29](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-04-21...v2026-04-29)
 
 > **Commit:** `48d716c` · 31 commits · 64 files
 
@@ -292,7 +292,7 @@ git log v2026-04-20..v2026-04-21 --oneline --author-date-order
 
 ---
 
-### v2026-04-21
+### [v2026-04-21](https://github.com/hhellbusch/my-ai-workspace/compare/v2026-04-20...v2026-04-21)
 
 > **Commit:** `69663c7` · 75 commits · 67 files
 
@@ -338,7 +338,7 @@ git log v2026-04-20..v2026-04-21 --oneline --author-date-order
 
 ---
 
-### v2026-04-20
+### v2026-04-20 *(first tag — no prior compare)*
 
 > **Commit:** `3d30f8b` · 69 commits · 674 files
 

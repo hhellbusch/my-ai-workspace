@@ -109,6 +109,8 @@ If `RELEASES.md` doesn't exist, create it with:
 
 If `RELEASES.md` exists, append the new release sections and update the summary table.
 
+**Compare links:** Tags in the summary table and release section headings should link to GitHub compare views. Derive the repo URL from `git remote get-url origin` (strip `.git`). Format: `[vYYYY-MM-DD](https://github.com/<org>/<repo>/compare/<prev>...<tag>)`. The first tag has no prior, so leave it unlinked with a note: `v2026-04-20 *(first tag — no prior compare)*`.
+
 For summaries, use the commit messages to infer the theme. Cluster commits by topic (e.g., "vGPU docs", "commit-guard", "submodule bumps", "skills migration") and write a one-line summary per cluster. Group clusters into a coherent theme paragraph.
 
 #### Step 5: Commit
