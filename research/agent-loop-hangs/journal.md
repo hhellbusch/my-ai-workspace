@@ -352,17 +352,87 @@ Post-fix turn deltas (context tokens between consecutive turns):
 - ✅ `maxTokens` now uses model spec value (65536 for Qwen3)
 - ✅ Zero `max_tokens` finish events in provider log
 - ✅ 3–4× more tokens per turn
-- ⏳ Still observing model thinking pauses (H2 — this is inherent to Qwen3)
+- ⏳ **Qwen3 thinking latency confirmed** — gaps of 17–91s between turns, inconsistent
 - 📊 Watch for: fewer compaction events, slower context growth, reduced hang frequency
+
+### Refined Finding: Qwen3 Thinking Latency (2026-06-05 18:14)
+
+**Symptom:** The model takes 17–91 seconds to respond between turns, sometimes longer after compaction. The pattern is **inconsistent** — turns can be fast (3s) then slow (91s) with no visible trigger.
+
+**Evidence — User-only timestamps (cleaned of AI session noise):**
+
+| Time | Gap | Trigger | Notes |
+|------|-----|---------|-------|
+| 17:31:56 | 83.5s | User: "let's do zero change analysis" | Heavy tool-use session (log analysis) |
+| 17:33:37 | 100.2s | User: "update our journal" | Context growing, tool-use heavy |
+| 17:35:00 | 83.6s | User: "you lost the thread" | Compounding context weight |
+| 17:51:49 | **972s** (16 min) | User: "what else" | Post-compaction — biggest stall |
+| 18:09:36 | 44.8s | User: "got a crash" | Journal commit attempt |
+| 18:11:59 | **91.4s** | User: "just stopped processing" | Heavy log-analysis session |
+| 18:12:29 | 30.5s | User: "can you see the date" | Still processing |
+| 18:13:28 | 58.9s | User: "log analysis making it worse" | Self-referential context growth |
+
+**Key insight: The AI's own analysis makes the hang worse.** Each tool call, log parse, and explanation adds tokens to the context, which increases the model's thinking time. This is a self-reinforcing cycle: longer context → slower thinking → longer gaps → more analysis to figure out why → more context → slower thinking.
+
+**This is NOT a crash or bug.** The model is working, just thinking for an extended period. It's Qwen3's reasoning mode processing a growing context window. The latency is real and unpredictable.
+
+**Correlation with context size:** As context grows beyond ~50K tokens, thinking time becomes more variable (3–91s range). This is expected — the model must process more tokens per turn.
+
+**Impact on workflow:** The AI's tendency to analyze logs and explain its findings adds significant context weight, making the problem self-perpetuating. When the user sends a short message ("date", "did you finish"), the model still takes 30–90s to respond because it's processing the accumulated context.
+
+**Workaround:** Use separate sessions for different purposes (see below). Analysis sessions accumulate heavy context and cause long hangs. Work sessions with focused prompts have shorter, more predictable latency.
 
 ---
 
 ## Next Steps
 
-1. **Monitor compaction frequency** over the next few sessions with the cap removed
+1. **Implement dual-session workflow** — one for work (light context, fast response), one for analysis (heavy context, acceptable to hang) — see procedure below
 2. **Enhance the session log** to record per-turn timing (request start → TTFT → end) for every turn — ~50 lines in `index.ts`
 3. **Consider raising RPM/TPM limits** if LiteLLM supports them (currently 5000 RPM, 10M TPM — far from limits)
-4. **Document Qwen3 thinking latency** as a known characteristic — not a bug, but a tradeoff for the quality gains
+4. **Monitor compaction frequency** over the next few sessions with the cap removed
+5. **Document Qwen3 thinking latency** as a known characteristic — not a bug, but a tradeoff for the quality gains
+
+---
+
+## Procedure: Dual-Session Workflow for Qwen3
+
+**Problem:** Qwen3's thinking latency (17–91s) combined with context accumulation creates self-reinforcing hang cycles. Using the same session for both work and analysis compounds the problem.
+
+**Solution:** Maintain two parallel sessions:
+
+### Session 1 — Work Session
+- **Purpose:** Tasks, commits, code changes, user-facing work
+- **Model:** Qwen3 (or any reasoning model)
+- **Behavior:** Keep context light by using `/checkpoint` frequently, compact when context grows >40%
+- **Rule:** Never do log analysis or debugging here
+- **Expectation:** Turns complete in 3–15s typically, occasional 30–50s pauses for thinking
+
+### Session 2 — Analysis Session
+- **Purpose:** Log analysis, debugging, journal updates, pattern hunting
+- **Model:** Qwen3 or any reasoning model
+- **Behavior:** Accept long hangs (30–100s) as normal
+- **Rule:** Never do production work here
+- **Expectation:** Turns complete in 30–90s, context will grow heavily
+
+### Workflow
+1. Start with Session 1 (work). Keep it focused.
+2. When you need to analyze logs or debug, start Session 2 (analysis)
+3. Once analysis is done, close Session 2 (the context dies with it)
+4. Return to Session 1 for more work
+5. **Rule:** If Session 1 starts slowing down (>30s per turn), compact or start fresh
+
+### Why this works
+- Qwen3's thinking latency is proportional to context size
+- Analysis sessions grow heavy context → slow response
+- Work sessions stay light context → fast response
+- Each session's context dies when it closes, avoiding accumulation
+- The AI can't add analysis context to the work session if it's a separate session
+
+### Alternative: Single session with discipline
+- Compact before starting any analysis
+- Compact after finishing analysis
+- Keep work sessions under 30 turns
+- Use `/checkpoint` after every 10 turns to mark progress and enable clean compaction
 
 ---
 
