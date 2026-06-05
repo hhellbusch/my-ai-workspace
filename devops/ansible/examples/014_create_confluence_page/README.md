@@ -51,6 +51,7 @@ ansible-playbook simple_playbook.yml \
 |---|---|
 | `simple_playbook.yml` | Minimal example — create a page with static content |
 | `playbook.yml` | Full example — run validations, compose a results table, create or update a page |
+| `validation_record.j2` | Jinja2 template for the validation results HTML table |
 | `vault.example.yml` | Credential template (copy to `vault.yml` and encrypt) |
 
 ---
