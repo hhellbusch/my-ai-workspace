@@ -2,6 +2,9 @@
 
 Single Node OpenShift (SNO) cluster running in a KVM virtual machine, bridged onto a home LAN managed by pfSense. Intended as a local lab for testing ArgoCD, operator management, and GitOps workflows.
 
+> **Current install location:** `~/gemini-workspace/devops/ocp/install/exec/auth/kubeconfig`
+> The guide below uses `~/sno-install` as a placeholder path — update the guide if the install dir moves.
+
 ---
 
 ## Placeholders Used in This Guide
