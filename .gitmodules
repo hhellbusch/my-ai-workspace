@@ -23,3 +23,6 @@
 [submodule "submodules/paude-proxy"]
 	path = submodules/paude-proxy
 	url = https://github.com/hhellbusch/paude-proxy.git
+[submodule "submodules/pelorus"]
+	path = submodules/pelorus
+	url = https://github.com/hhellbusch/pelorus.git
