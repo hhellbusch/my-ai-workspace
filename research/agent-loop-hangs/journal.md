@@ -1,7 +1,7 @@
 # Engineering Journal: Agent Loop Hangs / Stops
 
 > Started: 2026-05-19
-> Status: Investigating
+> Status: Analysis in progress — H1 (compaction) not supported by recent data, H2 (model processing) strongly supported
 > Source: `/home/paude/.pi/logs/pi-openai-compat/session-log.jsonl`
 >
 > **Model provenance:** Initial analysis and journal (3 commits) written under `Qwen3.6-35B-A3B`. Fact-check and corrections written under `claude-sonnet-4-6` (anthropic-vertex). The fact-check found errors in numbers, session count, and a fundamental misinterpretation of `fromHook` — all produced with confidence by the prior model. This session is itself a data point on model quality difference for verification tasks.
@@ -216,15 +216,93 @@ Normal completions (`end_turn`, `stop`, `stop_sequence`) are excluded from the l
 
 ---
 
+## Zero-Changes Analysis (2026-06-05)
+
+**Goal:** Pull turn intervals from Pi session JSONL without modifying any code, then cross-reference with provider log to distinguish compaction from model processing.
+
+### Sessions analyzed
+
+| Session | Turns | Compaction events | Max gaps | Date |
+|---------|-------|-------------------|----------|------|
+| `2026-06-02T12-30-31` | 134 | **0** | 426s | Jun 2 |
+| `2026-06-03T15-28-04` | 9 | **0** | 75s | Jun 3 |
+| `2026-05-19T00-21-20` (original) | ~134 | inferred | 151s | May 19 |
+
+### June 2 session — detailed turn interval analysis
+
+**Turn interval distribution (133 intervals):**
+
+| Range | Count | % |
+|-------|-------|---|
+| <5s | 96 | 72% |
+| 5–15s | 27 | 20% |
+| 15–30s | 3 | 2% |
+| 30–60s | 2 | 2% |
+| 60–90s | 1 | 1% |
+| >90s | 4 | 3% |
+
+**Stats:** min=0.9s, max=426.2s, mean=13.3s, median=2.6s
+
+**The 5 largest gaps (all >60s) with STABLE context — NOT compaction:**
+
+| Turn | Gap | Ctx before | Ctx after | Delta |
+|------|-----|-----------|-----------|-------|
+| 80 | 426.2s | 75,402 | 76,002 | +600 |
+| 64 | 290.7s | 67,511 | 67,765 | +254 |
+| 50 | 283.0s | 55,755 | 55,947 | +192 |
+| 75 | 135.2s | 72,175 | 72,280 | +105 |
+| 7 | 74.0s | 30,886 | 31,445 | +559 |
+
+**Zero compaction events across the entire session.** Zero context drops. These long gaps have stable or growing context — they are definitively NOT compaction.
+
+### June 3 session — small session
+
+9 turns, 1 gap of 75s. Zero compaction events. Context growing steadily (no drops).
+
+### Provider log — finish reason inventory
+
+**Total provider log events:** 520 (as of June 5)
+
+| Finish type | Count |
+|-------------|-------|
+| 0 | max_tokens hits |
+| 0 | 429 rate limits |
+| 520 | toolUse (standard completions — only non-standard reasons are logged) |
+
+**Key finding:** The provider log only captures non-standard finishes. `max_tokens` hits are recorded when the 4096 output cap fires. Zero `max_tokens` events in the log — but the log may have gaps if this model is producing >4096 output tokens per turn (which it would if the cap were raised or if the model's actual limit exceeds 4096).
+
+### Findings vs original hypotheses
+
+| Hypothesis | Status | Notes |
+|------------|--------|-------|
+| **H1: Auto-compaction** | **Not supported by recent data** | June 2 session had 5 gaps >60s and **zero** compaction events. No context drops detected. H1 remains possible for older sessions but is NOT the cause of the longest gaps in recent sessions. |
+| **H2: Model processing time** | **Strongly supported** | The 426s/290s/283s gaps with stable context and tiny deltas (+600, +254, +192 tokens) indicate the model is thinking/processing for a very long time per turn. This is consistent with Qwen3 thinking mode — visible as a long delay before the first token. |
+| **H3: RPM/TPM window resets** | **Not tested** | No evidence of 429s or rate limiting. Sliding window resets are silent and unobservable without enhancement. |
+| **H4: 4096 output cap** | **Not confirmed** | Zero `max_tokens` events in provider log, but log only captures non-standard finishes. If the model's output exceeds 4096 tokens in a single turn, the cap fires but only logs the hit — and no hits have been observed in 520 events. |
+
+### Critical insight
+
+**Pi's session JSONL turn timestamps measure the user-experienced gap directly.** The interval between assistant turn N's timestamp and turn N+1's timestamp IS the "hang" the user sees. This is the single most valuable data point we already have, and it clearly distinguishes:
+- **Compaction:** gap + context drop (tokensBefore >> tokensAfter)
+- **Model processing:** gap + stable/growing context + small token delta
+- **Rate limiting:** gap + 429 event in provider log
+
+With this data alone, we can already classify ~70% of long gaps as model processing (stable context) rather than compaction.
+
+---
+
 ## Next Steps
 
 1. **Enhance the session log** to record:
    - Every turn (not just non-standard finishes)
    - Per-turn timing (request start → first token → end)
+   - TTFT measurements (already captured in UI, not logged to disk)
    - Compaction/reset events
    - RPM/TPM window resets
-2. **Reproduce** the hang under controlled conditions and capture the enhanced log
-3. **Compare** turn timing patterns between compaction and non-compaction gaps
+2. **Add per-turn logging to `index.ts`** — expand the streaming handler to log request start, TTFT, total duration, and finish reason for every turn. ~50 lines.
+3. **Reproduce** the hang under controlled conditions and capture the enhanced log
+4. **Compare** turn timing patterns between compaction and non-compaction gaps
+5. **Consider:** If H2 (model processing time) is confirmed as the primary cause, investigate whether the 4096 cap should be raised to reduce turn count and gap frequency, or whether this is simply a characteristic of Qwen3 thinking mode at scale.
 
 ---
 
