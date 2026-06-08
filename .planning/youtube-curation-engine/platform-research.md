@@ -186,14 +186,115 @@ The Gateway is the control plane — the product is the assistant. This means a 
 
 ---
 
+## Paude-Proxy — Credential Broker
+
+**Paude-proxy is a MITM credential broker.** It sits between the agent container and the internet, intercepts HTTPS requests, and injects real API keys into request headers based on destination domain. The agent never sees real credentials.
+
+### Architecture
+```
+Agent (dummy creds) → paude-proxy:3128 → Real upstream
+                        ↓
+                  Injects real API keys
+```
+
+### How It Works
+1. Agent sends requests with dummy credentials (e.g., `ANTHROPIC_API_KEY=paude-proxy-managed`)
+2. Proxy terminates TLS (MITM) using a shared CA cert
+3. Proxy looks up destination domain in credential routing table
+4. Proxy replaces auth header with real credentials
+5. Proxy forwards to upstream over new TLS connection
+6. Response passes back unmodified
+
+### Security Model
+- **Credential theft prevention:** Real credentials only exist in the proxy, never in the agent container
+- **Domain routing:** Strict suffix matching (`.openai.com` does NOT match `evil-openai.com`)
+- **Host header forgery protection:** Routing uses CONNECT target (TCP layer), not Host header
+- **No redirect following:** 3xx responses pass through to client (no redirect-based credential leakage)
+- **Source IP filtering:** `PAUDE_PROXY_ALLOWED_CLIENTS` restricts which IPs can connect
+
+### Credential Routing Configuration
+
+**Default config** is embedded in the binary at `internal/credentials/credentials.json`.
+
+**Custom config:** Pass via `PAUDE_PROXY_CREDENTIALS_CONFIG=/path/to/credentials.json`
+
+**Injector types:**
+| Type | Description | Required params |
+|---|---|---|
+| `bearer` | `Authorization: Bearer <value>` | — |
+| `api_key` | Custom header with credential value | `header_name` |
+| `gcloud` | OAuth2 Bearer from ADC (auto-refreshed) | — |
+
+### Google Cloud ADC (Vertex AI) — Two-Step Flow
+
+For Google Cloud APIs, the proxy uses a special two-step approach:
+1. **Token vending:** Agent has a stub ADC file with dummy values. When its auth library POSTs to `oauth2.googleapis.com/token`, the proxy intercepts and returns a dummy token.
+2. **Credential injection:** When the agent calls `*.googleapis.com` with the dummy Bearer token, the proxy's `GCloudInjector` replaces it with a real OAuth2 token from its own ADC.
+
+The agent never sees any real credential — not the refresh token, not even a short-lived access token.
+
+### Rolling Into Paude (from integration docs)
+
+Paude has planned a phased rollout to replace its squid proxy with paude-proxy:
+- Phase 1: Build and publish paude-proxy image (done — repo exists)
+- Phase 2: Add `--proxy-type=mitm` flag behind a feature flag
+- Phase 3: Test with each agent type (Claude Code, Cursor, Gemini, OpenClaw)
+- Phase 4: Make paude-proxy the default
+- Phase 5: Remove squid
+
+**Current state:** Squid is still the default in Paude. paude-proxy exists as a submodule (`submodules/paude-proxy/`) with full implementation and docs.
+
+### What This Means for YouTube API Key
+
+The YouTube API key needs to be added to the credential routing table. Two options:
+
+1. **Workspace-level config** (no paude-proxy changes needed):
+   - Create `paude-proxy-config.json` in the workspace
+   - Pass it via `PAUDE_PROXY_CREDENTIALS_CONFIG` env var
+   - Add `YOUTUBE_API_KEY` → `youtube.googleapis.com` route
+
+2. **Upstream paude integration** (requires paude changes):
+   - Add YouTube API key entry to the default credentials.json
+   - This would require Ben's approval/PR since upstream is quiet
+
+**Recommendation:** Option 1 — workspace-level config. No dependency on paude changes.
+
+---
+
 ## What's Still Needed
 
 ### 1. Secret Injection Pattern
-OpenClaw uses the same Paude secret injection mechanism as Pi:
-- `secret_env_vars` in the AgentConfig — host env vars delivered via `/credentials/env/`
-- Currently hardcoded list in Paude (git PAT, model keys)
-- Need: generic "inject any env var from paude config" mechanism
-- **OpenClaw-specific:** Would need to add `YOUTUBE_API_KEY` to the secret env var list
+
+**Paude-proxy already solves this — and does it better than env var injection.**
+
+Paude-proxy is a MITM credential broker running as a separate container (port 3128). The model:
+- Agent sends dummy credentials (e.g., `ANTHROPIC_API_KEY=paude-proxy-managed`)
+- Proxy terminates TLS via MITM, looks up the destination domain in its credential routing table
+- Proxy replaces the auth header with real credentials before forwarding to upstream
+- Agent never sees, stores, or can exfiltrate real credentials
+
+**Current default credential routing table:**
+| Env Var | Domain Pattern | Header Injected |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | `*.anthropic.com` | `x-api-key: <key>` |
+| `OPENAI_API_KEY` | `*.openai.com` | `Authorization: Bearer <key>` |
+| `CURSOR_API_KEY` | `*.cursor.com`, `*.cursorapi.com` | `Authorization: Bearer <key>` |
+| `GH_TOKEN` | `github.com`, `api.github.com` | `Authorization: Bearer <PAT>` |
+| `GOOGLE_APPLICATION_CREDENTIALS` | `*.googleapis.com` | `Authorization: Bearer <token>` (auto-refreshed OAuth2) |
+
+**For YouTube API:** Add an entry to the credential routing config:
+```json
+{
+  "env_var": "YOUTUBE_API_KEY",
+  "injector": "api_key",
+  "params": { "header_name": "Authorization" },
+  "domains": ["youtube.googleapis.com", "www.googleapis.com"]
+}
+```
+
+**Custom credential routing:** The proxy supports `PAUDE_PROXY_CREDENTIALS_CONFIG` pointing to a custom JSON file. This means YouTube API key injection can be done without modifying paude-proxy source — just pass a config file.
+
+**Status:** Solved by paude-proxy's credential routing. Need to add YouTube API key to the routing config.
 
 ### 2. YouTube API Integration
 OpenClaw's tools system is MCP-compatible. We'd need:
@@ -229,6 +330,12 @@ This is the key innovation — storing a topic vector or interest profile that t
 - Paude OpenClaw agent: `/pvc/workspace/git-projects/paude/src/paude/agents/openclaw.py`
 - Paude docs: `/pvc/workspace/git-projects/paude/docs/`
 - Pi extension docs: `/usr/local/lib/node_modules/@earendil-works/pi-coding-agent/docs/extensions.md`
+- **Paude-proxy:** `submodules/paude-proxy/` — MITM credential broker
+  - `README.md` — full docs on how the credential injection works
+  - `docs/PAUDE_INTEGRATION.md` — planned rollout into Paude (squid → paude-proxy migration)
+  - `internal/credentials/credentials.json` — current default routing table
+  - `internal/credentials/config.go` — credential config schema
+  - `internal/credentials/gcloud.go` — Google ADC token vending
 
 ## Practical: Spinning Up OpenClaw via Paude
 

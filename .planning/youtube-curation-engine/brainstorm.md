@@ -123,11 +123,46 @@ Start with **#1 + #4** as a single pass:
 ## Open Questions
 
 ### 1. Secret Injection Abstraction
-Currently paude injects specific secrets (git PAT, model keys) into container env. Want a generic mechanism where **any** paude config value flows into the container as an env var.
-- Needs upstream paude-pi-extension change
-- Should support a list of env vars to inject from paude config
-- Not hardcoded — discoverable from paude's config schema
-- **Status:** Need to scope paude-pi-extension changes
+
+**Paude-proxy already solves this — and does it better than env var injection.**
+
+Paude-proxy is a MITM credential broker running as a separate container (port 3128). The model:
+- Agent sends dummy credentials (e.g., `ANTHROPIC_API_KEY=paude-proxy-managed`)
+- Proxy terminates TLS via MITM, looks up the destination domain in its credential routing table
+- Proxy replaces the auth header with real credentials before forwarding to upstream
+- Agent never sees, stores, or can exfiltrate real credentials
+
+**Current default credential routing table** (`internal/credentials/credentials.json`):
+| Env Var | Domain Pattern | Header Injected |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | `*.anthropic.com` | `x-api-key: <key>` |
+| `OPENAI_API_KEY` | `*.openai.com` | `Authorization: Bearer <key>` |
+| `CURSOR_API_KEY` | `*.cursor.com`, `*.cursorapi.com` | `Authorization: Bearer <key>` |
+| `GH_TOKEN` | `github.com`, `api.github.com` | `Authorization: Bearer <PAT>` |
+| `GOOGLE_APPLICATION_CREDENTIALS` | `*.googleapis.com` | `Authorization: Bearer <token>` (auto-refreshed OAuth2) |
+
+**For YouTube API:** Add an entry to the credential routing config:
+```json
+{
+  "env_var": "YOUTUBE_API_KEY",
+  "injector": "api_key",
+  "params": { "header_name": "Authorization" },
+  "domains": ["youtube.googleapis.com", "www.googleapis.com"]
+}
+```
+
+**Custom credential routing:** The proxy supports `PAUDE_PROXY_CREDENTIALS_CONFIG` pointing to a custom JSON file. This means YouTube API key injection can be done without modifying paude-proxy source — just pass a config file.
+
+**Available injector types:**
+| Type | Description | Required params |
+|---|---|---|
+| `bearer` | Sets `Authorization: Bearer <value>` | — |
+| `api_key` | Sets a custom header with the credential value | `header_name` |
+| `gcloud` | OAuth2 Bearer token from ADC (auto-refreshed) | — |
+
+**Where to add it:** In the workspace's `paude.json` (which maps to paude-proxy's config), or pass a custom `credentials.json` to paude-proxy via `PAUDE_PROXY_CREDENTIALS_CONFIG`.
+
+**Status:** Solved by paude-proxy's credential routing. Need to add YouTube API key to the routing config.
 
 ### 2. OpenClaw vs Pi
 - **Pi:** Coding focus, on-demand, extensions system
