@@ -229,3 +229,45 @@ This is the key innovation — storing a topic vector or interest profile that t
 - Paude OpenClaw agent: `/pvc/workspace/git-projects/paude/src/paude/agents/openclaw.py`
 - Paude docs: `/pvc/workspace/git-projects/paude/docs/`
 - Pi extension docs: `/usr/local/lib/node_modules/@earendil-works/pi-coding-agent/docs/extensions.md`
+
+## Practical: Spinning Up OpenClaw via Paude
+
+### Fork Status
+Fork at `/pvc/workspace/git-projects/paude` is **fully up-to-date** with upstream. All agents present (claude, codex, cursor, gascity, gemini, openclaw).
+
+**Hermes is NOT in Paude.** Hermes Agent exists in the ecosystem (Switch UI, session finder tools, terminal agent benchmarks) but Paude does not support it as an agent type. The Paude agent registry is: claude, codex, cursor, gascity, gemini, openclaw.
+
+### Prerequisites (host machine)
+- **Container runtime:** Podman or Docker (not present inside Pi container)
+- **API credentials:** One of:
+  - `ANTHROPIC_API_KEY` (Anthropic provider)
+  - `OPENAI_API_KEY` (OpenAI provider)  
+  - `ANTHROPIC_VERTEX_PROJECT_ID` + `GOOGLE_CLOUD_PROJECT` (Vertex AI)
+- **Vertex + ADC:** `gcloud auth application-default login` for Vertex auth
+
+### Steps
+
+1. **Create OpenClaw session:**
+   ```bash
+   paude create --agent openclaw --provider openai --allowed-domains "default openclaw youtube" my-youtube-curator
+   ```
+   (Or `--provider anthropic` / `--provider vertex`)
+
+2. **Connect:**
+   ```bash
+   paude connect my-youtube-curator  # prints browser URL for OpenClaw
+   ```
+
+### Inside the Container
+- OpenClaw pre-installed from `ghcr.io/openclaw/openclaw:latest`
+- Gateway on port 18789
+- Config at `~/.openclaw/openclaw.json`
+- Workspace at `/pvc/workspace`
+- Python packages from `paude.json` setup
+- Secrets via `/credentials/env/` (not visible in container spec)
+- Git sync: agent commits → `git pull`
+
+### What You Need from Operator
+1. Network allowlist: `youtube.googleapis.com`, `www.googleapis.com`
+2. Secret injection: Add `YOUTUBE_API_KEY` to generic env var injection
+3. Provider API key (OpenAI, Anthropic, or Vertex)

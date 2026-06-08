@@ -174,3 +174,74 @@ Start with @aidotengineer, then expand. Should the priority list be:
 - Pi SDK docs: `/usr/local/lib/node_modules/@earendil-works/pi-coding-agent/docs/sdk.md`
 - Paude extension: `/pvc/workspace/submodules/paude-pi-extension/extensions/paude-l0.ts`
 - Paude OpenClaw agent: `/pvc/workspace/git-projects/paude/src/paude/agents/openclaw.py`
+
+## Practical: Spinning Up OpenClaw via Paude
+
+### Fork Status
+Fork at `/pvc/workspace/git-projects/paude` is **fully up-to-date** with upstream. No lag. All agents are present (claude, codex, cursor, gascity, gemini, openclaw).
+
+**Hermes is NOT in Paude.** Hermes Agent (https://github.com/txai/hermes) is a separate coding assistant. It exists in the ecosystem (Switch UI, session finder tools, terminal agent benchmarks) but Paude does not support it as an agent type.
+
+### Prerequisites
+- **Container runtime:** Podman or Docker (not present inside the Pi container — you'd run Paude commands from your host)
+- **API credentials:** One of:
+  - `ANTHROPIC_API_KEY` (for Anthropic provider)
+  - `OPENAI_API_KEY` (for OpenAI provider)
+  - `ANTHROPIC_VERTEX_PROJECT_ID` + `GOOGLE_CLOUD_PROJECT` (for Vertex AI provider)
+- **Vertex + ADC:** `gcloud auth application-default login` for Vertex auth
+
+### Steps
+
+1. **Install Paude** (on host):
+   ```bash
+   uv tool install paude
+   ```
+
+2. **Create OpenClaw session:**
+   ```bash
+   # With OpenAI
+   paude create --agent openclaw --provider openai --allowed-domains "default openclaw youtube" my-youtube-curator
+   
+   # With Anthropic
+   paude create --agent openclaw --provider anthropic --allowed-domains "default openclaw youtube" my-youtube-curator
+   
+   # With Vertex AI (recommended for existing PAI/Kai infrastructure)
+   paude create --agent openclaw --provider vertex --allowed-domains "default openclaw youtube" my-youtube-curator
+   ```
+
+3. **Connect** (terminal mode):
+   ```bash
+   paude connect my-youtube-curator
+   ```
+
+4. **Connect** (web mode — for OpenClaw, a browser URL is printed):
+   ```bash
+   paude connect my-youtube-curator
+   # Opens http://localhost:18789 in browser
+   ```
+
+### paude.json Update
+Your workspace `paude.json` currently only has `"agent": "pi"`. To use OpenClaw by default:
+```json
+{
+  "setup": "pip install requests beautifulsoup4 markdownify pdfplumber youtube-transcript-api",
+  "create": {
+    "allowed-domains": ["default", "research", "youtube", "openclaw"],
+    "agent": "openclaw"
+  }
+}
+```
+
+### What Happens Inside the Container
+- OpenClaw is pre-installed from `ghcr.io/openclaw/openclaw:latest`
+- Gateway listens on port 18789
+- Config at `~/.openclaw/openclaw.json`
+- Workspace mounted at `/pvc/workspace`
+- Python packages installed via `paude.json` setup
+- Secrets delivered via `/credentials/env/` (not visible in container spec)
+- Git-based sync: agent commits, you `git pull`
+
+### What You Need from Operator
+1. **Network allowlist:** `youtube.googleapis.com`, `www.googleapis.com` (for YouTube Data API)
+2. **Secret injection:** Add `YOUTUBE_API_KEY` to the generic env var injection mechanism
+3. **Provider credentials:** API key for whichever provider you use (OpenAI, Anthropic, or Vertex)
