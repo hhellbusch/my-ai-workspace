@@ -116,7 +116,9 @@ When creating or modifying content, see the `/cross-link` skill for the full pro
 - `library/` — **wiki layer**: enriched entries indexed in `library/README.md` and `library/catalog.md`
 - `research/` — **workshop/drawer layer**: raw sources and transcripts that feed the library wiki; indexed in `research/README.md`
 - `.planning/` — project briefs, roadmaps, style supplements
-- `rules/` — technical reference rules (branching, shell strict mode, structured edits, worktrees, submodules, research conventions, engineering principles). Referenced by AGENTS.md, not embedded.
+- `rules/` — technical reference rules (branching, shell strict mode, structured edits, worktrees, submodules, research conventions). Referenced by AGENTS.md, not embedded.
+
+Engineering principles (DRY, KISS, SRP, broken windows) live in `submodules/zanshin-pi-extension/kit/ENGINEERING-PRINCIPLES.md` — part of the zanshin-kit.
 - `STYLE.md` — workspace-level writing defaults
 - `ABOUT.md` — workspace owner identity
 - `BACKLOG.md` — project tracking (`> State:` line)
