@@ -88,3 +88,4 @@ The standard advice to invest in prompting skill is correct. For anyone whose wo
 | [Zanshin — What Remains When the Session Ends](../philosophy/zanshin.md) | The philosophical framing: why session boundaries are the hardest moment, and why the framework is named for the awareness that persists after completion |
 | [When AI Ignores Changes Made by Other Sessions](../case-studies/stale-context-in-long-sessions.md) | A concrete failure mode: one agent's state overwrites another's changes because cross-session context wasn't maintained |
 | [The Shift — Engineering Skills in the Age of AI](the-shift.md) | The foundational essay: what changes when AI handles implementation, and what skills matter more now |
+| [LangChain vs. Behavioral Skills](frameworks-vs-behavior.md) | Two layers of AI tooling: application frameworks (LangChain) vs behavioral context (skills). Names the category error of treating them as alternatives. |
