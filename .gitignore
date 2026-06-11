@@ -99,3 +99,4 @@ worktrees/
 .paude-prompt.txt
 AGENT-NOTES.md
 .github_pat
+kubeadmin-password
