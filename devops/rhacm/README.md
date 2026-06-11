@@ -41,6 +41,7 @@ Working configurations and patterns. All examples follow ACM 2.15+ best practice
 | [secret-management/](./examples/secret-management/) | Six patterns for distributing secrets across managed clusters |
 | [ocm-subscription-automation/](./examples/ocm-subscription-automation/) | OCM subscription and ClusterCurator automation |
 | [argocd-rbac/](./examples/argocd-rbac/) | ArgoCD RBAC configuration with RHACM |
+| [distribute-yaml-to-all-clusters.md](./examples/distribute-yaml-to-all-clusters.md) | Three approaches to pushing resources to managed clusters — direct loop, RHACM Policy+Placement, and GitOps |
 | [RHACM-2.15-BEST-PRACTICES.md](./examples/RHACM-2.15-BEST-PRACTICES.md) | ACM 2.15 best practices reference |
 | [CLUSTER-IMPORT-AUTOMATION-STRATEGIES.md](./examples/CLUSTER-IMPORT-AUTOMATION-STRATEGIES.md) | Comparison of cluster import automation approaches |
 | [BARE-METAL-OPERATOR-INTEGRATION.md](./examples/BARE-METAL-OPERATOR-INTEGRATION.md) | Bare metal operator integration patterns |
