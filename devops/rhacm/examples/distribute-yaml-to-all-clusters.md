@@ -156,11 +156,96 @@ oc get policies -n rhacm-policies -o wide
 
 ---
 
-## Option 3: GitOps (ArgoCD) — For Existing GitOps Pipelines
+## Option 3: GitOps with ArgoCD — For Existing GitOps Pipelines
 
-If your clusters already use ArgoCD via GitOps, push the YAML to a Git repo and let ArgoCD's ApplicationSet inject it everywhere via cluster labels. This is the cleanest for ongoing change management but the longest initial setup.
+If you're using ArgoCD, you can register RHACM-managed clusters as ArgoCD targets and deploy applications via ApplicationSet driven by cluster labels. The repo is your source of truth; ArgoCD handles deployment and drift correction.
 
-Your workspace has integration examples at `gitops-cluster-integration/`.
+### Registering RHACM Clusters with ArgoCD
+
+ArgoCD can discover clusters through RHACM using either:
+
+**ManagedClusterSet binding** (RHACM → ArgoCD integration):
+
+```yaml
+# In the openshift-gitops namespace
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: default
+spec:
+  clusterSet: default
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: all-openshift-clusters
+  namespace: openshift-gitops
+spec:
+  clusterSets:
+  - default
+  predicates:
+  - requiredClusterSelector:
+      labelSelector:
+        matchExpressions:
+        - key: vendor
+          operator: In
+          values:
+          - OpenShift
+---
+apiVersion: apps.open-cluster-management.io/v1beta1
+kind: GitOpsCluster
+metadata:
+  name: argo-acm-clusters
+  namespace: openshift-gitops
+spec:
+  argoServer:
+    cluster: local-cluster
+    argoNamespace: openshift-gitops
+  placementRef:
+    kind: Placement
+    apiVersion: cluster.open-cluster-management.io/v1beta1
+    name: all-openshift-clusters
+```
+
+This is a one-time setup on the hub — after applying it, ArgoCD automatically discovers managed clusters as deployment destinations.
+
+### Deploying with ApplicationSet
+
+Once clusters are registered, use ApplicationSet with the cluster selector:
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: global-config
+  namespace: openshift-gitops
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local-cluster
+        namespace: kube-system
+      - cluster: cluster-a
+        namespace: default
+      - cluster: cluster-b
+        namespace: default
+  template:
+    metadata:
+      name: '{{cluster}}-config'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/org/gitops-repo.git
+        targetRevision: main
+        path: configs/{{cluster}}
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+```
+
+For label-based cluster selection instead of a hardcoded list, combine with the ManagedClusterSet pattern above and use the `cluster` generator from the `argocd-rbac` integration.
+
+See `gitops-cluster-integration/` for the full ManagedClusterSet + ArgoCD integration examples.
 
 ---
 
