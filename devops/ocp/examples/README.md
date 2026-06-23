@@ -4,6 +4,14 @@ Configuration examples and templates for OpenShift clusters.
 
 ## Available Examples
 
+### Lab / SNO
+
+- **[SNO on KVM](sno-kvm-lab/README.md)** — Single Node OpenShift home-lab (pfSense DNS, agent installer, ArgoCD bootstrap)
+  - **[Dynamic storage (active — HPP)](sno-kvm-lab/dynamic-storage.md)** — end-to-end reproduction guide
+  - **[Internal image registry](sno-kvm-lab/image-registry-sno-lab.md)** — post-storage step for DevSpaces (`openshift/cli`)
+  - **[Local storage (bootstrap, retired)](sno-kvm-lab/local-storage.md)** — static Local Storage history + host disk attach
+  - **Manifests:** [hpp-vdb-mount.yaml](sno-kvm-lab/hpp-vdb-mount.yaml), [hpp.yaml](sno-kvm-lab/hpp.yaml), [storage-smoke-test.yaml](sno-kvm-lab/storage-smoke-test.yaml), [lvms.yaml](sno-kvm-lab/lvms.yaml)
+
 ### Networking
 
 - **[NetworkAttachmentDefinition (NAD)](network-attachment-definitions/README.md)** - Configure additional networks and VLANs for pods

@@ -1,0 +1,35 @@
+# LVM Storage (LVMS) — subscription template for SNO dynamic storage
+# Apply when: oc get packagemanifest lvms-operator -n openshift-marketplace succeeds
+# Prerequisite: tear down Local Storage and wipe vdb (see dynamic-storage.md)
+# Channel: adjust to match OCP minor (stable-4.22, stable-4.21, etc.)
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openshift-storage
+  labels:
+    openshift.io/cluster-monitoring: "true"
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: openshift-storage
+  namespace: openshift-storage
+spec:
+  targetNamespaces:
+  - openshift-storage
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: lvms-operator
+  namespace: openshift-storage
+spec:
+  channel: stable-4.22
+  name: lvms-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  installPlanApproval: Automatic

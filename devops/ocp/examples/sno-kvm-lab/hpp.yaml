@@ -1,0 +1,40 @@
+# HostPath Provisioner (HPP) — fallback dynamic storage for SNO lab
+# CRC uses the same provisioner family (kubevirt.io.hostpath-provisioner).
+#
+# Prerequisite: cert-manager running (OpenShift cert-manager Operator is installed on this cluster).
+# Install operator from upstream BEFORE applying this file:
+#
+#   oc apply -f https://raw.githubusercontent.com/kubevirt/hostpath-provisioner-operator/main/deploy/namespace.yaml
+#   oc apply -f https://raw.githubusercontent.com/kubevirt/hostpath-provisioner-operator/main/deploy/webhook.yaml -n hostpath-provisioner
+#   oc apply -f https://raw.githubusercontent.com/kubevirt/hostpath-provisioner-operator/main/deploy/operator.yaml -n hostpath-provisioner
+#
+# Pool path: vdb mounted at /var/hpvolumes (MachineConfig: hpp-vdb-mount.yaml).
+# First boot after Local Storage removal: vdb may need mkfs.ext4 once before mount unit succeeds.
+#
+# Full procedure: dynamic-storage.md § HPP procedure
+---
+apiVersion: hostpathprovisioner.kubevirt.io/v1beta1
+kind: HostPathProvisioner
+metadata:
+  name: hostpath-provisioner
+  namespace: hostpath-provisioner
+spec:
+  imagePullPolicy: IfNotPresent
+  storagePools:
+  - name: local
+    path: /var/hpvolumes
+  workload:
+    nodeSelector:
+      kubernetes.io/os: linux
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: hostpath-csi
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: kubevirt.io.hostpath-provisioner
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  storagePool: local

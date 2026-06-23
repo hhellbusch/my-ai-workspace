@@ -2,6 +2,8 @@
 
 This guide explains how to set **`storageClassName`** (and size) for the Cluster Monitoring Operator (CMO) stack—platform Prometheus, Alertmanager, and user-workload monitoring—and why **PVCs or pods** often appear stuck in **Pending**.
 
+For a home-lab SNO cluster without cloud CSI, see [SNO local storage](../../examples/sno-kvm-lab/local-storage.md) (`local-storage` StorageClass).
+
 ## Official documentation
 
 Use the version that matches your OpenShift minor release (replace `4.xx` or use `latest` on docs.redhat.com).

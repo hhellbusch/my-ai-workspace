@@ -5,6 +5,8 @@
 Unable to authenticate to the OpenShift internal image registry using `podman login`.
 Common errors:
 
+> **SNO lab:** If DevSpaces fails on `oc-cli` with `ImagePullBackOff` for `image-registry.openshift-image-registry.svc:5000/openshift/cli`, the registry may not be enabled at all (`managementState: Removed`). See [SNO lab — enable internal image registry](../../examples/sno-kvm-lab/image-registry-sno-lab.md) first; return here for external route and `podman login`.
+
 - **403 Forbidden** — user is authenticated but lacks registry RBAC roles
 - **401 Unauthorized** — token is invalid, expired, or malformed login command
 - **x509 / TLS error** — registry route uses a self-signed or internal CA cert

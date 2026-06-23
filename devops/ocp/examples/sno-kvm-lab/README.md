@@ -396,7 +396,28 @@ NAME              STATUS   ROLES                         AGE   VERSION
 
 ---
 
-## Part 8 — Bootstrap ArgoCD + Operators Installer
+## Part 8 — Storage
+
+SNO ships without a default `StorageClass`.
+PVCs (including OpenShift Dev Spaces workspaces) stay `Pending` until storage is configured.
+
+| Phase | Doc | Provisioner |
+|-------|-----|-------------|
+| **Active** | [dynamic-storage.md](dynamic-storage.md) | **HPP** — `hostpath-csi` default, pool on `vdb` at `/var/hpvolumes` |
+| Future target | [dynamic-storage.md](dynamic-storage.md) | **LVMS** — when `lvms-operator` appears in catalog |
+| Bootstrap (retired) | [local-storage.md](local-storage.md) | Local Storage Operator — static, one PV per disk |
+
+**Reproduce HPP:** follow [dynamic-storage.md § HPP procedure](dynamic-storage.md#hpp-procedure-reproduce-end-to-end).
+
+Manifests: [hpp-vdb-mount.yaml](hpp-vdb-mount.yaml), [hpp.yaml](hpp.yaml), [storage-smoke-test.yaml](storage-smoke-test.yaml).
+
+**Host (KVM):** attach second virtio disk — [local-storage.md § Host](local-storage.md#host-add-a-storage-disk) (same `vdb` step for HPP).
+
+**Post-storage (DevSpaces):** enable the internal image registry — [image-registry-sno-lab.md](image-registry-sno-lab.md).
+
+---
+
+## Part 9 — Bootstrap ArgoCD + Operators Installer
 
 Once the cluster is healthy, follow the operators-installer example guide at:
 `argo/examples/examples/operators-installer/README.md`
@@ -483,6 +504,7 @@ sudo virsh start sno
 sudo virsh destroy sno
 sudo virsh undefine sno --nvram
 sudo rm /var/lib/libvirt/images/sno.qcow2
+sudo rm /var/lib/libvirt/images/sno-storage.qcow2
 sudo rm /var/lib/libvirt/images/agent-sno.iso
 
 # Remove the bridge and restore <LAN_NIC> to direct LAN
@@ -507,3 +529,4 @@ sudo nmcli con up "Wired connection 1" 2>/dev/null || sudo nmcli con up <LAN_NIC
 | Watch operators | `watch oc get clusteroperators` |
 | kubeadmin password | `cat ~/sno-install/auth/kubeadmin-password` |
 | Web console | `https://console-openshift-console.apps.<CLUSTER_NAME>.<LOCAL_DOMAIN>` |
+| Storage class / PVs | `oc get storageclass,pv` — see [local-storage.md](local-storage.md) |

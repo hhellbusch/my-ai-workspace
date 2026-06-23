@@ -1,0 +1,30 @@
+# Mount dedicated storage disk (vdb) for HostPath Provisioner pool.
+# Device path is virtio-specific — re-check on the node if disks are re-attached:
+#   oc debug node/sno -- chroot /host ls -la /dev/disk/by-path/ | grep vdb
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: master
+  name: 99-sno-hpp-vdb-mount
+spec:
+  config:
+    ignition:
+      version: 3.5.0
+    systemd:
+      units:
+      - name: var-hpvolumes.mount
+        enabled: true
+        contents: |
+          [Unit]
+          Description=HostPath Provisioner storage (vdb)
+          Before=local-fs.target
+
+          [Mount]
+          What=/dev/disk/by-path/virtio-pci-0000:07:00.0
+          Where=/var/hpvolumes
+          Type=ext4
+          Options=defaults
+
+          [Install]
+          WantedBy=local-fs.target

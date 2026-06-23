@@ -1,0 +1,72 @@
+# Multi-PVC smoke test — run two claims against the same StorageClass
+# Usage: oc apply -f storage-smoke-test.yaml
+#        oc wait --for=condition=Ready pod -l app=storage-smoke -n default --timeout=180s
+#        oc delete -f storage-smoke-test.yaml
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: storage-smoke-a
+  namespace: default
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: hostpath-csi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: storage-smoke-b
+  namespace: default
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: hostpath-csi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: storage-smoke-a
+  namespace: default
+  labels:
+    app: storage-smoke
+spec:
+  containers:
+  - name: test
+    image: registry.redhat.io/ubi9/ubi-minimal:latest
+    command: ["sleep", "300"]
+    volumeMounts:
+    - name: data
+      mountPath: /data
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: storage-smoke-a
+  restartPolicy: Never
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: storage-smoke-b
+  namespace: default
+  labels:
+    app: storage-smoke
+spec:
+  containers:
+  - name: test
+    image: registry.redhat.io/ubi9/ubi-minimal:latest
+    command: ["sleep", "300"]
+    volumeMounts:
+    - name: data
+      mountPath: /data
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: storage-smoke-b
+  restartPolicy: Never
