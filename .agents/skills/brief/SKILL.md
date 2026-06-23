@@ -60,6 +60,11 @@ Create `.planning/<project-name>/BRIEF.md`:
 > **Started:** <date>
 > **Owner:** <from ABOUT.md if available>
 
+## Audience and Purpose
+
+**Reader:** [Who reads this brief — role or person]
+**Enables:** [What decision or scope boundary this anchors]
+
 ## Problem Statement
 
 [One paragraph — what problem is this work solving and why now?]
@@ -118,6 +123,7 @@ If this skill was invoked because a brief gap was detected (not by explicit user
 
 ## What makes a good brief
 
+- **Audience and purpose** answer TAGRI — who reads it, what it enables
 - **Problem statement** answers *why*, not *what*
 - **Success criteria** are checkable — avoid "improve" or "better"
 - **Key decisions** capture the things most likely to be re-litigated

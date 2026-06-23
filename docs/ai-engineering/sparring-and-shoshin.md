@@ -111,6 +111,7 @@ If you're new to these ideas and want to go further:
 | The meta-development loop these practices are embedded in | [The Meta-Development Loop](the-meta-development-loop.md) |
 | The broader Zanshin framework these practices are part of | [Zanshin — Patterns, Behaviors, and Why](session-framework.md) |
 | Load the full Zanshin framework into your own AI tools | [Zanshin — Portable Session Context](framework-bootstrap.md) |
+| Artifact economics — JBGE, TAGRI, when to stop writing | [Artifact Discipline and AI](artifact-discipline-and-ai.md) |
 
 ---
 

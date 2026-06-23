@@ -11,7 +11,7 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 
 **Workspace:** A practitioner's public workspace spanning engineering practice, philosophy, and technical reference. AI-assisted work built from real problems over time.
 
-**Collaboration style:** Shorter over longer; cut before adding. When context is incomplete, ask a sharp question. `/spar` and shoshin are used deliberately — engage fully when asked.
+**Collaboration style:** Shorter over longer; cut before adding. When context is incomplete, ask a sharp question — don't infer silently. Ambient shoshin below; `/shoshin` for deliberate depth; `/spar` when framing is settled.
 
 **Tooling preference:** Prefer free and open-source tools. Flag paid/proprietary options as such when they offer meaningfully lower barrier to entry.
 
@@ -22,11 +22,13 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 Pi extensions live in `submodules/`. When a task requires working with extension code, check the appropriate submodule.
 
 Key repos:
-- `zanshin-pi-extension/` — working discipline L0, commands (`/spar`, `/shoshin`, `/checkpoint`, stack); dev workflow at `docs/PI-EXT-DEV.md`
+- `zanshin-pi-extension/` — working discipline L0, commands (`/spar`, `/shoshin`, `/craft`, `/checkpoint`, stack); dev workflow at `docs/PI-EXT-DEV.md`
 - `paude-pi-extension/` — Paude container awareness injected into system prompt
 - `lid-pi-extension/` — linked-intent development workflow
 
 See `rules/submodule-workflow.md` for troubleshooting.
+
+**Paude (host):** Containerized agent sessions — models do not know this tool by default. Use `.agents/skills/paude-{launch,spec,harvest,triage}/` and `rules/paude-workflow.md` for session lifecycle, harvest, and merge. Narrative: `docs/ai-engineering/paude-getting-started.md`.
 
 **After pushing changes to a Pi extension submodule**, pull the update into the Pi package cache so the user can `/reload` to test immediately:
 
@@ -66,15 +68,54 @@ This workspace has persistent project state that survives across sessions. When 
 
 ## Shoshin — Beginner's Mind
 
-> Extends `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` — workspace-specific depth.
+> Ambient posture (always on). Invoked depth: `.agents/skills/shoshin/SKILL.md` or `/shoshin`. Portable core: `submodules/zanshin-pi-extension/skills/shoshin/SKILL.md`.
 
-Approach project context as if encountering it for the first time. This counters the tendency to inherit framing from prior sessions or handoff documents without verifying against source documents.
+Default posture: approach project context as if encountering it for the first time. **Ask a sharp question before building** when context is incomplete — collaborative, not silent inference. Dormant on simple tasks.
 
-**Read the brief**, not just the backlog or handoff. The brief is the authoritative statement of scope and purpose. If the backlog says one thing and the brief says another, surface the conflict.
+**Verify against sources**, not summaries or handoffs alone:
 
-**Don't trust the handoff alone.** `.planning/<project>/whats-next.md` captures one session's framing. It may carry assumptions that have drifted from the brief.
+- **Read the brief** (`.planning/<project>/BRIEF.md`), not just the backlog or handoff. If they conflict, surface it.
+- **Don't trust the handoff alone.** `.planning/<project>/whats-next.md` may have drifted from the brief.
+- **Re-read before deciding** when a choice depends on file contents (see In-Session Context Awareness).
 
-**When scope language appears** — "actually, let's broaden this to...", "I've been rethinking..." — acknowledge the shift explicitly, surface which documents need updating, and update as a set. If a `.planning/*/CHANGELOG.md` exists, add an entry capturing what changed and why.
+**When scope language appears** — "actually, let's broaden this to...", "I've been rethinking..." — acknowledge the shift, surface which documents need updating, update as a set. Log in `.planning/*/CHANGELOG.md` if it exists.
+
+**When the document itself may be wrong** (don't run routinely — specific signals):
+
+- External feedback: peer can't find the organizing question, not just unclear wording
+- Something survives review unchanged but still feels off
+- Author intent evolved beyond what the brief expresses
+- Major transition: first external review, publish, new contributor
+
+Ask: *"Is this asking the right question — or a well-written answer to the wrong one?"* Shoshin catches drift between sessions and documents; a wrong frame *inside* the documents needs user pushback or explicit reframing.
+
+**Deep mode:** say "apply shoshin" or `/shoshin` — follow the shoshin skill. Use before `/spar` when the problem may be mis-stated.
+
+---
+
+## Engineering Craft
+
+> Ambient posture (on code work). Invoked depth: `.agents/skills/craft/SKILL.md` or `/craft`. Full reference: `submodules/zanshin-pi-extension/kit/ENGINEERING-PRINCIPLES.md`.
+
+Default on code and design changes: **KISS** over clever; **SRP** (one reason to change); **DRY** when duplication will diverge — not on first coincidence; **YAGNI** for imagined requirements; **leave it slightly better** when already touching a file (≤5 min). Principles are lenses, not a checklist — name tensions when they conflict (DRY vs YAGNI, SRP vs KISS).
+
+Respect phase: make it work → make it right → make it fast. Don't mix refactor, features, and optimization in one pass without reason.
+
+**Deep mode:** say "apply craft" or `/craft` on a file, diff, or design. Use `/review` separately for repo convention compliance before commit.
+
+---
+
+## Artifact Discipline
+
+> Ambient posture (on docs, plans, epics). Invoked: JBGE lens in `/craft`; audience/purpose in `/shoshin`. Reference: `submodules/zanshin-pi-extension/kit/AGILE-ARTIFACT-DISCIPLINE.md`. Peer essay: `docs/ai-engineering/artifact-discipline-and-ai.md`.
+
+Derived from Scott Ambler's Agile Modeling / Agile Data work. AI makes artifact production cheap — default to **JBGE** (just barely good enough): sufficient for the task, no more. Context: invest more for complexity, risk, pragmatic compliance; invest less for skilled audience, easy change, high collaboration, likely change.
+
+**TAGRI** (they ain't gonna read it): before creating or expanding a doc, name the **reader** and the **decision or action** it enables. If unclear, ask — don't draft.
+
+**Travel light:** fewer artifacts; discard models/docs once purpose is served. **Document late:** envision lightly, build, then document what proved true.
+
+**Deep mode:** `/shoshin` for audience/purpose on a plan; `/craft` with JBGE lens on a draft; `/review` includes TAGRI check on new markdown.
 
 ---
 
@@ -118,7 +159,6 @@ When creating or modifying content, see the `/cross-link` skill for the full pro
 - `.planning/` — project briefs, roadmaps, style supplements
 - `rules/` — technical reference rules (branching, shell strict mode, structured edits, worktrees, submodules, research conventions). Referenced by AGENTS.md, not embedded.
 
-Engineering principles (DRY, KISS, SRP, broken windows) live in `submodules/zanshin-pi-extension/kit/ENGINEERING-PRINCIPLES.md` — part of the zanshin-kit.
 - `STYLE.md` — workspace-level writing defaults
 - `ABOUT.md` — workspace owner identity
 - `BACKLOG.md` — project tracking (`> State:` line)
@@ -153,7 +193,7 @@ Maintain a brief engineering journal for decisions and context that matter acros
 
 ## Intent First
 
-Before touching 3+ files or adding commands, skills, or rules: write a one-paragraph intent note in `.planning/` or the commit message that answers *why* — not just *what*. This prevents the pattern where a future agent can't tell why something exists and refactors it away.
+Before touching 3+ files or adding commands, skills, or rules: write a one-paragraph intent note in `.planning/` or the commit message that answers *why* — not just *what*. For new artifacts (briefs, epics, docs): also name *who reads it* and *what decision it enables* (TAGRI). This prevents the pattern where a future agent can't tell why something exists and refactors it away.
 
 For structured changes: see the `/lid` skill for touch/change/restructure scaling.
 

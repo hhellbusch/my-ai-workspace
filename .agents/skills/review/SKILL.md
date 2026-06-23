@@ -46,6 +46,9 @@ This command is read-only. It reports findings and asks for confirmation before 
 
 5. **Content quality** — For each new or modified file:
    - Markdown files: check for title heading, no obvious structural issues
+   - **Artifact discipline (TAGRI + JBGE)** — For new or substantially expanded markdown (not trivial README line edits):
+     - **TAGRI:** Name the intended reader and the decision/action the doc enables. Flag if unclear or missing.
+     - **JBGE:** Flag sections that look like template fill, duplicate structure, or verbosity beyond context (skilled audience, high change likelihood → should be lighter). Reference: `submodules/zanshin-pi-extension/kit/AGILE-ARTIFACT-DISCIPLINE.md`
    - Config files: check for valid syntax if tooling is available
    - Shell scripts (`.sh`, `.bash`): verify strict mode header present — `#!/usr/bin/env bash` + `set -euo pipefail`. Flag missing headers as **"Missing shell strict mode"**. Exception: scripts with a comment explaining why strict mode is intentionally omitted are fine.
    - No secrets, credentials, or sensitive data (flag `.env`, `*secret*`, `*credential*`, `*password*`, `*token*` patterns in content)
@@ -103,6 +106,7 @@ This command is read-only. It reports findings and asks for confirmation before 
 - Cross-references: OK / issues
 - External URLs: N verified / M broken or unverified
 - Content quality: OK / issues
+- Artifact discipline (TAGRI/JBGE): OK / N flags
 - Secrets scan: OK / issues
 - Biographical scan: N lines flagged / clean
 - Stale reviews: N reviewed files modified (re-read needed) / none

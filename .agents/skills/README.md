@@ -49,6 +49,8 @@ These are workspace-specific skills — unique to this project.
 | Skill | Purpose |
 |---|---|
 | `/start` | Session orientation — load context, check handoffs, suggest focus |
+| `/shoshin` | Invoked assumption-checking — collaborative questions, beginner's mind (extends zanshin kit) |
+| `/craft` | Invoked engineering-principles review on code, diff, or design (extends zanshin kit) |
 | `/whats-next` | Full session handoff — create comprehensive continuation doc |
 | `/checkpoint` | Mid-session state save — lightweight crash recovery snapshot |
 | `/review` | Pre-commit quality gate — verify against repo conventions |
@@ -103,7 +105,7 @@ The [Zanshin working discipline kit](https://github.com/hhellbusch/zanshin-pi-ex
 
 | Category | Skills |
 |---|---|
-| Working discipline | `/spar` · `/grill-me` · `/push` · `/pop` · `/stack` · `/shoshin` |
+| Working discipline | `/spar` · `/shoshin` · `/craft` · `/grill-me` · `/push` · `/pop` · `/stack` |
 | Reasoning frameworks | `/consider-5-whys` · `/consider-10-10-10` · `/consider-first-principles` · `/consider-inversion` · `/consider-occams-razor` · `/consider-one-thing` · `/consider-opportunity-cost` · `/consider-pareto` · `/consider-second-order` · `/consider-swot` · `/consider-via-negativa` · `/consider-eisenhower-matrix` |
 | Research | `/research-competitive` · `/research-deep-dive` · `/research-technical` · `/research-open-source` · `/research-options` · `/research-feasibility` · `/research-history` · `/research-landscape` |
 | Debug & intake | `/debug` · `/ask-me-questions` |
