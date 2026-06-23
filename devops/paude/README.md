@@ -178,6 +178,10 @@ paude create --dry-run
 
 ## Related
 
+- **Host skills:** `.agents/skills/paude-launch`, `paude-spec`, `paude-harvest`, `paude-triage` — session lifecycle (see `rules/paude-workflow.md`)
+- [`devops/paude/harvest-prep-prompt.md`](harvest-prep-prompt.md) — paste into container agent when task is done
+- [`docs/ai-engineering/paude-getting-started.md`](../../docs/ai-engineering/paude-getting-started.md) — narrative guide
+- [`.planning/paude-skills/SKILLS-SPEC.md`](../../.planning/paude-skills/SKILLS-SPEC.md) — skill requirements
 - [`devops/paude-proxy/README.md`](../paude-proxy/README.md) — proxy architecture, CA certs, PAT scopes
 - [`devops/pi/README.md`](../pi/README.md) — Pi agent configuration, extensions, skills discovery
 - [`submodules/paude/docs/CONFIGURATION.md`](../../submodules/paude/docs/CONFIGURATION.md) — full config reference
