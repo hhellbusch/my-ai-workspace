@@ -13,6 +13,11 @@ Reference material for Red Hat Advanced Cluster Management for Kubernetes. Organ
 How much fleet work lives in RHACM vs Argo CD is a posture choice, not a license choice.
 See [Fleet control spectrum](../fleet-control-spectrum.md) for multiple decision axes and a reconsideration checklist when the solution leans GitOps-heavy.
 
+**Git as source of truth for RHACM:** Hub policies, placements, and integration CRs belong in Git with the same PR and promotion flow as Argo CD apps.
+See [Git-driven RHACM configuration](git-driven-configuration.md).
+
+**Ideas & future work:** [fleet-management-ideas.md](../fleet-management-ideas.md) — framework and doc follow-ups for later review.
+
 ## Directories
 
 ### [`notes/`](./notes/)

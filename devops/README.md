@@ -9,6 +9,8 @@ Practical, runnable examples and references for infrastructure, platform, and op
 Cross-cutting reference for how RHACM and Argo CD divide fleet work — multiple decision axes, not a single product choice.
 
 - **[fleet-control-spectrum.md](fleet-control-spectrum.md)** — Reconciliation authority, compliance posture, lifecycle scope, and a reconsideration checklist for GitOps-heavy designs
+- **[rhacm/git-driven-configuration.md](rhacm/git-driven-configuration.md)** — RHACM hub and policy resources in Git; rebuild-from-scratch posture; delivery via Argo CD
+- **[fleet-management-ideas.md](fleet-management-ideas.md)** — Review log of doc and framework follow-ups (not a committed roadmap)
 
 ---
 

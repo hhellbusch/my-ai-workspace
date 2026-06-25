@@ -301,6 +301,7 @@ manually via workflow dispatch to compare any two refs on-demand.
 | Document                                                 | Audience              | Contents                                      |
 |----------------------------------------------------------|-----------------------|-----------------------------------------------|
 | [Fleet control spectrum](../../../fleet-control-spectrum.md) | Platform architects   | RHACM vs Argo CD tradeoffs; this framework's posture on each axis |
+| [Git-driven RHACM configuration](../../../rhacm/git-driven-configuration.md) | Platform engineers    | RHACM hub/policy resources in Git; delivery via Argo on the hub |
 | This README                                              | Platform engineers    | Architecture, directory structure, conventions |
 | [Guidelines](GUIDELINES.md)                              | All contributors      | Design intent, invariants, cascade contract, extension rules, pitfalls |
 | [Git Workflows](docs/GIT-WORKFLOWS.md)                   | All (esp. newcomers)  | Comparison of trunk-based, branch-per-env, GitHub Flow, GitFlow |

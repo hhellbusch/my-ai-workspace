@@ -35,6 +35,7 @@ The extremes are **design postures** — useful anchors, not procurement choices
 - [Reconsideration triggers](#reconsideration-triggers)
 - [Per-concern placement worksheet](#per-concern-placement-worksheet)
 - [Governance phase: what to add without redesign](#governance-phase-what-to-add-without-redesign)
+- [RHACM configuration in Git](#rhacm-configuration-in-git)
 - [Related reading](#related-reading)
 
 ---
@@ -328,6 +329,19 @@ Non-goals for this slice: duplicating Argo app content in policies; fleet-wide p
 
 ---
 
+## RHACM configuration in Git
+
+Governance policies are not a separate operational channel.
+They belong in the same Git repository and promotion pipeline as ApplicationSets and Helm charts — delivered to the hub by Argo CD, enforced on spokes by RHACM.
+
+That keeps **one source of truth** for rebuilding the fleet: cluster identity, ACM integration, governance, and app delivery all versioned together.
+
+See [Git-driven RHACM configuration](rhacm/git-driven-configuration.md) for directory layout, delivery patterns (static YAML, generated Helm, PolicyGenerator), CI gates, and the gap between today's framework (label sync in Git) and full hub integration under Argo sync.
+
+**Follow-up ideas (framework deferred):** [fleet-management-ideas.md](fleet-management-ideas.md)
+
+---
+
 ## Related reading
 
 | Topic | Location |
@@ -337,6 +351,7 @@ Non-goals for this slice: duplicating Argo app content in policies; fleet-wide p
 | Hub-and-spoke framework | [argo/examples/framework/](argo/examples/framework/) |
 | Framework design invariants | [GUIDELINES.md](argo/examples/framework/GUIDELINES.md) |
 | RHACM → Argo registration | [gitops-cluster-integration/](rhacm/examples/gitops-cluster-integration/) |
+| RHACM hub config in Git | [git-driven-configuration.md](rhacm/git-driven-configuration.md) |
 | ACM + Ansible bridge | [library/automate-ocp-cluster-deployment-rhacm-aap.md](../library/automate-ocp-cluster-deployment-rhacm-aap.md) |
 
 ---

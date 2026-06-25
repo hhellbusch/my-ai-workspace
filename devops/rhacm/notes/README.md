@@ -8,6 +8,7 @@ Informal RHACM quick references and working notes. These are operational referen
 - **[search-setup.md](search-setup.md)** — First-time setup for RHACM Search: enabling the hub service, deploying the per-cluster collector addon, and verifying results
 - **[production-readiness.md](production-readiness.md)** — Production hub checklist: search PVC, cluster backup, infra nodes, availability config, OLM approval, observability, sizing. Audit commands and effort/risk summary table.
 - **[cim-hub-setup.md](cim-hub-setup.md)** — Enable CIM / Assisted Installer on the hub for on-prem cluster provisioning: `AgentServiceConfig`, `Provisioning` CR, corporate proxy, mirror/`osImages`, verification
+- **[../git-driven-configuration.md](../git-driven-configuration.md)** — RHACM hub and governance resources in Git; same PR/promotion flow as Argo CD; rebuild-from-scratch posture
 
 ## Adding New Notes
 
