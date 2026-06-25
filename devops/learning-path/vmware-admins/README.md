@@ -536,6 +536,7 @@ When a mandate genuinely cannot be expressed as a policy template — for exampl
 
 **This repo**
 
+- [Fleet control spectrum](../../fleet-control-spectrum.md) — multiple barometers (reconciliation, compliance, lifecycle, drift) beyond the decision table above
 - [RHACM examples](../../rhacm/examples/) — secret management, cluster import, GitOps integration
 
 **Verification (scenario-based)**

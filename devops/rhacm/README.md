@@ -8,6 +8,11 @@ review:
 
 Reference material for Red Hat Advanced Cluster Management for Kubernetes. Organized into three directories by content type.
 
+## Fleet control spectrum
+
+How much fleet work lives in RHACM vs Argo CD is a posture choice, not a license choice.
+See [Fleet control spectrum](../fleet-control-spectrum.md) for multiple decision axes and a reconsideration checklist when the solution leans GitOps-heavy.
+
 ## Directories
 
 ### [`notes/`](./notes/)

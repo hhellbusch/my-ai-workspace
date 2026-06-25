@@ -4,6 +4,12 @@ Practical, runnable examples and references for infrastructure, platform, and op
 
 **What belongs here:** Runnable examples, troubleshooting guides, lab exercises, and integration patterns for any infrastructure, platform, or operational tool. Not essays or case studies (those live in [`docs/`](../docs/)) and not research workspaces ([`research/`](../research/)). Local LLM inference setup for consumer hardware lives here rather than in docs/ since it's practical reference, not essay.
 
+### Fleet control spectrum
+
+Cross-cutting reference for how RHACM and Argo CD divide fleet work — multiple decision axes, not a single product choice.
+
+- **[fleet-control-spectrum.md](fleet-control-spectrum.md)** — Reconciliation authority, compliance posture, lifecycle scope, and a reconsideration checklist for GitOps-heavy designs
+
 ---
 
 ## Contents
