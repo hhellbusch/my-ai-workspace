@@ -19,7 +19,7 @@ Operational quick references — configurations, requirements, and setup guides 
 | [production-readiness.md](./notes/production-readiness.md) | Production hub checklist: search PVC, cluster backup, infra nodes, availability config, OLM approval, observability, sizing. Audit commands and effort/risk table. |
 | [search-setup.md](./notes/search-setup.md) | First-time Search setup: hub component verification, PVC configuration, per-cluster addon status, tuning reference. |
 | [networking-requirements-2.16.md](./notes/networking-requirements-2.16.md) | Required ports and connectivity between hub and managed clusters, based on ACM 2.16 docs. |
-| [cim-hub-setup.md](./notes/cim-hub-setup.md) | Enable on-prem cluster provisioning: CIM, `AgentServiceConfig`, `Provisioning` CR, audit commands. |
+| [cim-hub-setup.md](./notes/cim-hub-setup.md) | Enable on-prem cluster provisioning: CIM, `AgentServiceConfig`, corporate proxy, mirror config, audit commands. |
 
 ### [`troubleshooting/`](./troubleshooting/)
 

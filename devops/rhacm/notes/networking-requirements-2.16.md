@@ -82,7 +82,8 @@ These apply inside the clusters and matter for NetworkPolicy or host-level firew
 
 ### Assisted Installer / CIM (on-prem cluster provisioning)
 - Install target → hub `assisted-image-service` route: **HTTPS 443** (discovery ISO download, agent registration during install)
-- Hub CIM enablement (`AgentServiceConfig`, storage, routes): see [cim-hub-setup.md](./cim-hub-setup.md)
+- Hub → `mirror.openshift.com` or internal mirror: **HTTPS 443** (RHCOS ISO/rootfs download by `assisted-image-service`)
+- Hub CIM enablement and corporate proxy / mirror: see [cim-hub-setup.md](./cim-hub-setup.md) — [Corporate proxy](./cim-hub-setup.md#corporate-proxy), [Mirror configuration](./cim-hub-setup.md#mirror-configuration)
 
 ### Submariner (optional — cross-cluster pod/service networking)
 
