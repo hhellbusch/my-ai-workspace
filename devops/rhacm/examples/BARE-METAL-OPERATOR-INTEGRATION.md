@@ -19,6 +19,8 @@ Metal³ provides bare metal host management for Kubernetes through:
 
 **Key Benefit**: Treat bare metal servers as declarative Kubernetes resources, just like cloud VMs.
 
+> **Hub prerequisite:** Provisioning new clusters via the Assisted Installer requires CIM to be enabled on the hub (`AgentServiceConfig`, and on on-prem hubs the `Provisioning` CR). Importing an existing cluster does not. See [cim-hub-setup.md](../notes/cim-hub-setup.md) before creating `InfraEnv` / `AgentClusterInstall` CRs.
+
 ---
 
 ## Architecture Components

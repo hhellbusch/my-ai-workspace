@@ -80,6 +80,10 @@ These apply inside the clusters and matter for NetworkPolicy or host-level firew
 ### Bare Metal with Hive Operator (cluster provisioning only)
 - Hub ↔ `libvirt` provisioning host: **Layer 2 or Layer 3 full IP connectivity** (no specific port; only required during initial cluster creation, not upgrades)
 
+### Assisted Installer / CIM (on-prem cluster provisioning)
+- Install target → hub `assisted-image-service` route: **HTTPS 443** (discovery ISO download, agent registration during install)
+- Hub CIM enablement (`AgentServiceConfig`, storage, routes): see [cim-hub-setup.md](./cim-hub-setup.md)
+
 ### Submariner (optional — cross-cluster pod/service networking)
 
 **What is Submariner?**

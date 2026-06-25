@@ -36,6 +36,7 @@ Red Hat Advanced Cluster Management (RHACM) provides end-to-end management for K
 rhacm/examples/
 ├── README.md                          # This file
 ├── BARE-METAL-OPERATOR-INTEGRATION.md # Metal³, Assisted Installer, ZTP reference
+│   # Hub CIM prerequisite: ../notes/cim-hub-setup.md
 ├── ocm-subscription-automation/       # Automate OCM subscription settings post-install
 │   ├── README.md                      # OCM CLI and standalone script documentation
 │   ├── set-ocm-subscription.sh        # Standalone automation script

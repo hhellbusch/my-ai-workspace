@@ -7,6 +7,7 @@ Informal RHACM quick references and working notes. These are operational referen
 - **[networking-requirements-2.16.md](networking-requirements-2.16.md)** — Required network connectivity between the ACM hub cluster and managed clusters (ports, directions, situational requirements) based on ACM 2.16 docs
 - **[search-setup.md](search-setup.md)** — First-time setup for RHACM Search: enabling the hub service, deploying the per-cluster collector addon, and verifying results
 - **[production-readiness.md](production-readiness.md)** — Production hub checklist: search PVC, cluster backup, infra nodes, availability config, OLM approval, observability, sizing. Audit commands and effort/risk summary table.
+- **[cim-hub-setup.md](cim-hub-setup.md)** — Enable CIM / Assisted Installer on the hub for on-prem cluster provisioning: `AgentServiceConfig`, `Provisioning` CR, verification, disconnected notes
 
 ## Adding New Notes
 
