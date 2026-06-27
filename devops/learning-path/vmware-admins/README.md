@@ -755,6 +755,8 @@ Many enterprise, government, and telco OCP deployments run without direct intern
 
 **When you need this:** Nodes in any phase cannot pull images or operator catalogs from the internet. Common scenarios: regulated industries (financial services, defence, healthcare), edge clusters with no guaranteed WAN, or lab environments behind strict egress firewalls. ZTP Phase 6 environments are often fully disconnected — the DevConf.US 2024 talk in Phase 5 demonstrates this end-to-end.
 
+**In-repo working guide:** [Disconnected OCP 4.18.14 + Quay](../../ocp/disconnected-install/working-guide.md) — phased execution path with worksheet and commands (pinned to 4.18.14).
+
 ### Mirror registry
 
 All images your clusters need must be copied to a local registry before they can be used. Red Hat provides `mirror-registry` (a single-node Quay instance) as the recommended local registry for this purpose.

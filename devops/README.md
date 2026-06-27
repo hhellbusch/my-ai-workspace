@@ -53,6 +53,7 @@ Curated multi-topic curricula (may span OpenShift, GitOps, and labs in this repo
 The deepest product section — install, operations, and troubleshooting for enterprise OpenShift.
 
 - **`examples/`** — OVN-Kubernetes networking, install config templates, SNO KVM lab setup
+- **`disconnected-install/`** — Disconnected OCP 4.18.14 with Quay + `oc-mirror`: [working guide](disconnected-install/working-guide.md), [scope](disconnected-install/BRIEF.md)
 - **`troubleshooting/`** — 20 guides covering: API slowness, bare metal inspection timeouts, apiserver cert deadlock, CoreOS networking, CSR management, kube-controller-manager crashloops, KubeVirt VM provisioning, namespace termination, Portworx CSI, worker TLS cert failures, image registry auth, MCP deadlock, RHACM webhook rejection, OAuth healthz, and more
 - **`notes/`** — Quick references: useful `oc` and `kubectl` commands
 - **`install/`** *(gitignored)* — Local install working directory; never committed

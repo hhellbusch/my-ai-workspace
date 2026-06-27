@@ -482,6 +482,7 @@ Full CR workflow: [BARE-METAL-OPERATOR-INTEGRATION.md — Method 1](../examples/
 
 | Doc | Contents |
 |-----|----------|
+| [Disconnected OCP + Quay (4.18.14)](../../ocp/disconnected-install/working-guide.md) | Full mirror stack — Quay, `oc-mirror`, install; this doc covers hub-side assisted mirror only |
 | [production-readiness.md](./production-readiness.md) | Post-install hub hardening (search, backup, sizing) — complementary, not a substitute for CIM |
 | [networking-requirements-2.16.md](./networking-requirements-2.16.md) | Hub ↔ managed cluster ports (import and Day-2 management) |
 | [BARE-METAL-OPERATOR-INTEGRATION.md](../examples/BARE-METAL-OPERATOR-INTEGRATION.md) | InfraEnv, AgentClusterInstall, discovery ISO, troubleshooting |
