@@ -46,31 +46,33 @@ This work is needed now because disconnected operation is a hard prerequisite fo
 - [ ] Documented procedure for incremental mirror update aligned to an OCP upgrade path
 - [ ] Gaps and org-specific choices captured in `Key Decisions` (below) — no silent assumptions
 
-## Target release
+## Target release (example)
 
-| Field | Value |
-|-------|-------|
-| **OCP version** | `4.18.14` |
+| Field | Example |
+|-------|---------|
+| **OCP z-stream** | `4.18.14` |
 | **Update channel** | `stable-4.18` |
-| **Operator catalog** | `registry.redhat.io/redhat/redhat-operator-index:v4.18` |
-| **Mirror policy API** | `ImageDigestMirrorSet` (4.13+; ICSP not needed for greenfield 4.18) |
-| **`oc-mirror` client** | Match 4.18 — use `oc` / `oc-mirror` from the 4.18.14 release payload |
+| **Operator catalog tag** | `v4.18` |
+| **Mirror policy API** | `ImageDigestMirrorSet` (4.13+ greenfield) |
+| **`oc-mirror` client** | Match target OCP z-stream |
 
-Pin mirroring to **exact** z-stream (`4.18.14`), not channel head, unless upgrade-in-place to a newer 4.18.z is an explicit next step.
+Pin mirroring to exact z-streams under change control unless z-stream upgrades are explicitly in scope.
 
 ## Constraints
 
-- Follow [OCP 4.18 disconnected environments](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/disconnected_environments/) documentation
-- Mirror content must match **exact** versions under change control — ad-hoc `latest` tags are unsafe for platform images
-- Regulated / air-gapped environments often require **fixed egress windows** for mirror refresh; design for offline transfer (`oc-mirror` archive workflow) if the mirror host never has internet
-- `oc-mirror` + IDMS over ICSP (OCP 4.13+); ACM assisted install mirror config in [cim-hub-setup.md](../../rhacm/notes/cim-hub-setup.md) if hub provisions clusters
+- Follow [OCP disconnected environments](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/disconnected_environments/) for the target version
+- **mirror-registry 2.x:** SQLite (`--sqliteStorage`); day-2 ops use `systemctl` on installed `quay-*` units — not `quay-postgres`/`quay-redis` (1.x legacy)
+- **mirror-registry:** image blobs on `--quayStorage` (dedicated filesystem, in `fstab`) — not root `/` or default Podman volumes
+- Mirror content must match exact versions — ad-hoc `latest` tags are unsafe for platform images
+- `oc-mirror` v2: use `--v2`; split platform and operator mirror runs; avoid `targetCatalog`/`targetTag` overrides on operator entries
 
 ## Key Decisions
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| Mirror registry product | **TBD** — `mirror-registry` (single-node Quay) vs existing enterprise Quay | `mirror-registry` is Red Hat's install-sized default; enterprise Quay if org already operates it |
-| OCP target version / channel | **4.18.14** / `stable-4.18` | Pins release payload, RHCOS build, and `redhat-operator-index:v4.18` |
+| Mirror registry product | **mirror-registry** (single-node Quay) or enterprise Quay | Red Hat default for bootstrap; enterprise if org already operates it |
+| OCP target version / channel | **per environment** | Drives ImageSetConfiguration channels and catalog tags |
+| Quay image storage | **`--quayStorage` on dedicated LV** | Default Podman volumes land on `/` — common failure mode |
 | Connected vs fully air-gapped mirror host | **TBD** | Air-gapped → `oc-mirror` archive + physical/one-way transfer; connected → direct sync to Quay |
 | Install method | **TBD** — IPI/UPI, assisted/CIM, or static | Determines RHCOS ISO/rootfs hosting and when IDMS must exist |
 | Operators to mirror (initial set) | **TBD** | Mirror minimum for platform (e.g. ACM, GitOps, Virt) — not full catalog |
@@ -101,16 +103,18 @@ flowchart LR
 
 | Phase | Outcome |
 |-------|---------|
-| **0 — Discover** | Install method, network zones, existing Quay, operator shortlist (version locked: 4.18.14) |
-| **1 — Quay** | Registry deployed, TLS + auth, storage, backup hook |
-| **2 — Mirror** | `ImageSetConfiguration` in Git; initial `oc-mirror` run; verify image presence in Quay |
-| **3 — Install** | Disconnected install of first cluster (or lab) using mirrored release + pull secret |
-| **4 — OperatorHub** | IDMS applied; default sources disabled; mirrored catalog; one operator proven |
-| **5 — Operate** | Upgrade/mirror refresh runbook; optional ACM/CIM mirror alignment |
+| **0 — Discover** | Install method, network zones, operator shortlist, storage plan |
+| **1 — Quay** | mirror-registry on dedicated `--quayStorage`; TLS + robot account |
+| **2 — Mirror** | oc-mirror platform then operators; cluster-resources saved |
+| **2b — Validate** | Release info + catalog tags in Quay; artifacts archived |
+| **3 — Install** | Greenfield cluster from mirrored release + IDMS + trust |
+| **4 — OperatorHub** | Default sources off; mirrored catalogs; operators installed |
+| **5 — Operate** | Incremental mirror, z-stream upgrades, Quay GC |
 
 ## Related
 
-- **[Working guide](working-guide.md)** — phased execution path, worksheet, commands, checklists
+- **[Working guide](working-guide.md)** — phased execution path, storage, troubleshooting
+- **[ImageSet examples](imageset-examples.md)** — platform / operators / combined YAML
 - [Disconnected environments appendix](../../learning-path/vmware-admins/README.md#appendix-disconnected-and-air-gapped-environments) — `oc-mirror`, IDMS, OperatorHub pattern
 - [CIM hub mirror configuration](../../rhacm/notes/cim-hub-setup.md) — assisted install `mirrorRegistryRef`, `osImages`
 - [Registry credentials via RHACM](../../rhacm/examples/secret-management/4_registry_credentials/README.md) — pull secret distribution to managed clusters
@@ -119,31 +123,17 @@ flowchart LR
 - Red Hat: [oc-mirror plugin (4.18)](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/disconnected_environments/mirroring-images-for-a-disconnected-installation)
 - Red Hat: [mirror-registry](https://docs.redhat.com/en/documentation/red_hat_quay/latest/html/red_hat_quay_installation_and_configuration_on_openshift_with_mirror_registry/)
 
-## ImageSetConfiguration (starter — extend operator list)
+## ImageSetConfiguration
 
-```yaml
-kind: ImageSetConfiguration
-apiVersion: mirror.openshift.io/v2alpha1
-archiveSize: 4
-mirror:
-  platform:
-    channels:
-      - name: stable-4.18
-        minVersion: 4.18.14
-        maxVersion: 4.18.14
-  operators:
-    - catalog: registry.redhat.io/redhat/redhat-operator-index:v4.18
-      packages: []   # populate in Phase 0 — e.g. advanced-cluster-management, openshift-gitops-operator
-  additionalImages: []   # workload / custom images as identified
-```
+See [imageset-examples.md](imageset-examples.md) for platform-only, operators-only, and combined templates.
 
-After mirror run: apply generated `ImageDigestMirrorSet` from `oc-mirror` output; verify with `oc adm release info quay.example.com/ocp4/openshift-release@sha256:...`.
+After mirror run: apply generated `ImageDigestMirrorSet` from `oc-mirror` output; verify with `oc adm release info` against the mirrored release digest.
 
 ## Open questions (resolve in Phase 0)
 
-1. Upgrade cadence within 4.18.z — pin only `4.18.14`, or mirror a range for in-place z-stream updates?
-2. Is the mirror host ever internet-connected, or strictly air-gapped with archive transfer?
-3. Greenfield Quay (`mirror-registry`) or integrate with existing Quay org/project layout?
-4. Single lab cluster first, or production disconnected install?
-5. Is ACM/CIM hub part of the same disconnected boundary?
-6. Which operators must be available at day-1 vs day-30?
+1. Target z-stream pin vs range for in-place z-stream updates?
+2. Connected mirror host vs fully air-gapped (`file://` archive transfer)?
+3. `mirror-registry` greenfield vs existing enterprise Quay?
+4. Lab first vs production disconnected install?
+5. ACM/CIM hub in the same disconnected boundary?
+6. Day-1 operator list and catalog map ([imageset-examples.md](imageset-examples.md))?

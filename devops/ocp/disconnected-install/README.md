@@ -2,20 +2,30 @@
 
 Stand up OpenShift in environments without reliable outbound internet: Quay mirror registry, `oc-mirror` content sync, and cluster image redirect via `ImageDigestMirrorSet`.
 
-**Target release:** OpenShift **4.18.14** (`stable-4.18`)
+**Example target:** OpenShift `4.18.14` on `stable-4.18` — substitute per environment.
 
 ## Contents
 
 | Document | Purpose |
 |----------|---------|
-| **[working-guide.md](working-guide.md)** | Start here — phased execution, worksheet, commands, checklists |
-| **[BRIEF.md](BRIEF.md)** | Scope, success criteria, architecture, open decisions |
+| **[working-guide.md](working-guide.md)** | Start here — phased execution, storage, mirror-registry, oc-mirror |
+| **[imageset-examples.md](imageset-examples.md)** | Copy-paste ImageSetConfiguration (platform / operators / combined) |
+| **[BRIEF.md](BRIEF.md)** | Scope, success criteria, architecture |
 
 ## Stack at a glance
 
 ```
-oc-mirror (connected or air-gap) → Quay mirror registry → OCP install + IDMS → disconnected OperatorHub
+oc-mirror (connected or air-gap) → Quay → validate → install + IDMS → disconnected OperatorHub
 ```
+
+## Workflow after mirroring
+
+1. **Validate** — release digest, catalog tags, archive `cluster-resources/`
+2. **Install** (greenfield) — `install-config` + `manifests/` + mirrored release image
+3. **OperatorHub** — disable defaults, apply catalogs, `Subscription` per operator
+4. **Operate** — incremental oc-mirror for new operators / z-streams
+
+See [working-guide.md](working-guide.md) Phase 2b onward. Existing clusters skip install — apply Phase 4 only.
 
 ## Related in this repo
 
