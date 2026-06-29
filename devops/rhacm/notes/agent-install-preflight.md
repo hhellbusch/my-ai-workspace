@@ -257,6 +257,7 @@ oc get agentclusterinstall -n <cluster-ns> -o yaml | grep -A5 'type: Requirement
 | Topic | Location |
 |-------|----------|
 | Hub CIM / Assisted Installer setup | [cim-hub-setup.md](./cim-hub-setup.md) |
+| Rootfs download fails during ISO boot | [agent-install-rootfs-ssl-failure.md](../troubleshooting/agent-install-rootfs-ssl-failure.md) |
 | `InfraEnv`, `AgentClusterInstall`, install workflow | [BARE-METAL-OPERATOR-INTEGRATION.md](../examples/BARE-METAL-OPERATOR-INTEGRATION.md) |
 | ClusterCurator CRD examples | [cluster-curator/README.md](../examples/ocm-subscription-automation/cluster-curator/README.md) |
 | Curator vs Ansible-as-provisioner | [CLUSTERCURATOR-ARCHITECTURE-DECISION.md](../examples/ocm-subscription-automation/cluster-curator/CLUSTERCURATOR-ARCHITECTURE-DECISION.md) |

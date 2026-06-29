@@ -473,6 +473,7 @@ Full CR workflow: [BARE-METAL-OPERATOR-INTEGRATION.md — Method 1](../examples/
 | `InfraEnv` stuck, no `ImageCreated` | Assisted image service not healthy |
 | PVCs Pending in `multicluster-engine` | No suitable StorageClass |
 | Agents cannot register after ISO boot | Firewall/DNS — install target cannot reach assisted routes |
+| Rootfs download fails at boot — `curl: (35) Connection reset by peer` | Install network → hub ingress :443; see [agent-install-rootfs-ssl-failure.md](../troubleshooting/agent-install-rootfs-ssl-failure.md) |
 | ISO pull fails on `mirror.openshift.com` | Hub egress blocked; see [Corporate proxy](#corporate-proxy) or [Mirror configuration](#mirror-configuration) |
 | Cluster proxy set but assisted pods have no `HTTP_PROXY` | Expected gap — inject proxy env on assisted pods |
 | HTTPS via proxy fails with cert errors | Missing `trustedCA` on cluster proxy or incomplete CA bundle |
@@ -487,6 +488,7 @@ Full CR workflow: [BARE-METAL-OPERATOR-INTEGRATION.md — Method 1](../examples/
 | [production-readiness.md](./production-readiness.md) | Post-install hub hardening (search, backup, sizing) — complementary, not a substitute for CIM |
 | [networking-requirements-2.16.md](./networking-requirements-2.16.md) | Hub ↔ managed cluster ports (import and Day-2 management) |
 | [BARE-METAL-OPERATOR-INTEGRATION.md](../examples/BARE-METAL-OPERATOR-INTEGRATION.md) | InfraEnv, AgentClusterInstall, discovery ISO, troubleshooting |
+| [agent-install-rootfs-ssl-failure.md](../troubleshooting/agent-install-rootfs-ssl-failure.md) | Install host cannot pull rootfs from `assisted-image-service` during ISO boot |
 | [ACM Clusters — CIM](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.5/html-single/clusters/index#enabling-the-central-infrastructure-management-service) | Upstream reference |
 | [ACM — cluster proxy](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.3/html/clusters/creating-a-cluster-proxy) | Hub and managed-cluster proxy context |
 | [OCP — cluster-wide proxy](https://docs.redhat.com/en/documentation/openshift_container_platform/4.17/html/configuring_network_settings/enable-cluster-wide-proxy) | `Proxy` CR, `trustedCA`, `noProxy` |

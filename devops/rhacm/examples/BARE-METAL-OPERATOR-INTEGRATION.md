@@ -810,13 +810,16 @@ kubectl get agents -n prod-cluster-01 -o yaml | grep -A 20 validationsInfo
 
 #### 3. Assisted Service Not Reachable
 
-**Symptom**: Discovery ISO can't contact assisted service
+**Symptom**: Discovery ISO can't contact assisted service — including early-boot rootfs download failures (`curl: (35) Connection reset by peer` to `assisted-image-service`).
+
+**Dedicated guide:** [agent-install-rootfs-ssl-failure.md](../troubleshooting/agent-install-rootfs-ssl-failure.md) — full diagnostic flow for install-network → hub connectivity.
 
 **Causes**:
 - Firewall blocking required ports (typically 80, 443, 8080, 8090, 6443)
 - DNS resolution failure for assisted service
 - Certificate validation issues
 - Incorrect assisted-service URL in cluster configuration
+- Corporate proxy on install path without `InfraEnv.spec.proxy`
 
 **Debug**:
 ```bash
@@ -828,6 +831,9 @@ oc logs -n multicluster-engine <assisted-service-pod>
 
 # Test connectivity from agent host (adjust port based on your deployment)
 curl -k https://assisted-service.apps.hub.example.com/api/assisted-install/v2/clusters
+
+# Rootfs URL (reproduce early-boot failure)
+curl -v "https://assisted-image-service-multicluster-engine.apps.hub.example.com/boot-artifacts/rootfs?arch=x86_64&version=4.20"
 ```
 
 #### 4. ManagedCluster Not Auto-Imported

@@ -17,6 +17,7 @@ Practical diagnostic guides for Red Hat Advanced Cluster Management operational 
 | [observability-addon-missing.md](./observability-addon-missing.md) | `ManagedClusterAddon` and `ManifestWork` for observability absent on hub — metrics not collected for some clusters |
 | [observability-platform-metrics-missing.md](./observability-platform-metrics-missing.md) | Custom metrics flowing to ACM dashboards but platform metrics (cpu, memory, kubelet) absent — Prometheus PVC full on spoke causing TSDB write failures and alert storm |
 | [search-service-503.md](./search-service-503.md) | Search UI returns 503 / "Error occurred while contacting the search service" — `search-postgres` OOMKill and other search component failures |
+| [agent-install-rootfs-ssl-failure.md](./agent-install-rootfs-ssl-failure.md) | Agent install host fails early boot pulling rootfs from `assisted-image-service` — `curl: (35) SSL_connect: Connection reset by peer` |
 
 ## Common Scenarios
 
@@ -53,6 +54,12 @@ Practical diagnostic guides for Red Hat Advanced Cluster Management operational 
 - `search-postgres` OOMKilled — increase memory limits via the `Search` CR
 - Search service not enabled in MCH, or per-cluster addon not deployed
 - See [search-service-503.md](./search-service-503.md); for first-time setup see [notes/search-setup.md](../notes/search-setup.md)
+
+**Agent install rootfs download fails during ISO boot:**
+- RHCOS live cannot reach `assisted-image-service` on the hub over HTTPS 443
+- `curl: (35) Connection reset by peer` — usually install-network routing, DNS, proxy, or firewall — not hub mirror egress
+- Test `curl` from the provisioning VLAN before re-booting; confirm `InfraEnv` `ImageCreated=True` on hub
+- See [agent-install-rootfs-ssl-failure.md](./agent-install-rootfs-ssl-failure.md)
 
 ## Reference Documentation
 
