@@ -348,6 +348,7 @@ status:
    
 5. AgentClusterInstall validates requirements
    └─> Checks CPU, memory, disk, network
+   └─> See [agent-install-preflight.md](../notes/agent-install-preflight.md) for orchestrating custom preflight and approval gates
    
 6. Assisted Service orchestrates installation
    └─> Deploys OpenShift on validated hosts

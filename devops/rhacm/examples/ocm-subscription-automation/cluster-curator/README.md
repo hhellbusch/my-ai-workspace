@@ -4,6 +4,8 @@
 **Context**: Bare metal OpenShift clusters managed by RHACM  
 **Last Updated**: March 2026
 
+**See also:** [agent-install-preflight.md](../../../notes/agent-install-preflight.md) — where prehooks fit in the full agent install lifecycle (validations, approval gates, external pipelines).
+
 ---
 
 ## What is ClusterCurator?

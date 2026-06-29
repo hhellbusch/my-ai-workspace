@@ -30,6 +30,7 @@ Operational quick references — configurations, requirements, and setup guides 
 | [search-setup.md](./notes/search-setup.md) | First-time Search setup: hub component verification, PVC configuration, per-cluster addon status, tuning reference. |
 | [networking-requirements-2.16.md](./notes/networking-requirements-2.16.md) | Required ports and connectivity between hub and managed clusters, based on ACM 2.16 docs. |
 | [cim-hub-setup.md](./notes/cim-hub-setup.md) | Enable on-prem cluster provisioning: CIM, `AgentServiceConfig`, corporate proxy, mirror config, audit commands. |
+| [agent-install-preflight.md](./notes/agent-install-preflight.md) | Preflight orchestration for agent-based installs: ClusterCurator prehooks, Assisted Installer validation, agent approval gates. |
 
 ### [`troubleshooting/`](./troubleshooting/)
 

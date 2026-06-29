@@ -13,6 +13,7 @@ A working reference for enabling **Central Infrastructure Management (CIM)** on 
 **Not covered here:** Importing an already-installed cluster into ACM — that path does not require `AgentServiceConfig`. See [cluster-import-ansible](../examples/cluster-import-ansible/README.md) and [CLUSTER-IMPORT-AUTOMATION-STRATEGIES.md](../examples/CLUSTER-IMPORT-AUTOMATION-STRATEGIES.md).
 
 **Downstream workflow:** Once CIM is healthy, see [BARE-METAL-OPERATOR-INTEGRATION.md](../examples/BARE-METAL-OPERATOR-INTEGRATION.md) for `InfraEnv`, discovery ISO, and install CRs.
+For pre-install validation and gating, see [agent-install-preflight.md](./agent-install-preflight.md).
 
 ---
 

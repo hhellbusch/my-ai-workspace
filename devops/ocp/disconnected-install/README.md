@@ -31,6 +31,7 @@ See [working-guide.md](working-guide.md) Phase 2b onward. Existing clusters skip
 
 - [Disconnected appendix (learning path)](../../learning-path/vmware-admins/README.md#appendix-disconnected-and-air-gapped-environments) — conceptual overview across fleet phases
 - [CIM hub mirror setup](../../rhacm/notes/cim-hub-setup.md) — assisted install / ACM provisioning
+- [Agent install preflight](../../rhacm/notes/agent-install-preflight.md) — gating ACM agent-based installs before install runs
 - [Image registry auth troubleshooting](../troubleshooting/image-registry-auth/README.md) — TLS and pull-secret patterns
 
 ## Official docs
