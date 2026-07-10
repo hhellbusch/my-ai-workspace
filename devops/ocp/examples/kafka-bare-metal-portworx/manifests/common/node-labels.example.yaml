@@ -1,0 +1,31 @@
+# Node labels for rack-aware Kafka + Portworx on bare-metal OpenShift
+#
+# Bare metal does NOT auto-populate topology.kubernetes.io/zone.
+# Apply labels at node join time (or via BMH / MachineSet metadata).
+#
+# This file is a reference — patch nodes individually or generate from inventory.
+#
+# Example per rack:
+#   oc label node worker-a1.example.com \
+#     topology.kubernetes.io/zone=rack-a \
+#     topology.kubernetes.io/region=dc1 \
+#     px/rack=rack-a \
+#     node-role.kubernetes.io/kafka=
+#
+# Repeat for rack-b, rack-c with distinct zone/rack values.
+#
+# Optional taint (pair with tolerations on Kafka pods):
+#   oc adm taint node worker-a1.example.com dedicated=kafka:NoSchedule
+
+apiVersion: v1
+kind: Node
+metadata:
+  name: worker-a1.example.com
+  labels:
+    # Canonical rack ID — used by Strimzi rack.topologyKey and topologySpreadConstraints
+    topology.kubernetes.io/zone: rack-a
+    topology.kubernetes.io/region: dc1
+    # Portworx failure domain — MUST match zone value for consistent behavior
+    px/rack: rack-a
+    # Dedicated kafka worker pool selector
+    node-role.kubernetes.io/kafka: ""

@@ -1,0 +1,18 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: kafka-worker
+  name: 99-kafka-kernel-tuning
+spec:
+  kernelArguments:
+    - transparent_hugepage=never
+  config:
+    ignition:
+      version: 3.2.0
+      storage:
+        files:
+          - path: /etc/sysctl.d/99-kafka.conf
+            mode: 0644
+            contents:
+              source: data:,vm.swappiness%3D1%0Avm.dirty_background_ratio%3D5%0Avm.dirty_ratio%3D10%0Anet.core.somaxconn%3D4096%0A

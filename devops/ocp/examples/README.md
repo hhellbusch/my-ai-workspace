@@ -18,6 +18,13 @@ Configuration examples and templates for OpenShift clusters.
   - **[Local storage (bootstrap, retired)](sno-kvm-lab/local-storage.md)** — static Local Storage history + host disk attach
   - **Manifests:** [hpp-vdb-mount.yaml](sno-kvm-lab/hpp-vdb-mount.yaml), [hpp.yaml](sno-kvm-lab/hpp.yaml), [storage-smoke-test.yaml](sno-kvm-lab/storage-smoke-test.yaml), [lvms.yaml](sno-kvm-lab/lvms.yaml)
 
+### Data / messaging
+
+- **[Kafka on bare-metal OpenShift with Portworx](kafka-bare-metal-portworx/README.md)** — Rack-aware node labels, Portworx StorageClass, dedicated worker pool, and operator-agnostic examples (Strimzi/AMQ Streams, Confluent, Helm)
+  - **[Common manifests](kafka-bare-metal-portworx/manifests/common/)** — labels, StorageClass, MachineConfigPool, kernel tuning
+  - **[Strimzi / AMQ Streams manifests](kafka-bare-metal-portworx/manifests/strimzi/)** — KafkaNodePool + Kafka CR (KRaft)
+  - **[Confluent example](kafka-bare-metal-portworx/manifests/confluent/)** — scheduling + storage; broker.rack wiring varies by operator version
+
 ### Networking
 
 - **[NetworkAttachmentDefinition (NAD)](network-attachment-definitions/README.md)** - Configure additional networks and VLANs for pods

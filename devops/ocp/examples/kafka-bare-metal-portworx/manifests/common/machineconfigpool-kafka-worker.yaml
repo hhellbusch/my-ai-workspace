@@ -1,0 +1,20 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfigPool
+metadata:
+  name: kafka-worker
+  labels:
+    machineconfiguration.openshift.io/managed-by: ""
+spec:
+  machineConfigSelector:
+    matchExpressions:
+      - key: machineconfiguration.openshift.io/role
+        operator: In
+        values:
+          - worker
+          - kafka-worker
+  nodeSelector:
+    matchLabels:
+      node-role.kubernetes.io/kafka: ""
+  # One node at a time during OS upgrades — respects Kafka PDBs on drain
+  maxUnavailable: 1
+  paused: false

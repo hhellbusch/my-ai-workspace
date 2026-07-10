@@ -12,7 +12,7 @@ description: OpenShift troubleshooting, configuration examples, and quick refere
 - [VLAN Network Segmentation](vlan-network-segmentation.md) — What install-config VLANs become on the cluster, day-2 VLAN management via Multus/NAD
 - [Disconnected install (Quay + oc-mirror)](disconnected-install/) — mirror-registry, oc-mirror v2, ImageSet examples, phased working guide
 - [IBM Z / LinuxONE](ibm-z/) — s390x vocabulary, CIM ABI LPAR, AOP fork notes, ACM vs Metal3 ([index](ibm-z/README.md))
-- [Examples](examples/) — Configuration examples and templates
+- [Examples](examples/) — Configuration examples and templates ([Kafka + Portworx rack-aware](examples/kafka-bare-metal-portworx/README.md))
 - [Notes](notes/) — Informal quick references and command lists
 - [Troubleshooting](troubleshooting/) — Symptom → cause → fix guides
 
