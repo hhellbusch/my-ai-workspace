@@ -1,13 +1,13 @@
-# Confluent Platform Operator — rack-aware scheduling example
+# Confluent Platform Operator — rack-aware scheduling example (illustrative).
 #
-# API group/version varies by Confluent operator release. Verify with:
-#   oc api-resources | grep -i confluent
+# BEFORE APPLY:
+#   oc api-resources | grep -i confluent    # confirm API group/version
+#   oc explain kafka.platform.confluent.io  # field names vary by operator release
 #
 # broker.rack is NOT set via topologyKey like Strimzi. Map node zone → broker.rack
-# using your operator version's configuration mechanism (broker config, env, or init).
-# See Confluent docs for: confluent.platform.rack / broker.rack
+# using your operator version's configuration mechanism.
 #
-# This example focuses on pod scheduling + Portworx storage — wire broker.rack separately.
+# This manifest is NOT guaranteed to apply verbatim — treat as a scheduling/storage template.
 
 apiVersion: platform.confluent.io/v1beta1
 kind: Kafka
@@ -17,7 +17,7 @@ metadata:
 spec:
   replicas: 3
   image:
-  # application: confluentinc/cp-server — set per your mirror/version
+    application: confluentinc/cp-server:7.7.0  # REPLACE: mirror path and supported version
   dataVolumeClaimTemplate:
     accessModes:
       - ReadWriteOnce
@@ -53,7 +53,6 @@ spec:
         labelSelector:
           matchLabels:
             app: prod-kafka
-  # Example broker config surface — field name may differ by operator version
   configOverrides:
     server:
       - default.replication.factor=3
@@ -61,5 +60,5 @@ spec:
       - offsets.topic.replication.factor=3
       - transaction.state.log.replication.factor=3
       - transaction.state.log.min.isr=2
-      # Set per-broker via operator mechanism, e.g. rack ID from downward API:
-      # - broker.rack=$(ZONE_FROM_NODE_LABEL)
+      # Wire broker.rack per operator docs — not a literal value:
+      # - broker.rack=<from topology.kubernetes.io/zone via downward API or init>

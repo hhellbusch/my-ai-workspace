@@ -1,5 +1,12 @@
 # Strimzi / AMQ Streams — Kafka cluster (KRaft)
+#
+# Prerequisites:
+#   - Strimzi operator 0.40+ (KRaft) or AMQ Streams 2.7+ (2.9+ recommended)
+#   - Kafka 3.7.0+ with matching metadataVersion
+#   - KafkaNodePool CRDs applied before this resource
+#
 # Apply after kafkanodepool-*.yaml. Operator must be installed in namespace.
+# Production: add a TLS listener (plain 9092 below is example-only).
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:

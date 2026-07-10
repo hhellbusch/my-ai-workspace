@@ -4,9 +4,11 @@
 
 **Purpose:** Provide copy-paste example manifests and an operator-agnostic layout so Kafka brokers, Portworx volume replicas, and OpenShift node upgrades all respect the same rack (failure-domain) labels.
 
-**Scope:** Example configurations only — placeholders (`rack-a`, `example.com`, sizing). Not validated end-to-end in a specific environment. Adjust replication factors, node counts, and resource limits to match your cluster.
+**Scope:** Example configurations — statically reviewed against Strimzi, Portworx, and OCP docs (see [VALIDATION.md](VALIDATION.md)). Not end-to-end tested without a live cluster. Placeholders (`rack-a`, `example.com`, sizing) must be adjusted to your environment.
 
 **Related:**
+
+- [VALIDATION.md](VALIDATION.md) — static review status, prerequisites matrix, cluster-side checks
 
 - [Portworx CSI crashloop troubleshooting](../../troubleshooting/portworx-csi-crashloop/README.md)
 - [NFS Portworx proxy PVC delays](../../troubleshooting/nfs-portworx-proxy-pvc-slow-ready/README.md)
@@ -17,6 +19,7 @@
 ## On this page
 
 - [Architecture](#architecture)
+- [Prerequisites](#prerequisites)
 - [Identify your Kafka operator](#identify-your-kafka-operator)
 - [Common foundation (all operators)](#common-foundation-all-operators)
 - [Operator-specific examples](#operator-specific-examples)
@@ -25,6 +28,20 @@
 - [OpenShift internals and tenancy](#openshift-internals-and-tenancy)
 - [Verification checklist](#verification-checklist)
 - [Manifest index](#manifest-index)
+
+---
+
+## Prerequisites
+
+| Component | Required for Strimzi manifests | How to verify |
+|-----------|-------------------------------|---------------|
+| Strimzi operator | **0.40+** (KRaft greenfield) | `oc get csv -A \| grep strimzi` |
+| AMQ Streams | **2.7+** (**2.9+** recommended) | `oc get csv -A \| grep amq-streams` |
+| Kafka | **3.7.0+** with matching `metadataVersion` | Strimzi / Red Hat version matrix |
+| Portworx CSI | `pxd.portworx.com` provisioner | `oc get csidriver pxd.portworx.com` |
+| Kafka worker nodes | ≥ 3 nodes, 3 distinct `topology.kubernetes.io/zone` values | See [node labels](#node-labels) |
+
+Full validation checklist: [VALIDATION.md](VALIDATION.md).
 
 ---
 
@@ -141,7 +158,14 @@ Isolate Kafka from generic workload churn. See [`manifests/common/machineconfigp
 
 ### Portworx StorageClass
 
-Cross-rack volume replicas. See [`manifests/common/portworx-storageclass-kafka.yaml`](manifests/common/portworx-storageclass-kafka.yaml).
+Cross-rack volume replicas. Primary file uses the **CSI provisioner** (`pxd.portworx.com`) — recommended for current OpenShift + Portworx installs per [Portworx CSI docs](https://docs.portworx.com/portworx-csi/reference/storage-class).
+
+| File | Provisioner | When to use |
+|------|-------------|-------------|
+| [`portworx-storageclass-kafka.yaml`](manifests/common/portworx-storageclass-kafka.yaml) | `pxd.portworx.com` | Default — CSI clusters |
+| [`portworx-storageclass-kafka-legacy-in-tree.yaml`](manifests/common/portworx-storageclass-kafka-legacy-in-tree.yaml) | `kubernetes.io/portworx-volume` | Legacy in-tree only |
+
+Confirm on cluster: `oc get sc -o custom-columns=NAME:.metadata.name,PROVISIONER:.provisioner | grep -i portworx`
 
 Key parameters:
 
@@ -153,6 +177,8 @@ Key parameters:
 ### Kernel tuning (optional)
 
 Bare-metal brokers benefit from disabling transparent huge pages and lowering swappiness. See [`manifests/common/machineconfig-kafka-tuning.yaml`](manifests/common/machineconfig-kafka-tuning.yaml).
+
+**Ignition version** in the MachineConfig must match your OCP release (`3.4.0` for 4.16+; see file header).
 
 ### Scheduling primitives (all operators)
 
@@ -182,9 +208,15 @@ Files: [`manifests/strimzi/`](manifests/strimzi/)
 
 Strimzi creates a PodDisruptionBudget automatically — verify it after deploy.
 
+The example `kafka-cluster.yaml` uses a **plaintext internal listener** (port 9092) for simplicity. Add TLS listeners before production.
+
 **Apply order:**
 
 ```bash
+# 0. Dry-run against your cluster (recommended)
+oc apply --dry-run=server -f manifests/common/
+oc apply --dry-run=server -f manifests/strimzi/
+
 # 1. Common foundation (labels, MCP, StorageClass) — per node / cluster admin
 oc apply -f manifests/common/portworx-storageclass-kafka.yaml
 oc apply -f manifests/common/machineconfigpool-kafka-worker.yaml
@@ -193,6 +225,8 @@ oc apply -f manifests/common/machineconfig-kafka-tuning.yaml
 # 2. Strimzi operator must already be installed in the target namespace
 oc apply -f manifests/strimzi/
 ```
+
+See [VALIDATION.md](VALIDATION.md) for cluster-side checks after apply.
 
 ### Confluent Platform Operator
 
@@ -215,7 +249,7 @@ Confluent broker rack ID is typically set via:
 broker.rack=<value from node label>
 ```
 
-Use an init container or the operator's configuration surface to map `topology.kubernetes.io/zone` → `broker.rack`. The example CR shows the scheduling side; wire `broker.rack` per your Confluent operator version docs.
+Use an init container or the operator's configuration surface to map `topology.kubernetes.io/zone` → `broker.rack`. The example CR is **illustrative** — confirm API group and fields with `oc api-resources` before apply.
 
 ### Helm / manual deployment
 
@@ -527,17 +561,20 @@ oc exec -n <kafka-namespace> <broker-pod-0> -- \
 ```
 manifests/
 ├── common/
-│   ├── node-labels.example.yaml          # Label commands / reference
-│   ├── portworx-storageclass-kafka.yaml  # repl=3, cross-rack
+│   ├── node-labels.example.yaml
+│   ├── portworx-storageclass-kafka.yaml              # CSI (pxd.portworx.com)
+│   ├── portworx-storageclass-kafka-legacy-in-tree.yaml
 │   ├── machineconfigpool-kafka-worker.yaml
-│   └── machineconfig-kafka-tuning.yaml   # THP, sysctl
+│   └── machineconfig-kafka-tuning.yaml
 ├── strimzi/
 │   ├── kafkanodepool-controllers.yaml
 │   ├── kafkanodepool-brokers.yaml
 │   └── kafka-cluster.yaml
 └── confluent/
-    └── kafka-rack-aware.example.yaml     # Scheduling + storage; wire broker.rack per version
+    └── kafka-rack-aware.example.yaml     # illustrative — verify API before apply
 ```
+
+[VALIDATION.md](VALIDATION.md) — static review status and cluster-side checklist.
 
 ---
 

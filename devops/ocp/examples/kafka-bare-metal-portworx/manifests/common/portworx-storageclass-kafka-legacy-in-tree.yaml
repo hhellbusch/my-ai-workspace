@@ -1,0 +1,18 @@
+# Legacy Portworx in-tree StorageClass — use only if the cluster has no pxd.portworx.com CSI driver.
+# Prefer portworx-storageclass-kafka.yaml (CSI) for new installs.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: portworx-kafka-repl3-legacy
+  annotations:
+    description: "Portworx Kafka volumes — in-tree provisioner (legacy)"
+provisioner: kubernetes.io/portworx-volume
+parameters:
+  repl: "3"
+  io_profile: "db"
+  priority_io: "high"
+  shared: "false"
+  racks: "rack-a,rack-b,rack-c"
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Retain
