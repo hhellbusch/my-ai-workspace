@@ -1,9 +1,11 @@
 # Strimzi / AMQ Streams — Kafka cluster (KRaft)
 #
+# Target: OCP 4.20+ with Streams for Apache Kafka 3.1 (Kafka 4.1, Strimzi 0.48.x)
+# or upstream Strimzi 0.48+.
+#
 # Prerequisites:
-#   - Strimzi operator 0.40+ (KRaft) or AMQ Streams 2.7+ (2.9+ recommended)
-#   - Kafka 3.7.0+ with matching metadataVersion
 #   - KafkaNodePool CRDs applied before this resource
+#   - Operator version must support Kafka 4.1.0 / metadataVersion 4.1-IV1
 #
 # Apply after kafkanodepool-*.yaml. Operator must be installed in namespace.
 # Production: add a TLS listener (plain 9092 below is example-only).
@@ -17,8 +19,8 @@ metadata:
     strimzi.io/kraft: enabled
 spec:
   kafka:
-    version: 3.7.0
-    metadataVersion: 3.7-IV4
+    version: 4.1.0
+    metadataVersion: 4.1-IV1
     listeners:
       - name: internal
         port: 9092

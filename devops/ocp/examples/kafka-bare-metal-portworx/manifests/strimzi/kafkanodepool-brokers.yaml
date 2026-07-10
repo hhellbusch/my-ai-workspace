@@ -1,4 +1,5 @@
 # Strimzi / AMQ Streams — brokers (3 replicas, 3 racks)
+# Target: OCP 4.20+ with Streams for Apache Kafka 3.1 (Kafka 4.1) or Strimzi 0.48+.
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaNodePool
 metadata:

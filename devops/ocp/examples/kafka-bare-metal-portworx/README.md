@@ -4,7 +4,9 @@
 
 **Purpose:** Provide copy-paste example manifests and an operator-agnostic layout so Kafka brokers, Portworx volume replicas, and OpenShift node upgrades all respect the same rack (failure-domain) labels.
 
-**Scope:** Example configurations — statically reviewed against Strimzi, Portworx, and OCP docs (see [VALIDATION.md](VALIDATION.md)). Not end-to-end tested without a live cluster. Placeholders (`rack-a`, `example.com`, sizing) must be adjusted to your environment.
+**Scope:** Example configurations for **OpenShift Container Platform 4.20+**. Statically reviewed against Strimzi, Portworx, and OCP 4.20 docs (see [VALIDATION.md](VALIDATION.md)). Not end-to-end tested without a live cluster. Placeholders (`rack-a`, `example.com`, sizing) must be adjusted to your environment.
+
+**Target platform:** OCP 4.20+ · Ignition 3.5.0 · [Streams for Apache Kafka 3.1](https://docs.redhat.com/en/documentation/red_hat_streams_for_apache_kafka/3.1/) (OCP 4.16–4.20) or Strimzi 0.48.x
 
 **Related:**
 
@@ -33,13 +35,19 @@
 
 ## Prerequisites
 
-| Component | Required for Strimzi manifests | How to verify |
-|-----------|-------------------------------|---------------|
-| Strimzi operator | **0.40+** (KRaft greenfield) | `oc get csv -A \| grep strimzi` |
-| AMQ Streams | **2.7+** (**2.9+** recommended) | `oc get csv -A \| grep amq-streams` |
-| Kafka | **3.7.0+** with matching `metadataVersion` | Strimzi / Red Hat version matrix |
-| Portworx CSI | `pxd.portworx.com` provisioner | `oc get csidriver pxd.portworx.com` |
-| Kafka worker nodes | ≥ 3 nodes, 3 distinct `topology.kubernetes.io/zone` values | See [node labels](#node-labels) |
+Assumes **OpenShift Container Platform 4.20+** (Ignition 3.5.0 MachineConfigs).
+
+| Component | Version for OCP 4.20+ | How to verify |
+|-----------|----------------------|---------------|
+| **Streams for Apache Kafka** (Red Hat) | **3.1** (Strimzi 0.48.x, Kafka 4.1) | `oc get csv -A \| grep -i amq-streams` |
+| **Strimzi** (upstream) | **0.48+** | `oc get csv -A \| grep strimzi` |
+| **Kafka** | **4.1.0** with `metadataVersion: 4.1-IV1` | Operator version matrix / CSV |
+| **Portworx CSI** | `pxd.portworx.com` provisioner | `oc get csidriver pxd.portworx.com` |
+| **Kafka worker nodes** | ≥ 3 nodes, 3 distinct `topology.kubernetes.io/zone` values | See [node labels](#node-labels) |
+
+Red Hat reference: [Streams for Apache Kafka 3.1 — tested on OCP 4.16–4.20](https://docs.redhat.com/en/documentation/red_hat_streams_for_apache_kafka/3.1/html/release_notes_for_streams_for_apache_kafka_3.1_on_openshift/ref-supported-configurations-str).
+
+OCP reference: [Machine configuration — Ignition 3.5.0 (OCP 4.20)](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/machine_configuration/machine-configs-configure).
 
 Full validation checklist: [VALIDATION.md](VALIDATION.md).
 
@@ -178,7 +186,7 @@ Key parameters:
 
 Bare-metal brokers benefit from disabling transparent huge pages and lowering swappiness. See [`manifests/common/machineconfig-kafka-tuning.yaml`](manifests/common/machineconfig-kafka-tuning.yaml).
 
-**Ignition version** in the MachineConfig must match your OCP release (`3.4.0` for 4.16+; see file header).
+Uses **Ignition 3.5.0** per [OCP 4.20 MachineConfig guidance](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/machine_configuration/machine-configs-configure).
 
 ### Scheduling primitives (all operators)
 
