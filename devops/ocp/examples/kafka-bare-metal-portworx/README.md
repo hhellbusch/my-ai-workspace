@@ -22,6 +22,7 @@
 
 - [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
+- [ACM provisioning and inventory](#acm-provisioning-and-inventory)
 - [Identify your Kafka operator](#identify-your-kafka-operator)
 - [Common foundation (all operators)](#common-foundation-all-operators)
 - [Operator-specific examples](#operator-specific-examples)
@@ -50,6 +51,76 @@ Red Hat reference: [Streams for Apache Kafka 3.1 — tested on OCP 4.16–4.20](
 OCP reference: [Machine configuration — Ignition 3.5.0 (OCP 4.20)](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/machine_configuration/machine-configs-configure).
 
 Full validation checklist: [VALIDATION.md](VALIDATION.md).
+
+---
+
+## ACM provisioning and inventory
+
+If the cluster is created via **ACM agent-based install** on bare metal (Ansible inventory → Git → hub `ClusterDeployment` / `InfraEnv` / `AgentClusterInstall`), rack and kafka labels **should be owned in source inventory** and rendered into hub manifests before install — not applied manually after the fact.
+
+### How labels flow (ACM + BMAC)
+
+```mermaid
+flowchart LR
+  INV[Ansible inventory / Git values]
+  GIT[Rendered YAML on hub]
+  BMH[BareMetalHost annotations]
+  AGENT[Agent.spec.nodeLabels]
+  NODE[Kubernetes Node labels]
+
+  INV --> GIT --> BMH --> AGENT --> NODE
+```
+
+The **Baremetal Agent Controller (BMAC)** on the hub copies BMH annotations prefixed with `bmac.agent-install.openshift.io.node-label.` into `Agent.spec.nodeLabels`. Assisted Installer applies those labels to the Node when the host joins the cluster (Day 0).
+
+You can also assign the **MachineConfigPool** at install time:
+
+```yaml
+bmac.agent-install.openshift.io/machine-config-pool: kafka-worker
+```
+
+Examples:
+
+- [`manifests/common/acm-bmh-kafka-host.example.yaml`](manifests/common/acm-bmh-kafka-host.example.yaml) — hub `BareMetalHost` with BMAC annotations
+- [`manifests/common/inventory-kafka-workers.example.yaml`](manifests/common/inventory-kafka-workers.example.yaml) — inventory shape for Ansible/Git rendering
+
+### Inventory fields to model per host
+
+| Inventory field | Becomes node label | Notes |
+|-----------------|-------------------|--------|
+| `rack` | `topology.kubernetes.io/zone` | Strimzi `rack.topologyKey` |
+| `rack` | `px/rack` | Portworx StorageClass `racks:` — **same value** |
+| `region` | `topology.kubernetes.io/region` | Optional |
+| `role: kafka` | `node-role.kubernetes.io/kafka: ""` | MCP `nodeSelector` |
+| — | `node-role.kubernetes.io/worker: ""` | Required worker role |
+
+### Two BMH label mechanisms (do not mix blindly)
+
+| Path | Where | When |
+|------|-------|------|
+| **BMAC annotations** (ACM agent install on hub) | `bmac.agent-install.openshift.io.node-label.*` | Day 0 via Assisted Installer |
+| **`spec.nodeLabels`** (Metal3 on cluster) | `BareMetalHost.spec.nodeLabels` | IPI / spoke Metal3 provisioning |
+
+This workspace's [`baremetal-hosts`](../../argo/examples/framework/apps/baremetal-hosts/) Helm chart uses `spec.nodeLabels` from `values.yaml` — suitable when BMH lives on the **spoke** cluster. For **ACM hub-side** agent install, prefer **BMAC annotations** in rendered hub manifests.
+
+See also: [vgpu-node-labeling.md](../../gpu/vgpu-node-labeling.md) for the same inventory → Git → label pattern (different labels, same GitOps model).
+
+### Taints
+
+`dedicated=kafka:NoSchedule` is not consistently available via BMAC Day-0 annotations. Options:
+
+1. **RHACM ConfigurationPolicy** on the managed cluster (enforce taint + label drift)
+2. **Post-install Ansible** from the same inventory that rendered BMH
+3. **`BareMetalHost.spec.nodeTaints`** if your Metal3 path supports it on the spoke
+
+### Day-2 label changes
+
+Labels set at install via BMAC are **not automatically updated** if inventory changes later. To move a host to a different rack or role:
+
+- Re-provision (disruptive), or
+- RHACM `ConfigurationPolicy` / Ansible to reconcile live nodes, then update Git to match
+
+For kafka rack placement, treat inventory corrections as **infra changes** — changing `topology.kubernetes.io/zone` on a live broker node forces rescheduling and ISR churn.
 
 ---
 
@@ -144,6 +215,10 @@ These apply regardless of Kafka distribution.
 | Upgrade parallelism | `maxUnavailable: 1` on the Kafka worker MachineConfigPool |
 
 ### Node labels
+
+**ACM agent install:** define labels in source inventory; render to hub `BareMetalHost` BMAC annotations — see [ACM provisioning and inventory](#acm-provisioning-and-inventory).
+
+**Post-install / manual** (fallback only):
 
 Label every Kafka-capable worker at join time. See [`manifests/common/node-labels.example.yaml`](manifests/common/node-labels.example.yaml).
 
@@ -569,7 +644,9 @@ oc exec -n <kafka-namespace> <broker-pod-0> -- \
 ```
 manifests/
 ├── common/
-│   ├── node-labels.example.yaml
+│   ├── node-labels.example.yaml              # Post-install oc label reference
+│   ├── acm-bmh-kafka-host.example.yaml       # ACM hub BMH + BMAC annotations
+│   ├── inventory-kafka-workers.example.yaml  # Ansible inventory shape
 │   ├── portworx-storageclass-kafka.yaml              # CSI (pxd.portworx.com)
 │   ├── portworx-storageclass-kafka-legacy-in-tree.yaml
 │   ├── machineconfigpool-kafka-worker.yaml

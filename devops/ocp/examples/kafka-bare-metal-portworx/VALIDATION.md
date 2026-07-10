@@ -136,6 +136,7 @@ oc get mcp kafka-worker -o jsonpath='{.spec.maxUnavailable}{"\n"}'
 4. **Confluent manifest** — Illustrative; confirm `oc api-resources` and operator docs before apply.
 5. **Sizing placeholders** — CPU, memory, and `2Ti` storage are not capacity-planned.
 6. **Portworx backend** — `io_profile` / `priority_io` support depends on Portworx version and underlying array.
+7. **ACM BMAC examples** — Illustrative hub BMH; confirm InfraEnv namespace, BMC credentials, and `infraenvs.agent-install.openshift.io` label match your GitOps layout.
 
 ---
 

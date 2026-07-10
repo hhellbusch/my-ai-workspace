@@ -1,0 +1,43 @@
+# ACM agent-based install — BareMetalHost with Day-0 node labels (hub namespace)
+#
+# When provisioning via ACM / Assisted Installer + Bare Metal Operator (BMAC),
+# node labels are declared on the hub BareMetalHost and synced to Agent.spec.nodeLabels,
+# then applied to the Kubernetes Node when the host joins the cluster.
+#
+# Annotation prefix: bmac.agent-install.openshift.io.node-label.<label-key>
+# MCP assignment:     bmac.agent-install.openshift.io/machine-config-pool
+#
+# Source inventory (Ansible host_vars / Git values) should own rack + role per host;
+# Ansible or Helm renders this manifest — do not hand-edit on the hub.
+#
+# Ref: openshift/assisted-service docs/hive-integration/README.md (BMAC node labels)
+# Workspace pattern: devops/argo/examples/framework/apps/baremetal-hosts/
+
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  name: prod-kafka-worker-a1
+  namespace: prod-kafka  # same namespace as InfraEnv / ClusterDeployment
+  labels:
+    infraenvs.agent-install.openshift.io: prod-kafka-infraenv
+  annotations:
+    inspect.metal3.io: disabled
+    # Assign to kafka-worker MCP at install time (must exist on cluster post-install)
+    bmac.agent-install.openshift.io/machine-config-pool: kafka-worker
+    # Rack / zone — used by Strimzi rack.topologyKey and topologySpreadConstraints
+    bmac.agent-install.openshift.io/node-label.topology.kubernetes.io/zone: rack-a
+    bmac.agent-install.openshift.io/node-label.topology.kubernetes.io/region: dc1
+    # Portworx rack — must match StorageClass racks: parameter
+    bmac.agent-install.openshift.io/node-label.px/rack: rack-a
+    # Dedicated kafka worker role
+    bmac.agent-install.openshift.io/node-label.node-role.kubernetes.io/kafka: ""
+    bmac.agent-install.openshift.io/node-label.node-role.kubernetes.io/worker: ""
+spec:
+  online: true
+  automatedCleaningMode: disabled
+  bootMACAddress: "aa:bb:cc:dd:ee:01"  # from inventory
+  bmc:
+    address: idrac-virtualmedia+https://bmc-a1.example.com/redfish/v1/Systems/System.Embedded.1
+    credentialsName: bmc-prod-kafka-worker-a1
+  rootDeviceHints:
+    deviceName: /dev/nvme0n1  # from inventory
