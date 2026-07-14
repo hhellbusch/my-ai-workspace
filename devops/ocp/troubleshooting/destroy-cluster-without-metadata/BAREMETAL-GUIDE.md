@@ -639,7 +639,9 @@ for node in master-0 master-1 master-2; do
 done
 ```
 
-For **retired hardware still fighting new nodes for the same IP** (partial reuse, not full cluster destroy), see [Bare Metal Stale Node IP Conflict](../bare-metal-stale-node-ip-conflict/README.md).
+For per-node wipe detail (all disks, BMC live ISO, iDRAC erase, BMH cleanup), see [Bare Metal RHCOS Disk Wipe](../bare-metal-rhcos-disk-wipe/README.md).
+
+For **retired hardware still fighting new nodes for the same IP**, see [Bare Metal Stale Node IP Conflict](../bare-metal-stale-node-ip-conflict/README.md).
 
 ---
 
@@ -879,6 +881,7 @@ See also:
 - `QUICK-REFERENCE.md` - Command quick reference
 - `../bare-metal-node-inspection-timeout/` - BMH troubleshooting
 - `../bare-metal-stale-node-ip-conflict/` - Retired hardware fighting new nodes for the same IP
+- `../bare-metal-rhcos-disk-wipe/` - Wipe RHCOS from retired bare-metal hardware
 
 ---
 

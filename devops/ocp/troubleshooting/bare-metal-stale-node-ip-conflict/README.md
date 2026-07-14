@@ -4,7 +4,7 @@
 
 During bare-metal OpenShift lifecycle changes — hardware replacement, control-plane swap, lab reuse, or rack moves — **old servers can remain powered on with the same IP addresses** later assigned to new nodes. Two physical hosts answering for one IP causes ARP/MAC flapping, intermittent API and SSH failures, and TLS errors that look like certificate problems.
 
-This guide helps you **confirm an IP conflict**, **isolate stale hardware**, **remove stale cluster membership**, and **wipe disks** so old RHCOS control-plane state cannot return on power-on.
+This guide helps you **confirm an IP conflict**, **isolate stale hardware**, and **remove stale cluster membership**. Wipe disks on retired hardware per [Bare Metal RHCOS Disk Wipe](../bare-metal-rhcos-disk-wipe/README.md).
 
 ## Symptoms
 
@@ -51,8 +51,8 @@ Different link-layer (MAC) addresses for the same IP across iterations strongly 
 
 - BMC (iDRAC, ILO, Redfish) access to **old and new** hardware — serial numbers are the source of truth, not IP or hostname
 - Inventory mapping: which physical server is **current** vs **retired**
-- SSH install key (for wipe via SSH when you can reach the correct stale host)
-- Optional: `oc` access to remove stale `Node` / `BareMetalHost` objects before wipe
+- SSH install key (optional — to confirm serial via SSH on a reachable host)
+- Optional: `oc` access to remove stale `Node` / `BareMetalHost` objects
 
 ---
 
@@ -137,43 +137,15 @@ oc delete machine <stale-machine-name> -n openshift-machine-api  # if it remains
 
 Deleting the **BareMetalHost** prevents Metal3/Ironic from reprovisioning the old server on next PXE boot.
 
-If the API is unavailable, complete physical isolation and disk wipe first; reconcile API objects after the live control plane is stable.
+If the API is unavailable, complete physical isolation first; reconcile API objects after the live control plane is stable.
 
 ---
 
-## Step 4: Wipe RHCOS / Control-Plane State from Stale Disks
+## Step 4: Wipe Disks on Retired Hardware
 
-Shutdown alone is **not** sufficient. RHCOS on disk includes ignition, ostree, and (on masters) etcd data — the node will rejoin the old control-plane identity on power-on.
+Shutdown alone is **not** sufficient — stale RHCOS can return on power-on. After isolation and cluster object removal, wipe all disks on **retired** serials only.
 
-Wipe **all** block devices on **retired** hardware only. Double-check BMC serial before destructive commands.
-
-### Option A: SSH to the stale host
-
-```bash
-lsblk
-
-for d in $(lsblk -dpno NAME | grep -E '^/dev/sd|^/dev/nvme'); do
-  echo "Wiping $d"
-  sudo wipefs -a "$d"
-  sudo sgdisk --zap-all "$d" 2>/dev/null || true
-  sudo dd if=/dev/zero of="$d" bs=1M count=100 status=progress
-done
-
-# Power off from BMC after wipe — do not leave booting
-```
-
-### Option B: BMC virtual media + live ISO
-
-Use when SSH is untrusted (IP conflict) or unavailable:
-
-1. Power on **one** retired server only; keep current hardware off that IP.
-2. Mount Fedora/RHEL live ISO (or RHCOS live ISO) via BMC virtual media.
-3. Boot to live environment; run the same `wipefs` / `sgdisk` / `dd` loop on every disk.
-4. Power off; set AC recovery to Stay Off.
-
-### Option C: RAID controller / iDRAC storage erase (Dell and similar)
-
-On PERC-backed systems: iDRAC → Storage → delete virtual disks or run cryptographic/secure erase. Also clear foreign configs. Disable internal disk boot in BIOS until hardware is repurposed.
+See **[Bare Metal RHCOS Disk Wipe](../bare-metal-rhcos-disk-wipe/README.md)** for serial confirmation, wipe methods (SSH, BMC live ISO, iDRAC/PERC), and BMC lock-down.
 
 ---
 
@@ -216,7 +188,7 @@ Unexpected extra nodes in `oc get nodes` may indicate stale members still regist
 | Situation | Action |
 |-----------|--------|
 | Intermittent API + changing MAC | Power off stale hardware → isolate network → verify ARP |
-| Stale host identified | BMC off → delete Node/BMH → wipe all disks |
+| Stale host identified | BMC off → delete Node/BMH → [wipe disks](../bare-metal-rhcos-disk-wipe/README.md) |
 | API TLS errors after ARP stable | [API Server Certificate Deadlock](../apiserver-cert-deadlock/README.md) |
 | Full cluster teardown + reuse | [Destroy Cluster Without Metadata](../destroy-cluster-without-metadata/BAREMETAL-GUIDE.md) |
 | Cannot reach API at all | Physical isolation first; localhost kubeconfig on **current** master — [Control Plane Kubeconfigs](../control-plane-kubeconfigs/README.md) |
@@ -226,7 +198,7 @@ Unexpected extra nodes in `oc get nodes` may indicate stale members still regist
 ## Prevention
 
 - **Inventory:** bind BMC serial to role; never reuse IPs without retiring old chassis in writing.
-- **Decommission checklist:** power off → delete BMH → wipe disks → disable switch port → AC Stay Off.
+- **Decommission checklist:** power off → delete BMH → [wipe disks](../bare-metal-rhcos-disk-wipe/README.md) → disable switch port → AC Stay Off.
 - **DHCP/DNS:** remove or quarantine reservations for retired MAC addresses.
 - **Metal3:** keep `BareMetalHost` count aligned with physical machines in service.
 - **Monitoring:** alert on MAC flapping and duplicate ARP for API VIP and master IPs.
@@ -237,6 +209,7 @@ Unexpected extra nodes in `oc get nodes` may indicate stale members still regist
 
 - [Quick Reference](QUICK-REFERENCE.md) – Decision tree and copy-paste commands
 - [Index](INDEX.md) – Navigate by symptom or task
+- [Bare Metal RHCOS Disk Wipe](../bare-metal-rhcos-disk-wipe/README.md) – Wipe retired hardware after isolation
 - [API Server Certificate Deadlock](../apiserver-cert-deadlock/README.md) – After IP stability is confirmed
 - [Control Plane Kubeconfigs](../control-plane-kubeconfigs/README.md) – localhost kubeconfig on current masters
 - [Destroy Cluster Without Metadata — Bare Metal](../destroy-cluster-without-metadata/BAREMETAL-GUIDE.md) – Full cluster teardown

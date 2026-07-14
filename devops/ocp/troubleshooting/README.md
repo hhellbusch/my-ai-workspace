@@ -41,8 +41,12 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
 ### Bare Metal Provisioning Issues
 
 - **[Bare Metal Stale Node IP Conflict](bare-metal-stale-node-ip-conflict/README.md)** - Retired hardware powered on with same IPs as new control-plane nodes (ARP/MAC flapping, misleading TLS errors)
-  - **[Quick Reference](bare-metal-stale-node-ip-conflict/QUICK-REFERENCE.md)** - MAC flapping test, BMC isolation, disk wipe ⚡
-  - [Index](bare-metal-stale-node-ip-conflict/INDEX.md) - Navigate by symptom or decommission task
+  - **[Quick Reference](bare-metal-stale-node-ip-conflict/QUICK-REFERENCE.md)** - MAC flapping test and BMC isolation ⚡
+  - [Index](bare-metal-stale-node-ip-conflict/INDEX.md) - Navigate by symptom or isolation task
+
+- **[Bare Metal RHCOS Disk Wipe](bare-metal-rhcos-disk-wipe/README.md)** - Wipe ignition, ostree, and etcd from retired bare-metal nodes before reuse
+  - **[Quick Reference](bare-metal-rhcos-disk-wipe/QUICK-REFERENCE.md)** - wipefs, BMC live ISO, iDRAC erase ⚡
+  - [Index](bare-metal-rhcos-disk-wipe/INDEX.md) - Decommission and disk wipe tasks
 
 - **[Bare Metal Node Inspection Timeout](bare-metal-node-inspection-timeout/README.md)** - Complete guide for nodes stuck in inspecting state
   - **[Force Re-Inspection](bare-metal-node-inspection-timeout/FORCE-REINSPECTION.md)** - Quick commands to force a stuck node to re-inspect ⚡

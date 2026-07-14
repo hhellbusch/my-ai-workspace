@@ -324,6 +324,7 @@ This creates a directory with cluster state, operator status, and logs. **Learni
 | Pending CSRs and certificate approval | [CSR Management](../csr-management/README.md) |
 | API or web console unreachable from outside; `oc` TLS errors | [API Server Certificate Deadlock](../apiserver-cert-deadlock/README.md) — triage unreachable vs untrusted first |
 | Intermittent API/SSH; MAC flapping; hardware swap | [Bare Metal Stale Node IP Conflict](../bare-metal-stale-node-ip-conflict/README.md) |
+| Retire bare-metal node; wipe disks before reuse | [Bare Metal RHCOS Disk Wipe](../bare-metal-rhcos-disk-wipe/README.md) |
 | TLS/certificate errors to the API (e.g. "certificate signed by unknown authority") | [API Server Certificate Deadlock](../apiserver-cert-deadlock/README.md) |
 | kube-controller-manager crash looping | [kube-controller-manager Crash Loop](../kube-controller-manager-crashloop/README.md) |
 | Bare metal node stuck in inspecting or provisioning | [Bare Metal Node Inspection Timeout](../bare-metal-node-inspection-timeout/README.md) |

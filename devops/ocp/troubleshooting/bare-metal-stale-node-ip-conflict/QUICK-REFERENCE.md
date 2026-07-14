@@ -1,6 +1,6 @@
 # Quick Reference: Bare Metal Stale Node IP Conflict
 
-Fast triage and decommission commands when retired hardware fights new nodes for the same IP.
+Fast triage when retired hardware fights new nodes for the same IP.
 
 ## Decision Tree
 
@@ -14,7 +14,7 @@ API / SSH / console flaky after hardware swap?
 │        └─ connection refused / timeout → network or apiserver down
 │
 ├─ Identify hardware (BMC serial — not IP)
-│  ├─ stale serial → isolate + wipe
+│  ├─ stale serial → isolate
 │  └─ current serial → keep; find other chassis on same IP
 │
 ├─ Isolate stale nodes
@@ -26,8 +26,7 @@ API / SSH / console flaky after hardware swap?
 │  ├─ yes → oc delete node + baremetalhost (stale)
 │  └─ no → physical isolation first
 │
-├─ Wipe all disks on stale hardware only
-│  └─ wipefs + sgdisk --zap-all + dd (or iDRAC storage erase)
+├─ Wipe retired hardware → bare-metal-rhcos-disk-wipe guide
 │
 └─ Power on CURRENT hardware only → re-check ARP + openssl issuer
    └─ TLS still wrong? → apiserver-cert-deadlock guide
@@ -104,22 +103,9 @@ Emergency API access during cert incidents: add `--insecure-skip-tls-verify`.
 
 ---
 
-## 4. Wipe disks (stale hardware only)
+## 4. Wipe disks
 
-```bash
-lsblk
-
-for d in $(lsblk -dpno NAME | grep -E '^/dev/sd|^/dev/nvme'); do
-  echo "Wiping $d"
-  sudo wipefs -a "$d"
-  sudo sgdisk --zap-all "$d" 2>/dev/null || true
-  sudo dd if=/dev/zero of="$d" bs=1M count=100 status=progress
-done
-```
-
-No SSH? Boot BMC virtual media live ISO and run the same loop.
-
-Dell PERC: iDRAC → Storage → secure erase / delete virtual disks.
+→ [Bare Metal RHCOS Disk Wipe](../bare-metal-rhcos-disk-wipe/QUICK-REFERENCE.md)
 
 ---
 
@@ -146,7 +132,7 @@ oc get nodes -o wide
 | API works sometimes, MAC flips | Stale node same IP | Power off stale BMC |
 | `unknown authority` + issuer changes | Two apiservers / two clusters | Isolate stale hardware before cert work |
 | SSH to "master" wrong serial | IP conflict | Use BMC serial; disable stale port |
-| Node returns after "shutdown" | Disk not wiped | wipefs all disks on stale host |
+| Node returns after "shutdown" | Disk not wiped | [Disk wipe guide](../bare-metal-rhcos-disk-wipe/README.md) |
 | Old host reprovisions on PXE | BMH still exists | `oc delete baremetalhost` |
 
 ---
