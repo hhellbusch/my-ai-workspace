@@ -13,6 +13,7 @@
 - [VALIDATION.md](VALIDATION.md) — static review status, prerequisites matrix, cluster-side checks
 
 - [Portworx CSI crashloop troubleshooting](../../troubleshooting/portworx-csi-crashloop/README.md)
+- [NVMe host NQN duplicates](../../troubleshooting/nvme-host-nqn-duplicate/README.md) — prerequisite if using NVMe-oF to FlashArray
 - [NFS Portworx proxy PVC delays](../../troubleshooting/nfs-portworx-proxy-pvc-slow-ready/README.md)
 - [OCP examples index](../README.md)
 

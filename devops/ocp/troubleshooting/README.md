@@ -57,6 +57,8 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
   - [Index](worker-node-tls-cert-failure/INDEX.md) - Guide navigation and quick scenarios
   - Script: `diagnose-tls.sh` - Automated TLS/certificate diagnostic tool
 
+Bare-metal nodes using NVMe-oF block storage: see [NVMe Host NQN Duplicates](nvme-host-nqn-duplicate/README.md) under Storage Issues (prerequisite before CSI install).
+
 ### Certificate Management
 
 - **[CSR Management](csr-management/README.md)** - Complete guide for managing Certificate Signing Requests
@@ -107,6 +109,11 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
   - Includes manual step-by-step for understanding the fix
 
 ### Storage Issues
+
+- **[NVMe Host NQN Duplicates](nvme-host-nqn-duplicate/README.md)** - Unique per-node host NQN/hostid for NVMe-oF storage on bare-metal OCP (Dell CSM, Portworx/Pure, HPE CSI)
+  - **[Quick Reference](nvme-host-nqn-duplicate/QUICK-REFERENCE.md)** - Verify, apply MachineConfig, confirm uniqueness ⚡
+  - [Index](nvme-host-nqn-duplicate/INDEX.md) - Navigate by task
+  - YAML: [99-worker-nvme-host-identity.yaml](nvme-host-nqn-duplicate/99-worker-nvme-host-identity.yaml) - systemd oneshot fix (not Ignition static file)
 
 - **[Portworx CSI Pod CrashLoopBackOff](portworx-csi-crashloop/README.md)** - Complete guide for troubleshooting px-csi-ext pod crashes
   - **[Quick Start](portworx-csi-crashloop/QUICKSTART.md)** - Fast fixes for common CSI issues ⚡

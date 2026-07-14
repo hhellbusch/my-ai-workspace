@@ -67,7 +67,7 @@ The deepest product section — install, operations, and troubleshooting for ent
 - **`examples/`** — OVN-Kubernetes networking, install config templates, SNO KVM lab setup
 - **`disconnected-install/`** — Disconnected OCP 4.18.14 with Quay + `oc-mirror`: [working guide](ocp/disconnected-install/working-guide.md), [scope](ocp/disconnected-install/BRIEF.md)
 - **`ibm-z/`** — OpenShift on IBM Z and LinuxONE (s390x): mental model, provisioning/automation (ACM, ABI, Metal3), external references ([index](ocp/ibm-z/README.md))
-- **`troubleshooting/`** — 20 guides covering: API slowness, bare metal inspection timeouts, apiserver cert deadlock, CoreOS networking, CSR management, kube-controller-manager crashloops, KubeVirt VM provisioning, namespace termination, Portworx CSI, worker TLS cert failures, image registry auth, MCP deadlock, RHACM webhook rejection, OAuth healthz, and more
+- **`troubleshooting/`** — 20+ guides covering: API slowness, bare metal inspection timeouts, apiserver cert deadlock, CoreOS networking, CSR management, kube-controller-manager crashloops, KubeVirt VM provisioning, namespace termination, NVMe host NQN duplicates, Portworx CSI, worker TLS cert failures, image registry auth, MCP deadlock, RHACM webhook rejection, OAuth healthz, and more
 - **`notes/`** — Quick references: useful `oc` and `kubectl` commands
 - **`install/`** *(gitignored)* — Local install working directory; never committed
 
