@@ -16,7 +16,7 @@ On RHCOS, that identity normally lives in:
 Every worker then looks like the same initiator.
 Storage CSI drivers, multipath, and array-side host objects break — sometimes with an explicit duplicate-NQN error.
 
-This guide covers verification, the correct MachineConfig fix, an anti-pattern to avoid, and array registration notes for Dell and Portworx environments.
+This guide covers verification, the correct MachineConfig fix, how vendor proposals compare, an anti-pattern to avoid, and array registration notes for Dell and Portworx environments.
 
 ## When to Use This Guide
 
@@ -154,6 +154,103 @@ Confirm uniqueness across nodes before installing or restarting storage CSI driv
 
 ---
 
+## Provider fixes compared
+
+Storage vendors and the OpenShift ecosystem have converged on the same underlying fix: **run `nvme gen-hostnqn` on each node at boot via a MachineConfig systemd unit**.
+Differences are in whether they also set `hostid`, how many systemd units they use, and whether regeneration is unconditional or gated on a known-bad value.
+
+The manifest in this directory — [99-worker-nvme-host-identity.yaml](99-worker-nvme-host-identity.yaml) — synthesizes vendor guidance with two additions most vendors omit: **paired `hostid` generation** and **explicit boot ordering** (`Before=network-online.target`).
+
+### Summary
+
+| Source | Reference | Mechanism | Sets `hostnqn` | Sets `hostid` | Systemd units | Regeneration |
+|--------|-----------|-----------|----------------|---------------|---------------|--------------|
+| **This repo** | [99-worker-nvme-host-identity.yaml](99-worker-nvme-host-identity.yaml) | MC + systemd oneshot | `nvme gen-hostnqn` | `dmidecode -s system-uuid` | 1 combined | Every boot (idempotent on stable DMI) |
+| **Dell CSM** | [PowerMax / PowerStore / PowerFlex OpenShift install](https://dell.github.io/csm-docs/docs/getting-started/installation/openshift/powermax/csmoperator/) | MC + systemd oneshot | `nvme gen-hostnqn` | No | 1 (`custom-coreos-generate-nvme-hostnqn`) | Every boot |
+| **HPE CSI** | [Duplicate NQNs on OpenShift](https://scod.hpedev.io/csi_driver/partners/redhat_openshift/index.html) | MC + systemd oneshot | `nvme gen-hostnqn` | `dmidecode -s system-uuid` | 2 separate | Every boot |
+| **Pure / Portworx** | [DinoCloud OCP + NVMe-TCP + FlashArray](https://dinocloud.net/2026/02/16/beginners-guide-to-openshift-virtualization-with-nvme-tcp-pure-flasharray/) | MC + systemd oneshot | `nvme gen-hostnqn` | Optional (`random/uuid` if empty) | 1 conditional | Only if value matches known duplicate |
+| **Red Hat** | [KCS 7073579](https://access.redhat.com/solutions/7073579), [RHEL Bug 2049991](https://bugzilla.redhat.com/show_bug.cgi?id=2049991) | Installer / dracut (desired state) | `nvme gen-hostnqn` at install | DMI UUID at install | N/A (not an MC workaround) | Should happen at install; MC is a gap-fill |
+| **Harvester** | [#6911](https://github.com/harvester/harvester/issues/6911) | Image build + first-boot scriptlets | RPM postinstall / boot script | Same | N/A (fix the image) | Once at first boot |
+| **Peer anti-pattern** | Field suggestion (do not use) | Ignition `storage.files` | Literal `$(cat ...)` string | No | N/A | Never executes |
+
+### Dell CSM
+
+Dell documents the duplicate-NQN problem across PowerMax, PowerStore, and PowerFlex OpenShift install guides.
+Their MachineConfig uses a single systemd unit that runs:
+
+```bash
+/usr/sbin/nvme gen-hostnqn > /etc/nvme/hostnqn
+```
+
+**Compared to this repo:** same `hostnqn` command and MC pattern.
+Dell does **not** set `/etc/nvme/hostid` in the same unit.
+For Dell CSM that is often sufficient because CSM registers hosts by NQN, but setting `hostid` as well is safer for general NVMe-oF reconnect behavior.
+Dell bundles additional MC fragments in the same guides (udev multipath policy, `ctrl_loss_tmo` rules) — see their docs for the full NVMe/TCP prep stack, not just NQN.
+
+### HPE CSI
+
+HPE documents the failure mode explicitly — CSI init container errors with `Duplicate NQN ... will cause data corruption` — and ships hosted manifests:
+
+- Worker: `https://scod.hpedev.io/csi_driver/partners/redhat_openshift/examples/nqns/machine-config.yaml`
+- Converged (master pool): `.../machine-config-converged.yaml`
+
+Their worker manifest uses **two** systemd units:
+
+```bash
+nvme gen-hostnqn > /etc/nvme/hostnqn
+dmidecode -s system-uuid > /etc/nvme/hostid
+```
+
+**Compared to this repo:** same commands for both files.
+HPE splits them into separate units (easier to see which step failed); we combine them in one `ExecStart` (atomic update, fewer moving parts).
+HPE uses `ignition.version: 3.2.0` and does not set `Before=network-online.target`.
+HPE ships a ready-made **master** variant for converged clusters; we document duplicating the MC with `role: master` instead.
+
+**When to prefer HPE's YAML:** HPE CSI on OpenShift, especially if you want the upstream-hosted manifest and separate unit names matching HPE support docs.
+
+### Pure Storage / Portworx (community)
+
+The [DinoCloud FlashArray + OCP guide](https://dinocloud.net/2026/02/16/beginners-guide-to-openshift-virtualization-with-nvme-tcp-pure-flasharray/) embeds NQN fix inside a larger `99-px-nvme-optimization` MachineConfig (multipath, udev, nmstate).
+Their NQN unit is **conditional** — it regenerates only when `hostnqn` equals a specific known duplicate:
+
+```bash
+if [ "$(cat /etc/nvme/hostnqn)" = "nqn.2014-08.org.nvmexpress:uuid:4957c8e0-..." ]; then
+  nvme gen-hostnqn > /etc/nvme/hostnqn
+fi
+```
+
+The author later recommends also handling `hostid`, optionally with `cat /proc/sys/kernel/random/uuid` when empty.
+
+**Compared to this repo:** conditional regen is safer if you already registered hosts on the array under the *old* NQN and want to avoid changing identity on every boot until you're sure — but it **fails silently** if the baked-in duplicate is a different UUID than the one hardcoded in the `if` test.
+Our manifest regenerates unconditionally, which is simpler and correct when the duplicate value is unknown or varies by image version.
+Prefer conditional logic only when you know the exact bad NQN and have a migration plan for array-side host objects.
+
+### Red Hat / Harvester (root cause, not workaround)
+
+These references explain **why** the duplicate exists rather than shipping a customer MachineConfig:
+
+- **RHEL Bug 2049991** — installer should run `nvme gen-hostnqn` and copy `{hostnqn,hostid}` into the installed rootfs before dracut rebuild; relevant for NVMe boot-from-SAN.
+- **KCS 7073579** — acknowledges duplicate host NQNs on OCP nodes (subscriber article).
+- **Harvester #6911** — static files baked into the ISO rootfs; fix by removing them at image build and regenerating at first boot.
+
+**Compared to this repo:** our MachineConfig is a **day-2 gap-fill** when the platform image still ships duplicates.
+Harvester/RHEL fixes address the image pipeline; until RHCOS does the same, the MC workaround remains necessary.
+
+### Why this repo's manifest
+
+| Choice | Rationale |
+|--------|-----------|
+| Combined systemd unit | Same outcome as HPE's two units; one place to read the full identity setup |
+| Both `hostnqn` and `hostid` | HPE and NVMe-oF best practice; Dell omits `hostid` but it costs little to set |
+| Unconditional regen | Handles any baked-in duplicate, not just one known UUID (DinoCloud approach) |
+| `Before=network-online.target` | Identity ready before storage network and CSI connect attempts |
+| `/usr/sbin/nvme` path | Explicit path; works even if `$PATH` differs in the systemd service context |
+
+Use vendor-hosted YAML (HPE) or Dell's exact unit name if your support contract expects matching config.
+Functionally, all systemd-based approaches listed above produce the same per-node NQN on bare metal when DMI UUID is valid.
+
+---
+
 ## Anti-pattern: Ignition Static File with Shell
 
 A common peer suggestion looks like this:
@@ -253,9 +350,13 @@ Harvester fixed all three (`machine-id`, iSCSI initiator, NVMe host files) toget
 
 ## External References
 
-- [Dell CSM — PowerMax on OpenShift](https://dell.github.io/csm-docs/docs/getting-started/installation/openshift/powermax/csmoperator/) — documents duplicate NQN problem and MachineConfig fix
+Vendor and platform docs cited in [Provider fixes compared](#provider-fixes-compared):
+
+- [Dell CSM — PowerMax on OpenShift](https://dell.github.io/csm-docs/docs/getting-started/installation/openshift/powermax/csmoperator/) — duplicate NQN problem; `hostnqn`-only MachineConfig
 - [Dell CSM — PowerStore NVMe requirements](https://dell.github.io/csm-docs/v3/deployment/csmoperator/drivers/powerstore/)
-- [HPE CSI — Duplicate NQNs on OpenShift](https://scod.hpedev.io/csi_driver/partners/redhat_openshift/index.html)
+- [HPE CSI — Duplicate NQNs on OpenShift](https://scod.hpedev.io/csi_driver/partners/redhat_openshift/index.html) — hosted worker and converged MachineConfig YAML
+- [DinoCloud — OCP + NVMe-TCP + Pure FlashArray](https://dinocloud.net/2026/02/16/beginners-guide-to-openshift-virtualization-with-nvme-tcp-pure-flasharray/) — conditional NQN regen inside broader storage MC
+- [Portworx FlashArray prep](https://docs.portworx.com/portworx-csi/install/prepare/flash-array) — Portworx host registration (assumes unique NQNs)
 - [Red Hat KCS 7073579](https://access.redhat.com/solutions/7073579) — NVMe Host NQN not generated as expected for OCP nodes (subscriber)
 - [RHEL Bug 2049991](https://bugzilla.redhat.com/show_bug.cgi?id=2049991) — installer / dracut hostnqn generation
 - [Harvester #6911](https://github.com/harvester/harvester/issues/6911) — root-cause explanation for RHCOS-derived images

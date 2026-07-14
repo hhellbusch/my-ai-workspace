@@ -7,6 +7,7 @@
 | Check if nodes have duplicate NQNs | [QUICK-REFERENCE § Verify](QUICK-REFERENCE.md#1-verify-per-node) |
 | Apply the MachineConfig fix | [QUICK-REFERENCE § Apply](QUICK-REFERENCE.md#2-apply-fix) |
 | Understand why Ignition `data:,$(cat...)` fails | [README — Anti-pattern](README.md#anti-pattern-ignition-static-file-with-shell) |
+| Compare Dell / HPE / Pure fixes to ours | [README — Provider fixes compared](README.md#provider-fixes-compared) |
 | Full context and array registration | [README](README.md) |
 
 ## By Task
@@ -17,6 +18,7 @@
 | Symptom → duplicate NQN CSI error | [README — Symptoms](README.md#symptoms) |
 | Why RHCOS duplicates these files | [README — Root Cause](README.md#root-cause) |
 | MachineConfig manifest | [99-worker-nvme-host-identity.yaml](99-worker-nvme-host-identity.yaml) |
+| Dell / HPE / Pure vs this repo | [README — Provider fixes compared](README.md#provider-fixes-compared) |
 | Dell CSM / Portworx registration | [README — Step 3](README.md#step-3-register-hosts-on-the-storage-array) |
 | Pre-install vs post-install timing | [README — Timing](README.md#timing-pre-install-vs-post-install) |
 | iSCSI initiator same bug class | [README — iSCSI](README.md#iscsi-initiator-same-class-of-bug) |
