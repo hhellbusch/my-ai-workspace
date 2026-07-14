@@ -639,6 +639,8 @@ for node in master-0 master-1 master-2; do
 done
 ```
 
+For **retired hardware still fighting new nodes for the same IP** (partial reuse, not full cluster destroy), see [Bare Metal Stale Node IP Conflict](../bare-metal-stale-node-ip-conflict/README.md).
+
 ---
 
 ### Step 9: Clean Up Installation Artifacts
@@ -876,6 +878,7 @@ See also:
 - `README.md` - General overview and cloud providers
 - `QUICK-REFERENCE.md` - Command quick reference
 - `../bare-metal-node-inspection-timeout/` - BMH troubleshooting
+- `../bare-metal-stale-node-ip-conflict/` - Retired hardware fighting new nodes for the same IP
 
 ---
 

@@ -322,6 +322,7 @@ This creates a directory with cluster state, operator status, and logs. **Learni
 |-----------|----------------|
 | You need the exact install timeline and monitoring commands | [Control Plane Kubeconfigs / Installation Monitoring](../control-plane-kubeconfigs/INSTALL-MONITORING.md) |
 | Pending CSRs and certificate approval | [CSR Management](../csr-management/README.md) |
+| Intermittent API/SSH; MAC flapping; hardware swap | [Bare Metal Stale Node IP Conflict](../bare-metal-stale-node-ip-conflict/README.md) |
 | TLS/certificate errors to the API (e.g. "certificate signed by unknown authority") | [API Server Certificate Deadlock](../apiserver-cert-deadlock/README.md) |
 | kube-controller-manager crash looping | [kube-controller-manager Crash Loop](../kube-controller-manager-crashloop/README.md) |
 | Bare metal node stuck in inspecting or provisioning | [Bare Metal Node Inspection Timeout](../bare-metal-node-inspection-timeout/README.md) |
