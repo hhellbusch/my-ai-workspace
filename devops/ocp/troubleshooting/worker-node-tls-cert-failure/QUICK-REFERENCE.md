@@ -217,7 +217,7 @@ fi
 | Error Message | Root Cause | Quick Fix |
 |---------------|------------|-----------|
 | `x509: certificate has expired` | MCS cert expired | Fix 1 |
-| `x509: certificate signed by unknown authority` | CA bundle mismatch | See README Solution 2 |
+| `x509: certificate signed by unknown authority` | CA bundle mismatch (MCS :22623 / ignition) | See README Solution 2. **Not** [API serving cert deadlock](../apiserver-cert-deadlock/README.md) unless error targets `:6443` |
 | `connection refused` | MCS not running or firewall | Check pods, HAProxy |
 | `connection timeout` | Network issue | Check VIP, routing |
 | `dial tcp: lookup ... no such host` | DNS issue | Check cluster DNS |

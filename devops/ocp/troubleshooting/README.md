@@ -25,7 +25,8 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
   - Script: `diagnostic-script.sh` - Automated performance diagnostic tool
 
 - **[API Server Certificate Deadlock](apiserver-cert-deadlock/README.md)** - Resolve bad apiserver cert when the operator cannot apply a new cert
-  - [Quick Reference](apiserver-cert-deadlock/QUICK-REFERENCE.md) - Commands to get access, replace cert, and restart API/operator ⚡
+  - **[Quick Reference](apiserver-cert-deadlock/QUICK-REFERENCE.md)** - Triage decision tree, worker-hop access, and remediation commands ⚡
+  - [Index](apiserver-cert-deadlock/INDEX.md) - Navigate by symptom, access constraint, or fix step
 
 - **[Control Plane Kubeconfigs](control-plane-kubeconfigs/README.md)** - Complete guide to kubeconfigs on CoreOS control plane nodes
   - [Quick Reference](control-plane-kubeconfigs/QUICK-REFERENCE.md) - Copy-paste commands for monitoring cluster operators
@@ -248,7 +249,7 @@ Planned troubleshooting guides:
 - [ ] Operator degradation patterns
 - [ ] Upgrade stuck/failed scenarios
 - [ ] Bare metal provisioning failures (post-inspection)
-- [ ] Certificate rotation issues
+- [ ] Certificate rotation issues — partial: [API Server Certificate Deadlock](apiserver-cert-deadlock/README.md)
 - [ ] Router/Ingress problems
 - [x] KubeVirt VM provisioning issues - See [KubeVirt VM Stuck in Provisioning](kubevirt-vm-stuck-provisioning/README.md)
 - [x] Namespace stuck in Terminating state - See [Namespace Stuck in Terminating State](namespace-stuck-terminating/README.md)

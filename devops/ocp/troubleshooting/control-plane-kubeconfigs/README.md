@@ -231,6 +231,7 @@ export KUBECONFIG=/etc/kubernetes/static-pod-resources/${LATEST_APISERVER}/secre
 
 - [Cluster Operator Monitoring](./QUICK-REFERENCE.md)
 - [Common Installation Issues](./INSTALL-MONITORING.md)
+- [API Server Certificate Deadlock](../apiserver-cert-deadlock/README.md) – When localhost kubeconfig is needed to break a TLS trust deadlock
 - [API Server Troubleshooting](../kube-controller-manager-crashloop/)
 
 ---
