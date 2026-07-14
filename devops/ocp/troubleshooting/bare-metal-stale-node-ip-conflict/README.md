@@ -210,6 +210,7 @@ Unexpected extra nodes in `oc get nodes` may indicate stale members still regist
 - [Quick Reference](QUICK-REFERENCE.md) – Decision tree and copy-paste commands
 - [Index](INDEX.md) – Navigate by symptom or task
 - [Bare Metal RHCOS Disk Wipe](../bare-metal-rhcos-disk-wipe/README.md) – Wipe retired hardware after isolation
+- [RHACM Bare Metal Cluster Destroy](../../../rhacm/notes/bare-metal-cluster-destroy.md) – MCE destroy vs detach; automation limits
 - [API Server Certificate Deadlock](../apiserver-cert-deadlock/README.md) – After IP stability is confirmed
 - [Control Plane Kubeconfigs](../control-plane-kubeconfigs/README.md) – localhost kubeconfig on current masters
 - [Destroy Cluster Without Metadata — Bare Metal](../destroy-cluster-without-metadata/BAREMETAL-GUIDE.md) – Full cluster teardown

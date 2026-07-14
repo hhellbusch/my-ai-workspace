@@ -247,7 +247,7 @@ oc get agentclusterinstall -n <cluster-ns> -o yaml | grep -A5 'type: Requirement
 
 - **No generic preflight CR** — custom logic requires AAP/ClusterCurator, external pipeline, or approval automation.
 - **Prehook timing** — runs before provisioning activates; not a substitute for post-ISO host review.
-- **ClusterCurator scope** — install and upgrade hooks are the primary supported lifecycle integrations; validate destroy/scale needs against your ACM version.
+- **ClusterCurator scope** — install and upgrade hooks are the primary supported lifecycle integrations; validate destroy/scale needs against your ACM version. See [bare-metal-cluster-destroy.md](./bare-metal-cluster-destroy.md) for destroy + disk wipe on bare metal.
 - **Posthook timing on upgrades** — some upgrade posthooks have fired before all ClusterOperators finished updating (Red Hat KB [6992335](https://access.redhat.com/solutions/6992335)); design post-install validation accordingly.
 
 ---
@@ -257,6 +257,7 @@ oc get agentclusterinstall -n <cluster-ns> -o yaml | grep -A5 'type: Requirement
 | Topic | Location |
 |-------|----------|
 | Hub CIM / Assisted Installer setup | [cim-hub-setup.md](./cim-hub-setup.md) |
+| Bare-metal firewall ports and blocked-port symptoms | [acm-bare-metal-network-requirements.md](./acm-bare-metal-network-requirements.md) |
 | Rootfs download fails during ISO boot | [agent-install-rootfs-ssl-failure.md](../troubleshooting/agent-install-rootfs-ssl-failure.md) |
 | `InfraEnv`, `AgentClusterInstall`, install workflow | [BARE-METAL-OPERATOR-INTEGRATION.md](../examples/BARE-METAL-OPERATOR-INTEGRATION.md) |
 | ClusterCurator CRD examples | [cluster-curator/README.md](../examples/ocm-subscription-automation/cluster-curator/README.md) |

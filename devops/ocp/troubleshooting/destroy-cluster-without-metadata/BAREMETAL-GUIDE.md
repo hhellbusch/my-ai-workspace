@@ -641,6 +641,8 @@ done
 
 For per-node wipe detail (all disks, BMC live ISO, iDRAC erase, BMH cleanup), see [Bare Metal RHCOS Disk Wipe](../bare-metal-rhcos-disk-wipe/README.md).
 
+For **RHACM/MCE destroy** on bare-metal clusters (what destroy vs detach covers, and why disk wipe is separate), see [RHACM bare metal cluster destroy](../../rhacm/notes/bare-metal-cluster-destroy.md).
+
 For **retired hardware still fighting new nodes for the same IP**, see [Bare Metal Stale Node IP Conflict](../bare-metal-stale-node-ip-conflict/README.md).
 
 ---

@@ -31,8 +31,10 @@ Operational quick references — configurations, requirements, and setup guides 
 | [production-readiness.md](./notes/production-readiness.md) | Production hub checklist: search PVC, cluster backup, infra nodes, availability config, OLM approval, observability, sizing. Audit commands and effort/risk table. |
 | [search-setup.md](./notes/search-setup.md) | First-time Search setup: hub component verification, PVC configuration, per-cluster addon status, tuning reference. |
 | [networking-requirements-2.16.md](./notes/networking-requirements-2.16.md) | Required ports and connectivity between hub and managed clusters, based on ACM 2.16 docs. |
+| [acm-bare-metal-network-requirements.md](./notes/acm-bare-metal-network-requirements.md) | Bare-metal CIM install ports by phase with blocked-port symptoms; generic firewall templates (no environment-specific hosts). |
 | [cim-hub-setup.md](./notes/cim-hub-setup.md) | Enable on-prem cluster provisioning: CIM, `AgentServiceConfig`, corporate proxy, mirror config, audit commands. |
 | [agent-install-preflight.md](./notes/agent-install-preflight.md) | Preflight orchestration for agent-based installs: ClusterCurator prehooks, Assisted Installer validation, agent approval gates. |
+| [bare-metal-cluster-destroy.md](./notes/bare-metal-cluster-destroy.md) | RHACM/MCE destroy vs detach on bare metal; BMO deprovision vs disk wipe; ClusterCurator destroy hooks. |
 
 ### [`troubleshooting/`](./troubleshooting/)
 

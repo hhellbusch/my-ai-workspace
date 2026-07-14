@@ -12,7 +12,8 @@ This guide covers **safe identification**, **cluster object removal**, **disk wi
 |----------|----------------|
 | Retired control-plane or worker hardware being removed from service | Yes |
 | Old nodes powered on after IP reuse on new hardware | Yes — after [isolating stale hosts](../bare-metal-stale-node-ip-conflict/README.md) |
-| Full cluster destroy and hardware reuse | Start with [Destroy Cluster Without Metadata — Bare Metal](../destroy-cluster-without-metadata/BAREMETAL-GUIDE.md); use this for per-node disk wipe detail |
+| Full cluster destroy via RHACM/MCE | Start with [RHACM bare metal cluster destroy](../../../rhacm/notes/bare-metal-cluster-destroy.md); use this guide for disk wipe |
+| Full cluster destroy without hub metadata | [Destroy Cluster Without Metadata — Bare Metal](../destroy-cluster-without-metadata/BAREMETAL-GUIDE.md); use this for per-node disk wipe detail |
 | Node stuck in provisioning | No — see [Bare Metal Node Inspection Timeout](../bare-metal-node-inspection-timeout/README.md) |
 
 ---
@@ -170,6 +171,7 @@ lsblk  # from live ISO or first boot — no openshift/RHCOS labels
 
 - [Quick Reference](QUICK-REFERENCE.md) – Copy-paste wipe commands
 - [Index](INDEX.md) – Navigate by task
+- [RHACM Bare Metal Cluster Destroy](../../../rhacm/notes/bare-metal-cluster-destroy.md) – MCE destroy vs detach; when disk wipe is required
 - [Bare Metal Stale Node IP Conflict](../bare-metal-stale-node-ip-conflict/README.md) – When duplicate IPs cause MAC flapping
 - [Destroy Cluster Without Metadata — Bare Metal](../destroy-cluster-without-metadata/BAREMETAL-GUIDE.md) – Full cluster teardown
 - [Bare Metal Node Inspection Timeout](../bare-metal-node-inspection-timeout/README.md) – Active provisioning issues

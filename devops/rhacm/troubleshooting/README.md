@@ -19,6 +19,11 @@ Practical diagnostic guides for Red Hat Advanced Cluster Management operational 
 | [search-service-503.md](./search-service-503.md) | Search UI returns 503 / "Error occurred while contacting the search service" — `search-postgres` OOMKill and other search component failures |
 | [agent-install-rootfs-ssl-failure.md](./agent-install-rootfs-ssl-failure.md) | Agent install host fails early boot pulling rootfs from `assisted-image-service` — `curl: (35) SSL_connect: Connection reset by peer` |
 
+## Lifecycle / Decommission
+
+- [Bare metal cluster destroy](../notes/bare-metal-cluster-destroy.md) — RHACM destroy vs detach; disk wipe is not built-in on bare metal
+- [Bare Metal RHCOS Disk Wipe](../../ocp/troubleshooting/bare-metal-rhcos-disk-wipe/README.md) — Wipe procedures after destroy
+
 ## Common Scenarios
 
 **MCH stuck during upgrade:**
