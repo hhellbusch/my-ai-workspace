@@ -70,24 +70,45 @@ CRITICAL: Duplicate NQN 'nqn.2014-08.org.nvmexpress:uuid:...' detected on node '
 
 ## Root Cause
 
-RHCOS/CoreOS images can ship with **static** `/etc/nvme/hostnqn` and `/etc/nvme/hostid` baked into the rootfs.
-Every node installed from that image copies the same files.
+Two related RHCOS image problems:
+
+1. **Duplicate static files** — `/etc/nvme/hostnqn` and `/etc/nvme/hostid` baked into the rootfs with the same values on every node.
+2. **Missing `/etc/nvme/` directory** — on rpm-ostree/RHCOS, `nvme-cli` RPM `%post` scriptlets that normally run `install -d /etc/nvme` and generate host identity **do not execute** ([RHEL Bug 1900691](https://bugzilla.redhat.com/show_bug.cgi?id=1900691)). Newer images that removed the bad static files may ship **without the directory at all**.
+
+Every node installed from that image either copies the same files or has no writable identity path.
 The installer does not always regenerate per-node values before first boot.
 
 This is the same class of bug documented for Harvester ([harvester#6911](https://github.com/harvester/harvester/issues/6911)) and acknowledged for OCP ([Red Hat KCS 7073579](https://access.redhat.com/solutions/7073579), [RHEL Bug 2049991](https://bugzilla.redhat.com/show_bug.cgi?id=2049991)).
 
-On bare metal, hardware UUIDs *are* unique — the problem is the **file content**, not the servers.
+On bare metal, hardware UUIDs *are* unique — the problem is the **file content** (or, rarely, a missing directory on the host), not the servers.
+
+**Rare edge case — missing `/etc/nvme/` on the host:** some RHCOS builds may lack the directory because `nvme-cli` `%post` does not run on ostree ([RHEL Bug 1900691](https://bugzilla.redhat.com/show_bug.cgi?id=1900691)). The KBA redirect and vendor MCs assume the path exists. Our MachineConfig creates the directory defensively; see [What the fix does](#what-the-fix-does).
+
+**False positive — `oc debug` without `chroot`:** `oc debug node/<name>` drops you in a debug pod. `/etc/nvme` is on the **host** at `/host/etc/nvme`. Without `chroot /host`, `ls /etc/nvme` looks missing even when the host is fine. Always `chroot /host` before checking host paths (same pattern as other node troubleshooting guides in this repo).
 
 ---
 
 ## Step 1: Verify
 
+Paths below are on the **host** filesystem. Use one of:
+
+```bash
+# SSH — already on the host
+ssh core@<node> 'cat /etc/nvme/hostnqn'
+
+# oc debug — must chroot to the host
+oc debug node/<node> -- chroot /host cat /etc/nvme/hostnqn
+# or: oc debug node/<node>, then chroot /host
+```
+
 Run on **each** node that will use NVMe-oF storage (workers at minimum; masters too if they participate in storage I/O):
 
 ```bash
-echo "hostnqn: $(cat /etc/nvme/hostnqn)"
-echo "hostid:   $(cat /etc/nvme/hostid)"
+ls -ld /etc/nvme 2>&1 || echo "MISSING: /etc/nvme directory"
+test -f /etc/nvme/hostnqn && echo "hostnqn: $(cat /etc/nvme/hostnqn)" || echo "hostnqn: (file missing)"
+test -f /etc/nvme/hostid && echo "hostid:   $(cat /etc/nvme/hostid)" || echo "hostid:   (file missing)"
 echo "dmi uuid: $(dmidecode -s system-uuid 2>/dev/null || cat /sys/class/dmi/id/product_uuid)"
+echo "expected: $(nvme gen-hostnqn 2>/dev/null || /usr/sbin/nvme gen-hostnqn)"
 ```
 
 From a bastion with SSH access to all nodes:
@@ -139,10 +160,12 @@ MCO rolls the pool — expect a **rolling reboot** of affected nodes.
 
 ### What the fix does
 
+Ignition creates `/etc/nvme` (mode `0755`) because RHCOS does not run `nvme-cli` install-time scriptlets.
 A systemd oneshot runs early in boot on **each** node:
 
-1. `nvme gen-hostnqn > /etc/nvme/hostnqn` — format DMI UUID as standard host NQN (with validation/fallback)
-2. `dmidecode -s system-uuid > /etc/nvme/hostid` — set paired host ID
+1. `mkdir -p /etc/nvme` — belt-and-suspenders if the directory was removed or never merged from Ignition
+2. `nvme gen-hostnqn > /etc/nvme/hostnqn` — format DMI UUID as standard host NQN (with validation/fallback)
+3. `dmidecode -s system-uuid > /etc/nvme/hostid` — set paired host ID
 
 Both files must stay in sync for stable NVMe-oF reconnect behavior.
 
@@ -163,6 +186,27 @@ done
 ```
 
 Confirm uniqueness across nodes before installing or restarting storage CSI drivers.
+
+If files are still missing after MCO rollout:
+
+```bash
+ssh core@<node> 'systemctl status nvme-gen-host-identity.service; journalctl -u nvme-gen-host-identity.service -b --no-pager'
+```
+
+Common failures: checked paths from `oc debug` without `chroot /host` (false missing), `/etc/nvme` actually absent on host (fixed in current manifest), `nvme` binary not found (check `which nvme` / `/usr/sbin/nvme`), or unit not in rendered MC (`oc get mc 99-worker-nvme-host-identity -o yaml`).
+
+### Manual workaround (single node, emergency)
+
+Only if `/etc/nvme` is still absent **after** `chroot /host` (rare on current RHCOS). Not durable without MachineConfig — MCO may reconcile drift — but useful to confirm the fix before rolling the pool:
+
+```bash
+mkdir -p /etc/nvme
+/usr/sbin/nvme gen-hostnqn > /etc/nvme/hostnqn
+dmidecode -s system-uuid > /etc/nvme/hostid
+cat /etc/nvme/hostnqn /etc/nvme/hostid
+```
+
+Apply the MachineConfig for a persistent, cluster-wide fix.
 
 ---
 
@@ -263,6 +307,7 @@ Harvester/RHEL fixes address the image pipeline; until RHCOS does the same, the 
 | Unconditional regen | Handles any baked-in duplicate, not just one known UUID (DinoCloud approach) |
 | `Before=network-online.target` | Identity ready before storage network and CSI connect attempts |
 | `/usr/sbin/nvme` path | Explicit path; works even if `$PATH` differs in the systemd service context |
+| Ignition `storage.directories` + `mkdir -p` | RHCOS skips `nvme-cli` %post — `/etc/nvme` may not exist (Bug 1900691); KBA and vendor MCs often omit this |
 
 Use vendor-hosted YAML (HPE) or Dell's exact unit name if your support contract expects matching config.
 Functionally, all systemd-based approaches listed above produce the same per-node NQN on bare metal when DMI UUID is valid.

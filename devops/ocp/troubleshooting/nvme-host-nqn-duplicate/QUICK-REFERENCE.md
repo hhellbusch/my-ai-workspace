@@ -7,8 +7,11 @@ Unique host NQN per node for NVMe-oF storage on OpenShift (Dell CSM, Portworx/Pu
 ```
 Deploying NVMe-oF storage (CSI) on bare-metal OCP?
 │
-├─ KBA check: gen-hostnqn vs file on disk
+├─ Using oc debug? → chroot /host first (else /etc/nvme looks missing)
+│
+├─ KBA check: gen-hostnqn vs file on disk (on host)
 │  ssh core@<node> 'echo expected: $(nvme gen-hostnqn); echo on-disk: $(cat /etc/nvme/hostnqn)'
+│  or: oc debug node/<node> -- chroot /host sh -c 'nvme gen-hostnqn; cat /etc/nvme/hostnqn'
 │  differ → baked-in wrong NQN
 │
 ├─ Check NQNs unique across all storage nodes
@@ -28,13 +31,20 @@ Deploying NVMe-oF storage (CSI) on bare-metal OCP?
 
 ## 1. Verify (per node)
 
+Host paths only. With `oc debug node/<node>`, run `chroot /host` first (or use `-- chroot /host` on the command).
+
 ```bash
 # Red Hat KBA: expected vs on-disk
 nvme gen-hostnqn
 cat /etc/nvme/hostnqn
-
 cat /etc/nvme/hostid
 dmidecode -s system-uuid
+```
+
+One-liner via debug:
+
+```bash
+oc debug node/<node> -- chroot /host sh -c 'nvme gen-hostnqn; cat /etc/nvme/hostnqn; cat /etc/nvme/hostid'
 ```
 
 Across all workers:
@@ -48,9 +58,12 @@ done
 
 | Result | Action |
 |--------|--------|
+| `/etc/nvme` missing in `oc debug` shell | `chroot /host` and re-check — likely false positive |
+| `/etc/nvme` missing after `chroot /host` | Rare host edge case — MC creates dir; see §2b emergency mkdir |
 | `gen-hostnqn` ≠ `cat hostnqn` | Baked-in wrong file — apply fix below |
 | Same NQN on 2+ nodes | Apply fix below |
 | NQN contains `$(cat` | Anti-pattern MC — replace with systemd fix |
+| MC applied, files still missing on host | `chroot /host systemctl status nvme-gen-host-identity.service` |
 | Each NQN unique, UUID matches DMI | OK — [NVMe/TCP network prep](../nvme-tcp-storage-network/QUICK-REFERENCE.md) |
 
 ---
@@ -66,6 +79,20 @@ oc get mcp worker -w   # wait for UPDATED=True, UPDATING=False
 ```
 
 Repeat for `master` pool if masters use NVMe-oF (change role label and MCP name). See [MachineConfig pools](../../notes/machine-config-pools.md#same-config-on-master-and-worker).
+
+---
+
+## 2b. Manual emergency fix (one node, host only)
+
+Only if `/etc/nvme` is still missing **after** `chroot /host` (rare). Use `chroot /host` or SSH as `core@`.
+
+```bash
+mkdir -p /etc/nvme
+/usr/sbin/nvme gen-hostnqn > /etc/nvme/hostnqn
+dmidecode -s system-uuid > /etc/nvme/hostid
+```
+
+Use only to validate; apply MachineConfig for cluster-wide persistence.
 
 ---
 
@@ -96,6 +123,7 @@ done
 
 | Do | Don't |
 |----|-------|
+| `chroot /host` when using `oc debug node` | Check `/etc/nvme` from the debug pod without chroot |
 | systemd oneshot via MachineConfig | Ignition `data:,...$(cat ...)` — shell never runs |
 | Set both `hostnqn` and `hostid` | Set only `hostnqn` |
 | Verify before CSI install | Assume RHCOS auto-unique per node |

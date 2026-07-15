@@ -24,6 +24,13 @@ spec:
   config:
     ignition:
       version: 3.4.0
+    # RHCOS does not run nvme-cli %post (Bug 1900691), so /etc/nvme may be absent.
+    # Create the directory via Ignition and again in the unit before writing files.
+    storage:
+      directories:
+        - filesystem: root
+          path: /etc/nvme
+          mode: 493
     systemd:
       units:
         - name: nvme-gen-host-identity.service
@@ -36,7 +43,7 @@ spec:
 
             [Service]
             Type=oneshot
-            ExecStart=/bin/sh -c '/usr/sbin/nvme gen-hostnqn > /etc/nvme/hostnqn && dmidecode -s system-uuid > /etc/nvme/hostid'
+            ExecStart=/bin/sh -c 'mkdir -p /etc/nvme && /usr/sbin/nvme gen-hostnqn > /etc/nvme/hostnqn && dmidecode -s system-uuid > /etc/nvme/hostid'
             RemainAfterExit=yes
 
             [Install]
