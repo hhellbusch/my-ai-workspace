@@ -15,7 +15,8 @@
 | **Rack label** | `topology.kubernetes.io/zone: rack-a` | `platform.example.com/rack: rack-a` |
 | **Site label** | `topology.kubernetes.io/region: dc1` | `platform.example.com/site: dc1` |
 | **Strimzi `rack.topologyKey`** | `topology.kubernetes.io/zone` | `platform.example.com/rack` |
-| **Spread constraint `topologyKey`** | `topology.kubernetes.io/zone` | `platform.example.com/rack` |
+| **CFK `rackAssignment.nodeLabels`** | `[topology.kubernetes.io/zone]` | `[platform.example.com/rack]` |
+| **Spread / anti-affinity `topologyKey`** | `topology.kubernetes.io/zone` | `platform.example.com/rack` |
 | **Portworx rack label** | `px/rack: rack-a` | `px/rack: rack-a` *(unchanged)* |
 | **Example rack values** | `rack-a`, `rack-b`, `rack-c` | same |
 
@@ -101,6 +102,60 @@ Files: [`zone-region/strimzi/`](manifests/zone-region/strimzi/) vs [`custom-rack
 
 ---
 
+## Side-by-side: Confluent (CFK)
+
+**Zone/region** — `rackAssignment` + pod anti-affinity:
+
+```yaml
+spec:
+  oneReplicaPerNode: true
+  rackAssignment:
+    nodeLabels:
+      - topology.kubernetes.io/zone
+  podTemplate:
+    serviceAccountName: kafka-rack
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values: [prod-kafka]
+            topologyKey: topology.kubernetes.io/zone
+```
+
+**Custom-rack**:
+
+```yaml
+spec:
+  rackAssignment:
+    nodeLabels:
+      - platform.example.com/rack
+  podTemplate:
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: platform.example.com/rack
+```
+
+Files: [`zone-region/confluent/`](manifests/zone-region/confluent/) vs [`custom-rack/confluent/`](manifests/custom-rack/confluent/) · RBAC: [`common/confluent-kafka-rbac.yaml`](manifests/common/confluent-kafka-rbac.yaml)
+
+---
+
+## Side-by-side: Confluent vs Strimzi
+
+| Concern | Strimzi / AMQ Streams | Confluent (CFK) |
+|---------|----------------------|-----------------|
+| Set `broker.rack` from node label | `spec.kafka.rack.topologyKey` | `spec.rackAssignment.nodeLabels` (list) |
+| One broker per node | `podAntiAffinity` on `kubernetes.io/hostname` | `spec.oneReplicaPerNode: true` + hostname anti-affinity |
+| Spread across racks | `topologySpreadConstraints` on rack key | `podAntiAffinity` on rack key (or pod overlay for spread constraints) |
+| RBAC for rack lookup | Operator handles internally | ServiceAccount + ClusterRole (`get`/`list` nodes, pods) |
+| Storage class | `KafkaNodePool.spec.storage.class` | `spec.storageClass.name` + `dataVolumeCapacity` |
+| KRaft | `Kafka` + `KafkaNodePool` CRs | `KRaftController` + `Kafka` CRs |
+
+---
+
 ## Side-by-side: inventory (Ansible)
 
 | Inventory field | Zone/region label key | Custom-rack label key |
@@ -149,7 +204,8 @@ Some teams set **both** `topology.kubernetes.io/zone` and `platform.example.com/
 | Concern | Zone/region | Custom-rack |
 |---------|-------------|-------------|
 | Strimzi / Kafka `broker.rack` | From `topology.kubernetes.io/zone` | From `platform.example.com/rack` |
-| Pod spread across racks | `topologyKey: topology.kubernetes.io/zone` | `topologyKey: platform.example.com/rack` |
+| CFK `rackAssignment` | Reads `topology.kubernetes.io/zone` | Reads `platform.example.com/rack` |
+| Pod spread across racks | Strimzi: `topologySpreadConstraints`; CFK: `podAntiAffinity` on rack key | Same pattern, different label key |
 | MCO drain order by failure domain | **Yes** — drains by zone alphabetically | **No** — MCO ignores custom keys; drains by node age cluster-wide |
 | Portworx replica placement | `px/rack` (same both) | `px/rack` (same both) |
 | ACM BMAC Day-0 labels | Annotation key = label key | Annotation key = label key |
@@ -183,11 +239,13 @@ manifests/
 │   ├── node-labels.example.yaml
 │   ├── acm-bmh-kafka-host.example.yaml
 │   ├── inventory-kafka-workers.example.yaml
+│   ├── confluent/
 │   └── strimzi/
 └── custom-rack/               # platform.example.com/rack + site
     ├── node-labels.example.yaml
     ├── acm-bmh-kafka-host.example.yaml
     ├── inventory-kafka-workers.example.yaml
+    ├── confluent/
     └── strimzi/
 ```
 

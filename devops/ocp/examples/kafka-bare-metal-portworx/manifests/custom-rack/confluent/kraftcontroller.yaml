@@ -1,0 +1,47 @@
+# Custom-rack variant — KRaft controllers spread on platform.example.com/rack
+# Compare: ../../zone-region/confluent/kraftcontroller.yaml
+apiVersion: platform.confluent.io/v1beta1
+kind: KRaftController
+metadata:
+  name: kraftcontroller
+  namespace: kafka
+spec:
+  replicas: 3
+  image:
+    application: confluentinc/cp-server:8.1.0
+    init: confluentinc/confluent-init-container:3.1.0
+  dataVolumeCapacity: 50Gi
+  storageClass:
+    name: portworx-kafka-repl3
+  podTemplate:
+    tolerations:
+      - key: dedicated
+        value: kafka
+        effect: NoSchedule
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - kraftcontroller
+            topologyKey: platform.example.com/rack
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: node-role.kubernetes.io/kafka
+                  operator: Exists
+    podSecurityContext:
+      fsGroup: 1000
+      runAsUser: 1000
+      runAsNonRoot: true
+    resources:
+      requests:
+        cpu: "2"
+        memory: 8Gi
+      limits:
+        cpu: "2"
+        memory: 8Gi

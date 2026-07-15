@@ -9,6 +9,13 @@ Two parallel examples for the same Kafka + Portworx rack-aware layout. **Do not 
 
 Shared across both variants (label key agnostic):
 
-- [`common/`](common/) — Portworx StorageClass, MCP, kernel tuning (identical)
+- [`common/`](common/) — Portworx StorageClass, MCP, kernel tuning, CFK rack-assignment RBAC
+
+Operator examples (pick one operator per cluster):
+
+| Operator | zone-region | custom-rack |
+|----------|-------------|-------------|
+| **Confluent (CFK)** — primary | [`zone-region/confluent/`](zone-region/confluent/) | [`custom-rack/confluent/`](custom-rack/confluent/) |
+| **Strimzi / AMQ Streams** — comparison | [`zone-region/strimzi/`](zone-region/strimzi/) | [`custom-rack/strimzi/`](custom-rack/strimzi/) |
 
 Side-by-side comparison: [LABELING-COMPARISON.md](../LABELING-COMPARISON.md)

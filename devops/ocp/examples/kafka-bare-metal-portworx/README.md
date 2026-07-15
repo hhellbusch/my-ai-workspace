@@ -1,8 +1,8 @@
 # Kafka on Bare-Metal OpenShift with Portworx — Rack-Aware Example
 
-**Audience:** Platform engineers deploying or hardening Kafka on bare-metal OpenShift with Portworx-backed storage, without a fixed operator choice yet.
+**Audience:** Platform engineers deploying or hardening Kafka on bare-metal OpenShift with Portworx-backed storage — **Confluent Platform Operator (CFK)** is the primary example path; Strimzi/AMQ Streams examples are kept for side-by-side comparison.
 
-**Purpose:** Provide copy-paste example manifests and an operator-agnostic layout so Kafka brokers, Portworx volume replicas, and OpenShift node upgrades all respect the same rack (failure-domain) labels.
+**Purpose:** Provide copy-paste example manifests so Kafka brokers, Portworx volume replicas, and OpenShift node upgrades all respect the same rack (failure-domain) labels — regardless of whether you use Confluent or Strimzi.
 
 **Scope:** Example configurations for **OpenShift Container Platform 4.20+**. Statically reviewed against Strimzi, Portworx, and OCP 4.20 docs (see [VALIDATION.md](VALIDATION.md)). Not end-to-end tested without a live cluster. Placeholders (`rack-a`, `example.com`, sizing) must be adjusted to your environment.
 
@@ -108,7 +108,7 @@ Examples (zone-region variant — see [custom-rack](manifests/custom-rack/) for 
 
 | Inventory field | Becomes node label | Notes |
 |-----------------|-------------------|--------|
-| `rack` | `topology.kubernetes.io/zone` | Strimzi `rack.topologyKey` |
+| `rack` | `topology.kubernetes.io/zone` | Strimzi `rack.topologyKey` · CFK `rackAssignment.nodeLabels` |
 | `rack` | `px/rack` | Portworx StorageClass `racks:` — **same value** |
 | `region` | `topology.kubernetes.io/region` | Optional |
 | `role: kafka` | `node-role.kubernetes.io/kafka: ""` | MCP `nodeSelector` |
@@ -213,7 +213,7 @@ oc get kafkas -A 2>/dev/null         # Confluent Platform Operator (name varies 
 |-------------|----------|-----------------------------------|
 | `Kafka`, `KafkaNodePool` CRDs; Strimzi CSV | **Strimzi** (upstream) | [`manifests/zone-region/strimzi/`](manifests/zone-region/strimzi/) or [`custom-rack/strimzi/`](manifests/custom-rack/strimzi/) |
 | Same CRDs; `amq-streams` or Red Hat build CSV | **AMQ Streams** (Red Hat Strimzi) | Same as Strimzi — pick one [labeling variant](LABELING-COMPARISON.md) |
-| `platform.confluent.io` CRDs; Confluent CSV | **Confluent Platform Operator** | Use same `topologyKey` as your labeling variant in pod template (no Confluent example in repo yet) |
+| `platform.confluent.io` CRDs; Confluent CSV | **Confluent Platform Operator (CFK)** | [`manifests/zone-region/confluent/`](manifests/zone-region/confluent/) or [`custom-rack/confluent/`](manifests/custom-rack/confluent/) + [`common/confluent-kafka-rbac.yaml`](manifests/common/confluent-kafka-rbac.yaml) |
 | Helm release, no operator CRD | **Helm / manual** | Set `broker.rack` in broker config; use [`manifests/common/`](manifests/common/) scheduling labels |
 | `eventstreams` CRD (older) | **IBM Event Streams** | Not covered here — same rack-awareness concepts apply to broker config |
 
@@ -296,9 +296,67 @@ Every Kafka deployment should enforce:
 
 ## Operator-specific examples
 
-### Strimzi / AMQ Streams
+### Confluent Platform Operator (CFK) — primary path
 
-AMQ Streams is Red Hat's build of the Strimzi operator — the `Kafka` and `KafkaNodePool` CRs are the same model.
+Confluent uses `platform.confluent.io` CRDs (`Kafka`, `KRaftController`). Rack awareness is **two layers**:
+
+1. **Kafka partition placement** — `spec.rackAssignment.nodeLabels` reads the node label and sets `broker.rack` (requires `oneReplicaPerNode: true` and a ServiceAccount with `get`/`list` on `nodes` + `pods`).
+2. **Pod scheduling** — `podTemplate.affinity.podAntiAffinity` on the same label key spreads brokers across racks at schedule time.
+
+Files (zone-region): [`manifests/zone-region/confluent/`](manifests/zone-region/confluent/) · Custom-rack: [`manifests/custom-rack/confluent/`](manifests/custom-rack/confluent/) · RBAC: [`manifests/common/confluent-kafka-rbac.yaml`](manifests/common/confluent-kafka-rbac.yaml)
+
+| CFK field | Effect (zone-region) | Custom-rack equivalent |
+|-----------|----------------------|-------------------------|
+| `spec.rackAssignment.nodeLabels` | `[topology.kubernetes.io/zone]` | `[platform.example.com/rack]` |
+| `spec.oneReplicaPerNode` | `true` — one broker per node | same |
+| `podTemplate.serviceAccountName` | `kafka-rack` (RBAC manifest) | same |
+| `podTemplate.affinity.podAntiAffinity` | `topologyKey: topology.kubernetes.io/zone` | `topologyKey: platform.example.com/rack` |
+| `spec.storageClass.name` | `portworx-kafka-repl3` | same |
+| `configOverrides.server` | `min.insync.replicas=2`, RF=3 | same |
+
+CFK also sets `default.replication.factor` and `min.insync.replicas` from replica count; the example overrides explicitly to match the Strimzi side-by-side values.
+
+**Strimzi vs CFK mapping** — see [LABELING-COMPARISON.md](LABELING-COMPARISON.md#side-by-side-confluent-vs-strimzi).
+
+Pin `image.application` / `image.init` to your licensed Confluent Platform version. Examples use **CP 8.1.0** (KRaft) — confirm against your CFK operator bundle.
+
+**Apply order:**
+
+```bash
+# 0. Dry-run against your cluster (recommended)
+oc apply --dry-run=server -f manifests/common/
+oc apply --dry-run=server -f manifests/zone-region/confluent/
+# or: -f manifests/custom-rack/confluent/
+
+# 1. Common foundation (MCP, StorageClass, kernel tuning)
+oc apply -f manifests/common/portworx-storageclass-kafka.yaml
+oc apply -f manifests/common/machineconfigpool-kafka-worker.yaml
+oc apply -f manifests/common/machineconfig-kafka-tuning.yaml
+
+# 2. CFK operator must already be installed; create target namespace
+oc create namespace kafka --dry-run=client -o yaml | oc apply -f -
+
+# 3. Rack-assignment RBAC (before Kafka CR)
+oc apply -f manifests/common/confluent-kafka-rbac.yaml
+
+# 4. KRaft controllers, then brokers (order matters)
+oc apply -f manifests/zone-region/confluent/kraftcontroller.yaml
+oc apply -f manifests/zone-region/confluent/kafka-rack-aware.yaml
+# or: -f manifests/custom-rack/confluent/
+```
+
+**Verify `broker.rack`:**
+
+```bash
+oc exec -n kafka prod-kafka-0 -- \
+  grep broker.rack /opt/confluentinc/etc/kafka/kafka.properties
+```
+
+For strict `topologySpreadConstraints` with `whenUnsatisfiable: DoNotSchedule` (as in the Strimzi examples), CFK requires the [pod overlay](https://docs.confluent.io/operator/current/co-configure-misc.html#pod-overlay) feature — the examples here use CFK-native `podAntiAffinity` on the rack label key instead.
+
+### Strimzi / AMQ Streams — comparison
+
+AMQ Streams is Red Hat's build of the Strimzi operator — the `Kafka` and `KafkaNodePool` CRs are the same model. Kept for side-by-side comparison with CFK.
 
 Files (zone-region): [`manifests/zone-region/strimzi/`](manifests/zone-region/strimzi/) · Custom-rack: [`manifests/custom-rack/strimzi/`](manifests/custom-rack/strimzi/)
 
@@ -332,10 +390,6 @@ oc apply -f manifests/zone-region/strimzi/
 ```
 
 See [VALIDATION.md](VALIDATION.md) for cluster-side checks after apply.
-
-### Confluent Platform Operator
-
-Confluent uses different CRDs. Rack awareness uses `podTemplate` + `broker.rack` wiring — set spread `topologyKey` to match your [labeling variant](LABELING-COMPARISON.md). No Confluent YAML in this example set yet; mirror the Strimzi `topologyKey` choice.
 
 ### Helm / manual deployment
 
@@ -596,10 +650,12 @@ RACK:.metadata.labels.px/rack
 # 2. Brokers spread across zones
 oc get pods -n <kafka-namespace> -o wide | grep -i kafka
 
-# 3. broker.rack set (Strimzi example — pod name will vary)
+# 3. broker.rack set (CFK)
 oc exec -n <kafka-namespace> <broker-pod-0> -- \
-  grep broker.rack /opt/kafka/custom-config/server.properties 2>/dev/null || \
-  oc exec -n <kafka-namespace> <broker-pod-0> -- printenv | grep -i rack
+  grep broker.rack /opt/confluentinc/etc/kafka/kafka.properties
+# Strimzi / AMQ Streams:
+# oc exec -n <kafka-namespace> <broker-pod-0> -- \
+#   grep broker.rack /opt/kafka/custom-config/server.properties
 
 # 4. Portworx volume replica placement
 pxctl volume inspect <volume-id>
@@ -620,16 +676,18 @@ oc exec -n <kafka-namespace> <broker-pod-0> -- \
 ```
 manifests/
 ├── README.md                 # variant index
-├── common/                   # shared: Portworx SC, MCP, kernel tuning
+├── common/                   # shared: Portworx SC, MCP, kernel tuning, CFK RBAC
 ├── zone-region/              # topology.kubernetes.io/zone + region
 │   ├── node-labels.example.yaml
 │   ├── acm-bmh-kafka-host.example.yaml
 │   ├── inventory-kafka-workers.example.yaml
-│   └── strimzi/
+│   ├── confluent/            # CFK — primary path
+│   └── strimzi/              # AMQ Streams / upstream — comparison
 └── custom-rack/              # platform.example.com/rack + site
     ├── node-labels.example.yaml
     ├── acm-bmh-kafka-host.example.yaml
     ├── inventory-kafka-workers.example.yaml
+    ├── confluent/
     └── strimzi/
 ```
 
@@ -643,7 +701,7 @@ manifests/
 These change sizing and manifest values:
 
 1. **Rack and broker count** — e.g. 3 racks × 3 brokers vs 3 × 6
-2. **Operator choice** — Strimzi/AMQ vs Confluent vs Helm
+2. **Operator choice** — Confluent (primary examples) vs Strimzi/AMQ vs Helm
 3. **Dedicated kafka pool** — recommended; shared workers require stronger resource quotas
 4. **OCP upgrade channel** — EUS vs stable affects upgrade choreography
 

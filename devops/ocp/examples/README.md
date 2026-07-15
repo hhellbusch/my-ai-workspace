@@ -20,11 +20,11 @@ Configuration examples and templates for OpenShift clusters.
 
 ### Data / messaging
 
-- **[Kafka on bare-metal OpenShift with Portworx](kafka-bare-metal-portworx/README.md)** — Rack-aware example for **OCP 4.20+** (Ignition 3.5.0, Streams 3.1 / Kafka 4.1, Portworx CSI)
+- **[Kafka on bare-metal OpenShift with Portworx](kafka-bare-metal-portworx/README.md)** — Rack-aware example for **OCP 4.20+** (Confluent CFK primary; Strimzi/AMQ comparison; Portworx CSI)
   - **[VALIDATION.md](kafka-bare-metal-portworx/VALIDATION.md)** — static review status and cluster-side apply checklist
-  - **[Common manifests](kafka-bare-metal-portworx/manifests/common/)** — labels, StorageClass (CSI + legacy), MachineConfigPool, kernel tuning
-  - **[LABELING-COMPARISON.md](kafka-bare-metal-portworx/LABELING-COMPARISON.md)** — zone/region vs custom-rack labels side-by-side
-  - **[zone-region manifests](kafka-bare-metal-portworx/manifests/zone-region/)** · **[custom-rack manifests](kafka-bare-metal-portworx/manifests/custom-rack/)
+  - **[Common manifests](kafka-bare-metal-portworx/manifests/common/)** — StorageClass (CSI + legacy), MCP, kernel tuning, CFK RBAC
+  - **[LABELING-COMPARISON.md](kafka-bare-metal-portworx/LABELING-COMPARISON.md)** — zone/region vs custom-rack; Confluent vs Strimzi
+  - **[zone-region manifests](kafka-bare-metal-portworx/manifests/zone-region/)** · **[custom-rack manifests](kafka-bare-metal-portworx/manifests/custom-rack/)** — each includes `confluent/` and `strimzi/`
 
 ### Networking
 
