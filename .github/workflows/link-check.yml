@@ -16,5 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Check internal markdown links
         run: bash scripts/check-markdown-links.sh
