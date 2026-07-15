@@ -1,5 +1,4 @@
-# Strimzi / AMQ Streams — brokers (3 replicas, 3 racks)
-# Target: OCP 4.20+ with Streams for Apache Kafka 3.1 (Kafka 4.1) or Strimzi 0.48+.
+# Custom-rack variant — spread on platform.example.com/rack
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaNodePool
 metadata:
@@ -44,7 +43,7 @@ spec:
                     operator: Exists
       topologySpreadConstraints:
         - maxSkew: 1
-          topologyKey: topology.kubernetes.io/zone
+          topologyKey: platform.example.com/rack
           whenUnsatisfiable: DoNotSchedule
           labelSelector:
             matchLabels:

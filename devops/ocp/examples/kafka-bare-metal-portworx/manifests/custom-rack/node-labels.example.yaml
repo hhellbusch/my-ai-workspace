@@ -1,0 +1,21 @@
+# Custom-rack variant — domain-prefixed rack/site labels (no topology.kubernetes.io/zone)
+# Compare: ../zone-region/node-labels.example.yaml · ../../LABELING-COMPARISON.md
+#
+# Replace platform.example.com with your org domain.
+#
+# Example per rack:
+#   oc label node worker-a1.example.com \
+#     platform.example.com/rack=rack-a \
+#     platform.example.com/site=dc1 \
+#     px/rack=rack-a \
+#     node-role.kubernetes.io/kafka=
+
+apiVersion: v1
+kind: Node
+metadata:
+  name: worker-a1.example.com
+  labels:
+    platform.example.com/rack: rack-a
+    platform.example.com/site: dc1
+    px/rack: rack-a
+    node-role.kubernetes.io/kafka: ""

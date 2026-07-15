@@ -23,8 +23,8 @@ Configuration examples and templates for OpenShift clusters.
 - **[Kafka on bare-metal OpenShift with Portworx](kafka-bare-metal-portworx/README.md)** — Rack-aware example for **OCP 4.20+** (Ignition 3.5.0, Streams 3.1 / Kafka 4.1, Portworx CSI)
   - **[VALIDATION.md](kafka-bare-metal-portworx/VALIDATION.md)** — static review status and cluster-side apply checklist
   - **[Common manifests](kafka-bare-metal-portworx/manifests/common/)** — labels, StorageClass (CSI + legacy), MachineConfigPool, kernel tuning
-  - **[Strimzi / AMQ Streams manifests](kafka-bare-metal-portworx/manifests/strimzi/)** — KafkaNodePool + Kafka CR (KRaft)
-  - **[Confluent example](kafka-bare-metal-portworx/manifests/confluent/)** — scheduling + storage; broker.rack wiring varies by operator version
+  - **[LABELING-COMPARISON.md](kafka-bare-metal-portworx/LABELING-COMPARISON.md)** — zone/region vs custom-rack labels side-by-side
+  - **[zone-region manifests](kafka-bare-metal-portworx/manifests/zone-region/)** · **[custom-rack manifests](kafka-bare-metal-portworx/manifests/custom-rack/)
 
 ### Networking
 

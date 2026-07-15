@@ -1,3 +1,0 @@
-# Strimzi / AMQ Streams — KRaft controllers (3 replicas, 3 racks)
-# Target: OCP 4.20+ with Streams for Apache Kafka 3.1 (Strimzi 0.48.x) or Strimzi 0.48+ upstream.
-apiVersion: kafka.strimzi.io/v1beta2

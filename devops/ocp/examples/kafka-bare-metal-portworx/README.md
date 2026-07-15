@@ -11,6 +11,7 @@
 **Related:**
 
 - [VALIDATION.md](VALIDATION.md) — static review status, prerequisites matrix, cluster-side checks
+- [LABELING-COMPARISON.md](LABELING-COMPARISON.md) — **zone/region vs custom-rack labels** (side-by-side)
 
 - [Portworx CSI crashloop troubleshooting](../../troubleshooting/portworx-csi-crashloop/README.md)
 - [NVMe host NQN duplicates](../../troubleshooting/nvme-host-nqn-duplicate/README.md) — prerequisite if using NVMe-oF to FlashArray
@@ -22,6 +23,7 @@
 ## On this page
 
 - [Architecture](#architecture)
+- [Rack labeling variants](#rack-labeling-variants)
 - [Prerequisites](#prerequisites)
 - [ACM provisioning and inventory](#acm-provisioning-and-inventory)
 - [Identify your Kafka operator](#identify-your-kafka-operator)
@@ -45,13 +47,28 @@ Assumes **OpenShift Container Platform 4.20+** (Ignition 3.5.0 MachineConfigs).
 | **Strimzi** (upstream) | **0.48+** | `oc get csv -A \| grep strimzi` |
 | **Kafka** | **4.1.0** with `metadataVersion: 4.1-IV1` | Operator version matrix / CSV |
 | **Portworx CSI** | `pxd.portworx.com` provisioner | `oc get csidriver pxd.portworx.com` |
-| **Kafka worker nodes** | ≥ 3 nodes, 3 distinct `topology.kubernetes.io/zone` values | See [node labels](#node-labels) |
+| **Kafka worker nodes** | ≥ 3 nodes, 3 distinct rack label values per [labeling variant](#rack-labeling-variants) | See node label examples |
 
 Red Hat reference: [Streams for Apache Kafka 3.1 — tested on OCP 4.16–4.20](https://docs.redhat.com/en/documentation/red_hat_streams_for_apache_kafka/3.1/html/release_notes_for_streams_for_apache_kafka_3.1_on_openshift/ref-supported-configurations-str).
 
 OCP reference: [Machine configuration — Ignition 3.5.0 (OCP 4.20)](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/machine_configuration/machine-configs-configure).
 
 Full validation checklist: [VALIDATION.md](VALIDATION.md).
+
+---
+
+## Rack labeling variants
+
+Two parallel manifest sets — **pick one per cluster**, do not mix label keys.
+
+| Variant | When to use | Manifests |
+|---------|-------------|-----------|
+| **[zone-region](manifests/zone-region/)** | Well-known `topology.kubernetes.io/zone` / `region`; MCO drains by zone | Default for bare-metal rack-as-zone |
+| **[custom-rack](manifests/custom-rack/)** | Domain labels (`platform.example.com/rack`) when zone is reserved or CMDB uses rack/site | Explicit semantics, no cloud AZ confusion |
+
+Full side-by-side comparison: **[LABELING-COMPARISON.md](LABELING-COMPARISON.md)**
+
+Shared infra (both variants): [`manifests/common/`](manifests/common/) — Portworx StorageClass, MCP, kernel tuning.
 
 ---
 
@@ -80,12 +97,14 @@ You can also assign the **MachineConfigPool** at install time:
 bmac.agent-install.openshift.io/machine-config-pool: kafka-worker
 ```
 
-Examples:
+Examples (zone-region variant — see [custom-rack](manifests/custom-rack/) for alternate keys):
 
-- [`manifests/common/acm-bmh-kafka-host.example.yaml`](manifests/common/acm-bmh-kafka-host.example.yaml) — hub `BareMetalHost` with BMAC annotations
-- [`manifests/common/inventory-kafka-workers.example.yaml`](manifests/common/inventory-kafka-workers.example.yaml) — inventory shape for Ansible/Git rendering
+- [`manifests/zone-region/acm-bmh-kafka-host.example.yaml`](manifests/zone-region/acm-bmh-kafka-host.example.yaml)
+- [`manifests/zone-region/inventory-kafka-workers.example.yaml`](manifests/zone-region/inventory-kafka-workers.example.yaml)
 
 ### Inventory fields to model per host
+
+**Zone/region variant:**
 
 | Inventory field | Becomes node label | Notes |
 |-----------------|-------------------|--------|
@@ -94,6 +113,8 @@ Examples:
 | `region` | `topology.kubernetes.io/region` | Optional |
 | `role: kafka` | `node-role.kubernetes.io/kafka: ""` | MCP `nodeSelector` |
 | — | `node-role.kubernetes.io/worker: ""` | Required worker role |
+
+**Custom-rack variant** — same inventory shape; map `rack` → `platform.example.com/rack`, `site` → `platform.example.com/site`. See [LABELING-COMPARISON.md](LABELING-COMPARISON.md).
 
 ### Two BMH label mechanisms (do not mix blindly)
 
@@ -190,9 +211,9 @@ oc get kafkas -A 2>/dev/null         # Confluent Platform Operator (name varies 
 
 | If you see… | Operator | Example manifests in this directory |
 |-------------|----------|-----------------------------------|
-| `Kafka`, `KafkaNodePool` CRDs; Strimzi CSV | **Strimzi** (upstream) | [`manifests/strimzi/`](manifests/strimzi/) |
-| Same CRDs; `amq-streams` or Red Hat build CSV | **AMQ Streams** (Red Hat Strimzi) | Same as Strimzi — CRs are compatible; use Red Hat-supported versions |
-| `platform.confluent.io` CRDs; Confluent CSV | **Confluent Platform Operator** | [`manifests/confluent/`](manifests/confluent/) — equivalent concepts, different CR shape |
+| `Kafka`, `KafkaNodePool` CRDs; Strimzi CSV | **Strimzi** (upstream) | [`manifests/zone-region/strimzi/`](manifests/zone-region/strimzi/) or [`custom-rack/strimzi/`](manifests/custom-rack/strimzi/) |
+| Same CRDs; `amq-streams` or Red Hat build CSV | **AMQ Streams** (Red Hat Strimzi) | Same as Strimzi — pick one [labeling variant](LABELING-COMPARISON.md) |
+| `platform.confluent.io` CRDs; Confluent CSV | **Confluent Platform Operator** | Use same `topologyKey` as your labeling variant in pod template (no Confluent example in repo yet) |
 | Helm release, no operator CRD | **Helm / manual** | Set `broker.rack` in broker config; use [`manifests/common/`](manifests/common/) scheduling labels |
 | `eventstreams` CRD (older) | **IBM Event Streams** | Not covered here — same rack-awareness concepts apply to broker config |
 
@@ -217,11 +238,9 @@ These apply regardless of Kafka distribution.
 
 ### Node labels
 
-**ACM agent install:** define labels in source inventory; render to hub `BareMetalHost` BMAC annotations — see [ACM provisioning and inventory](#acm-provisioning-and-inventory).
+**ACM agent install:** define labels in source inventory; render to hub `BareMetalHost` BMAC annotations — see [ACM provisioning and inventory](#acm-provisioning-and-inventory). Use [`zone-region/`](manifests/zone-region/) or [`custom-rack/`](manifests/custom-rack/) node label examples.
 
-**Post-install / manual** (fallback only):
-
-Label every Kafka-capable worker at join time. See [`manifests/common/node-labels.example.yaml`](manifests/common/node-labels.example.yaml).
+**Post-install / manual** (fallback only): see `node-labels.example.yaml` in your chosen variant directory.
 
 ```bash
 oc label node worker-a1.example.com \
@@ -281,12 +300,12 @@ Every Kafka deployment should enforce:
 
 AMQ Streams is Red Hat's build of the Strimzi operator — the `Kafka` and `KafkaNodePool` CRs are the same model.
 
-Files: [`manifests/strimzi/`](manifests/strimzi/)
+Files (zone-region): [`manifests/zone-region/strimzi/`](manifests/zone-region/strimzi/) · Custom-rack: [`manifests/custom-rack/strimzi/`](manifests/custom-rack/strimzi/)
 
-| Strimzi field | Effect |
-|---------------|--------|
-| `spec.kafka.rack.topologyKey: topology.kubernetes.io/zone` | Sets `broker.rack` per broker from the node label |
-| `template.pod.topologySpreadConstraints` | Spreads broker **pods** across zones |
+| Strimzi field | Effect (zone-region) | Custom-rack equivalent |
+|---------------|----------------------|-------------------------|
+| `spec.kafka.rack.topologyKey` | `topology.kubernetes.io/zone` | `platform.example.com/rack` |
+| `template.pod.topologySpreadConstraints` | `topologyKey: topology.kubernetes.io/zone` | `topologyKey: platform.example.com/rack` |
 | `template.pod.affinity.podAntiAffinity` | Prevents two brokers on one node |
 | `spec.kafka.config.min.insync.replicas: 2` | Survives one broker loss with RF=3 |
 
@@ -299,41 +318,24 @@ The example `kafka-cluster.yaml` uses a **plaintext internal listener** (port 90
 ```bash
 # 0. Dry-run against your cluster (recommended)
 oc apply --dry-run=server -f manifests/common/
-oc apply --dry-run=server -f manifests/strimzi/
+oc apply --dry-run=server -f manifests/zone-region/strimzi/
+# or: -f manifests/custom-rack/strimzi/
 
-# 1. Common foundation (labels, MCP, StorageClass) — per node / cluster admin
+# 1. Common foundation (labels from variant dir, MCP, StorageClass)
 oc apply -f manifests/common/portworx-storageclass-kafka.yaml
 oc apply -f manifests/common/machineconfigpool-kafka-worker.yaml
 oc apply -f manifests/common/machineconfig-kafka-tuning.yaml
 
 # 2. Strimzi operator must already be installed in the target namespace
-oc apply -f manifests/strimzi/
+oc apply -f manifests/zone-region/strimzi/
+# or: -f manifests/custom-rack/strimzi/
 ```
 
 See [VALIDATION.md](VALIDATION.md) for cluster-side checks after apply.
 
 ### Confluent Platform Operator
 
-Confluent uses different CRDs (`Kafka` under `platform.confluent.io` or version-specific API groups). Rack awareness is configured on the broker component, not via Strimzi's `rack.topologyKey`.
-
-Files: [`manifests/confluent/`](manifests/confluent/)
-
-Equivalent mapping:
-
-| Concept | Strimzi | Confluent |
-|---------|---------|-----------|
-| Rack label source | `spec.kafka.rack.topologyKey` | `spec.podTemplate` + broker env / `confluent.platform.rack` |
-| Spread across racks | `topologySpreadConstraints` in pod template | Same — in `spec.podTemplate.pod` |
-| Storage class | `storage.class` on node pool | `dataVolumeClaimTemplate` on Kafka CR |
-| PDB | Auto-created | Configure `spec.podDisruptionBudget` if supported by your operator version |
-
-Confluent broker rack ID is typically set via:
-
-```properties
-broker.rack=<value from node label>
-```
-
-Use an init container or the operator's configuration surface to map `topology.kubernetes.io/zone` → `broker.rack`. The example CR is **illustrative** — confirm API group and fields with `oc api-resources` before apply.
+Confluent uses different CRDs. Rack awareness uses `podTemplate` + `broker.rack` wiring — set spread `topologyKey` to match your [labeling variant](LABELING-COMPARISON.md). No Confluent YAML in this example set yet; mirror the Strimzi `topologyKey` choice.
 
 ### Helm / manual deployment
 
@@ -644,22 +646,21 @@ oc exec -n <kafka-namespace> <broker-pod-0> -- \
 
 ```
 manifests/
-├── common/
-│   ├── node-labels.example.yaml              # Post-install oc label reference
-│   ├── acm-bmh-kafka-host.example.yaml       # ACM hub BMH + BMAC annotations
-│   ├── inventory-kafka-workers.example.yaml  # Ansible inventory shape
-│   ├── portworx-storageclass-kafka.yaml              # CSI (pxd.portworx.com)
-│   ├── portworx-storageclass-kafka-legacy-in-tree.yaml
-│   ├── machineconfigpool-kafka-worker.yaml
-│   └── machineconfig-kafka-tuning.yaml
-├── strimzi/
-│   ├── kafkanodepool-controllers.yaml
-│   ├── kafkanodepool-brokers.yaml
-│   └── kafka-cluster.yaml
-└── confluent/
-    └── kafka-rack-aware.example.yaml     # illustrative — verify API before apply
+├── README.md                 # variant index
+├── common/                   # shared: Portworx SC, MCP, kernel tuning
+├── zone-region/              # topology.kubernetes.io/zone + region
+│   ├── node-labels.example.yaml
+│   ├── acm-bmh-kafka-host.example.yaml
+│   ├── inventory-kafka-workers.example.yaml
+│   └── strimzi/
+└── custom-rack/              # platform.example.com/rack + site
+    ├── node-labels.example.yaml
+    ├── acm-bmh-kafka-host.example.yaml
+    ├── inventory-kafka-workers.example.yaml
+    └── strimzi/
 ```
 
+[LABELING-COMPARISON.md](LABELING-COMPARISON.md) — side-by-side zone/region vs custom-rack.
 [VALIDATION.md](VALIDATION.md) — static review status and cluster-side checklist.
 
 ---

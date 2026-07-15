@@ -1,0 +1,31 @@
+# Custom-rack variant — Ansible inventory → custom label mapping
+# Compare: ../zone-region/inventory-kafka-workers.example.yaml · ../../LABELING-COMPARISON.md
+
+kafka_workers:
+  hosts:
+    prod-kafka-worker-a1:
+      rack: rack-a
+      site: dc1
+      boot_mac: "aa:bb:cc:dd:ee:01"
+      bmc_address: bmc-a1.example.com
+      root_device: /dev/nvme0n1
+    prod-kafka-worker-b1:
+      rack: rack-b
+      site: dc1
+      boot_mac: "aa:bb:cc:dd:ee:02"
+      bmc_address: bmc-b1.example.com
+      root_device: /dev/nvme0n1
+    prod-kafka-worker-c1:
+      rack: rack-c
+      site: dc1
+      boot_mac: "aa:bb:cc:dd:ee:03"
+      bmc_address: bmc-c1.example.com
+      root_device: /dev/nvme0n1
+
+# Template mapping (replace platform.example.com with your domain):
+#   platform.example.com/rack: "{{ rack }}"
+#   platform.example.com/site: "{{ site }}"
+#   px/rack: "{{ rack }}"
+#
+# BMAC annotation:
+#   bmac.agent-install.openshift.io/node-label.platform.example.com/rack: "{{ rack }}"

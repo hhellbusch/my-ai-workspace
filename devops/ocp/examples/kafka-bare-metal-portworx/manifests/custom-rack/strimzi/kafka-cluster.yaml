@@ -1,14 +1,5 @@
-# Strimzi / AMQ Streams — Kafka cluster (KRaft)
-#
-# Target: OCP 4.20+ with Streams for Apache Kafka 3.1 (Kafka 4.1, Strimzi 0.48.x)
-# or upstream Strimzi 0.48+.
-#
-# Prerequisites:
-#   - KafkaNodePool CRDs applied before this resource
-#   - Operator version must support Kafka 4.1.0 / metadataVersion 4.1-IV1
-#
-# Apply after kafkanodepool-*.yaml. Operator must be installed in namespace.
-# Production: add a TLS listener (plain 9092 below is example-only).
+# Custom-rack variant — topologyKey: platform.example.com/rack
+# Compare: ../../zone-region/strimzi/kafka-cluster.yaml
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
@@ -35,9 +26,8 @@ spec:
       num.network.threads: 8
       num.io.threads: 16
       log.retention.hours: 168
-    # Sets broker.rack from node label — Kafka spreads partition replicas across racks
     rack:
-      topologyKey: topology.kubernetes.io/zone
+      topologyKey: platform.example.com/rack
   entityOperator:
     topicOperator: {}
     userOperator: {}

@@ -81,7 +81,8 @@ cd devops/ocp/examples/kafka-bare-metal-portworx
 oc apply --dry-run=server -f manifests/common/portworx-storageclass-kafka.yaml
 oc apply --dry-run=server -f manifests/common/machineconfigpool-kafka-worker.yaml
 oc apply --dry-run=server -f manifests/common/machineconfig-kafka-tuning.yaml
-oc apply --dry-run=server -f manifests/strimzi/
+oc apply --dry-run=server -f manifests/zone-region/strimzi/
+# or: oc apply --dry-run=server -f manifests/custom-rack/strimzi/
 ```
 
 Fix API version / field errors before real apply. Operator CSV must support Kafka 4.1.0.
