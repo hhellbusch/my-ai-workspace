@@ -35,7 +35,15 @@ The MCO does **not** support multiple `machineconfiguration.openshift.io/role` v
 
 ### One pool per node
 
-A node belongs to **at most one** MCP. If a node matches more than one pool's `nodeSelector`, the MCO errors — pools must partition nodes cleanly.
+A node belongs to **at most one** MCP. Pool assignment is not symmetric:
+
+- A node with both `worker` and a custom role label (e.g. `worker,infra`) is managed by the **custom pool** — custom pools take priority over the default `worker` pool.
+- If you add a custom role label but **do not** create the matching MCP, the MCO still treats the node as a worker.
+- A node with only a custom role label and **no** matching MCP is **unmanaged** by the MCO.
+
+When creating a custom pool, label nodes with the custom role first (they may keep `worker` temporarily). Remove `node-role.kubernetes.io/worker` only when you want the node infra-only for scheduling — the custom pool still inherits worker MachineConfigs via `machineConfigSelector`.
+
+The MCO errors when it cannot resolve a single pool (e.g. a node matches multiple custom pools, or edge cases like single-node dev clusters with conflicting roles). Design labels so each node resolves to exactly one pool.
 
 ### Pools select configs; configs do not select pools
 
@@ -66,7 +74,7 @@ OpenShift creates two MCPs at install time:
 
 | Pool | Nodes | Notes |
 |------|-------|-------|
-| `master` | Control plane | `maxUnavailable` is always `1`. Do not raise it. |
+| `master` | Control plane | Default and recommended `maxUnavailable` is `1` — do not raise for control plane pools. |
 | `worker` | All workers not claimed by a more specific pool | Default for most compute nodes. |
 
 Check status:
@@ -187,7 +195,7 @@ Each pool rolls out on its own schedule. Expect two reboot waves.
 
 4. **Drain blocked by unrelated PDB** — MCO must evict all pods on a node during drain. A misconfigured PDB on a co-located workload stalls the entire pool update.
 
-5. **Conflicting MCs on the same path** — Two MCs in the same pool writing the same file or kernel arg: higher-numbered MC name wins (e.g. `99-` beats `50-`). Avoid overlap across pools on the same node — one node, one pool.
+5. **Conflicting MCs on the same path** — Within a rendered config, the MCO merges MCs in lexicographic name order; later names override earlier ones for the same field (e.g. `99-worker-foo` overrides `50-worker-foo`). Since **OCP 4.15+**, MCs targeting a custom pool role override worker-role MCs for the same field regardless of name order. Avoid defining the same path in both `worker` and custom roles unless you intend the custom value to win.
 
 6. **Ignition version mismatch** — Match `spec.config.ignition.version` to the cluster. Check an existing MC:
 
