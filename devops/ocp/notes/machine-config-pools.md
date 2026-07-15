@@ -185,6 +185,88 @@ Each pool rolls out on its own schedule. Expect two reboot waves.
 
 ---
 
+## Speeding up rollouts
+
+Parallelism is controlled on the **MCP** (`spec.maxUnavailable`, `spec.paused`) — not on individual `MachineConfig` objects. The MCO cordons and drains up to `maxUnavailable` nodes per pool at a time, then reboots them.
+
+### Raise `maxUnavailable` within a pool
+
+Default is `1` (sequential). Increase to drain multiple nodes in parallel:
+
+```yaml
+spec:
+  maxUnavailable: 3       # integer — up to 3 nodes at once
+  # or
+  maxUnavailable: "25%"   # percentage of pool size
+```
+
+```bash
+oc patch mcp worker --type=merge -p '{"spec":{"maxUnavailable":"25%"}}'
+oc get mcp worker -w
+```
+
+| Tradeoff | Detail |
+|----------|--------|
+| Faster | More nodes update concurrently when spare capacity exists |
+| Risk | More pods stacked on fewer schedulable nodes during drain |
+| PDBs still apply | Eviction must find a home — if not, the pool stalls |
+| Blast radius | A bad MC affects more nodes before you notice |
+
+**Do not raise `maxUnavailable` on the `master` pool.** Keep control plane sequential.
+
+### Pools already roll out in parallel with each other
+
+MCO updates each MCP independently. During a cluster upgrade with defaults, you typically get one node updating per pool at the same time — e.g. one master, one worker, one per custom pool (`kafka-worker`, `gpu-worker`). Custom pools isolate blast radius; they do not speed a single pool, but they let pools progress concurrently.
+
+### Canary pool (validate before fleet rollout)
+
+For large worker fleets, pause the main pool and validate on a small custom MCP first:
+
+1. Create a canary MCP with 1–2 nodes.
+2. Set `paused: true` on the `worker` pool.
+3. Apply MCs; wait for the canary pool to reach `UPDATED=True`.
+4. Unpause `worker` (optionally with a higher `maxUnavailable` once validated).
+
+```yaml
+spec:
+  paused: true
+  maxUnavailable: 1
+```
+
+See [Performing a canary rollout update](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/updating_clusters/update-using-custom-machine-config-pools) in the Red Hat docs.
+
+### Batch MC changes before rollout
+
+Each MC edit triggers a new rendered config. Apply all MC objects first, then watch one MCP rollout — the MCO merges them into a single rendered config per pool. You pay one reboot cycle per node, not one per MC file.
+
+### What actually limits speed
+
+| Constraint | Effect |
+|------------|--------|
+| PDBs | High `maxUnavailable` means nothing if pods cannot reschedule |
+| Node capacity | Draining several heavy nodes may leave nowhere for those pods |
+| Zone order | MCO drains by zone (alphabetical), oldest first — not all zones at once |
+| Stateful workloads | Kafka, etcd, Ceph — parallel drains can break ISR/quorum even when MCP allows it |
+| Reboot-bound changes | Kernel args and many file changes — parallel means parallel reboots |
+
+### When to keep `maxUnavailable: 1`
+
+- Control plane (`master` pool)
+- Quorum- or ISR-sensitive workloads (Kafka brokers, etcd, storage)
+- Clusters near capacity with tight PDBs
+- First application of an untested MC
+
+```bash
+oc get mcp -o custom-columns=\
+NAME:.metadata.name,\
+MAX:.spec.maxUnavailable,\
+PAUSED:.spec.paused,\
+UPDATING:.status.conditions[?(@.type==\"Updating\")].status,\
+UPDATED:.status.conditions[?(@.type==\"Updated\")].status
+```
+
+---
+
 ## Common pitfalls
 
 1. **Wrong role on a scoped change** — `role: worker` on kernel tuning meant for three nodes reboots **every** worker. Use a custom pool and `role: <custom>`.
@@ -244,4 +326,5 @@ For Kafka-specific MCP implications (ISR, shared-cluster drain coupling), see th
 
 - [OpenShift 4 — Machine configuration overview](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/machine_configuration/machine-config-index)
 - [Creating custom machine config pools](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/machine_configuration/machine-config-custom-mcp)
+- [Canary rollout via custom MCPs](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/updating_clusters/update-using-custom-machine-config-pools)
 - [MCO custom pools design doc](https://github.com/openshift/machine-config-operator/blob/master/docs/custom-pools.md)
