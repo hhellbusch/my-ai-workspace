@@ -21,6 +21,83 @@ MCPs manage **OS configuration**, not pod scheduling. Labels, taints, and affini
 
 ## Targeting rules
 
+### Node roles vs MC roles
+
+Two label systems — similar names, different objects:
+
+| Label | On | Purpose |
+|-------|-----|---------|
+| `node-role.kubernetes.io/<name>` | **Node** | Node class in `oc get nodes` ROLES; **MCP `nodeSelector`** matches this |
+| `machineconfiguration.openshift.io/role: <name>` | **MachineConfig** | Which configs merge into a pool's rendered MC |
+
+Default mapping at install:
+
+| Node role | MCP | MC roles in rendered config |
+|-----------|-----|----------------------------|
+| `node-role.kubernetes.io/master` | `master` | `master` (+ platform templates) |
+| `node-role.kubernetes.io/worker` | `worker` | `worker` |
+| `node-role.kubernetes.io/<custom>` | custom MCP (if defined) | `worker` + `<custom>` via `machineConfigSelector` |
+
+```
+Node                          MachineConfigPool              MachineConfig
+────                          ─────────────────              ─────────────
+node-role.../kafka      →     nodeSelector: kafka      ←     role: kafka-worker
+                              selector: [worker, kafka-worker]     role: worker (inherited)
+```
+
+**Node role → pool membership.** **MC role → which config fragments compose that pool.** Workload placement (taints, affinity, `topology.kubernetes.io/zone`, app labels) is separate — do not conflate with node roles.
+
+### Node role guidelines
+
+Use `node-role.kubernetes.io/*` for **platform node class** and MCP boundaries — not as general-purpose app labels.
+
+#### When to add a custom node role
+
+| Stay on default `worker` | Add a custom node role |
+|--------------------------|-------------------------|
+| Same OS config as all workers | Different **MachineConfig** scope (kernel, files, systemd) |
+| Taints/affinity enough for workload separation | Separate **MCP rollout** (`maxUnavailable`, `paused`, upgrade order) |
+| Rack/zone metadata only | Node must leave the default `worker` pool |
+
+If you only need “pods run here,” use **taints + affinity + topology labels** — not a new node role.
+
+#### Rules
+
+1. **One custom node role per node** — never stack two custom pool roles (e.g. `kafka` + `gpu-worker`) on one host.
+2. **Create the MCP before labeling** — label without a matching MCP leaves the node in `worker` or **unmanaged**.
+3. **Keep `worker` unless infra-only** — `worker` + custom is normal; drop `worker` only when the node should not run generic workloads (custom MCP still inherits worker MCs).
+4. **Align names** — document the mapping between node role (`kafka`), MCP name (`kafka-worker`), and MC role (`kafka-worker`).
+5. **No custom roles on control plane** — master nodes use `role: master` MCs only.
+6. **Prefer install-time labels** for fixed node class (ACM BMAC annotations, BMH `spec.nodeLabels`, GitOps inventory) — day-2 role changes trigger MCP rollouts.
+7. **Git as source of truth** — model roles in inventory; avoid ad-hoc `oc label` without updating declared state.
+
+#### Label types (do not mix purposes)
+
+| Type | Examples | Use for |
+|------|----------|---------|
+| Node role | `node-role.kubernetes.io/worker`, `.../infra` | MCP membership |
+| Topology | `topology.kubernetes.io/zone`, `topology.kubernetes.io/region` | Rack/zone, Strimzi, MCO drain order |
+| Workload | taints, `nvidia.com/gpu.present`, app labels | Scheduling |
+
+#### Checklist before adding `node-role.kubernetes.io/<foo>`
+
+1. Need different **OS-level** config on this class? If no → taints/labels only.
+2. Need a **separate MCP**? If no → stay in `worker`.
+3. MCP exists with `worker` in `machineConfigSelector`?
+4. Will any node get **two custom** roles? If yes → redesign.
+5. Naming consistent across node label, MCP name, and MC role?
+
+#### Anti-patterns
+
+| Anti-pattern | Why it hurts |
+|--------------|--------------|
+| Node role per app team | MCP sprawl; pool overlap risk |
+| Label before MCP exists | Unmanaged or wrong pool |
+| Rack/zone as node role | Conflates scheduling topology with OS config |
+| `role: worker` MC to target three nodes | Reboots every worker — use custom pool |
+
+See also: [Kafka labeling comparison](../examples/kafka-bare-metal-portworx/LABELING-COMPARISON.md) (rack labels vs dedicated node roles), [GPU node labeling](../gpu/vgpu-node-labeling.md) (inventory → Git → label).
+
 ### One role label per MachineConfig
 
 Every `MachineConfig` carries exactly one pool-targeting label:
