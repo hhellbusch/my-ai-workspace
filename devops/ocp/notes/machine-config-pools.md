@@ -224,6 +224,52 @@ metadata:
 
 Each pool rolls out on its own schedule. Expect two reboot waves.
 
+### Define the config once (Helm or Kustomize)
+
+The MCO requires two API objects, but you should not maintain duplicate `spec` blocks by hand — they will drift. Generate both MCs from one source:
+
+| Tool | Pattern |
+|------|---------|
+| **Helm** | Template `metadata.labels` / `metadata.name` on a shared `spec`; `helm template` with `role: master` and `role: worker` (values or two releases). |
+| **Kustomize** | Base `MachineConfig` with common `spec`; overlays patch only `metadata.name` and `machineconfiguration.openshift.io/role`. |
+
+**Helm sketch:**
+
+```yaml
+# templates/machineconfig.yaml
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  name: 99-{{ .Values.role }}-{{ .Values.purpose }}
+  labels:
+    machineconfiguration.openshift.io/role: {{ .Values.role }}
+spec:
+  {{- toYaml .Values.machineConfigSpec | nindent 2 }}
+```
+
+```bash
+# Render both (example values files or --set)
+helm template mc ./chart -f values-master.yaml > 99-master-policy.yaml
+helm template mc ./chart -f values-worker.yaml > 99-worker-policy.yaml
+```
+
+**Kustomize sketch:**
+
+```
+machineconfig-policy/
+  base/kustomization.yaml      # common spec
+  base/machineconfig.yaml      # spec only; name/role placeholders or patches
+  overlays/master/kustomization.yaml   # patches role + name
+  overlays/worker/kustomization.yaml
+```
+
+```bash
+kustomize build overlays/master | oc apply -f -
+kustomize build overlays/worker | oc apply -f -
+```
+
+Repo example of hand-duplicated master/worker MCs (good candidate to templatize): [`signature-policy-machineconfig.yaml`](../troubleshooting/image-signature-policy-mcp-deadlock/signature-policy-machineconfig.yaml).
+
 ---
 
 ## Rollout behavior
