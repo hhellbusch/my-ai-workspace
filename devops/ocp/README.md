@@ -13,7 +13,7 @@ description: OpenShift troubleshooting, configuration examples, and quick refere
 - [Disconnected install (Quay + oc-mirror)](disconnected-install/) — mirror-registry, oc-mirror v2, ImageSet examples, phased working guide
 - [IBM Z / LinuxONE](ibm-z/) — s390x vocabulary, CIM ABI LPAR, AOP fork notes, ACM vs Metal3 ([index](ibm-z/README.md))
 - [Examples](examples/) — Configuration examples and templates ([Kafka + Portworx rack-aware](examples/kafka-bare-metal-portworx/README.md))
-- [Notes](notes/) — Informal quick references and command lists
+- [Notes](notes/) — Informal quick references and command lists ([MachineConfig pools](notes/machine-config-pools.md))
 - [Troubleshooting](troubleshooting/) — Symptom → cause → fix guides
 
 Browse the full technical reference index → [devops/README.md](../README.md)

@@ -186,7 +186,7 @@ Pure Storage / Portworx publishes a 10-part series (also bundled as an [ebook](h
 **Topics**
 
 - **Cluster operators** — the controllers that own the platform's own components; `oc get co` is the dashboard for platform health
-- **MachineConfig / MachineConfigPool** — how node-level configuration is managed declaratively (and why you do not SSH into nodes to make changes)
+- **MachineConfig / MachineConfigPool** — how node-level configuration is managed declaratively (see [`devops/ocp/notes/machine-config-pools.md`](../../ocp/notes/machine-config-pools.md)); why you do not SSH into nodes to make changes
 - **Nodes**: cordon, drain, `oc get nodes`, node conditions — the equivalents of putting a host in maintenance mode
 - **Authentication** (OAuth, identity providers) — enough to diagnose "I cannot log in" and understand who can do what
 - **Security Context Constraints (SCCs)** — OpenShift's pod-level security model; no VMware equivalent. Every pod runs under an SCC; `restricted-v2` is the default and is more restrictive than vanilla Kubernetes. A workload that runs on upstream Kubernetes or a development cluster often fails on OCP because of SCC violations. Use `oc adm policy who-can use scc` to audit what service accounts have elevated access.

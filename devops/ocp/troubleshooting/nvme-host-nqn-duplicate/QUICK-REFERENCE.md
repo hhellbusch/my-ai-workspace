@@ -57,7 +57,7 @@ oc apply -f 99-worker-nvme-host-identity.yaml
 oc get mcp worker -w   # wait for UPDATED=True, UPDATING=False
 ```
 
-Repeat for `master` pool if masters use NVMe-oF (change role label and MCP name).
+Repeat for `master` pool if masters use NVMe-oF (change role label and MCP name). See [MachineConfig pools](../../notes/machine-config-pools.md#same-config-on-master-and-worker).
 
 ---
 

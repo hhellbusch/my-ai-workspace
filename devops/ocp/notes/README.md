@@ -10,6 +10,7 @@ Informal OpenShift quick references and command notes. These are working referen
 
 ## Contents
 
+- **[machine-config-pools.md](machine-config-pools.md)** — MachineConfig and MachineConfigPool targeting, custom pools, rollout behavior
 - **[openshift-useful-commands.md](openshift-useful-commands.md)** — Useful OpenShift and kubectl commands for pod management, troubleshooting, and cluster operations
 
 ## Adding New Notes

@@ -448,45 +448,18 @@ oc get pods -A --field-selector spec.nodeName=<kafka-node> \
 
 ### MachineConfigPool (MCP) — what to know
 
-MCPs are how OpenShift rolls **OS-level change** (RHCOS, kernel args, kubelet, CRI-O, systemd) to nodes.
-They are **not** how you schedule Kafka pods — that is labels, taints, affinity.
-But MCP choices directly affect upgrade drain behavior and what kernel tuning lands where.
+See **[MachineConfig and MachineConfigPool](../../../notes/machine-config-pools.md)** for targeting rules, custom pool patterns, rollout behavior, and diagnostics. Summary for this example:
 
-#### Default pools
+- `kafka-worker` MCP selects MCs with roles `worker` + `kafka-worker`; nodes labeled `node-role.kubernetes.io/kafka` leave the default `worker` pool.
+- `99-kafka-kernel-tuning` uses `role: kafka-worker` so THP/sysctl changes reboot **only** kafka nodes — not every worker.
+- `maxUnavailable: 1` on the kafka pool drains one broker at a time; respects PDBs during cluster upgrades.
 
-| Pool | Nodes | Upgrade notes |
-|------|-------|----------------|
-| `master` | Control plane | Always sequential (`maxUnavailable: 1`). Never raise. |
-| `worker` | All workers without a more specific pool | Default for most compute nodes. |
-
-#### Custom pools (e.g. `kafka-worker`)
-
-A node belongs to **exactly one** MCP — the most specific `nodeSelector` match wins.
-Creating `kafka-worker` pulls kafka-labeled nodes **out of** the default `worker` pool.
-
-```
-worker MCP          →  nodes WITHOUT node-role.kubernetes.io/kafka
-kafka-worker MCP    →  nodes WITH    node-role.kubernetes.io/kafka
-```
-
-Implications:
-
-| Topic | Detail |
-|-------|--------|
-| **machineConfigSelector** | Kafka pool must include `worker` + `kafka-worker` roles so base worker MachineConfigs still apply, plus kafka-specific ones (e.g. THP disable). |
-| **Kernel tuning scope** | `99-kafka-kernel-tuning` with `role: kafka-worker` reboots **only kafka nodes** — safe on a shared cluster. Putting it on `role: worker` would reboot every worker. |
-| **maxUnavailable** | Default `1`. Drains one node at a time; respects PDBs. Raising it speeds upgrades but stacks more pods on fewer nodes during drain — bad for Kafka ISR. |
-| **paused** | Stops MCP rollout for that pool only. Use to hold kafka nodes while app-worker pool finishes upgrading. |
-| **Degraded** | Pool stuck — often pending MachineConfig, drain blocked by PDB, or node NotReady. Check `oc get mcp kafka-worker -o yaml` and `oc describe node`. |
-| **Update order** | MCO drains by `topology.kubernetes.io/zone` (alphabetical), oldest node first within zone. Bare metal without zone labels: oldest first cluster-wide. |
-| **Reboot cost** | Most MachineConfig changes trigger reboot. Plan maintenance windows; kafka brokers will roll one at a time if PDB is correct. |
-
-#### MCP pitfalls on shared clusters
+#### MCP pitfalls on shared Kafka clusters
 
 1. **Accidentally sharing a pool** — If kafka nodes stay in default `worker`, you cannot tune kernel params for kafka without affecting apps (and vice versa).
 2. **Drain coupling** — Draining a shared node evicts Kafka **and** every other pod on that node. A misconfigured app PDB elsewhere can block the drain and stall the entire MCP update.
-3. **maxUnavailable on worker pool** — If someone raises `worker` pool `maxUnavailable` to speed app upgrades, kafka nodes in that pool drain in parallel — risky even with kafka PDB.
-4. **MachineConfig overlap** — Two MCPs must not apply conflicting configs to the same node. One node, one pool — design labels so pools partition cleanly.
+3. **maxUnavailable on worker pool** — If someone raises `worker` pool `maxUnavailable` to speed app upgrades, kafka nodes still in that pool drain in parallel — risky even with kafka PDB.
+4. **MachineConfig overlap** — One node, one pool. Design labels so pools partition cleanly. See the [dedicated guide](../../../notes/machine-config-pools.md#common-pitfalls).
 
 ---
 
