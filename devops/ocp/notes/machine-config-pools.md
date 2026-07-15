@@ -35,15 +35,72 @@ The MCO does **not** support multiple `machineconfiguration.openshift.io/role` v
 
 ### One pool per node
 
-A node belongs to **at most one** MCP. Pool assignment is not symmetric:
+A node belongs to **at most one** MCP. How overlaps resolve:
 
-- A node with both `worker` and a custom role label (e.g. `worker,infra`) is managed by the **custom pool** — custom pools take priority over the default `worker` pool.
-- If you add a custom role label but **do not** create the matching MCP, the MCO still treats the node as a worker.
-- A node with only a custom role label and **no** matching MCP is **unmanaged** by the MCO.
+| Situation | Result |
+|-----------|--------|
+| `worker` + one custom role, **custom MCP exists** | **Custom pool wins** (e.g. `worker,infra` → `infra` MCP). Node leaves `worker` pool counts; still inherits worker MCs via custom `machineConfigSelector`. |
+| Custom role label, **no custom MCP** | Stays in **`worker`** pool. |
+| Custom role only, **no matching MCP** | **Unmanaged** — MCO does not reconcile the node. |
+| **Two custom pools** both match | **Error** — MCO cannot pick a pool. |
+| **`master` + `worker`** on same node | **Error** — common in single-node dev clusters (CRC). |
 
-When creating a custom pool, label nodes with the custom role first (they may keep `worker` temporarily). Remove `node-role.kubernetes.io/worker` only when you want the node infra-only for scheduling — the custom pool still inherits worker MachineConfigs via `machineConfigSelector`.
+#### Worker + custom (normal)
 
-The MCO errors when it cannot resolve a single pool (e.g. a node matches multiple custom pools, or edge cases like single-node dev clusters with conflicting roles). Design labels so each node resolves to exactly one pool.
+This is the expected path when carving out a subset of workers:
+
+```bash
+# Node may show both roles while transitioning
+oc label node worker-2 node-role.kubernetes.io/kafka=
+
+# worker MCP machine count drops; kafka-worker MCP gains the node
+oc get mcp
+```
+
+Remove `node-role.kubernetes.io/worker` only when you want the node **infra-only for scheduling**. The custom pool still inherits worker MachineConfigs through `machineConfigSelector: [worker, <custom>]`.
+
+#### Two custom pools on one node (failure)
+
+If two MCPs both match the same node's labels, the MCO errors:
+
+```text
+Error finding pools for node: node worker-2 belongs to more than one MachineConfigPool
+```
+
+Example mistake — both pools select the same node:
+
+```yaml
+# kafka-worker MCP
+nodeSelector:
+  matchLabels:
+    node-role.kubernetes.io/kafka: ""
+
+# gpu-worker MCP — worker-2 has BOTH kafka and gpu labels
+nodeSelector:
+  matchLabels:
+    node-role.kubernetes.io/gpu-worker: ""
+```
+
+```bash
+oc label node worker-2 node-role.kubernetes.io/kafka=
+oc label node worker-2 node-role.kubernetes.io/gpu-worker=   # now matches two custom MCPs
+```
+
+**Fix:** one custom role per node for MCP purposes. Split nodes across pools — do not stack custom pool labels on the same host.
+
+#### Diagnose and recover
+
+```bash
+oc get nodes --show-labels | rg 'node-role.kubernetes.io'
+oc get mcp -o custom-columns=NAME:.metadata.name,NODES:.status.machineCount,SELECTOR:.spec.nodeSelector
+oc describe node <node>
+oc logs -n openshift-machine-config-operator -l k8s-app=machine-config-controller --tail=100 \
+  | rg -i 'more than one|machineconfigpool'
+```
+
+Recovery: remove the extra role label or narrow one MCP's `nodeSelector` so only one pool matches. Wait for MCO to reconcile; watch `oc get mcp -w`.
+
+Design rule: **each node's labels must resolve to exactly one MCP.**
 
 ### Pools select configs; configs do not select pools
 
@@ -309,11 +366,13 @@ UPDATED:.status.conditions[?(@.type==\"Updated\")].status
 
 3. **Node still in default worker pool** — Without the custom node role label, pool-specific MCs never apply to that node.
 
-4. **Drain blocked by unrelated PDB** — MCO must evict all pods on a node during drain. A misconfigured PDB on a co-located workload stalls the entire pool update.
+4. **Two custom pools on one node** — Stacking custom role labels (e.g. `kafka` + `gpu-worker`) without disjoint node sets causes MCO pool resolution errors. One custom MCP per node.
 
-5. **Conflicting MCs on the same path** — Within a rendered config, the MCO merges MCs in lexicographic name order; later names override earlier ones for the same field (e.g. `99-worker-foo` overrides `50-worker-foo`). Since **OCP 4.15+**, MCs targeting a custom pool role override worker-role MCs for the same field regardless of name order. Avoid defining the same path in both `worker` and custom roles unless you intend the custom value to win.
+5. **Drain blocked by unrelated PDB** — MCO must evict all pods on a node during drain. A misconfigured PDB on a co-located workload stalls the entire pool update.
 
-6. **Ignition version mismatch** — Match `spec.config.ignition.version` to the cluster. Check an existing MC:
+6. **Conflicting MCs on the same path** — Within a rendered config, the MCO merges MCs in lexicographic name order; later names override earlier ones for the same field (e.g. `99-worker-foo` overrides `50-worker-foo`). Since **OCP 4.15+**, MCs targeting a custom pool role override worker-role MCs for the same field regardless of name order. Avoid defining the same path in both `worker` and custom roles unless you intend the custom value to win.
+
+7. **Ignition version mismatch** — Match `spec.config.ignition.version` to the cluster. Check an existing MC:
 
    ```bash
    oc get mc 00-worker -o jsonpath='{.spec.config.ignition.version}{"\n"}'
