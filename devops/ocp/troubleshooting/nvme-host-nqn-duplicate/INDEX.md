@@ -7,7 +7,9 @@
 | Check if nodes have duplicate NQNs | [QUICK-REFERENCE § Verify](QUICK-REFERENCE.md#1-verify-per-node) |
 | Apply the MachineConfig fix | [QUICK-REFERENCE § Apply](QUICK-REFERENCE.md#2-apply-fix) |
 | Understand why Ignition `data:,$(cat...)` fails | [README — Anti-pattern](README.md#anti-pattern-ignition-static-file-with-shell) |
+| Red Hat KBA diagnostic | [README — KBA diagnostic](README.md#red-hat-kba-diagnostic-kcs-7073579) |
 | Compare Dell / HPE / Pure fixes to ours | [README — Provider fixes compared](README.md#provider-fixes-compared) |
+| Next: storage network (dual NIC) | [NVMe/TCP Storage Network](../nvme-tcp-storage-network/README.md) |
 | Full context and array registration | [README](README.md) |
 
 ## By Task

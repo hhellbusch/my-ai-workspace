@@ -7,11 +7,15 @@ Unique host NQN per node for NVMe-oF storage on OpenShift (Dell CSM, Portworx/Pu
 ```
 Deploying NVMe-oF storage (CSI) on bare-metal OCP?
 │
-├─ Check NQNs on every storage node
+├─ KBA check: gen-hostnqn vs file on disk
+│  ssh core@<node> 'echo expected: $(nvme gen-hostnqn); echo on-disk: $(cat /etc/nvme/hostnqn)'
+│  differ → baked-in wrong NQN
+│
+├─ Check NQNs unique across all storage nodes
 │  ssh core@<node> 'cat /etc/nvme/hostnqn'
 │
 ├─ All unique and match dmidecode system-uuid?
-│  ├─ yes → proceed with CSI / array registration
+│  ├─ yes → NVMe/TCP network prep → ../nvme-tcp-storage-network/
 │  └─ no → apply MachineConfig fix (below), wait for MCO reboot
 │
 ├─ File contains literal "$(cat ...)"?
@@ -25,7 +29,10 @@ Deploying NVMe-oF storage (CSI) on bare-metal OCP?
 ## 1. Verify (per node)
 
 ```bash
+# Red Hat KBA: expected vs on-disk
+nvme gen-hostnqn
 cat /etc/nvme/hostnqn
+
 cat /etc/nvme/hostid
 dmidecode -s system-uuid
 ```
@@ -41,9 +48,10 @@ done
 
 | Result | Action |
 |--------|--------|
+| `gen-hostnqn` ≠ `cat hostnqn` | Baked-in wrong file — apply fix below |
 | Same NQN on 2+ nodes | Apply fix below |
 | NQN contains `$(cat` | Anti-pattern MC — replace with systemd fix |
-| Each NQN unique, UUID matches DMI | OK — proceed to storage install |
+| Each NQN unique, UUID matches DMI | OK — [NVMe/TCP network prep](../nvme-tcp-storage-network/QUICK-REFERENCE.md) |
 
 ---
 
@@ -99,4 +107,5 @@ done
 
 - [Full guide](README.md)
 - [MachineConfig example](99-worker-nvme-host-identity.yaml)
+- [NVMe/TCP storage network](../nvme-tcp-storage-network/README.md) — next step after NQN fix
 - [Portworx CSI CrashLoop](../portworx-csi-crashloop/README.md)

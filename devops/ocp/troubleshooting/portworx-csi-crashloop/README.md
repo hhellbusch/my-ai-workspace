@@ -679,6 +679,7 @@ oc adm must-gather
 This guide is focused on `px-csi-ext` pod issues. For other Portworx issues, see:
 
 - **[NVMe host NQN duplicates](../nvme-host-nqn-duplicate/README.md)** — prerequisite when using NVMe-oF to FlashArray; duplicate NQNs block CSI node registration
+- **[NVMe/TCP storage network](../nvme-tcp-storage-network/README.md)** — dual NIC topology and native multipath before CSI install
 - Portworx node pods crash looping
 - Portworx cluster not forming (quorum issues)
 - Volume attachment failures

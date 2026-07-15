@@ -15,6 +15,7 @@
 
 - [Portworx CSI crashloop troubleshooting](../../troubleshooting/portworx-csi-crashloop/README.md)
 - [NVMe host NQN duplicates](../../troubleshooting/nvme-host-nqn-duplicate/README.md) — prerequisite if using NVMe-oF to FlashArray
+- [NVMe/TCP storage network](../../troubleshooting/nvme-tcp-storage-network/README.md) — dual NIC, no bond, NMState (after NQN fix)
 - [NFS Portworx proxy PVC delays](../../troubleshooting/nfs-portworx-proxy-pvc-slow-ready/README.md)
 - [OCP examples index](../README.md)
 
@@ -48,6 +49,7 @@ Assumes **OpenShift Container Platform 4.20+** (Ignition 3.5.0 MachineConfigs).
 | **Kafka** | **4.1.0** with `metadataVersion: 4.1-IV1` | Operator version matrix / CSV |
 | **Portworx CSI** | `pxd.portworx.com` provisioner | `oc get csidriver pxd.portworx.com` |
 | **Worker nodes** | ≥ 3 workers with 3 distinct rack label values per [labeling variant](#rack-labeling-variants) | See node label examples |
+| **NVMe-oF to FlashArray** (if used) | Unique host NQN per node; dual storage NICs | [NQN guide](../../troubleshooting/nvme-host-nqn-duplicate/README.md), [NVMe/TCP network](../../troubleshooting/nvme-tcp-storage-network/README.md) |
 
 Red Hat reference: [Streams for Apache Kafka 3.1 — tested on OCP 4.16–4.20](https://docs.redhat.com/en/documentation/red_hat_streams_for_apache_kafka/3.1/html/release_notes_for_streams_for_apache_kafka_3.1_on_openshift/ref-supported-configurations-str).
 

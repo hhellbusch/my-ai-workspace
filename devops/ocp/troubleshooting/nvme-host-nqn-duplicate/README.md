@@ -104,6 +104,18 @@ done
 
 **Fail:** two or more nodes share the same `hostnqn`, or the file contains a literal `$(cat ...)` string (see anti-pattern below).
 
+### Red Hat KBA diagnostic (KCS 7073579)
+
+Red Hat's recommended triage compares **what the host should have** vs **what is on disk**:
+
+```bash
+nvme gen-hostnqn          # correct value from host UUID
+cat /etc/nvme/hostnqn     # value currently in use
+```
+
+If these differ, the baked-in file is wrong — apply the fix in Step 2.
+This check is the fastest way to confirm the duplicate-NQN problem without comparing nodes to each other.
+
 ---
 
 ## Step 2: Apply the Fix (MachineConfig + systemd)
@@ -169,7 +181,7 @@ The manifest in this directory — [99-worker-nvme-host-identity.yaml](99-worker
 | **Dell CSM** | [PowerMax / PowerStore / PowerFlex OpenShift install](https://dell.github.io/csm-docs/docs/getting-started/installation/openshift/powermax/csmoperator/) | MC + systemd oneshot | `nvme gen-hostnqn` | No | 1 (`custom-coreos-generate-nvme-hostnqn`) | Every boot |
 | **HPE CSI** | [Duplicate NQNs on OpenShift](https://scod.hpedev.io/csi_driver/partners/redhat_openshift/index.html) | MC + systemd oneshot | `nvme gen-hostnqn` | `dmidecode -s system-uuid` | 2 separate | Every boot |
 | **Pure / Portworx** | [DinoCloud OCP + NVMe-TCP + FlashArray](https://dinocloud.net/2026/02/16/beginners-guide-to-openshift-virtualization-with-nvme-tcp-pure-flasharray/) | MC + systemd oneshot | `nvme gen-hostnqn` | Optional (`random/uuid` if empty) | 1 conditional | Only if value matches known duplicate |
-| **Red Hat** | [KCS 7073579](https://access.redhat.com/solutions/7073579), [RHEL Bug 2049991](https://bugzilla.redhat.com/show_bug.cgi?id=2049991) | Installer / dracut (desired state) | `nvme gen-hostnqn` at install | DMI UUID at install | N/A (not an MC workaround) | Should happen at install; MC is a gap-fill |
+| **Red Hat** | [KCS 7073579](https://access.redhat.com/solutions/7073579), [RHEL Bug 2049991](https://bugzilla.redhat.com/show_bug.cgi?id=2049991), OCPBUGS-34629, RHEL-8041 | Manual per node (KBA) or installer/dracut (desired) | `nvme gen-hostnqn` | DMI UUID / sysimage copy | N/A (KBA); MC gap-fill in practice | KBA: manual; vendors: every boot |
 | **Harvester** | [#6911](https://github.com/harvester/harvester/issues/6911) | Image build + first-boot scriptlets | RPM postinstall / boot script | Same | N/A (fix the image) | Once at first boot |
 | **Peer anti-pattern** | Field suggestion (do not use) | Ignition `storage.files` | Literal `$(cat ...)` string | No | N/A | Never executes |
 
@@ -229,9 +241,15 @@ Prefer conditional logic only when you know the exact bad NQN and have a migrati
 
 These references explain **why** the duplicate exists rather than shipping a customer MachineConfig:
 
+- **[KCS 7073579](https://access.redhat.com/solutions/7073579)** (updated Jan 2026) — acknowledges duplicate host NQNs on OCP nodes; resolution is `nvme gen-hostnqn > /etc/nvme/hostnqn`; **recommends manual fix per node** until RHCOS automates generation (tracked under **OCPBUGS-34629**, **RHEL-8041**).
 - **RHEL Bug 2049991** — installer should run `nvme gen-hostnqn` and copy `{hostnqn,hostid}` into the installed rootfs before dracut rebuild; relevant for NVMe boot-from-SAN.
-- **KCS 7073579** — acknowledges duplicate host NQNs on OCP nodes (subscriber article).
 - **Harvester #6911** — static files baked into the ISO rootfs; fix by removing them at image build and regenerating at first boot.
+
+**KBA install-only steps (not day-2 CSI):** FC `echo add > /sys/class/fc/fc_udev_device/nvme_discovery` and copying `{hostnqn,hostid}` to `/mnt/sysimage/etc/nvme/` apply during **live install / boot-from-SAN**, not to a running cluster.
+
+**Manual vs MachineConfig:** Red Hat's KBA prefers manual per-node correction; HPE, Dell, and this repo use **MachineConfig + systemd** because cluster-scale manual SSH does not scale.
+Both implement the same command — the tension is operational automation vs waiting for a platform fix.
+Revisit or remove the MC when OCPBUGS-34629 / RHEL-8041 land in your OCP version.
 
 **Compared to this repo:** our MachineConfig is a **day-2 gap-fill** when the platform image still ships duplicates.
 Harvester/RHEL fixes address the image pipeline; until RHCOS does the same, the MC workaround remains necessary.
@@ -344,6 +362,7 @@ Harvester fixed all three (`machine-id`, iSCSI initiator, NVMe host files) toget
 
 - [Quick Reference](QUICK-REFERENCE.md) — verify, apply, and confirm commands
 - [Index](INDEX.md) — navigate by task
+- [NVMe/TCP Storage Network](../nvme-tcp-storage-network/README.md) — step 2: dual NIC topology, no bond, NMState (after NQN fix)
 - [Portworx CSI CrashLoop](../portworx-csi-crashloop/README.md) — if CSI fails after NQN fix
 - [Kafka on Bare Metal + Portworx](../../examples/kafka-bare-metal-portworx/README.md) — rack-aware storage example
 - [Bare Metal Node Inspection Timeout](../bare-metal-node-inspection-timeout/README.md) — provisioning issues before storage attach
@@ -357,7 +376,7 @@ Vendor and platform docs cited in [Provider fixes compared](#provider-fixes-comp
 - [HPE CSI — Duplicate NQNs on OpenShift](https://scod.hpedev.io/csi_driver/partners/redhat_openshift/index.html) — hosted worker and converged MachineConfig YAML
 - [DinoCloud — OCP + NVMe-TCP + Pure FlashArray](https://dinocloud.net/2026/02/16/beginners-guide-to-openshift-virtualization-with-nvme-tcp-pure-flasharray/) — conditional NQN regen inside broader storage MC
 - [Portworx FlashArray prep](https://docs.portworx.com/portworx-csi/install/prepare/flash-array) — Portworx host registration (assumes unique NQNs)
-- [Red Hat KCS 7073579](https://access.redhat.com/solutions/7073579) — NVMe Host NQN not generated as expected for OCP nodes (subscriber)
+- [Red Hat KCS 7073579](https://access.redhat.com/solutions/7073579) — duplicate NQN on OCP; manual fix; OCPBUGS-34629 / RHEL-8041 tracking
 - [RHEL Bug 2049991](https://bugzilla.redhat.com/show_bug.cgi?id=2049991) — installer / dracut hostnqn generation
 - [Harvester #6911](https://github.com/harvester/harvester/issues/6911) — root-cause explanation for RHCOS-derived images
 - [nvme gen-hostnqn man page](https://github.com/linux-nvme/nvme-cli/blob/master/Documentation/nvme-gen-hostnqn.txt)

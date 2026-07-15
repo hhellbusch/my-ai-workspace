@@ -57,7 +57,7 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
   - [Index](worker-node-tls-cert-failure/INDEX.md) - Guide navigation and quick scenarios
   - Script: `diagnose-tls.sh` - Automated TLS/certificate diagnostic tool
 
-Bare-metal nodes using NVMe-oF block storage: see [NVMe Host NQN Duplicates](nvme-host-nqn-duplicate/README.md) under Storage Issues (prerequisite before CSI install).
+Bare-metal nodes using NVMe-oF block storage: see [NVMe Host NQN Duplicates](nvme-host-nqn-duplicate/README.md) then [NVMe/TCP Storage Network](nvme-tcp-storage-network/README.md) under Storage Issues (prerequisites before CSI install).
 
 ### Certificate Management
 
@@ -114,6 +114,11 @@ Bare-metal nodes using NVMe-oF block storage: see [NVMe Host NQN Duplicates](nvm
   - **[Quick Reference](nvme-host-nqn-duplicate/QUICK-REFERENCE.md)** - Verify, apply MachineConfig, confirm uniqueness ⚡
   - [Index](nvme-host-nqn-duplicate/INDEX.md) - Navigate by task
   - YAML: [99-worker-nvme-host-identity.yaml](nvme-host-nqn-duplicate/99-worker-nvme-host-identity.yaml) - systemd oneshot fix (not Ignition static file)
+
+- **[NVMe/TCP Storage Network](nvme-tcp-storage-network/README.md)** - Dual-NIC storage fabric on bare-metal OCP: no bond, NMState, native multipath (after NQN fix)
+  - **[Quick Reference](nvme-tcp-storage-network/QUICK-REFERENCE.md)** - Topology decision tree and verify commands ⚡
+  - [Index](nvme-tcp-storage-network/INDEX.md) - Navigate by task
+  - YAML: [example-nncp-storage-interfaces.yaml](nvme-tcp-storage-network/example-nncp-storage-interfaces.yaml) - NNCP skeleton for two storage NICs
 
 - **[Portworx CSI Pod CrashLoopBackOff](portworx-csi-crashloop/README.md)** - Complete guide for troubleshooting px-csi-ext pod crashes
   - **[Quick Start](portworx-csi-crashloop/QUICKSTART.md)** - Fast fixes for common CSI issues ⚡
@@ -253,6 +258,7 @@ Planned troubleshooting guides:
 - [ ] Networking issues (SDN/OVN) - OpenShift networking layer
 - [x] CoreOS base system networking - See [CoreOS Networking Issues](coreos-networking-issues/README.md)
 - [x] Storage/PVC problems (Portworx) - See [Portworx CSI Pod CrashLoopBackOff](portworx-csi-crashloop/README.md)
+- [x] NVMe-oF bare metal prep - See [NVMe Host NQN Duplicates](nvme-host-nqn-duplicate/README.md), [NVMe/TCP Storage Network](nvme-tcp-storage-network/README.md)
 - [ ] Storage/PVC problems (OCS/ODF)
 - [x] Image signature policy rejections - See [Image Signature Policy Blocking MCP Rollout](image-signature-policy-mcp-deadlock/README.md)
 - [ ] Image registry issues (general)
