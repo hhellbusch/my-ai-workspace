@@ -266,9 +266,25 @@ Key parameters:
 
 ### Kernel tuning (optional)
 
-Bare-metal brokers can benefit from disabling transparent huge pages and lowering swappiness. See [`manifests/common/machineconfig-kafka-tuning.yaml`](manifests/common/machineconfig-kafka-tuning.yaml).
+Brokers benefit from host-level VM and THP settings that protect the page cache and reduce latency jitter. See [`manifests/common/machineconfig-kafka-tuning.yaml`](manifests/common/machineconfig-kafka-tuning.yaml) — the file header documents **each sysctl/kernel argument**, **references** (Confluent, Red Hat OCP, Cloudera), **trade-offs on shared workers**, and **impact on non-Kafka colocated pods**.
 
-**Not in default apply order** — the MachineConfig targets the default `worker` role, so it reboots every worker when applied. Use only if those sysctl changes are acceptable for all workloads sharing worker nodes.
+| Setting | Intent |
+|---------|--------|
+| `transparent_hugepage=never` | Avoid THP compaction latency on broker JVMs |
+| `vm.swappiness=1` | Prefer page cache over swap (Confluent recommends low, not 0) |
+| `vm.dirty_*` | Tune writeback aggressiveness for log I/O |
+| `net.core.somaxconn=4096` | Higher socket listen backlog for many clients |
+
+**Impact on non-Kafka pods** (summary — detail in the MC header):
+
+| Colocated workload | Risk |
+|--------------------|------|
+| Microservices with memory limits | Low |
+| Memory-heavy pods without limits | Medium — `swappiness=1` may OOM before swap |
+| Large JVM / DB / analytics | Medium — THP disabled; dirty ratios affect writeback |
+| Write-heavy batch jobs | Low–medium — conservative `dirty_*` reduces burst write throughput |
+
+**Not in default apply order** — `role: worker` reboots every worker via MCO. Apply only if those changes are acceptable for all colocated workloads, or adopt a scoped alternative (dedicated MCP or [Node Tuning Operator](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/scalability_and_performance/what-huge-pages-do-and-how-they-are-consumed) profile) instead.
 
 Uses **Ignition 3.5.0** per [OCP 4.20 MachineConfig guidance](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/machine_configuration/machine-configs-configure).
 

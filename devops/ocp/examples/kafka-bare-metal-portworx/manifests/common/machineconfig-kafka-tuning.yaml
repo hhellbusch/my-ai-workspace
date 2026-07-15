@@ -1,11 +1,141 @@
 # Optional kernel/sysctl tuning for worker nodes (OCP 4.20+).
 #
-# NOT applied by default in this example — Kafka brokers schedule on any worker,
-# so this MachineConfig reboots every node in the default worker pool.
-# Apply only if the sysctl/THP changes are acceptable for all workloads on workers.
+# NOT applied by default in this example set. Kafka brokers schedule on any worker,
+# so this MachineConfig targets machineconfiguration.openshift.io/role: worker and
+# triggers an MCP rollout (cordon → drain → reboot) on every worker when applied.
 #
-# Ignition 3.5.0 is required for OpenShift Container Platform 4.20.
+# Why this file exists
+# --------------------
+# Kafka brokers are I/O- and page-cache-heavy: they rely on the OS to buffer log
+# segments in RAM before async flush to disk (see Confluent deployment guidance).
+# Default RHCOS worker sysctl/THP settings are generic — not tuned for that
+# access pattern. This MachineConfig applies commonly cited broker host tunings
+# in one place for bare-metal OpenShift + Portworx layouts.
+#
+# What each setting does (and why)
+# --------------------------------
+#
+# transparent_hugepage=never  (kernel cmdline)
+#   THP lets the kernel promote 4Ki pages to 2Mi huge pages automatically.
+#   On memory-pressured or fragmented nodes, khugepaged compaction can add
+#   latency jitter — a problem for latency-sensitive brokers. Disabling THP is
+#   widely recommended for Kafka JVM workloads (not the same as static hugepages).
+#   Refs:
+#   - Red Hat OCP — THP can cause degradation; disabling is recommended when
+#     apps manage memory themselves:
+#     https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/scalability_and_performance/what-huge-pages-do-and-how-they-are-consumed
+#   - Red Hat — transparent hugepages overview:
+#     https://access.redhat.com/solutions/46111
+#
+# vm.swappiness=1
+#   Kafka performance depends on keeping broker data in the page cache. Swap
+#   evicts cache-backed pages to disk and hurts throughput/latency. A value of
+#   1 strongly prefers retaining cache over swapping, but still allows swap
+#   under catastrophic memory pressure (Confluent explicitly warns against 0).
+#   Ref:
+#   https://docs.confluent.io/platform/current/kafka/post-deployment.html
+#   (section "Tuning virtual memory")
+#
+# vm.dirty_background_ratio=5 / vm.dirty_ratio=10
+#   Control how much dirty page cache can accumulate before the kernel starts
+#   background or synchronous writeback to disk. Lower ratios flush sooner
+#   (more predictable I/O, less burstiness on fsync); higher ratios defer
+#   writes and can improve sequential write throughput at the cost of longer
+#   dirty cache residency. Values here (5/10) are conservative — Cloudera and
+#   other guides sometimes use higher dirty_ratio for pure broker nodes.
+#   Refs:
+#   - https://docs.cloudera.com/runtime/7.3.1/kafka-performance-tuning/topics/kafka-tune-broker-syslevel-virtual-memory.html
+#   - https://documentation.ubuntu.com/charmed-kafka/3/reference/performance-tuning/
+#
+# net.core.somaxconn=4096
+#   Raises the listen backlog for sockets. Brokers accept many client and
+#   inter-broker connections; default somaxconn (often 128–4096) can become a
+#   bottleneck under connection storms. Harmless for most apps; slightly
+#   increases kernel queue memory at high connection counts.
+#
+# Trade-offs (especially on shared workers)
+# -----------------------------------------
+#
+# | Benefit | Cost |
+# |---------|------|
+# | Lower swap-induced latency for Kafka | Same swappiness on all colocated apps — less aggressive swap may increase OOM risk for memory-heavy non-Kafka pods if limits are loose |
+# | More stable broker latency (no THP) | THP disabled cluster-wide on workers — workloads that benefit from THP lose that optimization |
+# | Tuned dirty ratios for log I/O | Affects page writeback for every workload on the node, not only Kafka |
+# | One Git-tracked baseline | MCO rollout reboots every worker; plan maintenance window and PDB/drain coupling with app pods |
+#
+# Impact on non-Kafka workloads
+# ------------------------------
+# These are node-level settings — every pod on the worker inherits them, not only
+# Kafka. Scope is the whole default worker MCP when role: worker is used.
+#
+# Per setting — what colocated apps may see:
+#
+#   transparent_hugepage=never
+#     Apps that benefit from automatic 2Mi page promotion (some large-heap JVMs,
+#     certain databases, analytics jobs) may see slightly higher TLB pressure or
+#     more 4Ki page faults. Typical small microservices are usually unaffected.
+#
+#   vm.swappiness=1
+#     Under memory pressure the kernel prefers reclaiming cache over swapping
+#     anonymous memory. Pods without memory limits, or with heaps sized near node
+#     capacity, may hit OOM sooner than on default swappiness (~60 on RHEL).
+#     Pods with proper requests/limits and Guaranteed QoS are lower risk.
+#
+#   vm.dirty_background_ratio=5 / vm.dirty_ratio=10
+#     Conservative ratios flush dirty page cache sooner. Write-heavy non-Kafka
+#     workloads (log shippers, DBs, image builders) may see more frequent
+#     writeback and lower peak buffered-write throughput; crash recovery can be
+#     somewhat more predictable for all workloads on the node.
+#
+#   net.core.somaxconn=4096
+#     Rarely harmful. Slightly more kernel memory for connection backlogs at very
+#     high connection counts. Default on many systems is already in this range.
+#
+# Risk by workload type (shared workers):
+#
+# | Workload | Typical risk |
+# |----------|--------------|
+# | Web/API microservices with limits | Low |
+# | Memory-heavy apps without limits | Medium (swappiness → OOM before swap) |
+# | Large JVM, databases, analytics | Medium (THP disabled; dirty ratios) |
+# | Write-heavy batch / ETL | Low–medium (conservative dirty ratios) |
+#
+# Operational cost for all workloads: MCO apply triggers cordon → drain → reboot
+# per worker. App PDBs on the same node can block drain — not a sysctl issue,
+# but often the larger production concern than the tuning values themselves.
+#
+# When to apply
+# -------------
+# - Kafka is production-critical on this cluster and worker capacity is sized
+#   with broker page-cache needs in mind.
+# - You accept worker-wide sysctl/THP changes for all colocated workloads, OR
+#   you later move to a dedicated worker pool / Node Tuning Operator profile
+#   scoped to a subset of nodes.
+#
+# When to skip or use an alternative
+# ----------------------------------
+# - Mixed worker fleet where other apps depend on default VM behavior or THP.
+# - You prefer the Node Tuning Operator (NTO) for THP only — see Red Hat doc
+#   above for a Tuned profile without a kernel cmdline change (still evaluate
+#   rollout impact on shared nodes).
+# - You need broker-only tuning without touching apps: use a dedicated MCP or
+#   NTO nodeSelector — not used in this example (shared workers).
+#
+# Not included (tune separately if needed)
+# ----------------------------------------
+# - vm.max_map_count — partition/log-segment count can require raising this
+#   (Confluent/Charmed Kafka docs); depends on topic/partition scale.
+# - File descriptor ulimits — Kafka opens many log segments and sockets;
+#   often handled via pod securityContext or container runtime defaults on OCP.
+# - Network buffer sysctls (net.core.rmem_max, etc.) — workload and NIC dependent.
+# - Filesystem mount options (noatime) — Portworx PVC path, not node MC scope.
+#
+# Strimzi note: broker memory requests should leave headroom for page cache beyond
+# the JVM heap — see Strimzi configuring docs (disk I/O / page cache table).
+#
+# OCP MachineConfig API (Ignition 3.5.0 on 4.20):
 # https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/machine_configuration/machine-configs-configure
+#
 apiVersion: machineconfiguration.openshift.io/v1
 kind: MachineConfig
 metadata:

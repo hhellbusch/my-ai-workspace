@@ -171,7 +171,7 @@ See [`zone-region/inventory-workers.example.yaml`](manifests/zone-region/invento
 | Artifact | Why |
 |----------|-----|
 | [`common/portworx-storageclass-kafka.yaml`](manifests/common/portworx-storageclass-kafka.yaml) | `racks: "rack-a,rack-b,rack-c"` references **values**, not K8s label keys |
-| [`common/machineconfig-kafka-tuning.yaml`](manifests/common/machineconfig-kafka-tuning.yaml) | Optional; `role: worker` — not applied by default |
+| [`common/machineconfig-kafka-tuning.yaml`](manifests/common/machineconfig-kafka-tuning.yaml) | Optional; `role: worker` — rationale, refs, Kafka + non-Kafka trade-offs in header |
 | Replication / minISR Kafka config | Logical rack awareness via `broker.rack`, not label key name |
 
 ---
