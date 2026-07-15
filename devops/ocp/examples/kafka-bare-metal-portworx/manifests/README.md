@@ -9,7 +9,7 @@ Two parallel examples for the same Kafka + Portworx rack-aware layout. **Do not 
 
 Shared across both variants (label key agnostic):
 
-- [`common/`](common/) — Portworx StorageClass, MCP, kernel tuning, CFK rack-assignment RBAC
+- [`common/`](common/) — Portworx StorageClass, optional worker-wide kernel tuning, CFK rack-assignment RBAC
 
 Operator examples (pick one operator per cluster):
 

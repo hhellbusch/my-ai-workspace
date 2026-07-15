@@ -346,8 +346,7 @@ oc logs -n openshift-machine-config-operator -l k8s-app=machine-config-controlle
 
 | Example | What it demonstrates |
 |---------|---------------------|
-| [`kafka-bare-metal-portworx/manifests/common/machineconfigpool-kafka-worker.yaml`](../examples/kafka-bare-metal-portworx/manifests/common/machineconfigpool-kafka-worker.yaml) | Custom pool with `[worker, kafka-worker]` selector |
-| [`kafka-bare-metal-portworx/manifests/common/machineconfig-kafka-tuning.yaml`](../examples/kafka-bare-metal-portworx/manifests/common/machineconfig-kafka-tuning.yaml) | Pool-scoped kernel/sysctl tuning (`role: kafka-worker`) |
+| [`kafka-bare-metal-portworx/manifests/common/machineconfig-kafka-tuning.yaml`](../examples/kafka-bare-metal-portworx/manifests/common/machineconfig-kafka-tuning.yaml) | Optional worker-wide kernel/sysctl tuning (`role: worker`) — kafka example uses shared workers |
 | [`gpu/machineconfig-iommu-intel.yaml`](../gpu/machineconfig-iommu-intel.yaml) | `role: worker` vs custom `gpu-worker` pool (comments) |
 | [`troubleshooting/image-signature-policy-mcp-deadlock/signature-policy-machineconfig.yaml`](../troubleshooting/image-signature-policy-mcp-deadlock/signature-policy-machineconfig.yaml) | Duplicate MC for `master` and `worker` |
 | [`troubleshooting/nvme-host-nqn-duplicate/99-worker-nvme-host-identity.yaml`](../troubleshooting/nvme-host-nqn-duplicate/99-worker-nvme-host-identity.yaml) | Worker-scoped file + systemd fix |

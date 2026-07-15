@@ -2,13 +2,13 @@
 # Compare: ../zone-region/node-labels.example.yaml · ../../LABELING-COMPARISON.md
 #
 # Replace platform.example.com with your org domain.
+# Kafka brokers schedule on any worker — rack labels only, no dedicated kafka role.
 #
 # Example per rack:
 #   oc label node worker-a1.example.com \
 #     platform.example.com/rack=rack-a \
 #     platform.example.com/site=dc1 \
-#     px/rack=rack-a \
-#     node-role.kubernetes.io/kafka=
+#     px/rack=rack-a
 
 apiVersion: v1
 kind: Node
@@ -18,4 +18,3 @@ metadata:
     platform.example.com/rack: rack-a
     platform.example.com/site: dc1
     px/rack: rack-a
-    node-role.kubernetes.io/kafka: ""

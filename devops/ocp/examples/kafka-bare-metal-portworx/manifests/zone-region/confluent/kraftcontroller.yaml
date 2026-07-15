@@ -14,10 +14,6 @@ spec:
   storageClass:
     name: portworx-kafka-repl3
   podTemplate:
-    tolerations:
-      - key: dedicated
-        value: kafka
-        effect: NoSchedule
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -28,12 +24,6 @@ spec:
                   values:
                     - kraftcontroller
             topologyKey: topology.kubernetes.io/zone
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: node-role.kubernetes.io/kafka
-                  operator: Exists
     podSecurityContext:
       fsGroup: 1000
       runAsUser: 1000

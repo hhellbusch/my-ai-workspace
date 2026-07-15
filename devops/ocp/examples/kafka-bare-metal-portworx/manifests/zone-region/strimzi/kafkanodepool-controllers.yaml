@@ -23,10 +23,6 @@ spec:
       memory: 8Gi
   template:
     pod:
-      tolerations:
-        - key: dedicated
-          value: kafka
-          effect: NoSchedule
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -35,12 +31,6 @@ spec:
                   strimzi.io/cluster: prod-kafka
                   strimzi.io/kind: Kafka
               topologyKey: kubernetes.io/hostname
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: node-role.kubernetes.io/kafka
-                    operator: Exists
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: topology.kubernetes.io/zone

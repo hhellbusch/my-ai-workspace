@@ -36,8 +36,7 @@ Replace `platform.example.com` with your org domain (e.g. `kafka.company.com`).
 oc label node worker-a1.example.com \
   topology.kubernetes.io/zone=rack-a \
   topology.kubernetes.io/region=dc1 \
-  px/rack=rack-a \
-  node-role.kubernetes.io/kafka=
+  px/rack=rack-a
 ```
 
 **Custom-rack variant** — [`custom-rack/node-labels.example.yaml`](manifests/custom-rack/node-labels.example.yaml)
@@ -46,15 +45,14 @@ oc label node worker-a1.example.com \
 oc label node worker-a1.example.com \
   platform.example.com/rack=rack-a \
   platform.example.com/site=dc1 \
-  px/rack=rack-a \
-  node-role.kubernetes.io/kafka=
+  px/rack=rack-a
 ```
 
 ---
 
 ## Side-by-side: ACM BMAC annotations
 
-**Zone/region** — [`zone-region/acm-bmh-kafka-host.example.yaml`](manifests/zone-region/acm-bmh-kafka-host.example.yaml)
+**Zone/region** — [`zone-region/acm-bmh-worker-host.example.yaml`](manifests/zone-region/acm-bmh-worker-host.example.yaml)
 
 ```yaml
 bmac.agent-install.openshift.io/node-label.topology.kubernetes.io/zone: rack-a
@@ -62,7 +60,7 @@ bmac.agent-install.openshift.io/node-label.topology.kubernetes.io/region: dc1
 bmac.agent-install.openshift.io/node-label.px/rack: rack-a
 ```
 
-**Custom-rack** — [`custom-rack/acm-bmh-kafka-host.example.yaml`](manifests/custom-rack/acm-bmh-kafka-host.example.yaml)
+**Custom-rack** — [`custom-rack/acm-bmh-worker-host.example.yaml`](manifests/custom-rack/acm-bmh-worker-host.example.yaml)
 
 ```yaml
 bmac.agent-install.openshift.io/node-label.platform.example.com/rack: rack-a
@@ -164,7 +162,7 @@ Files: [`zone-region/confluent/`](manifests/zone-region/confluent/) vs [`custom-
 | `site` / `region` | `topology.kubernetes.io/region` | `platform.example.com/site` |
 | `rack` (Portworx) | `px/rack` | `px/rack` |
 
-See [`zone-region/inventory-kafka-workers.example.yaml`](manifests/zone-region/inventory-kafka-workers.example.yaml) and [`custom-rack/inventory-kafka-workers.example.yaml`](manifests/custom-rack/inventory-kafka-workers.example.yaml).
+See [`zone-region/inventory-workers.example.yaml`](manifests/zone-region/inventory-workers.example.yaml) and [`custom-rack/inventory-workers.example.yaml`](manifests/custom-rack/inventory-workers.example.yaml).
 
 ---
 
@@ -173,8 +171,7 @@ See [`zone-region/inventory-kafka-workers.example.yaml`](manifests/zone-region/i
 | Artifact | Why |
 |----------|-----|
 | [`common/portworx-storageclass-kafka.yaml`](manifests/common/portworx-storageclass-kafka.yaml) | `racks: "rack-a,rack-b,rack-c"` references **values**, not K8s label keys |
-| [`common/machineconfigpool-kafka-worker.yaml`](manifests/common/machineconfigpool-kafka-worker.yaml) | Selects `node-role.kubernetes.io/kafka` only |
-| [`common/machineconfig-kafka-tuning.yaml`](manifests/common/machineconfig-kafka-tuning.yaml) | OS tuning — no topology labels |
+| [`common/machineconfig-kafka-tuning.yaml`](manifests/common/machineconfig-kafka-tuning.yaml) | Optional; `role: worker` — not applied by default |
 | Replication / minISR Kafka config | Logical rack awareness via `broker.rack`, not label key name |
 
 ---
@@ -219,11 +216,11 @@ The **MCO drain ordering** row is the main operational tradeoff: custom labels g
 
 ```bash
 # Zone/region variant
-oc get nodes -l node-role.kubernetes.io/kafka \
+oc get nodes -l node-role.kubernetes.io/worker \
   -o custom-columns=NAME:.metadata.name,ZONE:.metadata.labels.topology\\.kubernetes\\.io/zone,RACK:.metadata.labels.px/rack
 
 # Custom-rack variant
-oc get nodes -l node-role.kubernetes.io/kafka \
+oc get nodes -l node-role.kubernetes.io/worker \
   -o custom-columns=NAME:.metadata.name,RACK:.metadata.labels.platform\\.example\\.com/rack,PX:.metadata.labels.px/rack
 ```
 
@@ -237,14 +234,14 @@ manifests/
 ├── common/                    # shared (both variants)
 ├── zone-region/               # topology.kubernetes.io/zone + region
 │   ├── node-labels.example.yaml
-│   ├── acm-bmh-kafka-host.example.yaml
-│   ├── inventory-kafka-workers.example.yaml
+│   ├── acm-bmh-worker-host.example.yaml
+│   ├── inventory-workers.example.yaml
 │   ├── confluent/
 │   └── strimzi/
 └── custom-rack/               # platform.example.com/rack + site
     ├── node-labels.example.yaml
-    ├── acm-bmh-kafka-host.example.yaml
-    ├── inventory-kafka-workers.example.yaml
+    ├── acm-bmh-worker-host.example.yaml
+    ├── inventory-workers.example.yaml
     ├── confluent/
     └── strimzi/
 ```

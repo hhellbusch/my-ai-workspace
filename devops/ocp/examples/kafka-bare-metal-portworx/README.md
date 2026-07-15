@@ -47,7 +47,7 @@ Assumes **OpenShift Container Platform 4.20+** (Ignition 3.5.0 MachineConfigs).
 | **Strimzi** (upstream) | **0.48+** | `oc get csv -A \| grep strimzi` |
 | **Kafka** | **4.1.0** with `metadataVersion: 4.1-IV1` | Operator version matrix / CSV |
 | **Portworx CSI** | `pxd.portworx.com` provisioner | `oc get csidriver pxd.portworx.com` |
-| **Kafka worker nodes** | ≥ 3 nodes, 3 distinct rack label values per [labeling variant](#rack-labeling-variants) | See node label examples |
+| **Worker nodes** | ≥ 3 workers with 3 distinct rack label values per [labeling variant](#rack-labeling-variants) | See node label examples |
 
 Red Hat reference: [Streams for Apache Kafka 3.1 — tested on OCP 4.16–4.20](https://docs.redhat.com/en/documentation/red_hat_streams_for_apache_kafka/3.1/html/release_notes_for_streams_for_apache_kafka_3.1_on_openshift/ref-supported-configurations-str).
 
@@ -68,7 +68,7 @@ Two parallel manifest sets — **pick one per cluster**, do not mix label keys.
 
 Full side-by-side comparison: **[LABELING-COMPARISON.md](LABELING-COMPARISON.md)**
 
-Shared infra (both variants): [`manifests/common/`](manifests/common/) — Portworx StorageClass, MCP, kernel tuning.
+Shared infra (both variants): [`manifests/common/`](manifests/common/) — Portworx StorageClass, optional kernel tuning.
 
 ---
 
@@ -91,16 +91,12 @@ flowchart LR
 
 The **Baremetal Agent Controller (BMAC)** on the hub copies BMH annotations prefixed with `bmac.agent-install.openshift.io.node-label.` into `Agent.spec.nodeLabels`. Assisted Installer applies those labels to the Node when the host joins the cluster (Day 0).
 
-You can also assign the **MachineConfigPool** at install time:
-
-```yaml
-bmac.agent-install.openshift.io/machine-config-pool: kafka-worker
-```
+You can assign a **MachineConfigPool** at install time if you use custom pools elsewhere in the cluster. This example does **not** use a dedicated kafka worker pool — brokers schedule on any worker.
 
 Examples (zone-region variant — see [custom-rack](manifests/custom-rack/) for alternate keys):
 
-- [`manifests/zone-region/acm-bmh-kafka-host.example.yaml`](manifests/zone-region/acm-bmh-kafka-host.example.yaml)
-- [`manifests/zone-region/inventory-kafka-workers.example.yaml`](manifests/zone-region/inventory-kafka-workers.example.yaml)
+- [`manifests/zone-region/acm-bmh-worker-host.example.yaml`](manifests/zone-region/acm-bmh-worker-host.example.yaml)
+- [`manifests/zone-region/inventory-workers.example.yaml`](manifests/zone-region/inventory-workers.example.yaml)
 
 ### Inventory fields to model per host
 
@@ -111,8 +107,7 @@ Examples (zone-region variant — see [custom-rack](manifests/custom-rack/) for 
 | `rack` | `topology.kubernetes.io/zone` | Strimzi `rack.topologyKey` · CFK `rackAssignment.nodeLabels` |
 | `rack` | `px/rack` | Portworx StorageClass `racks:` — **same value** |
 | `region` | `topology.kubernetes.io/region` | Optional |
-| `role: kafka` | `node-role.kubernetes.io/kafka: ""` | MCP `nodeSelector` |
-| — | `node-role.kubernetes.io/worker: ""` | Required worker role |
+| — | `node-role.kubernetes.io/worker: ""` | Default worker pool (no dedicated kafka role) |
 
 **Custom-rack variant** — same inventory shape; map `rack` → `platform.example.com/rack`, `site` → `platform.example.com/site`. See [LABELING-COMPARISON.md](LABELING-COMPARISON.md).
 
@@ -126,14 +121,6 @@ Examples (zone-region variant — see [custom-rack](manifests/custom-rack/) for 
 This workspace's [`baremetal-hosts`](../../argo/examples/framework/apps/baremetal-hosts/) Helm chart uses `spec.nodeLabels` from `values.yaml` — suitable when BMH lives on the **spoke** cluster. For **ACM hub-side** agent install, prefer **BMAC annotations** in rendered hub manifests.
 
 See also: [vgpu-node-labeling.md](../../gpu/vgpu-node-labeling.md) for the same inventory → Git → label pattern (different labels, same GitOps model).
-
-### Taints
-
-`dedicated=kafka:NoSchedule` is not consistently available via BMAC Day-0 annotations. Options:
-
-1. **RHACM ConfigurationPolicy** on the managed cluster (enforce taint + label drift)
-2. **Post-install Ansible** from the same inventory that rendered BMH
-3. **`BareMetalHost.spec.nodeTaints`** if your Metal3 path supports it on the spoke
 
 ### Day-2 label changes
 
@@ -233,8 +220,8 @@ These apply regardless of Kafka distribution.
 | Kafka replication factor | 3 |
 | `min.insync.replicas` | 2 |
 | Portworx `repl` | 3, with `racks` spanning all racks |
-| Workers per rack | ≥ 2 if the pool runs more than Kafka (gives drain targets during upgrades) |
-| Upgrade parallelism | `maxUnavailable: 1` on the Kafka worker MachineConfigPool |
+| Workers per rack | Enough capacity for brokers **and** other workloads (brokers share workers) |
+| Upgrade parallelism | `maxUnavailable: 1` on the default `worker` MachineConfigPool |
 
 ### Node labels
 
@@ -246,18 +233,18 @@ These apply regardless of Kafka distribution.
 oc label node worker-a1.example.com \
   topology.kubernetes.io/zone=rack-a \
   topology.kubernetes.io/region=dc1 \
-  px/rack=rack-a \
-  node-role.kubernetes.io/kafka=
+  px/rack=rack-a
 ```
 
-### Dedicated Kafka worker pool
+### Shared workers (this example)
 
-Isolate Kafka from generic workload churn. See [`manifests/common/machineconfigpool-kafka-worker.yaml`](manifests/common/machineconfigpool-kafka-worker.yaml).
+Kafka brokers **schedule on any worker** — no `node-role.kubernetes.io/kafka` label, no `dedicated=kafka` taint, and no custom `kafka-worker` MachineConfigPool. Rack awareness comes from `topology.kubernetes.io/zone` (or custom rack labels) and operator scheduling rules only.
 
-- Label: `node-role.kubernetes.io/kafka=""`
-- Taint: `dedicated=kafka:NoSchedule`
-- `maxUnavailable: 1` — one node at a time during OS upgrades
-- `paused: true` — optional hold during sensitive maintenance
+Implications:
+
+- Brokers may colocate with application pods — use `Guaranteed` QoS (requests = limits) and PDBs to protect broker availability during drains.
+- Node drains during worker MCP upgrades evict **all** pods on the node, not just Kafka.
+- Foreign pods in a rack can reduce scheduling headroom for broker spread — plan worker capacity per rack accordingly.
 
 ### Portworx StorageClass
 
@@ -279,7 +266,9 @@ Key parameters:
 
 ### Kernel tuning (optional)
 
-Bare-metal brokers benefit from disabling transparent huge pages and lowering swappiness. See [`manifests/common/machineconfig-kafka-tuning.yaml`](manifests/common/machineconfig-kafka-tuning.yaml).
+Bare-metal brokers can benefit from disabling transparent huge pages and lowering swappiness. See [`manifests/common/machineconfig-kafka-tuning.yaml`](manifests/common/machineconfig-kafka-tuning.yaml).
+
+**Not in default apply order** — the MachineConfig targets the default `worker` role, so it reboots every worker when applied. Use only if those sysctl changes are acceptable for all workloads sharing worker nodes.
 
 Uses **Ignition 3.5.0** per [OCP 4.20 MachineConfig guidance](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/machine_configuration/machine-configs-configure).
 
@@ -328,10 +317,10 @@ oc apply --dry-run=server -f manifests/common/
 oc apply --dry-run=server -f manifests/zone-region/confluent/
 # or: -f manifests/custom-rack/confluent/
 
-# 1. Common foundation (MCP, StorageClass, kernel tuning)
+# 1. Common foundation (StorageClass)
 oc apply -f manifests/common/portworx-storageclass-kafka.yaml
-oc apply -f manifests/common/machineconfigpool-kafka-worker.yaml
-oc apply -f manifests/common/machineconfig-kafka-tuning.yaml
+# Optional — reboots all workers:
+# oc apply -f manifests/common/machineconfig-kafka-tuning.yaml
 
 # 2. CFK operator must already be installed; create target namespace
 oc create namespace kafka --dry-run=client -o yaml | oc apply -f -
@@ -379,10 +368,10 @@ oc apply --dry-run=server -f manifests/common/
 oc apply --dry-run=server -f manifests/zone-region/strimzi/
 # or: -f manifests/custom-rack/strimzi/
 
-# 1. Common foundation (labels from variant dir, MCP, StorageClass)
+# 1. Common foundation (labels from variant dir, StorageClass)
 oc apply -f manifests/common/portworx-storageclass-kafka.yaml
-oc apply -f manifests/common/machineconfigpool-kafka-worker.yaml
-oc apply -f manifests/common/machineconfig-kafka-tuning.yaml
+# Optional — reboots all workers:
+# oc apply -f manifests/common/machineconfig-kafka-tuning.yaml
 
 # 2. Strimzi operator must already be installed in the target namespace
 oc apply -f manifests/zone-region/strimzi/
@@ -423,7 +412,7 @@ The Machine Config Operator (MCO) upgrades nodes: cordon → drain → OS update
 
 ### Upgrade-friendly settings
 
-- Keep `maxUnavailable: 1` on the `kafka-worker` MachineConfigPool (default).
+- Keep `maxUnavailable: 1` on the default `worker` MachineConfigPool (default).
 - Never raise `maxUnavailable` on control-plane pools.
 - When `topology.kubernetes.io/zone` is set, MCO drains alphabetically by zone, oldest node first within each zone.
 
@@ -432,9 +421,8 @@ The Machine Config Operator (MCO) upgrades nodes: cordon → drain → OS update
 1. `oc adm upgrade` — confirm no blockers.
 2. Confirm Kafka healthy (no under-replicated partitions, all brokers in ISR).
 3. Upgrade control plane (sequential, etcd-safe).
-4. Upgrade non-Kafka workers first (if sharing a pool).
-5. Upgrade `kafka-worker` pool one node at a time.
-6. MCO drain evicts one broker → pod reschedules on another rack → Portworx volume reattaches.
+4. Upgrade `worker` pool one node at a time — brokers and apps drain together.
+5. MCO drain evicts pods on the node → broker reschedules on another rack → Portworx volume reattaches.
 
 If drain appears stuck, check PDB events:
 
@@ -443,12 +431,12 @@ oc describe pdb -n <kafka-namespace>
 oc get events -n <kafka-namespace> --field-selector reason=Evicted
 ```
 
-### Pause Kafka pool during maintenance (optional)
+### Pause worker pool during maintenance (optional)
 
 ```bash
-oc patch mcp kafka-worker --type=merge -p '{"spec":{"paused":true}}'
+oc patch mcp worker --type=merge -p '{"spec":{"paused":true}}'
 # ... maintenance ...
-oc patch mcp kafka-worker --type=merge -p '{"spec":{"paused":false}}'
+oc patch mcp worker --type=merge -p '{"spec":{"paused":false}}'
 ```
 
 ### Adding nodes
@@ -468,8 +456,7 @@ oc patch mcp kafka-worker --type=merge -p '{"spec":{"paused":false}}'
 
 ## OpenShift internals and tenancy
 
-Whether Kafka shares a cluster with application workloads changes almost every operational decision.
-The rack-aware manifests still apply in both models; **how you use MachineConfigPools and node isolation** differs.
+This example assumes **Kafka brokers share worker nodes with other workloads** — no dedicated kafka hardware or custom MCP. Rack-aware scheduling and Portworx replication still apply; operational tradeoffs differ from a dedicated-node design.
 
 ### Discover the tenancy model
 
@@ -477,43 +464,38 @@ The rack-aware manifests still apply in both models; **how you use MachineConfig
 # Kafka namespaces and footprint
 oc get ns | grep -iE 'kafka|strimzi|confluent|amq'
 oc adm top nodes
-oc get pods -A -o wide --field-selector spec.nodeName=<worker> | head
+oc get pods -n <kafka-namespace> -o wide
 
-# Dedicated kafka nodes?
-oc get nodes -l node-role.kubernetes.io/kafka
-oc get nodes -o custom-columns=NAME:.metadata.name,TAINTS:.spec.taints
+# Rack labels on workers (zone-region variant)
+oc get nodes -l node-role.kubernetes.io/worker \
+  -o custom-columns=NAME:.metadata.name,ZONE:.metadata.labels.topology\\.kubernetes\\.io/zone,PX:.metadata.labels.px/rack
 
-# MCP membership — is kafka on a custom pool or default worker?
-oc get mcp
-oc get mcp -o yaml | grep -A5 nodeSelector
-
-# Competing workloads on kafka nodes (should be empty if dedicated)
-oc get pods -A --field-selector spec.nodeName=<kafka-node> \
+# Competing workloads on broker nodes
+oc get pods -A --field-selector spec.nodeName=<worker-with-broker> \
   -o custom-columns=NS:.metadata.namespace,NAME:.metadata.name
 ```
 
 | Signal | Likely model |
 |--------|----------------|
-| All workers run mixed app + infra pods; no kafka label/taints | **Shared multi-tenant** |
-| Subset of workers labeled `kafka`, tainted `dedicated=kafka` | **Dedicated nodes on shared cluster** (most common) |
-| Every worker runs only Kafka/Portworx/infra; no app namespaces | **Kafka-dedicated cluster** |
+| Brokers on workers that also run app pods; no kafka label/taints | **Shared multi-tenant** *(this example)* |
+| Subset of workers labeled `kafka`, tainted `dedicated=kafka` | **Dedicated nodes on shared cluster** |
+| Every worker runs only Kafka/Portworx/infra | **Kafka-dedicated cluster** |
 
 ---
 
 ### MachineConfigPool (MCP) — what to know
 
-See **[MachineConfig and MachineConfigPool](../../../notes/machine-config-pools.md)** for targeting rules, custom pool patterns, rollout behavior, and diagnostics. Summary for this example:
+See **[MachineConfig and MachineConfigPool](../../../notes/machine-config-pools.md)** for targeting rules, custom pool patterns, rollout behavior, and diagnostics. Summary for **this example**:
 
-- `kafka-worker` MCP selects MCs with roles `worker` + `kafka-worker`; nodes labeled `node-role.kubernetes.io/kafka` leave the default `worker` pool.
-- `99-kafka-kernel-tuning` uses `role: kafka-worker` so THP/sysctl changes reboot **only** kafka nodes — not every worker.
-- `maxUnavailable: 1` on the kafka pool drains one broker at a time; respects PDBs during cluster upgrades.
+- Brokers use the default **`worker`** MCP — no custom `kafka-worker` pool.
+- Optional [`machineconfig-kafka-tuning.yaml`](manifests/common/machineconfig-kafka-tuning.yaml) uses `role: worker` and affects **all** workers if applied.
+- `maxUnavailable: 1` on the worker pool drains one node at a time; PDBs on kafka **and** app pods can block drain.
 
-#### MCP pitfalls on shared Kafka clusters
+#### MCP pitfalls with shared workers
 
-1. **Accidentally sharing a pool** — If kafka nodes stay in default `worker`, you cannot tune kernel params for kafka without affecting apps (and vice versa).
-2. **Drain coupling** — Draining a shared node evicts Kafka **and** every other pod on that node. A misconfigured app PDB elsewhere can block the drain and stall the entire MCP update.
-3. **maxUnavailable on worker pool** — If someone raises `worker` pool `maxUnavailable` to speed app upgrades, kafka nodes still in that pool drain in parallel — risky even with kafka PDB.
-4. **MachineConfig overlap** — One node, one pool. Design labels so pools partition cleanly. See the [dedicated guide](../../../notes/machine-config-pools.md#common-pitfalls).
+1. **Drain coupling** — Draining a worker evicts Kafka **and** every other pod on that node. A misconfigured app PDB can block the drain and stall the entire MCP update.
+2. **maxUnavailable on worker pool** — Raising `worker` pool `maxUnavailable` to speed upgrades drains multiple nodes in parallel — risky for Kafka ISR even with broker PDBs.
+3. **Kernel tuning scope** — Do not apply kafka-specific MachineConfigs to `worker` unless acceptable for all colocated workloads.
 
 ---
 
@@ -547,49 +529,31 @@ On a **shared cluster**, CVO may update the Kafka operator CSV while MCO is stil
 
 ### Tenancy models compared
 
-#### A. Dedicated nodes on a shared cluster (recommended if not fully dedicated)
+#### A. Shared workers *(this example)*
 
-Kafka runs on a labeled, tainted subset of workers; apps run elsewhere.
+Kafka runs on the default worker pool alongside applications.
 
 | Do | Why |
 |----|-----|
-| Label + taint kafka nodes | `dedicated=kafka:NoSchedule` blocks accidental colocation |
-| Separate `kafka-worker` MCP | Kernel tuning and upgrade cadence isolated from app workers |
-| Upgrade app `worker` pool first | Absorb platform churn before touching broker nodes |
+| Strong `podAntiAffinity` + rack spread in operator CRs | Best-effort broker distribution across racks amid foreign pods |
 | `Guaranteed` QoS on brokers (requests = limits) | CPU/memory not stolen by bursty neighbors |
-| `PriorityClass` for kafka pods (optional) | Lower chance of eviction under node pressure — does **not** override PDB or manual drain |
+| Namespace `ResourceQuota` + `LimitRange` on app namespaces | Cap app burst on shared nodes |
+| Verify PDBs on **all** pods sharing a node before drain | App PDBs can block worker MCP rollout |
 
 | Watch | Risk |
 |-------|------|
+| Foreign pods in a rack | May occupy slots needed for broker spread or drain rescheduling |
 | Portworx on all storage nodes | PX replication traffic shares physical network with apps |
-| Cluster-wide monitoring/logging | Thanos/Loki collectors on kafka nodes consume disk IO |
-| DaemonSets | `ovn-kube-node`, `portworx`, `node-exporter` always on kafka nodes — normal, plan capacity for them |
-| Insufficient kafka nodes per rack | Need ≥1 broker slot per rack **plus** headroom for drain rescheduling |
+| Cluster-wide monitoring/logging | Collectors on workers consume disk IO |
+| DaemonSets | `ovn-kube-node`, `portworx`, `node-exporter` always on workers — plan capacity |
 
-#### B. Fully shared workers (kafka colocated with apps)
+#### B. Dedicated nodes on a shared cluster
 
-Avoid if Kafka is production-critical. If unavoidable:
-
-| Do | Why |
-|----|-----|
-| Strong `podAntiAffinity` + `topologySpreadConstraints` | Best-effort rack spread amid foreign pods |
-| Namespace `ResourceQuota` + `LimitRange` on app namespaces | Cap app burst on shared nodes |
-| Do **not** put kafka kernel tuning on `worker` role | Would reboot app nodes too |
-| Accept weaker rack guarantees | Foreign pods may occupy the only slot in a zone |
-
-Drain during upgrade evicts **all** pods on the node — app + kafka together.
-Any app with `PodDisruptionBudget minAvailable` matching replica count can block the node drain.
+Kafka runs on a labeled, tainted subset of workers; apps run elsewhere. Not used in this example — see [machine-config-pools.md](../../../notes/machine-config-pools.md) for custom MCP patterns if you adopt it later.
 
 #### C. Kafka-dedicated cluster
 
-Simplest operationally: entire `worker` pool is kafka-capable.
-
-| Do | Why |
-|----|-----|
-| Kafka tuning on `worker` role is acceptable | All workers are kafka nodes |
-| Single MCP often sufficient | Optional `kafka-worker` pool only if you also run infra nodes (ingress, monitoring) on separate hardware |
-| Still label racks | Rack awareness is physical, not tenancy-dependent |
-| Plan control-plane sizing | etcd and API load from Kafka operators + many brokers |
+Entire `worker` pool is kafka-capable. Simplest operationally when no app colocation is required.
 
 ---
 
@@ -610,38 +574,33 @@ Simplest operationally: entire `worker` pool is kafka-capable.
 
 ---
 
-### Upgrade choreography by tenancy model
+### Upgrade choreography (shared workers)
 
-| Step | Shared cluster (dedicated kafka nodes) | Kafka-dedicated cluster |
-|------|----------------------------------------|-------------------------|
-| 1 | Verify kafka health, ISR, no under-replicated partitions | Same |
-| 2 | `oc adm upgrade` — resolve Upgradeable=false conditions | Same |
-| 3 | CVO completes control plane + operator updates | Same |
-| 4 | Upgrade default `worker` pool (app nodes) | N/A or infra-only pool |
-| 5 | Pause `kafka-worker` MCP optional during app pool churn | Optional pause on `worker` |
-| 6 | Upgrade `kafka-worker` MCP one node at a time | Upgrade `worker` MCP |
-| 7 | Rebalance if brokers landed suboptimally after rolls | Same |
+| Step | Action |
+|------|--------|
+| 1 | Verify kafka health, ISR, no under-replicated partitions |
+| 2 | `oc adm upgrade` — resolve Upgradeable=false conditions |
+| 3 | CVO completes control plane + operator updates |
+| 4 | Upgrade `worker` MCP one node at a time |
+| 5 | Rebalance if brokers landed suboptimally after rolls (operator-dependent) |
 
 ---
 
 ### Quick decision guide
 
 ```
-Is Kafka production-critical with strict latency SLA?
-├── Yes → dedicated kafka nodes minimum (model A)
-│         └── SLA very strict? → dedicated cluster (model C)
-└── No  → shared workers possible (model B) with quotas and soft affinity only
+Need dedicated kafka hardware or taints?
+├── No  → shared workers (this example)
+└── Yes → custom MCP + node labels — see machine-config-pools.md
 ```
-
-If you are unsure which model you have today, run the [discovery commands](#discover-the-tenancy-model) and check whether any non-kafka pods land on broker nodes.
 
 ---
 
 ## Verification checklist
 
 ```bash
-# 1. Matching zone + px/rack on kafka workers
-oc get nodes -l node-role.kubernetes.io/kafka \
+# 1. Rack labels on workers (zone-region variant)
+oc get nodes -l node-role.kubernetes.io/worker \
   -o custom-columns=\
 NAME:.metadata.name,\
 ZONE:.metadata.labels.topology\\.kubernetes\\.io/zone,\
@@ -676,17 +635,17 @@ oc exec -n <kafka-namespace> <broker-pod-0> -- \
 ```
 manifests/
 ├── README.md                 # variant index
-├── common/                   # shared: Portworx SC, MCP, kernel tuning, CFK RBAC
+├── common/                   # shared: Portworx SC, optional kernel tuning, CFK RBAC
 ├── zone-region/              # topology.kubernetes.io/zone + region
 │   ├── node-labels.example.yaml
-│   ├── acm-bmh-kafka-host.example.yaml
-│   ├── inventory-kafka-workers.example.yaml
+│   ├── acm-bmh-worker-host.example.yaml
+│   ├── inventory-workers.example.yaml
 │   ├── confluent/            # CFK — primary path
 │   └── strimzi/              # AMQ Streams / upstream — comparison
 └── custom-rack/              # platform.example.com/rack + site
     ├── node-labels.example.yaml
-    ├── acm-bmh-kafka-host.example.yaml
-    ├── inventory-kafka-workers.example.yaml
+    ├── acm-bmh-worker-host.example.yaml
+    ├── inventory-workers.example.yaml
     ├── confluent/
     └── strimzi/
 ```
@@ -702,7 +661,7 @@ These change sizing and manifest values:
 
 1. **Rack and broker count** — e.g. 3 racks × 3 brokers vs 3 × 6
 2. **Operator choice** — Confluent (primary examples) vs Strimzi/AMQ vs Helm
-3. **Dedicated kafka pool** — recommended; shared workers require stronger resource quotas
+3. **Dedicated kafka pool** — not used; brokers share the default worker pool
 4. **OCP upgrade channel** — EUS vs stable affects upgrade choreography
 
 *Example configurations — not production-ready without review. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md).*

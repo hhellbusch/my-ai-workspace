@@ -1,4 +1,8 @@
-# Kernel/sysctl tuning for Kafka workers (OCP 4.20+).
+# Optional kernel/sysctl tuning for worker nodes (OCP 4.20+).
+#
+# NOT applied by default in this example — Kafka brokers schedule on any worker,
+# so this MachineConfig reboots every node in the default worker pool.
+# Apply only if the sysctl/THP changes are acceptable for all workloads on workers.
 #
 # Ignition 3.5.0 is required for OpenShift Container Platform 4.20.
 # https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/machine_configuration/machine-configs-configure
@@ -6,7 +10,7 @@ apiVersion: machineconfiguration.openshift.io/v1
 kind: MachineConfig
 metadata:
   labels:
-    machineconfiguration.openshift.io/role: kafka-worker
+    machineconfiguration.openshift.io/role: worker
   name: 99-kafka-kernel-tuning
 spec:
   kernelArguments:

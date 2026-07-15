@@ -23,7 +23,7 @@ Performed via YAML parse, doc cross-reference, and OCP 4.20 / Streams 3.1 / Port
 | Kafka / metadataVersion | Pass | `4.1.0` / `4.1-IV1` per Strimzi kafka-versions.yaml |
 | Portworx `px/rack` + `racks` SC param | Pass | Matches Portworx topology awareness docs |
 | Portworx provisioner | Pass | Primary SC uses `pxd.portworx.com` (CSI) |
-| MCP / MachineConfig API shape | Pass | Ignition **3.5.0** per OCP 4.20 docs |
+| MCP / MachineConfig API shape | Pass | Optional tuning uses Ignition **3.5.0** / `role: worker` |
 | Confluent CFK manifests | Pass | `rackAssignment`, KRaft, `storageClass`, RBAC per Confluent docs |
 | Server-side apply (`oc apply --dry-run=server`) | Not run | Requires OCP 4.20+ cluster + credentials |
 | End-to-end Kafka ready | Not run | Requires operator, nodes, Portworx |
@@ -83,8 +83,8 @@ oc get sc -o custom-columns=NAME:.metadata.name,PROVISIONER:.provisioner | grep 
 cd devops/ocp/examples/kafka-bare-metal-portworx
 
 oc apply --dry-run=server -f manifests/common/portworx-storageclass-kafka.yaml
-oc apply --dry-run=server -f manifests/common/machineconfigpool-kafka-worker.yaml
-oc apply --dry-run=server -f manifests/common/machineconfig-kafka-tuning.yaml
+# Optional — reboots all workers:
+# oc apply --dry-run=server -f manifests/common/machineconfig-kafka-tuning.yaml
 oc apply --dry-run=server -f manifests/common/confluent-kafka-rbac.yaml
 oc apply --dry-run=server -f manifests/zone-region/confluent/
 # or: oc apply --dry-run=server -f manifests/custom-rack/confluent/
@@ -97,16 +97,17 @@ Fix API version / field errors before real apply. Strimzi operator CSV must supp
 ### 3. Node topology preflight
 
 ```bash
-oc get nodes -l node-role.kubernetes.io/kafka \
+oc get nodes -l node-role.kubernetes.io/worker \
   -o custom-columns=NAME:.metadata.name,ZONE:.metadata.labels.topology\\.kubernetes\\.io/zone,RACK:.metadata.labels.px/rack
 
 kubectl get nodes -L px/rack
 ```
 
-### 4. MCP rollout
+### 4. MCP rollout (optional kernel tuning only)
 
 ```bash
-oc get mcp kafka-worker
+# Only if you applied machineconfig-kafka-tuning.yaml (worker role):
+oc get mcp worker
 oc get machineconfig 99-kafka-kernel-tuning -o yaml | grep 'version:'
 # Expect ignition version 3.5.0 on OCP 4.20
 ```
@@ -142,7 +143,7 @@ pxctl volume inspect <volume-id>
 
 ```bash
 oc get pdb -n kafka
-oc get mcp kafka-worker -o jsonpath='{.spec.maxUnavailable}{"\n"}'
+oc get mcp worker -o jsonpath='{.spec.maxUnavailable}{"\n"}'
 ```
 
 ---
