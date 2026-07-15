@@ -21,7 +21,7 @@ def main() -> None:
         "# DevOps Symptom Index",
         "",
         "Machine-generated lookup table: symptom string → troubleshooting guide.",
-        f"Source: [`catalog.yaml`](catalog.yaml). Regenerate: `python3 scripts/generate-symptom-index.py`.",
+        f"Source: `devops/catalog.yaml` (also staged as [catalog.yaml](catalog.yaml) on the site). Regenerate: `python3 scripts/generate-symptom-index.py`.",
         "",
         f"*Generated {datetime.date.today().isoformat()}.*",
         "",

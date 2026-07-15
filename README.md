@@ -72,7 +72,7 @@ The skills system (`/spar`, `/shoshin`, `/checkpoint`, `/start`, `/stack`) and t
 
 Practical, runnable examples and troubleshooting guides for infrastructure and platform tooling. *Skip this section if you're here for the essays — it's independent.*
 
-**Browse the site** (full-text search, unified nav): [hhellbusch.github.io/gemini-workspace](https://hhellbusch.github.io/gemini-workspace/)
+**Browse the site** (full-text search, unified nav): [hhellbusch.github.io/my-ai-workspace](https://hhellbusch.github.io/my-ai-workspace/)
 
 [Browse the full reference index →](devops/README.md) · [Symptom lookup →](devops/SYMPTOM-INDEX.md)
 
@@ -92,7 +92,7 @@ Practical, runnable examples and troubleshooting guides for infrastructure and p
 
 ## Using This
 
-**Read on GitHub or the site** — essays and case studies are written for external readers. Any file link works standalone on GitHub; the [docs site](https://hhellbusch.github.io/gemini-workspace/) adds search and sidebar navigation across `devops/` and `docs/`.
+**Read on GitHub or the site** — essays and case studies are written for external readers. Any file link works standalone on GitHub; the [docs site](https://hhellbusch.github.io/my-ai-workspace/) adds search and sidebar navigation across `devops/` and `docs/`.
 
 **Clone with submodules** — this repo vendors the [Zanshin Pi extension](https://github.com/hhellbusch/zanshin-pi-extension) and other submodules under `submodules/` (working discipline lives under `submodules/zanshin-pi-extension/kit/`). After `git clone`, run:
 

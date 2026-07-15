@@ -8,7 +8,7 @@ review:
 
 Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster issues.
 
-**Site:** [OCP troubleshooting section](https://hhellbusch.github.io/gemini-workspace/devops/ocp/troubleshooting/) · **Symptom lookup:** [SYMPTOM-INDEX.md](../../SYMPTOM-INDEX.md)
+**Site:** [OCP troubleshooting section](https://hhellbusch.github.io/my-ai-workspace/devops/ocp/troubleshooting/) · **Symptom lookup:** [SYMPTOM-INDEX.md](../../SYMPTOM-INDEX.md)
 
 ## Available Guides
 

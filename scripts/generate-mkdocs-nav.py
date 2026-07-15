@@ -60,6 +60,7 @@ def main() -> None:
 
     nav = [
         {"Home": "index.md"},
+        {"Interactive PoC": "interactive-poc.md"},
         {"DevOps Reference": devops_nav},
         {"Essays": docs_nav},
     ]

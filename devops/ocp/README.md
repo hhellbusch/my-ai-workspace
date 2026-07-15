@@ -22,7 +22,7 @@ Symptom → cause → fix guides with quick references and diagnostic scripts.
 | Registry / images | [Image registry auth](troubleshooting/image-registry-auth/README.md), [Signature policy MCP deadlock](troubleshooting/image-signature-policy-mcp-deadlock/README.md) |
 | Other | [CSR management](troubleshooting/csr-management/README.md), [CoreOS networking](troubleshooting/coreos-networking-issues/README.md), [Namespace terminating](troubleshooting/namespace-stuck-terminating/README.md), [KubeVirt provisioning](troubleshooting/kubevirt-vm-stuck-provisioning/README.md), [MCO webhook](troubleshooting/multiclusterobservability-webhook-rejection/README.md), [Destroy without metadata](troubleshooting/destroy-cluster-without-metadata/README.md), [Debug toolbox](troubleshooting/debug-toolbox-container/README.md), [AAP SSH MTU](troubleshooting/aap-ssh-mtu-issues/README.md) |
 
-**Full catalog with quick-ref links:** [troubleshooting/README.md](troubleshooting/README.md) · **Symptom lookup:** [SYMPTOM-INDEX.md](../SYMPTOM-INDEX.md) · **Site:** [OpenShift on Field Notes](https://hhellbusch.github.io/gemini-workspace/devops/ocp/)
+**Full catalog with quick-ref links:** [troubleshooting/README.md](troubleshooting/README.md) · **Symptom lookup:** [SYMPTOM-INDEX.md](../SYMPTOM-INDEX.md) · **Site:** [OpenShift on Field Notes](https://hhellbusch.github.io/my-ai-workspace/devops/ocp/)
 
 ## Install and configuration
 

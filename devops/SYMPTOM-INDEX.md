@@ -1,7 +1,7 @@
 # DevOps Symptom Index
 
 Machine-generated lookup table: symptom string → troubleshooting guide.
-Source: [`catalog.yaml`](catalog.yaml). Regenerate: `python3 scripts/generate-symptom-index.py`.
+Source: `devops/catalog.yaml` (also staged as [catalog.yaml](catalog.yaml) on the site). Regenerate: `python3 scripts/generate-symptom-index.py`.
 
 *Generated 2026-07-15.*
 

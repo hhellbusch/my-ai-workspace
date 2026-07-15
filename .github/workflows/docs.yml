@@ -9,10 +9,13 @@ on:
       - 'mkdocs.yml'
       - 'requirements-docs.txt'
       - 'scripts/build-docs.sh'
+      - 'scripts/stage-docs.sh'
       - 'scripts/stage-mkdocs.py'
       - 'scripts/generate-mkdocs-nav.py'
       - 'scripts/generate-symptom-index.py'
-      - 'devops/catalog.yaml'
+      - 'scripts/export-catalog-json.py'
+      - 'scripts/ensure-mermaid-asset.sh'
+      - 'docs-site/**'
   workflow_dispatch:
 
 permissions:
@@ -38,7 +41,7 @@ jobs:
         run: pip install -r requirements-docs.txt
 
       - name: Build site
-        run: bash scripts/build-docs.sh --dirty
+        run: bash scripts/build-docs.sh
 
       - name: Deploy to GitHub Pages
         env:

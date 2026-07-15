@@ -8,11 +8,13 @@ review:
 
 Practical, runnable examples and references for infrastructure, platform, and operational tooling — built from real work and accumulated over time. Currently weighted toward enterprise Kubernetes and OpenShift environments; will grow as work and interests do.
 
-**Browse the site** (search, sidebar nav): [hhellbusch.github.io/gemini-workspace](https://hhellbusch.github.io/gemini-workspace/) — built from this tree with MkDocs Material on push to `main`.
+**Browse the site** (search, sidebar nav): [hhellbusch.github.io/my-ai-workspace](https://hhellbusch.github.io/my-ai-workspace/) — built from this tree with MkDocs Material on push to `main`.
 
 **Symptom lookup:** [SYMPTOM-INDEX.md](SYMPTOM-INDEX.md) — generated from [`catalog.yaml`](catalog.yaml).
 
 **Build the site locally:** `pip install -r requirements-docs.txt && bash scripts/build-docs.sh` → `site/`
+
+**Preview with live reload:** `bash scripts/serve-docs.sh` (refreshes staging automatically)
 
 **What belongs here:** Runnable examples, troubleshooting guides, lab exercises, and integration patterns for any infrastructure, platform, or operational tool. Not essays or case studies (those live in [`docs/`](../docs/)) and not research workspaces ([`research/`](../research/)). Local LLM inference setup for consumer hardware lives here rather than in docs/ since it's practical reference, not essay.
 

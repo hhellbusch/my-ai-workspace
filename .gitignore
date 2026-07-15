@@ -106,3 +106,5 @@ site-staging/
 site/
 mkdocs.effective.yml
 mkdocs.nav.yml
+docs-site/assets/poc/catalog.json
+docs-site/assets/mermaid/mermaid.min.js
