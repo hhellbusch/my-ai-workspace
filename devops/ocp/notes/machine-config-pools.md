@@ -233,7 +233,7 @@ spec:
   maxUnavailable: 1
 ```
 
-See [Performing a canary rollout update](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/updating_clusters/update-using-custom-machine-config-pools) in the Red Hat docs.
+See [Performing a canary rollout update](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/updating_clusters/performing-a-cluster-update#update-using-custom-machine-config-pools) (section 3.4 of *Performing a cluster update*) in the Red Hat docs.
 
 ### Batch MC changes before rollout
 
@@ -326,5 +326,5 @@ For Kafka-specific MCP implications (ISR, shared-cluster drain coupling), see th
 
 - [OpenShift 4 — Machine configuration overview](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/machine_configuration/machine-config-index)
 - [Creating custom machine config pools](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/machine_configuration/machine-config-custom-mcp)
-- [Canary rollout via custom MCPs](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/updating_clusters/update-using-custom-machine-config-pools)
+- [Canary rollout via custom MCPs](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/updating_clusters/performing-a-cluster-update#update-using-custom-machine-config-pools) — section 3.4, *Performing a cluster update*
 - [MCO custom pools design doc](https://github.com/openshift/machine-config-operator/blob/master/docs/custom-pools.md)
