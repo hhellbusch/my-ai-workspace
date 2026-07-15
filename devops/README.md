@@ -10,6 +10,8 @@ Practical, runnable examples and references for infrastructure, platform, and op
 
 **What belongs here:** Runnable examples, troubleshooting guides, lab exercises, and integration patterns for any infrastructure, platform, or operational tool. Not essays or case studies (those live in [`docs/`](../docs/)) and not research workspaces ([`research/`](../research/)). Local LLM inference setup for consumer hardware lives here rather than in docs/ since it's practical reference, not essay.
 
+**External links:** Red Hat doc URLs (`docs.redhat.com`) — see [`rules/red-hat-docs-links.md`](../rules/red-hat-docs-links.md) (pin versions, verify slugs, searchable link text).
+
 ### Fleet control spectrum
 
 Cross-cutting reference for how RHACM and Argo CD divide fleet work — multiple decision axes, not a single product choice.

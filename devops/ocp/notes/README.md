@@ -8,6 +8,8 @@ review:
 
 Informal OpenShift quick references and command notes. These are working references — commands and patterns used regularly — not structured troubleshooting guides (those live in `ocp/troubleshooting/`).
 
+Red Hat doc links in notes follow [`rules/red-hat-docs-links.md`](../../../rules/red-hat-docs-links.md).
+
 ## Contents
 
 - **[machine-config-pools.md](machine-config-pools.md)** — MachineConfig and MachineConfigPool targeting, custom pools, rollout behavior
