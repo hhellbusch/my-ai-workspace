@@ -214,6 +214,40 @@ oc get mcp worker -w
 
 **Do not raise `maxUnavailable` on the `master` pool.** Keep control plane sequential.
 
+#### Percentage math (`"25%"`, `"33%"`, etc.)
+
+Percentage values use **round up** (ceiling), same as Kubernetes `IntOrString` elsewhere:
+
+```
+parallel = ceil(pool_size × percent / 100)
+```
+
+| Pool size | `25%` | `33%` | `50%` |
+|----------:|------:|------:|------:|
+| 3 | 1 | 1 | 2 |
+| 4 | 1 | 2 | 2 |
+| 5 | 2 | 2 | 3 |
+| 6 | 2 | 2 | 3 |
+| 8 | 2 | 3 | 4 |
+| 10 | 3 | 4 | 5 |
+| 12 | 3 | 4 | 6 |
+
+On **3–4 nodes**, `"25%"` behaves like `maxUnavailable: 1` — you need a larger pool before percent buys parallelism. For a small pool where you want two nodes at once, use an integer (`maxUnavailable: 2`) and accept that half the pool may be down.
+
+**Syntax:** percent must be a quoted string (`"25%"`). Integer form is unquoted (`2`). You cannot set `0` to stop rollouts — use `paused: true`.
+
+**Unavailable count** includes any node not schedulable during the update (cordoned, draining, rebooting, `NotReady`) — not only nodes actively receiving the new MC.
+
+```bash
+oc get mcp worker -o jsonpath='maxUnavailable={.spec.maxUnavailable} machines={.status.machineCount}{"\n"}'
+```
+
+| Approach | When to use |
+|----------|-------------|
+| Integer (`2`, `3`) | Fixed parallelism as the pool grows |
+| Percent (`"25%"`) | Scales with fleet size on large homogeneous worker pools |
+| `1` | Default; quorum/stateful workloads |
+
 ### Pools already roll out in parallel with each other
 
 MCO updates each MCP independently. During a cluster upgrade with defaults, you typically get one node updating per pool at the same time — e.g. one master, one worker, one per custom pool (`kafka-worker`, `gpu-worker`). Custom pools isolate blast radius; they do not speed a single pool, but they let pools progress concurrently.
