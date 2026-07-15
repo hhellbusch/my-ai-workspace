@@ -1,0 +1,47 @@
+name: Docs site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'devops/**'
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - 'requirements-docs.txt'
+      - 'scripts/build-docs.sh'
+      - 'scripts/stage-mkdocs.py'
+      - 'scripts/generate-mkdocs-nav.py'
+      - 'scripts/generate-symptom-index.py'
+      - 'devops/catalog.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-docs.txt
+
+      - name: Install MkDocs
+        run: pip install -r requirements-docs.txt
+
+      - name: Build site
+        run: bash scripts/build-docs.sh --dirty
+
+      - name: Deploy to GitHub Pages
+        env:
+          MKDOCS_GIT_COMMITTERS_NAME: github-actions[bot]
+          MKDOCS_GIT_COMMITTERS_EMAIL: github-actions[bot]@users.noreply.github.com
+        run: mkdocs gh-deploy --force -f mkdocs.effective.yml

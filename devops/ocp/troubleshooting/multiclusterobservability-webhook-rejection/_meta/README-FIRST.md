@@ -54,7 +54,7 @@ oc delete multiclusterobservability observability
 oc apply -f your-mco.yaml
 ```
 
-**Read more:** [NAME-IS-SET-BUT-ERROR-PERSISTS.md](NAME-IS-SET-BUT-ERROR-PERSISTS.md)
+**Read more:** [../NAME-IS-SET-BUT-ERROR-PERSISTS.md](../NAME-IS-SET-BUT-ERROR-PERSISTS.md)
 
 ---
 
@@ -86,7 +86,7 @@ metadata:
   namespace: open-cluster-management-observability
 ```
 
-**Read more:** [YOUR-ERROR-SOLUTION.md](YOUR-ERROR-SOLUTION.md)
+**Read more:** [../YOUR-ERROR-SOLUTION.md](../YOUR-ERROR-SOLUTION.md)
 
 ---
 
@@ -106,15 +106,15 @@ This will tell you exactly what's wrong and how to fix it.
 | File | Purpose | When to Use |
 |------|---------|-------------|
 | **[README-FIRST.md](README-FIRST.md)** | This file - quick decision tree | Start here! |
-| **[bypass-webhook.sh](bypass-webhook.sh)** | Interactive script to bypass webhook | Name IS set but error persists |
-| **[check-mco-name.sh](check-mco-name.sh)** | Diagnostic for missing names | Not sure what's wrong |
-| **[NAME-IS-SET-BUT-ERROR-PERSISTS.md](NAME-IS-SET-BUT-ERROR-PERSISTS.md)** | Detailed guide for webhook bug | Name IS set but error persists |
-| **[YOUR-ERROR-SOLUTION.md](YOUR-ERROR-SOLUTION.md)** | Solution for this specific error | General troubleshooting |
-| **[QUICK-FIX.md](QUICK-FIX.md)** | Fast fixes for all scenarios | Need quick commands |
-| **[README.md](README.md)** | Complete troubleshooting guide | Want full understanding |
-| **[INDEX.md](INDEX.md)** | Navigation guide | Need to find something |
-| **[example-mco.yaml](example-mco.yaml)** | Working YAML examples | Creating new MCO |
-| **[diagnose-webhook-issue.sh](diagnose-webhook-issue.sh)** | Full diagnostic collection | Debugging or support ticket |
+| **[../bypass-webhook.sh](../bypass-webhook.sh)** | Interactive script to bypass webhook | Name IS set but error persists |
+| **[../check-mco-name.sh](../check-mco-name.sh)** | Diagnostic for missing names | Not sure what's wrong |
+| **[../NAME-IS-SET-BUT-ERROR-PERSISTS.md](../NAME-IS-SET-BUT-ERROR-PERSISTS.md)** | Detailed guide for webhook bug | Name IS set but error persists |
+| **[../YOUR-ERROR-SOLUTION.md](../YOUR-ERROR-SOLUTION.md)** | Solution for this specific error | General troubleshooting |
+| **[../QUICK-REFERENCE.md](../QUICK-REFERENCE.md)** | Fast fixes for all scenarios | Need quick commands |
+| **[../README.md](../README.md)** | Complete troubleshooting guide | Want full understanding |
+| **[../INDEX.md](../INDEX.md)** | Navigation guide | Need to find something |
+| **[../example-mco.yaml](../example-mco.yaml)** | Working YAML examples | Creating new MCO |
+| **[../diagnose-webhook-issue.sh](../diagnose-webhook-issue.sh)** | Full diagnostic collection | Debugging or support ticket |
 
 ---
 
@@ -145,9 +145,9 @@ oc apply -f mco.yaml
 ## Still Stuck?
 
 1. Run `./check-mco-name.sh` - automated diagnosis
-2. Read [QUICK-FIX.md](QUICK-FIX.md) - all scenarios covered
+2. Read [../QUICK-REFERENCE.md](../QUICK-REFERENCE.md) - all scenarios covered
 3. Run `./diagnose-webhook-issue.sh` - collect full diagnostics
-4. Check [README.md](README.md) - comprehensive guide
+4. Check [../README.md](../README.md) - comprehensive guide
 
 ---
 

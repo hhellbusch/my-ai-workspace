@@ -137,6 +137,41 @@ cat /etc/nvme/hostnqn     # value currently in use
 If these differ, the baked-in file is wrong — apply the fix in Step 2.
 This check is the fastest way to confirm the duplicate-NQN problem without comparing nodes to each other.
 
+### Effective and connected NQN (what the array sees)
+
+Storage arrays do not inspect files on OpenShift nodes. They only see the **Host NQN** and **Host ID** that `nvme-cli` / `libnvme` sends in NVMe-oF **Discover** and **Connect** commands (same identity the CSI node driver uses when attaching volumes).
+
+**Pre-connect** — resolve what the initiator will present:
+
+```bash
+nvme show-hostnqn          # libnvme resolved Host NQN
+cat /etc/nvme/hostnqn      # on-disk value (used if present)
+```
+
+If `/etc/nvme/hostnqn` exists, it wins over auto-generation from DMI. That is why a wrong baked-in file propagates to the array even when `nvme gen-hostnqn` looks correct.
+
+**Post-connect** — confirm what was sent on active fabric controllers:
+
+```bash
+for f in /sys/class/nvme/nvme*/hostnqn; do
+  [ -f "$f" ] && echo "$(basename $(dirname $f)): $(cat $f)"
+done
+nvme list-subsys
+```
+
+Each connected controller's `hostnqn` sysfs attribute should match `/etc/nvme/hostnqn` on that node.
+
+**Array side** — compare two views:
+
+| View | Meaning |
+|------|---------|
+| **Registered host object** | NQN you (or CSM/Portworx) configured — may be stale |
+| **Live NVMe-oF session / initiator** | NQN the array received on connect — ground truth for ACL debugging |
+
+Vendor examples: Pure `purehost list` and connection details; Dell CSM auto-registers from node NQN into PowerStore/PowerMax host objects; HPE CSI surfaces the node NQN in `hpenodeinfos` before connect.
+
+If file, `show-hostnqn`, sysfs, and array session disagree: fix node identity (Step 2), restart CSI node pods, then update or recreate array host objects. See [QUICK-REFERENCE § 1b](QUICK-REFERENCE.md#1b-validate-effective-and-connected-nqn).
+
 ---
 
 ## Step 2: Apply the Fix (MachineConfig + systemd)

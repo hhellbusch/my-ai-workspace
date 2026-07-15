@@ -120,7 +120,7 @@ Examples (zone-region variant — see [custom-rack](manifests/custom-rack/) for 
 | **BMAC annotations** (ACM agent install on hub) | `bmac.agent-install.openshift.io.node-label.*` | Day 0 via Assisted Installer |
 | **`spec.nodeLabels`** (Metal3 on cluster) | `BareMetalHost.spec.nodeLabels` | IPI / spoke Metal3 provisioning |
 
-This workspace's [`baremetal-hosts`](../../argo/examples/framework/apps/baremetal-hosts/) Helm chart uses `spec.nodeLabels` from `values.yaml` — suitable when BMH lives on the **spoke** cluster. For **ACM hub-side** agent install, prefer **BMAC annotations** in rendered hub manifests.
+This workspace's [`baremetal-hosts`](../../../argo/examples/framework/apps/baremetal-hosts/) Helm chart uses `spec.nodeLabels` from `values.yaml` — suitable when BMH lives on the **spoke** cluster. For **ACM hub-side** agent install, prefer **BMAC annotations** in rendered hub manifests.
 
 See also: [vgpu-node-labeling.md](../../gpu/vgpu-node-labeling.md) for the same inventory → Git → label pattern (different labels, same GitOps model).
 
@@ -503,7 +503,7 @@ oc get pods -A --field-selector spec.nodeName=<worker-with-broker> \
 
 ### MachineConfigPool (MCP) — what to know
 
-See **[MachineConfig and MachineConfigPool](../../../notes/machine-config-pools.md)** for targeting rules, custom pool patterns, rollout behavior, and diagnostics. Summary for **this example**:
+See **[MachineConfig and MachineConfigPool](../../notes/machine-config-pools.md)** for targeting rules, custom pool patterns, rollout behavior, and diagnostics. Summary for **this example**:
 
 - Brokers use the default **`worker`** MCP — no custom `kafka-worker` pool.
 - Optional [`machineconfig-kafka-tuning.yaml`](manifests/common/machineconfig-kafka-tuning.yaml) uses `role: worker` and affects **all** workers if applied.
@@ -567,7 +567,7 @@ Kafka runs on the default worker pool alongside applications.
 
 #### B. Dedicated nodes on a shared cluster
 
-Kafka runs on a labeled, tainted subset of workers; apps run elsewhere. Not used in this example — see [machine-config-pools.md](../../../notes/machine-config-pools.md) for custom MCP patterns if you adopt it later.
+Kafka runs on a labeled, tainted subset of workers; apps run elsewhere. Not used in this example — see [machine-config-pools.md](../../notes/machine-config-pools.md) for custom MCP patterns if you adopt it later.
 
 #### C. Kafka-dedicated cluster
 

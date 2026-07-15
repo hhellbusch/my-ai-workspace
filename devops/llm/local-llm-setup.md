@@ -50,7 +50,7 @@ Common consumer GPUs: RTX 4060 (8 GB), RTX 4070 (12 GB), RTX 4090 (24 GB).
 
 **Apple Silicon:** Unified memory means even base M-series configurations (16–32 GB) run meaningful models efficiently, and power draw is dramatically lower than a desktop GPU.
 
-**Evaluating your current setup on Linux:** Run `lspci | grep -Ei "vga|3d"` to identify your GPU, then `nvidia-smi` (NVIDIA) or `rocm-smi` (AMD) for VRAM and power baseline. For RAM: `free -h`. For storage: `df -h ~ && lsblk -d -o NAME,SIZE,ROTA,MODEL`. The experiment journal and [`local-llm-sysadmin.md`](local-llm-sysadmin.md) have more context on interpreting these outputs.
+**Evaluating your current setup on Linux:** Run `lspci | grep -Ei "vga|3d"` to identify your GPU, then `nvidia-smi` (NVIDIA) or `rocm-smi` (AMD) for VRAM and power baseline. For RAM: `free -h`. For storage: `df -h ~ && lsblk -d -o NAME,SIZE,ROTA,MODEL`. The experiment journal and [`local-llm-sysadmin.md`](../../docs/ai-engineering/local-llm-sysadmin.md) have more context on interpreting these outputs.
 
 ---
 
@@ -86,7 +86,7 @@ ramalama serve ollama://qwen3:30b-a3b
 
 > **Registry note:** Not all models are mirrored at `quay.io/ramalama/`. For models not mirrored there, use the `ollama://` prefix to pull from Ollama's registry directly (e.g. `ollama://qwen2.5:32b`).
 
-llama.cpp auto-fits context to available VRAM. On a 20 GB card with `qwen3:30b-a3b`, runtime `n_ctx` is ~14k tokens (not the 32k or 262k figures the model self-reports — those are training configuration values, not runtime allocations). Always check actual `n_ctx` in startup logs. See [What a Context Window Actually Is](what-a-context-window-actually-is.md).
+llama.cpp auto-fits context to available VRAM. On a 20 GB card with `qwen3:30b-a3b`, runtime `n_ctx` is ~14k tokens (not the 32k or 262k figures the model self-reports — those are training configuration values, not runtime allocations). Always check actual `n_ctx` in startup logs. See [What a Context Window Actually Is](../../docs/ai-engineering/what-a-context-window-actually-is.md).
 
 RamaLama tradeoffs vs. manual `podman run`: less control over fine-grained inference flags (`--enforce-eager`, `--max-model-len`, `--gpu-memory-utilization`), which matter at the edge of available VRAM. For routine model runs, it significantly reduces friction.
 
@@ -324,10 +324,10 @@ The cost argument requires honest accounting: hardware purchase, power draw, coo
 ## Related Reading
 
 - [vLLM Reference: Server-Grade Local Inference](local-llm-vllm.md) — full vLLM install, serve commands, container setup (NVIDIA + AMD), context limits, and cluster topology
-- [What a Context Window Actually Is](what-a-context-window-actually-is.md) — why the model's self-reported context window and the actual runtime allocation are usually different numbers
-- [The Case for Local: Disk Management as a Privacy-First AI Task](local-llm-sysadmin.md) — a worked example of a task that belongs on local inference, and the privacy argument made concrete
-- [Enterprise LLM Deployment on OpenShift AI](openshift-ai-llm-deployment-summary.md) — the enterprise side of the same question: vLLM on Kubernetes, multi-tenancy, economics at scale
-- [AI-Assisted Development Workflows](ai-assisted-development-workflows.md) — broader patterns for AI-assisted work
+- [What a Context Window Actually Is](../../docs/ai-engineering/what-a-context-window-actually-is.md) — why the model's self-reported context window and the actual runtime allocation are usually different numbers
+- [The Case for Local: Disk Management as a Privacy-First AI Task](../../docs/ai-engineering/local-llm-sysadmin.md) — a worked example of a task that belongs on local inference, and the privacy argument made concrete
+- [Enterprise LLM Deployment on OpenShift AI](../../docs/ai-engineering/openshift-ai-llm-deployment-summary.md) — the enterprise side of the same question: vLLM on Kubernetes, multi-tenancy, economics at scale
+- [AI-Assisted Development Workflows](../../docs/ai-engineering/ai-assisted-development-workflows.md) — broader patterns for AI-assisted work
 - [Local LLM Experiment Journal](../../research/ai-tooling/local-llm-experiment-journal.md) — dated logs of what was actually run: commands, failures, layer splits, tok/s numbers
 - [Level1Techs — AI and You Against the Machine](../../library/level1techs-ai-you-against-machine-local.md) — long-context local MoE + quant framing; AMD vs NVIDIA paths (library entry + cached transcript)
 

@@ -246,4 +246,4 @@ manifests/
     └── strimzi/
 ```
 
-*Example configurations — see [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md).*
+*Example configurations — see [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md).*

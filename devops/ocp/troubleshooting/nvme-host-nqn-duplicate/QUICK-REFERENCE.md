@@ -21,6 +21,9 @@ Deploying NVMe-oF storage (CSI) on bare-metal OCP?
 │  ├─ yes → NVMe/TCP network prep → ../nvme-tcp-storage-network/
 │  └─ no → apply MachineConfig fix (below), wait for MCO reboot
 │
+├─ CSI connected but array sees wrong NQN?
+│  §1b: compare file vs nvme show-hostnqn vs sysfs hostnqn vs array live sessions
+│
 ├─ File contains literal "$(cat ...)"?
 │  └─ yes → Ignition anti-pattern active; replace with systemd fix
 │
@@ -65,6 +68,61 @@ done
 | NQN contains `$(cat` | Anti-pattern MC — replace with systemd fix |
 | MC applied, files still missing on host | `chroot /host systemctl status nvme-gen-host-identity.service` |
 | Each NQN unique, UUID matches DMI | OK — [NVMe/TCP network prep](../nvme-tcp-storage-network/QUICK-REFERENCE.md) |
+
+---
+
+## 1b. Validate effective and connected NQN
+
+Arrays do **not** read `/etc/nvme/` off the node. `nvme-cli` / `libnvme` (and CSI drivers that call them) send **Host NQN** and **Host ID** in NVMe-oF **Discover** and **Connect** commands. The array matches that identity to host objects and ACLs.
+
+### Pre-connect — what libnvme will use
+
+On the host (`chroot /host` if using `oc debug`):
+
+```bash
+nvme show-hostnqn          # resolved Host NQN libnvme will present
+cat /etc/nvme/hostnqn      # on-disk value (wins if present)
+nvme gen-hostnqn           # DMI-derived value if file were absent
+```
+
+**Pass:** `show-hostnqn` matches `cat /etc/nvme/hostnqn`, and that string is unique per node.
+
+Resolution order: CLI `--hostnqn` / `--hostid` → `/etc/nvme/hostnqn` + `hostid` → auto-generate from DMI (with warning).
+
+### Post-connect — what the kernel actually sent
+
+After CSI has connected volumes (or a manual `nvme connect`):
+
+```bash
+# Host NQN used per connected NVMe-oF controller
+for f in /sys/class/nvme/nvme*/hostnqn; do
+  [ -f "$f" ] && echo "$(dirname $f | xargs basename): $(cat $f)"
+done
+
+nvme list-subsys
+nvme list
+```
+
+**Pass:** every `hostnqn` under sysfs matches `/etc/nvme/hostnqn` on that node.
+
+No `hostnqn` sysfs files yet → CSI has not connected, or connect failed before controllers appeared.
+
+### Array side — what the target recorded
+
+| Backend | Where to look |
+|---------|----------------|
+| **Manual registration** | Array UI/CLI **host object** NQN vs **live initiator / connection** list |
+| **Pure FlashArray** | `purehost list` — host object; check active connections for presented NQN |
+| **Dell CSM** | CSM registers from node NQN automatically — confirm host objects in PowerStore/PowerMax UI |
+| **HPE CSI** | `oc get hpenodeinfos -A` — NQN the driver read from the node at startup |
+
+Registered host NQN and live session NQN can differ if the on-disk file was wrong when CSI started — fix the node identity, restart CSI node pods, then reconcile array host objects.
+
+Debug one-liner (post-connect, via `oc debug`):
+
+```bash
+oc debug node/<node> -- chroot /host sh -c 'echo file: $(cat /etc/nvme/hostnqn); echo show: $(nvme show-hostnqn); for f in /sys/class/nvme/nvme*/hostnqn; do [ -f "$f" ] && echo connected: $(cat $f); done'
+```
 
 ---
 
@@ -127,6 +185,7 @@ done
 | systemd oneshot via MachineConfig | Ignition `data:,...$(cat ...)` — shell never runs |
 | Set both `hostnqn` and `hostid` | Set only `hostnqn` |
 | Verify before CSI install | Assume RHCOS auto-unique per node |
+| Compare file, `show-hostnqn`, and sysfs `hostnqn` after connect | Assume array reads `/etc/nvme` off the node |
 | Use `nvme gen-hostnqn` | Hardcode one NQN in a shared MC file |
 
 ---

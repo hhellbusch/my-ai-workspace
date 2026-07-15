@@ -22,7 +22,7 @@ This directory contains comprehensive resources for diagnosing and resolving RHA
   - Bypass validation temporarily
   - Debug root cause
   
-- **[QUICK-FIX.md](QUICK-FIX.md)** - Fast solutions for common scenarios
+- **[QUICK-REFERENCE.md](QUICK-REFERENCE.md)** - Fast solutions for common scenarios
   - TL;DR fixes for immediate problems
   - Common error messages and their solutions
   - Nuclear option for complete reset
@@ -77,7 +77,7 @@ This directory contains comprehensive resources for diagnosing and resolving RHA
 3. If name IS set but error persists, go to Path 1
 
 ### Path 3: I Need This Fixed Right Now (Any Scenario)
-1. Go to [QUICK-FIX.md](QUICK-FIX.md)
+1. Go to [QUICK-REFERENCE.md](QUICK-REFERENCE.md)
 2. Find your error message
 3. Copy-paste the fix
 4. Done
@@ -92,7 +92,7 @@ This directory contains comprehensive resources for diagnosing and resolving RHA
 ### Path 5: I'm Creating New MCO Resources
 1. Check [example-mco.yaml](example-mco.yaml)
 2. Copy the appropriate template
-3. Follow the prevention checklist in [QUICK-FIX.md](QUICK-FIX.md)
+3. Follow the prevention checklist in [QUICK-REFERENCE.md](QUICK-REFERENCE.md)
 4. Validate before applying
 
 ## Common Scenarios
@@ -130,7 +130,7 @@ oc patch multiclusterobservability $MCO_NAME -p '{"metadata":{"finalizers":null}
 oc delete multiclusterobservability $MCO_NAME --grace-period=0 --force
 ```
 
-**Reference:** QUICK-FIX.md → "If you can't edit/delete"
+**Reference:** QUICK-REFERENCE.md → "If you can't edit/delete"
 
 ### Scenario 2: Can't Edit MCO Resource
 **Problem:** Webhook rejects updates even though YAML looks correct
@@ -220,14 +220,14 @@ Can't perform operation on MCO?
 │  ├─ YES → You're missing resource name in command OR YAML
 │  │        Run: ./check-mco-name.sh
 │  │        See: README.md → Strategy 0
-│  │        See: QUICK-FIX.md → Top section
+│  │        See: QUICK-REFERENCE.md → Top section
 │  │
 │  └─ NO  → Continue below
 │
 ├─ Error mentions "name" or "nil" (but not the above)?
 │  │
 │  ├─ YES → Check nested resource names
-│  │        See: QUICK-FIX.md → "name cannot be nil"
+│  │        See: QUICK-REFERENCE.md → "name cannot be nil"
 │  │        Use: example-mco.yaml for proper structure
 │  │
 │  └─ NO  → Continue below
@@ -242,7 +242,7 @@ Can't perform operation on MCO?
 ├─ Need to force delete/bypass validation?
 │  │
 │  ├─ YES → Remove finalizers or disable webhook
-│  │        See: QUICK-FIX.md → "If you can't edit/delete"
+│  │        See: QUICK-REFERENCE.md → "If you can't edit/delete"
 │  │        See: README.md → Strategy 1 or 2
 │  │
 │  └─ NO  → Continue below
@@ -283,7 +283,7 @@ Found a new issue or solution? Add it to this troubleshooting guide following th
 **Quick Links:**
 - ⚡ **Name IS set but error persists:** `./bypass-webhook.sh` or [NAME-IS-SET-BUT-ERROR-PERSISTS.md](NAME-IS-SET-BUT-ERROR-PERSISTS.md)
 - ⚡ **Not sure if name is set:** `./check-mco-name.sh`
-- **Quick fixes:** [QUICK-FIX.md](QUICK-FIX.md)
+- **Quick fixes:** [QUICK-REFERENCE.md](QUICK-REFERENCE.md)
 - **Detailed guide:** [README.md](README.md)
 - **Examples:** [example-mco.yaml](example-mco.yaml)
 - **Full diagnostics:** `./diagnose-webhook-issue.sh`

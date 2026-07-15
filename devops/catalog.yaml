@@ -1,0 +1,301 @@
+# DevOps troubleshooting catalog — stable IDs for symptom lookup, site nav, and agent routing.
+# Generate symptom index: scripts/generate-symptom-index.py
+
+guides:
+  - id: failed-ocp-install
+    title: Failed OCP Install
+    path: devops/ocp/troubleshooting/failed-ocp-install
+    product: ocp
+    category: installation
+    symptoms:
+      - "openshift install did not complete"
+      - "bootstrap complete but cluster operators not available"
+      - "installation stuck"
+    tags: [installation, bootstrap, beginners]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: api-slowness-web-console
+    title: API Slowness and Web Console Performance
+    path: devops/ocp/troubleshooting/api-slowness-web-console
+    product: ocp
+    category: control-plane
+    symptoms:
+      - "oc commands slow"
+      - "web console slow"
+      - "API timeout"
+      - "etcd latency"
+    tags: [performance, control-plane, emergency]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: apiserver-cert-deadlock
+    title: API Server Certificate Deadlock
+    path: devops/ocp/troubleshooting/apiserver-cert-deadlock
+    product: ocp
+    category: control-plane
+    symptoms:
+      - "apiserver certificate expired"
+      - "kube-apiserver operator cannot apply cert"
+      - "x509 certificate has expired"
+    tags: [certificates, control-plane, emergency]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: control-plane-kubeconfigs
+    title: Control Plane Kubeconfigs
+    path: devops/ocp/troubleshooting/control-plane-kubeconfigs
+    product: ocp
+    category: control-plane
+    symptoms:
+      - "monitor cluster operators from control plane node"
+      - "kubeconfig on CoreOS master"
+      - "installation monitoring from master"
+    tags: [kubeconfig, control-plane, installation]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: kube-controller-manager-crashloop
+    title: kube-controller-manager Crash Loop
+    path: devops/ocp/troubleshooting/kube-controller-manager-crashloop
+    product: ocp
+    category: control-plane
+    symptoms:
+      - "kube-controller-manager CrashLoopBackOff"
+      - "controller manager pod restarting"
+    tags: [control-plane, crashloop]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: oauth-healthz-unavailable
+    title: OAuth Server healthz Unavailable
+    path: devops/ocp/troubleshooting/oauth-healthz-unavailable
+    product: ocp
+    category: control-plane
+    symptoms:
+      - "OAuthServerRouteEndpointAccessibleControllerAvailable"
+      - "authentication cluster operator degraded"
+      - "oauth-openshift.apps healthz connection refused"
+      - "oc login fails"
+    tags: [authentication, oauth, control-plane]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: bare-metal-stale-node-ip-conflict
+    title: Bare Metal Stale Node IP Conflict
+    path: devops/ocp/troubleshooting/bare-metal-stale-node-ip-conflict
+    product: ocp
+    category: bare-metal
+    symptoms:
+      - "MAC flapping"
+      - "retired node same IP as new control plane"
+      - "misleading TLS errors bare metal"
+    tags: [bare-metal, networking, ip-conflict]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: bare-metal-rhcos-disk-wipe
+    title: Bare Metal RHCOS Disk Wipe
+    path: devops/ocp/troubleshooting/bare-metal-rhcos-disk-wipe
+    product: ocp
+    category: bare-metal
+    symptoms:
+      - "reuse bare metal node"
+      - "wipe ignition ostree etcd"
+      - "decommission RHCOS disk"
+    tags: [bare-metal, disk-wipe, decommission]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: bare-metal-node-inspection-timeout
+    title: Bare Metal Node Inspection Timeout
+    path: devops/ocp/troubleshooting/bare-metal-node-inspection-timeout
+    product: ocp
+    category: bare-metal
+    symptoms:
+      - "BMH stuck inspecting"
+      - "bare metal node inspection timeout"
+      - "ironic inspection failed"
+    tags: [bare-metal, ironic, inspection]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: worker-node-tls-cert-failure
+    title: Worker Node TLS Certificate Failure
+    path: devops/ocp/troubleshooting/worker-node-tls-cert-failure
+    product: ocp
+    category: bare-metal
+    symptoms:
+      - "TLS certificate verification failed adding worker"
+      - "x509 certificate signed by unknown authority worker"
+    tags: [bare-metal, tls, certificates, workers]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: destroy-cluster-without-metadata
+    title: Destroy Cluster Without Metadata
+    path: devops/ocp/troubleshooting/destroy-cluster-without-metadata
+    product: ocp
+    category: lifecycle
+    symptoms:
+      - "openshift-install destroy metadata missing"
+      - "lost metadata.json"
+      - "manual cluster cleanup"
+    tags: [destroy, lifecycle, bare-metal, cloud]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: csr-management
+    title: CSR Management
+    path: devops/ocp/troubleshooting/csr-management
+    product: ocp
+    category: certificates
+    symptoms:
+      - "pending certificate signing request"
+      - "CSR not approved"
+      - "nodes not ready pending CSR"
+    tags: [certificates, csr, nodes]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: coreos-networking-issues
+    title: CoreOS Networking Issues
+    path: devops/ocp/troubleshooting/coreos-networking-issues
+    product: ocp
+    category: networking
+    symptoms:
+      - "CoreOS no network"
+      - "nmstate degraded"
+      - "node network not configured"
+    tags: [coreos, networking, nmstate]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: aap-ssh-mtu-issues
+    title: AAP SSH Connection MTU Issues
+    path: devops/ocp/troubleshooting/aap-ssh-mtu-issues
+    product: ocp
+    category: automation
+    symptoms:
+      - "AAP SSH connection timeout"
+      - "SSH works from bastion not from AAP"
+      - "MTU mismatch SSH"
+    tags: [aap, ansible, mtu, ssh]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: kubevirt-vm-stuck-provisioning
+    title: KubeVirt VM Stuck in Provisioning
+    path: devops/ocp/troubleshooting/kubevirt-vm-stuck-provisioning
+    product: ocp
+    category: virtualization
+    symptoms:
+      - "VM stuck provisioning"
+      - "kubevirt-velero-annotations-remover webhook not found"
+      - "virt-launcher pod not created"
+    tags: [kubevirt, velero, oadp, virtualization]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: namespace-stuck-terminating
+    title: Namespace Stuck in Terminating
+    path: devops/ocp/troubleshooting/namespace-stuck-terminating
+    product: ocp
+    category: kubernetes
+    symptoms:
+      - "namespace stuck terminating"
+      - "namespace finalizer blocking delete"
+    tags: [namespace, finalizers]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: image-registry-auth
+    title: Image Registry Auth and Route Exposure
+    path: devops/ocp/troubleshooting/image-registry-auth
+    product: ocp
+    category: registry
+    symptoms:
+      - "podman login registry 403"
+      - "image registry 401 unauthorized"
+      - "expose internal image registry route"
+    tags: [registry, authentication, disconnected]
+    quick_ref: null
+
+  - id: image-signature-policy-mcp-deadlock
+    title: Image Signature Policy MCP Deadlock
+    path: devops/ocp/troubleshooting/image-signature-policy-mcp-deadlock
+    product: ocp
+    category: registry
+    symptoms:
+      - "SignatureValidationFailed"
+      - "MachineConfigPool blocked signature policy"
+      - "policy.json rejecting registry.redhat.io"
+    tags: [registry, machineconfig, signatures, emergency]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: nvme-host-nqn-duplicate
+    title: NVMe Host NQN Duplicates
+    path: devops/ocp/troubleshooting/nvme-host-nqn-duplicate
+    product: ocp
+    category: storage
+    symptoms:
+      - "duplicate NVMe host NQN"
+      - "nvme hostid not unique"
+      - "NVMe-oF bare metal"
+    tags: [storage, nvme, bare-metal]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: nvme-tcp-storage-network
+    title: NVMe/TCP Storage Network
+    path: devops/ocp/troubleshooting/nvme-tcp-storage-network
+    product: ocp
+    category: storage
+    symptoms:
+      - "NVMe TCP storage network"
+      - "dual NIC storage fabric"
+      - "NNCP storage interfaces"
+    tags: [storage, nvme, networking]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: portworx-csi-crashloop
+    title: Portworx CSI Pod CrashLoopBackOff
+    path: devops/ocp/troubleshooting/portworx-csi-crashloop
+    product: ocp
+    category: storage
+    symptoms:
+      - "px-csi-ext CrashLoopBackOff"
+      - "Portworx CSI driver not found"
+      - "CSI socket connection refused"
+    tags: [storage, portworx, csi]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: nfs-portworx-proxy-pvc-slow-ready
+    title: NFS Portworx Proxy PVC Slow Ready
+    path: devops/ocp/troubleshooting/nfs-portworx-proxy-pvc-slow-ready
+    product: ocp
+    category: storage
+    symptoms:
+      - "PVC slow to bind NFS proxy"
+      - "pod 20 minutes to ready portworx nfs"
+    tags: [storage, portworx, nfs, pvc]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: prometheus-monitoring-storage
+    title: Prometheus and Alertmanager Storage
+    path: devops/ocp/troubleshooting/prometheus-monitoring-storage
+    product: ocp
+    category: storage
+    symptoms:
+      - "prometheus PVC pending"
+      - "alertmanager storage class"
+      - "cluster monitoring PVC stuck"
+    tags: [monitoring, prometheus, storage]
+    quick_ref: null
+
+  - id: multiclusterobservability-webhook-rejection
+    title: MultiClusterObservability Webhook Rejection
+    path: devops/ocp/troubleshooting/multiclusterobservability-webhook-rejection
+    product: ocp
+    category: rhacm
+    symptoms:
+      - "admission webhook denied multiclusterobservability"
+      - "metadata.name is required MCO"
+      - "cannot delete multiclusterobservability"
+    tags: [rhacm, webhook, observability]
+    quick_ref: QUICK-REFERENCE.md
+
+  - id: debug-toolbox-container
+    title: Debug Toolbox Container
+    path: devops/ocp/troubleshooting/debug-toolbox-container
+    product: ocp
+    category: tools
+    symptoms:
+      - "ephemeral debug container OpenShift"
+      - "network troubleshoot from pod"
+      - "privileged toolbox UBI"
+    tags: [debug, networking, toolbox]
+    quick_ref: QUICK-REFERENCE.md

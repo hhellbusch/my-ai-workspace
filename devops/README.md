@@ -8,6 +8,12 @@ review:
 
 Practical, runnable examples and references for infrastructure, platform, and operational tooling — built from real work and accumulated over time. Currently weighted toward enterprise Kubernetes and OpenShift environments; will grow as work and interests do.
 
+**Browse the site** (search, sidebar nav): [hhellbusch.github.io/gemini-workspace](https://hhellbusch.github.io/gemini-workspace/) — built from this tree with MkDocs Material on push to `main`.
+
+**Symptom lookup:** [SYMPTOM-INDEX.md](SYMPTOM-INDEX.md) — generated from [`catalog.yaml`](catalog.yaml).
+
+**Build the site locally:** `pip install -r requirements-docs.txt && bash scripts/build-docs.sh` → `site/`
+
 **What belongs here:** Runnable examples, troubleshooting guides, lab exercises, and integration patterns for any infrastructure, platform, or operational tool. Not essays or case studies (those live in [`docs/`](../docs/)) and not research workspaces ([`research/`](../research/)). Local LLM inference setup for consumer hardware lives here rather than in docs/ since it's practical reference, not essay.
 
 **External links:** Red Hat doc URLs (`docs.redhat.com`) — see [`rules/red-hat-docs-links.md`](../rules/red-hat-docs-links.md) (pin versions, verify slugs, searchable link text).
@@ -23,6 +29,15 @@ Cross-cutting reference for how RHACM and Argo CD divide fleet work — multiple
 ---
 
 ## Contents
+
+### [Bare Metal Dev Sandbox](bare-metal-dev-sandbox/)
+
+Local Redfish/BMC preflight harness for developing ACM bare-metal automation without dedicated hardware per developer.
+
+- **`scenarios/`** — 11 validation-gate scenarios (baseline pass, firewall blocks, BMC auth failure, kitchen-sink fail, and more)
+- **`playbooks/`** + **`roles/preflight_validate/`** — Ansible validation gate against sushy-static mock BMCs
+- **[WORKSHOP.md](bare-metal-dev-sandbox/WORKSHOP.md)** — Hands-on labs and peer teaching outline
+- **[HARNESS.md](bare-metal-dev-sandbox/HARNESS.md)** — Scenario runner and assertion model
 
 ### [Ansible](ansible/)
 

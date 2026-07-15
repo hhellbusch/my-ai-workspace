@@ -391,8 +391,8 @@ The guide is considered successful when:
 
 For questions about this guide or to report issues:
 - Documentation location: `ocp/troubleshooting/portworx-csi-crashloop/`
-- Guide index: [INDEX.md](./INDEX.md)
-- Main README: [README.md](./README.md)
+- Guide index: [INDEX.md](../INDEX.md)
+- Main README: [README.md](../README.md)
 
 ---
 
