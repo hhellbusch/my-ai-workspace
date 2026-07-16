@@ -32,14 +32,14 @@ Cross-cutting reference for how RHACM and Argo CD divide fleet work — multiple
 
 ## Contents
 
-### [Bare Metal Dev Sandbox](bare-metal-dev-sandbox/)
+### Bare Metal Dev Sandbox (`devops/bare-metal-dev-sandbox/`)
 
-Local Redfish/BMC preflight harness for developing ACM bare-metal automation without dedicated hardware per developer.
+Local Redfish/BMC preflight harness for developing ACM bare-metal automation without dedicated hardware per developer. *(In progress — not yet in tree; links will appear here when committed.)*
 
-- **`scenarios/`** — 11 validation-gate scenarios (baseline pass, firewall blocks, BMC auth failure, kitchen-sink fail, and more)
+- **`scenarios/`** — validation-gate scenarios (baseline pass, firewall blocks, BMC auth failure, kitchen-sink fail, and more)
 - **`playbooks/`** + **`roles/preflight_validate/`** — Ansible validation gate against sushy-static mock BMCs
-- **[WORKSHOP.md](bare-metal-dev-sandbox/WORKSHOP.md)** — Hands-on labs and peer teaching outline
-- **[HARNESS.md](bare-metal-dev-sandbox/HARNESS.md)** — Scenario runner and assertion model
+- **`WORKSHOP.md`** — hands-on labs and peer teaching outline
+- **`HARNESS.md`** — scenario runner and assertion model
 
 ### [Ansible](ansible/)
 
@@ -83,7 +83,7 @@ Curated multi-topic curricula (may span OpenShift, GitOps, and labs in this repo
 
 The deepest product section — install, operations, and troubleshooting for enterprise OpenShift.
 
-- **`examples/`** — OVN-Kubernetes networking, install config templates, SNO KVM lab setup
+- **`examples/`** — OVN-Kubernetes networking, install config templates, SNO KVM lab, [secondary disk offload](ocp/examples/bare-metal-secondary-disk/README.md)
 - **`disconnected-install/`** — Disconnected OCP 4.18.14 with Quay + `oc-mirror`: [working guide](ocp/disconnected-install/working-guide.md), [scope](ocp/disconnected-install/BRIEF.md)
 - **`ibm-z/`** — OpenShift on IBM Z and LinuxONE (s390x): mental model, provisioning/automation (ACM, ABI, Metal3), external references ([index](ocp/ibm-z/README.md))
 - **`troubleshooting/`** — 20+ guides covering: API slowness, bare metal inspection timeouts, apiserver cert deadlock, CoreOS networking, CSR management, kube-controller-manager crashloops, KubeVirt VM provisioning, namespace termination, NVMe host NQN duplicates, NVMe/TCP storage network, Portworx CSI, worker TLS cert failures, image registry auth, MCP deadlock, RHACM webhook rejection, OAuth healthz, and more

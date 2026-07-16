@@ -10,6 +10,13 @@ Configuration examples and templates for OpenShift clusters.
 
 ## Available Examples
 
+### Bare metal / secondary disk
+
+- **[Secondary disk offload (overview)](bare-metal-secondary-disk/README.md)** — What to move off the OS disk, patterns A–D, `by-path`, 14 TiB layout, use-case index
+  - **Use cases:** [index](bare-metal-secondary-disk/use-cases/README.md) · [application PV](bare-metal-secondary-disk/use-cases/application-pv.md) · [CSI pools](bare-metal-secondary-disk/use-cases/csi-raw-disks.md) · [etcd](bare-metal-secondary-disk/use-cases/etcd-master.md) · [registry](bare-metal-secondary-disk/use-cases/disconnected-registry.md) · [container storage](bare-metal-secondary-disk/use-cases/container-storage.md)
+- **[`/var/log` on secondary disk (complete)](bare-metal-var-log-disk/README.md)** — Ignition vs script + systemd `MachineConfig` side by side
+  - [approach-a-ignition.yaml](bare-metal-var-log-disk/approach-a-ignition.yaml) · [approach-b-script-systemd.yaml](bare-metal-var-log-disk/approach-b-script-systemd.yaml)
+
 ### Lab / SNO
 
 - **[SNO on KVM](sno-kvm-lab/README.md)** — Single Node OpenShift home-lab (pfSense DNS, agent installer, ArgoCD bootstrap)

@@ -30,7 +30,7 @@ Symptom → cause → fix guides with quick references and diagnostic scripts.
 - [Disconnected install (Quay + oc-mirror)](disconnected-install/) — mirror-registry, oc-mirror v2, ImageSet examples, phased working guide
 - [IBM Z / LinuxONE](ibm-z/) — s390x vocabulary, CIM ABI LPAR, AOP fork notes, ACM vs Metal3 ([index](ibm-z/README.md))
 - [GPU operator artifacts](gpu/) — ClusterPolicy, MachineConfig, vGPU runbooks
-- [Examples](examples/) — Configuration examples and templates ([Kafka + Portworx rack-aware](examples/kafka-bare-metal-portworx/README.md))
+- [Examples](examples/) — Configuration examples and templates ([secondary disk offload](examples/bare-metal-secondary-disk/README.md), [Kafka + Portworx rack-aware](examples/kafka-bare-metal-portworx/README.md))
 - [Notes](notes/) — Informal quick references ([MachineConfig pools](notes/machine-config-pools.md), useful `oc` commands)
 - **`install/`** *(gitignored)* — Local install working directory; never committed
 

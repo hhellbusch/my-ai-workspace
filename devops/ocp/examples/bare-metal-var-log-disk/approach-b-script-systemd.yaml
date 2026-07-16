@@ -1,0 +1,135 @@
+# Approach B — Script + systemd units via MachineConfig (imperative prep)
+#
+# Same discovery and rollout expectations as approach-a-ignition.yaml.
+# The script runs only when /dev/disk/by-partlabel/var_log is missing (systemd Condition).
+#
+# Replace BY_PATH in the embedded script after fleet validation.
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  name: 99-worker-var-log-disk-script
+  labels:
+    machineconfiguration.openshift.io/role: worker
+spec:
+  config:
+    ignition:
+      version: 3.5.0
+    storage:
+      files:
+        - path: /usr/local/sbin/prepare-var-log-disk.sh
+          mode: 0755
+          overwrite: true
+          contents:
+            inline: |
+              #!/usr/bin/bash
+              set -euo pipefail
+
+              BY_PATH="/dev/disk/by-path/pci-0000:3d:00.0-nvme-1"
+              PARTLABEL="var_log"
+              PART_NUM="1"
+              LOG_PART_SIZE_GIB="256"
+
+              log() { echo "prepare-var-log-disk: $*" >&2; }
+
+              if [[ ! -b "${BY_PATH}" ]]; then
+                log "block device not found: ${BY_PATH}"
+                exit 1
+              fi
+
+              DEV="$(readlink -f "${BY_PATH}")"
+              DEV_NAME="$(basename "${DEV}")"
+
+              # Refuse if this device hosts the OS root.
+              ROOT_SRC="$(findmnt -n -o SOURCE /sysroot 2>/dev/null || true)"
+              if [[ -n "${ROOT_SRC}" ]]; then
+                ROOT_PK="$(lsblk -ndo PKNAME "${ROOT_SRC}" 2>/dev/null || true)"
+                if [[ "${ROOT_PK}" == "${DEV_NAME}" || "${ROOT_SRC}" == "${DEV}" ]]; then
+                  log "refusing: ${BY_PATH} appears to be the OS disk"
+                  exit 1
+                fi
+              fi
+
+              PART_DEV="/dev/disk/by-partlabel/${PARTLABEL}"
+              if [[ -b "${PART_DEV}" ]]; then
+                log "partition already exists: ${PARTLABEL}"
+              else
+                if sgdisk -p "${DEV}" 2>/dev/null | grep -qE "^ +${PART_NUM} "; then
+                  log "partition ${PART_NUM} exists without partlabel ${PARTLABEL}; refusing"
+                  exit 1
+                fi
+
+                if ! sgdisk -p "${DEV}" &>/dev/null; then
+                  log "creating GPT on ${DEV}"
+                  sgdisk -o "${DEV}"
+                fi
+
+                log "creating partition ${PART_NUM} (${LOG_PART_SIZE_GIB} GiB) label ${PARTLABEL}"
+                sgdisk -n "${PART_NUM}:1MiB:+${LOG_PART_SIZE_GIB}GiB" \
+                  -c "${PART_NUM}:${PARTLABEL}" "${DEV}"
+                partprobe "${DEV}" 2>/dev/null || true
+                udevadm settle
+              fi
+
+              PART_DEV="/dev/disk/by-partlabel/${PARTLABEL}"
+              if [[ ! -b "${PART_DEV}" ]]; then
+                log "partition device missing after creation"
+                exit 1
+              fi
+
+              FSTYPE="$(blkid -o value -s TYPE "${PART_DEV}" 2>/dev/null || true)"
+              if [[ "${FSTYPE}" != "xfs" ]]; then
+                log "formatting xfs on ${PART_DEV}"
+                mkfs.xfs -L var_log_fs -f "${PART_DEV}"
+              else
+                log "xfs already present on ${PART_DEV}"
+              fi
+
+              log "done"
+        - path: /etc/systemd/journald.conf.d/99-var-log-limits.conf
+          mode: 0644
+          overwrite: true
+          contents:
+            inline: |
+              [Journal]
+              Storage=persistent
+              SystemMaxUse=50G
+              SystemKeepFree=10G
+              SystemMaxFileSize=1G
+              MaxRetentionSec=30day
+              Compress=yes
+    systemd:
+      units:
+        - name: prepare-var-log-disk.service
+          enabled: true
+          contents: |
+            [Unit]
+            Description=Create var_log partition on secondary NVMe
+            DefaultDependencies=no
+            Before=var-log.mount
+            ConditionPathExists=!/dev/disk/by-partlabel/var_log
+
+            [Service]
+            Type=oneshot
+            RemainAfterExit=yes
+            ExecStart=/usr/local/sbin/prepare-var-log-disk.sh
+
+            [Install]
+            WantedBy=multi-user.target
+        - name: var-log.mount
+          enabled: true
+          contents: |
+            [Unit]
+            Description=Mount /var/log on dedicated partition
+            Before=systemd-journald.service
+            After=prepare-var-log-disk.service
+            ConditionPathExists=/dev/disk/by-partlabel/var_log
+
+            [Mount]
+            What=/dev/disk/by-partlabel/var_log
+            Where=/var/log
+            Type=xfs
+            Options=defaults,noatime
+
+            [Install]
+            WantedBy=local-fs.target
