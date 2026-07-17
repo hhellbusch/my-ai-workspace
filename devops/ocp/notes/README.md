@@ -14,6 +14,9 @@ Red Hat doc links in notes follow [`rules/red-hat-docs-links.md`](../../../rules
 
 - **[machine-config-pools.md](machine-config-pools.md)** — MachineConfig and MachineConfigPool targeting, custom pools, rollout behavior
 - **[openshift-useful-commands.md](openshift-useful-commands.md)** — Useful OpenShift and kubectl commands for pod management, troubleshooting, and cluster operations
+- **[container-density-overcommit.md](container-density-overcommit.md)** — Packing/overcommit architecture for large bare-metal clusters (LimitRange, CRO, VPA, HPA)
+- **[cluster-resource-override.md](cluster-resource-override.md)** — ClusterResourceOverride Operator: request/limit ratios, opt-in namespaces, pitfalls
+- **[vertical-pod-autoscaler.md](vertical-pod-autoscaler.md)** — VPA features, tradeoffs, pitfalls, and right-sizing practices
 
 ## Adding New Notes
 
