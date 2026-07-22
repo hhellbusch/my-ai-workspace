@@ -156,6 +156,8 @@ Docs: [Ansible-OpenShift-Provisioning](https://ibm.github.io/Ansible-OpenShift-P
 
 This complements ACM (infra prep → ABI or UPI install → ACM import), it does not replace Assisted Service.
 
+**LPAR path choice (UPI / ABI / HCP):** [lpar-install-paths.md](lpar-install-paths.md)
+
 A plausible enterprise flow:
 
 ```mermaid

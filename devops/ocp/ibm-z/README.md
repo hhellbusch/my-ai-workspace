@@ -21,7 +21,13 @@ Built for peers who know x86 OpenShift or mainframe operations but not how the t
 | Guide | What you get |
 |-------|----------------|
 | [mental-model.md](mental-model.md) | Vocabulary (HMC, LPAR, z/VM, zCX), where OCP runs, deployment topology map |
+| [lpar-install-paths.md](lpar-install-paths.md) | **UPI vs ABI vs HCP on LPAR** — trade-offs and ACM alignment |
+| [cim-abi-lpar.md](cim-abi-lpar.md) | **CIM-driven ABI LPAR** — runbook (hub CRs + AOP boot); chosen path |
+| [lpar-networking-osa-vs-hipersockets.md](lpar-networking-osa-vs-hipersockets.md) | OSA vs HiperSockets — generic day-1 networking primer |
 | [provisioning-and-automation.md](provisioning-and-automation.md) | ACM, Metal3/Ironic, Agent-based install, Ansible — what works on Z and what does not |
+| [ansible-openshift-provisioning-review.md](ansible-openshift-provisioning-review.md) | Code review of IBM AOP — DRY debt, remediation phases |
+| [ansible-openshift-provisioning-fork.md](ansible-openshift-provisioning-fork.md) | Fork workflow and Phase 1 refactor status |
+| [ansible-openshift-provisioning-forks-meta.md](ansible-openshift-provisioning-forks-meta.md) | Meta-analysis of ~65 GitHub forks — patterns, risks, contribution strategy |
 | [references.md](references.md) | Canonical external docs, Redbooks, IBM Community posts |
 
 ---

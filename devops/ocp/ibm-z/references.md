@@ -67,7 +67,13 @@ review:
 |----------|------|
 | Domain index | [README.md](README.md) |
 | Mental model | [mental-model.md](mental-model.md) |
+| LPAR install paths (UPI/ABI/HCP) | [lpar-install-paths.md](lpar-install-paths.md) |
+| CIM ABI LPAR runbook | [cim-abi-lpar.md](cim-abi-lpar.md) |
 | Provisioning and automation | [provisioning-and-automation.md](provisioning-and-automation.md) |
+| AOP code review | [ansible-openshift-provisioning-review.md](ansible-openshift-provisioning-review.md) |
+| AOP fork workflow | [ansible-openshift-provisioning-fork.md](ansible-openshift-provisioning-fork.md) |
+| AOP fork meta-analysis | [ansible-openshift-provisioning-forks-meta.md](ansible-openshift-provisioning-forks-meta.md) |
+| **Fork `AGENTS.md`** | https://github.com/hhellbusch/Ansible-OpenShift-Provisioning/blob/refactor/phase-1-dry/AGENTS.md |
 | RHACM notes | [devops/rhacm/README.md](../../rhacm/README.md) |
 
 ---

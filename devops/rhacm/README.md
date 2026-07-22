@@ -18,7 +18,7 @@ See [Git-driven RHACM configuration](git-driven-configuration.md).
 
 **Ideas & future work:** [fleet-management-ideas.md](../fleet-management-ideas.md) — framework and doc follow-ups for later review.
 
-**OpenShift on IBM Z:** [devops/ocp/ibm-z/](../ocp/ibm-z/README.md) — s390x provisioning paths; ACM/MCE vs Metal3; complements CIM hub setup for Z cluster creation.
+**OpenShift on IBM Z:** [devops/ocp/ibm-z/](../ocp/ibm-z/README.md) — s390x provisioning paths; **[CIM ABI LPAR runbook](../ocp/ibm-z/cim-abi-lpar.md)** for hub-driven install.
 
 ## Directories
 

@@ -101,7 +101,7 @@ Both can coexist on one physical Z server alongside traditional z/OS and Linux w
 | **Architecture** | `amd64` | `s390x` — all images and operators must match |
 | **Install platform** | `baremetal`, `aws`, `vsphere`, … | **`none`** only (user-provisioned) |
 | **Machine API** | Often available | **Not available** — no autoscaling via MachineSet |
-| **Networking** | Generic NICs, common bond modes | OSA, subchannels, `rd.znet` boot params; bonding often `active-backup` |
+| **Networking** | Generic NICs, common bond modes | OSA (Ethernet), HiperSockets (same-CPC virtual), `rd.znet` boot params — see [lpar-networking-osa-vs-hipersockets.md](lpar-networking-osa-vs-hipersockets.md) |
 | **Boot** | iPXE, ISO common | LPAR/z/VM: **PXE required**; ISO only on RHEL KVM path |
 | **Hardware management** | BMC (IPMI/Redfish) | **HMC** (not a BMC — different API and workflow) |
 | **"Bare metal" in docs** | Often means BMO/Ironic IPI | Often means **LPARs without cloud provider** — not Bare Metal Operator |
@@ -122,6 +122,8 @@ Red Hat documents three installer postures on Z (no cloud-style IPI):
 
 All are **user-provisioned infrastructure**.
 You prepare LPARs/VMs, networking, storage, and load balancers.
+
+**Choosing a path:** see [lpar-install-paths.md](lpar-install-paths.md) for UPI vs ABI vs HCP trade-offs and ACM fit.
 
 See [provisioning-and-automation.md](provisioning-and-automation.md) for ACM, Metal3, and Ansible.
 

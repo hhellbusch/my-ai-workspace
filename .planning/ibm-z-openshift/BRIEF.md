@@ -15,7 +15,15 @@ Platform engineers and architects learning or evaluating OpenShift on s390x — 
 
 - Shared vocabulary when discussing Z/LinuxONE with RHACM, install, or mainframe teams
 - Correct tool choice (Agent/ABI vs Metal3 vs Ansible vs zCX) before design commitments
+- **CIM-driven ABI LPAR** runbook against existing hub infra
 - Iteration surface: gaps and open questions live in `whats-next.md`
+
+## Decision (2026-07-22)
+
+**Install path:** CIM-driven **ABI on LPAR** with **connected** ACM hub. **Topology:** HA.
+
+**Runbook:** [`cim-abi-lpar.md`](../../devops/ocp/ibm-z/cim-abi-lpar.md)  
+**Infra automation:** private [AOP fork](https://github.com/hhellbusch/Ansible-OpenShift-Provisioning) for HMC/LPAR boot — not upstream PRs.
 
 ## Scope
 
