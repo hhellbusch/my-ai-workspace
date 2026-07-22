@@ -244,3 +244,6 @@ export KUBECONFIG=/etc/kubernetes/static-pod-resources/kube-apiserver-certs/secr
 **Complexity:** High - required deep understanding of kubelet authentication flow  
 **Success:** ✅ Control plane recovering, ready to resume original task
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -379,3 +379,6 @@ spec:
 - [Policy Collection Examples](https://github.com/stolostron/policy-collection)
 - [ConfigurationPolicy Spec](https://github.com/stolostron/config-policy-controller)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

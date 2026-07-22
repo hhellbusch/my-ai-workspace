@@ -367,3 +367,6 @@ All methods work together with well-defined precedence, allowing you to:
 
 Choose the method that best fits your use case, or combine multiple methods for maximum flexibility!
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

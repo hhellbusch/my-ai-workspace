@@ -363,3 +363,7 @@ git pull --rebase origin main    # Fetch and rebase on top
 ---
 
 *This guide is part of the devops learning path. It covers fundamentals; for project-specific git workflows, see the workspace's working style documentation.*
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

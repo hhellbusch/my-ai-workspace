@@ -50,3 +50,7 @@ Project brief: [.planning/ibm-z-openshift/BRIEF.md](../../../.planning/ibm-z-ope
 
 When adding guides, update this table and `references.md`.
 Flag unverified claims inline — this domain is actively being explored.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

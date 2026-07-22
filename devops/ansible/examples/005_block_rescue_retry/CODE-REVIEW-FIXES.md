@@ -154,3 +154,6 @@ This is the recommended pattern for production use.
 
 All code review suggestions have been implemented. The examples now demonstrate best practices for Ansible block/rescue retry patterns with cleaner, more maintainable code.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

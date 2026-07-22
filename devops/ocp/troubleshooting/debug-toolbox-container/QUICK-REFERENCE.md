@@ -311,3 +311,7 @@ Privileged containers have elevated permissions and should not be left running i
 ---
 
 **See:** [README.md](./README.md) for detailed explanations and examples.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

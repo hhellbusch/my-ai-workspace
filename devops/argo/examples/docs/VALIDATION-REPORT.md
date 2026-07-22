@@ -918,3 +918,6 @@ spec:
 
 **Note**: All core tools required for validation were available. Optional linting tools (yamllint, shellcheck) were not installed but are recommended for enhanced validation in actual use.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

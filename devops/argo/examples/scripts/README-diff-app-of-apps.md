@@ -489,3 +489,7 @@ Found a bug or want to add features?
 ## License
 
 This script is part of the DevOps examples collection.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -126,3 +126,7 @@ cat /etc/containers/policy.json | jq .
 ## Need More Help?
 
 See the full troubleshooting guide: `README.md`
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

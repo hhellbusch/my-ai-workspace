@@ -36,3 +36,7 @@ Helm chart at v24.9.1. Review against current upstream before applying.
 - Upgrade procedure: [GPU Driver Upgrades](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-driver-upgrades.html)
 - NVIDIA vGPU User Guide: [Grid vGPU](https://docs.nvidia.com/grid/latest/grid-vgpu-user-guide/index.html)
 - NVIDIA GPU Operator + OpenShift Virtualization: [virt-gpu docs](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/openshift-virtualization.html)
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

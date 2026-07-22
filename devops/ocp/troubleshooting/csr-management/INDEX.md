@@ -278,3 +278,6 @@ oc debug node/<node-name> -- chroot /host ls /etc/kubernetes/bootstrap-secrets/
 **Last Updated:** December 9, 2025  
 **Tested On:** OpenShift 4.18.14
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

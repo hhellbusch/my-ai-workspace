@@ -335,3 +335,7 @@ Found an issue or have a suggestion? Feedback is always appreciated.
 ---
 
 **AI Disclosure:** This documentation was created with AI assistance to provide comprehensive guidance for OpenShift debug containers.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

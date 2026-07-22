@@ -347,3 +347,6 @@ January 2025
 
 **Start here:** [`QUICK-REFERENCE.md`](./QUICK-REFERENCE.md) for immediate patterns, or [`DYNAMIC-MATRIX-GUIDE.md`](./DYNAMIC-MATRIX-GUIDE.md) for comprehensive understanding.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -340,3 +340,6 @@ item: "{{ data | selectattr('id', 'equalto', 'missing') | first | default({}) }}
 - `filter_patterns.yml` - All filter types demonstrated
 - `advanced_filters.yml` - Complex nested filtering
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

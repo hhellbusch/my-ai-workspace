@@ -108,3 +108,7 @@ For an ACM + ArgoCD setup focused on deployment and management, **Submariner is 
 | **4800** | UDP | VXLAN — intra-cluster with OpenShiftSDN CNI | Yes |
 | **4490** | UDP | NAT Discovery | Yes |
 | 500 | UDP | IPSec on gateway nodes | Situational |
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

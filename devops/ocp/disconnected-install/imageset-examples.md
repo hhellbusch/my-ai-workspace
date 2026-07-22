@@ -142,3 +142,7 @@ Catalog tag is always **`v4.18`** (with `v`), matching the OCP minor.
 | Portworx on `redhat-operator-index` | Wrong catalog — use `certified-operator-index` |
 | Reusing workspace after Quay rebuild | Stale `localhost:55000` cache → `manifest unknown` |
 | `graph: true` on first troubleshooting run | Extra moving parts — enable when OSUS is in scope |
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

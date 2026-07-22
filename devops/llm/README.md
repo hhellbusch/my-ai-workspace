@@ -28,3 +28,7 @@ Full vLLM install (NVIDIA CUDA + AMD ROCm), serve commands, Docker/Podman contai
 - [The Case for Local: Disk Management as a Privacy-First AI Task](../../docs/ai-engineering/local-llm-sysadmin.md) — a case study of using a local LLM to diagnose and plan disk space cleanup
 - [Enterprise LLM Deployment on OpenShift AI — Summary](../../docs/ai-engineering/openshift-ai-llm-deployment-summary.md) — the enterprise side: vLLM on Kubernetes, multi-tenancy, economics at scale
 - [Local LLM Experiment Journal](../../research/ai-tooling/local-llm-experiment-journal.md) — dated logs of what was actually run
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

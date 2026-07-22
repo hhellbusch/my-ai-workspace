@@ -558,3 +558,6 @@ Since certificate is not expired, check:
 
 **First action:** Get the EXACT error from BMC console, then we can pinpoint the fix!
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

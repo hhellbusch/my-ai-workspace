@@ -568,3 +568,6 @@ Still stuck?
 **Quick Ref Version:** 1.0  
 **See Also:** README.md (full documentation)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -172,3 +172,6 @@ Share the output with your team or Red Hat support.
 
 3. **Open a support case** with Red Hat or Portworx with the must-gather data
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

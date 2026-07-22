@@ -630,3 +630,6 @@ See also:
 | Get field values | `\| map(attribute='field') \| list` |
 | Count results | `\| selectattr(...) \| list \| length` |
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

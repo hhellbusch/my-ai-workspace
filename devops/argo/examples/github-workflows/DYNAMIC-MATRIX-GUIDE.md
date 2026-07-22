@@ -309,3 +309,6 @@ To test matrix generation without running full deployments:
 - [GitHub Actions: Outputs](https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs)
 - [GitHub Actions: Contexts](https://docs.github.com/en/actions/learn-github-actions/contexts#needs-context)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -309,3 +309,7 @@ workflow you choose. The only things that change are:
   original GitFlow post by Vincent Driessen
 - [docs.github.com/en/get-started/using-git/github-flow](https://docs.github.com/en/get-started/using-git/github-flow) —
   GitHub Flow documentation
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

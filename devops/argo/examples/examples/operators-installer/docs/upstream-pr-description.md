@@ -186,3 +186,7 @@ and exits non-zero, causing the Job to fail and ArgoCD to surface the violation.
 - `upgradeChain` and `automaticIntermediateManualUpgrades: true` are mutually exclusive by
   design. Setting both is valid YAML but the chain approver takes precedence, and the
   `INCREMENTAL_INSTALL_*` env vars are not injected when `upgradeChain` is present.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

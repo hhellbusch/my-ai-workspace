@@ -194,3 +194,6 @@ your-repo/
 4. Add validation steps to the GitHub Action
 5. Implement dry-run mode for pull requests
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

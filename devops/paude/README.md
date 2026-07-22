@@ -186,3 +186,7 @@ paude create --dry-run
 - [`devops/pi/README.md`](../pi/README.md) — Pi agent configuration, extensions, skills discovery
 - [`submodules/paude/docs/CONFIGURATION.md`](../../submodules/paude/docs/CONFIGURATION.md) — full config reference
 - [`submodules/paude/examples/`](../../submodules/paude/examples/) — Python, Node, Go devcontainer examples
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

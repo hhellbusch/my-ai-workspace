@@ -536,3 +536,7 @@ sudo nmcli con up "Wired connection 1" 2>/dev/null || sudo nmcli con up <LAN_NIC
 ## Related reading
 
 - [Windows VM on Fedora (CLI)](../../../kvm/windows-vm-on-fedora.md) — lighter-weight KVM/libvirt setup for a Windows guest before tackling SNO
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

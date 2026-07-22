@@ -101,3 +101,7 @@ Reverse proxy configuration, CA certificate management, and PAT (Personal Access
 HashiCorp Vault integration patterns.
 
 - **`integration/`** — Vault integration configurations and patterns for secrets management
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

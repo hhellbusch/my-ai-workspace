@@ -234,3 +234,7 @@ oc delete namespace <name>
                   print(d['spec']['template']['spec']['volumes'][0]['configMap'])"
   ```
 - Verify `RespectIgnoreDifferences=true` is also in `syncOptions`
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

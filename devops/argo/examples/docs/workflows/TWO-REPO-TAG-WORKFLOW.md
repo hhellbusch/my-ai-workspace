@@ -295,3 +295,6 @@ Application Repo        Config Repo (THIS REPO)
 
 Both tags are important, serve different purposes, and should be created!
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

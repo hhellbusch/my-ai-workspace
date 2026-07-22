@@ -299,3 +299,6 @@ Document both approaches but emphasize the post-installation method as the offic
 **Documentation Quality:** Production-Ready with Schema Clarification Added  
 **Alignment with Red Hat Docs:** 9.0/10 (Updated based on schema findings)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -231,3 +231,6 @@ sudo dd if=rhcos-custom.iso of=/dev/sdX bs=4M status=progress
 - [Butane Specification](https://coreos.github.io/butane/)
 - [RHEL CoreOS Documentation](https://docs.openshift.com/container-platform/latest/installing/install_config/installing-customizing.html)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

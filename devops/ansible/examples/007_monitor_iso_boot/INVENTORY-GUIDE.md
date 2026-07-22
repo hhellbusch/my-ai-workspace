@@ -452,3 +452,6 @@ ansible-playbook -i inventory.yml playbook.yml --vault-password-file .vault_pass
 - [Ansible Vault Guide](https://docs.ansible.com/ansible/latest/user_guide/vault.html)
 - [Main README](README.md)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

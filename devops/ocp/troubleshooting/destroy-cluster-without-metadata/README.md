@@ -852,3 +852,6 @@ If manual cleanup fails or you're unsure about resource ownership:
 **Last Updated:** December 2025  
 **Tested On:** OpenShift 4.12-4.15
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

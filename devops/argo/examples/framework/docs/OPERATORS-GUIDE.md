@@ -1365,3 +1365,7 @@ Examples:
 - `fix: correct storage class for prod-west-2`
 - `onboard: add new cluster prod-west-2`
 - `hotfix: disable feature X causing outage`
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

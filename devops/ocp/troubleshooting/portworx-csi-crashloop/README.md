@@ -680,3 +680,6 @@ This guide is focused on `px-csi-ext` pod issues. For other Portworx issues, see
 
 Each requires separate troubleshooting approaches.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

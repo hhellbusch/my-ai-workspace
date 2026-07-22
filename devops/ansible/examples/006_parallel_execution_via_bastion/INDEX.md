@@ -236,3 +236,6 @@ After reviewing this index:
 
 **Questions? Start with docs/AAP-README.md - it has everything you need to get started!**
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

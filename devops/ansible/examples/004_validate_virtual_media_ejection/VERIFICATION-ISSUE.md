@@ -212,3 +212,6 @@ I recommend:
 
 Would you like me to update all the playbooks to use the verified Redfish API approach instead?
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

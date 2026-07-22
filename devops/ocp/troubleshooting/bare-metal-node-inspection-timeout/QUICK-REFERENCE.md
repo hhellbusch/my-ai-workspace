@@ -180,3 +180,6 @@ curl -k -u "$USER:$PASS" -s https://$BMC_IP/redfish/v1/Systems | jq . || echo "F
 5. ❌ Copy-paste error in BMC IP address
 6. ❌ Wrong protocol (`redfish://` vs `redfish-virtualmedia+https://`)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -211,3 +211,6 @@ Found an issue or have a suggestion? This is part of the ansible-examples collec
 **Ansible Version:** 2.9+  
 **Collection Version:** ansible.utils 2.5.0+
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

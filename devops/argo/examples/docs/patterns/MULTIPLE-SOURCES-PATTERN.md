@@ -585,3 +585,7 @@ See `charts/argocd-apps/` for examples of:
 - Single source applications
 - Multiple source applications
 - App of Apps with multiple sources
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

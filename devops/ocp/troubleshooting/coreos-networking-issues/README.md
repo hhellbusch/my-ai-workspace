@@ -442,3 +442,6 @@ nmcli connection up "Wired connection 1"
 - [NetworkManager Documentation](https://networkmanager.dev/)
 - [Red Hat CoreOS Troubleshooting](https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal/installing-bare-metal.html)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

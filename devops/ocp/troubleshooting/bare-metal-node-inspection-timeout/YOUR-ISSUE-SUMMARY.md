@@ -348,3 +348,6 @@ This fixes about 50% of "2 working, 1 failing" scenarios.
 
 Good luck! Let me know if you need clarification on any of these steps.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

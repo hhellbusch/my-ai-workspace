@@ -623,3 +623,6 @@ Vault generates temporary credentials with TTL.
 - [MongoDB Connection String](https://www.mongodb.com/docs/manual/reference/connection-string/)
 - [Vault Database Secrets Engine](https://developer.hashicorp.com/vault/docs/secrets/databases)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -378,3 +378,7 @@ For a detailed comparison including GitHub Flow and GitFlow, see
 - [Guidelines](../GUIDELINES.md) — framework invariants
 - [ArgoCD Sync Windows](https://argo-cd.readthedocs.io/en/stable/user-guide/sync_windows/) —
   official ArgoCD documentation
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

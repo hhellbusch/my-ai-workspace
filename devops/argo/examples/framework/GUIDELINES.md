@@ -555,3 +555,7 @@ URL and `argo/examples/framework` as the path prefix. When deploying:
 | Date | Change |
 |------|--------|
 | 2026-04-10 | Initial version |
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

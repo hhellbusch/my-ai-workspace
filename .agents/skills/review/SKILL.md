@@ -72,12 +72,12 @@ This command is read-only. It reports findings and asks for confirmation before 
    - If biographical content was flagged in step 6, remind: "Run `/validate <path> voice-approved` after reviewing the biographical content"
    - This is informational, not a blocker — new files are expected to lack review metadata
 
-9. **AI disclosure footer check** — For each **new** markdown file under `docs/` (excluding README.md files), check that it includes the standard AI disclosure footer:
+9. **AI disclosure footer check** — For each **new** markdown file under `docs/` or `devops/`, check that it includes the standard AI disclosure footer:
    - The footer should be an italic line at the end of the file linking to `AI-DISCLOSURE.md`
-   - Standard text: *This document was created with AI assistance (Cursor) and has not been fully reviewed by the author. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
+   - Standard text: *This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
    - The relative path to `AI-DISCLOSURE.md` depends on file depth (e.g., `../../` for files two levels below repo root)
-   - Flag missing footers: "**Missing AI disclosure**: `file.md` — new docs file without standard footer"
-   - This is a quick fix (add the footer) but easy to forget when creating new essays or case studies
+   - Flag missing footers: "**Missing AI disclosure**: `file.md` — new markdown file without standard footer"
+   - This is a quick fix (add the footer) but easy to forget when creating new reference material
 
 10. **Backlog alignment** — Read `BACKLOG.md` and check if the work being committed relates to a tracked item. If not, note it (not a blocker, just a reminder).
 
@@ -190,6 +190,7 @@ Skip for changes that don't touch docs or planning files. If no `.planning/` pro
 - Modified files with `review:` frontmatter flagged as stale reviews
 - External URLs verified (fetched, not just eyeballed)
 - New `docs/` files checked for AI disclosure footer
+- New `devops/` markdown files checked for AI disclosure footer
 - Clear recommendation: commit or fix first
 - User confirms before any commit happens
 </success_criteria>

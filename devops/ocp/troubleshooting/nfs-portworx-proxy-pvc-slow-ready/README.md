@@ -221,3 +221,7 @@ If the delay is still 20+ minutes, capture:
 ---
 
 *AI-assisted content. Validate commands and StorageClass parameters against your cluster and Portworx/NFS documentation.*
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

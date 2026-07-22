@@ -150,3 +150,6 @@ Don't just retry blindly. Use the rescue block to:
 3. **Prepare** the system for retry
 4. **Fail gracefully** if recovery impossible
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -403,3 +403,6 @@ A comprehensive, professional-quality troubleshooting guide has been created for
 
 **The guide is ready for immediate use with your customer's px-csi-ext crashloop issue.**
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

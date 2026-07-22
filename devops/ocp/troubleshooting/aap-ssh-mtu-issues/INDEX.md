@@ -209,3 +209,7 @@ When adding new information:
 **Learning?** Start with [README.md](README.md)  
 **Examples?** See [EXAMPLES.md](EXAMPLES.md)  
 **Diagnostics?** Run [diagnose-mtu.sh](diagnose-mtu.sh)
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

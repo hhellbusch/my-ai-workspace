@@ -348,3 +348,6 @@ post_tasks:
 
 **Still stuck?** Check the full example in this directory or open an issue!
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

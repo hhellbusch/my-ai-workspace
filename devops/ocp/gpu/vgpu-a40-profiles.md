@@ -312,3 +312,7 @@ oc delete pod -n nvidia-gpu-operator -l app=nvidia-vgpu-manager --force
 - [Full GPU node management guide](../../../docs/ai-engineering/openshift-gpu-node-management.md)
 - [vGPU User Guide](https://docs.nvidia.com/grid/latest/grid-vgpu-user-guide/index.html)
 - [GPU Operator + OCP Virt](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/openshift-virtualization.html)
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

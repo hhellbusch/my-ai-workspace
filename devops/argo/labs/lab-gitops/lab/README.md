@@ -39,3 +39,7 @@ This lab teaches the components / groups / cluster cascade pattern for GitOps wi
 ## Time
 
 ~1 hour.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

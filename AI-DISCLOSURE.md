@@ -32,8 +32,9 @@ Different content requires different kinds of validation. Each category has a ba
 | Content category | Location | Validation types |
 |---|---|---|
 | Essays and case studies | `docs/**` | `read`, `fact-checked`, `voice-approved` |
-| DevOps examples | `{product}/examples/**` | `read`, `tested` |
-| Troubleshooting guides | `{product}/troubleshooting/**` | `read`, `commands-verified` |
+| DevOps reference | `devops/**` | `read`, `tested`, `commands-verified` |
+| DevOps examples | `devops/**/examples/**` | `read`, `tested` |
+| Troubleshooting guides | `devops/**/troubleshooting/**` | `read`, `commands-verified` |
 | Meta-system | `.agents/skills/`, `.cursor/skills/`, `.cursor/rules/` | `read`, `used-in-practice` |
 | Research and library | `research/**`, `library/**` | `read`, `sources-checked` |
 

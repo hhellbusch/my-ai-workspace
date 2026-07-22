@@ -698,3 +698,6 @@ namespaceSelector:
 7. ✅ Document your selection logic clearly
 8. ✅ Use consistent namespace labeling standards
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

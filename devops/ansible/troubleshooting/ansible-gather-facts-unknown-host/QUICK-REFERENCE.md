@@ -101,3 +101,7 @@ ansible-playbook -i <inventory> your-playbook.yml -vvv --step
     ansible_user: "{{ ssh_user }}"             # required
     ansible_ssh_private_key_file: "{{ key }}"  # required
 ```
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

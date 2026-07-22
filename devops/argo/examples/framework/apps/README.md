@@ -104,3 +104,7 @@ This creates the chart under `apps/my-new-app/` and the ApplicationSet at
 4. Gate template rendering on the feature flag
 5. Add the app to the relevant cluster `cluster.yaml` files
 6. Run the aggregation script and commit
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

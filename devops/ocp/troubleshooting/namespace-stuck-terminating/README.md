@@ -335,3 +335,6 @@ oc get events -n <namespace-name>
 *OpenShift Versions: 4.12+*
 *Tested on: OpenShift 4.14, 4.15*
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -540,4 +540,6 @@ For issues or questions:
 **For:** Dell PowerEdge R650/R660 with Red Hat CoreOS/OpenShift  
 **Tested:** Ansible 2.15+, community.general 8.0+
 
+---
 
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

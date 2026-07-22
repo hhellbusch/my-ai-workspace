@@ -233,3 +233,6 @@ For questions or issues, refer to:
 - [community.general.redfish_info documentation](https://docs.ansible.com/ansible/latest/collections/community/general/redfish_info_module.html)
 - [Dell iDRAC Redfish API guide](https://www.dell.com/support/manuals/en-us/idrac9-lifecycle-controller-v3.x-series/idrac_3.00.00.00_redfishapiguide/)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

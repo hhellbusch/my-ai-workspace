@@ -526,3 +526,6 @@ sudo -i
 
 **Both methods work equally well - choose based on your preference!**
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

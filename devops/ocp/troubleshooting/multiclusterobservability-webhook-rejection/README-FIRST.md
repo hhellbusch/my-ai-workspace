@@ -146,3 +146,7 @@ oc apply -f mco.yaml
 ---
 
 **Pro tip:** If you're 100% certain your name is set correctly, just run `./bypass-webhook.sh` and move on. This is almost always a webhook bug.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

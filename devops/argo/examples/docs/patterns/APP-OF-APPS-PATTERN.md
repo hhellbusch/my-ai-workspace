@@ -382,3 +382,6 @@ This pattern provides:
 - **Quick Reference**: [QUICK-REFERENCE.md](../getting-started/QUICK-REFERENCE.md) - Command cheat sheet
 - **Two-Repo Tag Workflow**: [TWO-REPO-TAG-WORKFLOW.md](../workflows/TWO-REPO-TAG-WORKFLOW.md) - Understanding config vs app repo tags
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

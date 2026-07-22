@@ -565,3 +565,6 @@ oc get baremetalhost master-2 -n openshift-machine-api -o yaml > master2-bmh.yam
 **Status:** Awaiting timeout increase and re-inspection results  
 **Next Action:** Follow Step 1-3 in "Recommended Next Steps" section
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

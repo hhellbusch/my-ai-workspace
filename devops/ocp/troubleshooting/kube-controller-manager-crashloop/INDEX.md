@@ -313,3 +313,6 @@ If you find issues with these guides or have suggestions:
 - 🗺️ **Need guidance:** TROUBLESHOOTING-FLOWCHART.md
 - 📚 **Want to learn:** README.md
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

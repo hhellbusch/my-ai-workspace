@@ -155,3 +155,6 @@ This pattern is useful when you want to:
 - **Different ArgoCD projects**: Apps in `default`, infra in `infrastructure` project
 - **Different naming**: Prefix infrastructure apps with `infra-`
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

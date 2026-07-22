@@ -308,3 +308,7 @@ oc apply -f mco.yaml --dry-run=server
 2. Run `./diagnose-webhook-issue.sh` for comprehensive diagnostics
 3. Check [README.md Strategy 0](README.md#strategy-0-fix-command-syntax-for-resource-name-may-not-be-empty) for detailed explanation
 4. Review [INDEX.md Scenario 0](INDEX.md#scenario-0-resource-name-may-not-be-empty-error--most-common) for workflow
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

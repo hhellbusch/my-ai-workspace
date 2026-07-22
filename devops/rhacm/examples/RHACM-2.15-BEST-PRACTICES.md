@@ -532,3 +532,6 @@ oc get rolebinding -n rhacm-secrets | grep open-cluster-management
 9. ✅ Label clusters consistently
 10. ✅ Enable etcd encryption and audit logging
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

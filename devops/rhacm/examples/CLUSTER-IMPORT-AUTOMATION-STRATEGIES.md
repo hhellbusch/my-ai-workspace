@@ -1034,3 +1034,7 @@ This document is part of a living knowledge base. Feedback and improvements welc
 **AI Disclosure**: This document was created with AI assistance as part of DevOps automation research and documentation efforts.
 
 *All strategies validated against RHACM 2.5+ and OpenShift 4.12+. Bare metal considerations based on OpenShift IPI/UPI, Assisted Installer, and Metal³ integration patterns.*
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

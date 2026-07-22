@@ -487,3 +487,6 @@ oc get policy.<policy-name> -n <cluster-namespace>
 - [ManagedClusterSet Guide](https://open-cluster-management.io/concepts/managedclusterset/)
 - [RHACM 2.15+ Best Practices](../RHACM-2.15-BEST-PRACTICES.md)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -328,3 +328,6 @@ START: kube-controller-manager Pod Crash Loop
 - Basic operations fail
 - Issue returns after apparent fix
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

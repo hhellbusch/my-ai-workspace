@@ -128,3 +128,7 @@ When updating this documentation:
 - [OpenShift 4.18 OVN-Kubernetes Network Plugin](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/ovn-kubernetes_network_plugin/configure-ovn-kubernetes-subnets)
 - [OpenShift 4.17 Configuring OVN-Kubernetes Subnets](https://docs.redhat.com/en/documentation/openshift_container_platform/4.17/html/ovn-kubernetes_network_plugin/configure-ovn-kubernetes-subnets)
 - [OpenShift 4.15 Cluster Network Operator](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/networking/cluster-network-operator)
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -80,3 +80,7 @@ which profile to create. Four methods are documented in
 - [`devops/ocp/gpu/vgpu-node-labeling.md`](../../../../../ocp/gpu/vgpu-node-labeling.md) — node label methods
 - [NVIDIA GPU Operator + OpenShift Virtualization](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/openshift-virtualization.html)
 - [NVIDIA Grid vGPU User Guide](https://docs.nvidia.com/vgpu/latest/grid-vgpu-user-guide/)
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

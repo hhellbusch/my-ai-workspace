@@ -10,3 +10,7 @@ App-of-apps patterns, Helm charts, multi-environment GitOps, and GitHub Actions 
 - [Labs](labs/) — Hands-on GitOps exercises
 
 Browse the full technical reference index → [devops/README.md](../README.md)
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

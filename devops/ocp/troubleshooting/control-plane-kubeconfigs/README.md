@@ -227,3 +227,6 @@ export KUBECONFIG=/etc/kubernetes/static-pod-resources/${LATEST_APISERVER}/secre
 - [Common Installation Issues](./INSTALL-MONITORING.md)
 - [API Server Troubleshooting](../kube-controller-manager-crashloop/)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

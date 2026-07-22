@@ -297,3 +297,7 @@ lab-cluster-components:
 ```
 
 **Coming up in Session 3:** Per-resource control — protecting individual resources from pruning, sync waves to enforce ordering, and lifecycle hooks.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

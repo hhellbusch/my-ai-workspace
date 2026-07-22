@@ -206,3 +206,7 @@ oc logs -n openshift-authentication-operator -l name=authentication-operator --t
 
 - [Red Hat Solution 7000864](https://access.redhat.com/solutions/7000864) — Authentication CO degraded with OAuthServerRouteEndpointAccessibleControllerAvailable (healthz connection refused; firewall/LB).
 - [api-slowness-web-console](../api-slowness-web-console/README.md) — General API/console/OAuth checks.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

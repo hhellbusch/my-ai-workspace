@@ -839,3 +839,6 @@ oc adm must-gather --image=registry.connect.redhat.com/portworx/must-gather:late
 - [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) - Command reference
 - [COMMON-ERRORS.md](./COMMON-ERRORS.md) - Error lookup table
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

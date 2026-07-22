@@ -555,3 +555,6 @@ Node becomes Ready
 4. Use the recovery checklist to verify
 5. Escalate if needed with collected data
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

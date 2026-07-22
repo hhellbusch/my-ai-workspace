@@ -998,3 +998,6 @@ Include must-gather output, performance metrics, and all collected logs with the
 - [Control Plane Kubeconfigs](../control-plane-kubeconfigs/README.md)
 - [kube-controller-manager Crash Loop](../kube-controller-manager-crashloop/README.md)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

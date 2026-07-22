@@ -152,3 +152,7 @@ Documentation warns that changes to monitoring ConfigMaps can **restart** affect
 ## Related material in this repo
 
 - [Portworx CSI CrashLoop](../portworx-csi-crashloop/README.md) — general CSI / storage driver failures that can also block monitoring PVCs if Portworx is the default class.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

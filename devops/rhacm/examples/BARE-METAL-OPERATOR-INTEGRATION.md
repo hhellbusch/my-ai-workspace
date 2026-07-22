@@ -1169,3 +1169,7 @@ This document is part of a living knowledge base. Feedback and improvements welc
 ---
 
 **AI Disclosure**: This document was created with AI assistance as part of DevOps automation research and documentation efforts.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -352,3 +352,6 @@ ssh core@192.168.1.50 "rpm-ostree status"
 - [Dell iDRAC Redfish API Guide](https://www.dell.com/support/manuals/en-us/idrac9-lifecycle-controller-v3.x-series/)
 - [DMTF Redfish Specification](https://www.dmtf.org/standards/redfish)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

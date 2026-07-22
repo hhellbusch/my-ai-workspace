@@ -139,3 +139,6 @@ oc adm inspect namespace/openshift-kube-controller-manager \
   --dest-dir=kcm-inspect-$(date +%Y%m%d-%H%M%S)
 ```
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

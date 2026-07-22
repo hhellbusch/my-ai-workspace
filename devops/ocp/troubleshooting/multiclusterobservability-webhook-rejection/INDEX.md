@@ -281,3 +281,7 @@ Found a new issue or solution? Add it to this troubleshooting guide following th
 - **Detailed guide:** [README.md](README.md)
 - **Examples:** [example-mco.yaml](example-mco.yaml)
 - **Full diagnostics:** `./diagnose-webhook-issue.sh`
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

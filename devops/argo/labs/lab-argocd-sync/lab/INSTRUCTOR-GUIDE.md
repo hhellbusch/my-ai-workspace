@@ -410,3 +410,7 @@ git log --oneline | head -20  # find the commit before the lab started
 git revert HEAD~<N>..HEAD     # revert N commits
 git push
 ```
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

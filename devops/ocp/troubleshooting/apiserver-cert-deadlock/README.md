@@ -259,3 +259,7 @@ If the operator "is not picking up the new cert":
 - [CSR management](../csr-management/README.md) – Node and client certificate approval
 - Red Hat: [Issue replacing Master API certificates in OpenShift 4](https://access.redhat.com/solutions/5991611) (subscription required)
 - OpenShift docs: [Configuring certificates](https://docs.openshift.com/container-platform/latest/security/certificates/api-server.html)
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

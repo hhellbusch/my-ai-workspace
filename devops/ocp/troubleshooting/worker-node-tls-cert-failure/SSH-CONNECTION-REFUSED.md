@@ -542,3 +542,6 @@ echo "4. Watch BMC console during boot for ignition errors"
 
 **Don't waste time debugging SSH - fix the root cause (TLS certificate) first!**
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

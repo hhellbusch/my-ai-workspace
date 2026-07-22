@@ -257,3 +257,7 @@ See README.md "Understanding SSH's Limited MTU Control" for detailed explanation
 - Real scenarios: `EXAMPLES.md`
 - Technical explanation: `README.md` → "Understanding SSH's Limited MTU Control"
 - OpenShift MTU docs: https://docs.openshift.com/container-platform/latest/networking/changing-cluster-network-mtu.html
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

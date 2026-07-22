@@ -217,3 +217,6 @@ If you find documentation that contradicts these findings, please:
 3. Check if it's official Red Hat documentation or community content
 4. File an issue with specific documentation links
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

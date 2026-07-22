@@ -626,3 +626,7 @@ site-c-server01: ok=10   changed=3    unreachable=0    failed=0
 ---
 
 **Note:** All examples are from real production environments with identifying details changed for confidentiality.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -150,3 +150,6 @@ oc get baremetalhost master-2 -n openshift-machine-api
 
 Then the node will proceed to provisioning and eventually join the cluster!
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

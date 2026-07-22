@@ -374,3 +374,6 @@ applications:
 - Chart README: [charts/argocd-apps/README.md](../../charts/argocd-apps/README.md)
 - ArgoCD docs: https://argo-cd.readthedocs.io/
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

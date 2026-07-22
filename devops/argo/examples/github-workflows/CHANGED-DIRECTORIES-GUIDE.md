@@ -498,3 +498,6 @@ git diff --name-only "$BASE" "$HEAD" | cut -d'/' -f2
 - [dorny/paths-filter](https://github.com/dorny/paths-filter)
 - [GitHub Actions Contexts](https://docs.github.com/en/actions/learn-github-actions/contexts)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

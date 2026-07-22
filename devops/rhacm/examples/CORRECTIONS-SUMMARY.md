@@ -320,3 +320,6 @@ This may indicate a non-standard deployment. Please:
 
 **Thank you for requesting verification! This made the documentation more accurate and aligned with Red Hat's official guidance.**
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

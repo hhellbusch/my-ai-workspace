@@ -218,4 +218,6 @@ If re-inspection still fails:
 
 💡 **Document what you changed** - Makes troubleshooting easier if re-inspection still fails.
 
+---
 
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

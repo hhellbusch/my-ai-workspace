@@ -48,3 +48,7 @@ A model that reasons silently and produces bad output gives you less to work wit
 - BACKLOG.md: "paude-proxy thinking relay — surface Qwen3 reasoning in Pi UI" — workaround design
 - `submodules/pi-openai-compat/index.ts` — `thinkingFormat: "qwen-chat-template"` (already correct)
 - `git-projects/pi-mono/packages/ai/src/providers/openai-completions.ts` lines 258–299 — stream parser that handles `reasoning_content`
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

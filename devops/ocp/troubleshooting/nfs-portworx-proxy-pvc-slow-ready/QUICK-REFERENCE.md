@@ -85,3 +85,7 @@ Existing PVCs keep their original mount options; new PVCs get the updated ones.
 ## Full guide
 
 [README.md](./README.md) — Investigation workflow, causes, and escalation.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

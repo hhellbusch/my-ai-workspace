@@ -14,3 +14,7 @@ description: OpenShift troubleshooting, configuration examples, and quick refere
 - [Troubleshooting](troubleshooting/) — Symptom → cause → fix guides
 
 Browse the full technical reference index → [devops/README.md](../README.md)
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

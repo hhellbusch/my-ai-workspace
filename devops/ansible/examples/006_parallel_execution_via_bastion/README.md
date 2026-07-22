@@ -166,3 +166,6 @@ A: See [docs/EXECUTION-ENVIRONMENT.md](docs/EXECUTION-ENVIRONMENT.md) troublesho
 - **[Ansible Async Documentation](https://docs.ansible.com/ansible/latest/user_guide/playbooks_async.html)**
 - **[AAP Documentation](https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/)**
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

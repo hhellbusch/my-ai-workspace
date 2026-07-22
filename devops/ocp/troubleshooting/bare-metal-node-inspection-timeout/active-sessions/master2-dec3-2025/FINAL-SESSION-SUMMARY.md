@@ -691,11 +691,6 @@ For quick reference tomorrow, see:
 - `ETCD-RECOVERY-SUCCESS.md` - What we successfully fixed
 - `README.md` (parent directory) - General troubleshooting guide
 
+---
 
-
-
-
-
-
-
-
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

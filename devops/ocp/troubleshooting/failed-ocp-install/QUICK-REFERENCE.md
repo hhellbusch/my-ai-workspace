@@ -84,3 +84,7 @@ oc get nodes
 - [Gathering cluster data](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/support/gathering-cluster-data) (gather bootstrap vs must-gather)
 - [Customer Portal](https://access.redhat.com/) (support, knowledge base)
 - Full list: see [README – Red Hat and OpenShift Resources](README.md#red-hat-and-openshift-resources)
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

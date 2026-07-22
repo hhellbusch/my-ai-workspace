@@ -1080,3 +1080,6 @@ oc create -f <node-bmh-definition.yaml>
 - Disk/storage corruption on the node
 - All troubleshooting steps exhausted (may need manual provisioning)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

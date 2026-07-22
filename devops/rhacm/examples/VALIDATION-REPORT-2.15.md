@@ -772,3 +772,6 @@ These RHACM examples demonstrate strong technical knowledge of RHACM 2.15+ archi
 
 **Overall Assessment:** ⚠️ **Good Foundation, Needs Polishing** - 85% compliance with best practices. Primary gaps are in resilience patterns (tolerations) and documentation consistency.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

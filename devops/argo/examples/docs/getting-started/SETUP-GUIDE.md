@@ -207,3 +207,6 @@ The ArgoCD UI will show all applications and their sync status.
 
 Need help? Check the documentation files or review the workflow logs for specific error messages.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

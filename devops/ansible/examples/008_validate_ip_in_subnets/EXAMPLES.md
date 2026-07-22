@@ -357,3 +357,6 @@ ansible localhost -m debug -a "msg={{ '10.1.1.1' | ansible.utils.ipaddr('10.1.0.
 
 For more details, see [README.md](README.md) and [QUICK-REFERENCE.md](QUICK-REFERENCE.md).
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

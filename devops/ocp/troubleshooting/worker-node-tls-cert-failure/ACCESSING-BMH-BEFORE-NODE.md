@@ -559,3 +559,6 @@ oc debug node/<worker-name>
 
 The **BMC console is your best bet** for real-time troubleshooting before the machine becomes a node!
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

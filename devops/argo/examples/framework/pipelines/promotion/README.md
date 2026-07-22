@@ -211,3 +211,7 @@ Developer ──push──▶ main (lab) ──PR──▶ release/dev ──PR�
                        │                   │                    │                       │
                     Lab clusters        Dev clusters       Staging clusters      Production clusters
 ```
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

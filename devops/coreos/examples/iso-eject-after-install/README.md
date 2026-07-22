@@ -101,3 +101,6 @@ eject -f /dev/sr0
 - [Butane Configuration Specifications](https://coreos.github.io/butane/)
 - [systemd Service Units](https://www.freedesktop.org/software/systemd/man/systemd.service.html)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

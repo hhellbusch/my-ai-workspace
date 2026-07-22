@@ -332,3 +332,7 @@ If you find additional technical inaccuracies or have questions about the correc
 4. Add notes explaining what was corrected and why
 
 **Remember:** Technical accuracy is critical for troubleshooting documentation. When in doubt, consult official sources and test before documenting.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -542,3 +542,6 @@ Open a Red Hat support case if:
 
 Include must-gather output and all collected logs with support case.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

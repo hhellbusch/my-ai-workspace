@@ -140,3 +140,7 @@ LPAR weight, entitlements, and shared vs dedicated IFLs affect performance — r
 | Provisioning and automation on Z | [provisioning-and-automation.md](provisioning-and-automation.md) |
 | External canonical docs | [references.md](references.md) |
 | Domain index | [README.md](README.md) |
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

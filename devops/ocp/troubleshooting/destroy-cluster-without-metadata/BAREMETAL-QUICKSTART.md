@@ -320,9 +320,6 @@ cd ocp/troubleshooting/destroy-cluster-without-metadata
 **Version:** 1.0  
 **Last Updated:** December 2025
 
+---
 
-
-
-
-
-
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

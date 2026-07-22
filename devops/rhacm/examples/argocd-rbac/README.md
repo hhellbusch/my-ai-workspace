@@ -74,3 +74,7 @@ oc get clusterrolebinding argocd-server-cluster-admin
 - `remediationAction: enforce` means RHACM will create/fix the bindings automatically.
 - Changing to `inform` makes the policy read-only (reports compliance without taking action).
 - This is intentionally scoped to OpenShift GitOps service accounts. If you use a different ArgoCD installation namespace, update the `namespace` field in the `subjects` entries.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

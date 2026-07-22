@@ -464,3 +464,6 @@ A: Use the Ignition config approach. Tests run automatically on first boot and r
 **For:** Dell PowerEdge with Red Hat CoreOS  
 **Part of:** ansible/examples/10_dell_memory_validation/
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

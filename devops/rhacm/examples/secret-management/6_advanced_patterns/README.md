@@ -623,3 +623,6 @@ EOF
 - [Hub Template Functions](https://github.com/stolostron/go-template-utils)
 - [Policy Collection Examples](https://github.com/stolostron/policy-collection)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

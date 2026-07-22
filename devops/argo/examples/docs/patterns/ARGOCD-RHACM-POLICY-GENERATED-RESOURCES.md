@@ -90,3 +90,7 @@ If you cannot change tracking or exclusions:
 ---
 
 *AI-assisted documentation. See project standards for disclosure.*
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

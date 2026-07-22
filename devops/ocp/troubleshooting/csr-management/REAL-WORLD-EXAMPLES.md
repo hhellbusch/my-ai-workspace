@@ -1060,7 +1060,6 @@ oc adm certificate approve csr-abc
 
 **These examples are from actual troubleshooting sessions and represent real scenarios you may encounter.**
 
+---
 
-
-
-
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

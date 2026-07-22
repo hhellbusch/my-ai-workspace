@@ -342,7 +342,6 @@ oc adm certificate approve <csr-name>
 **For detailed documentation, see:** [README.md](README.md)  
 **Scripts location:** `/ocp/troubleshooting/csr-management/`
 
+---
 
-
-
-
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

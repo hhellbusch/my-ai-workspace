@@ -236,3 +236,7 @@ If you're still stuck:
 2. Include the error message you're seeing
 3. Include your MCO YAML (sanitize secrets)
 4. Check operator logs: `oc logs -n open-cluster-management deployment/multicluster-observability-operator --tail=100`
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

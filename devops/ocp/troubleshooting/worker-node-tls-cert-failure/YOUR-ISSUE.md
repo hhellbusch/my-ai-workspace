@@ -390,3 +390,6 @@ oc logs -n openshift-machine-config-operator -l k8s-app=machine-config-server --
 
 **Next Step:** Run `./diagnose-tls.sh` and follow the recommendations in the output.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

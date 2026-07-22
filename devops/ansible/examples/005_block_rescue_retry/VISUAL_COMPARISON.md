@@ -210,3 +210,6 @@ Step 1: Learn with repetitive        Step 2: Refactor to clean
      Learning                         Production-ready
 ```
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

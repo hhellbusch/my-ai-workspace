@@ -219,3 +219,7 @@ Recursion is capped at **5 levels**. This covers all known real-world layouts. T
 - [argocd-diff-preview – Generated applications](https://dag-andersen.github.io/argocd-diff-preview/generated-applications/)
 - [App-of-Apps pattern](./patterns/APP-OF-APPS-PATTERN.md) in this repo
 - [diff-app-of-apps script](../scripts/README-diff-app-of-apps.md) in this repo
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

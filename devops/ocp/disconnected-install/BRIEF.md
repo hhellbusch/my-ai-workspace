@@ -137,3 +137,7 @@ After mirror run: apply generated `ImageDigestMirrorSet` from `oc-mirror` output
 4. Lab first vs production disconnected install?
 5. ACM/CIM hub in the same disconnected boundary?
 6. Day-1 operator list and catalog map ([imageset-examples.md](imageset-examples.md))?
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

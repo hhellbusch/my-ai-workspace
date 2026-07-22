@@ -351,3 +351,6 @@ This guide follows the same licensing as the parent repository and is provided a
 **Guide Version**: 1.0  
 **Compatibility**: OpenShift 4.x (tested on 4.12+)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

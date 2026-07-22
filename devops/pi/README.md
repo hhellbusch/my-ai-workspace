@@ -243,3 +243,7 @@ git -C /pvc/workspace/submodules/pi-openai-compat log --oneline -1
    ```
    If the installed clone is behind, update it: `pi update <name>` (or `pi update source` for the global source).
 5. **`ls` shows directory but `stat`/`read`/`cat` fail** — likely a git submodule that's not checked out (empty commit). Run `git submodule update --init <name>` in the workspace or `git submodule status` to check. The paude container's auto-init can fail silently if the container image predates the init hook.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

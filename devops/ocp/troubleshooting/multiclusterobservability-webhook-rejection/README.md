@@ -509,3 +509,7 @@ oc api-resources --verbs=list --namespaced -o name | xargs -n 1 oc get --show-ki
 **Investigation Framework**: Systematic webhook troubleshooting
 **Resolution Time**: 15-45 minutes depending on root cause
 **Impact**: Observability management operations blocked
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

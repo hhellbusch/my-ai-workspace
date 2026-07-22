@@ -223,3 +223,6 @@ Found an issue or have a suggestion? Feedback is always appreciated.
 **Last Updated:** December 9, 2025
 **Version:** 1.0
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

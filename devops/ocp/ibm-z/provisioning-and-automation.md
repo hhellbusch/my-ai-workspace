@@ -215,3 +215,7 @@ Tracked in [.planning/ibm-z-openshift/whats-next.md](../../../.planning/ibm-z-op
 | RHACM hub / CIM setup | [cim-hub-setup.md](../../rhacm/notes/cim-hub-setup.md) |
 | Fleet management posture | [fleet-control-spectrum.md](../../fleet-control-spectrum.md) |
 | Domain index | [README.md](README.md) |
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

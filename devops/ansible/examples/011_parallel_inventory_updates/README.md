@@ -317,4 +317,6 @@ A: Yes! Create a job template that runs this playbook. It works the same way.
 **Q: How much faster is it really?**  
 A: If you have N inventories that each take T seconds, sequential takes N×T, async takes ~T. So with 5 inventories, roughly 5x faster.
 
+---
 
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

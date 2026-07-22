@@ -35,3 +35,7 @@ and merge the PR, RHACM picks up the policy change and updates the labels.
 2. Commit and push (promotion pipeline handles the rest)
 3. After merge, RHACM Policy enforces the new labels on the ManagedCluster
 4. ArgoCD ApplicationSets react to the label change automatically
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -194,3 +194,7 @@ To reset the repo to a clean state, revert all participant commits:
 git revert HEAD~<number-of-participant-commits>..HEAD
 git push
 ```
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

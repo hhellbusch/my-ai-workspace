@@ -193,3 +193,7 @@ Since your name IS set:
 4. **Move on:** You've got work to do!
 
 The webhook is broken, not your configuration. Bypass it and proceed.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

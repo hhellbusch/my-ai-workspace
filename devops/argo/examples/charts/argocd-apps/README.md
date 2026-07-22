@@ -285,3 +285,6 @@ argocd app sync root-app-production
 
 See [APP-OF-APPS-PATTERN.md](../../docs/patterns/APP-OF-APPS-PATTERN.md) for comprehensive documentation.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

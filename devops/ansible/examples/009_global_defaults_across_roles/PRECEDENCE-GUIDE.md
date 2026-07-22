@@ -292,3 +292,6 @@ ansible-playbook playbook.yml -vvv | grep "my_var"
 
 This approach gives you maximum flexibility while keeping behavior predictable!
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

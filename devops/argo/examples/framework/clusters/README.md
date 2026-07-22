@@ -86,3 +86,7 @@ The validate-pr pipeline checks that:
 - `cluster.name` matches the directory name
 - `managedClusterLabels` are consistent with `groups` and `apps` sections
 - Referenced group directories exist
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

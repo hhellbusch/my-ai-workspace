@@ -578,3 +578,7 @@ updates (promote labels in groups rather than one cluster at a time).
 - [ArgoCD Scaling Best Practices](https://argo-cd.readthedocs.io/en/stable/operator-manual/high_availability/#scaling)
 - [OpenShift GitOps Operator Sizing](https://docs.openshift.com/gitops/latest/understanding_openshift_gitops/sizing-requirements-gitops.html)
 - [RHACM Performance and Scaling](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.9/html/install/sizing)
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

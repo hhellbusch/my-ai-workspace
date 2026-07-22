@@ -182,3 +182,6 @@ ansible-playbook playbook_redfish.yml \
 
 See `README-REDFISH.md` for full documentation.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

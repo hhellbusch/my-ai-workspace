@@ -553,3 +553,6 @@ ping -c 3 8.8.8.8
 
 Use this table to quickly identify which scenario matches your situation.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

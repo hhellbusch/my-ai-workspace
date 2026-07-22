@@ -369,3 +369,6 @@ ansible_ssh_common_args: '-o ProxyJump=bastion-user@bastion.example.com -o Ident
 - Review example playbooks in this directory
 - Test with the provided `test_connectivity.yml` playbook
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

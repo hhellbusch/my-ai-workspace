@@ -385,3 +385,7 @@ Official Red Hat and OpenShift documentation that complement this guide:
 ---
 
 *This guide is part of the [OpenShift Troubleshooting](../README.md) set. AI-assisted drafting was used during creation.*
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

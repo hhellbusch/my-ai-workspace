@@ -501,3 +501,6 @@ See [copysecretdata-examples.yaml](./copysecretdata-examples.yaml) for 10 comple
 - [RHACM Template Functions](https://github.com/stolostron/go-template-utils)
 - [Hub Secret Reference Guide](./README.md#hub-secret-references)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

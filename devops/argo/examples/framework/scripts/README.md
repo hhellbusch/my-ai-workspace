@@ -190,3 +190,7 @@ All scripts can be used in CI pipelines:
 
 The `fleet-diff.yaml` GitHub Actions workflow already integrates `fleet-diff.sh`
 with automatic PR comments and artifact uploads.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

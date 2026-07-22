@@ -178,3 +178,7 @@ Users are now properly informed about:
 **Update Completed:** 2026-02-02  
 **Files Modified:** 6 files updated, 1 file created (UPDATE-SUMMARY.md), 1 new guide (INSTALL-TIME-VS-POST-INSTALL.md)  
 **Total Documentation:** 4,295 lines across 8 comprehensive files
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

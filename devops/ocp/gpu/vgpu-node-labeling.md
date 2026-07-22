@@ -361,3 +361,7 @@ Ansible             → profile change execution (gated behind VM drain check)
 
 GitOps (`vgpu-node-profiles` ConfigMap) remains the **source of truth** — 
 all other mechanisms read from it or respect the same values.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

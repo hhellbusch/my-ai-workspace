@@ -503,3 +503,6 @@ oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl status
 - [COMMON-ERRORS.md](./COMMON-ERRORS.md) - Error lookup table
 - [INVESTIGATION-WORKFLOW.md](./INVESTIGATION-WORKFLOW.md) - Systematic process
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

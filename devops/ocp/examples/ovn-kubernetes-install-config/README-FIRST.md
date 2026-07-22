@@ -240,3 +240,7 @@ This documentation has been:
 ---
 
 *Documentation created with AI assistance and verified against official Red Hat/OpenShift sources.*
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

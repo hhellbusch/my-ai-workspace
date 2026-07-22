@@ -597,3 +597,6 @@ Renaming `local-cluster` to use your actual cluster name:
 
 The three-step process (disable → rename → enable) ensures a clean transition with minimal disruption.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

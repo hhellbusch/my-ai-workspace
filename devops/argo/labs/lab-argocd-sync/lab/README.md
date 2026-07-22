@@ -49,3 +49,7 @@ The lab runs in three independent one-hour sessions. Session 1 is the prerequisi
 ## Time
 
 ~1 hour per session. All three sessions total roughly 2–3 hours. For audiences new to ArgoCD, Session 1 (Exercises 1–4) is a solid standalone.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

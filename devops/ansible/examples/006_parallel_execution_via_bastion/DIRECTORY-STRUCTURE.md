@@ -226,3 +226,6 @@ docs/*.md
 
 Start with `README.md` for overview, then `docs/AAP-README.md` for AAP-specific guidance!
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

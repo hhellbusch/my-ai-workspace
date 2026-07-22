@@ -650,3 +650,6 @@ spec:
 - [Provider Guides](https://external-secrets.io/latest/provider/aws-secrets-manager/)
 - [RHACM Policy Collection](https://github.com/stolostron/policy-collection)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

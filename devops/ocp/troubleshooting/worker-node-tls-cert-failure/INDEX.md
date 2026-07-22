@@ -275,3 +275,6 @@ oc adm must-gather --dest-dir=/tmp/must-gather
 **Last Updated:** December 10, 2025  
 **Maintained By:** OpenShift Troubleshooting Team
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

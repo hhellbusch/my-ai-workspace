@@ -282,3 +282,7 @@ This typically means the Subscription's `status.currentCSV` does not match the `
 rendered by the chart. ArgoCD may be diffing live Subscription status fields. Add an
 ignore-differences rule to the Application or use `RespectIgnoreDifferences=true` in
 syncOptions (already set in this example's chart template).
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

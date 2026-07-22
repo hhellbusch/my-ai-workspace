@@ -550,3 +550,6 @@ oc delete pod -n kube-system $PX_CSI_POD
 - [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) - Command reference
 - [INVESTIGATION-WORKFLOW.md](./INVESTIGATION-WORKFLOW.md) - Systematic approach
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

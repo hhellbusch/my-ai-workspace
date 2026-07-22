@@ -255,3 +255,6 @@ ansible-playbook simple_filter.yml -v
 - Use cases: [EXAMPLES.md](EXAMPLES.md)
 - Test it: `./test_examples.sh`
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

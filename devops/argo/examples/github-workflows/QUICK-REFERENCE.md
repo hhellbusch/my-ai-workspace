@@ -331,3 +331,6 @@ jq -R -s -c 'split("\n") | map(select(length > 0))'
 - `detect-changed-directories.yml` - All detection methods
 - `deploy-changed-apps-matrix.yml` - Complete real-world example
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

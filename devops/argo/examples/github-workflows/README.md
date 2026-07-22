@@ -470,3 +470,6 @@ For issues or questions:
 
 **Last Updated:** November 2024
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

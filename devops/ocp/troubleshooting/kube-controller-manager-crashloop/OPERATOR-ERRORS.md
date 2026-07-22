@@ -376,3 +376,6 @@ oc delete pod -n openshift-monitoring -l app.kubernetes.io/name=thanos-query
 watch oc get pods -n openshift-monitoring -l app.kubernetes.io/name=thanos-query
 ```
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

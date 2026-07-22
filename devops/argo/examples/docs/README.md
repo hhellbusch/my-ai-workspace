@@ -64,3 +64,6 @@ and the [Operator's Guide](../framework/docs/OPERATORS-GUIDE.md) instead.
 - [Fleet framework](../framework/) — Hub-and-spoke fleet management system
 - [GitHub workflows](../github-workflows/) — CI/CD workflow examples
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -222,3 +222,7 @@ lab-cluster-components:
 Your Application in the ArgoCD UI should be **Synced / Healthy** with automated sync, prune, and selfHeal all active.
 
 **Coming up in Session 2:** How ArgoCD applies resources — syncOptions flags, drift suppression with ignoreDifferences, and retry on failure.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -593,3 +593,6 @@ This document contains additional real-world examples and use cases for filterin
   - `practical_example.yml`
   - `advanced_filters.yml`
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

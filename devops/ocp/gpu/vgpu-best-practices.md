@@ -636,3 +636,7 @@ vgpu:
 - [`research/gpu-gitops-workflow/README.md`](../../../research/gpu-gitops-workflow/README.md) — gap analysis that feeds this document
 - [NVIDIA Grid vGPU User Guide](https://docs.nvidia.com/vgpu/latest/grid-vgpu-user-guide/)
 - [NVIDIA GPU Operator + OpenShift Virtualization](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/openshift-virtualization.html)
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

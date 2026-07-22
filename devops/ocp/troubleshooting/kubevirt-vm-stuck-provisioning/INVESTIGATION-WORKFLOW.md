@@ -368,3 +368,6 @@ Include in escalation:
 - Relevant logs from KubeVirt components
 - Timeline of issue and attempted fixes
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

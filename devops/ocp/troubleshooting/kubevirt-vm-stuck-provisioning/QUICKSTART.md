@@ -68,3 +68,6 @@ chmod +x diagnostic-commands.sh
 
 Share the output with your team or support.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

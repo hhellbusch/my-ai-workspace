@@ -268,3 +268,6 @@ validate_media_ejection:
 - [Ansible Assert Module](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/assert_module.html)
 - [Ansible Until/Retry Logic](https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html#retrying-a-task-until-a-condition-is-met)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -297,3 +297,6 @@ velero restore create --from-backup test-vm-backup --namespace-mappings default:
 - [OADP Documentation](https://docs.openshift.com/container-platform/latest/backup_and_restore/application_backup_and_restore/installing/about-installing-oadp.html)
 - [KubeVirt Plugin Documentation](https://github.com/kubevirt/kubevirt-velero-plugin)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

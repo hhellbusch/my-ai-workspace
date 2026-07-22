@@ -272,3 +272,7 @@ ansible-playbook best_practice_playbook.yml
 - Tasks that will always fail (waste of time)
 - Operations that are not idempotent
 - Tasks where retry could cause data corruption
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

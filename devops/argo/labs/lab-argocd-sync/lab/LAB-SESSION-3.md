@@ -295,3 +295,7 @@ Your component now has:
 - `post-sync-notify.yaml` — PostSync hook
 
 When you're done, follow the **Cleanup** steps in [LAB-OVERVIEW.md](LAB-OVERVIEW.md).
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

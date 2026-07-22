@@ -70,3 +70,7 @@
 
 Re-check OCP and MCE version matrices when adding hosted-control-plane or ACM provisioning content.
 IBM Z hardware support (z17, LinuxONE 5) may require minimum OCP patch levels — confirm in the current install guide before citing version numbers in new guides.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

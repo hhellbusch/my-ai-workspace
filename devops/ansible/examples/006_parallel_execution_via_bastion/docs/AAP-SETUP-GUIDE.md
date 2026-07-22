@@ -351,3 +351,6 @@ Job Slicing: 10 (for 500+ hosts)
 - [AAP Documentation - Credentials](https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/)
 - [Ansible - ProxyJump Configuration](https://docs.ansible.com/ansible/latest/user_guide/connection_details.html)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

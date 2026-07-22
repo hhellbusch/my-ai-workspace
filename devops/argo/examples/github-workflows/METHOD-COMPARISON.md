@@ -416,3 +416,6 @@ Simple, reliable, maintainable.
 - [CHANGED-DIRECTORIES-GUIDE.md](./CHANGED-DIRECTORIES-GUIDE.md) - Detailed detection guide
 - [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) - Quick syntax reference
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

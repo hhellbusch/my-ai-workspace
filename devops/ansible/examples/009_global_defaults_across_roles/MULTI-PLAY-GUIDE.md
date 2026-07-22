@@ -435,9 +435,6 @@ worker_processes: 4
 
 See the example files for working demonstrations!
 
+---
 
-
-
-
-
-
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

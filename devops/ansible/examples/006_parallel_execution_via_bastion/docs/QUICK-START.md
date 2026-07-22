@@ -315,3 +315,6 @@ Place this in your project root (will be used by AAP)
 - **EXECUTION-ENVIRONMENT.md** - EE-specific considerations and troubleshooting
 - **COMPARISON.md** - Performance analysis and method comparison
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

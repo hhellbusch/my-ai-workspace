@@ -188,3 +188,7 @@ Refresh your browser after ArgoCD syncs — no restart, no `oc`, just a Git push
 
 **Two participants used the same `<name>`**
 - One of you needs to pick a different name, update all 4 files, and push again
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

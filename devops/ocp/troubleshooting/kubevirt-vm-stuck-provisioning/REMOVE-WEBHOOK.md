@@ -164,3 +164,6 @@ oc patch mutatingwebhookconfigurations kubevirt-velero-annotations-remover \
 
 This changes the failure policy from "Fail" to "Ignore", allowing VM creation to proceed even if the webhook service is missing.
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -413,3 +413,7 @@ oc exec -n <namespace> <pod> -- ip link show eth0 | grep mtu
 
 **Last Updated:** 2026-02-04  
 **Key Takeaway:** MTU must be uniform across all cluster nodes. Fix external network connectivity issues at the network boundary, not by changing individual nodes.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -246,3 +246,6 @@ See also:
 - Example 5: Block rescue retry (error handling patterns)
 - Example 6: Parallel execution (scaling validation checks)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

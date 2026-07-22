@@ -247,3 +247,6 @@ echo ""
 5. **Some operators depend on others** - order matters during installation
 6. **etcd, kube-apiserver, kube-controller-manager, kube-scheduler** are critical and should come up first
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

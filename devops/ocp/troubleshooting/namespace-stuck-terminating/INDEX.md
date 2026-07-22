@@ -400,3 +400,6 @@ Namespace stuck in Terminating?
 *Last Updated: February 2026*
 *OpenShift Versions: 4.12+*
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

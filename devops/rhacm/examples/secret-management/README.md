@@ -296,3 +296,6 @@ oc --context=<managed-cluster> create job test-secret \
 - [Ansible Examples](../../../ansible/examples/) - Automate RHACM policy creation
 - [Argo CD Examples](../../../argo/examples/) - GitOps with RHACM
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

@@ -153,3 +153,6 @@ Red Hat ACM: [Disable Hub Self-Management](https://docs.redhat.com/en/documentat
 
 **Full Documentation:** [acm-rename-local-cluster.md](acm-rename-local-cluster.md)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

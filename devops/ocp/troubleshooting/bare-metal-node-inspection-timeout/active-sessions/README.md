@@ -64,3 +64,7 @@ mv master2-dec3-2025 archive/master2-dec3-2025-resolved
 ```
 
 Add resolution summary to the archived session's README.
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

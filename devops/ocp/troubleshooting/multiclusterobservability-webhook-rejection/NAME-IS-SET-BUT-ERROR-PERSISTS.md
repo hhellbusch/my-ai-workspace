@@ -327,3 +327,7 @@ Include:
 - [README.md](README.md) → Strategy 2: Temporarily Disable Webhook Validation
 - [QUICK-FIX.md](QUICK-FIX.md) → "If you can't edit/delete and need to force it"
 - [YOUR-ERROR-SOLUTION.md](YOUR-ERROR-SOLUTION.md) → General solution for this error
+
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

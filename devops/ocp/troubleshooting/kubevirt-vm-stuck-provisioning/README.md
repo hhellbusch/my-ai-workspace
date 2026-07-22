@@ -69,3 +69,6 @@ This issue commonly occurs when:
 3. OADP was upgraded and the plugin didn't upgrade correctly
 4. Custom namespace (velero-ppdm) was used instead of default (openshift-adp)
 
+---
+
+*This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*
