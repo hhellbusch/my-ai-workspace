@@ -42,6 +42,12 @@ Learning guide for developers who want to understand what git does, not just mem
 
 - **`git-learning-guide.md`** — Content-addressable filesystem model, the staging area mental model, four core commands, branching strategy, undo/restore patterns, search and find, remote workflows, cheat sheet
 
+### [KVM / libvirt](kvm/)
+
+Host-side QEMU/KVM and libvirt on Linux.
+
+- **`windows-vm-on-fedora.md`** — CLI setup for Windows 10/11 on Fedora: `virt-install`, VirtIO driver paths, common permission and Q35 gotchas ([index](kvm/README.md))
+
 ### [Learning paths](learning-path/)
 
 Curated multi-topic curricula (may span OpenShift, GitOps, and labs in this repo).
@@ -53,7 +59,8 @@ Curated multi-topic curricula (may span OpenShift, GitOps, and labs in this repo
 The deepest product section — install, operations, and troubleshooting for enterprise OpenShift.
 
 - **`examples/`** — OVN-Kubernetes networking, install config templates, SNO KVM lab setup
-- **`disconnected-install/`** — Disconnected OCP 4.18.14 with Quay + `oc-mirror`: [working guide](disconnected-install/working-guide.md), [scope](disconnected-install/BRIEF.md)
+- **`disconnected-install/`** — Disconnected OCP 4.18.14 with Quay + `oc-mirror`: [working guide](ocp/disconnected-install/working-guide.md), [scope](ocp/disconnected-install/BRIEF.md)
+- **`ibm-z/`** — OpenShift on IBM Z and LinuxONE (s390x): mental model, provisioning/automation (ACM, ABI, Metal3), external references ([index](ocp/ibm-z/README.md))
 - **`troubleshooting/`** — 20 guides covering: API slowness, bare metal inspection timeouts, apiserver cert deadlock, CoreOS networking, CSR management, kube-controller-manager crashloops, KubeVirt VM provisioning, namespace termination, Portworx CSI, worker TLS cert failures, image registry auth, MCP deadlock, RHACM webhook rejection, OAuth healthz, and more
 - **`notes/`** — Quick references: useful `oc` and `kubectl` commands
 - **`install/`** *(gitignored)* — Local install working directory; never committed

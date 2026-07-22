@@ -530,3 +530,9 @@ sudo nmcli con up "Wired connection 1" 2>/dev/null || sudo nmcli con up <LAN_NIC
 | kubeadmin password | `cat ~/sno-install/auth/kubeadmin-password` |
 | Web console | `https://console-openshift-console.apps.<CLUSTER_NAME>.<LOCAL_DOMAIN>` |
 | Storage class / PVs | `oc get storageclass,pv` — see [local-storage.md](local-storage.md) |
+
+---
+
+## Related reading
+
+- [Windows VM on Fedora (CLI)](../../../kvm/windows-vm-on-fedora.md) — lighter-weight KVM/libvirt setup for a Windows guest before tackling SNO
