@@ -11,7 +11,9 @@ Runbook: [cim-abi-lpar.md](../../devops/ocp/ibm-z/cim-abi-lpar.md)
 
 - `devops/ocp/ibm-z/` domain — mental model, provisioning, LPAR path comparison
 - AOP code review + fork meta-analysis
-- Fork: Phase 1 (`hcp_approve_agent`, etc.) + Phase 2a (`lpar_hipersockets_bastion`, `AGENTS.md`, `FORK.md`)
+- Fork: Phase 1 (`hcp_approve_agent`, etc.) + Phase 2a (`lpar_hipersockets_bastion`, `AGENTS.md`, `FORK.md`) + Phase 3 CIM (`acm_abi_boot_lpar.yaml`, supporting roles)
+- Fork pushed: `refactor/phase-1-dry` → `origin` (`f4ea8d2..7d63366`)
+- Workspace docs committed locally (`9305416`)
 - [lpar-install-paths.md](../../devops/ocp/ibm-z/lpar-install-paths.md) — UPI/ABI/HCP trade-offs
 - [cim-abi-lpar.md](../../devops/ocp/ibm-z/cim-abi-lpar.md) — hub CRs + AOP boot runbook
 
@@ -20,11 +22,10 @@ Runbook: [cim-abi-lpar.md](../../devops/ocp/ibm-z/cim-abi-lpar.md)
 | Priority | Action |
 |----------|--------|
 | 1 | **Hub audit** — [cim-hub-setup.md](../../devops/rhacm/notes/cim-hub-setup.md) |
-| 2 | **Push fork** — `git push origin refactor/phase-1-dry` |
-| 3 | **Hub CRs** — ClusterDeployment + AgentClusterInstall + InfraEnv (`cpuArchitecture: s390x`) |
-| 4 | **Configure `acm:` in inventory** + `host_vars` for each LPAR node |
-| 5 | **Run** `playbooks/acm_abi_boot_lpar.yaml` on bastion |
-| 6 | **Approve agents** on hub; watch `AgentClusterInstall` |
+| 2 | **Hub CRs** — ClusterDeployment + AgentClusterInstall + InfraEnv (`cpuArchitecture: s390x`) |
+| 3 | **Configure `acm:` in inventory** + `host_vars` for each LPAR node |
+| 4 | **Run** `playbooks/acm_abi_boot_lpar.yaml` on bastion |
+| 5 | **Approve agents** on hub; watch `AgentClusterInstall` |
 
 ## Fork refactor focus (ABI + CIM)
 
