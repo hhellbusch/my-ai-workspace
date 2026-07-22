@@ -47,7 +47,7 @@ This workspace has persistent project state that survives across sessions. When 
 - **`ABOUT.md`** — Read first. The workspace owner's self-description; takes precedence over corpus inferences.
 - **`BACKLOG.md`** — In-progress work, what's coming next. The `/start` skill provides a structured orientation.
 - **`.planning/<project>/whats-next.md`** — Handoff from a previous session. The project dir is the one with the most recently modified `BRIEF.md`. If no project BRIEF exists, falls back to root `.planning/`. Staleness-check: if commits have been made since it was written, cross-reference against the backlog and git log.
-- **`STYLE.md`** (repo root) — Workspace-level writing defaults. Check before writing any `docs/` content.
+- **`STYLE.md`** (repo root) — Workspace-level writing defaults. Check before writing any `docs/` or `devops/` content. Review metadata: `rules/review-tracking.md`.
 - **`.planning/`** — Project briefs, roadmaps, style supplements.
 - **`library/`** — Personal reference library.
 - **Recent git log** — When there is no handoff file, the git log *is* the handoff.

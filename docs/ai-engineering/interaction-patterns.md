@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Interaction Patterns for AI Sessions
 
 > **Audience:** Engineers and practitioners using AI assistants across multiple sessions. Covers two structured patterns for AI-assisted work (the meta-prompt pipeline and the session-start briefing), the default unstructured session mode, and how to choose between them. Written for an external reader with no prior knowledge of this workspace's tools.

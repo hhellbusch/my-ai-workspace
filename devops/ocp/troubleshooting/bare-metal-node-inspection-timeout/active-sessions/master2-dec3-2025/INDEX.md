@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Session Index - master-2 Inspection / Control Plane Recovery
 
 **Date:** December 3, 2025  

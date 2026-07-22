@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Quick Setup Guide for ArgoCD Diff Preview
 
 Follow these steps to enable ArgoCD diff previews on your pull requests.

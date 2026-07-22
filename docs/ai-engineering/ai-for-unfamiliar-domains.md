@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Using AI to Work Outside Your Expertise — A Practical Example
 
 > **Audience:** Engineers, tech leads, and anyone curious about what AI coding assistants are actually good for.

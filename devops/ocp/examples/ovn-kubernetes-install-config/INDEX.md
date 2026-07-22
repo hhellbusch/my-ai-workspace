@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # OVN-Kubernetes Install Configuration - Documentation Index
 
 Complete guide for configuring OVN-Kubernetes networking at OpenShift install time.

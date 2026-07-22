@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Parallel Execution via Bastion for AAP
 
 Transform your serial Ansible playbooks into parallel powerhouses when using **Ansible Automation Platform (AAP)** with a bastion/jump host.

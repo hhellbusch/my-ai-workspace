@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # IP Subnet Validation with Ansible
 
 This example demonstrates how to validate that IP addresses belong to specific subnets using Ansible. This is useful for:

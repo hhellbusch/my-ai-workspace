@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # RHACM → ArgoCD Cluster Integration
 
 This pattern registers RHACM-managed clusters with an OpenShift GitOps (ArgoCD) instance using the ClusterSet-based integration. Clusters added to the ClusterSet are automatically discovered and made available as ArgoCD destinations — no manual secret creation required.

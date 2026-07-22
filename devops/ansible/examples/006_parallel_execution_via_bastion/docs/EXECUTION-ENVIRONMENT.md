@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Execution Environment Considerations for AAP
 
 When running Ansible playbooks from an Execution Environment (EE) on Ansible Automation Platform through a bastion host, there are specific considerations.

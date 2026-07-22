@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # The Landscape Pass — Assess All Threads Before Drafting Any
 
 > **Audience:** Writers, researchers, and engineers managing creative or analytical projects with many possible directions, where the temptation is to dive into the most interesting thread immediately.

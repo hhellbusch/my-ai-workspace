@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # RHACM Hub Cluster RBAC Configuration
 
 This directory contains RBAC resources for creating a service account with minimal permissions to automate RHACM cluster imports.

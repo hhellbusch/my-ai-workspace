@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Fleet Management Framework — Operator's Guide
 
 A learning path and operations manual for system administrators and operators

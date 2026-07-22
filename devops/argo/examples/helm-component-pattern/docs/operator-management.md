@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Operator management
 
 This document covers how to manage OLM operator installation and configuration in the fleet using the `components/` structure and the `operators-installer` Helm chart from [redhat-cop/helm-charts](https://github.com/redhat-cop/helm-charts/tree/main/charts/operators-installer).

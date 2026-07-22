@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # ArgoCD GitHub Actions Workflows
 
 This directory contains GitHub Actions workflows for ArgoCD multi-cluster deployments and diff previews.

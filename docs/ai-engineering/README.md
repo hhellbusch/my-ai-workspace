@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # AI-Assisted Engineering
 
 Essays on using AI effectively in engineering work — skills, workflows, risks, and practical patterns.

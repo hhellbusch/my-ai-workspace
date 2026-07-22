@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Runbook: A40 vGPU Profiles
 
 > **Target:** OpenShift 4.18+ with GPU Operator + OpenShift Virtualization

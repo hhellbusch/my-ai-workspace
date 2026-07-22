@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Quick Reference: NFS Portworx Proxy PVC Slow Ready (20+ Minutes)
 
 ## Where Is the Delay?

@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Standalone ArgoCD Examples — Documentation
 
 Documentation for the standalone ArgoCD examples (not the fleet management

@@ -15,6 +15,7 @@ This command is read-only. It reports findings and asks for confirmation before 
 <context>
 - Repo conventions: `.cursor/rules/repo-structure.mdc`
 - Cross-linking and registry rules: `.cursor/rules/cross-linking.md`
+- Review frontmatter: `rules/review-tracking.md`
 - Current changes: `git status`
 - Staged diff: `git diff --cached --stat`
 - Unstaged diff: `git diff --stat`
@@ -66,11 +67,11 @@ This command is read-only. It reports findings and asks for confirmation before 
    - If the frontmatter includes an `at:` SHA, include the diff command: "Run `git diff SHA..HEAD -- file.md` to see what changed since last review."
    - This is the **highest-priority informational item** — it's the easiest thing to miss and the hardest to recover from. Present it above other findings.
 
-8. **Review status note** — For new files in `docs/`, `research/`, or product directories (`devops/ansible/`, `devops/ocp/`, `devops/argo/`, etc.):
-   - Note that these files will start as **direction-reviewed** (no `review:` frontmatter)
+8. **Review frontmatter check** — For each **new** markdown file under `docs/` or `devops/`, verify YAML frontmatter includes a `review:` block with `status:` (typically `unreviewed` on creation). See `rules/review-tracking.md` for the canonical format.
+   - Flag missing blocks: "**Missing review frontmatter**: `file.md`"
+   - If file has other YAML keys (`description:`, `tags:`) but no `review:`, flag as missing — merge into existing frontmatter, do not add a second fence
    - Remind: "Run `/validate <path> read` after you've reviewed these files"
    - If biographical content was flagged in step 6, remind: "Run `/validate <path> voice-approved` after reviewing the biographical content"
-   - This is informational, not a blocker — new files are expected to lack review metadata
 
 9. **AI disclosure footer check** — For each **new** markdown file under `docs/` or `devops/`, check that it includes the standard AI disclosure footer:
    - The footer should be an italic line at the end of the file linking to `AI-DISCLOSURE.md`
@@ -110,8 +111,8 @@ This command is read-only. It reports findings and asks for confirmation before 
 - Secrets scan: OK / issues
 - Biographical scan: N lines flagged / clean
 - Stale reviews: N reviewed files modified (re-read needed) / none
-- Review status: N new files start as direction-reviewed (run `/validate` after reading)
-- AI disclosure footer: OK / N new docs files missing footer
+- Review frontmatter: OK / N new files missing `review:` block
+- AI disclosure footer: OK / N new files missing footer
 - Backlog alignment: tracked / untracked
 
 ### Blind Spots to Consider
@@ -189,8 +190,8 @@ Skip for changes that don't touch docs or planning files. If no `.planning/` pro
 - No secrets or credentials in staged content
 - Modified files with `review:` frontmatter flagged as stale reviews
 - External URLs verified (fetched, not just eyeballed)
-- New `docs/` files checked for AI disclosure footer
-- New `devops/` markdown files checked for AI disclosure footer
+- New `docs/` and `devops/` markdown files checked for `review:` frontmatter
+- New `docs/` and `devops/` markdown files checked for AI disclosure footer
 - Clear recommendation: commit or fix first
 - User confirms before any commit happens
 </success_criteria>

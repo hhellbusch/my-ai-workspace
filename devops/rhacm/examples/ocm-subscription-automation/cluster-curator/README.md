@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # ClusterCurator — Education Guide for Bare Metal
 
 **Target Audience**: Platform Engineers not yet using ClusterCurator  

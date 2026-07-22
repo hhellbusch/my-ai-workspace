@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Git, GitHub, and GitLab Learning Path
 
 **Audience:** Anyone learning Git for the first time — whether you're a developer, a writer, a researcher, or an infrastructure engineer. If you've used Git but not internalized *why* the model works the way it does, this path is for you.

@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # GitOps Lab — App-of-Apps with ArgoCD
 
 This lab teaches the components / groups / cluster cascade pattern for GitOps with ArgoCD. You add a live application component to a shared cluster by editing four files and pushing — without running `oc apply`.

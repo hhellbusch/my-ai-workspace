@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # RHEL CoreOS - Auto-Eject Installation Media
 
 This directory contains examples for automatically ejecting installation media (ISO) after RHEL CoreOS completes its installation.

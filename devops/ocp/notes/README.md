@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # OCP Notes
 
 Informal OpenShift quick references and command notes. These are working references — commands and patterns used regularly — not structured troubleshooting guides (those live in `ocp/troubleshooting/`).

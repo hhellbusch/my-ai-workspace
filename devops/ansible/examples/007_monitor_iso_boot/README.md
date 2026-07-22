@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Monitor ISO Boot and Installation
 
 This directory contains Ansible playbooks for monitoring system status during ISO boot and installation via Redfish API (iDRAC, iLO, etc.).

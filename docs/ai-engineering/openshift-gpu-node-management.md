@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # OpenShift GPU Node Management — Bare Metal Guide
 
 > **Audience:** Platform engineers running OpenShift on bare-metal GPU nodes (NVIDIA). Not a tutorial — a reference for the decision points, state machines, and configuration tradeoffs that matter during installation, scheduling, and upgrades.

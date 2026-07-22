@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # RHACM 2.15+ Best Practices
 
 This document outlines best practices for Red Hat Advanced Cluster Management 2.15 and newer versions.

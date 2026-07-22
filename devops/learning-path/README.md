@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Learning paths
 
 Curated curricula that span multiple areas of this repository (OpenShift, GitOps, labs, troubleshooting). Each path is self-contained under its own folder.

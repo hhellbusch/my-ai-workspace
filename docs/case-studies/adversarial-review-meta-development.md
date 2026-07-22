@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Adversarial Review as a Meta-Development Pattern
 
 > **Audience:** Engineers and teams using AI assistants who want to build in structural pushback rather than relying on discipline alone.

@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # 014 — Create a Confluence Page from an Ansible Playbook
 
 Publish structured content to Confluence using the REST API — no extra

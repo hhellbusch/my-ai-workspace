@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # ArgoCD App of Apps - Offline Diff Generator
 
 Generate comprehensive diffs for ArgoCD App of Apps pattern without cluster connectivity.

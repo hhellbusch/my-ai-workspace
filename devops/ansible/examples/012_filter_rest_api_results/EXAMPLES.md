@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Additional Examples - REST API Filtering
 
 This document contains additional real-world examples and use cases for filtering REST API results in Ansible.

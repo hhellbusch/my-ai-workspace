@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Failed OCP Install – Quick Reference
 
 Fast commands for troubleshooters who already know the install phases. For full explanations and teaching content, see [README.md](README.md).

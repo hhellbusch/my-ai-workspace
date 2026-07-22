@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Basic Secret Distribution with RHACM
 
 Learn how to distribute secrets from the RHACM Hub cluster to managed clusters using Policies.

@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Advanced Secret Management Patterns with RHACM
 
 Advanced patterns and best practices for complex secret management scenarios.

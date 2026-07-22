@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # A Portable AI Toolkit — My Agent, Anywhere
 
 > **Status:** Working draft — direction-reviewed, awaiting author review

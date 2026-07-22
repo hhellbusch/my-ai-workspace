@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # LangChain vs. Behavioral Skills — Two Layers, One Mistake
 
 > **Audience:** Engineers deciding between application frameworks and agent behavioral instructions for workflow automation. Skeptical of jargon. Values precision over enthusiasm.

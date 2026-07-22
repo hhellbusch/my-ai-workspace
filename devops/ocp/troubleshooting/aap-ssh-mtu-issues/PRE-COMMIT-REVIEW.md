@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Pre-Commit Review - AAP SSH MTU Issues Documentation
 
 **Review Date:** 2026-02-04  

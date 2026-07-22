@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Common Error Messages - Portworx CSI CrashLoopBackOff
 
 Quick lookup table for error messages and their solutions.

@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Two-Folder ArgoCD Setup
 
 This example shows how to scan two different folders and pass them as separate variables to Helm.

@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # vGPU Node Label Methods
 
 > Applies to: OpenShift 4.18+ with NVIDIA GPU Operator + OpenShift Virtualization

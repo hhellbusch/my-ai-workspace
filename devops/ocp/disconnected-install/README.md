@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Disconnected OpenShift Install (Quay + oc-mirror)
 
 Stand up OpenShift in environments without reliable outbound internet: Quay mirror registry, `oc-mirror` content sync, and cluster image redirect via `ImageDigestMirrorSet`.

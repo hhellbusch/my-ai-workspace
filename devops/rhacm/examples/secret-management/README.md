@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # RHACM Secret Management
 
 Complete examples for managing secrets across multiple Kubernetes clusters using Red Hat Advanced Cluster Management (RHACM).

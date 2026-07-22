@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Building a Personal Knowledge Management System with AI
 
 > **Audience:** Engineers and solo developers who use AI assistants for project work and want to understand what happens when you let AI build the organizational infrastructure for AI-assisted work.

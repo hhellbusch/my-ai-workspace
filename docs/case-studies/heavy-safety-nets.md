@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # When the Safety Net Is Too Heavy to Use
 
 > **Audience:** Engineers designing review processes, quality gates, or any system intended to catch errors before they ship.

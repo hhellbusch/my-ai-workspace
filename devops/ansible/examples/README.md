@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Ansible Best Practice Examples
 
 This project contains runnable examples for the Ansible patterns we discussed.

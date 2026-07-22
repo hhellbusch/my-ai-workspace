@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Distribute Resources Across Managed Clusters with RHACM
 
 > **Audience:** Platform engineers, SREs, or anyone managing multiple OCP clusters through RHACM  

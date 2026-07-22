@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Architecture and design opinions
 
 This document explains the problem this pattern solves, the principle that structures the solution, and the explicit design decisions ("opinions") baked into the implementation — with their full trade-offs.

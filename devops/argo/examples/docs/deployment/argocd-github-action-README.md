@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # ArgoCD App of Apps - GitHub Action Deployment
 
 Automated deployment of ArgoCD applications to OpenShift using GitHub Actions and Helm.

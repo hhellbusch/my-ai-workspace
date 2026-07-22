@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Active Troubleshooting Sessions
 
 This directory contains detailed notes from ongoing or recently completed troubleshooting sessions. Each session is stored in its own subdirectory with comprehensive documentation of the problem, investigation, and resolution.

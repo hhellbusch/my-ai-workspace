@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Container Registry Credentials with RHACM
 
 Practical example for distributing container registry pull secrets across managed clusters using RHACM.

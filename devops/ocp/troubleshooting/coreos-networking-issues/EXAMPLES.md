@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Real-World Examples - CoreOS Network Issues
 
 This document shows real output from various network failure scenarios to help you identify your specific problem.

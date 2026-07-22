@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # From Conversation to Essay in One Session
 
 > **Audience:** Engineers and writers using AI to produce structured content — essays, documentation, technical writing — who want to understand what an end-to-end AI-assisted writing pipeline looks like in practice.

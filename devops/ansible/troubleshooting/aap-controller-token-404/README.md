@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # AAP 2.5: ansible.controller.token 404 — Summary for Teams
 
 **Audience:** Teams using Ansible Automation Platform (AAP) 2.5.x and the `ansible.controller.token` module (e.g. in job templates or playbooks run via AAP).  

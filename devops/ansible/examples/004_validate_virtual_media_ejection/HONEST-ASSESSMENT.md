@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Honest Assessment: What We Know and Don't Know
 
 ## Your Question Was Spot-On

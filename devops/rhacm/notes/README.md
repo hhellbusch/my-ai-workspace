@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # RHACM Notes
 
 Informal RHACM quick references and working notes. These are operational references — configurations, port requirements, patterns used regularly — not structured troubleshooting guides (those live in `rhacm/troubleshooting/`).

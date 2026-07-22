@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # ArgoCD Sync Settings Lab
 
 This lab teaches ArgoCD sync configuration — automated sync, prune, self-heal, sync options, ignore differences, retry, sync waves, and hooks — through ten progressive exercises. Sync settings are controlled via your GitOps cascade values files, not the ArgoCD UI.

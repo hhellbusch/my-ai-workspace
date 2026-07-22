@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Quick Start - Fix VM Stuck in Provisioning
 
 **Problem**: VM stuck with error about missing `kubevirt-velero-annotations-remover` service

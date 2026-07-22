@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Investigation Workflow for KubeVirt VM Stuck in Provisioning
 
 This document provides a systematic workflow for investigating VMs stuck in provisioning state.

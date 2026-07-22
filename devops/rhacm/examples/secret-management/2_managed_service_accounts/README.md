@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # ManagedServiceAccounts with RHACM
 
 Create and manage ServiceAccounts on managed clusters with tokens automatically stored on the RHACM Hub cluster.

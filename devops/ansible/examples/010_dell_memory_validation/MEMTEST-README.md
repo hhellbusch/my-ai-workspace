@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Memory Testing Options for Red Hat CoreOS
 
 Comprehensive guide for running memory tests on CoreOS nodes, with multiple approaches depending on your needs.

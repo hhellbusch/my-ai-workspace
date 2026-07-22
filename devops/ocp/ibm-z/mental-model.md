@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Mental model — OpenShift on IBM Z and LinuxONE
 
 > **Audience:** Engineers new to the Z/LinuxONE + OpenShift intersection

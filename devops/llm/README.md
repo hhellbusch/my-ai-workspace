@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Local LLM Setup — Consumer Inference
 
 Practical setup guides for running large language models locally: Ollama, RamaLama, LM Studio, LiteLLM proxy, and vLLM for maximum serving throughput.

@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # ClusterCurator Architecture Decision
 
 **Context**: Bare metal OpenShift clusters provisioned by Ansible (AAP), registered into RHACM, handed off to ArgoCD  

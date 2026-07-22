@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # kube-controller-manager-operator Error Analysis
 
 ## Scenario: Operator Errors (Not Controller Manager Crashes)

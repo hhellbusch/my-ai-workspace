@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Filter REST API Results with Ansible
 
 This example demonstrates how to filter data returned from REST APIs using Ansible's powerful Jinja2 filters. Specifically focuses on filtering S3 credentials by bucket name, but the patterns apply to any REST API response.

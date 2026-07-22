@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Investigation Workflow - Portworx CSI Pod CrashLoopBackOff
 
 Systematic troubleshooting workflow for diagnosing `px-csi-ext` pod issues.

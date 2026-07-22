@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # When AI Ignores Changes Made by Other Sessions
 
 > **Audience:** Engineers running AI-assisted workflows across multiple sessions, agents, or parallel contexts where shared files can change between actions.

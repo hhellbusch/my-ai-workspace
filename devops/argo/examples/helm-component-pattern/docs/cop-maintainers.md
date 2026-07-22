@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # For CoP maintainers: relationship to gitops-standards-repo-template
 
 This document is for maintainers of [`redhat-cop/gitops-standards-repo-template`](https://github.com/redhat-cop/gitops-standards-repo-template) and people evaluating whether this pattern should become part of the CoP reference catalog.

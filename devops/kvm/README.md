@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # KVM / libvirt
 
 Host-side virtualization on Linux — QEMU/KVM, libvirt, and guest setup.

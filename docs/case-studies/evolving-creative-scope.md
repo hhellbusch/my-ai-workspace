@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # How AI Handles Evolving Creative Scope Across Sessions
 
 > **Audience:** Anyone using AI for multi-session creative or intellectual projects where the human's understanding evolves during the work — not just the output, but the framing itself.

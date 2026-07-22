@@ -1,5 +1,8 @@
 ---
 description: OpenShift on IBM Z and LinuxONE — vocabulary, deployment paths, provisioning automation
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
 ---
 
 # OpenShift on IBM Z and LinuxONE

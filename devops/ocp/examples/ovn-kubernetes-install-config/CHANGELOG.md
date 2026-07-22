@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Changelog - OVN-Kubernetes Install Configuration Documentation
 
 All notable changes to this documentation will be documented in this file.

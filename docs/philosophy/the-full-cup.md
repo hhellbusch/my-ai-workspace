@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # The Full Cup — Why Nobody Can Learn When the Tap Is Always On
 
 > **Audience:** Engineers, leaders, and anyone who has tried to teach a room full of people who are physically present and mentally somewhere else.

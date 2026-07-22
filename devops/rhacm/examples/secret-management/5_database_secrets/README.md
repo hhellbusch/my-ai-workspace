@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Database Secret Management with RHACM
 
 Complete workflow for managing database credentials across environments using RHACM and External Secrets Operator.

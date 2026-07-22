@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Debugging Your AI Assistant's Judgment
 
 > **Audience:** Engineers and leaders using AI for project management, prioritization, or any decision-making workflow where the AI's prior outputs influence its future recommendations.

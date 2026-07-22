@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Choosing Scripts Over Services — The YouTube Transcript Decision
 
 > **Audience:** Engineers making build-vs-integrate decisions in AI-assisted workflows, where the architecturally elegant option isn't always the right one.

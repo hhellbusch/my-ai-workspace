@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # OpenShift VLAN Network Segmentation
 
 > **Audience:** Platform operators managing OpenShift clusters with bare-metal or user-provisioned infrastructure

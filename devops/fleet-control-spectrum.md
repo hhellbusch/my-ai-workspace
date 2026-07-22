@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Fleet Control Spectrum
 
 > **Audience:** Platform architects and engineers choosing how RHACM and Argo CD divide fleet work on OpenShift

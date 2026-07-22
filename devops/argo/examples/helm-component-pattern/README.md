@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Platform component delivery at fleet scale
 
 *Composable group-based GitOps for OpenShift fleets — ArgoCD only, no RHACM required.*

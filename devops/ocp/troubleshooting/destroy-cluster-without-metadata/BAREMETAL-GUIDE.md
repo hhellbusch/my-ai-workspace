@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Destroying Bare Metal OpenShift Cluster Without Metadata
 
 ## Overview

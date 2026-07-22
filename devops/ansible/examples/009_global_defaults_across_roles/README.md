@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Global Defaults Across Playbooks and Roles
 
 This example demonstrates how to set default values globally for an Ansible playbook and make them available to all subsequent tasks and roles.

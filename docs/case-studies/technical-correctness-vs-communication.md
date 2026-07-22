@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # When Technical Correctness Isn't Enough
 
 > **Audience:** Anyone using AI for technical work that produces documentation, patterns, or explanations for others — especially in agentic or autonomous workflows where no human reviews output before it reaches a reader.

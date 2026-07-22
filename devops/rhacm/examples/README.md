@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Red Hat Advanced Cluster Management (RHACM) Examples
 
 This directory contains practical examples for working with Red Hat Advanced Cluster Management for Kubernetes (RHACM).

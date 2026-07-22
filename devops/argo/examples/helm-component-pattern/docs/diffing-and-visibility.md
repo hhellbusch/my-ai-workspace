@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Diffing and visibility at fleet scale
 
 Managing a fleet of clusters through GitOps creates two distinct visibility problems that require different tools:

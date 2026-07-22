@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Ego, AI, and the Zen Antidote
 
 > **Audience:** Engineers, leaders, and anyone who has noticed that AI makes them feel smarter than they are.

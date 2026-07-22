@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # RHACM Examples Validation Report - 2.15+ Compliance
 
 **Validation Date:** January 21, 2026  

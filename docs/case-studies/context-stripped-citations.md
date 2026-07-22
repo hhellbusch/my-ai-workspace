@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # When the Source Says the Opposite of the Claim
 
 > **Audience:** Engineers using AI to research, summarize, or build on external sources — especially technical articles that cite other work.

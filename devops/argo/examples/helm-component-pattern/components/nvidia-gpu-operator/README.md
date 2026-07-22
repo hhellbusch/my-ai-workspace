@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Component: nvidia-gpu-operator
 
 GitOps component for deploying and configuring the NVIDIA GPU Operator on

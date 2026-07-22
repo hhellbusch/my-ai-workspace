@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # ArgoCD Fleet Management Framework
 
 A hub-and-spoke GitOps framework for managing a fleet of OpenShift clusters using

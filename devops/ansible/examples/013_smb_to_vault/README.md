@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # 013 — Read File from SMB Share and Write to HashiCorp Vault
 
 Fetches a file from a Windows/Samba SMB share and stores its contents as a

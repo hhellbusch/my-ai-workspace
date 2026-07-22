@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # ArgoCD RBAC via RHACM Policy
 
 This pattern uses a RHACM `Policy` to declaratively grant OpenShift GitOps (ArgoCD) cluster-admin permissions on managed clusters. This avoids manually applying ClusterRoleBindings and ensures they are continuously reconciled by RHACM.

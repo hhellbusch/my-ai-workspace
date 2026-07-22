@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # External Secrets Operator Integration with RHACM
 
 Deploy and manage External Secrets Operator (ESO) across multiple clusters using RHACM, enabling secure secret synchronization from external stores like Vault, AWS Secrets Manager, and Azure Key Vault.

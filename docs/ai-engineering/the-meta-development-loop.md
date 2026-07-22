@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # The Meta-Development Loop — Building Tools That Build Your Workflow
 
 > **Audience:** Engineers using AI assistants for multi-session projects who want to understand why the most productive AI-assisted work often isn't feature work — it's building the infrastructure that makes feature work faster.

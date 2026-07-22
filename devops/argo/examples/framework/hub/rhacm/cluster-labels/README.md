@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Git-Driven Cluster Labels
 
 Cluster group memberships and app opt-in/out labels are managed **in Git** and

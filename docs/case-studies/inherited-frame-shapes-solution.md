@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # The Frame You Inherited Shapes the Solution You Can See
 
 > **Audience:** Anyone running multi-session AI-assisted work where early decisions accumulate into a shared context — especially builders of reference patterns, frameworks, or designs that evolve over many sessions.

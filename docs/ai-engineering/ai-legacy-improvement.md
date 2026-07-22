@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # AI-Driven Continuous Improvement for Legacy Systems
 
 > **Audience:** Engineers, tech leads, and engineering leaders responsible for systems that have been running longer than anyone wants to admit.

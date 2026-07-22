@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Argo CD Diff Preview with App-of-Apps (and App-of-App-of-Apps)
 
 Troubleshooting and patterns for using [dag-andersen/argocd-diff-preview](https://github.com/dag-andersen/argocd-diff-preview) with the app-of-apps and app-of-apps-of-apps patterns.

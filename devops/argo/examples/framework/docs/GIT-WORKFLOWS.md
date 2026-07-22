@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Git Workflows for Fleet Management
 
 This guide compares four Git branching strategies and explains how each maps

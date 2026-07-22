@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Prometheus and Alertmanager storage (`StorageClass`) on OpenShift
 
 This guide explains how to set **`storageClassName`** (and size) for the Cluster Monitoring Operator (CMO) stack—platform Prometheus, Alertmanager, and user-workload monitoring—and why **PVCs or pods** often appear stuck in **Pending**.

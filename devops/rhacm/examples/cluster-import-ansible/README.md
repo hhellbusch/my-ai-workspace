@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # RHACM Cluster Import - Ansible Automation
 
 Simple Ansible playbook to automate importing existing OpenShift clusters into Red Hat Advanced Cluster Management (RHACM).

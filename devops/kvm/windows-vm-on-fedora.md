@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Windows VM on Fedora — CLI Setup Guide
 
 Windows 10 or 11 guest on QEMU/KVM via libvirt, created entirely from the command line.

@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Provisioning and automation on s390x
 
 > **Audience:** Platform engineers choosing how to install and lifecycle-manage OCP on IBM Z

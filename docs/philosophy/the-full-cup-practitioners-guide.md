@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # The Full Cup — Practitioner's Guide
 
 > **Audience:** Engineers, tech leads, and consultants who facilitate kickoffs, lead transformations, or teach in professional settings — especially remote ones.

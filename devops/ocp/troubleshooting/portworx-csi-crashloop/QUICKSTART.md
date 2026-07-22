@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Quick Start - Fix Portworx CSI Pod CrashLoopBackOff
 
 **Problem**: `px-csi-ext` pod in CrashLoopBackOff, preventing PVC provisioning and volume operations

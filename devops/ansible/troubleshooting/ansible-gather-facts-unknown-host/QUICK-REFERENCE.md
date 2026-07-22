@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Quick Reference: Ansible gather_facts "Connection to UNKNOWN port 65535"
 
 > **See [README.md](README.md) for full investigation guide.**

@@ -17,13 +17,16 @@ This is an honest accounting, not a caveat. The project is partly an exploration
 
 ## Review status
 
-Individual files may note their review status in YAML frontmatter. In general:
+Individual files note review status in YAML frontmatter — required on all new `docs/` and `devops/` markdown.
+See [rules/review-tracking.md](rules/review-tracking.md) for format and `/validate` workflow.
+
+In general:
 
 - **Reviewed**: The author has read and validated the content, with specific validation types noted.
-- **Direction-reviewed**: The author guided the creation and reviewed the approach, but has not read the full output line-by-line. This is the majority of content.
-- **Unreviewed**: Generated during a session but not yet revisited. Some research artifacts and supporting files fall here.
+- **Direction-reviewed**: The author guided the creation and reviewed the approach, but has not read the full output line-by-line.
+- **Unreviewed**: Default for new or backfilled content; not yet re-read by the author.
 
-When no review status is noted, assume **direction-reviewed** — the author shaped the intent but the AI wrote the words.
+When no `review:` block is present (legacy files outside `docs/` / `devops/`), assume **direction-reviewed** — the author shaped the intent but the AI wrote the words.
 
 ### Validation types
 

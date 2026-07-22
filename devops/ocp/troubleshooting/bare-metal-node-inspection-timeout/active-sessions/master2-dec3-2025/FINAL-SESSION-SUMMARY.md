@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Final Session Summary - December 3, 2025
 
 **⚠️ CLUSTER-SPECIFIC SESSION:** This troubleshooting session is for ONE specific cluster with a VIP misconfiguration from installation. Do NOT assume these issues apply to other clusters.

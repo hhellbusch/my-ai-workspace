@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Dell PowerEdge Memory Validation Audit
 
 Automated Ansible playbook to detect Dell PowerEdge servers where memory DIMMs failed POST (Power-On Self-Test) validation but the server still booted into production.

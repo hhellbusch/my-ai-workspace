@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Who Is Speaking? — When AI Writes in Your Voice
 
 > **Audience:** Engineers, writers, and anyone publishing AI-assisted content where readers will attribute the words to a human author.

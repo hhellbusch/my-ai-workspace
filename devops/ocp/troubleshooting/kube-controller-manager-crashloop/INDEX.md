@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # kube-controller-manager Crash Loop - Document Index
 
 This directory contains comprehensive documentation for troubleshooting kube-controller-manager crash loop issues in OpenShift.

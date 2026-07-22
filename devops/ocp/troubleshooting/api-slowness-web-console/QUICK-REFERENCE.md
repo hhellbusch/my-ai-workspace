@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Quick Reference: API Slowness and Web Console Performance
 
 Fast diagnostic commands and decision tree for OpenShift API/web console slowness issues.

@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Disconnected OCP + Quay — Working Guide
 
 **Audience:** Platform engineer implementing mirror-registry, `oc-mirror`, and first disconnected cluster  

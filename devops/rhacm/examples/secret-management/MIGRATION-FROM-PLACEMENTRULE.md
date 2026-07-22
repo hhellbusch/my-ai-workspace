@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Migration Guide: PlacementRule to Placement
 
 Quick reference for migrating from deprecated PlacementRule to modern Placement API in RHACM 2.15+.

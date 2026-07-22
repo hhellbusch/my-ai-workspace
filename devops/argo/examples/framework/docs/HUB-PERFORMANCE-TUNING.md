@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Hub Performance Tuning Guide
 
 Scaling ArgoCD on a RHACM hub that manages hundreds of spoke clusters via

@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Argo CD hands-on labs
 
 Self-contained lab tracks for GitOps on OpenShift or Kubernetes. Each folder has charts, values, and an instructor guide.

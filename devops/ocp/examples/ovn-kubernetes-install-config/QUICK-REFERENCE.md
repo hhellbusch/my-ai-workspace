@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # OVN-Kubernetes Quick Reference
 
 Quick copy-paste configurations for common scenarios.

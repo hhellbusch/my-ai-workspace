@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Your Specific Issue: TLS Certificate Verification Failed Adding Workers
 
 ## Situation Summary

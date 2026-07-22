@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # copySecretData vs fromSecret in RHACM
 
 Complete comparison and usage guide for the two methods of referencing Hub secrets in RHACM policies.

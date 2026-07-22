@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Git — Learning Guide
 
 > For developers who want to understand what git does, not just memorize commands.

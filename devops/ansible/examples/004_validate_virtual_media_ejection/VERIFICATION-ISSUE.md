@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # ⚠️ Critical Verification Issue: Virtual Media Status Query
 
 ## Problem Statement

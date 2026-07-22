@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Zanshin — Patterns, Behaviors, and Why
 
 > **Audience:** Engineers and practitioners who want to understand the behavioral patterns encoded in this workspace's AI collaboration framework — what each behavior is defending against, how they fit together, and how to adapt them.

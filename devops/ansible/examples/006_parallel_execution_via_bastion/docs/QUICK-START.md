@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Quick Start Guide: Parallel Execution via Bastion (AAP)
 
 **For Ansible Automation Platform users running from an Execution Environment**

@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # SNO on KVM — Lab Setup Guide
 
 Single Node OpenShift (SNO) cluster running in a KVM virtual machine, bridged onto a home LAN managed by pfSense. Intended as a local lab for testing ArgoCD, operator management, and GitOps workflows.

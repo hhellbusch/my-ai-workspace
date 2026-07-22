@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Bastion Node Setup for RHACM Automation
 
 This guide helps set up bastion/jump hosts for RHACM cluster import automation.

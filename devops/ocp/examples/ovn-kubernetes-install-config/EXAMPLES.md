@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Complete install-config.yaml Examples
 
 This file contains complete, production-ready `install-config.yaml` examples for various scenarios.

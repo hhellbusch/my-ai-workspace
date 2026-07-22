@@ -1,5 +1,7 @@
 ---
-review: [status: unreviewed]
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
 created: 2026-05-12
 tags: proxy, paude, github, PAT, TLS, certificates
 ---

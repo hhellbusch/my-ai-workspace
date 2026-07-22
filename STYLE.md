@@ -23,7 +23,7 @@
 All essays, case studies, and guides in `docs/` follow this structure:
 
 - **Title:** `#` heading, optionally with an em-dash subtitle
-- **Front matter:** Blockquote with bold **Audience:** and **Purpose:** lines
+- **Front matter:** YAML `review:` block (required — see [rules/review-tracking.md](../rules/review-tracking.md)) plus blockquote with bold **Audience:** and **Purpose:** lines
 - **Section breaks:** Horizontal rules `---` between major thematic blocks
 - **Hierarchy:** `##` for main sections, `###` for subtopics
 - **Table of contents:** Guides longer than ~500 lines may include an `## On this page` section immediately after the front-matter separator. Essays and short guides do not need one.
@@ -35,9 +35,13 @@ All essays, case studies, and guides in `docs/` follow this structure:
 
 ## Structure — devops/
 
-Technical reference under `devops/` follows the same disclosure rule as `docs/`.
-READMEs included — every `.md` file gets the footer.
-Prefer blockquote or bold **Audience:** / **Purpose:** lines on guides; `review:` YAML frontmatter optional but recommended for new material.
+Technical reference under `devops/` follows the same metadata rules as `docs/`:
+
+- **`review:` YAML frontmatter** (required on every `.md` file) — default `status: unreviewed` on new content; see [rules/review-tracking.md](../rules/review-tracking.md)
+- **AI disclosure footer** (required) — standard footer linking to `AI-DISCLOSURE.md`; adjust path for file depth
+- **Audience / purpose** — blockquote or bold **Audience:** / **Purpose:** on guides
+
+Run `/validate <path> read` (or other types) after human review.
 See `AI-DISCLOSURE.md` for validation types by content category.
 
 ---

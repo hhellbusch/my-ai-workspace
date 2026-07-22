@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Pi Resource Wiring
 
 Reference for how pi discovers and displays resources in this workspace.

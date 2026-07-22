@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # ArgoCD Sync Settings Lab — Overview
 
 > **CLI note:** All commands in this lab use `oc`. `oc` is the OpenShift CLI and is a fully compatible drop-in replacement for `kubectl` — every `oc` command here works identically with `kubectl` if that is what you have available.

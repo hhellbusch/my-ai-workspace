@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # When Case Studies Generate System Improvements
 
 > **Audience:** Engineers and teams using structured documentation practices who suspect that writing things down does more than record what happened.

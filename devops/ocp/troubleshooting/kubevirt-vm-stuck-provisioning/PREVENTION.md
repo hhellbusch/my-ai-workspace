@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Prevention Guide - Avoiding KubeVirt VM Provisioning Issues
 
 This document provides strategies to prevent VM provisioning issues related to webhooks and OADP/Velero configuration.

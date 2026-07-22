@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Example 4: Validate Virtual Media Ejection from Dell iDRAC
 
 This example demonstrates how to eject virtual media from a Dell iDRAC endpoint and validate that the ejection was successful.

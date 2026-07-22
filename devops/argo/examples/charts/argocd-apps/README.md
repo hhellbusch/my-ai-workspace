@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # ArgoCD App of Apps Helm Chart
 
 This Helm chart implements the **App of Apps pattern** where a root ArgoCD Application manages multiple child applications, with each child app's target revision (branch, tag, or commit) controlled via Helm values.

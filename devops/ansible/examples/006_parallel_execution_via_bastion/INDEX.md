@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Index: Parallel Execution via Bastion for AAP
 
 Complete guide to parallel task execution through a bastion host when using Ansible Automation Platform.

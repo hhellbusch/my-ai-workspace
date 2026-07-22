@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Adopting Trunk-Based Development
 
 This guide walks you through setting up the ArgoCD Fleet Management Framework

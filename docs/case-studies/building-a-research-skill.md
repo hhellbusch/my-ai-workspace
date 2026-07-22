@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Building a Research and Verification Skill — A Case Study in Meta-Development
 
 > **Audience:** Engineers and leaders interested in how AI-assisted development works at the meta level — building tools that make AI more effective at complex, multi-step tasks.

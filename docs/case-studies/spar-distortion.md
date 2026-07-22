@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # When the Sparring Partner Shapes the Fighter
 
 > **Audience:** Engineers and writers using adversarial review tools in AI-assisted workflows who want to understand how the tool itself can distort the output it was meant to improve.

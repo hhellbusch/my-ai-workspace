@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Examples: Namespace Stuck in Terminating
 
 This document provides real-world examples and scenarios for resolving namespace deletion issues.

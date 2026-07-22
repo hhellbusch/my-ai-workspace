@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # AI-Assisted Open Source Contributions — Drafting Upstream Improvements Responsibly
 
 > **Audience:** Engineers who use AI coding assistants and contribute to (or want to contribute to) open source projects.

@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Troubleshooting RBAC for hubAcceptsClient
 
 This guide helps diagnose and fix RBAC issues when creating ManagedCluster resources with `hubAcceptsClient: true`.

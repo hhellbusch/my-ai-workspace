@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # GPU Operator — Operational Reference
 
 Operational artifacts for deploying and configuring the NVIDIA GPU Operator

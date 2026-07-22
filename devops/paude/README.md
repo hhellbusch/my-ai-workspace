@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Paude Container Tooling
 
 Operational reference for adding developer tooling to paude containers. The central question: **where does a tool belong?** The answer determines whether you need to rebuild an image, whether a tool travels with the workspace, and who else benefits from having it.

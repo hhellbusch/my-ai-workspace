@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Preventing ArgoCD from Owning RHACM-Generated Child Policies
 
 When ArgoCD deploys a `policy.open-cluster-management.io/v1` Policy (parent), the RHACM policy controller creates child policies (e.g. propagated policies on managed clusters). If those children inherit the **labels** ArgoCD uses for resource tracking (e.g. `app.kubernetes.io/instance` or `argocd.argoproj.io/instance`), ArgoCD will treat them as part of the Application: they show as **OutOfSync** and would be **pruned** if prune is enabled, because they are not in the desired (Git) state.

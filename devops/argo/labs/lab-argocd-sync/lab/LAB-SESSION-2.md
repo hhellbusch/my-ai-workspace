@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block backfilled 2026-07-22. Content predates explicit review metadata."
+---
+
 # Session 2 — Application-Level Controls
 
 > **CLI note:** All commands use `oc`. Every `oc` command works identically with `kubectl`.
