@@ -12,6 +12,7 @@
 
 - [VALIDATION.md](VALIDATION.md) — static review status, prerequisites matrix, cluster-side checks
 - [LABELING-COMPARISON.md](LABELING-COMPARISON.md) — **zone/region vs custom-rack labels** (side-by-side)
+- [Network policy and observability](../../notes/network-policy-observability.md) — Strimzi vs CFK policy differences, Flink ports, OVN audit logging, NetObserv
 
 - [Portworx CSI crashloop troubleshooting](../../troubleshooting/portworx-csi-crashloop/README.md)
 - [NVMe host NQN duplicates](../../troubleshooting/nvme-host-nqn-duplicate/README.md) — prerequisite if using NVMe-oF to FlashArray

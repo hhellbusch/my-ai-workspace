@@ -17,6 +17,7 @@ Red Hat doc links in notes follow [`rules/red-hat-docs-links.md`](../../../rules
 - **[container-density-overcommit.md](container-density-overcommit.md)** — Packing/overcommit architecture for large bare-metal clusters (LimitRange, CRO, VPA, HPA)
 - **[cluster-resource-override.md](cluster-resource-override.md)** — ClusterResourceOverride Operator: request/limit ratios, opt-in namespaces, pitfalls
 - **[vertical-pod-autoscaler.md](vertical-pod-autoscaler.md)** — VPA features, tradeoffs, pitfalls, and right-sizing practices
+- **[network-policy-observability.md](network-policy-observability.md)** — NetworkPolicy enforcement, OVN audit logging, NetObserv, Kafka (Strimzi vs CFK) and Flink port requirements
 
 ## Adding New Notes
 

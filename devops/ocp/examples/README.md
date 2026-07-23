@@ -31,10 +31,12 @@ Configuration examples and templates for OpenShift clusters.
   - **[VALIDATION.md](kafka-bare-metal-portworx/VALIDATION.md)** — static review status and cluster-side apply checklist
   - **[Common manifests](kafka-bare-metal-portworx/manifests/common/)** — StorageClass (CSI + legacy), optional kernel tuning, CFK RBAC
   - **[LABELING-COMPARISON.md](kafka-bare-metal-portworx/LABELING-COMPARISON.md)** — zone/region vs custom-rack; Confluent vs Strimzi
+  - **[Network policy and observability](../notes/network-policy-observability.md)** — Strimzi vs CFK policy model, Flink ports, observability stack
   - **[zone-region manifests](kafka-bare-metal-portworx/manifests/zone-region/)** · **[custom-rack manifests](kafka-bare-metal-portworx/manifests/custom-rack/)** — each includes `confluent/` and `strimzi/`
 
 ### Networking
 
+- **[Network policy and observability](../notes/network-policy-observability.md)** — OVN-Kubernetes policy enforcement, audit logging, NetObserv, Kafka (Strimzi vs CFK) and Flink requirements
 - **[NetworkAttachmentDefinition (NAD)](network-attachment-definitions/README.md)** - Configure additional networks and VLANs for pods
   - **[Quick Reference](network-attachment-definitions/QUICK-REFERENCE.md)** - Fast commands for NAD creation and pod attachment ⚡
   - VLAN configuration with macvlan, bridge, SR-IOV

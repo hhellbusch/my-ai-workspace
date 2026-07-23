@@ -181,7 +181,7 @@ Use this when triaging live — map the symptom back to the phase and port set.
 
 ## Preflight automation
 
-The bare-metal dev sandbox encodes Phase 2 port probes as check ID `network_firewall_install_ports` (6180, 6183, 9999, 6385). See [HARNESS.md](../../bare-metal-dev-sandbox/HARNESS.md).
+The bare-metal dev sandbox encodes Phase 2 port probes as check ID `network_firewall_install_ports` (6180, 6183, 9999, 6385). See `devops/bare-metal-dev-sandbox/HARNESS.md` when that harness is in tree.
 
 Phase 1 and Phase 3 probes are environment-specific (hub routes, API VIPs) — validate from a jump host on the install VLAN with `curl` to hub routes and API health endpoints.
 
