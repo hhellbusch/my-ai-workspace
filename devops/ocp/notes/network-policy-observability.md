@@ -10,7 +10,7 @@ review:
 >
 > **Purpose:** Explain how network policies are enforced, how to observe allow/deny decisions, and what ports and policy patterns Kafka (Strimzi vs Confluent) and Flink need.
 
-**Target platform:** OCP 4.18+ (OVN-Kubernetes default). Network Observability OVN events require 4.18+ and the `OVNObservability` feature gate.
+**Target platform:** OCP 4.18+ (OVN-Kubernetes default).
 
 **Related:**
 
@@ -55,6 +55,9 @@ Once a pod is selected by any `NetworkPolicy`, it becomes *isolated* — only ex
 - Policies match **pod labels**, not Deployment or CR names.
 - Cross-namespace flows use `namespaceSelector` + `podSelector`.
 - `EgressFirewall` controls traffic to external IPs; `NetworkPolicy` controls pod-to-pod and pod-to-service traffic inside the cluster.
+- **ANP/BANP precedence:** Admin and baseline admin policies evaluate alongside namespace `NetworkPolicy` objects.
+  A BANP default-deny can block traffic even when a namespace `NetworkPolicy` allows it — design platform baselines and namespace policies together, not in isolation.
+- **External egress** (S3 checkpoints, schema registry outside the cluster) needs `EgressFirewall` or an explicit egress allow to the target CIDR on port 443 — a namespace `NetworkPolicy` alone is not enough for traffic leaving the cluster.
 
 Cluster-wide audit log settings live in `policyAuditConfig` on the `Network` CR.
 See [OVN-Kubernetes install config — Policy Audit Config](../examples/ovn-kubernetes-install-config/README.md#policy-audit-config-parameters).
@@ -89,11 +92,19 @@ Each entry includes verdict (`allow`/`drop`), source/dest IPs and ports, and the
 
 Answers: *Who is talking to whom, and was traffic allowed or denied?*
 
+**Version matrix** (OVN network events — verify on your z-stream before production reliance):
+
+| Component | Minimum | Status |
+|-----------|---------|--------|
+| OCP | 4.18 | `OVNObservability` feature gate required |
+| NetObserv Operator | 1.8 | OVN `NetworkEvents` (Technology Preview) |
+| OVN ACL audit logging | Any OVN-Kubernetes cluster | GA — no feature gate |
+
 Requires:
 
-- Network Observability Operator installed
+- Network Observability Operator **1.8+** installed
 - Loki or Kafka as flow storage backend
-- OCP 4.18+ with `OVNObservability` feature gate enabled
+- OCP 4.18+ with `OVNObservability` feature gate enabled (`oc edit featuregate cluster`)
 - `FlowCollector` with eBPF `NetworkEvents`:
 
 ```yaml
@@ -118,6 +129,9 @@ Provides flow records enriched with Kubernetes metadata, allow/deny events for N
 **Pros:** Visual troubleshooting, historical search, cross-workload correlation.
 **Cons:** Heavier footprint (eBPF agent per node, storage backend); OVN network events are Technology Preview on 4.18+.
 
+Treat NetObserv OVN events as preview — validate on your z-stream before using them as compliance evidence.
+Prefer OVN ACL audit logging for incident response until preview features are GA on your version.
+
 ### When to use which
 
 | Need | Tool |
@@ -129,6 +143,10 @@ Provides flow records enriched with Kubernetes metadata, allow/deny events for N
 ---
 
 ## Kafka: Strimzi vs Confluent
+
+> **Unverified:** Port and policy behavior below is doc-sourced.
+> Not validated on a live locked-down cluster in this workspace.
+> Confirm generated policies and pod labels on a staging cluster before production rollout.
 
 The **Kafka protocol ports are the same** regardless of operator.
 Differences are in **who generates policies** and **how you declare allowed clients**.
@@ -170,9 +188,26 @@ Strimzi also generates policies for:
 - Entity Operator, Cruise Control, Kafka Connect (if deployed)
 - Cluster Operator → broker/controller connectivity (operator must reach the Kafka namespace)
 
-**Operator placement:** The Cluster Operator must reach controllers and brokers.
-If you apply a blanket deny-all in the Kafka namespace without Strimzi's generated policies, the operator breaks.
-Strimzi handles this when the operator runs in the same namespace as the cluster; cross-namespace operator installs need explicit policies.
+#### Cross-namespace operator (`openshift-operators`)
+
+Many clusters install the Streams/Strimzi operator in `openshift-operators` while Kafka runs in `kafka`.
+Strimzi generates operand policies in the Kafka namespace, but a cluster-wide BANP or a deny-all in `openshift-operators` can still block the operator from reaching brokers.
+
+**Verify first:**
+
+```bash
+oc get networkpolicy -n kafka
+oc get pods -n openshift-operators -l name=strimzi-cluster-operator
+oc logs -n openshift-operators deploy/strimzi-cluster-operator --tail=30
+```
+
+**If the operator cannot reconcile:**
+
+1. Inspect Strimzi-generated policies in `kafka` — they usually include operator ingress rules with `namespaceSelector: {}` or a label you control.
+2. If your operator namespace has no usable labels, set `STRIMZI_OPERATOR_NAMESPACE_LABELS` on the Cluster Operator deployment so generated policies can match it.
+3. As a last resort, add an explicit allow from `openshift-operators` to `kafka` — copy ports from the generated `*-cluster-operator-*` NetworkPolicy rather than guessing.
+
+**Same-namespace operator:** Strimzi handles operator connectivity automatically when the Cluster Operator runs in the same namespace as the Kafka cluster.
 
 **KRaft note:** Controller pods use metadata ports distinct from client listeners.
 Strimzi's generated policies cover controller-to-broker paths — do not replace them with hand-written policies unless you understand the full port map.
@@ -193,11 +228,19 @@ You must allow:
 
 | Source | Destination | Ports |
 |--------|-------------|-------|
-| CFK operator | Kafka, KRaft controller pods | Operator reconciliation ports |
+| CFK operator namespace | Kafka, KRaft controller pods | Discover from generated Services and `oc get netpol` on a staging cluster — do not guess |
 | Broker pods | Broker pods | 9090–9091 (inter-broker) |
 | Client pods (Flink, apps) | Broker listeners | 9092+ per listener config |
 | Prometheus | Brokers | 9404 |
 | Brokers | DNS | 5353/53 |
+
+**CFK pod labels** (for `podSelector` in hand-written policies — confirm with `oc get pods -n kafka --show-labels`):
+
+| Label | Example value | Use |
+|-------|---------------|-----|
+| `app` | `prod-kafka` (matches Kafka CR `metadata.name`) | Broker targeting |
+| `platform.confluent.io/type` | `kafka` | Component type |
+| `confluent-platform` | `"true"` | All CFK operands |
 
 ### Side-by-side summary
 
@@ -244,6 +287,45 @@ Flink adds **intra-cluster** flows on top of the Kafka client connection.
 
 ### Example policy sketch (Flink namespace)
 
+Broker `podSelector` by operator (confirm labels on your cluster):
+
+| Operator | `podSelector` |
+|----------|---------------|
+| Strimzi | `strimzi.io/kind: Kafka` + `strimzi.io/cluster: prod-kafka` |
+| CFK | `app: prod-kafka` + `platform.confluent.io/type: kafka` |
+
+**Strimzi egress** (Flink → Kafka):
+
+```yaml
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kafka
+          podSelector:
+            matchLabels:
+              strimzi.io/kind: Kafka
+              strimzi.io/cluster: prod-kafka
+      ports:
+        - { protocol: TCP, port: 9092 }
+```
+
+**CFK egress** (same flow, different labels):
+
+```yaml
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kafka
+          podSelector:
+            matchLabels:
+              app: prod-kafka
+              platform.confluent.io/type: kafka
+      ports:
+        - { protocol: TCP, port: 9092 }
+```
+
+Full Flink namespace policy (Strimzi variant):
+
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -285,26 +367,29 @@ spec:
           podSelector:
             matchLabels:
               strimzi.io/kind: Kafka
+              strimzi.io/cluster: prod-kafka
       ports:
         - { protocol: TCP, port: 9092 }
 ```
 
-For CFK, replace the `strimzi.io/kind: Kafka` selector with your CFK broker pod labels (for example `confluent.io/cluster`).
+For CFK, swap the final egress block for the CFK variant above.
 
 **Watch for:** Custom `taskmanager.data.port` and `taskmanager.rpc.port` values — pin a known port range in both Flink config and network policy rather than leaving ephemeral ports open.
+Schema Registry and external checkpoint storage need separate egress rules (see [Flink → other dependencies](#flink--other-dependencies)).
 
 ---
 
 ## End-to-end design checklist
 
 1. **Namespace layout:** `kafka`, `flink`, and optionally `netobserv` (dedicated namespace for Loki/Kafka storage backends).
-2. **Default posture:** BANP or namespace-level default-deny with explicit allows.
+2. **Default posture:** BANP or namespace-level default-deny with explicit allows — reconcile BANP rules with namespace `NetworkPolicy` (BANP can override allows).
 3. **Kafka policies:**
    - Strimzi: configure `networkPolicyPeers` per listener; verify generated policies with `oc get networkpolicy -n kafka`
-   - CFK: write ingress/egress policies for brokers, controllers, and operator
-4. **Flink policies:** Allow internal JM/TM ports, egress to Kafka listener port, DNS, and checkpoint storage.
+   - Strimzi cross-ns operator: confirm `openshift-operators` → `kafka` path if operator is not co-located
+   - CFK: write ingress/egress policies for brokers, controllers, and operator; confirm labels with `oc get pods --show-labels`
+4. **Flink policies:** Allow internal JM/TM ports, egress to Kafka listener port, DNS, Schema Registry (if used), and checkpoint storage (`EgressFirewall` or egress to 443 for S3).
 5. **Audit logging:** Enable `k8s.ovn.org/acl-logging` on `kafka` and `flink` namespaces (`"deny": "alert"`).
-6. **NetObserv:** Install operator + Loki; enable `OVNObservability` and `NetworkEvents` in FlowCollector.
+6. **NetObserv:** Operator 1.8+, Loki backend, `OVNObservability` gate, `NetworkEvents` in FlowCollector — treat as preview until validated on your z-stream.
 7. **Alerting:** Ship ACL deny logs and NetObserv denied flows to your SIEM or Alertmanager.
 
 ---
