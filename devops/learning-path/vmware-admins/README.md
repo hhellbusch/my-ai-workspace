@@ -37,7 +37,7 @@ ACM is not required to get value from this path. Phases 0–4 stand alone with t
 
 **Lab options in this repo**
 
-- [SNO on KVM lab setup](../../ocp/examples/sno-kvm-lab/README.md) — single-node OpenShift for local practice.
+- [SNO on KVM lab setup](../../ocp/examples/labs/sno-kvm-lab/README.md) — single-node OpenShift for local practice.
 - [Argo CD labs](../../argo/labs/README.md) — GitOps exercises (after you are comfortable with namespaces and manifests).
 - [OCP command notes](../../ocp/notes/openshift-useful-commands.md) — day-to-day `oc` / `kubectl` patterns.
 
@@ -84,7 +84,7 @@ Use this as a **temporary scaffold only**. The right column is the destination; 
 | vCenter cluster | **OpenShift cluster** (Kubernetes + platform operators) | Reasonable scaffold; revisit when you manage multiple clusters (Phase 5) — a "cluster" is now a unit in a fleet, not the top of the hierarchy. |
 | Resource pool / reservation | **Requests and limits**, **PriorityClasses**, **scheduling** | **Breaks in Phase 1.** Resource pools are administrative hierarchy. Requests/limits are per-workload contracts with the scheduler — an entirely different model with no concept of pool membership. |
 | VM / template | **VirtualMachine** / **DataVolume** (Virt); **Deployment** + Pods (containers) | **Breaks in Phase 1–2.** VM templates are static artifacts applied once. Kubernetes manifests are desired-state — the controller reconciles continuously, and divergence from the manifest is automatically corrected. |
-| Port group / dvSwitch | **Cluster Network Operator (OVN-Kubernetes)**, **NAD** / **Multus** for additional interfaces ([NAD example](../../ocp/examples/network-attachment-definitions/README.md)) | **Breaks in the networking deep dive.** NSX policy model does not map to Kubernetes NetworkPolicy; relearn from the CNI up. The analogy will mislead you in any non-trivial networking scenario. |
+| Port group / dvSwitch | **Cluster Network Operator (OVN-Kubernetes)**, **NAD** / **Multus** for additional interfaces ([NAD example](../../ocp/examples/networking/network-attachment-definitions/README.md)) | **Breaks in the networking deep dive.** NSX policy model does not map to Kubernetes NetworkPolicy; relearn from the CNI up. The analogy will mislead you in any non-trivial networking scenario. |
 | vSAN / VMFS / NFS datastore | **StorageClass**, **PV/PVC**, CSI drivers; Virt adds **DataVolumes** and **VolumeSnapshots** | **Breaks in the storage deep dive.** Datastores are shared mounts you manage. StorageClasses are dynamic provisioners — storage is requested per-workload, provisioned on demand, and the workload does not know where it lives. |
 | DRS / HA rules | **Scheduling**, **PodAffinity/AntiAffinity**, **Pod disruption budgets** | **Breaks in Phase 1.** DRS optimises existing placement post-hoc. The Kubernetes scheduler makes placement decisions at creation time; anti-affinity rules are constraints, not rebalancing triggers. |
 | vMotion / storage vMotion | **Live migration** (Virt), **drain/cordon** for nodes | Reasonable analogy for the outcome; the mechanism is entirely different (see Phase 3 and the storage deep dive). |
@@ -235,7 +235,7 @@ VMware admins from NSX-T face the steepest networking relearn in this path. The 
 - **OVN-Kubernetes** — the default CNI (Container Network Interface) for OCP. Provides overlay networking for pods, services, and egress. Logical routers and switches underpin the fabric; the Cluster Network Operator manages them — you interact through Kubernetes APIs, not a graphical topology editor.
 - **NetworkPolicy** — the Kubernetes API for restricting pod-to-pod and pod-to-external traffic. Important reframe: NetworkPolicy is a set of *allow* rules, not a firewall. Without any NetworkPolicy, all pod-to-pod traffic is allowed. An NSX distributed firewall rule (deny-by-default with explicit permits) maps conceptually to a default-deny NetworkPolicy + explicit allow policies — but the implementation is entirely different. Relearn this from the Kubernetes model, not by translating NSX constructs.
 - **Multus CNI** — enables multiple network interfaces on a single pod or VM. The primary interface is always managed by OVN-Kubernetes; secondary interfaces (additional VLANs for VM workloads, storage networks, management networks) are attached via Multus with bridge, MACVLAN, or IPVLAN plugins.
-- **NetworkAttachmentDefinition (NAD)** — the CR that defines a secondary network and its plugin configuration. A VM spec references a NAD to attach to that network. Required for any OCP Virt VM that needs to appear on a physical VLAN or a network that is separate from the pod overlay. See [NAD example](../../ocp/examples/network-attachment-definitions/README.md) in this repo.
+- **NetworkAttachmentDefinition (NAD)** — the CR that defines a secondary network and its plugin configuration. A VM spec references a NAD to attach to that network. Required for any OCP Virt VM that needs to appear on a physical VLAN or a network that is separate from the pod overlay. See [NAD example](../../ocp/examples/networking/network-attachment-definitions/README.md) in this repo.
 - **MetalLB** — provides LoadBalancer-type services on bare metal clusters (a role performed by cloud load balancers on cloud clusters, or by NSX on vSphere). Required if services need external IPs on bare metal without a cloud provider.
 - **NMState** — declarative node-level network configuration (bond interfaces, VLANs, bridge creation, MTU settings). Applied via `NodeNetworkConfigurationPolicy` CRs; the OCP equivalent of maintaining `/etc/sysconfig/network-scripts` files on each node — but declarative, version-controlled, and applied by the NMState Operator.
 - **SR-IOV Network Operator** — hardware-based network virtualization for high-throughput, low-latency workloads. Creates VFs (Virtual Functions) from SR-IOV-capable NICs (PFs). Required for telco RAN workloads and performance-sensitive VM network interfaces. Uses `SriovNetworkNodePolicy` and `SriovNetwork` CRs.
@@ -332,7 +332,7 @@ The shift from vSAN/VMFS datastores to the Kubernetes storage model is as signif
 
 **Goal:** Apply Git-as-change-management to cluster configuration. A PR merge replaces a change ticket. A `git revert` replaces an emergency rollback procedure. Argo CD (OpenShift GitOps) is the reconciliation engine that closes the loop between what is in Git and what is running in the cluster.
 
-**Lab:** The [SNO KVM lab](../../ocp/examples/sno-kvm-lab/README.md) in this repo is sufficient for this entire phase — you need one cluster and a Git repo.
+**Lab:** The [SNO KVM lab](../../ocp/examples/labs/sno-kvm-lab/README.md) in this repo is sufficient for this entire phase — you need one cluster and a Git repo.
 
 **Depends on:** [Prerequisite: Git](#prerequisite-git).
 

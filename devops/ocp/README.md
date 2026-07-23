@@ -26,11 +26,11 @@ Symptom → cause → fix guides with quick references and diagnostic scripts.
 
 ## Install and configuration
 
-- [VLAN Network Segmentation](vlan-network-segmentation.md) — What install-config VLANs become on the cluster, day-2 VLAN management via Multus/NAD
+- [VLAN Network Segmentation](examples/networking/vlan-segmentation.md) — What install-config VLANs become on the cluster, day-2 VLAN management via Multus/NAD
 - [Disconnected install (Quay + oc-mirror)](disconnected-install/) — mirror-registry, oc-mirror v2, ImageSet examples, phased working guide
 - [IBM Z / LinuxONE](ibm-z/) — s390x vocabulary, CIM ABI LPAR, AOP fork notes, ACM vs Metal3 ([index](ibm-z/README.md))
 - [GPU operator artifacts](gpu/) — ClusterPolicy, MachineConfig, vGPU runbooks
-- [Examples](examples/) — Configuration examples and templates ([secondary disk offload](examples/bare-metal-secondary-disk/README.md), [Kafka + Portworx rack-aware](examples/kafka-bare-metal-portworx/README.md))
+- [Examples](examples/) — Topic index: [bare-metal](examples/bare-metal/README.md), [messaging](examples/messaging/README.md), [networking](examples/networking/README.md), [labs](examples/labs/README.md) ([Kafka + Portworx](examples/messaging/kafka/bare-metal-portworx/README.md), [secondary disk](examples/bare-metal/secondary-disk/README.md))
 - [Notes](notes/) — Informal quick references ([MachineConfig pools](notes/machine-config-pools.md), [container density / overcommit](notes/container-density-overcommit.md), [ClusterResourceOverride](notes/cluster-resource-override.md), [Vertical Pod Autoscaler](notes/vertical-pod-autoscaler.md), [network policy observability](notes/network-policy-observability.md), useful `oc` commands)
 - **`install/`** *(gitignored)* — Local install working directory; never committed
 

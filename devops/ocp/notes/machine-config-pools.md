@@ -96,7 +96,7 @@ If you only need “pods run here,” use **taints + affinity + topology labels*
 | Rack/zone as node role | Conflates scheduling topology with OS config |
 | `role: worker` MC to target three nodes | Reboots every worker — use custom pool |
 
-See also: [Kafka labeling comparison](../examples/kafka-bare-metal-portworx/LABELING-COMPARISON.md) (rack labels vs dedicated node roles), [GPU node labeling](../gpu/vgpu-node-labeling.md) (inventory → Git → label).
+See also: [Kafka labeling comparison](../examples/messaging/kafka/bare-metal-portworx/LABELING-COMPARISON.md) (rack labels vs dedicated node roles), [GPU node labeling](../gpu/vgpu-node-labeling.md) (inventory → Git → label).
 
 ### One role label per MachineConfig
 
@@ -528,12 +528,12 @@ oc logs -n openshift-machine-config-operator -l k8s-app=machine-config-controlle
 
 | Example | What it demonstrates |
 |---------|---------------------|
-| [`kafka-bare-metal-portworx/manifests/common/machineconfig-kafka-tuning.yaml`](../examples/kafka-bare-metal-portworx/manifests/common/machineconfig-kafka-tuning.yaml) | Optional worker-wide kernel/sysctl tuning (`role: worker`) — kafka example uses shared workers |
+| [`messaging/kafka/bare-metal-portworx/manifests/common/machineconfig-kafka-tuning.yaml`](../examples/messaging/kafka/bare-metal-portworx/manifests/common/machineconfig-kafka-tuning.yaml) | Optional worker-wide kernel/sysctl tuning (`role: worker`) — kafka example uses shared workers |
 | [`gpu/machineconfig-iommu-intel.yaml`](../gpu/machineconfig-iommu-intel.yaml) | `role: worker` vs custom `gpu-worker` pool (comments) |
 | [`troubleshooting/image-signature-policy-mcp-deadlock/signature-policy-machineconfig.yaml`](../troubleshooting/image-signature-policy-mcp-deadlock/signature-policy-machineconfig.yaml) | Duplicate MC for `master` and `worker` |
 | [`troubleshooting/nvme-host-nqn-duplicate/99-worker-nvme-host-identity.yaml`](../troubleshooting/nvme-host-nqn-duplicate/99-worker-nvme-host-identity.yaml) | Worker-scoped file + systemd fix |
 
-For Kafka-specific MCP implications (ISR, shared-cluster drain coupling), see the MCP section in [`kafka-bare-metal-portworx/README.md`](../examples/kafka-bare-metal-portworx/README.md).
+For Kafka-specific MCP implications (ISR, shared-cluster drain coupling), see the MCP section in [`messaging/kafka/bare-metal-portworx/README.md`](../examples/messaging/kafka/bare-metal-portworx/README.md).
 
 ---
 

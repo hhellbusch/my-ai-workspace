@@ -19,6 +19,8 @@ Red Hat doc links in notes follow [`rules/red-hat-docs-links.md`](../../../rules
 - **[vertical-pod-autoscaler.md](vertical-pod-autoscaler.md)** — VPA features, tradeoffs, pitfalls, and right-sizing practices
 - **[network-policy-observability.md](network-policy-observability.md)** — NetworkPolicy enforcement, OVN audit logging, NetObserv, Kafka (Strimzi vs CFK) and Flink port requirements
 
+Placement rules for all `devops/` content: [ORGANIZATION.md](../../ORGANIZATION.md).
+
 ## Adding New Notes
 
 When adding a new note:

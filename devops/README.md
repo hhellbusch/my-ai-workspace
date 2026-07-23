@@ -18,6 +18,8 @@ Practical, runnable examples and references for infrastructure, platform, and op
 
 **What belongs here:** Runnable examples, troubleshooting guides, lab exercises, and integration patterns for any infrastructure, platform, or operational tool. Not essays or case studies (those live in [`docs/`](../docs/)) and not research workspaces ([`research/`](../research/)). Local LLM inference setup for consumer hardware lives here rather than in docs/ since it's practical reference, not essay.
 
+**Organization:** [ORGANIZATION.md](ORGANIZATION.md) — where to put new content (platform vs workload, troubleshooting vs examples vs notes).
+
 **External links:** Red Hat doc URLs (`docs.redhat.com`) — see [`rules/red-hat-docs-links.md`](../rules/red-hat-docs-links.md) (pin versions, verify slugs, searchable link text).
 
 ### Fleet control spectrum
@@ -81,14 +83,15 @@ Curated multi-topic curricula (may span OpenShift, GitOps, and labs in this repo
 
 ### [OpenShift (OCP)](ocp/)
 
-The deepest product section — install, operations, and troubleshooting for enterprise OpenShift.
+The deepest product section — install, operations, workloads on OpenShift, and symptom guides.
 
-- **`examples/`** — OVN-Kubernetes networking, install config templates, SNO KVM lab, [secondary disk offload](ocp/examples/bare-metal-secondary-disk/README.md)
-- **`disconnected-install/`** — Disconnected OCP 4.18.14 with Quay + `oc-mirror`: [working guide](ocp/disconnected-install/working-guide.md), [scope](ocp/disconnected-install/BRIEF.md)
-- **`ibm-z/`** — OpenShift on IBM Z and LinuxONE (s390x): mental model, provisioning/automation (ACM, ABI, Metal3), external references ([index](ocp/ibm-z/README.md))
-- **`troubleshooting/`** — 20+ guides covering: API slowness, bare metal inspection timeouts, apiserver cert deadlock, CoreOS networking, CSR management, kube-controller-manager crashloops, KubeVirt VM provisioning, namespace termination, NVMe host NQN duplicates, NVMe/TCP storage network, Portworx CSI, worker TLS cert failures, image registry auth, MCP deadlock, RHACM webhook rejection, OAuth healthz, and more
-- **`notes/`** — Quick references: [MachineConfig pools](ocp/notes/machine-config-pools.md), useful `oc` and `kubectl` commands
-- **`install/`** *(gitignored)* — Local install working directory; never committed
+- **`troubleshooting/`** — 25 catalog-backed guides ([index](ocp/troubleshooting/README.md), [SYMPTOM-INDEX](SYMPTOM-INDEX.md))
+- **`examples/`** — Runnable scenarios by topic:
+  - [bare-metal](ocp/examples/bare-metal/README.md) · [messaging/kafka](ocp/examples/messaging/kafka/README.md) · [networking](ocp/examples/networking/README.md) · [labs](ocp/examples/labs/README.md)
+- **`notes/`** — Quick refs: [MachineConfig pools](ocp/notes/machine-config-pools.md), [network policy](ocp/notes/network-policy-observability.md), [density/CRO/VPA](ocp/notes/container-density-overcommit.md), [useful commands](ocp/notes/openshift-useful-commands.md)
+- **`disconnected-install/`** — Quay + `oc-mirror` ([working guide](ocp/disconnected-install/working-guide.md))
+- **`ibm-z/`**, **`gpu/`** — Platform variants
+- **`install/`** *(gitignored)* — Local install working directory
 
 ### [RHACM](rhacm/)
 
@@ -103,29 +106,19 @@ Consumer inference setup guides: Ollama, RamaLama, LM Studio, LiteLLM proxy, and
 - **`local-llm-setup.md`** — Hardware requirements, model selection with measured tok/s, Cursor/Claude Code integration, electricity measurement methodology
 - **`local-llm-vllm.md`** — Full vLLM install (CUDA + ROCm), serve commands, container setup, context limits, cluster topology
 
-### [Pi Agent Configuration](pi/)
-
-Reference for how pi discovers and displays resources in this workspace — skills, extensions, startup behavior, and troubleshooting.
-
-- **`README.md`** — Directory layout, discovery rules, installed packages, startup display behavior, troubleshooting checklist
-
-### [Paude](paude/)
-
-Container tooling layering model for paude workspaces — where tools belong, how workspace config works, and this workspace's specific setup.
-
-- **`README.md`** — Three-layer model (base image / workspace / runtime), decision guide, `paude.json` reference, domain aliases, mid-session domain unblocking
-
-### [Paude Proxy](paude-proxy/)
-
-Reverse proxy configuration, CA certificate management, and PAT (Personal Access Token) documentation for the workspace environment.
-
-- **`README.md`** — Proxy architecture, environment variables, GitHub PAT scopes, TLS certificate details, and troubleshooting
-
 ### [Vault](vault/)
 
 HashiCorp Vault integration patterns.
 
 - **`integration/`** — Vault integration configurations and patterns for secrets management
+
+### Workspace tooling
+
+Agent and editor workflow for this repository — not infrastructure you deploy to clusters.
+
+- **[Pi](pi/)** — Pi agent discovery, packages, startup behavior
+- **[Paude](paude/)** — Container layering model and `paude.json`
+- **[Paude Proxy](paude-proxy/)** — Reverse proxy, TLS, GitHub PAT scopes
 
 ---
 

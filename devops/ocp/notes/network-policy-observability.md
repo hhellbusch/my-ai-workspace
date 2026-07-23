@@ -14,9 +14,9 @@ review:
 
 **Related:**
 
-- [OVN-Kubernetes install config](../examples/ovn-kubernetes-install-config/README.md) — `policyAuditConfig` on the cluster `Network` CR
-- [Kafka on bare-metal with Portworx](../examples/kafka-bare-metal-portworx/README.md) — rack-aware Confluent/Strimzi examples
-- [NetworkAttachmentDefinition (NAD)](../examples/network-attachment-definitions/README.md) — additional networks beyond the default pod network
+- [OVN-Kubernetes install config](../examples/networking/ovn-kubernetes-install-config/README.md) — `policyAuditConfig` on the cluster `Network` CR
+- [Kafka on bare-metal with Portworx](../examples/messaging/kafka/bare-metal-portworx/README.md) — rack-aware Confluent/Strimzi examples
+- [NetworkAttachmentDefinition (NAD)](../examples/networking/network-attachment-definitions/README.md) — additional networks beyond the default pod network
 - [Audit logging for network security](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_security/logging-network-security) — OVN ACL audit logging (Red Hat docs)
 - [Network Observability network policy](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/observability/network_observability/network-observability-network-policy) — NetObserv + OVN events (Red Hat docs)
 
@@ -60,7 +60,7 @@ Once a pod is selected by any `NetworkPolicy`, it becomes *isolated* — only ex
 - **External egress** (S3 checkpoints, schema registry outside the cluster) needs `EgressFirewall` or an explicit egress allow to the target CIDR on port 443 — a namespace `NetworkPolicy` alone is not enough for traffic leaving the cluster.
 
 Cluster-wide audit log settings live in `policyAuditConfig` on the `Network` CR.
-See [OVN-Kubernetes install config — Policy Audit Config](../examples/ovn-kubernetes-install-config/README.md#policy-audit-config-parameters).
+See [OVN-Kubernetes install config — Policy Audit Config](../examples/networking/ovn-kubernetes-install-config/README.md#policy-audit-config-parameters).
 
 ---
 
@@ -220,7 +220,7 @@ You write policies yourself (or via a policy-as-code layer like RHACM/Gatekeeper
 What CFK provides instead:
 
 - **Listener configuration** on the `Kafka` CR (`spec.listeners`) — same port semantics as upstream Kafka
-- **RBAC** for rack assignment and operator reconciliation (see [confluent-kafka-rbac.yaml](../examples/kafka-bare-metal-portworx/manifests/common/confluent-kafka-rbac.yaml))
+- **RBAC** for rack assignment and operator reconciliation (see [confluent-kafka-rbac.yaml](../examples/messaging/kafka/bare-metal-portworx/manifests/common/confluent-kafka-rbac.yaml))
 - **Route / Ingress / LoadBalancer** exposure for external clients — clients connect on 443 (Route) or the Service port you define
 
 **Implication:** On a locked-down cluster, CFK requires more explicit policy authoring.
@@ -252,7 +252,7 @@ You must allow:
 | External access | `route`, `ingress`, `loadbalancer` listeners | Same listener types; Route on 443 |
 | Observability hooks | Same OVN audit + NetObserv | Same OVN audit + NetObserv |
 
-For rack-aware bare-metal examples with both operators, see [kafka-bare-metal-portworx](../examples/kafka-bare-metal-portworx/README.md).
+For rack-aware bare-metal examples with both operators, see [messaging/kafka/bare-metal-portworx](../examples/messaging/kafka/bare-metal-portworx/README.md).
 
 ---
 

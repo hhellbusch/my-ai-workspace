@@ -48,7 +48,7 @@ Installs are **user-provisioned** (`platform: none`) — there is no x86-style i
 - [Agent install preflight](../../rhacm/notes/agent-install-preflight.md) — ACM hub orchestration for agent-based installs
 - [Fleet control spectrum](../../fleet-control-spectrum.md) — RHACM vs Argo CD when managing Z clusters from a hub
 - [RHACM](../../rhacm/README.md) — hub setup, CIM, cluster import patterns
-- [SNO KVM lab](../examples/sno-kvm-lab/README.md) — conceptual parallel for the RHEL KVM-on-LPAR path (x86, different networking model)
+- [SNO KVM lab](../examples/labs/sno-kvm-lab/README.md) — conceptual parallel for the RHEL KVM-on-LPAR path (x86, different networking model)
 - [KVM / libvirt](../../kvm/README.md) — host-side virtualization patterns on Fedora (not s390x-specific)
 
 ---

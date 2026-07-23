@@ -206,7 +206,7 @@ done
 - [Index](INDEX.md) — navigate by task
 - [NVMe Host NQN Duplicates](../nvme-host-nqn-duplicate/README.md) — step 1 in the prep chain
 - [Portworx CSI CrashLoop](../portworx-csi-crashloop/README.md)
-- [Kafka + Portworx bare metal](../../examples/kafka-bare-metal-portworx/README.md)
+- [Kafka + Portworx bare metal](../../examples/messaging/kafka/bare-metal-portworx/README.md)
 
 ## External References
 

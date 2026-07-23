@@ -28,6 +28,7 @@ def main() -> None:
 
     devops_nav: list = [
         {"DevOps hub": "devops/README.md"},
+        {"Organization": "devops/ORGANIZATION.md"},
         {"Symptom index": "devops/SYMPTOM-INDEX.md"},
     ]
 
@@ -41,6 +42,17 @@ def main() -> None:
             ]
             categories.append({category_label(category): items})
         devops_nav.append({f"{product_label} troubleshooting": categories})
+
+    devops_nav.append({
+        "OCP examples": [
+            {"Examples index": "devops/ocp/examples/README.md"},
+            {"Bare metal": "devops/ocp/examples/bare-metal/README.md"},
+            {"Messaging": "devops/ocp/examples/messaging/README.md"},
+            {"Kafka": "devops/ocp/examples/messaging/kafka/README.md"},
+            {"Networking": "devops/ocp/examples/networking/README.md"},
+            {"Labs": "devops/ocp/examples/labs/README.md"},
+        ]
+    })
 
     docs_nav: list = [{"Docs catalogue": "docs/README.md"}]
     for track, label in (

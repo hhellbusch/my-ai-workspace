@@ -23,4 +23,4 @@
 
 - [NVMe Host NQN Duplicates](../nvme-host-nqn-duplicate/README.md) — step 1
 - [Portworx CSI CrashLoop](../portworx-csi-crashloop/README.md) — step 6
-- [Kafka + Portworx bare metal](../../examples/kafka-bare-metal-portworx/README.md)
+- [Kafka + Portworx bare metal](../../examples/messaging/kafka/bare-metal-portworx/README.md)

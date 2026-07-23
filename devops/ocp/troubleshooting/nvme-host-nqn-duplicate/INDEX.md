@@ -30,5 +30,5 @@
 ## Related Guides
 
 - [Portworx CSI CrashLoop](../portworx-csi-crashloop/README.md) — CSI failures after storage prep
-- [Kafka + Portworx bare metal](../../examples/kafka-bare-metal-portworx/README.md) — rack-aware Portworx example
+- [Kafka + Portworx bare metal](../../examples/messaging/kafka/bare-metal-portworx/README.md) — rack-aware Portworx example
 - [Bare Metal Node Inspection Timeout](../bare-metal-node-inspection-timeout/README.md) — pre-storage provisioning issues
