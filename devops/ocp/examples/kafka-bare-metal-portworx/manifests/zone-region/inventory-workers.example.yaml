@@ -1,0 +1,31 @@
+# Zone/region variant — Ansible inventory → label mapping
+# Compare: ../custom-rack/inventory-workers.example.yaml · ../../LABELING-COMPARISON.md
+
+workers:
+  hosts:
+    prod-worker-a1:
+      rack: rack-a
+      region: dc1
+      boot_mac: "aa:bb:cc:dd:ee:01"
+      bmc_address: bmc-a1.example.com
+      root_device: /dev/nvme0n1
+    prod-worker-b1:
+      rack: rack-b
+      region: dc1
+      boot_mac: "aa:bb:cc:dd:ee:02"
+      bmc_address: bmc-b1.example.com
+      root_device: /dev/nvme0n1
+    prod-worker-c1:
+      rack: rack-c
+      region: dc1
+      boot_mac: "aa:bb:cc:dd:ee:03"
+      bmc_address: bmc-c1.example.com
+      root_device: /dev/nvme0n1
+
+# Template mapping:
+#   topology.kubernetes.io/zone: "{{ rack }}"
+#   topology.kubernetes.io/region: "{{ region }}"
+#   px/rack: "{{ rack }}"
+#
+# BMAC annotation:
+#   bmac.agent-install.openshift.io/node-label.topology.kubernetes.io/zone: "{{ rack }}"

@@ -342,8 +342,11 @@ spec:
     posthook:
       - name: remove-cmdb-record
       - name: release-ip-reservations
+      - name: wipe-bare-metal-disks   # custom AAP job — see rhacm/notes/bare-metal-cluster-destroy.md
   towerAuthSecret: aap-credentials
 ```
+
+For what RHACM **destroy** does and does not do on bare metal (disk wipe is not built-in), see [bare-metal-cluster-destroy.md](../../../notes/bare-metal-cluster-destroy.md) and [Bare Metal RHCOS Disk Wipe](../../../../ocp/troubleshooting/bare-metal-rhcos-disk-wipe/README.md).
 
 ---
 

@@ -8,7 +8,17 @@ review:
 
 Practical, runnable examples and references for infrastructure, platform, and operational tooling — built from real work and accumulated over time. Currently weighted toward enterprise Kubernetes and OpenShift environments; will grow as work and interests do.
 
+**Browse the site** (search, sidebar nav): [hhellbusch.github.io/my-ai-workspace](https://hhellbusch.github.io/my-ai-workspace/) — built from this tree with MkDocs Material on push to `main`.
+
+**Symptom lookup:** [SYMPTOM-INDEX.md](SYMPTOM-INDEX.md) — generated from [`catalog.yaml`](catalog.yaml).
+
+**Build the site locally:** `pip install -r requirements-docs.txt && bash scripts/build-docs.sh` → `site/`
+
+**Preview with live reload:** `bash scripts/serve-docs.sh` (refreshes staging automatically)
+
 **What belongs here:** Runnable examples, troubleshooting guides, lab exercises, and integration patterns for any infrastructure, platform, or operational tool. Not essays or case studies (those live in [`docs/`](../docs/)) and not research workspaces ([`research/`](../research/)). Local LLM inference setup for consumer hardware lives here rather than in docs/ since it's practical reference, not essay.
+
+**External links:** Red Hat doc URLs (`docs.redhat.com`) — see [`rules/red-hat-docs-links.md`](../rules/red-hat-docs-links.md) (pin versions, verify slugs, searchable link text).
 
 ### Fleet control spectrum
 
@@ -21,6 +31,15 @@ Cross-cutting reference for how RHACM and Argo CD divide fleet work — multiple
 ---
 
 ## Contents
+
+### Bare Metal Dev Sandbox (`devops/bare-metal-dev-sandbox/`)
+
+Local Redfish/BMC preflight harness for developing ACM bare-metal automation without dedicated hardware per developer. *(In progress — not yet in tree; links will appear here when committed.)*
+
+- **`scenarios/`** — validation-gate scenarios (baseline pass, firewall blocks, BMC auth failure, kitchen-sink fail, and more)
+- **`playbooks/`** + **`roles/preflight_validate/`** — Ansible validation gate against sushy-static mock BMCs
+- **`WORKSHOP.md`** — hands-on labs and peer teaching outline
+- **`HARNESS.md`** — scenario runner and assertion model
 
 ### [Ansible](ansible/)
 
@@ -64,11 +83,11 @@ Curated multi-topic curricula (may span OpenShift, GitOps, and labs in this repo
 
 The deepest product section — install, operations, and troubleshooting for enterprise OpenShift.
 
-- **`examples/`** — OVN-Kubernetes networking, install config templates, SNO KVM lab setup
+- **`examples/`** — OVN-Kubernetes networking, install config templates, SNO KVM lab, [secondary disk offload](ocp/examples/bare-metal-secondary-disk/README.md)
 - **`disconnected-install/`** — Disconnected OCP 4.18.14 with Quay + `oc-mirror`: [working guide](ocp/disconnected-install/working-guide.md), [scope](ocp/disconnected-install/BRIEF.md)
 - **`ibm-z/`** — OpenShift on IBM Z and LinuxONE (s390x): mental model, provisioning/automation (ACM, ABI, Metal3), external references ([index](ocp/ibm-z/README.md))
-- **`troubleshooting/`** — 20 guides covering: API slowness, bare metal inspection timeouts, apiserver cert deadlock, CoreOS networking, CSR management, kube-controller-manager crashloops, KubeVirt VM provisioning, namespace termination, Portworx CSI, worker TLS cert failures, image registry auth, MCP deadlock, RHACM webhook rejection, OAuth healthz, and more
-- **`notes/`** — Quick references: useful `oc` and `kubectl` commands
+- **`troubleshooting/`** — 20+ guides covering: API slowness, bare metal inspection timeouts, apiserver cert deadlock, CoreOS networking, CSR management, kube-controller-manager crashloops, KubeVirt VM provisioning, namespace termination, NVMe host NQN duplicates, NVMe/TCP storage network, Portworx CSI, worker TLS cert failures, image registry auth, MCP deadlock, RHACM webhook rejection, OAuth healthz, and more
+- **`notes/`** — Quick references: [MachineConfig pools](ocp/notes/machine-config-pools.md), useful `oc` and `kubectl` commands
 - **`install/`** *(gitignored)* — Local install working directory; never committed
 
 ### [RHACM](rhacm/)

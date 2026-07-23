@@ -1,0 +1,74 @@
+site_name: Field Notes
+site_description: Engineering reference and essays — DevOps troubleshooting, examples, and AI-assisted practice.
+site_url: https://hhellbusch.github.io/my-ai-workspace/
+repo_url: https://github.com/hhellbusch/my-ai-workspace
+repo_name: hhellbusch/my-ai-workspace
+
+docs_dir: site-staging
+strict: false
+
+# Markdown-only staging: guides link to yaml/sh/library paths that exist on GitHub
+# but are not copied into the site. Suppress expected link noise.
+validation:
+  nav:
+    omitted_files: ignore
+  links:
+    not_found: ignore
+    unrecognized_links: ignore
+    anchors: ignore
+    absolute_links: ignore
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.expand
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Light mode
+
+plugins:
+  - search
+  - mermaid2:
+      javascript: assets/mermaid/mermaid.min.js
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+  - pymdownx.highlight
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+extra_css:
+  - assets/poc/symptom-picker.css
+
+extra_javascript:
+  - assets/poc/symptom-picker.js
+
+# Nav is generated before build — see scripts/generate-mkdocs-nav.py
+nav:
+  - Home: index.md
+
+extra:
+  generator: false

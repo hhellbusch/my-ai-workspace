@@ -639,6 +639,12 @@ for node in master-0 master-1 master-2; do
 done
 ```
 
+For per-node wipe detail (all disks, BMC live ISO, iDRAC erase, BMH cleanup), see [Bare Metal RHCOS Disk Wipe](../bare-metal-rhcos-disk-wipe/README.md).
+
+For **RHACM/MCE destroy** on bare-metal clusters (what destroy vs detach covers, and why disk wipe is separate), see [RHACM bare metal cluster destroy](../../../rhacm/notes/bare-metal-cluster-destroy.md).
+
+For **retired hardware still fighting new nodes for the same IP**, see [Bare Metal Stale Node IP Conflict](../bare-metal-stale-node-ip-conflict/README.md).
+
 ---
 
 ### Step 9: Clean Up Installation Artifacts
@@ -876,6 +882,8 @@ See also:
 - `README.md` - General overview and cloud providers
 - `QUICK-REFERENCE.md` - Command quick reference
 - `../bare-metal-node-inspection-timeout/` - BMH troubleshooting
+- `../bare-metal-stale-node-ip-conflict/` - Retired hardware fighting new nodes for the same IP
+- `../bare-metal-rhcos-disk-wipe/` - Wipe RHCOS from retired bare-metal hardware
 
 ---
 

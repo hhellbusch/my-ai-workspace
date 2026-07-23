@@ -1,0 +1,60 @@
+# Zone/region variant — rackAssignment reads topology.kubernetes.io/zone
+# Compare: ../../custom-rack/confluent/kafka-rack-aware.yaml · Strimzi: ../strimzi/
+apiVersion: platform.confluent.io/v1beta1
+kind: Kafka
+metadata:
+  name: prod-kafka
+  namespace: kafka
+spec:
+  replicas: 3
+  oneReplicaPerNode: true
+  rackAssignment:
+    nodeLabels:
+      - topology.kubernetes.io/zone
+  image:
+    application: confluentinc/cp-server:8.1.0
+    init: confluentinc/confluent-init-container:3.1.0
+  dataVolumeCapacity: 2Ti
+  storageClass:
+    name: portworx-kafka-repl3
+  dependencies:
+    kRaftController:
+      clusterRef:
+        name: kraftcontroller
+  configOverrides:
+    server:
+      - min.insync.replicas=2
+      - default.replication.factor=3
+      - offsets.topic.replication.factor=3
+      - transaction.state.log.replication.factor=3
+      - transaction.state.log.min.isr=2
+  podTemplate:
+    serviceAccountName: kafka-rack
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - prod-kafka
+            topologyKey: topology.kubernetes.io/zone
+          - labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - prod-kafka
+            topologyKey: kubernetes.io/hostname
+    podSecurityContext:
+      fsGroup: 1000
+      runAsUser: 1000
+      runAsNonRoot: true
+    resources:
+      requests:
+        cpu: "8"
+        memory: 32Gi
+      limits:
+        cpu: "8"
+        memory: 32Gi

@@ -217,19 +217,19 @@ Guide tells you when you're done:
 
 This guide references and complements:
 
-1. **[Control Plane Kubeconfigs](../control-plane-kubeconfigs/README.md)**
+1. **[Control Plane Kubeconfigs](../../control-plane-kubeconfigs/README.md)**
    - Monitoring from control plane nodes
    - When API is completely unavailable
 
-2. **[kube-controller-manager Crash Loop](../kube-controller-manager-crashloop/README.md)**
+2. **[kube-controller-manager Crash Loop](../../kube-controller-manager-crashloop/README.md)**
    - When controller manager is part of the problem
    - Control plane component troubleshooting
 
-3. **[CSR Management](../csr-management/README.md)**
+3. **[CSR Management](../../csr-management/README.md)**
    - Pending CSRs can cause API slowness
    - Certificate approval strategies
 
-4. **[CoreOS Networking Issues](../coreos-networking-issues/README.md)**
+4. **[CoreOS Networking Issues](../../coreos-networking-issues/README.md)**
    - When networking is the root cause
    - Base system connectivity
 

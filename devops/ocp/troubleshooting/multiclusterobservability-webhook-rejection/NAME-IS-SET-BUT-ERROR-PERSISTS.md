@@ -331,7 +331,7 @@ Include:
 ## Related Documentation
 
 - [README.md](README.md) → Strategy 2: Temporarily Disable Webhook Validation
-- [QUICK-FIX.md](QUICK-FIX.md) → "If you can't edit/delete and need to force it"
+- [QUICK-REFERENCE.md](QUICK-REFERENCE.md) → "If you can't edit/delete and need to force it"
 - [YOUR-ERROR-SOLUTION.md](YOUR-ERROR-SOLUTION.md) → General solution for this error
 
 ---

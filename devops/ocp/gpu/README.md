@@ -31,6 +31,8 @@ see [`devops/argo/examples/helm-component-pattern/components/nvidia-gpu-operator
 | `machineconfig-iommu-intel.yaml` | MachineConfig: IOMMU kernel args for Intel nodes (VT-d) |
 | `machineconfig-iommu-amd.yaml` | MachineConfig: IOMMU kernel args for AMD nodes (AMD-Vi) |
 
+For MachineConfig pool targeting and custom pool patterns, see [`../notes/machine-config-pools.md`](../notes/machine-config-pools.md).
+
 These files are derived from the [NVIDIA GPU Operator](https://github.com/NVIDIA/gpu-operator)
 Helm chart at v24.9.1. Review against current upstream before applying.
 

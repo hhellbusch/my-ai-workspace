@@ -154,13 +154,13 @@ If you want this permanently fixed, open a support case with:
 ## Related Documentation
 
 For detailed explanations:
-- **[NAME-IS-SET-BUT-ERROR-PERSISTS.md](NAME-IS-SET-BUT-ERROR-PERSISTS.md)** - Full guide for this scenario
-- **[README.md](README.md)** - Complete troubleshooting guide
-- **[QUICK-FIX.md](QUICK-FIX.md)** - All quick fixes
+- **[../NAME-IS-SET-BUT-ERROR-PERSISTS.md](../NAME-IS-SET-BUT-ERROR-PERSISTS.md)** - Full guide for this scenario
+- **[../README.md](../README.md)** - Complete troubleshooting guide
+- **[../QUICK-REFERENCE.md](../QUICK-REFERENCE.md)** - All quick fixes
 
 For other scenarios:
-- **[YOUR-ERROR-SOLUTION.md](YOUR-ERROR-SOLUTION.md)** - If name was actually missing
-- **[INDEX.md](INDEX.md)** - Navigation guide
+- **[../YOUR-ERROR-SOLUTION.md](../YOUR-ERROR-SOLUTION.md)** - If name was actually missing
+- **[../INDEX.md](../INDEX.md)** - Navigation guide
 
 ## Quick Commands
 

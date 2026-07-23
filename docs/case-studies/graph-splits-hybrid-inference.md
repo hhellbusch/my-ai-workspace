@@ -119,7 +119,7 @@ The graph split count scales with: number of CPU/GPU boundary crossings in the l
 
 - [When the Survivor Becomes the Recommendation](survivorship-bias-recommendations.md) — the same experiment sequence produced a second failure mode: framing the only-thing-that-worked as "the recommended default"
 - [What a Context Window Actually Is](../ai-engineering/what-a-context-window-actually-is.md) — the MoE model that replaced the 72B target also revealed the three-number context window problem
-- [Running a Local LLM: Setup, Tradeoffs, and Real Electricity Cost](../ai-engineering/local-llm-setup.md) — the broader hardware setup guide, including the model selection table that resulted from these experiments
+- [Running a Local LLM: Setup, Tradeoffs, and Real Electricity Cost](../../devops/llm/local-llm-setup.md) — the broader hardware setup guide, including the model selection table that resulted from these experiments
 - [Local LLM Experiment Journal](../../research/ai-tooling/local-llm-experiment-journal.md) — the source data: exact commands, layer split counts, graph split measurements, and tok/s figures
 
 ---

@@ -1,0 +1,19 @@
+# Zone/region variant — well-known topology labels
+# Compare: ../custom-rack/node-labels.example.yaml · ../../LABELING-COMPARISON.md
+#
+# Kafka brokers schedule on any worker — rack labels only, no dedicated kafka role.
+#
+# Example per rack:
+#   oc label node worker-a1.example.com \
+#     topology.kubernetes.io/zone=rack-a \
+#     topology.kubernetes.io/region=dc1 \
+#     px/rack=rack-a
+
+apiVersion: v1
+kind: Node
+metadata:
+  name: worker-a1.example.com
+  labels:
+    topology.kubernetes.io/zone: rack-a
+    topology.kubernetes.io/region: dc1
+    px/rack: rack-a

@@ -511,6 +511,7 @@ Create a registry requirements document:
 
 ## Related Issues
 
+- MachineConfig pool targeting (master + worker duplicate MCs): See [`../../notes/machine-config-pools.md`](../../notes/machine-config-pools.md)
 - Image pull failures due to registry authentication: See `../api-slowness-web-console/`
 - MCP stuck updating: See MCP troubleshooting sections
 - Disconnected cluster image mirroring: See ImageContentSourcePolicy / ImageDigestMirrorSet configuration

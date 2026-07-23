@@ -10,6 +10,13 @@ Configuration examples and templates for OpenShift clusters.
 
 ## Available Examples
 
+### Bare metal / secondary disk
+
+- **[Secondary disk offload (overview)](bare-metal-secondary-disk/README.md)** — What to move off the OS disk, patterns A–D, `by-path`, 14 TiB layout, use-case index
+  - **Use cases:** [index](bare-metal-secondary-disk/use-cases/README.md) · [application PV](bare-metal-secondary-disk/use-cases/application-pv.md) · [CSI pools](bare-metal-secondary-disk/use-cases/csi-raw-disks.md) · [etcd](bare-metal-secondary-disk/use-cases/etcd-master.md) · [registry](bare-metal-secondary-disk/use-cases/disconnected-registry.md) · [container storage](bare-metal-secondary-disk/use-cases/container-storage.md)
+- **[`/var/log` on secondary disk (complete)](bare-metal-var-log-disk/README.md)** — Ignition vs script + systemd `MachineConfig` side by side
+  - [approach-a-ignition.yaml](bare-metal-var-log-disk/approach-a-ignition.yaml) · [approach-b-script-systemd.yaml](bare-metal-var-log-disk/approach-b-script-systemd.yaml)
+
 ### Lab / SNO
 
 - **[SNO on KVM](sno-kvm-lab/README.md)** — Single Node OpenShift home-lab (pfSense DNS, agent installer, ArgoCD bootstrap)
@@ -18,8 +25,18 @@ Configuration examples and templates for OpenShift clusters.
   - **[Local storage (bootstrap, retired)](sno-kvm-lab/local-storage.md)** — static Local Storage history + host disk attach
   - **Manifests:** [hpp-vdb-mount.yaml](sno-kvm-lab/hpp-vdb-mount.yaml), [hpp.yaml](sno-kvm-lab/hpp.yaml), [storage-smoke-test.yaml](sno-kvm-lab/storage-smoke-test.yaml), [lvms.yaml](sno-kvm-lab/lvms.yaml)
 
+### Data / messaging
+
+- **[Kafka on bare-metal OpenShift with Portworx](kafka-bare-metal-portworx/README.md)** — Rack-aware example for **OCP 4.20+** (Confluent CFK primary; Strimzi/AMQ comparison; Portworx CSI)
+  - **[VALIDATION.md](kafka-bare-metal-portworx/VALIDATION.md)** — static review status and cluster-side apply checklist
+  - **[Common manifests](kafka-bare-metal-portworx/manifests/common/)** — StorageClass (CSI + legacy), optional kernel tuning, CFK RBAC
+  - **[LABELING-COMPARISON.md](kafka-bare-metal-portworx/LABELING-COMPARISON.md)** — zone/region vs custom-rack; Confluent vs Strimzi
+  - **[Network policy and observability](../notes/network-policy-observability.md)** — Strimzi vs CFK policy model, Flink ports, observability stack
+  - **[zone-region manifests](kafka-bare-metal-portworx/manifests/zone-region/)** · **[custom-rack manifests](kafka-bare-metal-portworx/manifests/custom-rack/)** — each includes `confluent/` and `strimzi/`
+
 ### Networking
 
+- **[Network policy and observability](../notes/network-policy-observability.md)** — OVN-Kubernetes policy enforcement, audit logging, NetObserv, Kafka (Strimzi vs CFK) and Flink requirements
 - **[NetworkAttachmentDefinition (NAD)](network-attachment-definitions/README.md)** - Configure additional networks and VLANs for pods
   - **[Quick Reference](network-attachment-definitions/QUICK-REFERENCE.md)** - Fast commands for NAD creation and pod attachment ⚡
   - VLAN configuration with macvlan, bridge, SR-IOV

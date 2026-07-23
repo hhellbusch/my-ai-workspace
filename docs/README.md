@@ -8,6 +8,8 @@ review:
 
 Essays and case studies across three tracks — AI-assisted engineering, philosophy and practice, and documented case studies from the meta-development process itself.
 
+**Site:** [Essays on Field Notes](https://hhellbusch.github.io/my-ai-workspace/docs/) — full catalogue with search.
+
 ## Tracks
 
 ### [AI-Assisted Engineering](ai-engineering/)

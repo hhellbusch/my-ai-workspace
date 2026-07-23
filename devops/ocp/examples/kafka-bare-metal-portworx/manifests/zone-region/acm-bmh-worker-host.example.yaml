@@ -1,0 +1,25 @@
+# Zone/region variant — ACM hub BMH with BMAC node-label annotations
+# Compare: ../custom-rack/acm-bmh-worker-host.example.yaml · ../../LABELING-COMPARISON.md
+
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  name: prod-worker-a1
+  namespace: prod-kafka
+  labels:
+    infraenvs.agent-install.openshift.io: prod-kafka-infraenv
+  annotations:
+    inspect.metal3.io: disabled
+    bmac.agent-install.openshift.io/node-label.topology.kubernetes.io/zone: rack-a
+    bmac.agent-install.openshift.io/node-label.topology.kubernetes.io/region: dc1
+    bmac.agent-install.openshift.io/node-label.px/rack: rack-a
+    bmac.agent-install.openshift.io/node-label.node-role.kubernetes.io/worker: ""
+spec:
+  online: true
+  automatedCleaningMode: disabled
+  bootMACAddress: "aa:bb:cc:dd:ee:01"
+  bmc:
+    address: idrac-virtualmedia+https://bmc-a1.example.com/redfish/v1/Systems/System.Embedded.1
+    credentialsName: bmc-prod-worker-a1
+  rootDeviceHints:
+    deviceName: /dev/nvme0n1

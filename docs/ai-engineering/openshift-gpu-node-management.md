@@ -93,7 +93,7 @@ These components live in the `nvidia-gpu-operator` namespace (OCP default) or `g
 
 ### The IOMMU consideration
 
-If your GPU nodes require IOMMU (required for SR-IOV, vGPU, and some passthrough configurations), IOMMU is a **host-level kernel parameter** set via `MachineConfig`. Enabling it triggers a **rolling node reboot**.
+If your GPU nodes require IOMMU (required for SR-IOV, vGPU, and some passthrough configurations), IOMMU is a **host-level kernel parameter** set via `MachineConfig`. Enabling it triggers a **rolling node reboot**. For pool targeting (all workers vs a GPU-only custom pool), see [`devops/ocp/notes/machine-config-pools.md`](../../devops/ocp/notes/machine-config-pools.md).
 
 ```yaml
 apiVersion: machineconfiguration.openshift.io/v1

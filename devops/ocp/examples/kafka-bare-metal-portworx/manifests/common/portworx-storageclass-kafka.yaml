@@ -1,0 +1,22 @@
+# Portworx CSI StorageClass (recommended for current OpenShift + Portworx installs).
+# Verify provisioner on cluster: oc get sc -o custom-columns=NAME:.metadata.name,PROVISIONER:.provisioner | grep -i portworx
+#
+# Legacy in-tree provisioner (kubernetes.io/portworx-volume): see
+# portworx-storageclass-kafka-legacy-in-tree.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: portworx-kafka-repl3
+  annotations:
+    description: "Portworx Kafka volumes — repl 3, one replica per rack (CSI)"
+provisioner: pxd.portworx.com
+parameters:
+  repl: "3"
+  io_profile: "db"
+  priority_io: "high"
+  shared: "false"
+  # Comma-separated rack IDs — must match px/rack node labels
+  racks: "rack-a,rack-b,rack-c"
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Retain

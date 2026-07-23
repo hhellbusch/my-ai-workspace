@@ -304,7 +304,7 @@ oc apply -f mco.yaml --dry-run=server
 
 ## Related Documentation
 
-- **[QUICK-FIX.md](QUICK-FIX.md)** - Other common error messages and fixes
+- **[QUICK-REFERENCE.md](QUICK-REFERENCE.md)** - Other common error messages and fixes
 - **[README.md](README.md)** - Complete troubleshooting guide with all strategies
 - **[example-mco.yaml](example-mco.yaml)** - Working YAML examples
 

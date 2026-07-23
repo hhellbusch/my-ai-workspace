@@ -1,0 +1,46 @@
+# NodeNetworkConfigurationPolicy skeleton — two independent storage NICs (no bond).
+#
+# Prerequisites:
+#   - kubernetes-nmstate operator installed
+#   - Replace interface names, IPs, CIDR, and nodeSelector for your environment
+#   - Match MTU to your fabric (9000 shown; use 1500 if jumbo not end-to-end)
+#
+# Apply:
+#   oc apply -f example-nncp-storage-interfaces.yaml
+#   oc get nncp,nns
+#
+# See README.md in this directory for topology (dual switch, no storage bond).
+---
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: storage-nvme-tcp-interfaces
+spec:
+  nodeSelector:
+    node-role.kubernetes.io/worker: ""
+  desiredState:
+    interfaces:
+      - name: ens1f0
+        type: ethernet
+        state: up
+        mtu: 9000
+        ipv4:
+          enabled: true
+          address:
+            - ip: 10.100.1.101
+              prefix-length: 24
+          dhcp: false
+      - name: ens1f1
+        type: ethernet
+        state: up
+        mtu: 9000
+        ipv4:
+          enabled: true
+          address:
+            - ip: 10.100.2.101
+              prefix-length: 24
+          dhcp: false
+    routes:
+      config: []
+    # Omit default routes on storage-only policy; OVN primary handles cluster default.
+    # If same-subnet dual-NIC, add sysctl for arp_ignore/arp_announce via separate MachineConfig.

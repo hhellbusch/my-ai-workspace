@@ -8,6 +8,8 @@ review:
 
 Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster issues.
 
+**Site:** [OCP troubleshooting section](https://hhellbusch.github.io/my-ai-workspace/devops/ocp/troubleshooting/) · **Symptom lookup:** [SYMPTOM-INDEX.md](../../SYMPTOM-INDEX.md)
+
 ## Available Guides
 
 ### Installation Failures
@@ -25,7 +27,8 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
   - Script: `diagnostic-script.sh` - Automated performance diagnostic tool
 
 - **[API Server Certificate Deadlock](apiserver-cert-deadlock/README.md)** - Resolve bad apiserver cert when the operator cannot apply a new cert
-  - [Quick Reference](apiserver-cert-deadlock/QUICK-REFERENCE.md) - Commands to get access, replace cert, and restart API/operator ⚡
+  - **[Quick Reference](apiserver-cert-deadlock/QUICK-REFERENCE.md)** - Triage decision tree, worker-hop access, and remediation commands ⚡
+  - [Index](apiserver-cert-deadlock/INDEX.md) - Navigate by symptom, access constraint, or fix step
 
 - **[Control Plane Kubeconfigs](control-plane-kubeconfigs/README.md)** - Complete guide to kubeconfigs on CoreOS control plane nodes
   - [Quick Reference](control-plane-kubeconfigs/QUICK-REFERENCE.md) - Copy-paste commands for monitoring cluster operators
@@ -37,7 +40,18 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
   - [Quick Reference](kube-controller-manager-crashloop/QUICK-REFERENCE.md) - Fast command reference and decision tree
   - [Operator Errors](kube-controller-manager-crashloop/OPERATOR-ERRORS.md) - Troubleshooting operator-specific issues
 
+- **[OAuth Server healthz Unavailable](oauth-healthz-unavailable/README.md)** - Authentication CO degraded when OAuth route `/healthz` is unreachable
+  - **[Quick Reference](oauth-healthz-unavailable/QUICK-REFERENCE.md)** - Emergency checks and route/DNS triage ⚡
+
 ### Bare Metal Provisioning Issues
+
+- **[Bare Metal Stale Node IP Conflict](bare-metal-stale-node-ip-conflict/README.md)** - Retired hardware powered on with same IPs as new control-plane nodes (ARP/MAC flapping, misleading TLS errors)
+  - **[Quick Reference](bare-metal-stale-node-ip-conflict/QUICK-REFERENCE.md)** - MAC flapping test and BMC isolation ⚡
+  - [Index](bare-metal-stale-node-ip-conflict/INDEX.md) - Navigate by symptom or isolation task
+
+- **[Bare Metal RHCOS Disk Wipe](bare-metal-rhcos-disk-wipe/README.md)** - Wipe ignition, ostree, and etcd from retired bare-metal nodes before reuse
+  - **[Quick Reference](bare-metal-rhcos-disk-wipe/QUICK-REFERENCE.md)** - wipefs, BMC live ISO, iDRAC erase ⚡
+  - [Index](bare-metal-rhcos-disk-wipe/INDEX.md) - Decommission and disk wipe tasks
 
 - **[Bare Metal Node Inspection Timeout](bare-metal-node-inspection-timeout/README.md)** - Complete guide for nodes stuck in inspecting state
   - **[Force Re-Inspection](bare-metal-node-inspection-timeout/FORCE-REINSPECTION.md)** - Quick commands to force a stuck node to re-inspect ⚡
@@ -47,6 +61,16 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
   - [Quick Reference](worker-node-tls-cert-failure/QUICK-REFERENCE.md) - Fast diagnostic commands and common fixes
   - [Index](worker-node-tls-cert-failure/INDEX.md) - Guide navigation and quick scenarios
   - Script: `diagnose-tls.sh` - Automated TLS/certificate diagnostic tool
+
+Bare-metal nodes using NVMe-oF block storage: see [NVMe Host NQN Duplicates](nvme-host-nqn-duplicate/README.md) then [NVMe/TCP Storage Network](nvme-tcp-storage-network/README.md) under Storage Issues (prerequisites before CSI install).
+
+### Cluster Lifecycle
+
+- **[Destroy Cluster Without Metadata](destroy-cluster-without-metadata/README.md)** - Manual cleanup when `openshift-install destroy` metadata is lost
+  - **[Quick Reference](destroy-cluster-without-metadata/QUICK-REFERENCE.md)** - Platform-specific find/cleanup commands ⚡
+  - [Bare Metal Guide](destroy-cluster-without-metadata/BAREMETAL-GUIDE.md) - Metal3/Ironic/BMH cleanup workflow
+  - [Index](destroy-cluster-without-metadata/INDEX.md) - Navigate by platform or task
+  - Scripts: `find-cluster-*.sh`, `cleanup-baremetal-cluster.sh`
 
 ### Certificate Management
 
@@ -74,7 +98,7 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
 ### Virtualization Issues (KubeVirt)
 
 - **[KubeVirt VM Stuck in Provisioning](kubevirt-vm-stuck-provisioning/README.md)** - Fix VMs blocked by missing OADP/Velero webhook service
-  - **[Quick Start](kubevirt-vm-stuck-provisioning/QUICKSTART.md)** - 1-minute fix for VM provisioning issues ⚡
+  - **[Quick Reference](kubevirt-vm-stuck-provisioning/QUICK-REFERENCE.md)** - 1-minute fix for VM provisioning issues ⚡
   - [Remove Webhook](kubevirt-vm-stuck-provisioning/REMOVE-WEBHOOK.md) - Quick fix that disables OADP for VMs
   - [Repair Velero Plugin](kubevirt-vm-stuck-provisioning/REPAIR-VELERO-PLUGIN.md) - Proper fix maintaining OADP functionality
   - [Investigation Workflow](kubevirt-vm-stuck-provisioning/INVESTIGATION-WORKFLOW.md) - Systematic troubleshooting for any VM provisioning issue
@@ -91,13 +115,25 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
 
 ### Container Images and Registry Issues
 
+- **[Image Registry Auth and Route Exposure](image-registry-auth/README.md)** - `podman login` failures, 401/403, TLS, and exposing the internal registry route
+
 - **[Image Signature Policy Blocking MCP Rollout](image-signature-policy-mcp-deadlock/README.md)** - Fix signature validation errors causing MachineConfigPool deadlock
-  - **[Quick Start](image-signature-policy-mcp-deadlock/QUICK-START.md)** - Fast manual fix to break the deadlock ⚡
+  - **[Quick Reference](image-signature-policy-mcp-deadlock/QUICK-REFERENCE.md)** - Fast manual fix to break the deadlock ⚡
   - Script: `manual-fix-signature-policy.sh` - Automated policy fix for all nodes
   - YAML: `signature-policy-machineconfig.yaml` - Permanent MachineConfig solution
   - Includes manual step-by-step for understanding the fix
 
 ### Storage Issues
+
+- **[NVMe Host NQN Duplicates](nvme-host-nqn-duplicate/README.md)** - Unique per-node host NQN/hostid for NVMe-oF storage on bare-metal OCP (Dell CSM, Portworx/Pure, HPE CSI)
+  - **[Quick Reference](nvme-host-nqn-duplicate/QUICK-REFERENCE.md)** - Verify, apply MachineConfig, confirm uniqueness ⚡
+  - [Index](nvme-host-nqn-duplicate/INDEX.md) - Navigate by task
+  - YAML: [99-worker-nvme-host-identity.yaml](nvme-host-nqn-duplicate/99-worker-nvme-host-identity.yaml) - systemd oneshot fix (not Ignition static file)
+
+- **[NVMe/TCP Storage Network](nvme-tcp-storage-network/README.md)** - Dual-NIC storage fabric on bare-metal OCP: no bond, NMState, native multipath (after NQN fix)
+  - **[Quick Reference](nvme-tcp-storage-network/QUICK-REFERENCE.md)** - Topology decision tree and verify commands ⚡
+  - [Index](nvme-tcp-storage-network/INDEX.md) - Navigate by task
+  - YAML: [example-nncp-storage-interfaces.yaml](nvme-tcp-storage-network/example-nncp-storage-interfaces.yaml) - NNCP skeleton for two storage NICs
 
 - **[Portworx CSI Pod CrashLoopBackOff](portworx-csi-crashloop/README.md)** - Complete guide for troubleshooting px-csi-ext pod crashes
   - **[Quick Start](portworx-csi-crashloop/QUICKSTART.md)** - Fast fixes for common CSI issues ⚡
@@ -115,7 +151,7 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
 ### Multi-Cluster Management (RHACM)
 
 - **[MultiClusterObservability Webhook Rejection](multiclusterobservability-webhook-rejection/README.md)** - Fix admission webhook rejections when editing/deleting MCO resources
-  - **[Quick Fix](multiclusterobservability-webhook-rejection/QUICK-FIX.md)** - Immediate solutions for webhook blocking operations ⚡
+  - **[Quick Reference](multiclusterobservability-webhook-rejection/QUICK-REFERENCE.md)** - Immediate solutions for webhook blocking operations ⚡
   - [Index](multiclusterobservability-webhook-rejection/INDEX.md) - Guide navigation and common scenarios
   - [Example YAML](multiclusterobservability-webhook-rejection/example-mco.yaml) - Properly formatted MCO configurations
   - Script: `diagnose-webhook-issue.sh` - Automated webhook diagnostic tool
@@ -237,14 +273,16 @@ Planned troubleshooting guides:
 - [ ] Networking issues (SDN/OVN) - OpenShift networking layer
 - [x] CoreOS base system networking - See [CoreOS Networking Issues](coreos-networking-issues/README.md)
 - [x] Storage/PVC problems (Portworx) - See [Portworx CSI Pod CrashLoopBackOff](portworx-csi-crashloop/README.md)
+- [x] NVMe-oF bare metal prep - See [NVMe Host NQN Duplicates](nvme-host-nqn-duplicate/README.md), [NVMe/TCP Storage Network](nvme-tcp-storage-network/README.md)
 - [ ] Storage/PVC problems (OCS/ODF)
 - [x] Image signature policy rejections - See [Image Signature Policy Blocking MCP Rollout](image-signature-policy-mcp-deadlock/README.md)
-- [ ] Image registry issues (general)
-- [ ] Authentication failures
+- [x] Image registry issues (general) - See [Image Registry Auth](image-registry-auth/README.md)
+- [x] Authentication failures (OAuth healthz) - See [OAuth Server healthz Unavailable](oauth-healthz-unavailable/README.md)
 - [ ] Operator degradation patterns
 - [ ] Upgrade stuck/failed scenarios
+- [x] Cluster destroy without metadata - See [Destroy Cluster Without Metadata](destroy-cluster-without-metadata/README.md)
 - [ ] Bare metal provisioning failures (post-inspection)
-- [ ] Certificate rotation issues
+- [ ] Certificate rotation issues — partial: [API Server Certificate Deadlock](apiserver-cert-deadlock/README.md)
 - [ ] Router/Ingress problems
 - [x] KubeVirt VM provisioning issues - See [KubeVirt VM Stuck in Provisioning](kubevirt-vm-stuck-provisioning/README.md)
 - [x] Namespace stuck in Terminating state - See [Namespace Stuck in Terminating State](namespace-stuck-terminating/README.md)

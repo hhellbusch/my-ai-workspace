@@ -1,0 +1,50 @@
+# Generate unique per-node NVMe host NQN and host ID on worker pool.
+#
+# Apply:
+#   oc apply -f 99-worker-nvme-host-identity.yaml
+#
+# Before applying, match spec.config.ignition.version to your cluster:
+#   oc get mc 00-worker -o jsonpath='{.spec.config.ignition.version}{"\n"}'
+# OCP 4.20+ often uses 3.5.0; adjust the value below if needed.
+#
+# MCO will roll the worker pool (rolling reboot). Verify after:
+#   ssh core@<node> 'cat /etc/nvme/hostnqn; cat /etc/nvme/hostid; dmidecode -s system-uuid'
+#
+# For masters that use NVMe-oF, duplicate with role: master and name: 99-master-nvme-host-identity.
+#
+# See README.md in this directory for why Ignition storage.files with $(cat ...) does NOT work.
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  name: 99-worker-nvme-host-identity
+  labels:
+    machineconfiguration.openshift.io/role: worker
+spec:
+  config:
+    ignition:
+      version: 3.4.0
+    # RHCOS does not run nvme-cli %post (Bug 1900691), so /etc/nvme may be absent.
+    # Create the directory via Ignition and again in the unit before writing files.
+    storage:
+      directories:
+        - filesystem: root
+          path: /etc/nvme
+          mode: 493
+    systemd:
+      units:
+        - name: nvme-gen-host-identity.service
+          enabled: true
+          contents: |
+            [Unit]
+            Description=Generate per-node NVMe host NQN and host ID
+            Before=network-online.target
+            Documentation=https://bugzilla.redhat.com/show_bug.cgi?id=2049991
+
+            [Service]
+            Type=oneshot
+            ExecStart=/bin/sh -c 'mkdir -p /etc/nvme && /usr/sbin/nvme gen-hostnqn > /etc/nvme/hostnqn && dmidecode -s system-uuid > /etc/nvme/hostid'
+            RemainAfterExit=yes
+
+            [Install]
+            WantedBy=multi-user.target

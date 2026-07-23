@@ -1,0 +1,31 @@
+# RBAC for CFK rack assignment — reads node labels to set broker.rack
+# Apply before Kafka CR. Required by spec.rackAssignment (see Confluent rack awareness docs).
+# Compare: zone-region/confluent/ and custom-rack/confluent/
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kafka-rack
+  namespace: kafka
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kafka-rack-assignment
+rules:
+  - apiGroups: [""]
+    resources: [nodes, pods]
+    verbs: [get, list]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kafka-rack-assignment
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kafka-rack-assignment
+subjects:
+  - kind: ServiceAccount
+    name: kafka-rack
+    namespace: kafka

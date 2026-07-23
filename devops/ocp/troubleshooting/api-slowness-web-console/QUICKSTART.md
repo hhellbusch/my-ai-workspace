@@ -112,7 +112,7 @@ The script will:
 - Time estimates
 
 ### 📝 Want Overview
-**→ [GUIDE-SUMMARY.md](GUIDE-SUMMARY.md)**
+**→ [GUIDE-SUMMARY.md](_meta/GUIDE-SUMMARY.md)** (process overview; optional)
 - What's included
 - Coverage details
 - Integration info

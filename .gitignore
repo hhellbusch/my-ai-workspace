@@ -100,3 +100,11 @@ worktrees/
 AGENT-NOTES.md
 .github_pat
 kubeadmin-password
+
+# MkDocs build artifacts
+site-staging/
+site/
+mkdocs.effective.yml
+mkdocs.nav.yml
+docs-site/assets/poc/catalog.json
+docs-site/assets/mermaid/mermaid.min.js
