@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Zone/region vs custom-rack label comparison for Kafka + Portworx."
+---
+
 # Rack labeling — zone/region vs custom labels
 
 **Audience:** Platform engineers choosing how to represent physical racks on bare-metal OpenShift for Kafka + Portworx.

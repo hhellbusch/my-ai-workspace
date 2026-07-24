@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Static validation checklist for bare-metal-portworx Kafka manifests."
+---
+
 # Validation — Kafka Bare-Metal Portworx Example
 
 **Audience:** Engineers applying or reviewing these manifests before production use.

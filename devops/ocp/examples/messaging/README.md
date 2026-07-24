@@ -8,7 +8,10 @@ review:
 
 Event streaming workloads on OpenShift: Kafka first; room for Schema Registry, Connect, and MirrorMaker examples later.
 
-**Cross-cutting reference:** [Network policy and observability](../../notes/network-policy-observability.md) — Strimzi vs Confluent CFK, Flink egress, OVN audit logging, NetObserv.
+**Cross-cutting reference:**
+
+- [Network policy and observability](../../notes/network-policy-observability.md) — Strimzi vs Confluent CFK, Flink egress, OVN audit logging, NetObserv
+- [Kafka on OpenShift tenancy](../../notes/kafka-on-openshift-tenancy.md) — shared vs dedicated workers, MCP/CVO upgrades
 
 ## Kafka
 

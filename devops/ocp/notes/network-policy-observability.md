@@ -16,6 +16,7 @@ review:
 
 - [OVN-Kubernetes install config](../examples/networking/ovn-kubernetes-install-config/README.md) — `policyAuditConfig` on the cluster `Network` CR
 - [Kafka on bare-metal with Portworx](../examples/messaging/kafka/bare-metal-portworx/README.md) — rack-aware Confluent/Strimzi examples
+- [Kafka on OpenShift tenancy](kafka-on-openshift-tenancy.md) — shared vs dedicated workers, upgrade choreography
 - [NetworkAttachmentDefinition (NAD)](../examples/networking/network-attachment-definitions/README.md) — additional networks beyond the default pod network
 - [Audit logging for network security](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_security/logging-network-security) — OVN ACL audit logging (Red Hat docs)
 - [Network Observability network policy](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/observability/network_observability/network-observability-network-policy) — NetObserv + OVN events (Red Hat docs)

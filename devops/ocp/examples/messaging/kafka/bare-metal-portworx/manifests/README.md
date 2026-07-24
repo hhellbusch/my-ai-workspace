@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Manifest variant index for bare-metal-portworx Kafka example."
+---
+
 # Manifest variants — rack labeling
 
 Two parallel examples for the same Kafka + Portworx rack-aware layout. **Do not mix** label keys within one cluster.
