@@ -13,6 +13,7 @@ on:
       - 'scripts/stage-mkdocs.py'
       - 'scripts/generate-mkdocs-nav.py'
       - 'scripts/generate-symptom-index.py'
+      - 'scripts/generate-example-index.py'
       - 'scripts/export-catalog-json.py'
       - 'scripts/ensure-mermaid-asset.sh'
       - 'docs-site/**'

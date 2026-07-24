@@ -16,6 +16,7 @@ This command is read-only. It reports findings and asks for confirmation before 
 - Repo conventions: `.cursor/rules/repo-structure.mdc`
 - Cross-linking and registry rules: `.cursor/rules/cross-linking.md`
 - Review frontmatter: `rules/review-tracking.md`
+- Automated frontmatter check: `scripts/check-review-frontmatter.py`
 - Current changes: `git status`
 - Staged diff: `git diff --cached --stat`
 - Unstaged diff: `git diff --stat`
@@ -68,7 +69,7 @@ This command is read-only. It reports findings and asks for confirmation before 
    - If the frontmatter includes an `at:` SHA, include the diff command: "Run `git diff SHA..HEAD -- file.md` to see what changed since last review."
    - This is the **highest-priority informational item** — it's the easiest thing to miss and the hardest to recover from. Present it above other findings.
 
-8. **Review frontmatter check** — For each **new** markdown file under `docs/` or `devops/`, verify YAML frontmatter includes a `review:` block with `status:` (typically `unreviewed` on creation). See `rules/review-tracking.md` for the canonical format.
+8. **Review frontmatter check** — For each **new** markdown file under `docs/` or `devops/`, verify YAML frontmatter includes a `review:` block with `status:` (typically `unreviewed` on creation). See `rules/review-tracking.md` for the canonical format. Run `python3 scripts/check-review-frontmatter.py` locally (same check as CI).
    - Flag missing blocks: "**Missing review frontmatter**: `file.md`"
    - If file has other YAML keys (`description:`, `tags:`) but no `review:`, flag as missing — merge into existing frontmatter, do not add a second fence
    - Remind: "Run `/validate <path> read` after you've reviewed these files"

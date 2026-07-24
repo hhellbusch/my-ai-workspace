@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Optional local pre-commit hook — install: bash scripts/install-githooks.sh
+# Skips when no devops/docs markdown (or check scripts) are staged.
+# Bypass: git commit --no-verify  |  SKIP_PRE_COMMIT=1 git commit
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+
+if [[ "${SKIP_PRE_COMMIT:-}" == "1" ]]; then
+  exit 0
+fi
+
+mapfile -t STAGED < <(git diff --cached --name-only --diff-filter=ACMR)
+if ((${#STAGED[@]} == 0)); then
+  exit 0
+fi
+
+needs_markdown_checks=0
+for path in "${STAGED[@]}"; do
+  if [[ "$path" == scripts/check-markdown-links.sh || "$path" == scripts/check-review-frontmatter.py ]]; then
+    needs_markdown_checks=1
+    break
+  fi
+  if [[ "$path" == *.md && ( "$path" == devops/* || "$path" == docs/* ) ]]; then
+    needs_markdown_checks=1
+    break
+  fi
+done
+
+if ((needs_markdown_checks == 0)); then
+  exit 0
+fi
+
+echo "pre-commit: markdown checks (devops/ and docs/)..."
+
+python3 scripts/check-review-frontmatter.py --staged
+
+if [[ "${SKIP_LINK_CHECK:-}" != "1" ]]; then
+  bash scripts/check-markdown-links.sh
+else
+  echo "pre-commit: skipping link check (SKIP_LINK_CHECK=1)"
+fi
+
+echo "pre-commit: markdown checks passed."
