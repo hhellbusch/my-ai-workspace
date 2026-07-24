@@ -45,6 +45,8 @@ Diagnostic guides organized by symptom.
 | [search-service-503.md](./troubleshooting/search-service-503.md) | Search UI returns 503 — covers `SearchPVCNotPresent`, `search-postgres` OOMKill, and `search-api` failures. |
 | [mch-stuck-pending-upgrade.md](./troubleshooting/mch-stuck-pending-upgrade.md) | `MultiClusterHub` stuck in `Updating` / `Pending` / `Installing` during hub upgrade. |
 | [managed-cluster-lease-not-updated.md](./troubleshooting/managed-cluster-lease-not-updated.md) | Managed clusters showing Unknown — lease not updated by registration agent. |
+| [observability-addon-missing.md](./troubleshooting/observability-addon-missing.md) | Observability `ManagedClusterAddon` missing on hub for some clusters. |
+| [observability-platform-metrics-missing.md](./troubleshooting/observability-platform-metrics-missing.md) | Custom metrics present but platform metrics absent — often Prometheus PVC full on spoke. |
 | [agent-install-rootfs-ssl-failure.md](./troubleshooting/agent-install-rootfs-ssl-failure.md) | Agent install host fails rootfs download from `assisted-image-service` — SSL connection reset during early boot. |
 
 ### [`examples/`](./examples/)

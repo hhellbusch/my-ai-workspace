@@ -121,7 +121,8 @@ sudo virsh attach-disk sno \
 Confirm the disk is visible inside the guest:
 
 ```bash
-export KUBECONFIG=~/gemini-workspace/devops/ocp/install/exec/auth/kubeconfig
+export REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
+export KUBECONFIG="${REPO_ROOT}/devops/ocp/install/exec/auth/kubeconfig"
 
 oc debug node/sno -- chroot /host lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT
 ```
@@ -147,7 +148,8 @@ Manifests are also saved at [local-storage.yaml](local-storage.yaml).
 ### 1. Install Local Storage Operator
 
 ```bash
-export KUBECONFIG=~/gemini-workspace/devops/ocp/install/exec/auth/kubeconfig
+export REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
+export KUBECONFIG="${REPO_ROOT}/devops/ocp/install/exec/auth/kubeconfig"
 
 oc apply -f local-storage.yaml
 # Applies namespace, OperatorGroup, Subscription, LocalVolume, and default StorageClass annotation

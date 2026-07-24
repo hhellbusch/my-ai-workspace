@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "OCP MachineConfig pool quick reference — review metadata backfill."
+---
+
 # MachineConfig and MachineConfigPool
 
 How OpenShift rolls OS-level node configuration — and how to target the right nodes without surprises.

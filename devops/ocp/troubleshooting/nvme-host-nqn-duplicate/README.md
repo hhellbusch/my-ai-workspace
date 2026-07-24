@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "NVMe host NQN troubleshooting guide — review metadata backfill."
+---
+
 # NVMe Host NQN Duplicates on OpenShift Nodes
 
 ## Overview

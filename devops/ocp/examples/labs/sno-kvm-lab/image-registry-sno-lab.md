@@ -83,7 +83,8 @@ Use **`emptyDir`** for registry blob storage — fine for a lab; images are lost
 No extra PVC required.
 
 ```bash
-export KUBECONFIG=~/gemini-workspace/devops/ocp/install/exec/auth/kubeconfig
+export REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
+export KUBECONFIG="${REPO_ROOT}/devops/ocp/install/exec/auth/kubeconfig"
 ```
 
 ### 1. Enable the registry

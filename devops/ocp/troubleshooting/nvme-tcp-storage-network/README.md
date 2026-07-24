@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "NVMe/TCP storage network troubleshooting guide — review metadata backfill."
+---
+
 # NVMe/TCP Storage Network on Bare-Metal OpenShift
 
 ## Overview

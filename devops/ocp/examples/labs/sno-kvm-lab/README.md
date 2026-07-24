@@ -8,8 +8,8 @@ review:
 
 Single Node OpenShift (SNO) cluster running in a KVM virtual machine, bridged onto a home LAN managed by pfSense. Intended as a local lab for testing ArgoCD, operator management, and GitOps workflows.
 
-> **Current install location:** `~/gemini-workspace/devops/ocp/install/exec/auth/kubeconfig`
-> The guide below uses `~/sno-install` as a placeholder path — update the guide if the install dir moves.
+> **Kubeconfig location:** `${REPO_ROOT}/devops/ocp/install/exec/auth/kubeconfig` (see placeholders below — `REPO_ROOT` defaults to the git repo root)
+> The guide below uses `~/sno-install` as a placeholder path for the agent-based install working directory.
 
 ---
 
@@ -26,6 +26,7 @@ Replace these with your actual values before running any commands.
 | `<SNO_IP>` | Static IP to assign the SNO cluster node | `192.168.1.210` (outside DHCP pool) |
 | `<LOCAL_DOMAIN>` | pfSense local domain (**System → General Setup → Domain**) | `home.lab` |
 | `<CLUSTER_NAME>` | OCP cluster name (used as DNS subdomain) | `sno` |
+| `REPO_ROOT` | Git repository root (for kubeconfig and lab paths) | `$(git rev-parse --show-toplevel)` |
 
 ---
 

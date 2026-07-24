@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Secondary disk container storage use case — review metadata backfill."
+---
+
 # Use Case — Container Image Store (`/var/lib/containers`)
 
 **Audience:** Platform engineers evaluating whether to move CRI-O / Podman image layers off the OS disk.

@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Secondary disk /var/log use case — review metadata backfill."
+---
+
 # Use Case — `/var/log` and Journal
 
 **Status:** Complete guide with side-by-side manifests.

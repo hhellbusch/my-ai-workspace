@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Secondary disk CSI raw disks use case — review metadata backfill."
+---
+
 # Use Case — CSI Storage Pools (Portworx, ODF) on Raw Disks
 
 **Audience:** Platform engineers dedicating secondary drives to distributed storage on bare metal.

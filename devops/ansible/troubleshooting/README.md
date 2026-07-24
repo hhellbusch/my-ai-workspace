@@ -15,6 +15,10 @@ Troubleshooting documentation for common Ansible issues applicable across AAP, A
 - **[gather_facts "Connection to UNKNOWN port 65535"](ansible-gather-facts-unknown-host/README.md)** - Diagnose and fix gather_facts failures where the host resolves to UNKNOWN and the port to 65535, indicating Ansible connection variable resolution failure
   - **[Quick Reference](ansible-gather-facts-unknown-host/QUICK-REFERENCE.md)** - Isolation test, root cause table, and fix patterns ⚡
 
+### AAP / Controller API
+
+- **[AAP 2.5 `ansible.controller.token` 404](aap-controller-token-404/README.md)** - Token creation fails with HTTP 404 after AAP 2.5 Gateway API path changes
+
 ## Using These Guides
 
 Each guide follows this structure:

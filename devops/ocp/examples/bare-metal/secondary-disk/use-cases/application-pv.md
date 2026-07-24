@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Secondary disk application PV use case — review metadata backfill."
+---
+
 # Use Case — Application and Platform PVCs on Secondary Disk
 
 **Audience:** Platform engineers who need local persistent volumes on bare-metal workers without consuming the OS virtual disk.

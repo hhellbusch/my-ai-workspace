@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Secondary disk disconnected registry use case — review metadata backfill."
+---
+
 # Use Case — Mirror Registry on Secondary Disk (Disconnected)
 
 **Audience:** Engineers running `mirror-registry` or Quay for disconnected OpenShift — often on a **bare-metal or RHEL host**, not always an OCP worker.

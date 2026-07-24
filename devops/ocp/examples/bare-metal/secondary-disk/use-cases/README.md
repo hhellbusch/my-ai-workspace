@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Secondary disk use-case index — review metadata backfill."
+---
+
 # Secondary Disk — Use-Case Index
 
 Parent overview: [bare-metal/secondary-disk/README.md](../README.md)

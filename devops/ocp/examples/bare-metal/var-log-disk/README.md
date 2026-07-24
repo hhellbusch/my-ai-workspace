@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Bare-metal /var/log disk offload example — review metadata backfill."
+---
+
 # Bare-Metal Secondary Disk for `/var/log` — Two Approaches
 
 **Parent guide:** [Secondary disk offload overview](../secondary-disk/README.md) · [Use-case index](../secondary-disk/use-cases/README.md)

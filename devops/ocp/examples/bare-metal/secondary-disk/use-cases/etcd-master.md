@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Secondary disk etcd/master use case — review metadata backfill."
+---
+
 # Use Case — etcd on a Dedicated Master Disk
 
 **Audience:** Platform engineers sizing control-plane storage on bare-metal masters.

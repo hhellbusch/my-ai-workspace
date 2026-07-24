@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Bare-metal secondary disk offload example — review metadata backfill."
+---
+
 # Bare-Metal Secondary Disk Offload — Overview
 
 **Audience:** Platform engineers planning how to use secondary drives on homogeneous bare-metal OpenShift (RHCOS) — OS on a virtual disk, one or more physical NVMe/HDD tiers available.

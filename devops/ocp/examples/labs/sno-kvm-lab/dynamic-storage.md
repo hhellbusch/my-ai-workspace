@@ -199,7 +199,8 @@ Run when `lvms-operator` is installable.
 ### 1. Tear down Local Storage
 
 ```bash
-export KUBECONFIG=~/gemini-workspace/devops/ocp/install/exec/auth/kubeconfig
+export REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
+export KUBECONFIG="${REPO_ROOT}/devops/ocp/install/exec/auth/kubeconfig"
 
 # Stop DevSpaces workspace and delete its PVC first
 oc delete devworkspace --all -A --wait=true
@@ -273,8 +274,9 @@ All manifests live in this directory — see [manifest index](#manifest-index).
 **Prerequisites:** SNO cluster healthy; second virtio disk (`vdb`) attached on KVM host — [local-storage.md § Host](local-storage.md#host-add-a-storage-disk).
 
 ```bash
-export KUBECONFIG=~/gemini-workspace/devops/ocp/install/exec/auth/kubeconfig
-cd ~/gemini-workspace/devops/ocp/examples/labs/sno-kvm-lab
+export REPO_ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
+export KUBECONFIG="${REPO_ROOT}/devops/ocp/install/exec/auth/kubeconfig"
+cd "${REPO_ROOT}/devops/ocp/examples/labs/sno-kvm-lab"
 ```
 
 ### Step 0 — Tear down Local Storage (skip if fresh install, never had it)
