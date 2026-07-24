@@ -17,9 +17,13 @@ review:
 | `ocp/` | OpenShift Container Platform — install, operations, workloads on OCP |
 | `rhacm/` | Advanced Cluster Management — hub, fleet, CIM, policies |
 | `ansible/`, `argo/`, `vault/` | Delivery and automation layers |
+| `coreos/`, `kvm/` | Host and first-boot reference (Butane/Ignition, libvirt/KVM) |
 | `learning-path/`, `git/`, `llm/` | Pedagogy and setup — not product runbooks |
 | `pi/`, `paude/`, `paude-proxy/` | Workspace agent tooling (this repo's AI workflow) |
-| `catalog.yaml`, `SYMPTOM-INDEX.md` | Generated discovery for **OCP troubleshooting** guides |
+| `catalog.yaml`, `SYMPTOM-INDEX.md`, `EXAMPLE-INDEX.md` | Generated discovery — troubleshooting guides and OCP examples |
+| `fleet-control-spectrum.md` | Cross-product fleet decision reference (RHACM vs Argo CD axes) |
+| `fleet-management-ideas.md` | Review queue for fleet doc follow-ups (not a roadmap) |
+| `README.md` | DevOps hub index |
 
 **Essays and case studies** → `docs/`. **Raw research** → `research/`. **Enriched wiki entries** → `library/`.
 
@@ -57,12 +61,18 @@ Install-time or platform-variant areas stay at `ocp/` root when they span topics
 
 ## Discovery for agents and humans
 
-1. **Symptom** → `devops/SYMPTOM-INDEX.md` (from `catalog.yaml`)
-2. **Product hub** → `devops/<product>/README.md`
-3. **OCP topic** → `devops/ocp/examples/<topic>/README.md`
-4. **Site browse** → MkDocs build (`scripts/build-docs.sh`) from staged `devops/` + `docs/`
+1. **Symptom** → `devops/SYMPTOM-INDEX.md` (from `catalog.yaml` `guides` — OCP, RHACM, Ansible today)
+2. **Runnable example / scenario** → `devops/EXAMPLE-INDEX.md` (from `catalog.yaml` `examples` — OCP scenarios today)
+3. **Product hub** → `devops/<product>/README.md`
+4. **OCP topic** → `devops/ocp/examples/<topic>/README.md`
+5. **Site browse** → MkDocs build (`scripts/build-docs.sh`) from staged `devops/` + `docs/`
 
 When adding troubleshooting guides, update `catalog.yaml` and run `scripts/generate-symptom-index.py`.
+When adding OCP examples, add an `examples:` entry and run `scripts/generate-example-index.py`.
+
+**Labs placement:** `ocp/examples/labs/` for OpenShift lab walkthroughs; `argo/labs/` for GitOps instructor tracks — different audiences, both valid.
+
+**Git pedagogy:** `learning-path/git/` is the staged curriculum; `devops/git/git-learning-guide.md` is the optional in-repo deep dive — cross-link both.
 
 ## Cross-linking checklist
 

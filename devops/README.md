@@ -10,7 +10,9 @@ Practical, runnable examples and references for infrastructure, platform, and op
 
 **Browse the site** (search, sidebar nav): [hhellbusch.github.io/my-ai-workspace](https://hhellbusch.github.io/my-ai-workspace/) — built from this tree with MkDocs Material on push to `main`.
 
-**Symptom lookup:** [SYMPTOM-INDEX.md](SYMPTOM-INDEX.md) — generated from [`catalog.yaml`](catalog.yaml).
+**Symptom lookup:** [SYMPTOM-INDEX.md](SYMPTOM-INDEX.md) — generated from [`catalog.yaml`](catalog.yaml) `guides`.
+
+**Example lookup:** [EXAMPLE-INDEX.md](EXAMPLE-INDEX.md) — generated from [`catalog.yaml`](catalog.yaml) `examples`.
 
 **Build the site locally:** `pip install -r requirements-docs.txt && bash scripts/build-docs.sh` → `site/`
 
@@ -47,7 +49,7 @@ Local Redfish/BMC preflight harness for developing ACM bare-metal automation wit
 
 Automation patterns built from real operational needs.
 
-- **`examples/`** — 13 runnable playbooks: retry-on-timeout, error handling with logging, conditional blocks, virtual media ejection, block/rescue/retry patterns, parallel execution via bastion, ISO boot monitoring, IP subnet validation, global defaults across roles, Dell memory validation, parallel inventory updates, REST API result filtering, SMB-to-Vault credential management
+- **`examples/`** — 14 runnable playbooks: retry-on-timeout, error handling with logging, conditional blocks, virtual media ejection, block/rescue/retry patterns, parallel execution via bastion, ISO boot monitoring, IP subnet validation, global defaults across roles, Dell memory validation, parallel inventory updates, REST API result filtering, SMB-to-Vault credential management, Confluence page creation
 - **`troubleshooting/`** — AAP Controller token 404 on AAP 2.5.x (Gateway API path change); Ansible gather-facts unknown host
 
 ### [ArgoCD / GitOps](argo/)
@@ -80,6 +82,7 @@ Host-side QEMU/KVM and libvirt on Linux.
 Curated multi-topic curricula (may span OpenShift, GitOps, and labs in this repo).
 
 - **`vmware-admins/`** — VMware platform engineers → Kubernetes, OpenShift, OpenShift Virtualization; includes a **Git / GitHub** prerequisite for GitOps; links to Red Hat docs, courses, and in-repo labs ([index](learning-path/README.md))
+- **`git/`** — Staged Git curriculum with external resources and in-repo deep dive cross-links ([index](learning-path/git/README.md))
 
 ### [OpenShift (OCP)](ocp/)
 
@@ -97,6 +100,8 @@ The deepest product section — install, operations, workloads on OpenShift, and
 
 Red Hat Advanced Cluster Management patterns for multi-cluster environments.
 
+- **`notes/`** — Hub readiness, search setup, CIM, agent preflight, bare-metal networking, cluster destroy ([index](rhacm/notes/README.md))
+- **`troubleshooting/`** — 6 symptom guides in [SYMPTOM-INDEX](SYMPTOM-INDEX.md) (`product: rhacm`) — MCH upgrade, cluster lease, observability, search 503, agent rootfs SSL ([index](rhacm/troubleshooting/README.md))
 - **`examples/`** — Secret management patterns, cluster import with Ansible, ArgoCD RBAC integration, GitOps cluster integration, OCM subscription automation
 
 ### [Local LLM Setup](llm/)

@@ -53,6 +53,8 @@ Once a pod is selected by any `NetworkPolicy`, it becomes *isolated* — only ex
 
 - **DNS** must be allowed under default-deny.
   On OCP, egress to `openshift-dns` on UDP/TCP **5353** (or `kube-dns` on port 53 in upstream clusters).
+- **kube-apiserver** egress is required for any workload that talks to the in-cluster API (`kubernetes.default` ClusterIP, typically TCP **443**).
+  Easy to miss for classic Confluent Helm / hand-written CFK policies — see [Kafka broker init — kubernetes Service unreachable](../troubleshooting/kafka-broker-init-kubernetes-svc/README.md).
 - Policies match **pod labels**, not Deployment or CR names.
 - Cross-namespace flows use `namespaceSelector` + `podSelector`.
 - `EgressFirewall` controls traffic to external IPs; `NetworkPolicy` controls pod-to-pod and pod-to-service traffic inside the cluster.
@@ -234,6 +236,7 @@ You must allow:
 | Client pods (Flink, apps) | Broker listeners | 9092+ per listener config |
 | Prometheus | Brokers | 9404 |
 | Brokers | DNS | 5353/53 |
+| Brokers / init / operator | kube-apiserver (`kubernetes.default`) | TCP 443 (Service); do not omit under default-deny |
 
 **CFK pod labels** (for `podSelector` in hand-written policies — confirm with `oc get pods -n kafka --show-labels`):
 

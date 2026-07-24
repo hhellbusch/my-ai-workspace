@@ -31,7 +31,8 @@ Runnable scenarios and templates for OpenShift clusters, grouped by **topic** un
 ## messaging
 
 - **[Kafka on bare-metal with Portworx](messaging/kafka/bare-metal-portworx/README.md)** — Rack-aware CFK/Strimzi, OCP 4.20+
-- **[Network policy and observability](../notes/network-policy-observability.md)** — Strimzi vs CFK, Flink ports, NetObserv
+
+Companion notes: [network policy and observability](../notes/network-policy-observability.md) · [Kafka on OpenShift tenancy](../notes/kafka-on-openshift-tenancy.md)
 
 ## networking
 
