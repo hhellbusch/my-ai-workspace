@@ -1,0 +1,40 @@
+---
+# Hybrid network: real TCP probe fails when mock_listener is false (closed connection).
+name: network-hybrid-closed
+description: No listener on 9999 — wait_for fails like a blocked firewall path.
+
+validation_mode: hybrid
+expect:
+  exit_code: 2
+  blocking:
+    - id: network_firewall_install_ports
+
+inputs:
+  hub:
+    ocp_version: "4.20.1"
+    idrac_generation: "10"
+    min_ocp_version_idrac10: "4.20.0"
+  bmc:
+    hosts:
+      - name: control-plane-01
+        address: "127.0.0.1"
+        port: 8000
+    credentials:
+      username: root
+      password: calvin
+    virtual_media_privilege: administrator
+  network:
+    probe_from: local
+    firewall_checks:
+      - id: ironic-ipa
+        port: 9999
+        mock_listener: false
+        targets:
+          - host: "127.0.0.1"
+            port: 9999
+      - id: virtual-media-http
+        port: 6180
+        mock_listener: true
+        targets:
+          - host: "127.0.0.1"
+            port: 6180

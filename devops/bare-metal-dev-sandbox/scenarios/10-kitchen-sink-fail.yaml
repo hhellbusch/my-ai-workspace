@@ -1,0 +1,60 @@
+---
+# Scenario: worst-case harness — every check that can fire simultaneously does.
+# Auth must succeed or privilege is gated off (see catalog bmc_redfish_authentication.gates).
+name: kitchen-sink-fail
+description: >
+  Hub below minimum + non-admin BMC role + multiple install ports closed.
+  Three blocking check IDs (max co-occurring in this gate design).
+
+validation_mode: harness
+expect:
+  exit_code: 2
+  blocking:
+    - id: hub_ocp_version_idrac10
+    - id: bmc_virtual_media_privilege
+    - id: network_firewall_install_ports
+  not_blocking:
+    - id: bmc_redfish_authentication
+
+inputs:
+  hub:
+    ocp_version: "4.19.6"
+    idrac_generation: "10"
+    min_ocp_version_idrac10: "4.20.0"
+  bmc:
+    hosts:
+      - name: control-plane-01
+        address: "127.0.0.1"
+        port: 8000
+    credentials:
+      username: root
+      password: calvin
+      auth_ok: true
+    virtual_media_privilege: readonly
+  network:
+    probe_from: local
+    firewall_checks:
+      - id: virtual-media-http
+        port: 6180
+        targets:
+          - host: "10.0.0.5"
+            port: 6180
+        state: closed
+      - id: virtual-media-https
+        port: 6183
+        targets:
+          - host: "10.0.0.5"
+            port: 6183
+        state: closed
+      - id: ironic-ipa
+        port: 9999
+        targets:
+          - host: "10.20.30.40"
+            port: 9999
+        state: closed
+      - id: ironic-api
+        port: 6385
+        targets:
+          - host: "10.20.30.40"
+            port: 6385
+        state: closed

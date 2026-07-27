@@ -1,0 +1,8 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#SessionService.SessionService",
+  "@odata.id": "/redfish/v1/SessionService",
+  "@odata.type": "#SessionService.v1_1_8.SessionService",
+  "Id": "SessionService",
+  "Name": "Session Service",
+  "ServiceEnabled": false
+}

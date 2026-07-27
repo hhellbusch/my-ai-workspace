@@ -1,0 +1,61 @@
+---
+# G1 smoke test: query VirtualMedia from local static Redfish sandbox.
+#
+# Prerequisites:
+#   ./scripts/start-static.sh
+#   ansible-galaxy collection install -r requirements.yml
+#
+# Usage:
+#   ansible-playbook playbooks/smoke-redfish.yml
+
+- name: Smoke test — static Redfish sandbox
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    bmc_host: "{{ lookup('env', 'BMC_HOST') | default('127.0.0.1', true) }}"
+    bmc_port: "{{ lookup('env', 'BMC_PORT') | default('8000', true) }}"
+    bmc_user: "{{ lookup('env', 'BMC_USER') | default('root', true) }}"
+    bmc_password: "{{ lookup('env', 'BMC_PASSWORD') | default('calvin', true) }}"
+    # calvin is a common iDRAC lab default — override via env in production probes
+    validate_certs: false
+    baseuri: "{{ bmc_host }}:{{ bmc_port }}"
+
+  tasks:
+    - name: Probe service root
+      ansible.builtin.uri:
+        url: "https://{{ baseuri }}/redfish/v1/"
+        return_content: true
+        status_code: 200
+        validate_certs: false
+      register: service_root
+
+    - name: Assert Managers collection is linked
+      ansible.builtin.assert:
+        that:
+          - service_root.json.Managers is defined
+        fail_msg: "Service root missing Managers link — check mockup fixtures"
+
+    - name: Query VirtualMedia via Redfish
+      community.general.redfish_info:
+        category: Manager
+        command: GetVirtualMedia
+        baseuri: "{{ baseuri }}"
+        username: "{{ bmc_user }}"
+        password: "{{ bmc_password }}"
+        validate_certs: "{{ validate_certs }}"
+      register: redfish_facts
+
+    - name: Assert Virtual CD entry is present
+      ansible.builtin.assert:
+        that:
+          - redfish_facts.redfish_facts.virtual_media is defined
+          - redfish_facts.redfish_facts.virtual_media.entries | length > 0
+          - redfish_facts.redfish_facts.virtual_media.entries[0][1] | selectattr('Id', 'equalto', 'CD') | list | length == 1
+        fail_msg: "VirtualMedia CD fixture not returned as expected"
+
+    - name: Smoke test passed
+      ansible.builtin.debug:
+        msg: >-
+          G1 sandbox OK — redfish_info returned VirtualMedia CD
+          ({{ redfish_facts.redfish_facts.virtual_media.entries[0][1] | selectattr('Id', 'equalto', 'CD') | map(attribute='Name') | first }})

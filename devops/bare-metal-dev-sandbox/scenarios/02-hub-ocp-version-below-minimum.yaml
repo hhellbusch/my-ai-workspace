@@ -1,0 +1,28 @@
+---
+# Scenario: hub OpenShift version below documented minimum for iDRAC10 virtual media.
+name: hub-ocp-version-below-minimum
+description: Hub OpenShift version is below the configured minimum for iDRAC10 targets.
+
+validation_mode: harness
+expect:
+  exit_code: 2
+  blocking:
+    - id: hub_ocp_version_idrac10
+
+inputs:
+  hub:
+    ocp_version: "4.19.6"
+    idrac_generation: "10"
+    min_ocp_version_idrac10: "4.20.0"
+  bmc:
+    hosts:
+      - name: control-plane-01
+        address: "127.0.0.1"
+        port: 8000
+    credentials:
+      username: root
+      password: calvin
+    virtual_media_privilege: administrator
+  network:
+    probe_from: local
+    firewall_checks: []

@@ -1,0 +1,44 @@
+{
+  "preflight_report_path": "/tmp/preflight-live.json",
+  "preflight_inputs": {
+    "hub": {
+      "idrac_generation": "10",
+      "min_ocp_version_idrac10": "4.20.0"
+    },
+    "bmc": {
+      "hosts": [
+        {
+          "name": "control-plane-01",
+          "address": "BMC_IP_1",
+          "port": 443
+        }
+      ],
+      "credentials": {}
+    },
+    "network": {
+      "probe_from": "local",
+      "firewall_checks": [
+        {
+          "id": "virtual-media-http",
+          "port": 6180,
+          "targets": [{ "host": "BOOTSTRAP_OR_IMAGE_HOST", "port": 6180 }]
+        },
+        {
+          "id": "virtual-media-https",
+          "port": 6183,
+          "targets": [{ "host": "BOOTSTRAP_OR_IMAGE_HOST", "port": 6183 }]
+        },
+        {
+          "id": "ironic-ipa",
+          "port": 9999,
+          "targets": [{ "host": "NODE_IP", "port": 9999 }]
+        },
+        {
+          "id": "ironic-api",
+          "port": 6385,
+          "targets": [{ "host": "BOOTSTRAP_IP", "port": 6385 }]
+        }
+      ]
+    }
+  }
+}

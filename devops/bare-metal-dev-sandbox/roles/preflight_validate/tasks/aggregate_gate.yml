@@ -1,0 +1,39 @@
+---
+- name: Aggregated gate — print warnings
+  ansible.builtin.debug:
+    msg: "WARNING [{{ item.id }}]: {{ item.message }}"
+  loop: "{{ preflight_warnings }}"
+  when: preflight_warnings | length > 0
+
+- name: Aggregated gate — print blocking findings
+  ansible.builtin.debug:
+    msg: "BLOCKING [{{ item.id }}]: {{ item.message }}"
+  loop: "{{ preflight_findings }}"
+  when: preflight_findings | length > 0
+
+- name: Aggregated gate — emit findings JSON artifact
+  ansible.builtin.copy:
+    content: "{{ {'blocking': preflight_findings, 'warnings': preflight_warnings} | to_nice_json }}"
+    dest: "{{ preflight_report_path | default(lookup('env', 'PREFLIGHT_REPORT_PATH') | default('/tmp/preflight-report.json', true)) }}"
+    mode: "0644"
+
+- name: Aggregated gate — summary
+  ansible.builtin.debug:
+    msg: >-
+      Validation gate complete: {{ preflight_findings | length }} blocking,
+      {{ preflight_warnings | length }} warning(s).
+      {% if preflight_findings | length > 0 %}
+      Playbook will exit non-zero — expected when testing negative harness scenarios.
+      Look for PASS/FAIL from run-scenario.sh, not this Ansible status alone.
+      {% else %}
+      Gate passed — no blocking findings.
+      {% endif %}
+
+- name: Aggregated gate — stop when blocking findings exist
+  ansible.builtin.fail:
+    msg: >-
+      Validation gate blocked install ({{ preflight_findings | length }} finding(s)):
+      {% for item in preflight_findings %}
+      [{{ item.id }}] {{ item.message }}{{ '\n' }}
+      {% endfor %}
+  when: preflight_findings | length > 0

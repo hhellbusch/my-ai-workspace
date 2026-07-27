@@ -1,0 +1,14 @@
+---
+preflight_findings: []
+preflight_warnings: []
+preflight_bmc_cred_failed: false
+preflight_skip_bmc_hardware: false
+
+# Populated by scenario loader or live inventory
+preflight_inputs: {}
+
+validation_mode: harness
+# harness | hybrid | live — hybrid = scenario inputs + real TCP firewall probes
+
+# Semver compare helper inputs
+hub_idrac10_min_version: "4.20.0"

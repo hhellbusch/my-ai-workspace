@@ -1,0 +1,46 @@
+# Preflight check catalog — stable IDs for findings, scenarios, and CI assertions.
+# Reference: production bare-metal preflight spec (validation gate slice).
+
+checks:
+  - id: hub_ocp_version_idrac10
+    layer: hub
+    description: >
+      ACM hub OpenShift version must meet the configured minimum when the BMC
+      generation is iDRAC10 (see Red Hat release notes for tested virtual-media paths).
+    blocking: true
+    harness_input: inputs.hub.ocp_version
+    live_probe: oc get clusterversion version -o jsonpath='{.status.desired.version}'
+
+  - id: bmc_redfish_authentication
+    layer: bmc
+    description: Authenticated GET /redfish/v1/ for each BMC endpoint.
+    blocking: true
+    gates: [bmc_virtual_media_privilege]
+    harness_fields:
+      auth_ok: "false — simulated auth failure (sushy-static does not enforce HTTP auth)"
+
+  - id: bmc_virtual_media_privilege
+    layer: bmc
+    description: >
+      iDRAC account must have Administrator privileges to configure Virtual Media
+      and first-boot device (per RH bare-metal / iDRAC guidance).
+    blocking: true
+  - id: network_firewall_install_ports
+    layer: network
+    description: >
+      TCP paths required during IPI/virtual-media install phase must be reachable from
+      the probe host (typically bastion). Common blockers: 6180/6183 (image server
+      from BMC), 9999 (Ironic Python Agent on nodes), 6385 (Ironic API on bootstrap).
+      Full phase/symptom matrix: devops/rhacm/notes/acm-bare-metal-network-requirements.md
+    blocking: true
+    default_ports:
+      - 6180
+      - 6183
+      - 9999
+      - 6385
+    harness_fields:
+      state: "open | closed — simulated reachability (validation_mode: harness)"
+    hybrid_fields:
+      mock_listener: "true = start local TCP listener before probe; false/omit = closed path"
+    live_fields:
+      probe_from: "local = probe from controller; inventory hostname = delegate wait_for (requires INVENTORY)"

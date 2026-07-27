@@ -1,0 +1,11 @@
+---
+- name: Preflight validation gate
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    validation_mode: "{{ preflight_validation_mode | default('harness') }}"
+    preflight_inputs: "{{ preflight_inputs | default({}) }}"
+
+  roles:
+    - role: preflight_validate

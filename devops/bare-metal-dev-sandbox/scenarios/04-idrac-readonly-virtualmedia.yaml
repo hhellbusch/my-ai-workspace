@@ -1,0 +1,28 @@
+---
+# Scenario: BMC account authenticates but lacks Virtual Media administrator privileges.
+name: idrac-readonly-virtualmedia
+description: BMC credentials authenticate but lack Virtual Media administrator privileges.
+
+validation_mode: harness
+expect:
+  exit_code: 2
+  blocking:
+    - id: bmc_virtual_media_privilege
+
+inputs:
+  hub:
+    ocp_version: "4.20.1"
+    idrac_generation: "10"
+    min_ocp_version_idrac10: "4.20.0"
+  bmc:
+    hosts:
+      - name: control-plane-01
+        address: "127.0.0.1"
+        port: 8000
+    credentials:
+      username: operator
+      password: readonly
+    virtual_media_privilege: readonly
+  network:
+    probe_from: local
+    firewall_checks: []

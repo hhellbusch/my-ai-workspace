@@ -1,0 +1,92 @@
+---
+- name: Firewall — resolve check list
+  ansible.builtin.set_fact:
+    _fw_checks: "{{ preflight_inputs.network.firewall_checks | default([]) }}"
+    _fw_probe_from: "{{ preflight_inputs.network.probe_from | default('local') }}"
+
+- name: Firewall — harness mode simulated port state
+  when: validation_mode == 'harness'
+  block:
+    - name: Firewall — collect closed paths from scenario
+      ansible.builtin.set_fact:
+        _fw_blocked_lines: >-
+          {{ (_fw_blocked_lines | default([]))
+            + ['TCP ' ~ item.port ~ ' (' ~ item.id ~ ') blocked on install path: '
+              ~ (item.targets[0].host | default('?')) ~ ':' ~ item.targets[0].port] }}
+      loop: "{{ _fw_checks }}"
+      when: item.state | default('open') == 'closed'
+
+    - name: Firewall — emit aggregated install-port finding (harness)
+      ansible.builtin.set_fact:
+        preflight_findings: >-
+          {{ preflight_findings + [{
+            'id': 'network_firewall_install_ports',
+            'message': 'Install-phase TCP paths blocked (harness):'
+              ~ '\n  - ' ~ (_fw_blocked_lines | join('\n  - '))
+              ~ '\n(open on machine/OOB network during bare-metal install).'
+          }] }}
+      when: _fw_blocked_lines | default([]) | length > 0
+
+- name: Firewall — TCP probes (hybrid or live)
+  when:
+    - validation_mode in ['hybrid', 'live']
+    - _fw_checks | length > 0
+  block:
+    - name: Firewall — probe each target from controller
+      ansible.builtin.wait_for:
+        host: "{{ item.1.host }}"
+        port: "{{ item.1.port }}"
+        timeout: 3
+        state: started
+      loop: "{{ _fw_checks | subelements('targets', skip_missing=True) }}"
+      loop_control:
+        label: "{{ item.0.id }} {{ item.1.host }}:{{ item.1.port }}"
+      register: _fw_probe_local
+      failed_when: false
+      when: preflight_inputs.network.probe_from | default('local') in ['', 'local', 'localhost']
+
+    - name: Firewall — probe each target (delegated to probe_from host)
+      ansible.builtin.wait_for:
+        host: "{{ item.1.host }}"
+        port: "{{ item.1.port }}"
+        timeout: 3
+        state: started
+      delegate_to: "{{ _fw_probe_from }}"
+      loop: "{{ _fw_checks | subelements('targets', skip_missing=True) }}"
+      loop_control:
+        label: "{{ item.0.id }} {{ item.1.host }}:{{ item.1.port }}"
+      register: _fw_probe_delegate
+      failed_when: false
+      when: preflight_inputs.network.probe_from | default('local') not in ['', 'local', 'localhost']
+
+    - name: Firewall — select probe results
+      ansible.builtin.set_fact:
+        _fw_probe_results: >-
+          {{ (_fw_probe_local.results | default([]))
+            if not (_fw_probe_local.skipped | default(true))
+            else (_fw_probe_delegate.results | default([])) }}
+
+    - name: Firewall — collect unreachable install ports
+      ansible.builtin.set_fact:
+        _fw_unreachable_lines: >-
+          {{ (_fw_unreachable_lines | default([]))
+            + ['TCP ' ~ item.item.1.port ~ ' (' ~ item.item.0.id ~ ') not reachable from probe host '
+              ~ (preflight_inputs.network.probe_from | default('local')
+                 if preflight_inputs.network.probe_from | default('local') not in ['', 'local', 'localhost']
+                 else 'localhost') ~ ': '
+              ~ item.item.1.host ~ ':' ~ item.item.1.port
+              ~ (' (hybrid: no mock listener)' if validation_mode == 'hybrid' else '')] }}
+      loop: "{{ _fw_probe_results }}"
+      when:
+        - not item.skipped | default(false)
+        - item.state | default('') != 'started'
+
+    - name: Firewall — emit aggregated install-port finding (probe)
+      ansible.builtin.set_fact:
+        preflight_findings: >-
+          {{ preflight_findings + [{
+            'id': 'network_firewall_install_ports',
+            'message': 'Install-phase TCP paths not reachable:'
+              ~ '\n  - ' ~ (_fw_unreachable_lines | join('\n  - '))
+          }] }}
+      when: _fw_unreachable_lines | default([]) | length > 0
