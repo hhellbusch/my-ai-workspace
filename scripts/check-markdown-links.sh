@@ -6,6 +6,10 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
+if [ -f .gitmodules ] && git submodule status | grep -q '^-'; then
+  git submodule update --init --recursive --depth 1
+fi
+
 tmp=$(mktemp)
 trap 'rm -f "$tmp"' EXIT
 
@@ -15,7 +19,9 @@ while IFS= read -r file; do
     | grep -v '^https\?://' \
     | grep -v '^http' \
     | grep -v '^mailto:' || true)
-  [ -z "$links" ] && continue
+  if [ -z "$links" ]; then
+    continue
+  fi
   while IFS= read -r link; do
     [ -z "$link" ] && continue
     dir=$(dirname "$file")
@@ -27,7 +33,8 @@ while IFS= read -r file; do
     fi
   done <<< "$links"
 done < <(
-  git ls-files 'devops/**/*.md' 'docs/**/*.md' \
+  git ls-files 'devops/' 'docs/' \
+    | grep '\.md$' \
     | grep -v '^research/.*/sources/' \
     | grep -v '/_meta/' \
     | grep -v '^\.planning/'
