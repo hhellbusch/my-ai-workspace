@@ -127,6 +127,7 @@ Git, OpenShift, RHACM, AAP, Ansible, cluster lifecycle:
 | [Dan Walsh — Career Lessons](dan-walsh-devconf-2025-career-lessons.md) | containers / selinux / career | 2026-04-18 |
 | [argocd-diff-preview](argocd-diff-preview.md) | argocd / desired-state diff / CI | 2026-04-29 |
 | [Jared Burck — LLMs on Red Hat OpenShift](jared-burck-openshift-ai-llm-deployment.md) | openshift-ai / kserve / vllm / enterprise LLM | 2026-04-30 |
+| [OCP Container Density / Overcommit](ocp-container-density-overcommit.md) | openshift / bare-metal packing / CRO·VPA·HPA | 2026-07-17 |
 
 ## Entry Template
 

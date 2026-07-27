@@ -75,6 +75,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Architectural Katas | Ted Neward | 2010 | http://blogs.newardassociates.com/blog/2010/architectural-katas.html | architecture, kata, practice, design | — |
 | Contributor Covenant | Coraline Ada Ehmke | 2014 | https://www.contributor-covenant.org/ | open-source, code-of-conduct, community-governance | — |
 | Rethinking Open Source Mentorship in the AI Era | GitHub Blog | 2025 | https://github.blog/open-source/maintainers/rethinking-open-source-mentorship-in-the-ai-era/ | open-source, mentorship, ai, pr-review, maintainer-burnout | — |
+| OCP Container Density / Overcommit (landscape) | Field Notes research | 2026 | research/ocp-container-density-overcommit/ | openshift, bare-metal, density, overcommit, CRO, VPA, HPA | [enriched](ocp-container-density-overcommit.md) |
 
 ## Online Courses
 

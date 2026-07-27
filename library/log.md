@@ -315,3 +315,9 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Wing:** ai-engineering
 - **Source:** YouTube / research/ingest-queue/sources/ralph-loops-build-dumb-ai-loops-that-ship-chris-parsons-cherrypick.md
 - **Note:** Workshop. Ralph loop = re-run prompt after completion to catch gaps. Simple loops > n8n orchestration. Self-improving skills. Ticket-driven loops. AI Engineer channel.
+
+## [2026-07-17] ingest | OCP Container Density / Overcommit
+- **Entry:** [ocp-container-density-overcommit.md](ocp-container-density-overcommit.md)
+- **Wing:** devops
+- **Source:** research collection / research/ocp-container-density-overcommit/sources/
+- **Note:** Landscape survey stub — 12 sources fetched (OKD/adoc mirrors where RH 403); paths P1–P10 in paths.md. Full enrichment pending analysis.

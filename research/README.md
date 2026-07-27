@@ -23,6 +23,7 @@ Research workspaces containing fetched sources, analysis findings, and assessmen
 | `devops/` | DevOps research — transcripts and analysis | Sources on disk | [README.md](devops/README.md) |
 | `openclaw/` | OpenClaw architecture — gateway, memory, proactivity | 1 transcript | [README.md](openclaw/README.md) · [library entry](../library/alex-krentsel-openclaw-deep-dive.md) |
 | `harness-engineering/` | Agent harness first principles (Tejas Kumar) | 1 transcript | [README.md](harness-engineering/README.md) · [library entry](../library/tejas-kumar-harnesses-in-ai.md) |
+| `ocp-container-density-overcommit/` | Bare-metal OCP packing: CRO, VPA/HPA, LimitRange, node allocatable, maxPods | 12 of 12 fetched | [paths.md](ocp-container-density-overcommit/paths.md) · [library stub](../library/ocp-container-density-overcommit.md) |
 
 ## Structure Convention
 
