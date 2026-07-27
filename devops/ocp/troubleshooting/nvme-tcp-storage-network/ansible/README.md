@@ -8,7 +8,7 @@
 Debug pods for nodes share the **host network namespace** and mount the host root.
 `chroot /host nvme discover ...` therefore exercises the same storage NICs and routes the CSI stack will use.
 
-Always `chroot /host` — same pitfall as the [host NQN guide](../nvme-host-nqn-duplicate/README.md).
+Always `chroot /host` — same pitfall as the [host NQN guide](../../nvme-host-nqn-duplicate/README.md).
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ Always `chroot /host` — same pitfall as the [host NQN guide](../nvme-host-nqn-
 - Permission to create debug pods (`oc auth can-i create pods`)
 - `nvme-cli` on the node (RHCOS typically has `/usr/sbin/nvme`)
 - Discovery controller IPs reachable on the **storage** network (not the OVN primary only)
-- Unique host NQN per node — [nvme-host-nqn-duplicate](../nvme-host-nqn-duplicate/README.md)
+- Unique host NQN per node — [nvme-host-nqn-duplicate](../../nvme-host-nqn-duplicate/README.md)
 
 ## Quick start
 
