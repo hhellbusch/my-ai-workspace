@@ -1,0 +1,132 @@
+---
+# NVMe-oF fabric check via oc debug (no SSH to nodes).
+#
+# Runs `nvme discover` on each listed OpenShift node through:
+#   oc debug node/<name> --quiet -- chroot /host nvme discover ...
+#
+# Goal: verify storage cabling / L3 path to discovery controllers before CSI.
+# Prefer host_iface binding so each fabric path is exercised independently.
+#
+# Usage:
+#   cp vars.example.yml vars.yml   # edit nodes + targets
+#   ansible-playbook nvme-discover.yml -e @vars.yml
+#   ansible-playbook nvme-discover.yml -e @vars.yml --forks 8
+
+- name: Validate control-plane access and build node inventory
+  hosts: localhost
+  gather_facts: false
+  vars:
+    oc_bin: oc
+    ocp_nodes: []
+    nvme_discovery_targets: []
+    nvme_discover_timeout_sec: 120
+    nvme_discover_show_hostnqn: true
+    nvme_discover_fail_on_error: true
+  tasks:
+    - name: Require ocp_nodes and nvme_discovery_targets
+      ansible.builtin.assert:
+        that:
+          - ocp_nodes | length > 0
+          - nvme_discovery_targets | length > 0
+        fail_msg: >-
+          Pass vars with -e @vars.yml (see vars.example.yml).
+          Need non-empty ocp_nodes and nvme_discovery_targets.
+
+    - name: Check oc can create pods (debug)
+      ansible.builtin.command:
+        argv:
+          - "{{ oc_bin }}"
+          - auth
+          - can-i
+          - create
+          - pods
+      changed_when: false
+
+    - name: Build ephemeral inventory (one host per node, connection local)
+      ansible.builtin.add_host:
+        name: "{{ item }}"
+        groups: ocp_nvme_nodes
+        ansible_connection: local
+        ansible_python_interpreter: /usr/bin/python3
+        oc_bin: "{{ oc_bin }}"
+        nvme_discovery_targets: "{{ nvme_discovery_targets }}"
+        nvme_discover_timeout_sec: "{{ nvme_discover_timeout_sec }}"
+        nvme_discover_show_hostnqn: "{{ nvme_discover_show_hostnqn }}"
+        nvme_discover_fail_on_error: "{{ nvme_discover_fail_on_error }}"
+      loop: "{{ ocp_nodes }}"
+      changed_when: false
+
+- name: Run nvme discover on each node via oc debug
+  hosts: ocp_nvme_nodes
+  gather_facts: false
+  order: sorted
+  tasks:
+    - name: Optional — show host NQN (identity prerequisite)
+      when: nvme_discover_show_hostnqn | bool
+      ansible.builtin.command:
+        argv:
+          - "{{ oc_bin }}"
+          - debug
+          - "node/{{ inventory_hostname }}"
+          - --quiet
+          - --
+          - chroot
+          - /host
+          - sh
+          - -c
+          - |
+            echo "file=$(cat /etc/nvme/hostnqn 2>/dev/null || echo MISSING)"
+            echo "show=$(nvme show-hostnqn 2>/dev/null || echo UNAVAILABLE)"
+      register: hostnqn_out
+      changed_when: false
+      failed_when: false
+      timeout: "{{ nvme_discover_timeout_sec | int }}"
+
+    - name: Print host NQN
+      when: nvme_discover_show_hostnqn | bool
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ hostnqn_out.stdout_lines | default([hostnqn_out.stderr | default('no output')]) }}"
+
+    - name: Discover each fabric target
+      ansible.builtin.include_tasks: tasks/discover_one.yml
+      loop: "{{ nvme_discovery_targets }}"
+      loop_control:
+        loop_var: target
+        label: "{{ inventory_hostname }} → {{ target.name | default(target.traddr) }}"
+
+- name: Summarize discover results
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ocp_nodes: []
+    nvme_discover_fail_on_error: true
+  tasks:
+    - name: Collect per-node results from hostvars
+      ansible.builtin.set_fact:
+        nvme_discover_rows: "{{ (nvme_discover_rows | default([])) + [{'node': item, 'results': hostvars[item].nvme_discover_results | default([])}] }}"
+      loop: "{{ ocp_nodes }}"
+
+    - name: Print summary
+      ansible.builtin.debug:
+        msg: |
+          {% for row in nvme_discover_rows %}
+          === {{ row.node }} ===
+          {% for r in row.results %}
+          {{ 'PASS' if r.ok else 'FAIL' }}  {{ r.target }}  traddr={{ r.traddr }}  iface={{ r.host_iface | default('-') }}
+          {% if not r.ok %}
+            rc={{ r.rc }}  err={{ r.stderr | trim | truncate(200) }}
+          {% endif %}
+          {% else %}
+          (no results recorded)
+          {% endfor %}
+          {% endfor %}
+
+    - name: Fail if any required discover failed
+      when: nvme_discover_fail_on_error | bool
+      ansible.builtin.assert:
+        that:
+          - nvme_discover_rows | map(attribute='results') | flatten | selectattr('ok', 'equalto', false) | list | length == 0
+        fail_msg: >-
+          One or more nvme discover attempts failed.
+          Check cabling, storage NIC IPs/MTU, switch ports, and array discovery listeners.
+        success_msg: All nvme discover attempts succeeded.

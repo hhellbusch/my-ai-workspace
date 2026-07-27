@@ -1,0 +1,30 @@
+---
+# Expects: target (dict), inventory_hostname = OpenShift node name
+# Appends to nvme_discover_results on the current host.
+
+- name: Build nvme discover argv (optional -w host_iface)
+  ansible.builtin.set_fact:
+    _nvme_discover_argv: "{{ [oc_bin, 'debug', 'node/' ~ inventory_hostname, '--quiet', '--', 'chroot', '/host', 'nvme', 'discover', '-t', target.transport | default('tcp'), '-a', target.traddr, '-s', (target.trsvcid | default('4420') | string)] + (['-w', target.host_iface] if (target.host_iface | default('') | length) > 0 else []) }}"
+
+- name: Run nvme discover via oc debug
+  ansible.builtin.command:
+    argv: "{{ _nvme_discover_argv }}"
+  register: _discover
+  changed_when: false
+  failed_when: false
+  timeout: "{{ nvme_discover_timeout_sec | int }}"
+
+- name: Record discover result
+  ansible.builtin.set_fact:
+    nvme_discover_results: "{{ (nvme_discover_results | default([])) + [{'target': target.name | default(target.traddr), 'traddr': target.traddr, 'host_iface': target.host_iface | default(''), 'ok': (_discover.rc | default(1)) == 0, 'rc': _discover.rc | default(1), 'stdout': _discover.stdout | default(''), 'stderr': _discover.stderr | default('')}] }}"
+
+- name: Show discover output
+  ansible.builtin.debug:
+    msg: |
+      {{ inventory_hostname }} → {{ target.name | default(target.traddr) }}
+      cmd: {{ _nvme_discover_argv | join(' ') }}
+      rc: {{ _discover.rc | default('?') }}
+      --- stdout ---
+      {{ _discover.stdout | default('') }}
+      --- stderr ---
+      {{ _discover.stderr | default('') }}

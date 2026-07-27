@@ -23,6 +23,7 @@ review:
 | Native multipath vs dm-multipath | [README — Native NVMe multipath](README.md#native-nvme-multipath-not-dm-multipath) |
 | NMState NNCP on OCP | [README — OpenShift NMState](README.md#openshift-nmstate-for-storage-interfaces) |
 | Example NNCP skeleton | [example-nncp-storage-interfaces.yaml](example-nncp-storage-interfaces.yaml) |
+| Fabric check: `nvme discover` via `oc debug` | [ansible/README.md](ansible/README.md) |
 | Full prep order (NQN → network → CSI) | [README — Prep checklist](README.md#prep-checklist-order-matters) |
 
 ## Related Guides
