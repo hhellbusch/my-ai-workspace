@@ -18,6 +18,7 @@ This directory contains four categories of content:
 |----------|------|---------|
 | [Fleet Management Framework](#fleet-management-framework) | `framework/` | Production-ready hub-and-spoke system for managing a fleet of OpenShift clusters |
 | [Fleet control spectrum](../../fleet-control-spectrum.md) | `devops/` | RHACM vs Argo CD tradeoffs across multiple axes; maps to the framework posture |
+| [BigFix on OCP with GitOps](../../bigfix-gitops-on-ocp.md) | `devops/` | Food for thought: endpoint management vs cluster GitOps; ownership matrix |
 | [Helm Component Pattern](#helm-component-pattern) | `helm-component-pattern/` | Reference implementation: `mustMergeOverwrite` with named component keys, multi-hub App-of-Apps-of-Apps |
 | [Standalone Examples](#standalone-argocd-examples) | `apps/`, `charts/`, `examples/` | Reference ArgoCD Application and Helm chart examples |
 | [CI/CD & Tooling](#cicd-workflows--tooling) | `github-workflows/`, `scripts/` | Example GitHub Actions workflows and utility scripts |

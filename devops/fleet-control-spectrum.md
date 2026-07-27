@@ -267,7 +267,7 @@ See [grey zone resolution](learning-path/vmware-admins/README.md#key-decision-ar
 
 **Reconsider:** `PolicyAutomation` → AAP.
 Argo CD does not call external systems on compliance events.
-See [library: RHACM + AAP talk](library/automate-ocp-cluster-deployment-rhacm-aap.md).
+See [library: RHACM + AAP talk](../library/automate-ocp-cluster-deployment-rhacm-aap.md).
 
 ### 5. Regulatory evidence beyond Git log
 
@@ -359,6 +359,7 @@ See [Git-driven RHACM configuration](rhacm/git-driven-configuration.md) for dire
 | RHACM → Argo registration | [gitops-cluster-integration/](rhacm/examples/gitops-cluster-integration/) |
 | RHACM hub config in Git | [git-driven-configuration.md](rhacm/git-driven-configuration.md) |
 | ACM + Ansible bridge | [library/automate-ocp-cluster-deployment-rhacm-aap.md](../library/automate-ocp-cluster-deployment-rhacm-aap.md) |
+| BigFix on OCP with GitOps (learning / discussion) | [bigfix-gitops-on-ocp.md](bigfix-gitops-on-ocp.md) |
 
 ---
 
