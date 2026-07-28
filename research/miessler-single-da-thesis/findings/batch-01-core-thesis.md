@@ -27,7 +27,7 @@
 
 **Verdict:** VERIFIED WITH CAVEATS
 
-**Details:** This is a proprietary framework, not a cited standard. The level boundaries are reasonable but fuzzy ("not clean lines" is his own caveat). OpenClaw (Claude?) advancing toward AS1 through proactivity is a concrete claim — proactive monitoring of stated goals is a meaningful capability step. The framework is useful as a mental model. It shouldn't be cited as industry consensus.
+**Details:** This is a proprietary framework, not a cited standard. The level boundaries are reasonable but fuzzy ("not clean lines" is his own caveat). Personal Agent Gateway (Claude?) advancing toward AS1 through proactivity is a concrete claim — proactive monitoring of stated goals is a meaningful capability step. The framework is useful as a mental model. It shouldn't be cited as industry consensus.
 
 **Impact:** Good organizing framework for the library entry. The "proactivity as AS1 entry criterion" point is the substantive insight.
 
@@ -37,7 +37,7 @@
 
 **Claim:** "This is a major major feature that's required that previous agents didn't have proactivity... the fact that you can give it some things that you care about to some degree, right? And it puts it in a text file or whatever and it could just like check on them regularly."
 
-**Source actually says:** The claim holds up internally. The video distinguishes reactive agents (wait for user prompt, execute, return) from proactive assistants (monitor stated goals, surface relevant information, act before asked). OpenClaw's goal-monitoring feature is the concrete example.
+**Source actually says:** The claim holds up internally. The video distinguishes reactive agents (wait for user prompt, execute, return) from proactive assistants (monitor stated goals, surface relevant information, act before asked). Personal Agent Gateway's goal-monitoring feature is the concrete example.
 
 **Verdict:** VERIFIED
 

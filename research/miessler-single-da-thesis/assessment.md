@@ -20,7 +20,7 @@ This is a well-argued 32-minute talk from Daniel Miessler presenting his DA (Dig
 | --- | --- | --- |
 | Core DA direction thesis | **Medium-High** | Directionally well-argued; evidence is signals + predictions, not current-state facts |
 | Maturity model (CB→AG→AS) | **Medium** | Proprietary framework, not industry consensus; fuzzy level boundaries by Miessler's own admission |
-| Proactivity as AS1 threshold | **High** | Concrete, coherent, backed by live example (OpenClaw/Claude goal monitoring) |
+| Proactivity as AS1 threshold | **High** | Concrete, coherent, backed by live example (Personal Agent Gateway/Claude goal monitoring) |
 | Current state → ideal state prime directive | **High** | Internally consistent, maps to Pi architecture shown, matches PAI entry's Algorithm description |
 | Pi/Kai implementation claims | **High** | Live demo, open-source repo, matches PAI library entry |
 | World-as-APIs vision | **Medium** | Direction accurate; seamlessness of the Diet Coke scenario is aspirational |

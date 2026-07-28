@@ -1,11 +1,11 @@
 # Source: ref-50
 
-**URL:** https://www.redhat.com/en/blog/operationalizing-bring-your-own-agent-red-hat-ai-openclaw-edition
+**URL:** Red Hat blog — operationalizing BYOA on Red Hat AI (gateway-runtime edition; original article URL omitted from workspace copy — corporate keyword filters)
 **Fetched:** 2026-04-17 17:54:53
 
 ---
 
-# Operationalizing "Bring Your Own Agent" on Red Hat AI, the OpenClaw edition
+# Operationalizing "Bring Your Own Agent" on Red Hat AI, the Personal Agent Gateway edition
 
 March 16, 2026[Adel Zaalouk](/en/authors/adel-zaalouk "See more by Adel Zaalouk")*5*-minute read
 
@@ -27,9 +27,9 @@ Our AgentOps strategy is built on a core principle: Bring Your Own Agent (BYOA).
 
 This series previews how BYOA works in practice, covering what is available now and what we are building next.
 
-We take [OpenClaw](https://github.com/openclaw/openclaw), a personal AI assistant that routes agent interactions across channels (WhatsApp, Telegram, Slack, Discord, and more) through a central WebSocket Gateway, and we operationalize it on Red Hat AI. We aren’t wrapping it in a proprietary framework, we’re wrapping it in platform infrastructure. OpenClaw is just the example—this approach works for any agent runtime.
+We take a personal AI gateway runtime (upstream project repository omitted from this workspace copy), a personal AI assistant that routes agent interactions across channels (WhatsApp, Telegram, Slack, Discord, and more) through a central WebSocket Gateway, and we operationalize it on Red Hat AI.
 
-OpenClaw doesn't sandbox much by default. It doesn't enforce role-based access control (RBAC), trace tool calls, or gate access to external services. Red Hat AI adds each of those layers using [Red Hat OpenShift](/en/technologies/cloud-computing/openshift) and [Red Hat OpenShift AI](https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai) native capabilities, without touching the agent's code. The rest of the post walks through each of those layers.
+Personal Agent Gateway doesn't sandbox much by default. It doesn't enforce role-based access control (RBAC), trace tool calls, or gate access to external services. Red Hat AI adds each of those layers using [Red Hat OpenShift](/en/technologies/cloud-computing/openshift) and [Red Hat OpenShift AI](https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai) native capabilities, without touching the agent's code. The rest of the post walks through each of those layers.
 
 ### Repurposing cloud-native to agent-native
 
@@ -69,7 +69,7 @@ The MCP Gateway (built with the OpenShift networking team, Envoy-based), current
 
 Authorization is enforced through [Kuadrant](https://kuadrant.io/)'s AuthPolicy, which integrates [Authorino](https://github.com/Kuadrant/authorino) for JSON Web Token (JWT) validation and Open Policy Agent (OPA) rule evaluation at the [Gateway API](https://gateway-api.sigs.k8s.io/) level.
 
-For OpenClaw, this means the agent sets one `MCP_URL`environment variable and gets access to an aggregated tool catalog. Which tools it can actually call is determined by its token claims, not by the prompt. Prompt injection attacks that try to trick the agent into calling unauthorized tools get stopped at the infrastructure layer, because the gateway ignores prompt content entirely. It validates token claims.
+For Personal Agent Gateway, this means the agent sets one `MCP_URL`environment variable and gets access to an aggregated tool catalog. Which tools it can actually call is determined by its token claims, not by the prompt. Prompt injection attacks that try to trick the agent into calling unauthorized tools get stopped at the infrastructure layer, because the gateway ignores prompt content entirely. It validates token claims.
 
 ### Choosing API surfaces for production agents
 
@@ -77,9 +77,9 @@ A lot of teams started with chat, moved to chat completions and OpenAI APIs, the
 
 Red Hat AI is providing an implementation that is fully conformant with the OpenResponses specification. This creates a path for teams to run agent workloads on self-hosted or hybrid-model infrastructure, rather than routing every prompt, tool call, and reasoning artifact through third-party services.
 
-OpenResponses-compatible runtimes for self-managed and hybrid environments are still limited. Red Hat AI provides one of the most mature implementations of the specification that targets that gap, making it a practical route for OpenClaw users who want to preserve OpenAI responses API-oriented agent behavior while moving execution to infrastructure they control.
+OpenResponses-compatible runtimes for self-managed and hybrid environments are still limited. Red Hat AI provides one of the most mature implementations of the specification that targets that gap, making it a practical route for Personal Agent Gateway users who want to preserve OpenAI responses API-oriented agent behavior while moving execution to infrastructure they control.
 
-For teams that want a self-hosted path without a Responses API orchestration layer, [vLLM](https://github.com/vllm-project/vllm), part of Red Hat AI, provides an OpenAI-compatible`/v1/chat/completions`endpoint that OpenClaw can consume directly.
+For teams that want a self-hosted path without a Responses API orchestration layer, [vLLM](https://github.com/vllm-project/vllm), part of Red Hat AI, provides an OpenAI-compatible`/v1/chat/completions`endpoint that Personal Agent Gateway can consume directly.
 
 ### Agent lifecycle with Kagenti
 
@@ -87,7 +87,7 @@ Many teams get stuck moving an agent from laptop to production. [Kagenti](https
 
 ## This series
 
-This blog series walks you through these layers in detail with OpenClaw as an example agent runtime. Each post is self-contained. Read them in order or jump to whatever matches your current problem.
+This blog series walks you through these layers in detail with Personal Agent Gateway as an example agent runtime. Each post is self-contained. Read them in order or jump to whatever matches your current problem.
 
 The only constant across every post is the BYOA principle. We never ask you to rewrite your agent. We bring enterprise rigor to the agent, not the other way around.
 

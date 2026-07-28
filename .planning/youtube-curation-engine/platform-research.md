@@ -1,46 +1,46 @@
-# Platform Research — OpenClaw vs Pi for YouTube Curation
+# Platform Research — Personal Agent Gateway vs Pi for YouTube Curation
 
 **Created:** 2026-06-08  
 **Status:** Research complete  
-**Related:** brainstorm.md, Paude OpenClaw agent docs
+**Related:** brainstorm.md, Paude Personal Agent Gateway agent docs
 
 ---
 
-## OpenClaw Architecture (from Paude source)
+## Personal Agent Gateway Architecture (from Paude source)
 
-Paude treats OpenClaw as a first-class agent with its own implementation at `/pvc/workspace/git-projects/paude/src/paude/agents/openclaw.py`.
+Paude treats Personal Agent Gateway as a first-class agent with its own implementation at `/pvc/workspace/git-projects/paude/src/paude/agents/gateway-runtime agent module in Paude`.
 
 ### Integration Points
 - **Gateway:** Web-based, port 18789, browser interface
 - **CLI:** Terminal connection via `paude connect`
-- **Base image:** `ghcr.io/openclaw/openclaw:latest` (pre-installed)
-- **Config:** `~/.openclaw/openclaw.json`
+- **Base image:** `vendor gateway container image (registry path omitted)` (pre-installed)
+- **Config:** `~/.personal-agent-gateway/personal-agent-gateway.json`
 - **Providers:** Anthropic, OpenAI, Vertex AI (model-agnostic)
 - **Tools config:** `"profile": "coding"`, `"fs": {"workspaceOnly": true}`, `"exec": {"host": "gateway", "security": "allowlist"}`
 - **Yolo mode:** `"security": "full", "ask": "off"`
 - **OTEL:** Diagnostics plugin built-in
-- **Network:** `extra_domain_aliases: ["openclaw"]`
+- **Network:** `extra_domain_aliases: ["gateway"]`
 
-### Pi vs OpenClaw Tradeoffs
+### Pi vs Personal Agent Gateway Tradeoffs
 
-| Capability | Pi | OpenClaw | Winner for YouTube |
+| Capability | Pi | Personal Agent Gateway | Winner for YouTube |
 |------------|----|----------|--------------------|
-| Scheduling | None (need cron wrapper) | Built-in heartbeat + cron | OpenClaw ✅ |
-| Memory | Session-based, no built-in persistence | MEMORY.md + search + wiki | OpenClaw ✅ |
+| Scheduling | None (need cron wrapper) | Built-in heartbeat + cron | Personal Agent Gateway ✅ |
+| Memory | Session-based, no built-in persistence | MEMORY.md + search + wiki | Personal Agent Gateway ✅ |
 | On-demand coding | Excellent (native) | Good (has it) | Pi ✅ |
 | Extensions | TypeScript, rich API (registerTool, registerCommand, events) | Skills (workspace-based) | Pi ✅ |
-| Auto-detection | None | Heartbeat checks for attention | OpenClaw ✅ |
+| Auto-detection | None | Heartbeat checks for attention | Personal Agent Gateway ✅ |
 | Channel routing | None | Multi-channel (WhatsApp, Telegram, Discord, etc.) | N/A for this use |
 | Tool ecosystem | MCP-compatible | MCP-compatible + native tools | Tie |
 | Secrets | env var passthrough (current) | env var passthrough via Paude | Tie |
 | Git sync | Paude (commit/pull workflow) | Paude (commit/pull workflow) | Tie |
 
 ### Verdict
-**Hybrid approach.** OpenClaw handles scheduled monitoring + memory + curation. Pi handles active coding, extension development, and the YouTube API wrapper tooling. Both run in Paude containers with the same git-based sync workflow.
+**Hybrid approach.** Personal Agent Gateway handles scheduled monitoring + memory + curation. Pi handles active coding, extension development, and the YouTube API wrapper tooling. Both run in Paude containers with the same git-based sync workflow.
 
 ---
 
-## OpenClaw Built-in Scheduling
+## Personal Agent Gateway Built-in Scheduling
 
 ### Heartbeats — Periodic Agent Turns
 
@@ -95,7 +95,7 @@ Paude treats OpenClaw as a first-class agent with its own implementation at `/pv
 
 **Command payloads** — deterministic scripts without needing a model:
 ```bash
-openclaw cron create "*/15 * * * *" \
+personal-agent-gateway cron create "*/15 * * * *" \
   --name "Queue depth probe" \
   --command "scripts/check-queue.sh" \
   --command-cwd "/srv/app" \
@@ -115,7 +115,7 @@ openclaw cron create "*/15 * * * *" \
 
 ---
 
-## OpenClaw Memory System
+## Personal Agent Gateway Memory System
 
 ### File-Based Memory
 
@@ -154,27 +154,27 @@ openclaw cron create "*/15 * * * *" \
 
 ---
 
-## OpenClaw Skills System
+## Personal Agent Gateway Skills System
 
-Skills in OpenClaw are workspace-based, similar to Pi skills but with a different integration model. They live in the workspace directory and are loaded from there.
+Skills in Personal Agent Gateway are workspace-based, similar to Pi skills but with a different integration model. They live in the workspace directory and are loaded from there.
 
 **Comparison to Pi:**
-| | Pi | OpenClaw |
+| | Pi | Personal Agent Gateway |
 |---|---|---|
 | Location | `~/.pi/agent/skills/`, `~/.cursor/skills/` | Workspace `.agents/skills/` or `.cursor/skills/` |
 | Format | SKILL.md with YAML frontmatter | Similar SKILL.md format |
-| Registration | Auto-discovered by Pi | Auto-discovered by OpenClaw |
+| Registration | Auto-discovered by Pi | Auto-discovered by Personal Agent Gateway |
 | Extension system | TypeScript extensions (registerTool, registerCommand, events) | Plugins (active-memory, memory-wiki, diagnostics-otel) |
 | Custom tools | Yes (TypeScript) | MCP-compatible tools |
 | Command hooks | Yes (registerCommand) | Via cron and heartbeat prompts |
 
-**Key insight:** For the YouTube curation engine, we can use OpenClaw's skills for the interface layer (like a `/watchlist` command), and its plugins for the memory/search layer. The heavy lifting (YouTube API wrapper) can be a Python script that the skills/cron invokes.
+**Key insight:** For the YouTube curation engine, we can use Personal Agent Gateway's skills for the interface layer (like a `/watchlist` command), and its plugins for the memory/search layer. The heavy lifting (YouTube API wrapper) can be a Python script that the skills/cron invokes.
 
 ---
 
-## OpenClaw Multi-Channel Delivery
+## Personal Agent Gateway Multi-Channel Delivery
 
-OpenClaw supports a wide range of messaging channels:
+Personal Agent Gateway supports a wide range of messaging channels:
 - WhatsApp, Telegram, Slack, Discord, Google Chat, Signal
 - iMessage, IRC, Microsoft Teams, Matrix, Feishu, LINE
 - Mattermost, Nextcloud Talk, Nostr, Synology Chat, Tlon
@@ -238,7 +238,7 @@ The agent never sees any real credential — not the refresh token, not even a s
 Paude has planned a phased rollout to replace its squid proxy with paude-proxy:
 - Phase 1: Build and publish paude-proxy image (done — repo exists)
 - Phase 2: Add `--proxy-type=mitm` flag behind a feature flag
-- Phase 3: Test with each agent type (Claude Code, Cursor, Gemini, OpenClaw)
+- Phase 3: Test with each agent type (Claude Code, Cursor, Gemini, Personal Agent Gateway)
 - Phase 4: Make paude-proxy the default
 - Phase 5: Remove squid
 
@@ -297,7 +297,7 @@ Paude-proxy is a MITM credential broker running as a separate container (port 31
 **Status:** Solved by paude-proxy's credential routing. Need to add YouTube API key to the routing config.
 
 ### 2. YouTube API Integration
-OpenClaw's tools system is MCP-compatible. We'd need:
+Personal Agent Gateway's tools system is MCP-compatible. We'd need:
 - A Python script that wraps the YouTube Data API v3
 - Skills or cron jobs that invoke it
 - Memory files that store the interest profile
@@ -315,19 +315,19 @@ This is the key innovation — storing a topic vector or interest profile that t
 
 1. **Design the YouTube API wrapper** — Python tool that queries YouTube Data API, returns ranked results
 2. **Design the interest profile format** — How do we represent what topics the user cares about?
-3. **Design the cron/heartbeat integration** — How does OpenClaw invoke the wrapper on a schedule?
+3. **Design the cron/heartbeat integration** — How does Personal Agent Gateway invoke the wrapper on a schedule?
 4. **Implement MVP** — YouTube API wrapper + manual invocation first, then schedule
 
 ---
 
 ## References
 
-- OpenClaw README: https://github.com/openclaw/openclaw
-- OpenClaw heartbeat: `docs/gateway/heartbeat.md`
-- OpenClaw cron: `docs/automation/cron-jobs.md`
-- OpenClaw memory: `docs/concepts/memory.md`, `docs/concepts/memory-search.md`, `docs/concepts/active-memory.md`
-- OpenClaw memory wiki: `docs/plugins/memory-wiki.md`
-- Paude OpenClaw agent: `/pvc/workspace/git-projects/paude/src/paude/agents/openclaw.py`
+- Personal Agent Gateway README: upstream gateway project README (URL omitted)
+- Personal Agent Gateway heartbeat: `docs/gateway/heartbeat.md`
+- Personal Agent Gateway cron: `docs/automation/cron-jobs.md`
+- Personal Agent Gateway memory: `docs/concepts/memory.md`, `docs/concepts/memory-search.md`, `docs/concepts/active-memory.md`
+- Personal Agent Gateway memory wiki: `docs/plugins/memory-wiki.md`
+- Paude Personal Agent Gateway agent: `/pvc/workspace/git-projects/paude/src/paude/agents/gateway-runtime agent module in Paude`
 - Paude docs: `/pvc/workspace/git-projects/paude/docs/`
 - Pi extension docs: `/usr/local/lib/node_modules/@earendil-works/pi-coding-agent/docs/extensions.md`
 - **Paude-proxy:** `submodules/paude-proxy/` — MITM credential broker
@@ -337,12 +337,12 @@ This is the key innovation — storing a topic vector or interest profile that t
   - `internal/credentials/config.go` — credential config schema
   - `internal/credentials/gcloud.go` — Google ADC token vending
 
-## Practical: Spinning Up OpenClaw via Paude
+## Practical: Spinning Up Personal Agent Gateway via Paude
 
 ### Fork Status
-Fork at `/pvc/workspace/git-projects/paude` is **fully up-to-date** with upstream. All agents present (claude, codex, cursor, gascity, gemini, openclaw).
+Fork at `/pvc/workspace/git-projects/paude` is **fully up-to-date** with upstream. All agents present (claude, codex, cursor, gascity, gemini, personal-agent-gateway).
 
-**Hermes is NOT in Paude.** Hermes Agent exists in the ecosystem (Switch UI, session finder tools, terminal agent benchmarks) but Paude does not support it as an agent type. The Paude agent registry is: claude, codex, cursor, gascity, gemini, openclaw.
+**Hermes is NOT in Paude.** Hermes Agent exists in the ecosystem (Switch UI, session finder tools, terminal agent benchmarks) but Paude does not support it as an agent type. The Paude agent registry is: claude, codex, cursor, gascity, gemini, personal-agent-gateway.
 
 ### Prerequisites (host machine)
 - **Container runtime:** Podman or Docker (not present inside Pi container)
@@ -354,21 +354,21 @@ Fork at `/pvc/workspace/git-projects/paude` is **fully up-to-date** with upstrea
 
 ### Steps
 
-1. **Create OpenClaw session:**
+1. **Create Personal Agent Gateway session:**
    ```bash
-   paude create --agent openclaw --provider openai --allowed-domains "default openclaw youtube" my-youtube-curator
+   paude create --agent <gateway> --provider openai --allowed-domains "default gateway youtube" my-youtube-curator
    ```
    (Or `--provider anthropic` / `--provider vertex`)
 
 2. **Connect:**
    ```bash
-   paude connect my-youtube-curator  # prints browser URL for OpenClaw
+   paude connect my-youtube-curator  # prints browser URL for Personal Agent Gateway
    ```
 
 ### Inside the Container
-- OpenClaw pre-installed from `ghcr.io/openclaw/openclaw:latest`
+- Personal Agent Gateway pre-installed from `vendor gateway container image (registry path omitted)`
 - Gateway on port 18789
-- Config at `~/.openclaw/openclaw.json`
+- Config at `~/.personal-agent-gateway/personal-agent-gateway.json`
 - Workspace at `/pvc/workspace`
 - Python packages from `paude.json` setup
 - Secrets via `/credentials/env/` (not visible in container spec)

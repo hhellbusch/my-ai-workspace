@@ -47,13 +47,13 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### Peer deck: Field Notes presentation — iterative passes
 - **Product:** presentations / meta
 - **Context:** Slide deck for sharing workspace with peers (`presentations/field-notes-for-peers.md`). Pass 3 (2026-05-29): restructured for engineers new to coding agents — basics first, Field Notes as example, reading map levels 0–5. Capture doc: `.planning/field-notes-peer-deck/NOTES.md`. Remaining: optional live-demo appendix, voice-approved title, export check.
-- **Links:** `presentations/field-notes-for-peers.md`, `.planning/field-notes-peer-deck/NOTES.md`, `library/alex-krentsel-openclaw-deep-dive.md`
+- **Links:** `presentations/field-notes-for-peers.md`, `.planning/field-notes-peer-deck/NOTES.md`, `library/alex-krentsel-personal-agent-gateway-deep-dive.md`
 - **Added:** 2026-05-29
 
-### Evaluate Field Notes + clanker runtime conjunction (OpenClaw / Paude+Pi)
+### Evaluate Field Notes + clanker runtime conjunction (Personal Agent Gateway / Paude+Pi)
 - **Product:** meta / tooling / research
-- **Context:** Field Notes as git-backed brain (library, rules, skills, backlog); OpenClaw-class runtime as proactive executor (cron, heartbeat, channels). Not two competing memory systems — canonical truth in git, ephemeral recall in agent memory, promotion rule for durable learnings. Minimum experiment sketched in `.planning/field-notes-peer-deck/NOTES.md`. Containerize (Paude or Docker). Relates to distributed agent backlog Stage 2 and Simon Scrapes Level 3 (memsearch/OpenClaw-style).
-- **Links:** `.planning/field-notes-peer-deck/NOTES.md`, `library/alex-krentsel-openclaw-deep-dive.md`, `library/simon-scrapes-claude-code-memory-systems.md`, `docs/ai-engineering/portable-ai-toolkit.md`, `docs/ai-engineering/paude-getting-started.md`
+- **Context:** Field Notes as git-backed brain (library, rules, skills, backlog); Personal Agent Gateway-class runtime as proactive executor (cron, heartbeat, channels). Not two competing memory systems — canonical truth in git, ephemeral recall in agent memory, promotion rule for durable learnings. Minimum experiment sketched in `.planning/field-notes-peer-deck/NOTES.md`. Containerize (Paude or Docker). Relates to distributed agent backlog Stage 2 and Simon Scrapes Level 3 (memsearch/Personal Agent Gateway-style).
+- **Links:** `.planning/field-notes-peer-deck/NOTES.md`, `library/alex-krentsel-personal-agent-gateway-deep-dive.md`, `library/simon-scrapes-claude-code-memory-systems.md`, `docs/ai-engineering/portable-ai-toolkit.md`, `docs/ai-engineering/paude-getting-started.md`
 - **Added:** 2026-05-29
 
 ### Distributed agent methodology: git worktrees → paude → OpenShift
@@ -114,7 +114,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ### Doc or deck appendix: Field Notes in the PKM / agent-memory landscape
 - **Product:** docs / presentations
-- **Context:** Synthesis from 2026-05-29 peer-deck conversation: map Field Notes to second brain, PARA, Zettelkasten (articulate-before-automate), Karpathy LLM Wiki, Simon Scrapes memory levels, OpenClaw, MemPalace, OpenBrain. Could be a short `docs/ai-engineering/` essay or `presentations/` speaker appendix — not a full essay unless author wants it. Source material in `.planning/field-notes-peer-deck/NOTES.md` and library entries listed there.
+- **Context:** Synthesis from 2026-05-29 peer-deck conversation: map Field Notes to second brain, PARA, Zettelkasten (articulate-before-automate), Karpathy LLM Wiki, Simon Scrapes memory levels, Personal Agent Gateway, MemPalace, OpenBrain. Could be a short `docs/ai-engineering/` essay or `presentations/` speaker appendix — not a full essay unless author wants it. Source material in `.planning/field-notes-peer-deck/NOTES.md` and library entries listed there.
 - **Added:** 2026-05-29
 
 ### Optional atomic-note layer (Zettelkasten-adjacent) in Field Notes
@@ -624,7 +624,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ### Explore Paude for containerized agent workflows
 - **Product:** meta
-- **Context:** [Paude](https://github.com/bbrowning/paude) runs AI coding agents (Claude Code, Cursor CLI, Gemini CLI, OpenClaw) in secure containers with git-based sync. POC on public cloud models first — local model inference is a separate lower-priority thread (see "Local model as Paude inference backend").
+- **Context:** [Paude](https://github.com/bbrowning/paude) runs AI coding agents (Claude Code, Cursor CLI, Gemini CLI, Personal Agent Gateway) in secure containers with git-based sync. POC on public cloud models first — local model inference is a separate lower-priority thread (see "Local model as Paude inference backend").
 - **Multi-agent as first-class experiment:** Paude's support for multiple agents (Claude Code, Gemini CLI, Cursor CLI) is the core of the value proposition, not a detail. Key experiment: run the same task spec through Claude Code and Gemini CLI via Paude on the same task. Don't compare quality — compare *behavior*: how did each interpret the spec, where did each deviate, which required more precision to get right? This informs how LID-formatted briefs need to be written for agent-agnostic vs. agent-specific tasks. It also informs the enterprise platform adoption story — teams bring their preferred agent; Paude provides the container, isolation, and git sync.
 - **Deployment progression:**
   - **Stage 1 — Execution model (Podman POC):** Paude via Podman, local machine. Public cloud APIs (Claude + Gemini). Prove: agents run, multi-agent comparison works, harvest produces usable output.

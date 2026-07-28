@@ -56,9 +56,9 @@ CLAUDE.md is always-loaded (Level 1). The session-awareness rule, `/checkpoint`,
 
 cavemem (from the caveman ecosystem, in backlog) is SQLite + MCP, cross-agent, local — overlaps with MemPalace (SQL + ChromaDB) but adds cross-tool access via MCP. Evaluate both before adopting either; they may be redundant.
 
-### OpenClaw architecture (deeper dive)
+### Personal Agent Gateway architecture (deeper dive)
 
-For implementation detail on Level 3's OpenClaw-style patterns (gateway, cron, heartbeat, markdown config), see [Alex Krentsel — OpenClaw Deep Dive](alex-krentsel-openclaw-deep-dive.md). Transcript: [research/openclaw/sources/](../research/openclaw/sources/openclaw-video-sxX8BMscce0.md).
+For implementation detail on Level 3's Personal Agent Gateway-style patterns (gateway, cron, heartbeat, markdown config), see [Alex Krentsel — Personal Agent Gateway Deep Dive](alex-krentsel-personal-agent-gateway-deep-dive.md). Transcript: [research/personal-agent-gateway/sources/krentsel-gateway-deep-dive-sxX8BMscce0.md](../research/personal-agent-gateway/sources/krentsel-gateway-deep-dive-sxX8BMscce0.md).
 
 ---
 

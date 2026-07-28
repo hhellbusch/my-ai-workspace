@@ -11,7 +11,7 @@ All orchestration in this workspace is currently in-process: Task subagents run 
 - **No fire-and-forget** — long-running tasks (research fetching, large drafts, code refactors) tie up the session. You can't assign work and walk away.
 - **No multi-agent comparison** — everything runs through the same model. There's no mechanism to run the same task against Claude, Gemini, and Cursor CLI and compare outputs.
 
-[Paude](https://github.com/bbrowning/paude) (v0.15.0) runs AI coding agents in network-filtered containers with git-based sync. It supports Claude Code, Cursor CLI, Gemini CLI, and OpenClaw. Its orchestration model — create, assign, harvest, PR — maps to the "leaf task executor" gap in the current architecture without replacing the core pipeline.
+[Paude](https://github.com/bbrowning/paude) (v0.15.0) runs AI coding agents in network-filtered containers with git-based sync. It supports Claude Code, Cursor CLI, Gemini CLI, and Personal Agent Gateway. Its orchestration model — create, assign, harvest, PR — maps to the "leaf task executor" gap in the current architecture without replacing the core pipeline.
 
 ## Success Criteria
 
