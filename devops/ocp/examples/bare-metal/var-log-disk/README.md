@@ -268,8 +268,8 @@ You still mount **`/var/log` once**; `/var/log/pods` comes along automatically.
 
 | Layout | When |
 |--------|------|
-| **p1 log slice on one large NVMe** | Single data NVMe (e.g. 14 TiB) — p2+ for [application PV](../bare-metal-secondary-disk/use-cases/application-pv.md) |
-| **Whole smaller NVMe → `/var/log`** | Two or more NVMe — dedicate a 1–2 TiB drive to logs; use [whole-disk mount](../sno-kvm-lab/hpp-vdb-mount.yaml) instead of partitioning a 14 TiB data drive |
+| **p1 log slice on one large NVMe** | Single data NVMe (e.g. 14 TiB) — p2+ for [application PV](../secondary-disk/use-cases/application-pv.md) |
+| **Whole smaller NVMe → `/var/log`** | Two or more NVMe — dedicate a 1–2 TiB drive to logs; use [whole-disk mount](../../labs/sno-kvm-lab/hpp-vdb-mount.yaml) instead of partitioning a 14 TiB data drive |
 | **NVMe #2 = logs, #3+ = data** | Cleanest with 3+ drives — one `by-path` per role in Git |
 
 ```text
@@ -281,7 +281,7 @@ BOSS/PERC (OS)     nvme1 (logs)           nvme2–n (data)
 ```
 
 Each bay needs its own validated `by-path` in inventory.
-See [secondary disk overview](../bare-metal-secondary-disk/README.md#large-nvme-layout-example).
+See [secondary disk overview](../secondary-disk/README.md#large-nvme-layout-example).
 
 ---
 
@@ -294,7 +294,7 @@ See [secondary disk overview](../bare-metal-secondary-disk/README.md#large-nvme-
 | **Same block device to CSI and log MC** | Portworx/ODF vs Ignition fight over the disk | One consumer per device or explicit p1/p2 split |
 | **Full 14 TiB to logs** | Wastes data-tier capacity; huge FS if uncapped | Fixed slice or dedicated smaller NVMe + `journald` limits |
 | **Both approach A and B applied** | Conflicting units / double mount | One MC per pool |
-| **Expecting `/var/log` to free image space** | CRI-O/kubelet still on OS `/var` | Size OS VD or see [container storage](../bare-metal-secondary-disk/use-cases/container-storage.md) |
+| **Expecting `/var/log` to free image space** | CRI-O/kubelet still on OS `/var` | Size OS VD or see [container storage](../secondary-disk/use-cases/container-storage.md) |
 
 ---
 

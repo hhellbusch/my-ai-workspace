@@ -32,7 +32,7 @@ This use case is documented in a dedicated example directory:
 - **One large NVMe:** log p1, then [application PV](application-pv.md) on p2+
 - **Multiple NVMe:** whole log drive at `/var/log`, data bay(s) for [application PV](application-pv.md) or [CSI pools](csi-raw-disks.md)
 
-Pitfalls (nested `pods/` mount, wrong bay, CSI conflict): [var-log guide § Pitfalls](../../bare-metal-var-log-disk/README.md#pitfalls).
+Pitfalls (nested `pods/` mount, wrong bay, CSI conflict): [var-log guide § Pitfalls](../../var-log-disk/README.md#pitfalls).
 
 ---
 

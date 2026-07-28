@@ -140,7 +140,7 @@ BOSS/PERC (OS)     nvme bay 2 (logs)      nvme bay 3+ (data)
 
 Mounting **`/var/log`** covers **`/var/log/pods`** and **`/var/log/containers`** — do not add a second mount for pod logs alone.
 
-Details and pitfalls: [var-log guide](../bare-metal-var-log-disk/README.md#multiple-nvme-drives).
+Details and pitfalls: [var-log guide](../var-log-disk/README.md#multiple-nvme-drives).
 
 ---
 
