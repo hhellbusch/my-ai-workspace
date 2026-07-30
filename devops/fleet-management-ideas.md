@@ -7,11 +7,11 @@ review:
 # Fleet Management — Ideas & Future Work
 
 > **Audience:** Workspace owner — review queue, not a committed roadmap
-> **Status:** Living log · last updated 2026-06-25
+> **Status:** Living log · last updated 2026-07-16
 > **Scope:** Documentation and framework follow-ups from fleet control spectrum / RHACM-as-code work
 
 Items here are **candidates for later**.
-Nothing in this file is in-flight unless it also appears in [BACKLOG.md](../../BACKLOG.md) or an active epic.
+Nothing in this file is in-flight unless it also appears in [BACKLOG.md](../BACKLOG.md) or an active epic.
 
 ---
 
@@ -82,6 +82,7 @@ Nothing in this file is in-flight unless it also appears in [BACKLOG.md](../../B
 | ID | Item | Where |
 |----|------|-------|
 | ✓ | Fleet control spectrum (seven axes) | [fleet-control-spectrum.md](fleet-control-spectrum.md) |
+| ✓ | BigFix on OCP with GitOps (learning note) | [bigfix-gitops-on-ocp.md](bigfix-gitops-on-ocp.md) |
 | ✓ | Git-driven RHACM configuration principle | [rhacm/git-driven-configuration.md](rhacm/git-driven-configuration.md) |
 | ✓ | Framework label sync as Git → ACM → Argo pattern | [cluster-labels README](argo/examples/framework/hub/rhacm/cluster-labels/README.md) |
 
@@ -90,6 +91,10 @@ Nothing in this file is in-flight unless it also appears in [BACKLOG.md](../../B
 ## Session log
 
 Brief context for future-you when picking items up.
+
+**2026-07-16** — Drafted BigFix-on-OCP GitOps learning note as food for thought (not a runbook).
+Framed two loops (Argo for appliance, CI for content), RHCOS skepticism, ownership matrix, team discussion prompts.
+Cross-linked from fleet-control spectrum, devops README, and argo examples index.
 
 **2026-06-25** — Brainstormed fleet control spectrum (multiple barometers, not binary Argo vs ACM).
 Current solution posture: GitOps-heavy; Day 2 via Helm/ApplicationSets; ACM used for import, GitOpsCluster, label enforcement.

@@ -1,0 +1,46 @@
+---
+- name: Hub version check — resolve inputs
+  ansible.builtin.set_fact:
+    _hub_inputs: "{{ preflight_inputs.hub | default({}) }}"
+    _idrac_gen: "{{ preflight_inputs.hub.idrac_generation | default('') | string }}"
+
+- name: Hub version check — skip when iDRAC generation not 10
+  ansible.builtin.debug:
+    msg: "Skipping hub_ocp_version_idrac10 — idrac_generation is not 10"
+  when: _idrac_gen != '10'
+
+- name: Hub version check — compare versions
+  when: _idrac_gen == '10'
+  block:
+    - name: Hub version check — resolve hub OpenShift version
+      ansible.builtin.set_fact:
+        _hub_version: >-
+          {%- if validation_mode in ['harness', 'hybrid'] -%}
+          {{ _hub_inputs.ocp_version | default('') }}
+          {%- else -%}
+          {{ lookup('pipe', 'oc get clusterversion version -o jsonpath={.status.desired.version} 2>/dev/null') | default('', true) }}
+          {%- endif -%}
+        _min_version: "{{ _hub_inputs.min_ocp_version_idrac10 | default(hub_idrac10_min_version) }}"
+
+    - name: Hub version check — record finding when below minimum
+      ansible.builtin.set_fact:
+        preflight_findings: >-
+          {{ preflight_findings + [{
+            'id': 'hub_ocp_version_idrac10',
+            'message': 'Hub OpenShift ' ~ _hub_version ~ ' is below minimum '
+              ~ _min_version ~ ' for iDRAC10 virtual media (configured in preflight inputs).'
+          }] }}
+      when: >-
+        (_hub_version | length == 0)
+        or (_hub_version is version(_min_version, '<'))
+
+    - name: Hub version check — warn when version string empty in live mode
+      ansible.builtin.set_fact:
+        preflight_warnings: >-
+          {{ preflight_warnings + [{
+            'id': 'hub_ocp_version_idrac10',
+            'message': 'Could not read hub OpenShift version via oc — is kubeconfig pointed at the hub?'
+          }] }}
+      when:
+        - validation_mode == 'live'
+        - _hub_version | length == 0

@@ -77,7 +77,7 @@
 
 ---
 
-## ref-50: Operationalizing “Bring Your Own Agent” on Red Hat AI, the OpenClaw edition (blog)
+## ref-50: Operationalizing “Bring Your Own Agent” on Red Hat AI, the Personal Agent Gateway edition (blog)
 
 **Article claims:** **Kata Containers** / **OpenShift sandboxed containers** for **strict sandbox isolation** of agents; **Kagenti** with **SPIFFE/SPIRE** verifying agent identity and injecting **short-lived, scoped service-account tokens**.
 

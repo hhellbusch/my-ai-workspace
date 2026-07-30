@@ -1,0 +1,23 @@
+---
+- name: Initialize findings accumulators
+  ansible.builtin.set_fact:
+    preflight_findings: "{{ preflight_findings | default([]) }}"
+    preflight_warnings: "{{ preflight_warnings | default([]) }}"
+    preflight_bmc_cred_failed: false
+    preflight_skip_bmc_hardware: false
+
+- name: Hub — OpenShift version vs iDRAC10 minimum
+  ansible.builtin.include_tasks: check_hub_version.yml
+
+- name: BMC — Redfish authentication
+  ansible.builtin.include_tasks: check_bmc_credentials.yml
+
+- name: BMC — Virtual Media administrator privileges
+  ansible.builtin.include_tasks: check_virtual_media_privilege.yml
+  when: not preflight_skip_bmc_hardware | bool
+
+- name: Network — install-phase firewall / TCP paths
+  ansible.builtin.include_tasks: check_firewall_ports.yml
+
+- name: Aggregated validation gate
+  ansible.builtin.include_tasks: aggregate_gate.yml

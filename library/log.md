@@ -148,10 +148,10 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/youtube-sources-apr2026/sources/youtube-T17bpGItqXw-transcript.md
 - **Note:** Enriched entry added 2026-05-03 — themes, quotes, links to experiment journal + `local-llm-setup.md`. **Personal “Why”** section in entry still a short placeholder for author fill-in.
 
-## [2026-05-29] ingest | Alex Krentsel — Principles for Autonomous System Design: OpenClaw Deep Dive
-- **Entry:** [alex-krentsel-openclaw-deep-dive.md](alex-krentsel-openclaw-deep-dive.md)
+## [2026-05-29] ingest | Alex Krentsel — Principles for Autonomous System Design: Personal Agent Gateway Deep Dive
+- **Entry:** [alex-krentsel-personal-agent-gateway-deep-dive.md](alex-krentsel-personal-agent-gateway-deep-dive.md)
 - **Wing:** ai-engineering / agents / memory
-- **Source:** YouTube / research/openclaw/sources/openclaw-video-sxX8BMscce0.md
+- **Source:** YouTube / research/personal-agent-gateway/sources/krentsel-gateway-deep-dive-sxX8BMscce0.md
 - **Note:** Architecture deep dive — gateway, cron/heartbeat proactivity, markdown config, skills vs MCP; maps to Simon Scrapes Level 3 and Field Notes gaps.
 
 ## [2026-05-29] ingest | Tejas Kumar — Harnesses in AI: A Deep Dive (AI Engineer)
@@ -284,7 +284,7 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Entry:** [hannah-fry-ai-agents-best-or-worst.md](hannah-fry-ai-agents-best-or-worst.md)
 - **Wing:** ai-engineering
 - **Source:** YouTube / research/ingest-queue/sources/why-ai-agents-are-either-the-best-or-worst-thing-weve-ever-built.md
-- **Note:** Popular science documentary. Nicklas Lundblad on agency scarcity; lethal trifecta; "George" prompt injection; Summer Yu loses control of OpenClaw. Broader-audience bridge for non-technical peers.
+- **Note:** Popular science documentary. Nicklas Lundblad on agency scarcity; lethal trifecta; "George" prompt injection; Summer Yu loses control of Personal Agent Gateway. Broader-audience bridge for non-technical peers.
 
 ## [2026-05-30] ingest | Lucas Meijer — A love letter to Pi (Build Monumental)
 - **Entry:** [lucas-meijer-love-letter-to-pi.md](lucas-meijer-love-letter-to-pi.md)
@@ -315,3 +315,9 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Wing:** ai-engineering
 - **Source:** YouTube / research/ingest-queue/sources/ralph-loops-build-dumb-ai-loops-that-ship-chris-parsons-cherrypick.md
 - **Note:** Workshop. Ralph loop = re-run prompt after completion to catch gaps. Simple loops > n8n orchestration. Self-improving skills. Ticket-driven loops. AI Engineer channel.
+
+## [2026-07-17] ingest | OCP Container Density / Overcommit
+- **Entry:** [ocp-container-density-overcommit.md](ocp-container-density-overcommit.md)
+- **Wing:** devops
+- **Source:** research collection / research/ocp-container-density-overcommit/sources/
+- **Note:** Landscape survey stub — 12 sources fetched (OKD/adoc mirrors where RH 403); paths P1–P10 in paths.md. Full enrichment pending analysis.

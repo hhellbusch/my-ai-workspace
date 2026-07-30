@@ -43,7 +43,7 @@ Comprehensive troubleshooting documentation for common OpenShift (OCP) cluster i
 - **[OAuth Server healthz Unavailable](oauth-healthz-unavailable/README.md)** - Authentication CO degraded when OAuth route `/healthz` is unreachable
   - **[Quick Reference](oauth-healthz-unavailable/QUICK-REFERENCE.md)** - Emergency checks and route/DNS triage ⚡
 
-- **[Kafka Broker Stuck in Init — kubernetes Service Unreachable](kafka-broker-init-kubernetes-svc/README.md)** - Confluent/Kafka init cannot reach `kubernetes.default` ClusterIP; triage NetworkPolicy egress, admission webhook TLS, and OVN `ovnkube-node` restarts
+- **[Kafka Broker Stuck in Init — kubernetes Service Unreachable](kafka-broker-init-kubernetes-svc/README.md)** - Confluent/Kafka init cannot reach the in-cluster API (`kubernetes` Service); triage ANP priority, DNS/API egress, admission webhook TLS, and OVN `ovnkube-node` restarts
 
 ### Bare Metal Provisioning Issues
 

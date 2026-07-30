@@ -1,0 +1,60 @@
+---
+# Copy to vars.yml and edit for your cluster / fabric.
+# ansible-playbook nvme-discover.yml -e @vars.yml
+
+# OpenShift CLI (must talk to the target cluster; KUBECONFIG or default context)
+oc_bin: oc
+
+# Parallelism: ansible-playbook ... --forks 5
+# Keep modest — each node starts a debug pod.
+
+# Seconds per discover attempt (includes debug pod start)
+nvme_discover_timeout_sec: 120
+
+# Fail the play if any required target fails discover on any node
+nvme_discover_fail_on_error: true
+
+# Optional: also print host NQN (does not fail the play by itself)
+nvme_discover_show_hostnqn: true
+
+# Nodes to check — OpenShift Node object names (oc get nodes)
+ocp_nodes:
+  - worker-0
+  - worker-1
+  - worker-2
+
+# Discovery targets shared by all nodes.
+# Bind host_iface when you want path/cabling isolation (recommended for dual fabric).
+#
+# Dual-fabric example (two subnets / two storage NICs):
+nvme_discovery_targets:
+  - name: fabric-a
+    traddr: 10.100.1.10
+    trsvcid: "4420"
+    transport: tcp
+    host_iface: ens1f0
+  - name: fabric-b
+    traddr: 10.100.2.10
+    trsvcid: "4420"
+    transport: tcp
+    host_iface: ens1f1
+
+# Same-subnet dual-NIC example (omit or comment one of the above):
+# nvme_discovery_targets:
+#   - name: ctrl-a
+#     traddr: 10.100.0.10
+#     trsvcid: "4420"
+#     transport: tcp
+#     host_iface: ens1f0
+#   - name: ctrl-b
+#     traddr: 10.100.0.11
+#     trsvcid: "4420"
+#     transport: tcp
+#     host_iface: ens1f1
+
+# Unbound discover (reachability only — weaker cabling signal):
+# nvme_discovery_targets:
+#   - name: ctrl-a
+#     traddr: 10.100.1.10
+#     trsvcid: "4420"
+#     transport: tcp

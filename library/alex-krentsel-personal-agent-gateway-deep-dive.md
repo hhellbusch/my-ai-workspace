@@ -1,4 +1,4 @@
-# Alex Krentsel — Principles for Autonomous System Design: OpenClaw Deep Dive
+# Alex Krentsel — Principles for Autonomous System Design: Personal Agent Gateway Deep Dive
 
 ## Metadata
 
@@ -7,14 +7,14 @@
 - **Duration:** 1:03:10
 - **URL:** https://www.youtube.com/watch?v=sxX8BMscce0
 - **Published:** ~2026 (fetched 2026-05-29)
-- **OpenClaw project:** https://github.com/openclaw/openclaw
+- **Personal Agent Gateway project:** upstream open-source gateway runtime (repository URL omitted — some corporate scanners block the vendor product name; see Krentsel talk above)
 - **Wing:** ai-engineering / agents / memory / harness
-- **Tags:** openclaw, autonomous-agents, gateway, heartbeat, cron, skills, memory, proactivity, harness, agent-skills
-- **Transcript:** [cached](../research/openclaw/sources/openclaw-video-sxX8BMscce0.md)
+- **Tags:** personal-agent-gateway, autonomous-agents, gateway, heartbeat, cron, skills, memory, proactivity, harness, agent-skills
+- **Transcript:** [cached](../research/personal-agent-gateway/sources/krentsel-gateway-deep-dive-sxX8BMscce0.md)
 
 ## Why This Matters (personal)
 
-Useful systems-level map of **why OpenClaw feels different** from reactive coding agents — not marketing, but architecture: gateway controller, scheduled wake-ups (cron + heartbeat), markdown-as-config, and optional memory search. Complements the Simon Scrapes memory taxonomy (which names OpenClaw-style patterns at Level 3) with **implementation detail from someone who read the code**.
+Useful systems-level map of **why Personal Agent Gateway feels different** from reactive coding agents — not marketing, but architecture: gateway controller, scheduled wake-ups (cron + heartbeat), markdown-as-config, and optional memory search. Complements the Simon Scrapes memory taxonomy (which names Personal Agent Gateway-style patterns at Level 3) with **implementation detail from someone who read the code**.
 
 Recommended learning path: watch or skim transcript **after** [Simon Scrapes — Memory Systems](simon-scrapes-claude-code-memory-systems.md) for vocabulary, **before** comparing to Field Notes / PAI / Pi.
 
@@ -22,7 +22,7 @@ Recommended learning path: watch or skim transcript **after** [Simon Scrapes —
 
 Krentsel frames LLM evolution in four phases (next-token → chat assistant → static orchestration → **autonomous agents** with dynamic tool use and self-modification). A **harness** bundles context for each LLM call; the industry trend is increasing **loopiness** (nested agent loops).
 
-OpenClaw's architecture is three layers:
+Personal Agent Gateway's architecture is three layers:
 
 1. **Connectors (northbound)** — WhatsApp, Telegram, Discord, Gmail, etc.; user rarely touches the admin UI after setup.
 2. **Gateway controller (middle)** — routes messages, manages **sessions** (OS-process metaphor: isolation, permissions, sandboxes), **cron** (predictable scheduled tasks), **heartbeat** (unpredictable proactive checks every ~30 min), and **memory** (vector DB + daily summaries; retrieval is **agent-initiated**, not auto-injected).
@@ -43,13 +43,13 @@ Two mechanisms:
 | **Cron** | Predictable schedule | Daily 9am paper digest — agent schedules its own cron job |
 | **Heartbeat** | Unpredictable / monitoring | Every 30 min: run `heartbeat.md`, check experiments, email, inter-session fixes |
 
-This is the concrete implementation behind “OpenClaw moved us toward AS1” in [Miessler’s DA thesis](daniel-miessler-single-da-thesis.md) — proactive monitoring, not just reactive chat.
+This is the concrete implementation behind “Personal Agent Gateway moved us toward AS1” in [Miessler’s DA thesis](daniel-miessler-single-da-thesis.md) — proactive monitoring, not just reactive chat.
 
 ### Memory: vector store + optional retrieval
 
 Memory module = vector DB of conversations/documents + end-of-day summary docs. **Important:** the system prompt tells the agent to use `memory search` / `memory get` **when needed** — memories are not bulk-injected up front. Closer to **on-demand recall** than always-loaded context.
 
-Maps to Simon Scrapes **Level 3 (OpenClaw-style daily notes + semantic)** and partially Level 4 if verbatim search is used — but Field Notes still lacks this **automated promotion/dreaming** loop unless added.
+Maps to Simon Scrapes **Level 3 (Personal Agent Gateway-style daily notes + semantic)** and partially Level 4 if verbatim search is used — but Field Notes still lacks this **automated promotion/dreaming** loop unless added.
 
 ### Sessions = processes, agents = threads
 
@@ -61,7 +61,7 @@ Everything collapses to one LLM call with a fixed template: tools list, skill he
 
 ## How This Maps to Field Notes
 
-| OpenClaw | Field Notes today | Gap / note |
+| Personal Agent Gateway | Field Notes today | Gap / note |
 |---|---|---|
 | `user.md` / bootstrap | `ABOUT.md` | Human-written; no self-bootstrap |
 | `soul.md` / `agents.md` | `AGENTS.md` + `.cursor/rules/` | Similar discipline layer; no evolving “soul” |
@@ -71,17 +71,17 @@ Everything collapses to one LLM call with a fixed template: tools list, skill he
 | Skills (progressive) | `.agents/skills/` | Same AgentSkills standard — aligned |
 | Cron tool (agent schedules itself) | Git worktrees + async Paude | Partial — human still harvests |
 
-**Verdict for the “database vs markdown” question:** OpenClaw uses **both** — markdown for identity/discipline/config, **vector DB for memory search**. Field Notes is markdown-first; adding OpenClaw-like memory would mean a **retrieval layer** (Level 3), not replacing essays/runbooks with SQL.
+**Verdict for the “database vs markdown” question:** Personal Agent Gateway uses **both** — markdown for identity/discipline/config, **vector DB for memory search**. Field Notes is markdown-first; adding Personal Agent Gateway-like memory would mean a **retrieval layer** (Level 3), not replacing essays/runbooks with SQL.
 
 ## Position in the Ecosystem Map
 
-| System | Primary problem | OpenClaw relation |
+| System | Primary problem | Personal Agent Gateway relation |
 |---|---|---|
 | **Field Notes** | Git-backed reference + harness for human-reviewed work | Discipline + wiki layers; no proactive gateway |
-| **Karpathy LLM Wiki** | Synthesized knowledge base | OpenClaw memory is session/conversation oriented, not wiki schema |
-| **MemPalace** | Verbatim recall | OpenClaw memory is semantic search; different retrieval contract |
-| **PAI/Kai** | Single digital assistant + scaffolding | Kai is Pi-native; Miessler explicitly says “none of it is OpenClaw” but proactivity parallel |
-| **Paude** | Containerized agent runtime | OpenClaw supported as `--agent openclaw`; Red Hat BYOA blog operationalizes it on OpenShift AI |
+| **Karpathy LLM Wiki** | Synthesized knowledge base | Personal Agent Gateway memory is session/conversation oriented, not wiki schema |
+| **MemPalace** | Verbatim recall | Personal Agent Gateway memory is semantic search; different retrieval contract |
+| **PAI/Kai** | Single digital assistant + scaffolding | Kai is Pi-native; Miessler explicitly says “none of it is Personal Agent Gateway” but proactivity parallel |
+| **Paude** | Containerized agent runtime | Browser-based gateway agent supported in Paude (see `paude create --help` for agent flags); Red Hat BYOA blog operationalizes the gateway runtime on OpenShift AI |
 
 ## Notable Quotes (paraphrased from transcript)
 
@@ -92,15 +92,14 @@ Everything collapses to one LLM call with a fixed template: tools list, skill he
 
 ## Related Workspace Material
 
-- [Simon Scrapes — Memory Systems](simon-scrapes-claude-code-memory-systems.md) — Level 3 OpenClaw-style; taxonomy
-- [Karpathy — LLM Wiki](karpathy-llm-wiki.md) — synthesis layer vs OpenClaw session memory
-- [Daniel Miessler — Single DA Thesis](daniel-miessler-single-da-thesis.md) — proactivity / OpenClaw mention
-- [Portable AI Toolkit](../docs/ai-engineering/portable-ai-toolkit.md) — Paude + Pi + Zanshin vs OpenClaw-as-runtime
-- [Paude getting started](../docs/ai-engineering/paude-getting-started.md) — `--agent openclaw`
-- Red Hat BYOA OpenClaw edition — `research/openshift-ai-llm-deployment/sources/ref-50.md`
+- [Simon Scrapes — Memory Systems](simon-scrapes-claude-code-memory-systems.md) — Level 3 Personal Agent Gateway-style; taxonomy
+- [Karpathy — LLM Wiki](karpathy-llm-wiki.md) — synthesis layer vs Personal Agent Gateway session memory
+- [Daniel Miessler — Single DA Thesis](daniel-miessler-single-da-thesis.md) — proactivity / Personal Agent Gateway mention
+- [Portable AI Toolkit](../docs/ai-engineering/portable-ai-toolkit.md) — Paude + Pi + Zanshin vs Personal Agent Gateway-as-runtime
+- [Paude getting started](../docs/ai-engineering/paude-getting-started.md) — gateway runtime agent in Paude
+- Red Hat BYOA Personal Agent Gateway edition — `research/openshift-ai-llm-deployment/sources/ref-50.md`
 
 ## Sources
 
 - Video: https://www.youtube.com/watch?v=sxX8BMscce0
-- Transcript: [research/openclaw/sources/openclaw-video-sxX8BMscce0.md](../research/openclaw/sources/openclaw-video-sxX8BMscce0.md)
-- OpenClaw: https://github.com/openclaw/openclaw
+- Transcript: [research/personal-agent-gateway/sources/krentsel-gateway-deep-dive-sxX8BMscce0.md](../research/personal-agent-gateway/sources/krentsel-gateway-deep-dive-sxX8BMscce0.md)

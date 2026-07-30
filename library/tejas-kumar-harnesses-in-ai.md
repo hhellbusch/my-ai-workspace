@@ -78,7 +78,7 @@ Use smaller/cheaper models (GPT-3.5, open-weight) when harness provides groundin
 | Tool registry + stable environment | Loop 3 agent slide; `AGENTS.md` + rules + skills |
 | Prompt unchanged, harness changed outcome | Invest in harness (docs, rules, skills) not prompt hacks |
 
-Related: [Lopopolo](ryan-lopopolo-harness-engineering.md) · [Horthy](dex-horthy-no-vibes-allowed.md) · [Krentsel / OpenClaw](alex-krentsel-openclaw-deep-dive.md)
+Related: [Lopopolo](ryan-lopopolo-harness-engineering.md) · [Horthy](dex-horthy-no-vibes-allowed.md) · [Krentsel / Personal Agent Gateway](alex-krentsel-personal-agent-gateway-deep-dive.md)
 
 ---
 

@@ -1,0 +1,22 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#Manager.Manager",
+  "@odata.id": "/redfish/v1/Managers/iDRAC.Embedded.1",
+  "@odata.type": "#Manager.v1_15_0.Manager",
+  "Id": "iDRAC.Embedded.1",
+  "Name": "iDRAC Service",
+  "ManagerType": "BMC",
+  "Status": {
+    "State": "Enabled",
+    "Health": "OK"
+  },
+  "VirtualMedia": {
+    "@odata.id": "/redfish/v1/Managers/iDRAC.Embedded.1/VirtualMedia"
+  },
+  "Links": {
+    "ManagerForServers": [
+      {
+        "@odata.id": "/redfish/v1/Systems/System.Embedded.1"
+      }
+    ]
+  }
+}

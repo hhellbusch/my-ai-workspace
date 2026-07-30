@@ -33,6 +33,8 @@ review:
 - [Approach A — Ignition](#approach-a--ignition)
 - [Approach B — Script + systemd](#approach-b--script--systemd)
 - [14 TiB NVMe sizing](#14-tib-nvme-sizing)
+- [Multiple NVMe drives](#multiple-nvme-drives)
+- [Pitfalls](#pitfalls)
 - [GitOps delivery](#gitops-delivery)
 - [Rollout and verification](#rollout-and-verification)
 - [Choosing between A and B](#choosing-between-a-and-b)
@@ -45,10 +47,37 @@ review:
 On bare-metal workers the OS virtual disk carries `/var` (container images, kubelet, logs).
 Journal and `/var/log` growth can pressure the OS disk even when large secondary NVMe drives are installed.
 
-Goal: mount **`/var/log`** (including journal persistence under `/var/log/journal`) on a **dedicated partition** on secondary NVMe, using a **stable `by-path`** identifier on homogeneous hardware.
+Goal: mount **`/var/log`** on a **dedicated partition or disk** on secondary NVMe, using a **stable `by-path`** identifier on homogeneous hardware.
+
+That single mount covers **journal**, **kubelet container log files**, and other paths under `/var/log` (see below).
 
 This does **not** replace cluster logging (Loki / Cluster Logging).
 It relocates **node-local** log storage and caps journal growth via `journald` limits.
+
+---
+
+## What mounting `/var/log` includes
+
+Mounting at **`/var/log`** moves the **entire tree** — no separate `MachineConfig` for pod logs.
+
+| Path | Role |
+|------|------|
+| `/var/log/journal/` | Persistent systemd journal (kubelet, crio, units) |
+| `/var/log/pods/` | Per-pod log files (`kubectl logs` reads via kubelet) |
+| `/var/log/containers/` | Symlinks into `pods/` |
+| `/var/log/audit/` | auditd (if enabled) |
+
+**Does not move:** `/var/lib/containers` (images), `/var/lib/kubelet` (sandboxes, emptyDir).
+Kubelet **log rotation** (`containerLogMaxSize`, `containerLogMaxFiles`) still applies regardless of disk.
+
+Verify pod logs share the mount:
+
+```bash
+oc debug node/worker-0 -- chroot /host bash -c '
+  findmnt /var/log /var/log/pods 2>/dev/null || findmnt /var/log
+  df -h /var/log/pods
+'
+```
 
 ---
 
@@ -232,6 +261,43 @@ A 256 GiB partition formats in seconds; a 14 TiB `mkfs` on first boot does n
 
 ---
 
+## Multiple NVMe drives
+
+Extra NVMe bays change **layout**, not the MC mechanism.
+You still mount **`/var/log` once**; `/var/log/pods` comes along automatically.
+
+| Layout | When |
+|--------|------|
+| **p1 log slice on one large NVMe** | Single data NVMe (e.g. 14 TiB) — p2+ for [application PV](../secondary-disk/use-cases/application-pv.md) |
+| **Whole smaller NVMe → `/var/log`** | Two or more NVMe — dedicate a 1–2 TiB drive to logs; use [whole-disk mount](../../labs/sno-kvm-lab/hpp-vdb-mount.yaml) instead of partitioning a 14 TiB data drive |
+| **NVMe #2 = logs, #3+ = data** | Cleanest with 3+ drives — one `by-path` per role in Git |
+
+```text
+BOSS/PERC (OS)     nvme1 (logs)           nvme2–n (data)
+──────────────     ────────────           ──────────────
+/var, images       whole disk or p1       Local Storage / LVMS / CSI
+                   → /var/log
+                   (includes pods/)
+```
+
+Each bay needs its own validated `by-path` in inventory.
+See [secondary disk overview](../secondary-disk/README.md#large-nvme-layout-example).
+
+---
+
+## Pitfalls
+
+| Pitfall | Why it hurts | Mitigation |
+|---------|--------------|------------|
+| **Separate mount at `/var/log/pods` only** | Journal/audit stay on OS disk; nested mounts are harder to reason about | Mount parent **`/var/log`** |
+| **Wrong `by-path` per bay** | MC formats or mounts the wrong NVMe | Validate on ≥3 nodes; document bay → path in Git |
+| **Same block device to CSI and log MC** | Portworx/ODF vs Ignition fight over the disk | One consumer per device or explicit p1/p2 split |
+| **Full 14 TiB to logs** | Wastes data-tier capacity; huge FS if uncapped | Fixed slice or dedicated smaller NVMe + `journald` limits |
+| **Both approach A and B applied** | Conflicting units / double mount | One MC per pool |
+| **Expecting `/var/log` to free image space** | CRI-O/kubelet still on OS `/var` | Size OS VD or see [container storage](../secondary-disk/use-cases/container-storage.md) |
+
+---
+
 ## GitOps delivery
 
 Neither approach requires a custom CRD.
@@ -286,7 +352,8 @@ oc debug node/$NODE -- chroot /host bash -c '
 Expected:
 
 - `/var/log` on `by-partlabel/var_log` (or child device), **not** the OS `/var` filesystem
-- Partition 1 ≈ 256 GiB; ~13 TiB unallocated on the NVMe
+- `df /var/log/pods` shows the **same** filesystem as `/var/log`
+- Partition 1 ≈ 256 GiB (or whole log NVMe); data NVMe(s) separate when multi-bay
 - `journalctl --disk-usage` well below partition size
 
 ### Failure signals

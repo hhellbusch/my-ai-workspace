@@ -30,6 +30,7 @@ Cross-cutting reference for how RHACM and Argo CD divide fleet work — multiple
 
 - **[fleet-control-spectrum.md](fleet-control-spectrum.md)** — Reconciliation authority, compliance posture, lifecycle scope, and a reconsideration checklist for GitOps-heavy designs
 - **[rhacm/git-driven-configuration.md](rhacm/git-driven-configuration.md)** — RHACM hub and policy resources in Git; rebuild-from-scratch posture; delivery via Argo CD
+- **[bigfix-gitops-on-ocp.md](bigfix-gitops-on-ocp.md)** — Food for thought: HCL BigFix on OpenShift with GitOps — ownership matrix and team discussion prompts
 - **[fleet-management-ideas.md](fleet-management-ideas.md)** — Review log of doc and framework follow-ups (not a committed roadmap)
 
 ---
@@ -38,12 +39,13 @@ Cross-cutting reference for how RHACM and Argo CD divide fleet work — multiple
 
 ### Bare Metal Dev Sandbox (`devops/bare-metal-dev-sandbox/`)
 
-Local Redfish/BMC preflight harness for developing ACM bare-metal automation without dedicated hardware per developer. *(In progress — not yet in tree; links will appear here when committed.)*
+Local Redfish/BMC preflight harness for developing ACM bare-metal automation without dedicated hardware per developer.
 
+- **[README.md](bare-metal-dev-sandbox/README.md)** — start here; fidelity tiers and promotion gates
+- **[HARNESS.md](bare-metal-dev-sandbox/HARNESS.md)** — scenario runner and assertion model
+- **[WORKSHOP.md](bare-metal-dev-sandbox/WORKSHOP.md)** — hands-on labs and peer teaching outline
 - **`scenarios/`** — validation-gate scenarios (baseline pass, firewall blocks, BMC auth failure, kitchen-sink fail, and more)
 - **`playbooks/`** + **`roles/preflight_validate/`** — Ansible validation gate against sushy-static mock BMCs
-- **`WORKSHOP.md`** — hands-on labs and peer teaching outline
-- **`HARNESS.md`** — scenario runner and assertion model
 
 ### [Ansible](ansible/)
 

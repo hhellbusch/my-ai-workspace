@@ -21,6 +21,7 @@ review:
 - [Offload candidates](#offload-candidates)
 - [Implementation patterns](#implementation-patterns)
 - [Large NVMe layout (example)](#large-nvme-layout-example)
+- [Multiple NVMe drives](#multiple-nvme-drives)
 - [Fleet identity (`by-path`)](#fleet-identity-by-path)
 - [GitOps shape](#gitops-shape)
 - [Use-case guides](#use-case-guides)
@@ -120,6 +121,29 @@ nvme1n1  (14 TiB)
 
 ---
 
+## Multiple NVMe drives
+
+When the host has **two or more** large NVMe devices, prefer **role per bay** over slicing one 14 TiB drive for everything.
+
+```text
+BOSS/PERC (OS)     nvme bay 2 (logs)      nvme bay 3+ (data)
+──────────────     ─────────────────      ───────────────────
+/sysroot, /var     whole disk → /var/log   Local Storage / LVMS / CSI
+(images, kubelet)  (includes pods/)       (whole disk each)
+```
+
+| Strategy | Logs | Data PVCs / CSI |
+|----------|------|-----------------|
+| **One huge NVMe only** | p1 slice (256 GiB) | p2+ or unallocated remainder |
+| **Log NVMe + data NVMe(s)** | Whole smaller drive at `/var/log` | Other bay(s) — no log partition on data disks |
+| **Three+ NVMe** | Dedicated log bay | One or more bays per storage operator |
+
+Mounting **`/var/log`** covers **`/var/log/pods`** and **`/var/log/containers`** — do not add a second mount for pod logs alone.
+
+Details and pitfalls: [var-log guide](../var-log-disk/README.md#multiple-nvme-drives).
+
+---
+
 ## Fleet identity (`by-path`)
 
 | Identifier | Use for fleet-wide MC? |
@@ -188,6 +212,9 @@ Spoke (Argo CD): day-2 `MachineConfig` and storage CRs.
 - Give logs an entire 14 TiB partition without `journald` caps
 - Run Pattern A and B mount logic for the same path on one node
 - `wipeTable: true` on a data disk with existing PVCs
+- Mount only `/var/log/pods` while leaving journal on the OS disk (mount **`/var/log`** instead)
+- Assign the same physical NVMe to both a log `MachineConfig` and a CSI/storage operator
+- Assume multiple NVMe bays share one `by-path` — each bay needs discovery and a Git entry
 
 ---
 

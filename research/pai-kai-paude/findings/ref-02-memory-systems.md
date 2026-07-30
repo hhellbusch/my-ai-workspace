@@ -21,7 +21,7 @@ A taxonomy of 6 memory levels for Claude Code, evaluated by storage mechanism an
 |---|---|---|---|---|
 | 1 | Native | CLAUDE.md + memory.md | Always-loaded context | Built-in to Claude Code |
 | 2 | Structured + hooks | Directory tree (general/tools/domain) | SessionStart hook auto-injects memory.md index | John/Paweł pattern |
-| 3 | Semantic | OpenClaw-style (memory.md + daily notes) | UserPromptSubmit hook: top-3 semantic matches injected | memsearch (Zilliz) |
+| 3 | Semantic | Personal Agent Gateway-style (memory.md + daily notes) | UserPromptSubmit hook: top-3 semantic matches injected | memsearch (Zilliz) |
 | 4 | Verbatim | SQL + ChromaDB, memory palace structure (wings/rooms/drawers) | AA-language symbolic index; verbatim retrieval in 42ms | MemPalace |
 | 5 | Knowledge base | Markdown folders (raw/ → wiki/) | Claude maintains wiki; Obsidian visualizes connections | Karpathy LLM Wiki / Recall |
 | 6 | Cross-tool | Postgres (thoughts table + embeddings) | MCP server → Supabase edge function; any AI tool queries | OpenBrain / Mem0 |
@@ -43,7 +43,7 @@ The video's Level 2–4 are all automated solutions to the same problem. The wor
 
 ### 2. Memsearch (Level 3) is the most immediately relevant tool
 
-**Why it fits:** OpenClaw's memory architecture (memory.md + daily notes + background "dreaming") is structurally similar to what the workspace already does. Memsearch ports this to Claude Code with two additions: semantic vector search and a `UserPromptSubmit` hook that auto-injects the top 3 matches without requiring the user to ask. The folder format is plain markdown — readable, portable, version-controllable.
+**Why it fits:** Personal Agent Gateway's memory architecture (memory.md + daily notes + background "dreaming") is structurally similar to what the workspace already does. Memsearch ports this to Claude Code with two additions: semantic vector search and a `UserPromptSubmit` hook that auto-injects the top 3 matches without requiring the user to ask. The folder format is plain markdown — readable, portable, version-controllable.
 
 **The dreaming process** — a background pass that promotes recurring daily-note content into long-term memory.md and forgets stale content — is interesting for YOLO-mode: it's an automated version of the progressive bookkeeping pattern. Instead of the human deciding what's worth capturing, the system scores and promotes.
 

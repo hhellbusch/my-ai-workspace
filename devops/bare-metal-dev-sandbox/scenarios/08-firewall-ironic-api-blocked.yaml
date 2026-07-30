@@ -1,0 +1,46 @@
+---
+# Scenario: install-phase TCP 6385 (Ironic API on bootstrap) blocked on the data path.
+name: firewall-ironic-api-blocked
+description: Install-phase port 6385 closed — common Gen17 install-path blocker alongside 9999.
+
+validation_mode: harness
+expect:
+  exit_code: 2
+  blocking:
+    - id: network_firewall_install_ports
+
+inputs:
+  hub:
+    ocp_version: "4.20.1"
+    idrac_generation: "10"
+    min_ocp_version_idrac10: "4.20.0"
+  bmc:
+    hosts:
+      - name: control-plane-01
+        address: "127.0.0.1"
+        port: 8000
+    credentials:
+      username: root
+      password: calvin
+    virtual_media_privilege: administrator
+  network:
+    probe_from: local
+    firewall_checks:
+      - id: ironic-api
+        port: 6385
+        targets:
+          - host: "127.0.0.1"
+            port: 6385
+        state: closed
+      - id: ironic-ipa
+        port: 9999
+        targets:
+          - host: "127.0.0.1"
+            port: 9999
+        state: open
+      - id: virtual-media-http
+        port: 6180
+        targets:
+          - host: "127.0.0.1"
+            port: 6180
+        state: open

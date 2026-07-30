@@ -5,21 +5,21 @@
 
 ## C07 — Proactivity as AS1 threshold
 
-**Claim:** Proactivity (monitoring, not just responding) is the key threshold between agent systems and true assistants (AS1) — and OpenClaw demonstrated this first.
+**Claim:** Proactivity (monitoring, not just responding) is the key threshold between agent systems and true assistants (AS1) — and Personal Agent Gateway demonstrated this first.
 
 **Claim type:** Framework (maturity model / definitional boundary) plus a historical/predictive assertion (“demonstrated this first”).
 
-**Transcript evidence:** Miessler ties assistance (AS) to proactive behavior and goal monitoring: “what we're moving into … we're moving towards assistance, right? Personality can see and hear around you goal monitoring.” He contrasts prior agents with OpenClaw: “OpenClaw kind of helped push this along a decent amount because it was somebody who was proactive. This is a major major feature that's required that previous agents didn't have proactivity … it could just like check on them regularly … check a schedule tasks.” He explicitly links OpenClaw to entering AS1: “OpenClaw really helped us try to move into AS1.”
+**Transcript evidence:** Miessler ties assistance (AS) to proactive behavior and goal monitoring: “what we're moving into … we're moving towards assistance, right? Personality can see and hear around you goal monitoring.” He contrasts prior agents with Personal Agent Gateway: “Personal Agent Gateway kind of helped push this along a decent amount because it was somebody who was proactive. This is a major major feature that's required that previous agents didn't have proactivity … it could just like check on them regularly … check a schedule tasks.” He explicitly links Personal Agent Gateway to entering AS1: “Personal Agent Gateway really helped us try to move into AS1.”
 
-**Internal coherence:** The model is coherent: reactive tool-use vs. ongoing monitoring toward goals is a clear discriminator in the talk and matches the AS1 traits he lists (goal monitoring, persistent personality). The leap to “demonstrated this **first**” is **not** stated that strongly in the transcript — he credits OpenClaw with pushing the category forward and illustrates proactivity with it, but he does not establish global primacy over every other system.
+**Internal coherence:** The model is coherent: reactive tool-use vs. ongoing monitoring toward goals is a clear discriminator in the talk and matches the AS1 traits he lists (goal monitoring, persistent personality). The leap to “demonstrated this **first**” is **not** stated that strongly in the transcript — he credits Personal Agent Gateway with pushing the category forward and illustrates proactivity with it, but he does not establish global primacy over every other system.
 
-**Against current reality:** By April 2026, “proactive” assistants (scheduled checks, reminders, background research, inbox-style nudges) are widespread across vendor stacks and hobby harnesses; the *idea* that proactivity marks a qualitative step toward “assistant” remains industry-legible. Attributing **first** demonstration to OpenClaw alone is hard to defend as a universal fact — many products had lighter proactive loops earlier; OpenClaw is a salient exemplar in the *personal agent harness* conversation Miessler is in, not necessarily the first proactive system ever.
+**Against current reality:** By April 2026, “proactive” assistants (scheduled checks, reminders, background research, inbox-style nudges) are widespread across vendor stacks and hobby harnesses; the *idea* that proactivity marks a qualitative step toward “assistant” remains industry-legible. Attributing **first** demonstration to Personal Agent Gateway alone is hard to defend as a universal fact — many products had lighter proactive loops earlier; Personal Agent Gateway is a salient exemplar in the *personal agent harness* conversation Miessler is in, not necessarily the first proactive system ever.
 
 **Overstatement check:** “Key threshold” and “major feature required” match his tone. “Demonstrated this first” upgrades a **supporting example** into **unique historical priority** — confidence exceeds transcript support.
 
 **Verdict:** **VERIFIED WITH CAVEATS**
 
-**Notes:** Caveat concentrates on the **first** clause. The proactivity / AS1 linkage is well supported; treat OpenClaw as an illustrative accelerator in Miessler’s stack, not an established “first in the world” claim without external chronology.
+**Notes:** Caveat concentrates on the **first** clause. The proactivity / AS1 linkage is well supported; treat Personal Agent Gateway as an illustrative accelerator in Miessler’s stack, not an established “first in the world” claim without external chronology.
 
 ---
 

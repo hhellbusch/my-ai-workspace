@@ -1,0 +1,38 @@
+---
+# Scenario: BMC Redfish auth fails — privilege check must be skipped, gate fails on auth only.
+# Note: sushy-static does not enforce HTTP auth; harness uses auth_ok: false to simulate failure.
+name: bmc-auth-failure
+description: Simulated BMC auth failure; hardware checks gated off before privilege probe.
+
+validation_mode: harness
+expect:
+  exit_code: 2
+  blocking:
+    - id: bmc_redfish_authentication
+  not_blocking:
+    - id: bmc_virtual_media_privilege
+
+inputs:
+  hub:
+    ocp_version: "4.20.1"
+    idrac_generation: "10"
+    min_ocp_version_idrac10: "4.20.0"
+  bmc:
+    hosts:
+      - name: control-plane-01
+        address: "127.0.0.1"
+        port: 8000
+    credentials:
+      username: root
+      password: calvin
+      auth_ok: false
+    virtual_media_privilege: readonly
+  network:
+    probe_from: local
+    firewall_checks:
+      - id: ironic-ipa
+        port: 9999
+        targets:
+          - host: "127.0.0.1"
+            port: 9999
+        state: open

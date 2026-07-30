@@ -1,0 +1,12 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#Chassis.Chassis",
+  "@odata.id": "/redfish/v1/Chassis/System.Embedded.1",
+  "@odata.type": "#Chassis.v1_22_0.Chassis",
+  "Id": "System.Embedded.1",
+  "Name": "Sandbox Chassis",
+  "ChassisType": "RackMount",
+  "Status": {
+    "State": "Enabled",
+    "Health": "OK"
+  }
+}
