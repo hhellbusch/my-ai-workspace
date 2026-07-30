@@ -46,7 +46,7 @@ This workspace has persistent project state that survives across sessions. When 
 
 - **`ABOUT.md`** — Read first. The workspace owner's self-description; takes precedence over corpus inferences.
 - **`BACKLOG.md`** — In-progress work, what's coming next. The `/start` skill provides a structured orientation.
-- **`.planning/<project>/whats-next.md`** — Handoff from a previous session. The project dir is the one with the most recently modified `BRIEF.md`. If no project BRIEF exists, falls back to root `.planning/`. Staleness-check: if commits have been made since it was written, cross-reference against the backlog and git log.
+- **`.planning/<project>/whats-next.md`** — Handoff from a previous session (see Progressive Bookkeeping for writing checkpoints). The project dir is the one with the most recently modified `BRIEF.md`. If no project BRIEF exists, falls back to root `.planning/`. Staleness-check: if commits have been made since it was written, cross-reference against the backlog and git log.
 - **`STYLE.md`** (repo root) — Workspace-level writing defaults. Check before writing any `docs/` or `devops/` content. Review metadata: `rules/review-tracking.md`.
 - **`.planning/`** — Project briefs, roadmaps, style supplements.
 - **`library/`** — Personal reference library.
@@ -119,6 +119,66 @@ Derived from Scott Ambler's Agile Modeling / Agile Data work. AI makes artifact 
 
 ---
 
+## Progressive Bookkeeping
+
+> Ambient posture (always on). Full reference: `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` (Progressive bookkeeping section).
+
+Session-end bookkeeping is not enough — crashes, resets, and interruptions happen. The goal: at any point in a session, current state is recoverable. Write checkpoints to `.planning/<project>/whats-next.md` (project-scoped; resolved via BRIEF.md mtime). Append with a datestamp when the file already has content — don't replace. If a session ends without a checkpoint, the git log is the fallback.
+
+Run a checkpoint before risky operations — large deletions, file moves/renames, multi-file refactors — and after substantial progress. Quick capture (two or three appended lines, no structure) is a fallback, not a default.
+
+**Deep mode:** say "checkpoint" or "write a handoff" (`/checkpoint` in Pi) — use the kit checkpoint format. Before close-out, ask what's in this window that won't survive a reboot.
+
+---
+
+## Stack Tracking
+
+> Ambient posture (always on). Full reference: `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` (Stack tracking section).
+
+Conversations naturally branch. Name subtopics explicitly; resolve a subtopic before going deeper. Stack depth ≥ 4 is a signal to park something. Open threads belong in checkpoints.
+
+Without Pi's `/push` / `/pop` / `/stack`, track depth in prose — state what you're parking and what you're returning to when switching topics.
+
+**Deep mode:** say "push [topic]" or "pop stack" (`/push`, `/pop`, `/stack` in Pi) — see kit for command behavior.
+
+---
+
+## Verification
+
+> Ambient posture (always on). Full reference: `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` (Verification section).
+
+AI output that sounds confident may still be wrong — fluent prose covers both assertion and evidence. Before accepting a significant finding: is this assertion or evidence? What's the source? For code, test it; for plans, name what would prove it wrong. See also In-Session Context Awareness for re-read-before-decide.
+
+The practical test: can you point to the thing that would disprove this? If not, you're trusting fluency.
+
+**Deep mode:** say "verify that before we proceed" — apply the kit checks to the specific claim or output.
+
+---
+
+## Review Discipline
+
+> Ambient posture (always on). Workspace policy: `AI-DISCLOSURE.md`. Review metadata: `rules/review-tracking.md`. Kit reference: `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` (Review discipline section).
+
+AI output is a draft until the author says otherwise. Do not mark new files as reviewed, approved, or finalized — that is the author's decision. Follow `AI-DISCLOSURE.md` for disclosure and review-status conventions (frontmatter on `docs/` and `devops/` per `rules/review-tracking.md`).
+
+Flag first-person biographical claims for author review. When an edit makes previously reviewed content stale, surface it — proceed with the edit; staleness is the author's problem.
+
+**Deep mode:** use `/review` before commit on pending changes; follow `AI-DISCLOSURE.md` for harness and model identifiers when identifiable.
+
+---
+
+## Branching Discipline
+
+> Ambient posture (on git work). Workspace rules: `rules/branching.md`. Kit reference: `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` (Branching discipline section).
+
+Default: `main` + feature branches — create `feature/<name>` off `main`, work, merge back. Escalate to `develop` only when multiple features need integration testing together or testing on main is too expensive. Integration branches receive merges only — never direct commits. Hotfixes always off `main`.
+
+`git pull --rebase origin main` before pushing. Prefer `--no-ff` merge commits; squash only when the branch has noisy WIP and no other branch has merged from it.
+
+**Deep mode:** see `rules/branching.md` for branch naming (`experiment/`, `docs/`, `fix/`), what may go direct to `main`, and force-push discipline.
+
+---
+
 ## Case Study Reflection
 
 When completing a non-trivial piece of work — building a tool, solving a multi-step problem, creating a new workflow pattern — briefly consider:
@@ -187,7 +247,7 @@ An orphaned transcript in `research/*/sources/` with no library entry is an inco
 
 ## Context Memory
 
-Maintain a brief engineering journal for decisions and context that matter across sessions. Log when you: choose an approach or tool, change scope mid-task, make an architectural decision, or encounter a non-obvious constraint. Keep it short — one paragraph is enough.
+Maintain a brief engineering journal for decisions and context that matter across sessions. Log when you: choose an approach or tool, change scope mid-task, make an architectural decision, or encounter a non-obvious constraint. Keep it short — one paragraph is enough. For session recovery and handoffs, see Progressive Bookkeeping.
 
 ---
 
