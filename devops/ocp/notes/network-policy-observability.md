@@ -1,7 +1,7 @@
 ---
 review:
   status: unreviewed
-  notes: "New reference — network policy and observability for Kafka/Flink on OCP."
+  notes: "Network policy and observability for Kafka/Flink on OCP; ANP tiers, platform baseline egress, DNS/API ports."
 ---
 
 # Network Policy and Observability on OpenShift
@@ -26,6 +26,8 @@ review:
 ## On this page
 
 - [How policies work on OCP](#how-policies-work-on-ocp)
+- [ANP priority and policy tiers](#anp-priority-and-policy-tiers)
+- [Platform baseline egress](#platform-baseline-egress)
 - [Observability options](#observability-options)
 - [Kafka: Strimzi vs Confluent](#kafka-strimzi-vs-confluent)
 - [Flink network requirements](#flink-network-requirements)
@@ -52,18 +54,127 @@ Once a pod is selected by any `NetworkPolicy`, it becomes *isolated* — only ex
 **Common gotchas:**
 
 - **DNS** must be allowed under default-deny.
-  On OCP, egress to `openshift-dns` on UDP/TCP **5353** (or `kube-dns` on port 53 in upstream clusters).
-- **kube-apiserver** egress is required for any workload that talks to the in-cluster API (`kubernetes.default` ClusterIP, typically TCP **443**).
+  On OCP, egress to `openshift-dns` on UDP/TCP **5353** (pod listen port; the Service presents port **53** to clients).
+- **kube-apiserver** egress is required for workloads that use the in-cluster API (`$KUBERNETES_SERVICE_HOST` / `$KUBERNETES_SERVICE_PORT` — the **`kubernetes` Service on TCP 443**).
+  Control-plane node allows on **6443** do not substitute for that Service path.
   Easy to miss for classic Confluent Helm / hand-written CFK policies — see [Kafka broker init — kubernetes Service unreachable](../troubleshooting/kafka-broker-init-kubernetes-svc/README.md).
+- **Do not hardcode the kubernetes Service VIP** in `ipBlock` rules as a permanent pattern.
+  Prefer [platform baseline egress](#platform-baseline-egress) or the cluster **`serviceNetwork` CIDR** on port **443**.
 - Policies match **pod labels**, not Deployment or CR names.
 - Cross-namespace flows use `namespaceSelector` + `podSelector`.
 - `EgressFirewall` controls traffic to external IPs; `NetworkPolicy` controls pod-to-pod and pod-to-service traffic inside the cluster.
-- **ANP/BANP precedence:** Admin and baseline admin policies evaluate alongside namespace `NetworkPolicy` objects.
+- **ANP/BANP precedence:** Admin and baseline admin policies evaluate in a **tier before** namespace `NetworkPolicy` objects (unless a rule `Pass`es to the next tier).
   A BANP default-deny can block traffic even when a namespace `NetworkPolicy` allows it — design platform baselines and namespace policies together, not in isolation.
+- **ANP priority:** Only `AdminNetworkPolicy` has `spec.priority` (**0–99**; lower number = higher precedence).
+  **Duplicate ANP priorities have undefined order** — intermittent allow/deny is a common symptom.
+  `BaselineAdminNetworkPolicy` has **no priority field** (cluster singleton, fixed tier). See [ANP priority and policy tiers](#anp-priority-and-policy-tiers).
 - **External egress** (S3 checkpoints, schema registry outside the cluster) needs `EgressFirewall` or an explicit egress allow to the target CIDR on port 443 — a namespace `NetworkPolicy` alone is not enough for traffic leaving the cluster.
 
 Cluster-wide audit log settings live in `policyAuditConfig` on the `Network` CR.
 See [OVN-Kubernetes install config — Policy Audit Config](../examples/networking/ovn-kubernetes-install-config/README.md#policy-audit-config-parameters).
+
+---
+
+## ANP priority and policy tiers
+
+OVN-Kubernetes evaluates policies in **three tiers** (not one shared priority list):
+
+| Tier | Resource | Priority field | Role |
+|------|----------|----------------|------|
+| 1 | `AdminNetworkPolicy` (ANP) | **`spec.priority` 0–99** (required) | Admin allow/deny/pass; lower number wins among ANPs |
+| 2 | `NetworkPolicy` | None | Namespace-scoped rules |
+| 3 | `BaselineAdminNetworkPolicy` (BANP) | **None** — singleton named `default` | Catch-all guardrail after tier 2 |
+
+**ANP vs BANP:** ANP is always evaluated **before** BANP. They are not ranked against each other by number — tier order decides. A BANP `Deny` does not override an ANP `Allow` on the same traffic; the ANP result applies first.
+
+**When BANP is not defined:** There is no tier-3 guardrail. Traffic that passes tier 1 (ANP) and tier 2 (namespace `NetworkPolicy`) without a matching deny is allowed (unless tier 1 denied it).
+
+**ANP duplicate priorities:** Red Hat documents that **when two ANPs share the same priority, precedence is not guaranteed** — intermittent allow/deny is a common symptom.
+
+**Practice:**
+
+1. Assign **unique** priorities per **ANP** only (up to 100 ANPs per cluster on OVN-K).
+2. Reserve bands deliberately — for example: low numbers for explicit **Deny**, mid band for platform **Allow** (DNS, API), higher numbers for **Pass** to namespace policy.
+3. Use **BANP** separately (`metadata.name: default`) for optional default-deny guardrails after namespace policies.
+4. Audit ANP priorities after changes:
+
+   ```bash
+   oc get adminnetworkpolicy -o json | jq -r '
+     .items[] | "\(.metadata.name)\tpriority=\(.spec.priority)"' | sort -t$'\t' -k2 -n
+
+   oc get adminnetworkpolicy -o json | jq -r '
+     .items | group_by(.spec.priority) | map(select(length > 1)) |
+     .[] | "DUPLICATE priority \(.[0].spec.priority): " + (map(.metadata.name) | join(", "))'
+   ```
+
+Reference: [Admin network policy — OCP 4.18](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/network_security/admin-network-policy) (priority, tiers, and BANP).
+
+---
+
+## Platform baseline egress
+
+For default-deny clusters, platform teams should own **DNS and API egress once** in BANP/ANP.
+Application namespaces (Kafka, Flink, etc.) then carry only **workload-specific** rules.
+
+| Traffic | Target (by role) | Port | Notes |
+|---------|------------------|------|-------|
+| Cluster DNS | `openshift-dns` pods (`app: dns`) | **5353** UDP/TCP | Required under default-deny |
+| In-cluster API | **`kubernetes` Service** (serviceNetwork VIP) | **443** TCP | What `$KUBERNETES_SERVICE_HOST` uses |
+| API (supplement) | Control-plane nodes | **6443** TCP | Optional; does not replace Service **443** |
+
+**Avoid:** Hardcoding the kubernetes Service VIP as a `/32` in Git — it is cluster-specific and often papers over ANP priority or missing Service-port allows.
+
+**Prefer:**
+
+- BANP/ANP `nodes` peer to control-plane on **6443** **plus** `networks` peer to **`serviceNetwork` on 443**, or
+- Namespace `NetworkPolicy` with `ipBlock.cidr` set to the cluster **`serviceNetwork`** (from `oc get network cluster -o jsonpath='{.status.serviceNetwork[0]}'`) and port **443** when no platform baseline exists.
+
+Illustrative **ANP** fragment for platform egress (adapt `subject` labels and `priority`):
+
+```yaml
+apiVersion: policy.networking.k8s.io/v1alpha1
+kind: AdminNetworkPolicy
+metadata:
+  name: tenant-platform-egress
+spec:
+  priority: 25
+  subject:
+    namespaces:
+      matchLabels:
+        network.openshift.io/tenant: "true"
+  egress:
+    - name: allow-to-dns
+      action: Allow
+      to:
+        - pods:
+            namespaceSelector:
+              matchLabels:
+                kubernetes.io/metadata.name: openshift-dns
+            podSelector:
+              matchLabels:
+                app: dns
+      ports:
+        - portNumber: { protocol: UDP, port: 5353 }
+        - portNumber: { protocol: TCP, port: 5353 }
+    - name: allow-to-kube-apiserver-nodes
+      action: Allow
+      to:
+        - nodes:
+            matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+      ports:
+        - portNumber: { protocol: TCP, port: 6443 }
+    - name: allow-to-kubernetes-service
+      action: Allow
+      to:
+        - networks:
+            - cidr: <serviceNetwork-CIDR>
+      ports:
+        - portNumber: { protocol: TCP, port: 443 }
+```
+
+Namespace `NetworkPolicy` cannot set ANP priority or use the `nodes` peer — fix tiering at the cluster policy layer.
 
 ---
 
@@ -387,14 +498,15 @@ Schema Registry and external checkpoint storage need separate egress rules (see 
 
 1. **Namespace layout:** `kafka`, `flink`, and optionally `netobserv` (dedicated namespace for Loki/Kafka storage backends).
 2. **Default posture:** BANP or namespace-level default-deny with explicit allows — reconcile BANP rules with namespace `NetworkPolicy` (BANP can override allows).
-3. **Kafka policies:**
+3. **Platform baseline:** Unique **ANP** priorities; cluster-wide DNS (**5353**) and kubernetes Service (**443**) allows; optional BANP `default` for tier-3 guardrails.
+4. **Kafka policies:**
    - Strimzi: configure `networkPolicyPeers` per listener; verify generated policies with `oc get networkpolicy -n kafka`
    - Strimzi cross-ns operator: confirm `openshift-operators` → `kafka` path if operator is not co-located
    - CFK: write ingress/egress policies for brokers, controllers, and operator; confirm labels with `oc get pods --show-labels`
-4. **Flink policies:** Allow internal JM/TM ports, egress to Kafka listener port, DNS, Schema Registry (if used), and checkpoint storage (`EgressFirewall` or egress to 443 for S3).
-5. **Audit logging:** Enable `k8s.ovn.org/acl-logging` on `kafka` and `flink` namespaces (`"deny": "alert"`).
-6. **NetObserv:** Operator 1.8+, Loki backend, `OVNObservability` gate, `NetworkEvents` in FlowCollector — treat as preview until validated on your z-stream.
-7. **Alerting:** Ship ACL deny logs and NetObserv denied flows to your SIEM or Alertmanager.
+5. **Flink policies:** Allow internal JM/TM ports, egress to Kafka listener port, DNS, Schema Registry (if used), and checkpoint storage (`EgressFirewall` or egress to 443 for S3).
+6. **Audit logging:** Enable `k8s.ovn.org/acl-logging` on `kafka` and `flink` namespaces (`"deny": "alert"`).
+7. **NetObserv:** Operator 1.8+, Loki backend, `OVNObservability` gate, `NetworkEvents` in FlowCollector — treat as preview until validated on your z-stream.
+8. **Alerting:** Ship ACL deny logs and NetObserv denied flows to your SIEM or Alertmanager.
 
 ---
 
@@ -435,6 +547,8 @@ When Flink cannot reach Kafka:
    ```
 
 6. **Route vs internal listener:** If using a Strimzi/CFK `route` listener, clients connect on **443** through the router — broker pod policies still apply to the passthrough path.
+
+When init containers cannot reach the kubernetes Service, see [Kafka broker init troubleshooting](../troubleshooting/kafka-broker-init-kubernetes-svc/README.md) (Path C: API/DNS egress and ANP priority).
 
 ---
 

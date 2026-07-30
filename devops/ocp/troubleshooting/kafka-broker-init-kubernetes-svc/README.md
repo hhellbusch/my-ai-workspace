@@ -1,7 +1,7 @@
 ---
 review:
   status: unreviewed
-  notes: "Working triage for Kafka/Confluent init stuck on kubernetes.default — NetworkPolicy, webhook, and OVN paths. Commands need field validation."
+  notes: "Triage for Kafka/Confluent init stuck on kubernetes.default — NetworkPolicy, ANP priority, webhook, and OVN paths."
 ---
 
 # Kafka Broker Stuck in Init — Cannot Reach `kubernetes` Service
@@ -9,8 +9,6 @@ review:
 > **Audience:** Platform engineers troubleshooting Confluent (classic Helm) or other Kafka brokers on OpenShift when init containers cannot reach the in-cluster API.
 >
 > **Purpose:** Split “cannot contact `kubernetes.default`” into webhook/API vs OVN vs NetworkPolicy paths, capture field signals, and avoid broker-delete cascades.
-
-**Working status:** Hypothesis and triage order only — not a confirmed root cause.
 
 **Related:**
 
@@ -25,7 +23,8 @@ review:
 ## Symptom
 
 Kafka broker pods (classic Confluent Helm install observed) stick in **Init**.
-Init logs indicate failure to contact the **ClusterIP of the `kubernetes` Service in `default`** (in-cluster kube-apiserver VIP — first address in `serviceNetwork`, often `172.30.0.1` on OpenShift defaults).
+Init logs show API client errors such as `max retries exceeded` with a path like `/api/v1/namespaces/<ns>/pods/<pod>` and `Failed to establish a new connection: Connection timed out`.
+The client still targets the **`kubernetes` Service** in `default` (`$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT`) — not the broker pod named in the URL.
 
 Operators delete stuck pods to recover.
 That can cascade: more brokers leave ISR / go offline under recovery load.
@@ -35,14 +34,16 @@ That can cascade: more brokers leave ISR / go offline under recovery load.
 | Signal | What it suggests |
 |--------|------------------|
 | Strict OVN-K + default-deny NetworkPolicy / BANP | **Path C** — classic Helm does not auto-allow kube-apiserver egress |
+| Intermittent failures; multiple ANPs share the same `spec.priority` | **Path C** — ANP evaluation order is undefined at equal priority |
 | Apiserver logs show failed admission webhook calls (often **x509** / TLS trust) and elevated `kube-apiserver` restart counts | **Path A** — API-path / webhook stress |
-| Elevated `ovnkube-node` restart counts; TCP to the Service IP fails | **Path B** — ClusterIP / OVN path |
+| Elevated `ovnkube-node` restart counts; TCP to the kubernetes Service fails | **Path B** — ClusterIP / OVN path |
 
 None of these alone proves the broker init failure.
 Use the fork below before picking a remediation.
 
-**Consistency hint:** Missing API egress in NetworkPolicy is often **consistent** for every pod matching the selector.
-“Occasional” plus delete-pod-to-fix fits Path B (OVN flap) or Path A (API/webhook load) better — unless policies/labels are uneven, BANP and namespace policies disagree, or OVN ACL programming lags during `ovnkube-node` restarts (Path B + C together).
+**Consistency hint:** Missing API egress in namespace `NetworkPolicy` is often **consistent** for every pod matching the selector.
+**Intermittent** init failures on a locked-down cluster — especially when control-plane egress rules already exist — check **duplicate ANP priorities** before assuming OVN or chart bugs.
+“Occasional” plus delete-pod-to-fix also fits Path B (OVN flap) or Path A (API/webhook load) when policies/labels are uneven, BANP and namespace policies disagree, or OVN ACL programming lags during `ovnkube-node` restarts (Path B + C together).
 
 ---
 
@@ -51,7 +52,8 @@ Use the fork below before picking a remediation.
 The `kubernetes` Service in `default` is the ClusterIP front door to the kube-apiserver for in-cluster clients.
 Broker init containers that need the API (SA token, labels, peer discovery, wait logic) talk to `$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT`.
 
-This is usually **not** a Confluent chart bug once the failure is “cannot reach that IP.”
+In-cluster clients use the **Service port** (typically **443**), not the apiserver **endpoint port** on control-plane nodes (**6443**).
+This is usually **not** a Confluent chart bug once the failure is “cannot reach the kubernetes Service.”
 
 ---
 
@@ -69,10 +71,10 @@ Capture the **exact** init failure class:
 
 | Failure class | Likely path | Lead with |
 |---------------|-------------|-----------|
-| TCP timeout / no route to the **Service IP**, on a **default-deny** cluster | Missing/incorrect egress policy | Path C (check before or with Path B) |
+| TCP timeout to the **kubernetes Service** on a **default-deny** cluster | Missing/incorrect egress or ANP priority collision | Path C |
 | TCP timeout / connection refused / no route, **without** policy deny evidence | OVN / node networking | Path B |
 | TCP connects, then TLS, HTTP 5xx, timeout, or admission denial | Apiserver / webhook | Path A |
-| Ambiguous or mixed | Multiple | Path C inventory + Path A/B correlation |
+| Ambiguous or mixed | Multiple | Path C inventory (including ANP priorities) + Path A/B correlation |
 
 ```bash
 # Stuck brokers and nodes
@@ -87,6 +89,10 @@ oc get endpoints kubernetes -n default -o wide
 oc get networkpolicy,adminnetworkpolicy,baselineadminnetworkpolicy -A
 oc get networkpolicy -n <kafka-ns> -o yaml
 
+# ANP priority collisions (OVN-K accepts 0–99; lower number = higher precedence; BANP has no priority)
+oc get adminnetworkpolicy -o json | jq -r '
+  .items[] | "\(.metadata.name)\tpriority=\(.spec.priority)"' | sort -t$'\t' -k2 -n
+
 # Control plane / network operators
 oc get co kube-apiserver network
 oc get pods -n openshift-kube-apiserver -o wide
@@ -96,7 +102,7 @@ oc get pods -n openshift-ovn-kubernetes -l app=ovnkube-node -o wide
 From a **debug pod on the same node** as a stuck broker (see [debug toolbox](../debug-toolbox-container/README.md)):
 
 ```bash
-# Substitute ClusterIP/port from the kafka pod env if needed
+# Substitute host/port from the broker pod env or kubernetes Service
 curl -vk --connect-timeout 5 \
   "https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}/readyz"
 ```
@@ -179,7 +185,7 @@ oc logs -n openshift-ovn-kubernetes -c ovnkube-node --tail=200 \
     --field-selector spec.nodeName=<broker-node> -o name | head -1)"
 ```
 
-If TCP to the kubernetes ClusterIP fails from the broker node while apiserver endpoints are healthy elsewhere, treat as an OVN / node networking incident (support case material).
+If TCP to the kubernetes Service fails from the broker node while apiserver endpoints are healthy elsewhere, treat as an OVN / node networking incident (support case material).
 Do not attribute it to the Helm chart.
 
 ### Related guide
@@ -188,23 +194,47 @@ Do not attribute it to the Helm chart.
 
 ---
 
-## Path C — Missing egress to kube-apiserver (strict NetworkPolicy)
+## Path C — Policy gaps (strict NetworkPolicy / ANP / BANP)
 
 ### Why it fits
 
 Once a pod is selected by any `NetworkPolicy`, it is **isolated**: only explicitly allowed egress works.
-Under default-deny / BANP baselines, brokers need an allow for:
+Under default-deny / BANP baselines, brokers need platform- or namespace-level allows for:
 
-| Destination | Typical allow | Why brokers/init need it |
-|-------------|---------------|--------------------------|
-| `openshift-dns` | UDP/TCP **5353** | Resolve names (including `kubernetes.default`) |
-| kube-apiserver via `kubernetes.default` ClusterIP | TCP **443** (Service port; host may be 6443 on endpoints) | Init / operator / in-cluster clients |
+| Destination | Port | Why brokers/init need it |
+|-------------|------|--------------------------|
+| `openshift-dns` pods | UDP/TCP **5353** | Cluster DNS (CoreDNS listens on 5353; Service presents port 53) |
+| **`kubernetes` Service** (in-cluster API VIP) | TCP **443** | Init containers and operators use `$KUBERNETES_SERVICE_HOST` / `$KUBERNETES_SERVICE_PORT` |
+| Control-plane nodes (optional supplement) | TCP **6443** | Direct or post-DNAT paths; does **not** replace the Service **443** allow |
 
 Classic **Confluent Helm** does not generate NetworkPolicies.
 Strimzi often does for listeners; CFK still expects you to author policies by hand.
-It is easy to allow broker↔broker and DNS and still **omit API egress** — then init fails contacting the `kubernetes` Service IP.
+It is easy to allow broker↔broker and DNS and still **omit API egress** — then init fails with connection timeouts to the kubernetes Service.
 
-See [Network policy and observability](../../notes/network-policy-observability.md) (DNS gotcha, CFK manual policies, OVN ACL audit).
+**Do not hardcode the kubernetes Service address** (`/32` in `ipBlock`) as a long-term fix.
+That VIP is cluster-specific and masks policy-design problems.
+Prefer a **platform ANP baseline** (optional BANP `default` for tier-3 guardrails; see [Network policy and observability](../../notes/network-policy-observability.md#platform-baseline-egress)) or allow the cluster **`serviceNetwork` CIDR** on TCP **443** when namespace policy must own API egress.
+
+### Control-plane rules are not enough
+
+`AdminNetworkPolicy` egress to **control-plane nodes** on **6443** (or **443**) matches a **different destination** than traffic to the **kubernetes Service VIP on 443**.
+In-cluster API clients use the Service front door.
+A policy stack that only allows control-plane nodes can still drop init traffic — or appear to work intermittently when combined with other rules.
+
+Standard namespace **`NetworkPolicy`** cannot use the `nodes` peer; only ANP/BANP can target control-plane nodes.
+
+### ANP priority collisions
+
+On OVN-Kubernetes, each `AdminNetworkPolicy` has `spec.priority` in **0–99** (**lower number = higher precedence**).
+`BaselineAdminNetworkPolicy` has **no priority field** (singleton `default`, evaluated in tier 3 after namespace `NetworkPolicy`).
+Red Hat documents that **there is no guarantee which policy wins when two ANPs share the same priority** — evaluation order becomes nondeterministic.
+
+Symptoms match Path B (intermittent timeouts, delete-pod-to-fix) but root cause is policy tiering.
+After assigning **unique, deliberate priorities**, API/DNS allows stabilize without per-cluster Service VIP `/32` rules.
+
+Reference: [Admin network policy — OCP 4.18](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/network_security/admin-network-policy) (priority and precedence).
+
+See [Network policy and observability](../../notes/network-policy-observability.md) (DNS gotcha, platform baseline, ANP priority, OVN ACL audit).
 
 ### Checks
 
@@ -217,7 +247,7 @@ oc get adminnetworkpolicy,baselineadminnetworkpolicy
 oc get pods -n <kafka-ns> --show-labels | head
 oc get networkpolicy -n <kafka-ns> -o yaml | grep -E 'podSelector|namespaceSelector|policyTypes|ports:|ipBlock'
 
-# Look for egress to DNS (5353) and to API (443) or to the kubernetes Service / apiserver CIDR
+# Look for egress to DNS (5353) and API (Service port 443)
 oc get networkpolicy -n <kafka-ns> -o json | jq '
   .items[] | {
     name: .metadata.name,
@@ -225,33 +255,30 @@ oc get networkpolicy -n <kafka-ns> -o json | jq '
     egress: .spec.egress
   }'
 
-# OVN ACL audit (if enabled) — deny verdicts toward the kubernetes ClusterIP
+# Duplicate ANP priorities (BANP has no priority field)
+oc get adminnetworkpolicy -o json | jq -r '
+  .items | group_by(.spec.priority) | map(select(length > 1)) |
+  .[] | "priority \(.[0].spec.priority): " + (map(.metadata.name) | join(", "))'
+
+# OVN ACL audit (if enabled) — deny verdicts toward the kubernetes Service VIP
 # Annotate ns: k8s.ovn.org/acl-logging: '{ "deny": "alert", "allow": "notice" }'
 ```
 
-**What “good enough” egress looks like (shape only — adapt labels/CIDRs):**
+**Namespace policy shape** (when platform baseline does not already allow API/DNS — adapt labels; confirm `serviceNetwork` from the cluster):
 
 ```yaml
-# Illustrative — confirm labels and ports on your cluster before apply
+# Illustrative — prefer platform ANP for DNS + API when possible
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-broker-to-kube-apiserver
+  name: allow-broker-egress-platform
   namespace: <kafka-ns>
 spec:
   podSelector:
     matchLabels:
-      # must match broker / init pods
-      app: <broker-label>
+      app: <broker-label>   # must match broker / init pods
   policyTypes: [Egress]
   egress:
-    - to:
-        - namespaceSelector: {}
-          podSelector: {}
-      # Prefer tighter: allow only the kubernetes Service IP or control-plane CIDR
-      ports:
-        - protocol: TCP
-          port: 443
     - to:
         - namespaceSelector:
             matchLabels:
@@ -261,16 +288,24 @@ spec:
           port: 5353
         - protocol: TCP
           port: 5353
+    - to:
+        - ipBlock:
+            cidr: <serviceNetwork-CIDR>   # oc get network cluster -o jsonpath='{.status.serviceNetwork[0]}'
+      ports:
+        - protocol: TCP
+          port: 443
 ```
 
-Prefer allowing the **`kubernetes` Service ClusterIP** (or documented control-plane CIDR) over wide-open egress.
 Confirm whether BANP already allows API and DNS cluster-wide — if BANP denies, a namespace allow will not override it.
+Namespace `NetworkPolicy` cannot set ANP priority; fix collisions at the cluster policy tier.
 
 ### Remediation direction
 
-1. Add/fix egress so broker (and init) pods can reach DNS and `kubernetes.default:443`.
-2. Re-test with a **same-label** debug pod or by watching one broker init — do not mass-delete.
-3. If ACL audit shows denies during `ovnkube-node` restarts, fix policy **and** treat Path B as concurrent.
+1. Assign **unique ANP priorities** (platform denies before allows; DNS/API allows before broad default-deny). Use BANP `default` separately for tier-3 guardrails if needed.
+2. Ensure tenant namespaces can reach **DNS (5353)** and the **kubernetes Service on 443** — via platform baseline or namespace `serviceNetwork` CIDR rule, not a hardcoded Service VIP.
+3. Keep namespace policies for **application traffic** (broker mesh, registry, metrics).
+4. Re-test with a **same-label** debug pod or by watching one broker init — do not mass-delete.
+5. If ACL audit shows denies during `ovnkube-node` restarts after policy is correct, treat Path B as concurrent.
 
 ---
 
@@ -285,10 +320,11 @@ Confirm whether BANP already allows API and DNS cluster-wide — if BANP denies,
 ## Priority order (working recommendation)
 
 1. **Classify** the init error (TCP vs post-connect).
-2. **On a strict OVN-K / NetworkPolicy cluster, inventory Path C first** when TCP to the kubernetes ClusterIP fails — missing API egress is a common Helm gap and is cheap to verify.
-3. **Path A** when apiserver shows webhook x509 (or similar) plus restarts — especially if TCP connects but API calls fail or time out.
-4. **Path B** when ClusterIP never connects despite policies that clearly allow API/DNS, especially if stuck pods sit on high-`ovnkube-node`-restart nodes.
-5. Only after platform path is stable, revisit Confluent Helm init scripts if they still fail against a healthy `kubernetes.default`.
+2. **On a strict OVN-K / NetworkPolicy cluster, inventory Path C first** when TCP to the kubernetes Service fails — missing API/DNS egress and **duplicate ANP priorities** are common Helm/platform gaps.
+3. **Path C — ANP priority** when failures are intermittent despite control-plane or API-looking rules; audit `spec.priority` on all ANPs.
+4. **Path A** when apiserver shows webhook x509 (or similar) plus restarts — especially if TCP connects but API calls fail or time out.
+5. **Path B** when the Service never connects despite correct policy tiering, especially if stuck pods sit on high-`ovnkube-node`-restart nodes.
+6. Only after platform path is stable, revisit Confluent Helm init scripts if they still fail against a healthy kubernetes Service.
 
 ---
 
@@ -297,10 +333,11 @@ Confirm whether BANP already allows API and DNS cluster-wide — if BANP denies,
 Copy answers into the incident thread:
 
 - [ ] Exact init container name and error line (one sample)
-- [ ] `kubernetes` Service ClusterIP and `endpoints/kubernetes` ready addresses
-- [ ] NetworkPolicy / ANP / BANP in the Kafka namespace — egress allow for DNS **and** API (443)?
+- [ ] `kubernetes` Service address and `endpoints/kubernetes` ready addresses
+- [ ] NetworkPolicy / ANP / BANP — egress allow for DNS (**5353**) and kubernetes Service (**443**)?
+- [ ] **Unique** `spec.priority` on each ANP (no duplicates in 0–99)
 - [ ] Broker pod labels vs `podSelector` on those policies
-- [ ] OVN ACL audit deny lines toward the kubernetes ClusterIP (if logging enabled)
+- [ ] OVN ACL audit deny lines toward the kubernetes Service VIP (if logging enabled)
 - [ ] Suspect webhook names, `failurePolicy`, `timeoutSeconds`
 - [ ] Whether curl/`readyz` from a **same-label** pod fails at TCP or after connect
 - [ ] Stuck broker node names vs `ovnkube-node` restart counts
@@ -313,7 +350,8 @@ Copy answers into the incident thread:
 
 - What is the suspect webhook’s `failurePolicy` (`Fail` or `Ignore`)?
 - Do init failures correlate to specific worker nodes, or are they random?
-- Do broker NetworkPolicies (or BANP) allow egress to DNS **and** to the kube-apiserver / `kubernetes` Service?
+- Do duplicate ANP priorities exist on the cluster?
+- Does the platform baseline allow DNS and kubernetes Service **443**, or only control-plane **6443**?
 
 ---
 

@@ -3,7 +3,7 @@
 Machine-generated lookup table: symptom string → troubleshooting guide.
 Source: `devops/catalog.yaml` (also staged as [catalog.yaml](catalog.yaml) on the site). Regenerate: `python3 scripts/generate-symptom-index.py`.
 
-*Generated 2026-07-24.*
+*Generated 2026-07-29.*
 
 | Symptom / keyword | Guide | Quick ref |
 |-------------------|-------|-----------|
@@ -42,6 +42,9 @@ Source: `devops/catalog.yaml` (also staged as [catalog.yaml](catalog.yaml) on th
 | confluent helm init kubernetes.default | [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) | — |
 | admission webhook x509 apiserver | [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) | — |
 | network policy missing kube-apiserver egress | [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) | — |
+| adminnetworkpolicy same priority | [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) | — |
+| ANP priority collision intermittent | [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) | — |
+| config-init max retries exceeded connection timed out | [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) | — |
 | OAuthServerRouteEndpointAccessibleControllerAvailable | [OAuth Server healthz Unavailable](ocp/troubleshooting/oauth-healthz-unavailable/README.md) | [⚡](ocp/troubleshooting/oauth-healthz-unavailable/QUICK-REFERENCE.md) |
 | authentication cluster operator degraded | [OAuth Server healthz Unavailable](ocp/troubleshooting/oauth-healthz-unavailable/README.md) | [⚡](ocp/troubleshooting/oauth-healthz-unavailable/QUICK-REFERENCE.md) |
 | oauth-openshift.apps healthz connection refused | [OAuth Server healthz Unavailable](ocp/troubleshooting/oauth-healthz-unavailable/README.md) | [⚡](ocp/troubleshooting/oauth-healthz-unavailable/QUICK-REFERENCE.md) |
@@ -137,7 +140,7 @@ Source: `devops/catalog.yaml` (also staged as [catalog.yaml](catalog.yaml) on th
 - [API Server Certificate Deadlock](ocp/troubleshooting/apiserver-cert-deadlock/README.md) — `certificates`, `control-plane`, `emergency`
 - [API Slowness and Web Console Performance](ocp/troubleshooting/api-slowness-web-console/README.md) — `performance`, `control-plane`, `emergency`
 - [Control Plane Kubeconfigs](ocp/troubleshooting/control-plane-kubeconfigs/README.md) — `kubeconfig`, `control-plane`, `installation`
-- [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) — `kafka`, `confluent`, `webhook`, `ovn`, `network-policy`, `control-plane`
+- [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) — `kafka`, `confluent`, `webhook`, `ovn`, `network-policy`, `control-plane`, `anp`, `banp`
 - [OAuth Server healthz Unavailable](ocp/troubleshooting/oauth-healthz-unavailable/README.md) — `authentication`, `oauth`, `control-plane`
 - [kube-controller-manager Crash Loop](ocp/troubleshooting/kube-controller-manager-crashloop/README.md) — `control-plane`, `crashloop`
 

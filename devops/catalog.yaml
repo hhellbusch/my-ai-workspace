@@ -300,7 +300,10 @@ guides:
       - "confluent helm init kubernetes.default"
       - "admission webhook x509 apiserver"
       - "network policy missing kube-apiserver egress"
-    tags: [kafka, confluent, webhook, ovn, network-policy, control-plane]
+      - "adminnetworkpolicy same priority"
+      - "ANP priority collision intermittent"
+      - "config-init max retries exceeded connection timed out"
+    tags: [kafka, confluent, webhook, ovn, network-policy, control-plane, anp, banp]
     quick_ref: null
 
   - id: debug-toolbox-container
