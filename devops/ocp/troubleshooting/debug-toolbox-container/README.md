@@ -145,7 +145,7 @@ oc wait --for=condition=ready pod/vlan-toolbox --timeout=60s
 oc exec -it vlan-toolbox -- bash
 ```
 
-**Note:** See [NetworkAttachmentDefinition Guide](../../examples/network-attachment-definitions/README.md) for complete NAD/VLAN documentation.
+**Note:** See [NetworkAttachmentDefinition Guide](../../examples/networking/network-attachment-definitions/README.md) for complete NAD/VLAN documentation.
 
 ### 2. Installing Diagnostic Tools
 
@@ -631,7 +631,7 @@ registry.redhat.io/ubi8/toolbox:8.10
 
 ## Related Documentation
 
-- [NetworkAttachmentDefinition Guide](../../examples/network-attachment-definitions/README.md) - Complete NAD/VLAN configuration and usage
+- [NetworkAttachmentDefinition Guide](../../examples/networking/network-attachment-definitions/README.md) - Complete NAD/VLAN configuration and usage
 - [AAP SSH MTU Issues](../aap-ssh-mtu-issues/README.md) - Using toolbox for MTU testing
 - [CoreOS Networking Issues](../coreos-networking-issues/README.md) - Node-level network troubleshooting
 - [API Slowness](../api-slowness-web-console/README.md) - Using toolbox to test API connectivity

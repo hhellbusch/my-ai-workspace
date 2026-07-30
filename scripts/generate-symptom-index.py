@@ -29,36 +29,40 @@ def main() -> None:
         "|-------------------|-------|-----------|",
     ]
 
-    for guide in sorted(guides, key=lambda g: (g.get("category", ""), g.get("title", ""))):
+    for guide in sorted(guides, key=lambda g: (g.get("product", ""), g.get("category", ""), g.get("title", ""))):
         title = guide["title"]
         rel = guide["path"].removeprefix("devops/")
-        readme = f"{rel}/README.md"
+        readme = rel if rel.endswith(".md") else f"{rel}/README.md"
         quick = guide.get("quick_ref")
-        quick_link = f"[⚡]({rel}/{quick})" if quick else "—"
+        quick_link = f"[⚡]({rel}/{quick})" if quick and not rel.endswith(".md") else "—"
         for symptom in guide.get("symptoms", []):
             lines.append(f"| {symptom} | [{title}]({readme}) | {quick_link} |")
 
     lines.extend(
         [
             "",
-            "## By category",
+            "## By product",
             "",
         ]
     )
 
-    by_category: dict[str, list] = {}
+    by_product: dict[str, dict[str, list]] = {}
     for guide in guides:
-        by_category.setdefault(guide.get("category", "other"), []).append(guide)
+        product = guide.get("product", "other")
+        by_product.setdefault(product, {}).setdefault(guide.get("category", "other"), []).append(guide)
 
-    for category in sorted(by_category):
-        lines.append(f"### {category.replace('-', ' ').title()}")
+    for product in sorted(by_product):
+        lines.append(f"### {product.upper() if product == 'ocp' else product.title()}")
         lines.append("")
-        for guide in sorted(by_category[category], key=lambda g: g["title"]):
-            rel = guide["path"].removeprefix("devops/")
-            readme = f"{rel}/README.md"
-            tags = ", ".join(f"`{t}`" for t in guide.get("tags", []))
-            lines.append(f"- [{guide['title']}]({readme}) — {tags}")
-        lines.append("")
+        for category in sorted(by_product[product]):
+            lines.append(f"#### {category.replace('-', ' ').title()}")
+            lines.append("")
+            for guide in sorted(by_product[product][category], key=lambda g: g["title"]):
+                rel = guide["path"].removeprefix("devops/")
+                readme = rel if rel.endswith(".md") else f"{rel}/README.md"
+                tags = ", ".join(f"`{t}`" for t in guide.get("tags", []))
+                lines.append(f"- [{guide['title']}]({readme}) — {tags}")
+            lines.append("")
 
     OUTPUT.write_text("\n".join(lines) + "\n")
     print(f"Wrote {OUTPUT.relative_to(ROOT)} ({len(guides)} guides)")

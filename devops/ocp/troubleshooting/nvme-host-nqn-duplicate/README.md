@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "NVMe host NQN troubleshooting guide — review metadata backfill."
+---
+
 # NVMe Host NQN Duplicates on OpenShift Nodes
 
 ## Overview
@@ -444,7 +450,7 @@ Harvester fixed all three (`machine-id`, iSCSI initiator, NVMe host files) toget
 - [Index](INDEX.md) — navigate by task
 - [NVMe/TCP Storage Network](../nvme-tcp-storage-network/README.md) — step 2: dual NIC topology, no bond, NMState (after NQN fix)
 - [Portworx CSI CrashLoop](../portworx-csi-crashloop/README.md) — if CSI fails after NQN fix
-- [Kafka on Bare Metal + Portworx](../../examples/kafka-bare-metal-portworx/README.md) — rack-aware storage example
+- [Kafka on Bare Metal + Portworx](../../examples/messaging/kafka/bare-metal-portworx/README.md) — rack-aware storage example
 - [Bare Metal Node Inspection Timeout](../bare-metal-node-inspection-timeout/README.md) — provisioning issues before storage attach
 
 ## External References

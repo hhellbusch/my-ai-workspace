@@ -19,7 +19,8 @@ review:
 - [networking-requirements-2.16.md](./networking-requirements-2.16.md) — ongoing hub ↔ managed cluster management (post-install)
 - [agent-install-rootfs-ssl-failure.md](../troubleshooting/agent-install-rootfs-ssl-failure.md) — discovery-phase 443 deep dive
 - [managed-cluster-lease-not-updated.md](../troubleshooting/managed-cluster-lease-not-updated.md) — klusterlet lease / Unknown status
-- `devops/bare-metal-dev-sandbox/catalog/checks.yaml` — `network_firewall_install_ports` preflight check IDs (when that harness is in tree)
+- [`devops/bare-metal-dev-sandbox/catalog/checks.yaml`](../../bare-metal-dev-sandbox/catalog/checks.yaml) — `network_firewall_install_ports` preflight check IDs
+- [`devops/bare-metal-dev-sandbox/HARNESS.md`](../../bare-metal-dev-sandbox/HARNESS.md) — sandbox harness overview
 
 **Official sources:**
 
@@ -181,7 +182,7 @@ Use this when triaging live — map the symptom back to the phase and port set.
 
 ## Preflight automation
 
-The bare-metal dev sandbox encodes Phase 2 port probes as check ID `network_firewall_install_ports` (6180, 6183, 9999, 6385). See `devops/bare-metal-dev-sandbox/HARNESS.md` when that harness is in tree.
+The bare-metal dev sandbox encodes Phase 2 port probes as check ID `network_firewall_install_ports` (6180, 6183, 9999, 6385). See [HARNESS.md](../../bare-metal-dev-sandbox/HARNESS.md).
 
 Phase 1 and Phase 3 probes are environment-specific (hub routes, API VIPs) — validate from a jump host on the install VLAN with `curl` to hub routes and API health endpoints.
 

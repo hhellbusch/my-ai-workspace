@@ -35,7 +35,7 @@
 
 ---
 
-## ref-50: Operationalizing “Bring Your Own Agent” on Red Hat AI, the OpenClaw edition (Red Hat blog)
+## ref-50: Operationalizing “Bring Your Own Agent” on Red Hat AI, the Personal Agent Gateway edition (Red Hat blog)
 
 **Article claims (footnote 50 in original):** BYOA as strategy; Kata-based OpenShift sandboxed containers for agent isolation; Kagenti + SPIFFE/SPIRE for cryptographic workload identity and short-lived scoped tokens; (adjacent article narrative) MCP-backed tool execution as operational reality.
 

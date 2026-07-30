@@ -72,7 +72,7 @@ All agent systems → calls to a model provider.
 
 **Only difference:** the **context** bundled each call — the harness.
 
-*Talk:* `alex-krentsel-openclaw-deep-dive.md` (Krentsel / OpenClaw architecture)
+*Talk:* `alex-krentsel-personal-agent-gateway-deep-dive.md` (Krentsel / Personal Agent Gateway architecture)
 
 ---
 
@@ -295,7 +295,7 @@ Same pattern for code, research, and docs.
 
 Broader scope: dynamic tools, self-config, cron/heartbeat.
 
-OpenClaw-class runtimes sit here; Cursor/Pi often sit at Loop 3.
+Personal Agent Gateway-class runtimes sit here; Cursor/Pi often sit at Loop 3.
 
 Each layer **wraps** the loops inside — matryoshka.
 
@@ -308,7 +308,7 @@ Each layer **wraps** the loops inside — matryoshka.
   Large-Language Model
   Assistants — ChatGPT, Claude, Gemini
   Scoped agents + tooling — Claude Code, Codex, Cursor
-  Autonomous + env. ownership — OpenClaw
+  Autonomous + env. ownership — Personal Agent Gateway
 ```
 
 Each line **wraps** the one above — matryoshka (Krentsel).
@@ -324,7 +324,7 @@ Each line **wraps** the one above — matryoshka (Krentsel).
 
 Chat, agents, and harnesses **repeat** these inner calls with more context.
 
-*Talk:* `alex-krentsel-openclaw-deep-dive.md` (~5:13–7:09)
+*Talk:* `alex-krentsel-personal-agent-gateway-deep-dive.md` (~5:13–7:09)
 
 ---
 
@@ -569,7 +569,7 @@ Start manual. Automate when friction is real.
 |---|---|---|
 | **PKM / second brain** | PARA, Zettelkasten, digital garden | capture → distill → express |
 | **LLM knowledge base** | Karpathy LLM Wiki, Recall | `research/` → `library/` |
-| **Agent memory / harness** | hooks, memsearch, OpenClaw | rules, skills, handoffs |
+| **Agent memory / harness** | hooks, memsearch, Personal Agent Gateway | rules, skills, handoffs |
 
 ---
 
@@ -877,7 +877,7 @@ Mount runtime + discipline + workspace on a new problem.
 
 **Brain** — git knowledge you own: `library/`, `docs/`, rules, `/audit`.
 
-**Proactive runtime** *(OpenClaw-class)* — cron, heartbeat, channels, shell.
+**Proactive runtime** *(Personal Agent Gateway-class)* — cron, heartbeat, channels, shell.
 
 Complementary — not either/or.
 
@@ -886,14 +886,14 @@ Complementary — not either/or.
 ## Brain + runtime — how they connect
 
 ```
-Field Notes (git)              OpenClaw-class runtime
+Field Notes (git)              Personal Agent Gateway-class runtime
 library/, docs/, rules         cron, heartbeat, channels
          └──── workspace mounted ───────┘
 ```
 
 **Promotion rule:** commit to `library/` or `BACKLOG` — not only vector memory.
 
-*Library:* `alex-krentsel-openclaw-deep-dive.md` *(exploratory)*
+*Library:* `alex-krentsel-personal-agent-gateway-deep-dive.md` *(exploratory)*
 
 ---
 
@@ -907,7 +907,7 @@ library/, docs/, rules         cron, heartbeat, channels
 ## What this deck does *not* claim (continued)
 
 - All repo content is author-reviewed *(much is draft)*
-- You need OpenClaw, Paude, or this exact layout
+- You need Personal Agent Gateway, Paude, or this exact layout
 
 **Trust, but verify.** The path is yours.
 
@@ -1025,7 +1025,7 @@ Six-level agent memory taxonomy — comparison vocabulary.
 **`karpathy-llm-wiki.md`**
 Raw sources vs wiki — why a pile of notes isn't a knowledge base.
 
-**`alex-krentsel-openclaw-deep-dive.md`**
+**`alex-krentsel-personal-agent-gateway-deep-dive.md`**
 Agentic loop matryoshka — harness, gateway, proactive runtime.
 
 ---

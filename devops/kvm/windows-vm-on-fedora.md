@@ -588,7 +588,7 @@ Set autostart on the new host if desired: `virsh autostart "$VM_NAME"`.
 
 ## Related reading
 
-- [SNO on KVM lab](../ocp/examples/sno-kvm-lab/README.md) — OpenShift single-node cluster on KVM (bridged networking, heavier footprint)
+- [SNO on KVM lab](../ocp/examples/labs/sno-kvm-lab/README.md) — OpenShift single-node cluster on KVM (bridged networking, heavier footprint)
 - [virtio-win downloads](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/) — stable and latest driver builds
 
 ---

@@ -56,7 +56,7 @@ Single mega-prompts (85+ instructions) guarantee partial adherence. Any step in 
 | Magic words make it work | If users need magic words to get good output, **fix the tool** |
 | Single 85-instruction planning prompt | Split into smaller prompts with fewer instructions each |
 
-The OpenClaw / Beads exception: OSS projects with no paying customers have different stakes. "If you have people who depend on your code, please read it."
+The Personal Agent Gateway / Beads exception: OSS projects with no paying customers have different stakes. "If you have people who depend on your code, please read it."
 
 ---
 

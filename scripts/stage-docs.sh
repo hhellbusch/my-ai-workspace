@@ -8,6 +8,7 @@ cd "$ROOT"
 
 bash scripts/ensure-mermaid-asset.sh
 python3 scripts/generate-symptom-index.py
+python3 scripts/generate-example-index.py
 python3 scripts/export-catalog-json.py
 python3 scripts/stage-mkdocs.py
 python3 scripts/generate-mkdocs-nav.py

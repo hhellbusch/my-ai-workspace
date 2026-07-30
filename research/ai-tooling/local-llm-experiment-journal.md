@@ -200,7 +200,7 @@ Hardware buys RAM; **harness** buys effective context. Workspace pointers:
 
 - **Serve:** `ramalama serve ollama://qwen3:30b-a3b` → **`http://127.0.0.1:8080/v1`** (use **127.0.0.1**, not `localhost`). **Model id:** `library/qwen3` (per Apr log).
 - **Characterization goal:** sweep **prompt sizes** (e.g. 2k / 6k / 12k / 14k tokens of filler + one task) and log **latency, truncation, tool errors** — effective **agent** context is min(**harness budget**, **`n_ctx`**).
-- **Wiring:** Any OpenAI-compatible client needs **`OPENAI_BASE_URL`** (or product-specific equivalent) **+** a placeholder **`OPENAI_API_KEY`** if the server ignores it. **LiteLLM** proxy pattern in [`devops/llm/local-llm-setup.md`](../../devops/llm/local-llm-setup.md) if the agent stack expects Anthropic-shaped traffic. *Exact Pi / OpenClaw env names — confirm in product docs when wiring;* append a row here after first successful run.
+- **Wiring:** Any OpenAI-compatible client needs **`OPENAI_BASE_URL`** (or product-specific equivalent) **+** a placeholder **`OPENAI_API_KEY`** if the server ignores it. **LiteLLM** proxy pattern in [`devops/llm/local-llm-setup.md`](../../devops/llm/local-llm-setup.md) if the agent stack expects Anthropic-shaped traffic. *Exact Pi / Personal Agent Gateway env names — confirm in product docs when wiring;* append a row here after first successful run.
 
 **Pi monorepo (local clone) — `models.json` vs real `n_ctx`**
 

@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "NVMe/TCP storage network troubleshooting guide — review metadata backfill."
+---
+
 # NVMe/TCP Storage Network on Bare-Metal OpenShift
 
 ## Overview
@@ -187,9 +193,22 @@ cat /sys/module/nvme_core/parameters/multipath
 
 # After CSI/array config — subsystems and paths
 nvme list-subsys
+
+# Pre-CSI fabric check (per path; adjust IPs / ifaces)
+nvme discover -t tcp -a <ctrl-a-ip> -s 4420 -w ens1f0
+nvme discover -t tcp -a <ctrl-b-ip> -s 4420 -w ens1f1
 ```
 
-From a bastion:
+Via `oc debug` (no SSH):
+
+```bash
+oc debug node/<node> --quiet -- chroot /host \
+  nvme discover -t tcp -a <ctrl-a-ip> -s 4420 -w ens1f0
+```
+
+Across a node list: [ansible/README.md](ansible/README.md).
+
+From a bastion with SSH (optional):
 
 ```bash
 for h in worker-0 worker-1 worker-2; do
@@ -204,9 +223,10 @@ done
 
 - [Quick Reference](QUICK-REFERENCE.md) — decision tree and copy-paste checks
 - [Index](INDEX.md) — navigate by task
+- [ansible/ — nvme discover via oc debug](ansible/README.md) — fleet fabric check
 - [NVMe Host NQN Duplicates](../nvme-host-nqn-duplicate/README.md) — step 1 in the prep chain
 - [Portworx CSI CrashLoop](../portworx-csi-crashloop/README.md)
-- [Kafka + Portworx bare metal](../../examples/kafka-bare-metal-portworx/README.md)
+- [Kafka + Portworx bare metal](../../examples/messaging/kafka/bare-metal-portworx/README.md)
 
 ## External References
 

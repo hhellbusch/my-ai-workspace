@@ -23,7 +23,7 @@ This video was already fully analyzed in `research/miessler-single-da-thesis/ass
 | C04: Pi upgrade skill monitors landscape + recommends improvements | Verified | Shown running live; sources match claim |
 | C05: Pi as back-end infrastructure for named DA (not "agents/tools/workflows") | Verified | Verbatim transcript; nuanced against library entry (design intent vs. technical artifacts) |
 | C06: Current → ideal state prime directive implemented through TLOS | Verified with caveats | Verbatim; library adds Algorithm execution machinery |
-| C07: Proactivity as AS1 threshold (OpenClaw as first) | Verified with caveats | Threshold is coherent; "first" claim exceeds transcript support |
+| C07: Proactivity as AS1 threshold (Personal Agent Gateway as first) | Verified with caveats | Threshold is coherent; "first" claim exceeds transcript support |
 | C08: "Everyone" at DA level "in 2 years" | Overstatement | Rhetorical tempo, not calibrated forecast; conflicts with Miessler's own hedges |
 | C09: Harness becomes invisible, users interact only with named DA | Verified with caveats | Valid as design north star; not current UX reality at scale |
 | C10: OpenAI/Jony Ive wearable converges with Kai | Directionally plausible | "I believe" hedging appropriate; convergence at narrative level, not feature parity |

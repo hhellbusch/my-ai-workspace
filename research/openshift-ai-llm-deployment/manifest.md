@@ -58,7 +58,7 @@
 | ref-47 | https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.0/html-single/working_with_llama_stack/index | fetched | sources/ref-47.md | RHOAI 3.0 Llama Stack docs |
 | ref-48 | https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.25/html/working_with_llama_stack/overview-of-llama-stack_rag | fetched | sources/ref-48.md | Llama Stack overview RAG |
 | ref-49 | https://www.redhat.com/en/blog/manual-agentic-streamlining-it-processes-red-hat-openshift-ai | fetched | sources/ref-49.md | Manual to agentic IT processes |
-| ref-50 | https://www.redhat.com/en/blog/operationalizing-bring-your-own-agent-red-hat-ai-openclaw-edition | fetched | sources/ref-50.md | BYOA on Red Hat AI OpenClaw |
+| ref-50 | https://www.redhat.com/en/blog/operationalizing-bring-your-own-agent-red-hat-ai-personal-agent-gateway-edition | fetched | sources/ref-50.md | BYOA on Red Hat AI Personal Agent Gateway |
 | ref-51 | https://medium.com/@shrishs/models-as-a-service-how-to-deploy-and-govern-llm-apis-on-openshift-ai-ed965acc7036 | fetched | sources/ref-51.md | MaaS deploy and govern LLM APIs |
 | ref-52 | https://medium.com/@krithika_85083/managing-openshift-clusters-best-practices-and-tools-14e590c61a21 | fetched | sources/ref-52.md | Managing OCP clusters best practices |
 | ref-53 | https://ai-on-openshift.io/odh-rhoai/kserve-uwm-dashboard-metrics/ | fetched | sources/ref-53.md | KServe UWM dashboard metrics |

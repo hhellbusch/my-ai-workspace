@@ -17,6 +17,28 @@ review:
 
 If the file already has YAML frontmatter (e.g. `description:`), add the `review:` block inside the same `---` fence — do not create a second frontmatter block.
 
+## Automated check
+
+`scripts/check-review-frontmatter.py` enforces the `review:` block on scoped markdown:
+
+| Mode | Command | When |
+|------|---------|------|
+| **Changed files** (local / CI) | `python3 scripts/check-review-frontmatter.py` | Default before commit; GitHub Actions on PR/push to `main` |
+| **CI (Actions)** | `python3 scripts/check-review-frontmatter.py --ci` | Uses the PR base branch or push commit range |
+| **Full audit** | `python3 scripts/check-review-frontmatter.py --all` | Backfill campaigns; reports all legacy gaps |
+
+**Scope:** `devops/**/*.md` and `docs/**/*.md`, excluding `research/*/sources/`, `*/_meta/`, and machine-generated `SYMPTOM-INDEX.md` / `EXAMPLE-INDEX.md`.
+
+CI checks **only changed** scoped files so legacy content without frontmatter does not block unrelated PRs. Touching a legacy file in a PR requires adding `review:` metadata in the same change.
+
+### Local pre-commit hook (optional)
+
+```bash
+bash scripts/install-githooks.sh   # once per clone — sets core.hooksPath=.githooks
+```
+
+Runs `check-review-frontmatter.py --staged` and `check-markdown-links.sh` when the commit stages `devops/` or `docs/` markdown. See [`.githooks/README.md`](../.githooks/README.md). Bypass: `git commit --no-verify`.
+
 ## Status values
 
 | Status | Meaning |

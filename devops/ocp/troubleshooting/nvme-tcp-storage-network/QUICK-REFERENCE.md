@@ -57,7 +57,20 @@ cat /sys/module/nvme_core/parameters/multipath
 # NQN (prerequisite)
 cat /etc/nvme/hostnqn
 nvme gen-hostnqn   # should match file after NQN fix
+
+# Fabric path (bind to storage NIC — stronger cabling check)
+nvme discover -t tcp -a <ctrl-a-ip> -s 4420 -w ens1f0
+nvme discover -t tcp -a <ctrl-b-ip> -s 4420 -w ens1f1
 ```
+
+Via API (no SSH) — single node:
+
+```bash
+oc debug node/<node> --quiet -- chroot /host \
+  nvme discover -t tcp -a <ctrl-a-ip> -s 4420 -w ens1f0
+```
+
+Fleet: [ansible/README.md](ansible/README.md) (`nvme-discover.yml`).
 
 Same-subnet dual-NIC — may need:
 

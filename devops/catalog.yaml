@@ -1,5 +1,6 @@
-# DevOps troubleshooting catalog — stable IDs for symptom lookup, site nav, and agent routing.
+# DevOps catalog — stable IDs for symptom lookup, example routing, site nav, and agent discovery.
 # Generate symptom index: scripts/generate-symptom-index.py
+# Generate example index: scripts/generate-example-index.py
 
 guides:
   - id: failed-ocp-install
@@ -288,6 +289,23 @@ guides:
     tags: [rhacm, webhook, observability]
     quick_ref: QUICK-REFERENCE.md
 
+  - id: kafka-broker-init-kubernetes-svc
+    title: Kafka Broker Stuck in Init — kubernetes Service Unreachable
+    path: devops/ocp/troubleshooting/kafka-broker-init-kubernetes-svc
+    product: ocp
+    category: control-plane
+    symptoms:
+      - "kafka broker stuck in init"
+      - "cannot reach kubernetes service ClusterIP"
+      - "confluent helm init kubernetes.default"
+      - "admission webhook x509 apiserver"
+      - "network policy missing kube-apiserver egress"
+      - "adminnetworkpolicy same priority"
+      - "ANP priority collision intermittent"
+      - "config-init max retries exceeded connection timed out"
+    tags: [kafka, confluent, webhook, ovn, network-policy, control-plane, anp, banp]
+    quick_ref: null
+
   - id: debug-toolbox-container
     title: Debug Toolbox Container
     path: devops/ocp/troubleshooting/debug-toolbox-container
@@ -299,3 +317,175 @@ guides:
       - "privileged toolbox UBI"
     tags: [debug, networking, toolbox]
     quick_ref: QUICK-REFERENCE.md
+
+  - id: rhacm-mch-stuck-pending-upgrade
+    title: MCH Stuck Pending Upgrade
+    path: devops/rhacm/troubleshooting/mch-stuck-pending-upgrade.md
+    product: rhacm
+    category: hub-upgrade
+    symptoms:
+      - "multiclusterhub stuck updating"
+      - "MCH pending installing"
+      - "hub upgrade stuck beyond 15 minutes"
+    tags: [rhacm, mch, upgrade, hub]
+    quick_ref: null
+
+  - id: rhacm-managed-cluster-lease-not-updated
+    title: Managed Cluster Lease Not Updated
+    path: devops/rhacm/troubleshooting/managed-cluster-lease-not-updated.md
+    product: rhacm
+    category: hub-upgrade
+    symptoms:
+      - "registration agent stopped updating its lease"
+      - "managed cluster unknown after hub upgrade"
+      - "cluster is not reachable RHACM"
+    tags: [rhacm, klusterlet, lease, hub]
+    quick_ref: null
+
+  - id: rhacm-observability-addon-missing
+    title: Observability Addon Missing
+    path: devops/rhacm/troubleshooting/observability-addon-missing.md
+    product: rhacm
+    category: observability
+    symptoms:
+      - "observability addon missing managed cluster"
+      - "no ManagedClusterAddon observability"
+      - "multicluster observability operator not reconciling"
+    tags: [rhacm, observability, addon]
+    quick_ref: null
+
+  - id: rhacm-observability-platform-metrics-missing
+    title: Observability Platform Metrics Missing
+    path: devops/rhacm/troubleshooting/observability-platform-metrics-missing.md
+    product: rhacm
+    category: observability
+    symptoms:
+      - "platform metrics missing ACM dashboards"
+      - "prometheus PVC full spoke cluster"
+      - "custom metrics but no cpu memory kubelet"
+    tags: [rhacm, observability, prometheus]
+    quick_ref: null
+
+  - id: rhacm-search-service-503
+    title: RHACM Search Service 503
+    path: devops/rhacm/troubleshooting/search-service-503.md
+    product: rhacm
+    category: search
+    symptoms:
+      - "search service 503 RHACM"
+      - "search-postgres OOMKilled"
+      - "error contacting search service"
+    tags: [rhacm, search]
+    quick_ref: null
+
+  - id: rhacm-agent-install-rootfs-ssl-failure
+    title: Agent Install Rootfs SSL Failure
+    path: devops/rhacm/troubleshooting/agent-install-rootfs-ssl-failure.md
+    product: rhacm
+    category: agent-install
+    symptoms:
+      - "assisted-image-service SSL connection reset"
+      - "agent install rootfs download failed"
+      - "curl 35 SSL_connect connection reset peer"
+    tags: [rhacm, agent-install, cim, ssl]
+    quick_ref: null
+
+  - id: ansible-aap-controller-token-404
+    title: AAP Controller Token 404
+    path: devops/ansible/troubleshooting/aap-controller-token-404
+    product: ansible
+    category: authentication
+    symptoms:
+      - "ansible.controller.token 404"
+      - "Failed to get token HTTP Error 404"
+      - "AAP 2.5 token module not found"
+    tags: [ansible, aap, token, gateway]
+    quick_ref: null
+
+examples:
+  - id: kafka-bare-metal-portworx
+    title: Kafka on Bare Metal with Portworx
+    path: devops/ocp/examples/messaging/kafka/bare-metal-portworx
+    product: ocp
+    topic: messaging/kafka
+    operators: [cfk, strimzi, amq-streams]
+    intents:
+      - rack-aware kafka on openshift bare metal
+      - portworx storage class for kafka
+      - confluent vs strimzi comparison
+      - acm inventory rack labels
+    tags: [kafka, portworx, bare-metal, cfk, strimzi, kraft]
+    companion_notes:
+      - devops/ocp/notes/network-policy-observability.md
+      - devops/ocp/notes/kafka-on-openshift-tenancy.md
+
+  - id: bare-metal-secondary-disk
+    title: Bare Metal Secondary Disk Offload
+    path: devops/ocp/examples/bare-metal/secondary-disk
+    product: ocp
+    topic: bare-metal
+    intents:
+      - secondary disk openshift bare metal
+      - by-path nvme worker disk layout
+      - offload var log etcd data disk
+    tags: [bare-metal, storage, ignition, machineconfig]
+    companion_notes:
+      - devops/ocp/notes/machine-config-pools.md
+
+  - id: bare-metal-var-log-disk
+    title: Var Log on Secondary Disk
+    path: devops/ocp/examples/bare-metal/var-log-disk
+    product: ocp
+    topic: bare-metal
+    intents:
+      - var log secondary disk openshift
+      - machineconfig var log offload
+    tags: [bare-metal, storage, var-log]
+    companion_notes: []
+
+  - id: networking-vlan-segmentation
+    title: VLAN Network Segmentation
+    path: devops/ocp/examples/networking/vlan-segmentation.md
+    product: ocp
+    topic: networking
+    intents:
+      - vlan install-config openshift
+      - multus vlan day-2 segmentation
+    tags: [networking, vlan, multus, install-config]
+    companion_notes: []
+
+  - id: networking-nad
+    title: NetworkAttachmentDefinition Examples
+    path: devops/ocp/examples/networking/network-attachment-definitions
+    product: ocp
+    topic: networking
+    intents:
+      - network attachment definition multus
+      - nad vlan sriov openshift
+    tags: [networking, multus, nad, sriov]
+    companion_notes: []
+
+  - id: networking-ovn-install-config
+    title: OVN-Kubernetes Install Config
+    path: devops/ocp/examples/networking/ovn-kubernetes-install-config
+    product: ocp
+    topic: networking
+    intents:
+      - ovn kubernetes install-config networking
+      - policy audit config network CR
+    tags: [networking, ovn, install-config]
+    companion_notes:
+      - devops/ocp/notes/network-policy-observability.md
+
+  - id: labs-sno-kvm
+    title: SNO on KVM Lab
+    path: devops/ocp/examples/labs/sno-kvm-lab
+    product: ocp
+    topic: labs
+    intents:
+      - single node openshift kvm lab
+      - agent install home lab sno
+      - argocd bootstrap sno lab
+    tags: [labs, sno, kvm, agent-install]
+    companion_notes:
+      - devops/kvm/windows-vm-on-fedora.md

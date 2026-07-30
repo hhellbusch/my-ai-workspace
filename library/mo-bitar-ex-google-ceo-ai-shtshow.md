@@ -51,7 +51,7 @@ Companies have a hypothesis: ship slightly more buggy code in 1/10th the time, f
 
 ## The access gap
 
-Peter Steinberger (OpenClaw founder, now at OpenAI) spent $250k in 7 days and $1.3M in a month running a science experiment: "how would we build software if tokens didn't matter?"
+Peter Steinberger (Personal Agent Gateway founder, now at OpenAI) spent $250k in 7 days and $1.3M in a month running a science experiment: "how would we build software if tokens didn't matter?"
 
 Mo's rejoinder: tokens do matter. Massively. The experiment is only available to people at the frontier companies. The rocket ship Eric Schmidt described has three seats, already taken.
 

@@ -3,10 +3,13 @@
 Machine-generated lookup table: symptom string → troubleshooting guide.
 Source: `devops/catalog.yaml` (also staged as [catalog.yaml](catalog.yaml) on the site). Regenerate: `python3 scripts/generate-symptom-index.py`.
 
-*Generated 2026-07-15.*
+*Generated 2026-07-29.*
 
 | Symptom / keyword | Guide | Quick ref |
 |-------------------|-------|-----------|
+| ansible.controller.token 404 | [AAP Controller Token 404](ansible/troubleshooting/aap-controller-token-404/README.md) | — |
+| Failed to get token HTTP Error 404 | [AAP Controller Token 404](ansible/troubleshooting/aap-controller-token-404/README.md) | — |
+| AAP 2.5 token module not found | [AAP Controller Token 404](ansible/troubleshooting/aap-controller-token-404/README.md) | — |
 | AAP SSH connection timeout | [AAP SSH Connection MTU Issues](ocp/troubleshooting/aap-ssh-mtu-issues/README.md) | [⚡](ocp/troubleshooting/aap-ssh-mtu-issues/QUICK-REFERENCE.md) |
 | SSH works from bastion not from AAP | [AAP SSH Connection MTU Issues](ocp/troubleshooting/aap-ssh-mtu-issues/README.md) | [⚡](ocp/troubleshooting/aap-ssh-mtu-issues/QUICK-REFERENCE.md) |
 | MTU mismatch SSH | [AAP SSH Connection MTU Issues](ocp/troubleshooting/aap-ssh-mtu-issues/README.md) | [⚡](ocp/troubleshooting/aap-ssh-mtu-issues/QUICK-REFERENCE.md) |
@@ -34,6 +37,14 @@ Source: `devops/catalog.yaml` (also staged as [catalog.yaml](catalog.yaml) on th
 | monitor cluster operators from control plane node | [Control Plane Kubeconfigs](ocp/troubleshooting/control-plane-kubeconfigs/README.md) | [⚡](ocp/troubleshooting/control-plane-kubeconfigs/QUICK-REFERENCE.md) |
 | kubeconfig on CoreOS master | [Control Plane Kubeconfigs](ocp/troubleshooting/control-plane-kubeconfigs/README.md) | [⚡](ocp/troubleshooting/control-plane-kubeconfigs/QUICK-REFERENCE.md) |
 | installation monitoring from master | [Control Plane Kubeconfigs](ocp/troubleshooting/control-plane-kubeconfigs/README.md) | [⚡](ocp/troubleshooting/control-plane-kubeconfigs/QUICK-REFERENCE.md) |
+| kafka broker stuck in init | [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) | — |
+| cannot reach kubernetes service ClusterIP | [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) | — |
+| confluent helm init kubernetes.default | [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) | — |
+| admission webhook x509 apiserver | [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) | — |
+| network policy missing kube-apiserver egress | [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) | — |
+| adminnetworkpolicy same priority | [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) | — |
+| ANP priority collision intermittent | [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) | — |
+| config-init max retries exceeded connection timed out | [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) | — |
 | OAuthServerRouteEndpointAccessibleControllerAvailable | [OAuth Server healthz Unavailable](ocp/troubleshooting/oauth-healthz-unavailable/README.md) | [⚡](ocp/troubleshooting/oauth-healthz-unavailable/QUICK-REFERENCE.md) |
 | authentication cluster operator degraded | [OAuth Server healthz Unavailable](ocp/troubleshooting/oauth-healthz-unavailable/README.md) | [⚡](ocp/troubleshooting/oauth-healthz-unavailable/QUICK-REFERENCE.md) |
 | oauth-openshift.apps healthz connection refused | [OAuth Server healthz Unavailable](ocp/troubleshooting/oauth-healthz-unavailable/README.md) | [⚡](ocp/troubleshooting/oauth-healthz-unavailable/QUICK-REFERENCE.md) |
@@ -80,58 +91,85 @@ Source: `devops/catalog.yaml` (also staged as [catalog.yaml](catalog.yaml) on th
 | VM stuck provisioning | [KubeVirt VM Stuck in Provisioning](ocp/troubleshooting/kubevirt-vm-stuck-provisioning/README.md) | [⚡](ocp/troubleshooting/kubevirt-vm-stuck-provisioning/QUICK-REFERENCE.md) |
 | kubevirt-velero-annotations-remover webhook not found | [KubeVirt VM Stuck in Provisioning](ocp/troubleshooting/kubevirt-vm-stuck-provisioning/README.md) | [⚡](ocp/troubleshooting/kubevirt-vm-stuck-provisioning/QUICK-REFERENCE.md) |
 | virt-launcher pod not created | [KubeVirt VM Stuck in Provisioning](ocp/troubleshooting/kubevirt-vm-stuck-provisioning/README.md) | [⚡](ocp/troubleshooting/kubevirt-vm-stuck-provisioning/QUICK-REFERENCE.md) |
+| assisted-image-service SSL connection reset | [Agent Install Rootfs SSL Failure](rhacm/troubleshooting/agent-install-rootfs-ssl-failure.md) | — |
+| agent install rootfs download failed | [Agent Install Rootfs SSL Failure](rhacm/troubleshooting/agent-install-rootfs-ssl-failure.md) | — |
+| curl 35 SSL_connect connection reset peer | [Agent Install Rootfs SSL Failure](rhacm/troubleshooting/agent-install-rootfs-ssl-failure.md) | — |
+| multiclusterhub stuck updating | [MCH Stuck Pending Upgrade](rhacm/troubleshooting/mch-stuck-pending-upgrade.md) | — |
+| MCH pending installing | [MCH Stuck Pending Upgrade](rhacm/troubleshooting/mch-stuck-pending-upgrade.md) | — |
+| hub upgrade stuck beyond 15 minutes | [MCH Stuck Pending Upgrade](rhacm/troubleshooting/mch-stuck-pending-upgrade.md) | — |
+| registration agent stopped updating its lease | [Managed Cluster Lease Not Updated](rhacm/troubleshooting/managed-cluster-lease-not-updated.md) | — |
+| managed cluster unknown after hub upgrade | [Managed Cluster Lease Not Updated](rhacm/troubleshooting/managed-cluster-lease-not-updated.md) | — |
+| cluster is not reachable RHACM | [Managed Cluster Lease Not Updated](rhacm/troubleshooting/managed-cluster-lease-not-updated.md) | — |
+| observability addon missing managed cluster | [Observability Addon Missing](rhacm/troubleshooting/observability-addon-missing.md) | — |
+| no ManagedClusterAddon observability | [Observability Addon Missing](rhacm/troubleshooting/observability-addon-missing.md) | — |
+| multicluster observability operator not reconciling | [Observability Addon Missing](rhacm/troubleshooting/observability-addon-missing.md) | — |
+| platform metrics missing ACM dashboards | [Observability Platform Metrics Missing](rhacm/troubleshooting/observability-platform-metrics-missing.md) | — |
+| prometheus PVC full spoke cluster | [Observability Platform Metrics Missing](rhacm/troubleshooting/observability-platform-metrics-missing.md) | — |
+| custom metrics but no cpu memory kubelet | [Observability Platform Metrics Missing](rhacm/troubleshooting/observability-platform-metrics-missing.md) | — |
+| search service 503 RHACM | [RHACM Search Service 503](rhacm/troubleshooting/search-service-503.md) | — |
+| search-postgres OOMKilled | [RHACM Search Service 503](rhacm/troubleshooting/search-service-503.md) | — |
+| error contacting search service | [RHACM Search Service 503](rhacm/troubleshooting/search-service-503.md) | — |
 
-## By category
+## By product
 
-### Automation
+### Ansible
+
+#### Authentication
+
+- [AAP Controller Token 404](ansible/troubleshooting/aap-controller-token-404/README.md) — `ansible`, `aap`, `token`, `gateway`
+
+### OCP
+
+#### Automation
 
 - [AAP SSH Connection MTU Issues](ocp/troubleshooting/aap-ssh-mtu-issues/README.md) — `aap`, `ansible`, `mtu`, `ssh`
 
-### Bare Metal
+#### Bare Metal
 
 - [Bare Metal Node Inspection Timeout](ocp/troubleshooting/bare-metal-node-inspection-timeout/README.md) — `bare-metal`, `ironic`, `inspection`
 - [Bare Metal RHCOS Disk Wipe](ocp/troubleshooting/bare-metal-rhcos-disk-wipe/README.md) — `bare-metal`, `disk-wipe`, `decommission`
 - [Bare Metal Stale Node IP Conflict](ocp/troubleshooting/bare-metal-stale-node-ip-conflict/README.md) — `bare-metal`, `networking`, `ip-conflict`
 - [Worker Node TLS Certificate Failure](ocp/troubleshooting/worker-node-tls-cert-failure/README.md) — `bare-metal`, `tls`, `certificates`, `workers`
 
-### Certificates
+#### Certificates
 
 - [CSR Management](ocp/troubleshooting/csr-management/README.md) — `certificates`, `csr`, `nodes`
 
-### Control Plane
+#### Control Plane
 
 - [API Server Certificate Deadlock](ocp/troubleshooting/apiserver-cert-deadlock/README.md) — `certificates`, `control-plane`, `emergency`
 - [API Slowness and Web Console Performance](ocp/troubleshooting/api-slowness-web-console/README.md) — `performance`, `control-plane`, `emergency`
 - [Control Plane Kubeconfigs](ocp/troubleshooting/control-plane-kubeconfigs/README.md) — `kubeconfig`, `control-plane`, `installation`
+- [Kafka Broker Stuck in Init — kubernetes Service Unreachable](ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md) — `kafka`, `confluent`, `webhook`, `ovn`, `network-policy`, `control-plane`, `anp`, `banp`
 - [OAuth Server healthz Unavailable](ocp/troubleshooting/oauth-healthz-unavailable/README.md) — `authentication`, `oauth`, `control-plane`
 - [kube-controller-manager Crash Loop](ocp/troubleshooting/kube-controller-manager-crashloop/README.md) — `control-plane`, `crashloop`
 
-### Installation
+#### Installation
 
 - [Failed OCP Install](ocp/troubleshooting/failed-ocp-install/README.md) — `installation`, `bootstrap`, `beginners`
 
-### Kubernetes
+#### Kubernetes
 
 - [Namespace Stuck in Terminating](ocp/troubleshooting/namespace-stuck-terminating/README.md) — `namespace`, `finalizers`
 
-### Lifecycle
+#### Lifecycle
 
 - [Destroy Cluster Without Metadata](ocp/troubleshooting/destroy-cluster-without-metadata/README.md) — `destroy`, `lifecycle`, `bare-metal`, `cloud`
 
-### Networking
+#### Networking
 
 - [CoreOS Networking Issues](ocp/troubleshooting/coreos-networking-issues/README.md) — `coreos`, `networking`, `nmstate`
 
-### Registry
+#### Registry
 
 - [Image Registry Auth and Route Exposure](ocp/troubleshooting/image-registry-auth/README.md) — `registry`, `authentication`, `disconnected`
 - [Image Signature Policy MCP Deadlock](ocp/troubleshooting/image-signature-policy-mcp-deadlock/README.md) — `registry`, `machineconfig`, `signatures`, `emergency`
 
-### Rhacm
+#### Rhacm
 
 - [MultiClusterObservability Webhook Rejection](ocp/troubleshooting/multiclusterobservability-webhook-rejection/README.md) — `rhacm`, `webhook`, `observability`
 
-### Storage
+#### Storage
 
 - [NFS Portworx Proxy PVC Slow Ready](ocp/troubleshooting/nfs-portworx-proxy-pvc-slow-ready/README.md) — `storage`, `portworx`, `nfs`, `pvc`
 - [NVMe Host NQN Duplicates](ocp/troubleshooting/nvme-host-nqn-duplicate/README.md) — `storage`, `nvme`, `bare-metal`
@@ -139,11 +177,31 @@ Source: `devops/catalog.yaml` (also staged as [catalog.yaml](catalog.yaml) on th
 - [Portworx CSI Pod CrashLoopBackOff](ocp/troubleshooting/portworx-csi-crashloop/README.md) — `storage`, `portworx`, `csi`
 - [Prometheus and Alertmanager Storage](ocp/troubleshooting/prometheus-monitoring-storage/README.md) — `monitoring`, `prometheus`, `storage`
 
-### Tools
+#### Tools
 
 - [Debug Toolbox Container](ocp/troubleshooting/debug-toolbox-container/README.md) — `debug`, `networking`, `toolbox`
 
-### Virtualization
+#### Virtualization
 
 - [KubeVirt VM Stuck in Provisioning](ocp/troubleshooting/kubevirt-vm-stuck-provisioning/README.md) — `kubevirt`, `velero`, `oadp`, `virtualization`
+
+### Rhacm
+
+#### Agent Install
+
+- [Agent Install Rootfs SSL Failure](rhacm/troubleshooting/agent-install-rootfs-ssl-failure.md) — `rhacm`, `agent-install`, `cim`, `ssl`
+
+#### Hub Upgrade
+
+- [MCH Stuck Pending Upgrade](rhacm/troubleshooting/mch-stuck-pending-upgrade.md) — `rhacm`, `mch`, `upgrade`, `hub`
+- [Managed Cluster Lease Not Updated](rhacm/troubleshooting/managed-cluster-lease-not-updated.md) — `rhacm`, `klusterlet`, `lease`, `hub`
+
+#### Observability
+
+- [Observability Addon Missing](rhacm/troubleshooting/observability-addon-missing.md) — `rhacm`, `observability`, `addon`
+- [Observability Platform Metrics Missing](rhacm/troubleshooting/observability-platform-metrics-missing.md) — `rhacm`, `observability`, `prometheus`
+
+#### Search
+
+- [RHACM Search Service 503](rhacm/troubleshooting/search-service-503.md) — `rhacm`, `search`
 

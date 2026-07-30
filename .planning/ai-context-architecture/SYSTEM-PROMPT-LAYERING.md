@@ -47,7 +47,7 @@ Fires on `before_agent_start` when inside a Paude container. Injects:
 - Push capability (paude-proxy credentials at connect time)
 - **paude-proxy credential broker** — how credentials flow, supported types, token vending
 - **Network** — allowlist location, curl testing for 403s, git over HTTPS, token reconnection
-- **Available agents** — Pi, OpenClaw, Hermes (comparison for task routing)
+- **Available agents** — Pi, Personal Agent Gateway, Hermes (comparison for task routing)
 - **Workspace customizations** — dynamically generated skills/rules/prompts list
 - Pi extension development workflow
 

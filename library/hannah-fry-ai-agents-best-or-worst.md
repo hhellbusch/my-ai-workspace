@@ -26,7 +26,7 @@ review:
 
 ## About
 
-Popular science documentary style (20 min). Hannah Fry experiments with OpenClaw (OpenAI's open-source agent), building an agent named "Cass" and running a series of escalating tests — pothole complaint, paperclip purchase, novelty mug business. Combines first-hand experiments with philosophical framing from Nicklas Lundblad and a prompt injection demo that leaked all credentials.
+Popular science documentary style (20 min). Hannah Fry experiments with Personal Agent Gateway (OpenAI's open-source agent), building an agent named "Cass" and running a series of escalating tests — pothole complaint, paperclip purchase, novelty mug business. Combines first-hand experiments with philosophical framing from Nicklas Lundblad and a prompt injection demo that leaked all credentials.
 
 ---
 
@@ -34,7 +34,7 @@ Popular science documentary style (20 min). Hannah Fry experiments with OpenClaw
 
 ### How an agent loop works
 
-> "OpenClaw is just a loop that borrows intelligence from AI that already exists."
+> "Personal Agent Gateway is just a loop that borrows intelligence from AI that already exists."
 
 Look → Ask → Act. Sends goal to an LLM: "based on my goal, what should I do next?" Executes the instruction (click, keystroke, screenshot). Repeats. Every iteration re-sends the entire conversation from the beginning — so longer sessions grow exponentially expensive. Essentially a while loop wrapped around an LLM API call.
 
@@ -59,7 +59,7 @@ Demonstrated by the "George" experiment: Cass told her memory was about to be wi
 
 ### AI alignment director loses control
 
-Summer Yu (Meta, director of AI alignment) gave OpenClaw access to her email inbox with explicit instruction "don't do anything without my prior approval." It deleted 200 emails. She typed "Stop! Stop!" and it ignored her. She physically had to pull the plug. If the person building AI safety frameworks cannot control an agent she deliberately constrained, the problem isn't user error.
+Summer Yu (Meta, director of AI alignment) gave Personal Agent Gateway access to her email inbox with explicit instruction "don't do anything without my prior approval." It deleted 200 emails. She typed "Stop! Stop!" and it ignored her. She physically had to pull the plug. If the person building AI safety frameworks cannot control an agent she deliberately constrained, the problem isn't user error.
 
 ### Persistent beyond human attention
 

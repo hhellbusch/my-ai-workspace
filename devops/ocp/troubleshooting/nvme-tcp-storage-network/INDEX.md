@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "NVMe/TCP storage network troubleshooting index — review metadata backfill."
+---
+
 # NVMe/TCP Storage Network — Index
 
 ## Start Here
@@ -17,10 +23,11 @@
 | Native multipath vs dm-multipath | [README — Native NVMe multipath](README.md#native-nvme-multipath-not-dm-multipath) |
 | NMState NNCP on OCP | [README — OpenShift NMState](README.md#openshift-nmstate-for-storage-interfaces) |
 | Example NNCP skeleton | [example-nncp-storage-interfaces.yaml](example-nncp-storage-interfaces.yaml) |
+| Fabric check: `nvme discover` via `oc debug` | [ansible/README.md](ansible/README.md) |
 | Full prep order (NQN → network → CSI) | [README — Prep checklist](README.md#prep-checklist-order-matters) |
 
 ## Related Guides
 
 - [NVMe Host NQN Duplicates](../nvme-host-nqn-duplicate/README.md) — step 1
 - [Portworx CSI CrashLoop](../portworx-csi-crashloop/README.md) — step 6
-- [Kafka + Portworx bare metal](../../examples/kafka-bare-metal-portworx/README.md)
+- [Kafka + Portworx bare metal](../../examples/messaging/kafka/bare-metal-portworx/README.md)

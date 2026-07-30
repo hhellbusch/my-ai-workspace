@@ -1,0 +1,73 @@
+---
+- name: Virtual media privilege — harness or hybrid mode
+  when: validation_mode in ['harness', 'hybrid']
+  block:
+    - name: Virtual media privilege — evaluate scenario role
+      ansible.builtin.set_fact:
+        _vm_privilege: "{{ preflight_inputs.bmc.virtual_media_privilege | default('administrator') }}"
+
+    - name: Virtual media privilege — record finding for non-administrator
+      ansible.builtin.set_fact:
+        preflight_findings: >-
+          {{ preflight_findings + [{
+            'id': 'bmc_virtual_media_privilege',
+            'message': 'BMC account lacks privileges to configure Virtual Media '
+              ~ 'and first-boot device (harness role: ' ~ _vm_privilege ~ ').'
+          }] }}
+      when: _vm_privilege != 'administrator'
+
+- name: Virtual media privilege — live mode
+  when: validation_mode == 'live'
+  block:
+    - name: Virtual media privilege — probe VirtualMedia via redfish_info
+      community.general.redfish_info:
+        category: Manager
+        command: GetVirtualMedia
+        baseuri: "{{ item.address }}:{{ item.port | default(443) }}"
+        username: "{{ _bmc_user | default(preflight_inputs.bmc.credentials.username) }}"
+        password: "{{ _bmc_pass | default(preflight_inputs.bmc.credentials.password) }}"
+        validate_certs: false
+      loop: "{{ preflight_inputs.bmc.hosts | default([]) }}"
+      loop_control:
+        label: "{{ item.name | default(item.address) }}"
+      register: _vm_info
+      failed_when: false
+
+    - name: Virtual media privilege — attempt boot option read (proxy for config rights)
+      community.general.redfish_info:
+        category: Systems
+        command: GetBootOverride
+        baseuri: "{{ item.address }}:{{ item.port | default(443) }}"
+        username: "{{ _bmc_user | default(preflight_inputs.bmc.credentials.username) }}"
+        password: "{{ _bmc_pass | default(preflight_inputs.bmc.credentials.password) }}"
+        validate_certs: false
+      loop: "{{ preflight_inputs.bmc.hosts | default([]) }}"
+      loop_control:
+        label: "{{ item.name | default(item.address) }}"
+      register: _boot_info
+      failed_when: false
+
+    - name: Virtual media privilege — record finding when VirtualMedia query failed
+      ansible.builtin.set_fact:
+        preflight_findings: >-
+          {{ preflight_findings + [{
+            'id': 'bmc_virtual_media_privilege',
+            'message': 'BMC ' ~ (item.item.name | default(item.item.address))
+              ~ ' VirtualMedia query failed — account may lack sufficient BMC role: '
+              ~ (item.msg | default('unknown error'))
+          }] }}
+      loop: "{{ _vm_info.results | default([]) }}"
+      when: item.failed | default(false)
+
+    - name: Virtual media privilege — warn when boot override query failed
+      ansible.builtin.set_fact:
+        preflight_warnings: >-
+          {{ preflight_warnings + [{
+            'id': 'bmc_virtual_media_privilege',
+            'message': 'BMC ' ~ (item.item.name | default(item.item.address))
+              ~ ' boot override query failed — verify BMC administrator privileges.'
+          }] }}
+      loop: "{{ _boot_info.results | default([]) }}"
+      when:
+        - item.failed | default(false)
+        - not (preflight_findings | selectattr('id', 'equalto', 'bmc_virtual_media_privilege') | list | length > 0)
