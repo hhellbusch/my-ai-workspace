@@ -707,6 +707,8 @@ done
 
 ### Emergency: Scale Down Workloads
 
+See also [pod termination quick stop](../../notes/pod-termination-quick-stop.md) for scale-to-zero vs force-delete tradeoffs.
+
 ```bash
 # If cluster is overwhelmed, temporarily scale down non-critical workloads
 # This reduces API load

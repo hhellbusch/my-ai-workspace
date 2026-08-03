@@ -31,7 +31,7 @@ Symptom → cause → fix guides with quick references and diagnostic scripts.
 - [IBM Z / LinuxONE](ibm-z/) — s390x vocabulary, CIM ABI LPAR, AOP fork notes, ACM vs Metal3 ([index](ibm-z/README.md))
 - [GPU operator artifacts](gpu/) — ClusterPolicy, MachineConfig, vGPU runbooks
 - [Examples](examples/) — Topic index: [bare-metal](examples/bare-metal/README.md), [messaging](examples/messaging/README.md), [networking](examples/networking/README.md), [labs](examples/labs/README.md) ([Kafka + Portworx](examples/messaging/kafka/bare-metal-portworx/README.md), [secondary disk](examples/bare-metal/secondary-disk/README.md))
-- [Notes](notes/) — Informal quick references ([MachineConfig pools](notes/machine-config-pools.md), [Kafka on OpenShift tenancy](notes/kafka-on-openshift-tenancy.md), [container density / overcommit](notes/container-density-overcommit.md), [ClusterResourceOverride](notes/cluster-resource-override.md), [Vertical Pod Autoscaler](notes/vertical-pod-autoscaler.md), [network policy observability](notes/network-policy-observability.md), useful `oc` commands)
+- [Notes](notes/) — Informal quick references ([MachineConfig pools](notes/machine-config-pools.md), [Kafka on OpenShift tenancy](notes/kafka-on-openshift-tenancy.md), [container density / overcommit](notes/container-density-overcommit.md), [ClusterResourceOverride](notes/cluster-resource-override.md), [Vertical Pod Autoscaler](notes/vertical-pod-autoscaler.md), [network policy observability](notes/network-policy-observability.md), [pod termination quick stop](notes/pod-termination-quick-stop.md), useful `oc` commands)
 - **`install/`** *(gitignored)* — Local install working directory; never committed
 
 Browse the full technical reference index → [devops/README.md](../README.md)
