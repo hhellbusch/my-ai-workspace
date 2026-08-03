@@ -29,6 +29,10 @@ Practical, runnable examples and references for infrastructure, platform, and op
 Cross-cutting reference for how RHACM and Argo CD divide fleet work — multiple decision axes, not a single product choice.
 
 - **[fleet-control-spectrum.md](fleet-control-spectrum.md)** — Reconciliation authority, compliance posture, lifecycle scope, and a reconsideration checklist for GitOps-heavy designs
+- **[rhacm/notes/greenfield-fleet-architecture.md](rhacm/notes/greenfield-fleet-architecture.md)** — Default ACM + GitOps stack for a new fleet; when to add AAP/AWX
+- **[rhacm/notes/acm-ansible-integration.md](rhacm/notes/acm-ansible-integration.md)** — Native ACM→Ansible integration paths and prerequisites
+- **[rhacm/notes/fleet-ad-hoc-data-gathering.md](rhacm/notes/fleet-ad-hoc-data-gathering.md)** — Patterns for ad-hoc diagnostics across fleet nodes
+- **[rhacm/notes/bare-metal-lifecycle-hook-patterns.md](rhacm/notes/bare-metal-lifecycle-hook-patterns.md)** — Preflight, BMH discovery, install gates — AAP/Curator vs Go/operator/CI
 - **[rhacm/git-driven-configuration.md](rhacm/git-driven-configuration.md)** — RHACM hub and policy resources in Git; rebuild-from-scratch posture; delivery via Argo CD
 - **[bigfix-gitops-on-ocp.md](bigfix-gitops-on-ocp.md)** — Food for thought: HCL BigFix on OpenShift with GitOps — ownership matrix and team discussion prompts
 - **[fleet-management-ideas.md](fleet-management-ideas.md)** — Review log of doc and framework follow-ups (not a committed roadmap)

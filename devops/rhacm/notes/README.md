@@ -17,6 +17,10 @@ Informal RHACM quick references and working notes. These are operational referen
 - **[cim-hub-setup.md](cim-hub-setup.md)** — Enable CIM / Assisted Installer on the hub for on-prem cluster provisioning: `AgentServiceConfig`, `Provisioning` CR, corporate proxy, mirror/`osImages`, verification
 - **[agent-install-preflight.md](agent-install-preflight.md)** — Preflight orchestration for ACM agent-based installs: ClusterCurator prehooks, Assisted Installer validations, agent approval gates, external pipelines
 - **[bare-metal-cluster-destroy.md](bare-metal-cluster-destroy.md)** — RHACM/MCE destroy vs detach for bare-metal clusters; BMO deprovision vs full disk wipe; ClusterCurator destroy hooks
+- **[greenfield-fleet-architecture.md](greenfield-fleet-architecture.md)** — Default stack and phased adoption for a new fleet: ACM + GitOps first, when to add AAP/AWX
+- **[acm-ansible-integration.md](acm-ansible-integration.md)** — Native ACM→Ansible paths (ClusterCurator, PolicyAutomation, subscriptions), AAP vs AWX, prerequisites
+- **[fleet-ad-hoc-data-gathering.md](fleet-ad-hoc-data-gathering.md)** — Strategies for host-level and API-level diagnostics across managed clusters (no fleet exec in ACM)
+- **[bare-metal-lifecycle-hook-patterns.md](bare-metal-lifecycle-hook-patterns.md)** — Implementation patterns for preflight, BMH discovery, and install gates (AAP + ClusterCurator, Go, operators, CI) with pros/cons and examples
 - **[../git-driven-configuration.md](../git-driven-configuration.md)** — RHACM hub and governance resources in Git; same PR/promotion flow as Argo CD; rebuild-from-scratch posture
 
 ## Adding New Notes

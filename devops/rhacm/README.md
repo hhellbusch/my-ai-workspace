@@ -35,6 +35,10 @@ Operational quick references — configurations, requirements, and setup guides 
 | [cim-hub-setup.md](./notes/cim-hub-setup.md) | Enable on-prem cluster provisioning: CIM, `AgentServiceConfig`, corporate proxy, mirror config, audit commands. |
 | [agent-install-preflight.md](./notes/agent-install-preflight.md) | Preflight orchestration for agent-based installs: ClusterCurator prehooks, Assisted Installer validation, agent approval gates. |
 | [bare-metal-cluster-destroy.md](./notes/bare-metal-cluster-destroy.md) | RHACM/MCE destroy vs detach on bare metal; BMO deprovision vs disk wipe; ClusterCurator destroy hooks. |
+| [greenfield-fleet-architecture.md](./notes/greenfield-fleet-architecture.md) | Greenfield fleet: ACM + GitOps default stack, phased Ansible adoption, anti-patterns. |
+| [acm-ansible-integration.md](./notes/acm-ansible-integration.md) | ACM and AAP/AWX: four native integration paths, Resource Operator, auto-exported vars. |
+| [fleet-ad-hoc-data-gathering.md](./notes/fleet-ad-hoc-data-gathering.md) | Ad-hoc commands and data gathering across fleet nodes (`oc debug`, ManifestWork, Ansible). |
+| [bare-metal-lifecycle-hook-patterns.md](./notes/bare-metal-lifecycle-hook-patterns.md) | Preflight, BMH discovery, install gates — AAP/Curator vs Go/operator/CI patterns with examples. |
 
 ### [`troubleshooting/`](./troubleshooting/)
 

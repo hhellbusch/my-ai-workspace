@@ -129,6 +129,7 @@ Found an issue or have an improvement? Please:
 
 ## Related
 
+- [RHACM notes](../notes/) — operational references including [greenfield fleet architecture](../notes/greenfield-fleet-architecture.md), [ACM ↔ Ansible](../notes/acm-ansible-integration.md), [fleet ad-hoc data gathering](../notes/fleet-ad-hoc-data-gathering.md), [bare metal lifecycle hook patterns](../notes/bare-metal-lifecycle-hook-patterns.md)
 - [Troubleshooting](../troubleshooting/) - Operational troubleshooting guides (managed cluster lease, upgrade issues)
 - [Ansible Examples](../../ansible/examples/) - Automation for cluster operations
 - [Argo CD Examples](../../argo/examples/) - GitOps application delivery

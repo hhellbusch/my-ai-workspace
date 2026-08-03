@@ -155,6 +155,7 @@ The biggest simplification is **removing the custom trigger mechanism** — what
 - [`../README.md`](../README.md) — OCM CLI and standalone script documentation
 - [`../set-ocm-subscription.sh`](../set-ocm-subscription.sh) — Automation script
 - [`./README.md`](./README.md) — ClusterCurator deep-dive with full CRD examples
+- [`../../../notes/bare-metal-lifecycle-hook-patterns.md`](../../../notes/bare-metal-lifecycle-hook-patterns.md) — Hook implementation patterns (AAP, Go, operator, CI)
 
 ---
 
