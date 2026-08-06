@@ -950,6 +950,12 @@ oc get etcd cluster -o yaml
 
 ## Related Documentation
 
+### Workspace
+
+- [Namespace guardrails](../../guides/namespace-guardrails/README.md) — object-count quotas to prevent etcd/API exhaustion
+
+### External
+
 - [OpenShift API Server Architecture](https://docs.openshift.com/container-platform/latest/architecture/control-plane.html)
 - [etcd Performance Tuning](https://docs.openshift.com/container-platform/latest/scalability_and_performance/recommended-performance-scale-practices/recommended-etcd-practices.html)
 - [OpenShift Web Console](https://docs.openshift.com/container-platform/latest/web_console/web-console.html)

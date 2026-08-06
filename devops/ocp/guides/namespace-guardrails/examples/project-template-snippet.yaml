@@ -1,0 +1,40 @@
+# Snippet for openshift-config project request template.
+# Append these objects BEFORE the parameters: section in template project-request.
+# Full template workflow: see guide README § Project request templates.
+---
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    name: ${PROJECT_NAME}-defaults
+  spec:
+    limits:
+      - type: Container
+        default:
+          cpu: "500m"
+          memory: 512Mi
+        defaultRequest:
+          cpu: "100m"
+          memory: 128Mi
+        max:
+          cpu: "4"
+          memory: 8Gi
+- apiVersion: v1
+  kind: ResourceQuota
+  metadata:
+    name: ${PROJECT_NAME}-quota
+  spec:
+    hard:
+      requests.cpu: "8"
+      requests.memory: 16Gi
+      limits.cpu: "16"
+      limits.memory: 32Gi
+      pods: "100"
+      services: "20"
+      configmaps: "50"
+      secrets: "50"
+      persistentvolumeclaims: "20"
+      count/deployments.apps: "30"
+      count/replicasets.apps: "60"
+      count/networkpolicies.networking.k8s.io: "20"
+      openshift.io/imagestreams: "20"
+      count/routes.route.openshift.io: "20"

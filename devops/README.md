@@ -97,6 +97,7 @@ The deepest product section — install, operations, workloads on OpenShift, and
 - **`troubleshooting/`** — 25 catalog-backed guides ([index](ocp/troubleshooting/README.md), [SYMPTOM-INDEX](SYMPTOM-INDEX.md))
 - **`examples/`** — Runnable scenarios by topic:
   - [bare-metal](ocp/examples/bare-metal/README.md) · [messaging/kafka](ocp/examples/messaging/kafka/README.md) · [networking](ocp/examples/networking/README.md) · [labs](ocp/examples/labs/README.md)
+- **`guides/`** — [Namespace guardrails](ocp/guides/namespace-guardrails/README.md) — object-count quotas, etcd impact, tier templates
 - **`notes/`** — Quick refs: [MachineConfig pools](ocp/notes/machine-config-pools.md), [network policy](ocp/notes/network-policy-observability.md), [density/CRO/VPA](ocp/notes/container-density-overcommit.md), [useful commands](ocp/notes/openshift-useful-commands.md)
 - **`disconnected-install/`** — Quay + `oc-mirror` ([working guide](ocp/disconnected-install/working-guide.md))
 - **`ibm-z/`**, **`gpu/`** — Platform variants

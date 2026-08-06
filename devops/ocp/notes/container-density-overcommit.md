@@ -1,3 +1,9 @@
+---
+review:
+  status: unreviewed
+  notes: "Review block added 2026-08-06 when cross-linking namespace-guardrails guide. Content predates explicit review metadata."
+---
+
 # Container density and overcommit
 
 How to pack more pods onto a large bare-metal OpenShift cluster without the density levers fighting each other.
@@ -88,7 +94,7 @@ Burstable (`request < limit`) is the usual density default on shared bare-metal 
 
 ## Suggested adoption order (large bare-metal)
 
-1. **Namespace defaults** — `LimitRange` (and `ResourceQuota` where multi-tenant caps matter) so every pod gets sane limits.
+1. **Namespace defaults** — `LimitRange` (and `ResourceQuota` where multi-tenant caps matter) so every pod gets sane limits. For object-count and etcd guardrails beyond compute, see [namespace guardrails](../guides/namespace-guardrails/README.md).
 2. **CRO on density tenants** — label non-prod / packable namespaces; leave critical namespaces unlabeled until measured.
 3. **VPA in `Off`** — collect recommendations over a representative load window.
 4. **Bake into Git** — promote `target` requests into Deployments (preferred under GitOps); use `Initial`/`Auto` only where live mutation is acceptable.
@@ -116,3 +122,4 @@ Those affect density too, but they are different control planes.
 - [Cluster-level overcommit using the Cluster Resource Override Operator](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/nodes/working-with-clusters#nodes-cluster-resource-override_nodes-cluster-overcommit) — CRO section, *Nodes* (OCP 4.18)
 - [Automatically adjust pod resource levels with the Vertical Pod Autoscaler](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/nodes/working-with-pods#nodes-pods-vertical-autoscaler-about_nodes-pods-vertical-autoscaler) — section 2.5, *Nodes* (OCP 4.18)
 - Tool notes: [cluster-resource-override.md](cluster-resource-override.md), [vertical-pod-autoscaler.md](vertical-pod-autoscaler.md)
+- Namespace policy: [namespace guardrails](../guides/namespace-guardrails/README.md)

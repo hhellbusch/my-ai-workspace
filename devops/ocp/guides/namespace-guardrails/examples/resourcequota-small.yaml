@@ -1,0 +1,34 @@
+# Small tier — dev sandbox, personal projects, CI experiments.
+# Object counts are conservative; control-plane protection is the primary goal.
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: tier-small
+spec:
+  hard:
+  # Compute
+    requests.cpu: "2"
+    requests.memory: 4Gi
+    limits.cpu: "4"
+    limits.memory: 8Gi
+    requests.storage: 20Gi
+  # Core object counts
+    pods: "20"
+    services: "10"
+    services.nodeports: "2"
+    services.loadbalancers: "1"
+    configmaps: "25"
+    secrets: "25"
+    persistentvolumeclaims: "5"
+  # Workload controllers
+    count/deployments.apps: "10"
+    count/replicasets.apps: "20"
+    count/jobs.batch: "10"
+    count/cronjobs.batch: "5"
+    count/statefulsets.apps: "3"
+  # Networking policy density
+    count/networkpolicies.networking.k8s.io: "10"
+  # OpenShift
+    openshift.io/imagestreams: "5"
+    count/routes.route.openshift.io: "10"
+    count/buildconfigs.build.openshift.io: "10"

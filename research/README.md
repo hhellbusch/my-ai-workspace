@@ -24,6 +24,7 @@ Research workspaces containing fetched sources, analysis findings, and assessmen
 | `personal-agent-gateway/` | Personal Agent Gateway architecture — gateway, memory, proactivity | 1 transcript | [README.md](personal-agent-gateway/README.md) · [library entry](../library/alex-krentsel-personal-agent-gateway-deep-dive.md) |
 | `harness-engineering/` | Agent harness first principles (Tejas Kumar) | 1 transcript | [README.md](harness-engineering/README.md) · [library entry](../library/tejas-kumar-harnesses-in-ai.md) |
 | `ocp-container-density-overcommit/` | Bare-metal OCP packing: CRO, VPA/HPA, LimitRange, node allocatable, maxPods | 12 of 12 fetched | [paths.md](ocp-container-density-overcommit/paths.md) · [library stub](../library/ocp-container-density-overcommit.md) |
+| `ocp-namespace-guardrails/` | Namespace limits beyond CPU/memory — etcd object counts, ResourceQuota tiers | Web sources cited | [guide](../devops/ocp/guides/namespace-guardrails/README.md) |
 
 ## Structure Convention
 
