@@ -17,6 +17,12 @@ review:
 
 If this combined doc and those two disagree later, the split docs win — update them first, then re-sync this one (or regenerate it).
 
+**Official references** (sent by a peer for cross-check — findings folded in below):
+
+- [OpenShift: Secondary networks — attaching a pod](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/multiple_networks/secondary-networks#nw-multus-advanced-annotations_attaching-pod) — `default-route` override, static IP/MAC annotations
+- [OpenShift: Secondary networks — configuring multi-network policy](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/multiple_networks/secondary-networks#configuring-multi-network-policy)
+- [OpenShift: MultiNetworkPolicy API reference](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_apis/multinetworkpolicy-k8s-cni-cncf-io-v1beta1)
+
 **Deployment context:** Confluent for Kubernetes (**CFK**), installed via Helm (not OLM/OperatorHub). Helm vs. OLM only affects how the operator itself is deployed, not the `platform.confluent.io` CRDs it watches.
 
 ---
@@ -170,6 +176,32 @@ spec:
 
 **hostNetwork as an alternative:** if the workload is a host-level daemon (not a typical pod) or already runs with `hostNetwork: true`, it shares the host's network namespace directly and the host route alone is sufficient — no Multus needed for that specific workload.
 
+**The pod-level version of the "no default route" rule:** the same mistake from [Layer 3 routing](#layer-3-routing) has a pod-scoped equivalent. The extended JSON form of the `k8s.v1.cni.cncf.io/networks` annotation accepts a `default-route` key per attachment — leave it unset for `repl-net`/`kafka-repl-net`. Left unset, the pod's default route stays on the primary (OVN) interface, and the secondary attachment only carries a route to its own subnet. Confirm via the pod's `k8s.v1.cni.cncf.io/network-status` annotation — the secondary entry should have no `"default-route"` key.
+
+**Static IP/MAC as an alternative to whereabouts:** the whereabouts-based NAD above assigns IPs dynamically from a range. If a workload needs a **stable, predictable** address per replica — which is exactly Kafka's situation, since `$(REPL_IP)` in [Part 2](#cfk-listener-configuration) is otherwise discovered at runtime via an init container — macvlan supports static addressing via CNI plugin chaining instead:
+
+```json
+{
+  "cniVersion": "0.3.1",
+  "name": "repl-net-static",
+  "plugins": [
+    {
+      "type": "macvlan",
+      "capabilities": { "ips": true },
+      "master": "bond-repl.200",
+      "mode": "bridge",
+      "ipam": { "type": "static" }
+    },
+    {
+      "capabilities": { "mac": true },
+      "type": "tuning"
+    }
+  ]
+}
+```
+
+The pod then requests its specific address via the `ips`/`mac` keys in its `k8s.v1.cni.cncf.io/networks` annotation — e.g., one static IP per Kafka broker StatefulSet ordinal. That turns `$(REPL_IP)` from "discovered at runtime" into "known at manifest-authoring time," removing the init-container lookup entirely. Trades the operational simplicity of a pool (whereabouts) for per-pod address pinning — worth it here because brokers already have stable per-replica identity that maps naturally onto a stable IP.
+
 ### Securing the secondary network: MultiNetworkPolicy
 
 Standard Kubernetes `NetworkPolicy` **only governs the default pod network** — it has no effect on the Multus-attached secondary interface. Without `MultiNetworkPolicy`, anything attached to this NAD can reach anything else attached to it, with zero in-cluster enforcement; you'd be relying entirely on physical VLAN isolation and upstream switch/router ACLs.
@@ -223,6 +255,10 @@ spec:
 ```
 
 Verify enforcement explicitly — spin up a debug pod on the same NAD without the matching label and confirm it *can't* reach the workload's replication port. `MultiNetworkPolicy` misconfiguration (missing `policy-for` annotation on either the NAD or the policy) tends to fail open silently.
+
+**If a peer sends you the "subnets field" caveat, it doesn't apply here.** Red Hat's docs note that `podSelector`/`namespaceSelector` peer matching in a multi-network policy is only valid if the secondary network's CNI config defines a `subnets` field — otherwise only `ipBlock` works. That restriction is scoped to **OVN-Kubernetes secondary networks** (CNI type `ovn-k8s-cni-overlay`, `topology: layer2`/`localnet`), a different mechanism from the **macvlan** NAD this design uses. For macvlan/IPVLAN/SR-IOV NADs — including the `kafka-repl-net` policy in Part 2 — `podSelector` is valid regardless; there's no `subnets` field in a macvlan CNI config to begin with.
+
+**CLI verification:** the resource name is `multi-networkpolicy` (singular, hyphenated) — `oc get multi-networkpolicy -n <namespace>`.
 
 ---
 
@@ -353,6 +389,8 @@ Because Cluster Linking is broker-only (no Connect layer), this is the only work
 | LACP bond assumed to span the WAN | The WAN carrier doesn't participate in your LACP; bond terminates locally, WAN segment is routed |
 | MachineConfig/NNCP applied to the default `worker` pool when only some nodes have the hardware | Fails to render, or misconfigures nodes without the matching NICs |
 | No `MultiNetworkPolicy` on the secondary interface | Standard `NetworkPolicy` doesn't see it; no in-cluster enforcement at all |
+| `default-route` set on the broker pod's `kafka-repl-net` Multus annotation | Same failure mode as the host-level default-route mistake, at pod scope — bleeds pod egress onto the replication link |
+| Assuming the OVN-K8s "`subnets` field required for `podSelector`" caveat applies to this macvlan NAD | It's specific to OVN-Kubernetes secondary networks, not macvlan/IPVLAN/SR-IOV |
 | `externalAccess.type: route` used for the Kafka replication listener | Routes all replication traffic through the shared ingress router — defeats the dedicated VLAN silently |
 | Unauthenticated Kafka listener exposed to Cluster Linking | Confluent explicitly calls this a security risk, not a style choice |
 
@@ -362,8 +400,9 @@ Because Cluster Linking is broker-only (no Connect layer), this is the only work
 2. `curl`/`nc` the remote replication IP:port from a debug pod on the NAD — confirms L2–L4 before the workload is involved.
 3. Check the workload pod's `k8s.v1.cni.cncf.io/network-status` annotation — confirms it actually got the second interface and correct IP.
 4. Fail one leg of the bond; confirm the replication path stays reachable.
-5. Confirm `MultiNetworkPolicy` actually blocks an unauthorized pod on the same NAD.
+5. Confirm `MultiNetworkPolicy` actually blocks an unauthorized pod on the same NAD (`oc get multi-networkpolicy -n <namespace>` to confirm it's present first).
 6. `ping -M do -s <size>` across the full path to confirm real MTU.
+7. Check the broker pod's `k8s.v1.cni.cncf.io/network-status` for the `kafka-repl-net` entry — confirm no `"default-route"` key is present unless deliberately set.
 7. Confirm the Cluster Link's `bootstrap.servers` payload value resolves to the `REPLICATION` listener's advertised (Multus) address, not the internal/external one.
 8. Fail over and back: confirm the pre-staged reverse link actually resumes replication without manual re-creation.
 
@@ -383,7 +422,7 @@ Because Cluster Linking is broker-only (no Connect layer), this is the only work
 - One Control Center instance per DC, or one shared instance? (Determines if Control Center needs any cross-DC network path beyond what brokers already have.)
 - Will the link-creation API calls be scripted/version-controlled, or done manually through the Control Center UI?
 - Does the installed CFK version's `listeners` schema support a custom listener without an `externalAccess` type, or is `configOverrides.server` passthrough required?
-- How is `$(REPL_IP)` populated at broker startup — init container reading `network-status`, or another mechanism?
+- How is `$(REPL_IP)` populated at broker startup — init container reading `network-status`, or a static IP per broker assigned via the pod annotation instead (see [static IP/MAC alternative](#layer-23-pod-attachment-via-multus))?
 
 ---
 

@@ -18,6 +18,9 @@ review:
 - [NetworkAttachmentDefinition (NAD) guide](network-attachment-definitions/README.md) — macvlan/SR-IOV, IPAM
 - [NVMe/TCP storage network](../../troubleshooting/nvme-tcp-storage-network/README.md) — contrasting pattern: dual NIC, **no bond**, for storage multipath
 - [MachineConfig pools](../../notes/machine-config-pools.md) — custom pool targeting for host-level config
+- [OpenShift: Secondary networks — attaching a pod](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/multiple_networks/secondary-networks#nw-multus-advanced-annotations_attaching-pod) — `default-route` override, static IP/MAC annotations
+- [OpenShift: Secondary networks — configuring multi-network policy](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/multiple_networks/secondary-networks#configuring-multi-network-policy)
+- [OpenShift: MultiNetworkPolicy API reference](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_apis/multinetworkpolicy-k8s-cni-cncf-io-v1beta1)
 
 ---
 
@@ -160,6 +163,32 @@ spec:
 
 **hostNetwork as an alternative:** if the workload is a host-level daemon (not a typical pod) or already runs with `hostNetwork: true`, it shares the host's network namespace directly and the host route alone is sufficient — no Multus needed for that specific workload.
 
+**The pod-level version of the "no default route" rule:** the same mistake from [Layer 3](#layer-3-routing) has a pod-scoped equivalent. The extended JSON form of the `k8s.v1.cni.cncf.io/networks` annotation accepts a `default-route` key per attachment — leave it unset for `repl-net`. Left unset, the pod's default route stays on the primary (OVN) interface as normal, and `repl-net` only carries a route to its own subnet, mirroring the host-level NNCP config. Confirm via `k8s.v1.cni.cncf.io/network-status` on the pod: the `repl-net` entry should have no `"default-route"` key. ([Ref](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/multiple_networks/secondary-networks#nw-multus-advanced-annotations_attaching-pod))
+
+**Static IP/MAC as an alternative to whereabouts:** the whereabouts-based NAD above assigns IPs dynamically from a range — fine for most cases, but if the workload needs a **stable, predictable** address per replica (e.g., something else's firewall allow-list or config references a specific IP, not just the subnet), macvlan supports static addressing via CNI plugin chaining instead:
+
+```json
+{
+  "cniVersion": "0.3.1",
+  "name": "repl-net-static",
+  "plugins": [
+    {
+      "type": "macvlan",
+      "capabilities": { "ips": true },
+      "master": "bond-repl.200",
+      "mode": "bridge",
+      "ipam": { "type": "static" }
+    },
+    {
+      "capabilities": { "mac": true },
+      "type": "tuning"
+    }
+  ]
+}
+```
+
+The pod then requests its specific address via the `ips`/`mac` keys in its `k8s.v1.cni.cncf.io/networks` annotation. This trades the operational simplicity of a pool (whereabouts) for per-pod address pinning — worth it only if something outside Kubernetes needs to reference a fixed IP rather than the subnet as a whole.
+
 ---
 
 ## Securing the secondary network: MultiNetworkPolicy
@@ -216,6 +245,10 @@ spec:
 
 Verify enforcement explicitly — spin up a debug pod on the same NAD without the matching label and confirm it *can't* reach the workload's replication port. `MultiNetworkPolicy` misconfiguration (missing `policy-for` annotation on either the NAD or the policy) tends to fail open silently.
 
+**If a peer sends you the "subnets field" caveat, it doesn't apply here.** Red Hat's docs note that `podSelector`/`namespaceSelector` peer matching in a multi-network policy is only valid if the secondary network's CNI config defines a `subnets` field — otherwise only `ipBlock` works. That restriction is scoped to **OVN-Kubernetes secondary networks** (CNI type `ovn-k8s-cni-overlay`, `topology: layer2`/`localnet`), a different mechanism from the **macvlan** NAD this design uses. For macvlan/IPVLAN/SR-IOV NADs, `podSelector` is valid regardless — there's no `subnets` field in a macvlan CNI config to begin with. ([Ref](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/multiple_networks/secondary-networks#configuring-multi-network-policy))
+
+**CLI verification:** the resource name is `multi-networkpolicy` (singular, hyphenated), not `multinetworkpolicy` or the plural you'd guess from the CRD `kind` — `oc get multi-networkpolicy -n <namespace>`.
+
 ---
 
 ## Anti-patterns
@@ -228,6 +261,8 @@ Verify enforcement explicitly — spin up a debug pod on the same NAD without th
 | LACP bond assumed to span the WAN | The WAN carrier doesn't participate in your LACP; bond terminates locally, WAN segment is routed |
 | MachineConfig/NNCP applied to the default `worker` pool when only some nodes have the hardware | Fails to render, or misconfigures nodes without the matching NICs |
 | No `MultiNetworkPolicy` on the secondary interface | Standard `NetworkPolicy` doesn't see it; no in-cluster enforcement at all |
+| `default-route` set on the pod's `repl-net` Multus annotation | Same failure mode as the host-level default-route mistake, at pod scope — bleeds pod egress onto the replication link |
+| Assuming the OVN-K8s "`subnets` field required for `podSelector`" caveat applies to this macvlan NAD | It's specific to OVN-Kubernetes secondary networks, not macvlan/IPVLAN/SR-IOV |
 
 ---
 
@@ -237,8 +272,9 @@ Verify enforcement explicitly — spin up a debug pod on the same NAD without th
 2. `curl`/`nc` the remote replication IP:port from a debug pod on the NAD — confirms L2–L4 before the workload is involved.
 3. Check the workload pod's `k8s.v1.cni.cncf.io/network-status` annotation — confirms it actually got the second interface and correct IP.
 4. Fail one leg of the bond; confirm the replication path stays reachable.
-5. Confirm `MultiNetworkPolicy` actually blocks an unauthorized pod on the same NAD.
+5. Confirm `MultiNetworkPolicy` actually blocks an unauthorized pod on the same NAD (`oc get multi-networkpolicy -n <namespace>` to confirm it's present first).
 6. `ping -M do -s <size>` across the full path to confirm real MTU.
+7. Check the pod's `k8s.v1.cni.cncf.io/network-status` for the `repl-net` entry — confirm no `"default-route"` key is present unless deliberately set.
 
 ---
 
