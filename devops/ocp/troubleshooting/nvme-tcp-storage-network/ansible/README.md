@@ -50,8 +50,16 @@ oc debug node/worker-0 --quiet -- chroot /host \
   nvme discover -t tcp -a 10.100.1.10 -s 4420 -w ens1f0
 ```
 
+## Fleet scale
+
+This playbook is **per OpenShift cluster** (one `oc` context at a time).
+To run across many clusters registered in RHACM, use a fleet wrapper: list `ManagedCluster` objects on the hub, obtain spoke API access per cluster (Cluster Proxy / ManagedServiceAccount), then invoke this playbook with site-specific `vars.yml`.
+
+See [RHACM fleet ad-hoc data gathering](../../../../rhacm/notes/fleet-ad-hoc-data-gathering.md) for patterns and the NVMe worked example.
+
 ## Related
 
 - [QUICK-REFERENCE](../QUICK-REFERENCE.md) — topology and host-side checks
 - [README](../README.md) — dual-NIC / no-bond design
 - [vars.example.yml](vars.example.yml)
+- [Fleet ad-hoc data gathering](../../../../rhacm/notes/fleet-ad-hoc-data-gathering.md) — ACM + multi-cluster orchestration

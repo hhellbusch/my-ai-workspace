@@ -78,6 +78,9 @@ oc get pods -l app=myapp --all-namespaces
 ```
 
 ### Force Delete Stuck Pods
+
+For routine "stop this workload" (Deployments, scale-to-zero vs force-delete, grace-period semantics), see [pod termination quick stop](pod-termination-quick-stop.md).
+
 ```bash
 oc delete pod <pod-name> -n <namespace> --grace-period=0 --force
 ```

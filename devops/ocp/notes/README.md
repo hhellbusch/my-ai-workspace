@@ -15,10 +15,12 @@ Red Hat doc links in notes follow [`rules/red-hat-docs-links.md`](../../../rules
 - **[machine-config-pools.md](machine-config-pools.md)** — MachineConfig and MachineConfigPool targeting, custom pools, rollout behavior
 - **[openshift-useful-commands.md](openshift-useful-commands.md)** — Useful OpenShift and kubectl commands for pod management, troubleshooting, and cluster operations
 - **[container-density-overcommit.md](container-density-overcommit.md)** — Packing/overcommit architecture for large bare-metal clusters (LimitRange, CRO, VPA, HPA)
+- **Namespace guardrails** — Object-count quotas and control-plane limits beyond CPU/memory: [guides/namespace-guardrails/README.md](../guides/namespace-guardrails/README.md)
 - **[cluster-resource-override.md](cluster-resource-override.md)** — ClusterResourceOverride Operator: request/limit ratios, opt-in namespaces, pitfalls
 - **[vertical-pod-autoscaler.md](vertical-pod-autoscaler.md)** — VPA features, tradeoffs, pitfalls, and right-sizing practices
 - **[network-policy-observability.md](network-policy-observability.md)** — NetworkPolicy enforcement, OVN audit logging, NetObserv, Kafka (Strimzi vs CFK) and Flink port requirements
 - **[kafka-on-openshift-tenancy.md](kafka-on-openshift-tenancy.md)** — Kafka tenancy models, MCP/CVO upgrades, PDB and network-policy pitfalls on shared workers
+- **[pod-termination-quick-stop.md](pod-termination-quick-stop.md)** — Force-delete vs scale-to-zero; grace-period=0 and the `kill -9` analogy
 
 Placement rules for all `devops/` content: [ORGANIZATION.md](../../ORGANIZATION.md).
 

@@ -1,0 +1,32 @@
+# Medium tier — team production namespaces, standard application workloads.
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: tier-medium
+spec:
+  hard:
+  # Compute
+    requests.cpu: "8"
+    requests.memory: 16Gi
+    limits.cpu: "16"
+    limits.memory: 32Gi
+    requests.storage: 100Gi
+  # Core object counts
+    pods: "100"
+    services: "20"
+    services.nodeports: "5"
+    services.loadbalancers: "2"
+    configmaps: "50"
+    secrets: "50"
+    persistentvolumeclaims: "20"
+  # Workload controllers — RS limit allows Deployment revision history
+    count/deployments.apps: "30"
+    count/replicasets.apps: "60"
+    count/jobs.batch: "20"
+    count/cronjobs.batch: "10"
+    count/statefulsets.apps: "10"
+    count/networkpolicies.networking.k8s.io: "20"
+  # OpenShift
+    openshift.io/imagestreams: "20"
+    count/routes.route.openshift.io: "20"
+    count/buildconfigs.build.openshift.io: "30"

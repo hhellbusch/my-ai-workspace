@@ -102,6 +102,7 @@ Running the pipeline repeatedly is safe: Ansible renders the same templates from
 
 - [Talk recording (YouTube)](https://www.youtube.com/watch?v=mi1z5H4VL3Q)
 - [Raw transcript](../research/devops/sources/ref-02-transcript.md)
+- Workspace reference: [ACM ↔ Ansible integration](../devops/rhacm/notes/acm-ansible-integration.md), [greenfield fleet architecture](../devops/rhacm/notes/greenfield-fleet-architecture.md)
 - Presenters' GitHub repo referenced in the talk: search for `rhacm-aap-cluster-deployment` on GitHub
 
 ---

@@ -11,6 +11,8 @@ review:
 **Last Updated**: March 2026
 
 **See also:** [agent-install-preflight.md](../../../notes/agent-install-preflight.md) — where prehooks fit in the full agent install lifecycle (validations, approval gates, external pipelines).
+**See also:** [acm-ansible-integration.md](../../../notes/acm-ansible-integration.md) — all native ACM→Ansible paths, AAP vs AWX, and prerequisites.
+**See also:** [bare-metal-lifecycle-hook-patterns.md](../../../notes/bare-metal-lifecycle-hook-patterns.md) — implementation patterns (AAP, Go, operator, CI) with examples and pros/cons.
 
 ---
 

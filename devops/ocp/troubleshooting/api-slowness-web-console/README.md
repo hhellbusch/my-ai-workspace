@@ -707,6 +707,8 @@ done
 
 ### Emergency: Scale Down Workloads
 
+See also [pod termination quick stop](../../notes/pod-termination-quick-stop.md) for scale-to-zero vs force-delete tradeoffs.
+
 ```bash
 # If cluster is overwhelmed, temporarily scale down non-critical workloads
 # This reduces API load
@@ -947,6 +949,12 @@ oc get etcd cluster -o yaml
 ```
 
 ## Related Documentation
+
+### Workspace
+
+- [Namespace guardrails](../../guides/namespace-guardrails/README.md) — object-count quotas to prevent etcd/API exhaustion
+
+### External
 
 - [OpenShift API Server Architecture](https://docs.openshift.com/container-platform/latest/architecture/control-plane.html)
 - [etcd Performance Tuning](https://docs.openshift.com/container-platform/latest/scalability_and_performance/recommended-performance-scale-practices/recommended-etcd-practices.html)

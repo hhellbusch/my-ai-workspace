@@ -290,14 +290,14 @@ For your customer with the px-csi-ext crashloop issue, here are the immediate st
 
 ```bash
 # Get the CSI pod name
-PX_CSI_POD=$(oc get pods -n kube-system -l app=px-csi-driver -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep 'px-csi-ext-' | grep -v node | head -1)
+PX_CSI_POD=$(oc get pods -n $PX_NS -l app=px-csi-driver -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep 'px-csi-ext-' | grep -v node | head -1)
 
 # Check the error
-oc logs -n kube-system $PX_CSI_POD --previous --tail=50
+oc logs -n $PX_NS $PX_CSI_POD --previous --tail=50
 
 # Check Portworx cluster health (CRITICAL)
-PX_POD=$(oc get pods -n kube-system -l name=portworx -o jsonpath='{.items[0].metadata.name}')
-oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl status
+PX_POD=$(oc get pods -n $PX_NS -l name=portworx -o jsonpath='{.items[0].metadata.name}')
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl status
 ```
 
 ### Step 2: Apply Appropriate Fix
@@ -312,7 +312,7 @@ Based on the error message, refer to:
 
 ```bash
 # Wait 2-3 minutes after fix
-oc get pod -n kube-system $PX_CSI_POD
+oc get pod -n $PX_NS $PX_CSI_POD
 
 # Test PVC creation (from QUICKSTART.md)
 # Commands provided in the guide

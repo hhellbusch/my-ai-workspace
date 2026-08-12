@@ -1,0 +1,17 @@
+# ClusterResourceQuota — aggregate cap across all projects owned by one requester.
+# Project admins cannot edit this; they see it via AppliedClusterResourceQuota.
+apiVersion: quota.openshift.io/v1
+kind: ClusterResourceQuota
+metadata:
+  name: for-user-example
+spec:
+  selector:
+    annotations:
+      openshift.io/requester: example-user@example.com
+  quota:
+    hard:
+      pods: "200"
+      secrets: "150"
+      configmaps: "150"
+      requests.cpu: "16"
+      requests.memory: 32Gi

@@ -31,6 +31,7 @@ Runnable scenarios and templates for OpenShift clusters, grouped by **topic** un
 ## messaging
 
 - **[Kafka on bare-metal with Portworx](messaging/kafka/bare-metal-portworx/README.md)** — Rack-aware CFK/Strimzi, OCP 4.20+
+- **[Cross-DC Cluster Linking](messaging/kafka/cross-dc-cluster-linking.md)** — Confluent Cluster Linking over a dedicated cross-DC network (design doc)
 
 Companion notes: [network policy and observability](../notes/network-policy-observability.md) · [Kafka on OpenShift tenancy](../notes/kafka-on-openshift-tenancy.md)
 
@@ -39,6 +40,7 @@ Companion notes: [network policy and observability](../notes/network-policy-obse
 - **[VLAN segmentation](networking/vlan-segmentation.md)** — Install-time vs day-2 Multus VLANs
 - **[NetworkAttachmentDefinition (NAD)](networking/network-attachment-definitions/README.md)** — Multus, VLAN, SR-IOV
 - **[OVN-Kubernetes install config](networking/ovn-kubernetes-install-config/README.md)** — `install-config.yaml` networking
+- **[Cross-DC replication network](networking/cross-dc-replication.md)** — Bonded NIC, dedicated VLAN, MultiNetworkPolicy (design doc)
 
 ## labs
 

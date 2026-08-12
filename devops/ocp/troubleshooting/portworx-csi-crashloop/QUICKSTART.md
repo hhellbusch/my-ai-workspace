@@ -8,20 +8,25 @@ review:
 
 **Problem**: `px-csi-ext` pod in CrashLoopBackOff, preventing PVC provisioning and volume operations
 
+```bash
+PX_NS=${PX_NS:-$(oc get pods -A -l name=portworx -o jsonpath='{.items[0].metadata.namespace}' 2>/dev/null)}
+PX_NS=${PX_NS:-portworx}
+```
+
 **Quick Diagnosis (2 minutes)**:
 
 ```bash
 # 1. Get pod name and check status
-PX_CSI_POD=$(oc get pods -n kube-system -l app=px-csi-driver -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep px-csi-ext)
-oc get pod -n kube-system $PX_CSI_POD
+PX_CSI_POD=$(oc get pods -n $PX_NS -l app=px-csi-driver -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep px-csi-ext)
+oc get pod -n $PX_NS $PX_CSI_POD
 
 # 2. Check the actual error
-oc logs -n kube-system $PX_CSI_POD --tail=50
-oc logs -n kube-system $PX_CSI_POD --previous --tail=50
+oc logs -n $PX_NS $PX_CSI_POD --tail=50
+oc logs -n $PX_NS $PX_CSI_POD --previous --tail=50
 
 # 3. Verify Portworx cluster health
-PX_POD=$(oc get pods -n kube-system -l name=portworx -o jsonpath='{.items[0].metadata.name}')
-oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl status
+PX_POD=$(oc get pods -n $PX_NS -l name=portworx -o jsonpath='{.items[0].metadata.name}')
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl status
 ```
 
 ---
@@ -34,13 +39,13 @@ oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl status
 
 ```bash
 # Check if Portworx main pods are healthy
-oc get pods -n kube-system -l name=portworx
+oc get pods -n $PX_NS -l name=portworx
 
 # If Portworx pods are running, restart the CSI pod
-oc delete pod -n kube-system $PX_CSI_POD
+oc delete pod -n $PX_NS $PX_CSI_POD
 
 # Watch it recover
-oc get pod -n kube-system $PX_CSI_POD -w
+oc get pod -n $PX_NS $PX_CSI_POD -w
 ```
 
 ### Fix 2: Missing CSI Driver Registration
@@ -52,10 +57,10 @@ oc get pod -n kube-system $PX_CSI_POD -w
 oc get csidriver pxd.portworx.com
 
 # If missing, check if Portworx operator is healthy
-oc get pods -n kube-system | grep portworx-operator
+oc get pods -n $PX_NS | grep portworx-operator
 
 # Restart operator if needed
-oc delete pod -n kube-system -l name=portworx-operator
+oc delete pod -n $PX_NS -l name=portworx-operator
 ```
 
 ### Fix 3: RBAC/Service Account Issues
@@ -64,14 +69,14 @@ oc delete pod -n kube-system -l name=portworx-operator
 
 ```bash
 # Verify service account exists
-oc get sa -n kube-system px-account
+oc get sa -n $PX_NS px-account
 
 # Check cluster role bindings
 oc get clusterrolebinding | grep portworx
 
 # If using specific SCC, verify it's assigned
 oc get scc | grep portworx
-oc adm policy who-can use scc portworx-scc -n kube-system
+oc adm policy who-can use scc portworx-scc -n $PX_NS
 ```
 
 ### Fix 4: Node Selector / Affinity Issues
@@ -80,10 +85,10 @@ oc adm policy who-can use scc portworx-scc -n kube-system
 
 ```bash
 # Check where pod is trying to schedule
-oc describe pod -n kube-system $PX_CSI_POD | grep -A 10 "Node-Selectors\|Affinity"
+oc describe pod -n $PX_NS $PX_CSI_POD | grep -A 10 "Node-Selectors\|Affinity"
 
 # Check which nodes have Portworx running
-oc get pods -n kube-system -l name=portworx -o wide
+oc get pods -n $PX_NS -l name=portworx -o wide
 
 # Verify node labels
 oc get nodes --show-labels | grep -i portworx
@@ -97,16 +102,16 @@ If the cluster is in critical state (can't provision PVCs):
 
 ```bash
 # 1. Check Portworx cluster status first (most important)
-PX_POD=$(oc get pods -n kube-system -l name=portworx -o jsonpath='{.items[0].metadata.name}')
-oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl status
+PX_POD=$(oc get pods -n $PX_NS -l name=portworx -o jsonpath='{.items[0].metadata.name}')
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl status
 
 # 2. If Portworx cluster is healthy but CSI is failing
 # Force restart the entire Portworx CSI driver DaemonSet
-oc rollout restart daemonset/px-csi-ext -n kube-system
+oc rollout restart daemonset/px-csi-ext -n $PX_NS
 
 # 3. Verify recovery (wait 2-3 minutes)
-oc rollout status daemonset/px-csi-ext -n kube-system
-oc get pods -n kube-system -l app=px-csi-driver
+oc rollout status daemonset/px-csi-ext -n $PX_NS
+oc get pods -n $PX_NS -l app=px-csi-driver
 ```
 
 ---
@@ -117,10 +122,10 @@ After applying fixes:
 
 ```bash
 # 1. Verify pod is running
-oc get pod -n kube-system $PX_CSI_POD
+oc get pod -n $PX_NS $PX_CSI_POD
 
 # 2. Check logs are clean (no errors)
-oc logs -n kube-system $PX_CSI_POD --tail=20
+oc logs -n $PX_NS $PX_CSI_POD --tail=20
 
 # 3. Test PVC creation
 cat <<EOF | oc apply -f -

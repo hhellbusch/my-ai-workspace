@@ -18,6 +18,7 @@ Event streaming workloads on OpenShift: Kafka first; room for Schema Registry, C
 | Example | Summary |
 |---------|---------|
 | [kafka/bare-metal-portworx/](kafka/bare-metal-portworx/README.md) | Rack-aware Kafka (CFK primary, Strimzi comparison), Portworx CSI, OCP 4.20+ |
+| [kafka/cross-dc-cluster-linking.md](kafka/cross-dc-cluster-linking.md) | Confluent Cluster Linking over a dedicated cross-DC network (design doc) |
 
 Platform-agnostic Kafka content (when added) will live under `devops/workloads/messaging/` — not here.
 

@@ -29,6 +29,10 @@ Practical, runnable examples and references for infrastructure, platform, and op
 Cross-cutting reference for how RHACM and Argo CD divide fleet work — multiple decision axes, not a single product choice.
 
 - **[fleet-control-spectrum.md](fleet-control-spectrum.md)** — Reconciliation authority, compliance posture, lifecycle scope, and a reconsideration checklist for GitOps-heavy designs
+- **[rhacm/notes/greenfield-fleet-architecture.md](rhacm/notes/greenfield-fleet-architecture.md)** — Default ACM + GitOps stack for a new fleet; when to add AAP/AWX
+- **[rhacm/notes/acm-ansible-integration.md](rhacm/notes/acm-ansible-integration.md)** — Native ACM→Ansible integration paths and prerequisites
+- **[rhacm/notes/fleet-ad-hoc-data-gathering.md](rhacm/notes/fleet-ad-hoc-data-gathering.md)** — Patterns for ad-hoc diagnostics across fleet nodes
+- **[rhacm/notes/bare-metal-lifecycle-hook-patterns.md](rhacm/notes/bare-metal-lifecycle-hook-patterns.md)** — Preflight, BMH discovery, install gates — AAP/Curator vs Go/operator/CI
 - **[rhacm/git-driven-configuration.md](rhacm/git-driven-configuration.md)** — RHACM hub and policy resources in Git; rebuild-from-scratch posture; delivery via Argo CD
 - **[bigfix-gitops-on-ocp.md](bigfix-gitops-on-ocp.md)** — Food for thought: HCL BigFix on OpenShift with GitOps — ownership matrix and team discussion prompts
 - **[fleet-management-ideas.md](fleet-management-ideas.md)** — Review log of doc and framework follow-ups (not a committed roadmap)
@@ -93,6 +97,7 @@ The deepest product section — install, operations, workloads on OpenShift, and
 - **`troubleshooting/`** — 25 catalog-backed guides ([index](ocp/troubleshooting/README.md), [SYMPTOM-INDEX](SYMPTOM-INDEX.md))
 - **`examples/`** — Runnable scenarios by topic:
   - [bare-metal](ocp/examples/bare-metal/README.md) · [messaging/kafka](ocp/examples/messaging/kafka/README.md) · [networking](ocp/examples/networking/README.md) · [labs](ocp/examples/labs/README.md)
+- **`guides/`** — [Namespace guardrails](ocp/guides/namespace-guardrails/README.md) — object-count quotas, etcd impact, tier templates
 - **`notes/`** — Quick refs: [MachineConfig pools](ocp/notes/machine-config-pools.md), [network policy](ocp/notes/network-policy-observability.md), [density/CRO/VPA](ocp/notes/container-density-overcommit.md), [useful commands](ocp/notes/openshift-useful-commands.md)
 - **`disconnected-install/`** — Quay + `oc-mirror` ([working guide](ocp/disconnected-install/working-guide.md))
 - **`ibm-z/`**, **`gpu/`** — Platform variants

@@ -14,6 +14,13 @@ Workloads using storage via a **NFS Portworx proxy PVC** may experience 20+ minu
 
 - **[QUICK-REFERENCE.md](./QUICK-REFERENCE.md)** - Diagnostic commands and quick checks ⚡
 
+Set the Portworx namespace once (OCP default: `portworx`):
+
+```bash
+PX_NS=${PX_NS:-$(oc get pods -A -l name=portworx -o jsonpath='{.items[0].metadata.namespace}' 2>/dev/null)}
+PX_NS=${PX_NS:-portworx}
+```
+
 ---
 
 ## Architecture Context
@@ -65,7 +72,7 @@ oc describe pod -n $NAMESPACE $POD_NAME
 
 ```bash
 oc get events -n $NAMESPACE --sort-by='.lastTimestamp' | tail -40
-oc get events -n kube-system --sort-by='.lastTimestamp' | grep -i portworx | tail -30
+oc get events -n $PX_NS --sort-by='.lastTimestamp' | grep -i portworx | tail -30
 ```
 
 Look for repeated “waiting for volume”, “provisioning”, “mount”, or timeout messages.
@@ -89,15 +96,15 @@ Confirm the StorageClass is for Portworx proxy volumes (e.g. `provisioner: pxd.p
 
 ```bash
 # CSI controller (provisioning)
-oc get pods -n kube-system -l app=px-csi-driver
-oc logs -n kube-system -l app=px-csi-driver --tail=200 --prefix=true | grep -i "provision\|proxy\|nfs\|error"
+oc get pods -n $PX_NS -l app=px-csi-driver
+oc logs -n $PX_NS -l app=px-csi-driver --tail=200 --prefix=true | grep -i "provision\|proxy\|nfs\|error"
 ```
 
 **2.3 Portworx cluster health**
 
 ```bash
-PX_POD=$(oc get pods -n kube-system -l name=portworx -o jsonpath='{.items[0].metadata.name}')
-oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl status
+PX_POD=$(oc get pods -n $PX_NS -l name=portworx -o jsonpath='{.items[0].metadata.name}')
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl status
 ```
 
 If the cluster is degraded or slow to respond, provisioning will be slow. See [portworx-csi-crashloop](../portworx-csi-crashloop/README.md) for Portworx-focused troubleshooting.
@@ -113,15 +120,15 @@ This is the most common cause of “20+ minutes until ready” with NFS proxy vo
 ```bash
 NODE=$(oc get pod -n $NAMESPACE $POD_NAME -o jsonpath='{.spec.nodeName}')
 echo "Pod node: $NODE"
-oc get pods -n kube-system -l name=portworx -o wide | grep $NODE
-PX_NODE_POD=$(oc get pods -n kube-system -l name=portworx -o wide | grep $NODE | awk '{print $1}')
+oc get pods -n $PX_NS -l name=portworx -o wide | grep $NODE
+PX_NODE_POD=$(oc get pods -n $PX_NS -l name=portworx -o wide | grep $NODE | awk '{print $1}')
 echo "Portworx pod on node: $PX_NODE_POD"
 ```
 
 **3.2 Portworx logs on that node (mount/NFS errors)**
 
 ```bash
-oc logs -n kube-system $PX_NODE_POD --tail=300 | grep -i "nfs\|mount\|proxy\|timeout\|error"
+oc logs -n $PX_NS $PX_NODE_POD --tail=300 | grep -i "nfs\|mount\|proxy\|timeout\|error"
 ```
 
 **3.3 NFS connectivity from the cluster**

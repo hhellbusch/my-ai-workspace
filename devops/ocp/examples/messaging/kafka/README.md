@@ -13,6 +13,7 @@ Scenario-specific guides for running Apache Kafka on OpenShift (Confluent Platfo
 | Scenario | Path | Operators | Focus |
 |----------|------|-----------|-------|
 | Bare metal + Portworx, rack-aware | [bare-metal-portworx/](bare-metal-portworx/README.md) | CFK (primary), Strimzi/AMQ Streams | Rack labels, Portworx CSI, ACM inventory, KRaft |
+| Cross-DC Cluster Linking | [cross-dc-cluster-linking.md](cross-dc-cluster-linking.md) | CFK (Helm install) | Dedicated replication network, listener config, bidirectional DR links (design doc, not yet implemented) |
 
 ### bare-metal-portworx document map
 

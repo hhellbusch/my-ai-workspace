@@ -194,16 +194,19 @@ Navigate this guide based on your needs and scenario.
 
 Commands:
 ```bash
+PX_NS=${PX_NS:-$(oc get pods -A -l name=portworx -o jsonpath='{.items[0].metadata.namespace}' 2>/dev/null)}
+PX_NS=${PX_NS:-portworx}
+
 # Get pod and check logs
-PX_CSI_POD=$(oc get pods -n kube-system -l app=px-csi-driver -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep px-csi-ext | head -1)
-oc logs -n kube-system $PX_CSI_POD --previous --tail=50
+PX_CSI_POD=$(oc get pods -n $PX_NS -l app=px-csi-driver -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep px-csi-ext | head -1)
+oc logs -n $PX_NS $PX_CSI_POD --previous --tail=50
 
 # Check Portworx health
-PX_POD=$(oc get pods -n kube-system -l name=portworx -o jsonpath='{.items[0].metadata.name}')
-oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl status
+PX_POD=$(oc get pods -n $PX_NS -l name=portworx -o jsonpath='{.items[0].metadata.name}')
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl status
 
 # Restart CSI if Portworx is healthy
-oc delete pod -n kube-system $PX_CSI_POD
+oc delete pod -n $PX_NS $PX_CSI_POD
 ```
 
 ---
@@ -289,18 +292,21 @@ oc delete pod -n kube-system $PX_CSI_POD
 ### Essential One-Liners
 
 ```bash
+PX_NS=${PX_NS:-$(oc get pods -A -l name=portworx -o jsonpath='{.items[0].metadata.namespace}' 2>/dev/null)}
+PX_NS=${PX_NS:-portworx}
+
 # Get CSI pod name
-PX_CSI_POD=$(oc get pods -n kube-system -l app=px-csi-driver -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep px-csi-ext | head -1)
+PX_CSI_POD=$(oc get pods -n $PX_NS -l app=px-csi-driver -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep px-csi-ext | head -1)
 
 # Check error
-oc logs -n kube-system $PX_CSI_POD --previous --tail=50
+oc logs -n $PX_NS $PX_CSI_POD --previous --tail=50
 
 # Check Portworx
-PX_POD=$(oc get pods -n kube-system -l name=portworx -o jsonpath='{.items[0].metadata.name}')
-oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl status
+PX_POD=$(oc get pods -n $PX_NS -l name=portworx -o jsonpath='{.items[0].metadata.name}')
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl status
 
 # Restart CSI
-oc delete pod -n kube-system $PX_CSI_POD
+oc delete pod -n $PX_NS $PX_CSI_POD
 
 # Run diagnostics
 ./diagnostic-script.sh diagnostics-$(date +%Y%m%d-%H%M%S).txt

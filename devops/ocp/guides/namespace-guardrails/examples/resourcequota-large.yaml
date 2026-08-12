@@ -1,0 +1,33 @@
+# Large tier — platform-adjacent or high-churn tenants (GitOps controllers, data pipelines).
+# Still far below Red Hat tested per-namespace maximums; tune from measured usage.
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: tier-large
+spec:
+  hard:
+  # Compute
+    requests.cpu: "32"
+    requests.memory: 64Gi
+    limits.cpu: "64"
+    limits.memory: 128Gi
+    requests.storage: 500Gi
+  # Core object counts
+    pods: "500"
+    services: "50"
+    services.nodeports: "10"
+    services.loadbalancers: "5"
+    configmaps: "200"
+    secrets: "200"
+    persistentvolumeclaims: "50"
+  # Workload controllers
+    count/deployments.apps: "100"
+    count/replicasets.apps: "200"
+    count/jobs.batch: "50"
+    count/cronjobs.batch: "25"
+    count/statefulsets.apps: "25"
+    count/networkpolicies.networking.k8s.io: "50"
+  # OpenShift
+    openshift.io/imagestreams: "50"
+    count/routes.route.openshift.io: "50"
+    count/buildconfigs.build.openshift.io: "75"

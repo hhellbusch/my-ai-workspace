@@ -12,6 +12,8 @@ A practical map of how to run checks **before** an ACM-provisioned cluster insta
 
 **Purpose:** Decide *where* preflight fits in the agent install lifecycle and which ACM mechanism to use at each stage.
 
+**Implementation detail:** For pattern catalog, examples, and AAP vs Go tradeoffs, see [bare-metal-lifecycle-hook-patterns.md](./bare-metal-lifecycle-hook-patterns.md).
+
 **Prerequisites on the hub:** CIM enabled (`AgentServiceConfig`, etc.).
 See [cim-hub-setup.md](./cim-hub-setup.md).
 **Downstream install objects:** `InfraEnv`, `AgentClusterInstall`, `ClusterDeployment`.
@@ -262,6 +264,9 @@ oc get agentclusterinstall -n <cluster-ns> -o yaml | grep -A5 'type: Requirement
 | `InfraEnv`, `AgentClusterInstall`, install workflow | [BARE-METAL-OPERATOR-INTEGRATION.md](../examples/BARE-METAL-OPERATOR-INTEGRATION.md) |
 | ClusterCurator CRD examples | [cluster-curator/README.md](../examples/ocm-subscription-automation/cluster-curator/README.md) |
 | Curator vs Ansible-as-provisioner | [CLUSTERCURATOR-ARCHITECTURE-DECISION.md](../examples/ocm-subscription-automation/cluster-curator/CLUSTERCURATOR-ARCHITECTURE-DECISION.md) |
+| Hook implementation patterns | [bare-metal-lifecycle-hook-patterns.md](./bare-metal-lifecycle-hook-patterns.md) |
+| ACM ↔ Ansible (native paths) | [acm-ansible-integration.md](./acm-ansible-integration.md) |
+| Greenfield fleet stack | [greenfield-fleet-architecture.md](./greenfield-fleet-architecture.md) |
 | ZTP Day 0 / Day 1 framing | [vmware-admins learning path](../../learning-path/vmware-admins/README.md) |
 | Red Hat — configure ClusterCurator | [ACM 2.10+ clusters docs](https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.10/html/clusters/managing-your-clusters#configuring-cluster-curator) |
 | Assisted Installer + Hive API | [assisted-service Hive integration](https://github.com/openshift/assisted-service/blob/master/docs/hive-integration/README.md) |

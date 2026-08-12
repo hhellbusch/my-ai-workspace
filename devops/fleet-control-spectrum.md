@@ -319,6 +319,7 @@ If unsure, answer the two questions first.
 | Pull secrets / bootstrap secrets | ESO or ACM | Bootstrap order fragile |
 | Cluster provision / upgrade | ACM (CIM, ZTP, Curator) | Any automated Day 0 |
 | External automation on cluster ready | ACM PolicyAutomation | DNS, tickets, AAP workflows |
+| Bare metal preflight / BMH hooks | Curator, CI, or operator | See [bare-metal-lifecycle-hook-patterns.md](rhacm/notes/bare-metal-lifecycle-hook-patterns.md) |
 
 ---
 
@@ -359,6 +360,10 @@ See [Git-driven RHACM configuration](rhacm/git-driven-configuration.md) for dire
 | RHACM → Argo registration | [gitops-cluster-integration/](rhacm/examples/gitops-cluster-integration/) |
 | RHACM hub config in Git | [git-driven-configuration.md](rhacm/git-driven-configuration.md) |
 | ACM + Ansible bridge | [library/automate-ocp-cluster-deployment-rhacm-aap.md](../library/automate-ocp-cluster-deployment-rhacm-aap.md) |
+| ACM ↔ Ansible integration (native paths) | [rhacm/notes/acm-ansible-integration.md](rhacm/notes/acm-ansible-integration.md) |
+| Greenfield fleet architecture | [rhacm/notes/greenfield-fleet-architecture.md](rhacm/notes/greenfield-fleet-architecture.md) |
+| Fleet ad-hoc data gathering | [rhacm/notes/fleet-ad-hoc-data-gathering.md](rhacm/notes/fleet-ad-hoc-data-gathering.md) |
+| Bare metal lifecycle hooks (preflight, BMH) | [rhacm/notes/bare-metal-lifecycle-hook-patterns.md](rhacm/notes/bare-metal-lifecycle-hook-patterns.md) |
 | BigFix on OCP with GitOps (learning / discussion) | [bigfix-gitops-on-ocp.md](bigfix-gitops-on-ocp.md) |
 
 ---
