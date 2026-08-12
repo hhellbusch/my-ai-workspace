@@ -25,6 +25,7 @@ Research workspaces containing fetched sources, analysis findings, and assessmen
 | `harness-engineering/` | Agent harness first principles (Tejas Kumar) | 1 transcript | [README.md](harness-engineering/README.md) · [library entry](../library/tejas-kumar-harnesses-in-ai.md) |
 | `ocp-container-density-overcommit/` | Bare-metal OCP packing: CRO, VPA/HPA, LimitRange, node allocatable, maxPods | 12 of 12 fetched | [paths.md](ocp-container-density-overcommit/paths.md) · [library stub](../library/ocp-container-density-overcommit.md) |
 | `ocp-namespace-guardrails/` | Namespace limits beyond CPU/memory — etcd object counts, ResourceQuota tiers | Web sources cited | [guide](../devops/ocp/guides/namespace-guardrails/README.md) |
+| `ocp-vmware-vs-baremetal-perf/` | OpenShift on VMware vs bare metal — benchmark literature, fair test design, lab plan | In progress | [DOE](ocp-vmware-vs-baremetal-perf/design-of-experiments.md) · [journal](ocp-vmware-vs-baremetal-perf/journal.md) |
 
 ## Structure Convention
 
