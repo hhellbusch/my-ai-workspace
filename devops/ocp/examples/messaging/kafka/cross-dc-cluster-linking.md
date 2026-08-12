@@ -12,6 +12,8 @@ review:
 
 **Deployment context:** Confluent for Kubernetes (**CFK**), installed via Helm (not OLM/OperatorHub). This doesn't change the CRD-level answer — Helm vs. OLM only affects how the operator itself is deployed, not the `platform.confluent.io` CRDs it watches.
 
+**Need the whole picture in one doc?** See [Cross-DC architecture overview](cross-dc-architecture-overview.md) — combines this doc and the generic network doc for sharing outside the repo.
+
 **Related:**
 
 - [Dedicated cross-DC replication network](../../networking/cross-dc-replication.md) — the generic host network (bond/VLAN/route), Multus NAD, and `MultiNetworkPolicy` layers this doc builds on. **Read that first** — this doc only covers what's different for Kafka/Confluent.

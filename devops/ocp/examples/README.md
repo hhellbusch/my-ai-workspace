@@ -32,6 +32,7 @@ Runnable scenarios and templates for OpenShift clusters, grouped by **topic** un
 
 - **[Kafka on bare-metal with Portworx](messaging/kafka/bare-metal-portworx/README.md)** — Rack-aware CFK/Strimzi, OCP 4.20+
 - **[Cross-DC Cluster Linking](messaging/kafka/cross-dc-cluster-linking.md)** — Confluent Cluster Linking over a dedicated cross-DC network (design doc)
+- **[Cross-DC architecture overview](messaging/kafka/cross-dc-architecture-overview.md)** — combined network + Cluster Linking doc, for sharing outside the repo (design doc)
 
 Companion notes: [network policy and observability](../notes/network-policy-observability.md) · [Kafka on OpenShift tenancy](../notes/kafka-on-openshift-tenancy.md)
 

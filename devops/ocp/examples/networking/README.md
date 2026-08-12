@@ -14,6 +14,7 @@ Cluster networking configuration: OVN-Kubernetes install-time settings, Multus s
 | [network-attachment-definitions/](network-attachment-definitions/README.md) | NAD, macvlan, SR-IOV, IPAM |
 | [ovn-kubernetes-install-config/](ovn-kubernetes-install-config/README.md) | `install-config.yaml` OVN parameters, MTU, verification |
 | [cross-dc-replication.md](cross-dc-replication.md) | Bonded-NIC dedicated network between two datacenters — bond/VLAN/route, Multus NAD, MultiNetworkPolicy (design doc, not yet implemented) |
+| [Cross-DC architecture overview](../messaging/kafka/cross-dc-architecture-overview.md) | Combined single-doc version of this + [Kafka Cluster Linking](../messaging/kafka/cross-dc-cluster-linking.md), for sharing outside the repo |
 
 **Troubleshooting:** [CoreOS networking](../../troubleshooting/coreos-networking-issues/README.md) · [AAP SSH MTU](../../troubleshooting/aap-ssh-mtu-issues/README.md) · [Debug toolbox + NAD](../../troubleshooting/debug-toolbox-container/README.md)
 

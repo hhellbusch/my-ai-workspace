@@ -10,6 +10,8 @@ review:
 
 **Purpose:** Describe the shape of a dedicated, bonded-NIC network between two bare-metal OpenShift clusters in different datacenters, used to carry replication traffic (e.g., storage mirroring, cross-cluster application replication) without bleeding onto general cluster/management traffic. Workload-agnostic — see [Kafka Cluster Linking](../messaging/kafka/cross-dc-cluster-linking.md) for a concrete application of this pattern.
 
+**Need the whole picture in one doc?** See [Cross-DC architecture overview](../messaging/kafka/cross-dc-architecture-overview.md) — combines this doc and the Kafka Cluster Linking doc for sharing outside the repo.
+
 **Related:**
 
 - [VLAN segmentation](vlan-segmentation.md) — install-time vs day-2 Multus VLANs
