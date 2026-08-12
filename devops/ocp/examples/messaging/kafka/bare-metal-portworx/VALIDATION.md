@@ -142,7 +142,9 @@ oc get pods -n kafka -o custom-columns=NAME:.metadata.name,NODE:.spec.nodeName
 oc exec -n kafka prod-kafka-0 -- grep broker.rack /opt/confluentinc/etc/kafka/kafka.properties
 # Strimzi:
 # oc exec -n kafka <broker-pod> -- grep broker.rack /opt/kafka/config/server.properties
-pxctl volume inspect <volume-id>
+PX_NS=${PX_NS:-portworx}
+PX_POD=$(oc get pods -n $PX_NS -l name=portworx -o jsonpath='{.items[0].metadata.name}')
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl volume inspect <volume-id>
 ```
 
 ### 7. Upgrade safety

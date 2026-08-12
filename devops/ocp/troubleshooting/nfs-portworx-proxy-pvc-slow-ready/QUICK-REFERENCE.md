@@ -6,6 +6,11 @@ review:
 
 # Quick Reference: NFS Portworx Proxy PVC Slow Ready (20+ Minutes)
 
+```bash
+PX_NS=${PX_NS:-$(oc get pods -A -l name=portworx -o jsonpath='{.items[0].metadata.namespace}' 2>/dev/null)}
+PX_NS=${PX_NS:-portworx}
+```
+
 ## Where Is the Delay?
 
 ```bash
@@ -29,7 +34,7 @@ oc describe pod -n $NAMESPACE $POD_NAME | tail -30
 ```bash
 oc describe pvc -n $NAMESPACE $PVC_NAME
 oc get events -n $NAMESPACE --sort-by='.lastTimestamp' | tail -30
-oc get events -n kube-system --sort-by='.lastTimestamp' | grep -i portworx | tail -20
+oc get events -n $PX_NS --sort-by='.lastTimestamp' | grep -i portworx | tail -20
 ```
 
 ### StorageClass (proxy + mount options)
@@ -43,17 +48,17 @@ oc get storageclass $SC -o yaml
 ### Portworx cluster health
 
 ```bash
-oc get pods -n kube-system -l name=portworx -o wide
-PX_POD=$(oc get pods -n kube-system -l name=portworx -o jsonpath='{.items[0].metadata.name}')
-oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl status
+oc get pods -n $PX_NS -l name=portworx -o wide
+PX_POD=$(oc get pods -n $PX_NS -l name=portworx -o jsonpath='{.items[0].metadata.name}')
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl status
 ```
 
 ### Mount delay: node and Portworx logs
 
 ```bash
 NODE=$(oc get pod -n $NAMESPACE $POD_NAME -o jsonpath='{.spec.nodeName}')
-PX_NODE_POD=$(oc get pods -n kube-system -l name=portworx -o wide | grep $NODE | awk '{print $1}')
-oc logs -n kube-system $PX_NODE_POD --tail=200 | grep -i "nfs\|mount\|proxy\|timeout\|error"
+PX_NODE_POD=$(oc get pods -n $PX_NS -l name=portworx -o wide | grep $NODE | awk '{print $1}')
+oc logs -n $PX_NS $PX_NODE_POD --tail=200 | grep -i "nfs\|mount\|proxy\|timeout\|error"
 ```
 
 ### NFS reachability (replace NFS server hostname)

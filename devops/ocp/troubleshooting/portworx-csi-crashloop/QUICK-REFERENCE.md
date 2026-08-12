@@ -10,62 +10,73 @@ Fast command reference for troubleshooting `px-csi-ext` pod issues.
 
 ---
 
+## Portworx namespace
+
+```bash
+PX_NS=${PX_NS:-$(oc get pods -A -l name=portworx -o jsonpath='{.items[0].metadata.namespace}' 2>/dev/null)}
+PX_NS=${PX_NS:-portworx}
+```
+
+OCP default is `portworx`. Legacy installs may use `kube-system`. In-tree proxy pods may still appear in `kube-system` — see [README namespace section](./README.md#portworx-namespace-on-openshift).
+
+---
+
 ## Essential Commands
 
 ### Get Pod Name
 
 ```bash
 # Get CSI pod name
-PX_CSI_POD=$(oc get pods -n kube-system -l app=px-csi-driver -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep 'px-csi-ext-' | grep -v node | head -1)
+PX_CSI_POD=$(oc get pods -n $PX_NS -l app=px-csi-driver -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep 'px-csi-ext-' | grep -v node | head -1)
 echo $PX_CSI_POD
 
 # Get all CSI pods
-oc get pods -n kube-system -l app=px-csi-driver
+oc get pods -n $PX_NS -l app=px-csi-driver
 ```
 
 ### Check Status
 
 ```bash
 # Pod status
-oc get pod -n kube-system $PX_CSI_POD
+oc get pod -n $PX_NS $PX_CSI_POD
 
 # Detailed description
-oc describe pod -n kube-system $PX_CSI_POD
+oc describe pod -n $PX_NS $PX_CSI_POD
 
 # Node where scheduled
-oc get pod -n kube-system $PX_CSI_POD -o jsonpath='{.spec.nodeName}'
+oc get pod -n $PX_NS $PX_CSI_POD -o jsonpath='{.spec.nodeName}'
 ```
 
 ### Check Logs
 
 ```bash
 # Current logs
-oc logs -n kube-system $PX_CSI_POD --tail=100
+oc logs -n $PX_NS $PX_CSI_POD --tail=100
 
 # Previous crash logs
-oc logs -n kube-system $PX_CSI_POD --previous --tail=100
+oc logs -n $PX_NS $PX_CSI_POD --previous --tail=100
 
 # All containers
-oc logs -n kube-system $PX_CSI_POD --all-containers=true
+oc logs -n $PX_NS $PX_CSI_POD --all-containers=true
 
 # Follow logs
-oc logs -n kube-system $PX_CSI_POD -f
+oc logs -n $PX_NS $PX_CSI_POD -f
 
 # Search for errors
-oc logs -n kube-system $PX_CSI_POD --previous | grep -i "error\|failed\|fatal\|panic"
+oc logs -n $PX_NS $PX_CSI_POD --previous | grep -i "error\|failed\|fatal\|panic"
 ```
 
 ### Check Events
 
 ```bash
 # Events for this pod
-oc get events -n kube-system --field-selector involvedObject.name=$PX_CSI_POD --sort-by='.lastTimestamp'
+oc get events -n $PX_NS --field-selector involvedObject.name=$PX_CSI_POD --sort-by='.lastTimestamp'
 
 # All Portworx events
-oc get events -n kube-system --sort-by='.lastTimestamp' | grep -i portworx | tail -30
+oc get events -n $PX_NS --sort-by='.lastTimestamp' | grep -i portworx | tail -30
 
 # Recent namespace events
-oc get events -n kube-system --sort-by='.lastTimestamp' | tail -50
+oc get events -n $PX_NS --sort-by='.lastTimestamp' | tail -50
 ```
 
 ---
@@ -76,32 +87,32 @@ oc get events -n kube-system --sort-by='.lastTimestamp' | tail -50
 
 ```bash
 # Get Portworx pod
-PX_POD=$(oc get pods -n kube-system -l name=portworx -o jsonpath='{.items[0].metadata.name}')
+PX_POD=$(oc get pods -n $PX_NS -l name=portworx -o jsonpath='{.items[0].metadata.name}')
 
 # Check status
-oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl status
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl status
 
 # Cluster list
-oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl cluster list
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl cluster list
 
 # Node list
-oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl cluster provision-status
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl cluster provision-status
 
 # Service status
-oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl service list
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl service list
 ```
 
 ### All Portworx Pods
 
 ```bash
 # List all Portworx pods
-oc get pods -n kube-system -l name=portworx -o wide
+oc get pods -n $PX_NS -l name=portworx -o wide
 
 # Check for restarts
-oc get pods -n kube-system -l name=portworx -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.containerStatuses[0].restartCount}{"\n"}{end}'
+oc get pods -n $PX_NS -l name=portworx -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.containerStatuses[0].restartCount}{"\n"}{end}'
 
 # Portworx operator
-oc get pods -n kube-system | grep portworx-operator
+oc get pods -n $PX_NS | grep portworx-operator
 ```
 
 ---
@@ -124,7 +135,7 @@ oc describe csidriver pxd.portworx.com
 oc get csinode
 
 # Describe CSI node
-oc describe csinode $(oc get pod -n kube-system $PX_CSI_POD -o jsonpath='{.spec.nodeName}')
+oc describe csinode $(oc get pod -n $PX_NS $PX_CSI_POD -o jsonpath='{.spec.nodeName}')
 ```
 
 ---
@@ -135,13 +146,13 @@ oc describe csinode $(oc get pod -n kube-system $PX_CSI_POD -o jsonpath='{.spec.
 
 ```bash
 # Check service account
-oc get sa -n kube-system px-account
+oc get sa -n $PX_NS px-account
 
 # Describe service account
-oc describe sa -n kube-system px-account
+oc describe sa -n $PX_NS px-account
 
 # Check secrets
-oc get secrets -n kube-system | grep px-account
+oc get secrets -n $PX_NS | grep px-account
 ```
 
 ### Cluster Role Bindings
@@ -151,9 +162,9 @@ oc get secrets -n kube-system | grep px-account
 oc get clusterrolebinding | grep portworx
 
 # Check specific permissions
-oc auth can-i --as=system:serviceaccount:kube-system:px-account create persistentvolumes
-oc auth can-i --as=system:serviceaccount:kube-system:px-account get csidrivers
-oc auth can-i --as=system:serviceaccount:kube-system:px-account list nodes
+oc auth can-i --as=system:serviceaccount:$PX_NS:px-account create persistentvolumes
+oc auth can-i --as=system:serviceaccount:$PX_NS:px-account get csidrivers
+oc auth can-i --as=system:serviceaccount:$PX_NS:px-account list nodes
 ```
 
 ### SecurityContextConstraints (OpenShift)
@@ -166,7 +177,7 @@ oc get scc | grep portworx
 oc describe scc portworx-scc
 
 # Who can use the SCC
-oc adm policy who-can use scc portworx-scc -n kube-system
+oc adm policy who-can use scc portworx-scc -n $PX_NS
 ```
 
 ---
@@ -177,7 +188,7 @@ oc adm policy who-can use scc portworx-scc -n kube-system
 
 ```bash
 # Get node where CSI pod is scheduled
-CSI_NODE=$(oc get pod -n kube-system $PX_CSI_POD -o jsonpath='{.spec.nodeName}')
+CSI_NODE=$(oc get pod -n $PX_NS $PX_CSI_POD -o jsonpath='{.spec.nodeName}')
 echo "CSI pod on node: $CSI_NODE"
 
 # Node details
@@ -187,20 +198,20 @@ oc describe node $CSI_NODE
 oc get node $CSI_NODE --show-labels
 
 # Portworx pods on this node
-oc get pods -n kube-system -l name=portworx -o wide | grep $CSI_NODE
+oc get pods -n $PX_NS -l name=portworx -o wide | grep $CSI_NODE
 ```
 
 ### Scheduling Details
 
 ```bash
 # Check node selector
-oc get pod -n kube-system $PX_CSI_POD -o jsonpath='{.spec.nodeSelector}'
+oc get pod -n $PX_NS $PX_CSI_POD -o jsonpath='{.spec.nodeSelector}'
 
 # Check affinity rules
-oc get pod -n kube-system $PX_CSI_POD -o yaml | grep -A 20 "affinity:"
+oc get pod -n $PX_NS $PX_CSI_POD -o yaml | grep -A 20 "affinity:"
 
 # Check tolerations
-oc get pod -n kube-system $PX_CSI_POD -o jsonpath='{.spec.tolerations}' | jq .
+oc get pod -n $PX_NS $PX_CSI_POD -o jsonpath='{.spec.tolerations}' | jq .
 ```
 
 ---
@@ -224,10 +235,10 @@ exit
 
 ```bash
 # Check volume mounts
-oc get pod -n kube-system $PX_CSI_POD -o jsonpath='{.spec.volumes}' | jq .
+oc get pod -n $PX_NS $PX_CSI_POD -o jsonpath='{.spec.volumes}' | jq .
 
 # Check container mounts
-oc get pod -n kube-system $PX_CSI_POD -o jsonpath='{.spec.containers[*].volumeMounts}' | jq .
+oc get pod -n $PX_NS $PX_CSI_POD -o jsonpath='{.spec.containers[*].volumeMounts}' | jq .
 ```
 
 ---
@@ -238,13 +249,13 @@ oc get pod -n kube-system $PX_CSI_POD -o jsonpath='{.spec.containers[*].volumeMo
 
 ```bash
 # Check resource requests/limits
-oc get pod -n kube-system $PX_CSI_POD -o jsonpath='{.spec.containers[*].resources}' | jq .
+oc get pod -n $PX_NS $PX_CSI_POD -o jsonpath='{.spec.containers[*].resources}' | jq .
 
 # Node capacity
 oc describe node $CSI_NODE | grep -A 15 "Allocated resources:"
 
 # Check if OOMKilled
-oc get pod -n kube-system $PX_CSI_POD -o jsonpath='{.status.containerStatuses[*].lastState.terminated.reason}'
+oc get pod -n $PX_NS $PX_CSI_POD -o jsonpath='{.status.containerStatuses[*].lastState.terminated.reason}'
 ```
 
 ---
@@ -255,54 +266,54 @@ oc get pod -n kube-system $PX_CSI_POD -o jsonpath='{.status.containerStatuses[*]
 
 ```bash
 # Simple restart
-oc delete pod -n kube-system $PX_CSI_POD
+oc delete pod -n $PX_NS $PX_CSI_POD
 
 # Watch recovery
-oc get pod -n kube-system $PX_CSI_POD -w
+oc get pod -n $PX_NS $PX_CSI_POD -w
 ```
 
 ### Restart All CSI Pods
 
 ```bash
 # Restart all CSI driver pods
-oc delete pod -n kube-system -l app=px-csi-driver
+oc delete pod -n $PX_NS -l app=px-csi-driver
 
 # Watch
-oc get pods -n kube-system -l app=px-csi-driver -w
+oc get pods -n $PX_NS -l app=px-csi-driver -w
 ```
 
 ### Restart Portworx Pod on Same Node
 
 ```bash
 # Find Portworx pod on same node as CSI
-CSI_NODE=$(oc get pod -n kube-system $PX_CSI_POD -o jsonpath='{.spec.nodeName}')
-PX_NODE_POD=$(oc get pods -n kube-system -l name=portworx -o wide | grep $CSI_NODE | awk '{print $1}')
+CSI_NODE=$(oc get pod -n $PX_NS $PX_CSI_POD -o jsonpath='{.spec.nodeName}')
+PX_NODE_POD=$(oc get pods -n $PX_NS -l name=portworx -o wide | grep $CSI_NODE | awk '{print $1}')
 
 # Restart it
-oc delete pod -n kube-system $PX_NODE_POD
+oc delete pod -n $PX_NS $PX_NODE_POD
 
 # Wait for ready
-oc wait --for=condition=Ready pod $PX_NODE_POD -n kube-system --timeout=300s
+oc wait --for=condition=Ready pod $PX_NODE_POD -n $PX_NS --timeout=300s
 ```
 
 ### Restart Operator
 
 ```bash
 # Restart Portworx operator
-oc delete pod -n kube-system -l name=portworx-operator
+oc delete pod -n $PX_NS -l name=portworx-operator
 
 # Watch recovery
-oc get pods -n kube-system -l name=portworx-operator -w
+oc get pods -n $PX_NS -l name=portworx-operator -w
 ```
 
 ### Force Rollout Restart
 
 ```bash
 # Restart entire DaemonSet
-oc rollout restart daemonset/px-csi-ext -n kube-system
+oc rollout restart daemonset/px-csi-ext -n $PX_NS
 
 # Check status
-oc rollout status daemonset/px-csi-ext -n kube-system
+oc rollout status daemonset/px-csi-ext -n $PX_NS
 ```
 
 ---
@@ -387,7 +398,7 @@ oc adm must-gather --image=registry.connect.redhat.com/portworx/must-gather:late
 oc adm must-gather
 
 # Inspect specific namespace
-oc adm inspect ns/kube-system
+oc adm inspect ns/$PX_NS
 ```
 
 ### Manual Diagnostics
@@ -402,28 +413,28 @@ DIAG_FILE="px-csi-diagnostics-$(date +%Y%m%d-%H%M%S).txt"
   echo ""
   
   echo "=== CSI Pod Status ==="
-  oc get pods -n kube-system -l app=px-csi-driver
+  oc get pods -n $PX_NS -l app=px-csi-driver
   echo ""
   
   echo "=== CSI Pod Details ==="
-  oc describe pod -n kube-system $PX_CSI_POD
+  oc describe pod -n $PX_NS $PX_CSI_POD
   echo ""
   
   echo "=== CSI Pod Logs ==="
-  oc logs -n kube-system $PX_CSI_POD --tail=200
+  oc logs -n $PX_NS $PX_CSI_POD --tail=200
   echo ""
   
   echo "=== CSI Pod Previous Logs ==="
-  oc logs -n kube-system $PX_CSI_POD --previous --tail=200
+  oc logs -n $PX_NS $PX_CSI_POD --previous --tail=200
   echo ""
   
   echo "=== Portworx Pods ==="
-  oc get pods -n kube-system -l name=portworx -o wide
+  oc get pods -n $PX_NS -l name=portworx -o wide
   echo ""
   
   echo "=== Portworx Status ==="
-  PX_POD=$(oc get pods -n kube-system -l name=portworx -o jsonpath='{.items[0].metadata.name}')
-  oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl status
+  PX_POD=$(oc get pods -n $PX_NS -l name=portworx -o jsonpath='{.items[0].metadata.name}')
+  oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl status
   echo ""
   
   echo "=== CSI Driver ==="
@@ -431,7 +442,7 @@ DIAG_FILE="px-csi-diagnostics-$(date +%Y%m%d-%H%M%S).txt"
   echo ""
   
   echo "=== Recent Events ==="
-  oc get events -n kube-system --sort-by='.lastTimestamp' | tail -50
+  oc get events -n $PX_NS --sort-by='.lastTimestamp' | tail -50
   echo ""
   
   echo "=== Storage Classes ==="
@@ -450,7 +461,7 @@ echo "Diagnostics saved to: $DIAG_FILE"
 ```
 Is px-csi-ext pod CrashLoopBackOff?
 │
-├─ YES → Check logs: oc logs -n kube-system $PX_CSI_POD --previous
+├─ YES → Check logs: oc logs -n $PX_NS $PX_CSI_POD --previous
 │        │
 │        ├─ "failed to connect to socket" → Check Portworx pod health
 │        │                                  → Restart Portworx pod, then CSI pod
@@ -480,7 +491,7 @@ Is px-csi-ext pod CrashLoopBackOff?
 |--------------|-----------|
 | `failed to connect to /var/lib/kubelet/plugins/pxd.portworx.com/csi.sock` | Restart Portworx pod, then CSI pod |
 | `csidrivers.storage.k8s.io "pxd.portworx.com" not found` | Restart operator or create CSI driver |
-| `User "system:serviceaccount:kube-system:px-account" cannot` | Fix RBAC bindings |
+| `User "system:serviceaccount:<px-namespace>:px-account" cannot` | Fix RBAC bindings (namespace is usually `portworx` on OCP) |
 | `ImagePullBackOff` | Add image pull secrets |
 | `0/X nodes are available` | Fix node labels or affinity rules |
 | `OOMKilled` | Increase memory limits |
@@ -491,8 +502,8 @@ Is px-csi-ext pod CrashLoopBackOff?
 
 ```bash
 # Quick status check
-PX_POD=$(oc get pods -n kube-system -l name=portworx -o jsonpath='{.items[0].metadata.name}')
-oc exec -n kube-system $PX_POD -- /opt/pwx/bin/pxctl status
+PX_POD=$(oc get pods -n $PX_NS -l name=portworx -o jsonpath='{.items[0].metadata.name}')
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl status
 
 # If Portworx cluster is healthy → CSI issue (restart CSI)
 # If Portworx cluster is unhealthy → Fix Portworx first

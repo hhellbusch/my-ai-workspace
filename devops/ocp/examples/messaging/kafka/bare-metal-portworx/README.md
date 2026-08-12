@@ -468,7 +468,14 @@ oc patch mcp worker --type=merge -p '{"spec":{"paused":false}}'
 ### Adding nodes
 
 1. Install host with rack labels **before** scheduling workloads.
-2. Confirm Portworx sees the node: `pxctl status`
+2. Confirm Portworx sees the node (`pxctl` runs inside the Portworx pod — OCP default namespace is `portworx`):
+
+```bash
+PX_NS=${PX_NS:-portworx}
+PX_POD=$(oc get pods -n $PX_NS -l name=portworx -o jsonpath='{.items[0].metadata.name}')
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl status
+```
+
 3. Scale brokers via your operator.
 4. Rebalance partitions (Cruise Control / `KafkaRebalance` for Strimzi).
 
@@ -515,7 +522,9 @@ oc exec -n <kafka-namespace> <broker-pod-0> -- \
 #   grep broker.rack /opt/kafka/custom-config/server.properties
 
 # 4. Portworx volume replica placement
-pxctl volume inspect <volume-id>
+PX_NS=${PX_NS:-portworx}
+PX_POD=$(oc get pods -n $PX_NS -l name=portworx -o jsonpath='{.items[0].metadata.name}')
+oc exec -n $PX_NS $PX_POD -- /opt/pwx/bin/pxctl volume inspect <volume-id>
 
 # 5. PDB present
 oc get pdb -n <kafka-namespace>
