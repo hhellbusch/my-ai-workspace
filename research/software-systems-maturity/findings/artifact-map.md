@@ -24,7 +24,7 @@
 | Code quality | [code-quality.md](../../../docs/ai-engineering/maturity/code-quality.md) | Thin — craft skill, deck xkcd links |
 | Testing & verification | [testing-and-verification.md](../../../docs/ai-engineering/maturity/testing-and-verification.md) | Partial — network test example |
 | Architecture & change | [architecture-and-change.md](../../../docs/ai-engineering/maturity/architecture-and-change.md) | Partial — argo GUIDELINES, fleet notes |
-| Builds & artifacts | [builds-and-artifacts.md](../../../docs/ai-engineering/maturity/builds-and-artifacts.md) | Partial — argo CI, operators-installer |
+| Builds & artifacts | [builds-and-artifacts.md](../../../docs/ai-engineering/maturity/builds-and-artifacts.md) | Partial+ — argo CI/promotion, operators-installer, framework render pipeline |
 | Deployment & release | [deployment-and-release.md](../../../docs/ai-engineering/maturity/deployment-and-release.md) | **Rich** — [devops/argo/](../../../devops/argo/README.md) |
 | Data management | [data-management.md](../../../docs/ai-engineering/maturity/data-management.md) | Thin — Fowler evodb external |
 | Monitoring & reliability | [monitoring-and-reliability.md](../../../docs/ai-engineering/maturity/monitoring-and-reliability.md) | Partial — ocp troubleshooting, [slo-and-runbooks](../../../devops/slo-and-runbooks.md) |

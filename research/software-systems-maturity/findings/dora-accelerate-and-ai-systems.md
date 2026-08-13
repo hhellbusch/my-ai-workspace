@@ -107,6 +107,27 @@ Avoid: converting axis levels into a fake DORA score. Avoid: ignoring DORA becau
 
 ---
 
+## Builds axis — DORA links
+
+**Primary DORA connection:** **Continuous integration** (*Accelerate* technical capability) — automated build and test on every change.
+
+| Maturity level | CI / artifact posture |
+|---|---|
+| **L1–2** | No DORA-aligned CI — integration is manual or scripted ad hoc |
+| **L3** | CI runs on change; artifact may still be ephemeral |
+| **L4** | Immutable stored artifact (registry tag, rendered manifest commit, pinned CSV) |
+| **L5** | Main always deployable; broken build blocks progression — supports **deployment frequency** without raising **change failure rate** |
+
+**Skew pattern:** build **L3** + deploy **L2** (CI produces output, human promotes) — name both axes in assessment.
+
+**GitOps nuance:** fleet repos often treat **CI render + lint** as the build stage and **Argo sync** as deploy ([builds deep dive](../../../docs/ai-engineering/maturity/builds-and-artifacts.md)).
+
+**AI era:** agent throughput increases PR volume — CI capacity and "broken main" discipline (deck: every build deployable) matter more. SBOM/provenance at L5 overlaps [Security](../../../docs/ai-engineering/maturity/security-and-secrets.md) when dependencies are agent-suggested.
+
+**Corpus:** [framework pipelines](../../../devops/argo/examples/framework/pipelines/) · [operators-installer](../../../devops/argo/examples/examples/operators-installer/) · [github-workflows](../../../devops/argo/examples/github-workflows/)
+
+---
+
 ## Sources
 
 - *Accelerate* — Forsgren, Humble, Kim (2018) — [library catalog stub](../../../library/catalog.md)
@@ -120,4 +141,4 @@ Avoid: converting axis levels into a fake DORA score. Avoid: ignoring DORA becau
 
 - Enriched library entry for *Accelerate* / DORA (4-step ingest)
 - Essay: "DORA in the agent era" under `docs/ai-engineering/`
-- Per-axis iteration notes linking DORA capabilities — **source control, deployment done**; builds, testing next
+- Per-axis iteration notes linking DORA capabilities — **source control, deployment, builds done**; testing next
