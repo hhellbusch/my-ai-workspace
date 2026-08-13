@@ -1,0 +1,47 @@
+# Pattern A — ClusterLink CR on DC-B (destination-initiated).
+# Replicates from DC-A → DC-B. bootstrapEndpoint = DC-A REPLICATION listener (Multus).
+#
+# Apply on dc-b cluster via Argo. Sync wave after Kafka CR + NAD.
+# Docs: https://docs.confluent.io/operator/current/co-link-clusters.html
+
+apiVersion: platform.confluent.io/v1beta1
+kind: ClusterLink
+metadata:
+  name: clusterlink-dc-a-to-dc-b
+  namespace: confluent
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+spec:
+  name: dr-cross-dc
+
+  destinationKafkaCluster:
+    kafkaRestClassRef:
+      name: krc-local
+      namespace: confluent
+
+  sourceKafkaCluster:
+    bootstrapEndpoint: "10.200.1.21:9095,10.200.1.22:9095,10.200.1.23:9095"
+    clusterID: ""  # fill from source Admin REST
+    kafkaRestClassRef:
+      name: krc-dc-a
+      namespace: confluent
+    authentication:
+      type: plain
+      jaasConfig:
+        secretRef: clusterlink-dc-a-sasl
+    tls:
+      enabled: true
+      truststore:
+        secretRef: clusterlink-dc-a-truststore
+      keystore:
+        secretRef: clusterlink-dc-a-keystore
+
+  mirrorTopics:
+    - name: "*"
+      prefix: dc-a.
+
+  mirrorTopicOptions:
+    autoCreateMirrorTopics: true
+
+  configs:
+    connections.max.idle.ms: "620000"

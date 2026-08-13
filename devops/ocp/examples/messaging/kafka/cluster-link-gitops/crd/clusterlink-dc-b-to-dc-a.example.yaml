@@ -1,0 +1,44 @@
+# Pattern A — ClusterLink CR on DC-A (reverse direction for bidirectional DR).
+# Pair with clusterlink-dc-a-to-dc-b.example.yaml via the same spec.name.
+
+apiVersion: platform.confluent.io/v1beta1
+kind: ClusterLink
+metadata:
+  name: clusterlink-dc-b-to-dc-a
+  namespace: confluent
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+spec:
+  name: dr-cross-dc
+
+  destinationKafkaCluster:
+    kafkaRestClassRef:
+      name: krc-local
+      namespace: confluent
+
+  sourceKafkaCluster:
+    bootstrapEndpoint: "10.200.2.21:9095,10.200.2.22:9095,10.200.2.23:9095"
+    clusterID: ""
+    kafkaRestClassRef:
+      name: krc-dc-b
+      namespace: confluent
+    authentication:
+      type: plain
+      jaasConfig:
+        secretRef: clusterlink-dc-b-sasl
+    tls:
+      enabled: true
+      truststore:
+        secretRef: clusterlink-dc-b-truststore
+      keystore:
+        secretRef: clusterlink-dc-b-keystore
+
+  mirrorTopics:
+    - name: "*"
+      prefix: dc-b.
+
+  mirrorTopicOptions:
+    autoCreateMirrorTopics: true
+
+  configs:
+    connections.max.idle.ms: "620000"

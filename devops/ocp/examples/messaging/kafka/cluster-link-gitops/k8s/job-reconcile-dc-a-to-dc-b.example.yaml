@@ -1,0 +1,55 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: reconcile-clusterlink-dc-a-to-dc-b
+  namespace: confluent
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app: clusterlink-reconciler
+        cross-dc.example/link: dc-a-to-dc-b
+    spec:
+      restartPolicy: Never
+      serviceAccountName: clusterlink-reconciler
+      containers:
+        - name: reconcile
+          # Replace with an image that includes yq, curl, jq, and your reconcile script.
+          image: quay.io/example/clusterlink-reconciler:0.1.0
+          command:
+            - /scripts/reconcile-link.example.sh
+            - --spec
+            - /config/link.desired.yaml
+            - --apply
+          env:
+            - name: KAFKA_REST_URL
+              value: "https://kafka.confluent.svc.cluster.local:8090"
+            - name: KAFKA_CLUSTER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: clusterlink-admin-credentials
+                  key: cluster-id
+          envFrom:
+            - secretRef:
+                name: clusterlink-admin-credentials
+          volumeMounts:
+            - name: spec
+              mountPath: /config
+              readOnly: true
+            - name: scripts
+              mountPath: /scripts
+              readOnly: true
+      volumes:
+        - name: spec
+          configMap:
+            name: clusterlink-dc-a-to-dc-b-spec
+        - name: scripts
+          configMap:
+            name: clusterlink-reconcile-scripts
+            defaultMode: 0555
