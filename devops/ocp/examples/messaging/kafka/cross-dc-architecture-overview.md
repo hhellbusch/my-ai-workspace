@@ -35,6 +35,7 @@ If this combined doc and those two disagree later, the split docs win — update
 
 - [Problem shape](#problem-shape)
 - [Layer map](#layer-map)
+- [Networking basics (terms used in this doc)](#networking-basics-terms-used-in-this-doc)
 - [Part 1 — The dedicated network (workload-agnostic)](#part-1--the-dedicated-network-workload-agnostic)
   - [Layer 1–2: host network](#layer-12-host-network)
   - [Layer 3: routing](#layer-3-routing)
@@ -84,6 +85,85 @@ L1  Physical             Two NICs, two cards, dedicated fiber/circuit
 ```
 
 Pod attachment (Multus) sits at L2/L3 and is the layer most often skipped by mistake.
+
+---
+
+## Networking basics (terms used in this doc)
+
+This section is for readers who are strong on OpenShift/Kafka but still building networking vocabulary — the rest of the doc assumes these ideas.
+
+### Layer numbers (quick reference)
+
+See the [layer map](#layer-map) above. In conversation you'll mostly touch **L1–2** (NICs, bond, VLAN), **L3** (subnets, gateways, routes — *not* default routes on the replication link), and **L4** (TCP port 9095 for replication). **L7** is Kafka + Cluster Linking on top.
+
+### Three address "worlds" on a node
+
+| World | Typical addresses | Who uses it |
+|---|---|---|
+| **Machine / management network** | Whatever the cluster already uses for API, nodes, SSH | Host OS, `oc debug node`, most infrastructure |
+| **OVN pod network (default)** | Cluster overlay (e.g. `10.128.x.x`) | Almost every pod's `eth0` — Services, internal Kafka clients |
+| **Replication VLAN subnet** | Per-DC `/26` (e.g. `10.200.1.0/26` ↔ `10.200.2.0/26`) | Cross-DC replication only — via Multus on broker pods |
+
+These are **different subnets on purpose**. Replication traffic should be identifiable by source/dest IP in the replication pools, not mixed with management traffic.
+
+### NAT, SNAT, and DNAT
+
+**NAT (Network Address Translation)** rewrites IP addresses (and often ports) in packet headers so traffic can cross between address realms.
+
+| Term | Rewrites | Typical direction | Example in OpenShift |
+|---|---|---|---|
+| **SNAT** (Source NAT) | Source IP/port | Outbound | Pod sends as `10.128.x.x`; remote may see the **node's machine-network IP** after OVN SNAT |
+| **DNAT** (Destination NAT) | Destination IP/port | Inbound | Client hits a Route/LoadBalancer VIP; packet is steered to a **pod IP** |
+
+**Why SNAT matters here:** If a broker only uses the default OVN network toward the other DC, egress can be **SNAT'd to the machine-network IP**. Firewalls and routing on the replication path expect sources in **`10.200.1.x`**, not the management subnet — return paths break or ACLs don't match. Multus gives replication traffic a path where the **source is already a replication-subnet IP** (see below).
+
+### Default pod network vs Multus secondary network
+
+**Without Multus:** Each pod gets one interface (`eth0`) on the cluster overlay (OVN-Kubernetes). That is the right default for API calls, DNS, image pulls, and internal Kafka clients.
+
+**Multus** is a CNI meta-plugin (enabled on OpenShift) that can attach **additional** interfaces defined by a **`NetworkAttachmentDefinition` (NAD)**. A pod annotation (`k8s.v1.cni.cncf.io/networks: …`) requests the extra attachment at startup.
+
+After attachment, a broker is **dual-homed** — not "moved" off the cluster network:
+
+```text
+┌─ Kafka pod ─────────────────────────────────────────────────────┐
+│  eth0 (OVN)          default route → normal cluster egress       │
+│                      INTERNAL listener, clients, API, DNS      │
+│                      (often SNAT to machine-network IP)          │
+├──────────────────────────────────────────────────────────────────┤
+│  net1 (Multus/NAD)   route to remote DC /26 ONLY                 │
+│                      REPLICATION listener advertised here        │
+│                      source IP = replication pool (10.200.1.x)   │
+│                      NO default-route on this attachment         │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+**NAD** = the Kubernetes object describing *how* to attach (macvlan on `bond-repl.200`, IP pool, routes). **Multus** = the mechanism that applies it. **`network-status` annotation** on the pod = what actually landed (IPs, routes — use this to verify no accidental `default-route`).
+
+More detail on NAD patterns: [NetworkAttachmentDefinition guide](../../networking/network-attachment-definitions/README.md).
+
+### Scoped route vs default route (host and pod)
+
+A **default route** (`0.0.0.0/0`) means "send *everything* out this interface." On the replication VLAN — host **or** pod — that bleeds API traffic, DNS, and pulls onto a link sized for replication only. It usually breaks the cluster outright.
+
+A **scoped route** means "send only **this prefix** out this interface" — here, the **other datacenter's replication `/26`**. Everything else follows the normal default (OVN / machine network).
+
+| Level | Correct shape | Wrong shape |
+|---|---|---|
+| **Host** (NNCP) | Route: remote `/26` → gateway on `bond-repl.200` | Default route on `bond-repl.200` |
+| **Pod** (NAD + annotation) | Route: remote `/26` on Multus iface; default stays on `eth0` | `default-route` set on Multus attachment |
+
+That split is the design rule peers often state as: **only traffic to the other DC's replication subnet uses the replication IP; all other destinations use the original cluster/machine path.**
+
+### Other terms that appear later
+
+| Term | Meaning |
+|---|---|
+| **CNI** | Container Network Interface — plugins that wire pod networking (OVN, Multus, macvlan, whereabouts) |
+| **macvlan** | Gives each pod its own MAC on a VLAN segment (default here); use **ipvlan** if the switch limits MAC counts |
+| **whereabouts** | IPAM plugin — assigns pod IPs from a pool on a NAD |
+| **NNCP / NNCE** | NodeNetworkConfigurationPolicy / Enactment — nmstate objects for host networking |
+| **`MultiNetworkPolicy`** | Like `NetworkPolicy`, but enforced on a **secondary** interface (standard policy only sees `eth0`) |
 
 ---
 
@@ -153,9 +233,11 @@ routes:
 
 ### Layer 2/3: pod attachment via Multus
 
-A MachineConfig/NNCP configures the **host**. It does nothing for pods on the default OVN network — pods don't automatically see this interface, and OVN-Kubernetes **SNATs pod egress to the node's primary (machine-network) IP** before the routing table is consulted. So even though the host has a correct route to the remote /26 via `bond-repl.200`, a pod on the default network reaching that destination gets routed over the right interface but with the **wrong source IP** — breaking return routing symmetry and complicating firewall rules that expect traffic sourced from the replication subnet specifically.
+See [Networking basics](#networking-basics-terms-used-in-this-doc) for NAT/SNAT, Multus, and dual-homed pods — this section applies those ideas to the replication VLAN.
 
-The fix: attach the workload's pod directly to the VLAN via a Multus `NetworkAttachmentDefinition`, giving it a real IP in the replication subnet.
+A MachineConfig/NNCP configures the **host**. It does nothing for pods on the default OVN network — pods don't automatically see that interface, and OVN-Kubernetes **SNATs pod egress to the node's primary (machine-network) IP** on the default path. So even though the host has a correct route to the remote /26 via `bond-repl.200`, a pod on the default network reaching that destination can still present the **wrong source IP** — breaking return routing symmetry and complicating firewall rules that expect traffic sourced from the replication subnet specifically.
+
+**The fix:** attach the workload pod to the VLAN via Multus — a **second** interface with a replication-subnet IP and a **scoped route to the remote DC's `/26` only**. The primary OVN interface (`eth0`) keeps the default route for everything else (API, DNS, internal listeners). The pod is dual-homed, not relocated to the replication subnet.
 
 ```yaml
 apiVersion: k8s.cni.cncf.io/v1
@@ -183,7 +265,7 @@ spec:
 
 **hostNetwork as an alternative:** if the workload is a host-level daemon (not a typical pod) or already runs with `hostNetwork: true`, it shares the host's network namespace directly and the host route alone is sufficient — no Multus needed for that specific workload.
 
-**The pod-level version of the "no default route" rule:** the same mistake from [Layer 3 routing](#layer-3-routing) has a pod-scoped equivalent. The extended JSON form of the `k8s.v1.cni.cncf.io/networks` annotation accepts a `default-route` key per attachment — leave it unset for `repl-net`/`kafka-repl-net`. Left unset, the pod's default route stays on the primary (OVN) interface, and the secondary attachment only carries a route to its own subnet. Confirm via the pod's `k8s.v1.cni.cncf.io/network-status` annotation — the secondary entry should have no `"default-route"` key.
+**The pod-level version of the "no default route" rule:** the same mistake from [Layer 3 routing](#layer-3-routing) has a pod-scoped equivalent. The extended JSON form of the `k8s.v1.cni.cncf.io/networks` annotation accepts a `default-route` key per attachment — leave it unset for `repl-net`/`kafka-repl-net`. Left unset, the pod's default route stays on the primary (OVN) interface; the Multus attachment carries only the **scoped route to the remote `/26`** (plus local replication-subnet addressing), not a default. Confirm via the pod's `k8s.v1.cni.cncf.io/network-status` annotation — the secondary entry should have no `"default-route"` key.
 
 **Static IP/MAC as an alternative to whereabouts:** macvlan supports per-pod address pinning via CNI chaining (`ipam.type: static`) and the extended `k8s.v1.cni.cncf.io/networks` annotation (`ips` / `routes` keys). **Neither mode is mandatory for Cluster Linking** — both need a correct advertised Multus IP; they differ in predictability, firewall shape, and CFK wiring complexity. See [Broker replication IP assignment](#broker-replication-ip-assignment) and [BROKER-IPAM.md](cross-dc-kafka-net-helm/BROKER-IPAM.md).
 
