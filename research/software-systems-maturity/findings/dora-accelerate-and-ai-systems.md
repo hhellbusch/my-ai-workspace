@@ -86,6 +86,27 @@ Avoid: converting axis levels into a fake DORA score. Avoid: ignoring DORA becau
 
 ---
 
+## Deployment axis — DORA links
+
+**Primary DORA metrics for this axis:**
+
+| DORA metric | Deployment axis connection |
+|---|---|
+| **Deployment frequency** | L4–5 automated reconcile enables safe frequent promote; L0–2 caps frequency regardless of desire |
+| **Lead time for changes** | L3+ declarative Git + PR + pipeline shortens commit→prod; manual deploy steps dominate at L1–2 |
+| **Change failure rate** | Under-investment in testing/monitoring at same deploy level — AI throughput can worsen this |
+| **MTTR** | L5 drift visibility + rollback paths; GitOps self-heal vs manual reconcile choice ([fleet spectrum](../../../devops/fleet-control-spectrum.md)) |
+
+**Accelerate capabilities mapped here:** continuous delivery, continuous deployment, deployment automation, trunk-based development (with [source control](source-control.md)).
+
+**Fleet nuance:** measure DORA on a **defined service or pipeline** (one app, one promotion path). Fleet-wide "we GitOps everything" is not one metric — hub policy, spokes, and apps may sit at different levels.
+
+**AI era:** agents accelerate manifest **production**; deployment maturity determines whether that increases **deployment frequency** or **change failure rate**. PR diff tools ([argocd-diff-preview](../../../library/argocd-diff-preview.md)) are L3–4 enablers when generation volume rises.
+
+**Corpus (rich):** [devops/argo/](../../../devops/argo/README.md) · [artifact map](artifact-map.md) · [deployment deep dive](../../../docs/ai-engineering/maturity/deployment-and-release.md)
+
+---
+
 ## Sources
 
 - *Accelerate* — Forsgren, Humble, Kim (2018) — [library catalog stub](../../../library/catalog.md)
@@ -99,4 +120,4 @@ Avoid: converting axis levels into a fake DORA score. Avoid: ignoring DORA becau
 
 - Enriched library entry for *Accelerate* / DORA (4-step ingest)
 - Essay: "DORA in the agent era" under `docs/ai-engineering/`
-- Per-axis iteration notes linking DORA capabilities (deployment, builds, testing next)
+- Per-axis iteration notes linking DORA capabilities — **source control, deployment done**; builds, testing next
