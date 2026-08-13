@@ -1,0 +1,7512 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Engineering reference and essays — DevOps troubleshooting, examples, and AI-assisted practice.">
+      
+      
+      
+        <link rel="canonical" href="https://hhellbusch.github.io/my-ai-workspace/devops/argo/examples/helm-component-pattern/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Platform component delivery at fleet scale - Field Notes</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/poc/symptom-picker.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#platform-component-delivery-at-fleet-scale" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="Field Notes" class="md-header__button md-logo" aria-label="Field Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Field Notes
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Platform component delivery at fleet scale
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/hhellbusch/my-ai-workspace" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    hhellbusch/my-ai-workspace
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Field Notes" class="md-nav__button md-logo" aria-label="Field Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Field Notes
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/hhellbusch/my-ai-workspace" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    hhellbusch/my-ai-workspace
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../interactive-poc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interactive PoC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DevOps Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DevOps Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DevOps hub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ORGANIZATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../SYMPTOM-INDEX/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Symptom index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../EXAMPLE-INDEX/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fleet-control-spectrum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fleet control spectrum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning paths
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Learning paths
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../learning-path/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning paths index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../learning-path/vmware-admins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VMware admins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../learning-path/git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git curriculum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pedagogy and setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Pedagogy and setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../git/git-learning-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git learning guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../kvm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    KVM on Fedora
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local LLM setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ansible troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ansible troubleshooting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_8_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8_1" id="__nav_3_8_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authentication
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_8_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authentication
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ansible/troubleshooting/aap-controller-token-404/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AAP Controller Token 404
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OCP troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP troubleshooting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_1" id="__nav_3_9_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Automation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/aap-ssh-mtu-issues/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AAP SSH Connection MTU Issues
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_2" id="__nav_3_9_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bare Metal
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Bare Metal
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/bare-metal-node-inspection-timeout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bare Metal Node Inspection Timeout
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/bare-metal-rhcos-disk-wipe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bare Metal RHCOS Disk Wipe
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/bare-metal-stale-node-ip-conflict/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bare Metal Stale Node IP Conflict
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/worker-node-tls-cert-failure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Worker Node TLS Certificate Failure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_3" id="__nav_3_9_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Certificates
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Certificates
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/csr-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CSR Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_4" id="__nav_3_9_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control Plane
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Control Plane
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/apiserver-cert-deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Server Certificate Deadlock
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/api-slowness-web-console/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Slowness and Web Console Performance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/control-plane-kubeconfigs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control Plane Kubeconfigs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/kafka-broker-init-kubernetes-svc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kafka Broker Stuck in Init — kubernetes Service Unreachable
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/oauth-healthz-unavailable/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OAuth Server healthz Unavailable
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/kube-controller-manager-crashloop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    kube-controller-manager Crash Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_5" id="__nav_3_9_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/failed-ocp-install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Failed OCP Install
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_6" id="__nav_3_9_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Kubernetes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/namespace-stuck-terminating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Namespace Stuck in Terminating
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_7" id="__nav_3_9_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Lifecycle
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/destroy-cluster-without-metadata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Destroy Cluster Without Metadata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_8" id="__nav_3_9_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Networking
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/coreos-networking-issues/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CoreOS Networking Issues
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_9" id="__nav_3_9_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registry
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Registry
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/image-registry-auth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Image Registry Auth and Route Exposure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/image-signature-policy-mcp-deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Image Signature Policy MCP Deadlock
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_10" id="__nav_3_9_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rhacm
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rhacm
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/multiclusterobservability-webhook-rejection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MultiClusterObservability Webhook Rejection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_11" id="__nav_3_9_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/nfs-portworx-proxy-pvc-slow-ready/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NFS Portworx Proxy PVC Slow Ready
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/nvme-host-nqn-duplicate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NVMe Host NQN Duplicates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/nvme-tcp-storage-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NVMe/TCP Storage Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/portworx-csi-crashloop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Portworx CSI Pod CrashLoopBackOff
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/prometheus-monitoring-storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prometheus and Alertmanager Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_12" id="__nav_3_9_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tools
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/debug-toolbox-container/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debug Toolbox Container
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_13" id="__nav_3_9_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Virtualization
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Virtualization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/troubleshooting/kubevirt-vm-stuck-provisioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    KubeVirt VM Stuck in Provisioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_10" id="__nav_3_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rhacm troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rhacm troubleshooting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_10_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_10_1" id="__nav_3_10_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Install
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_10_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Install
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rhacm/troubleshooting/agent-install-rootfs-ssl-failure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Install Rootfs SSL Failure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_10_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_10_2" id="__nav_3_10_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hub Upgrade
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_10_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hub Upgrade
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rhacm/troubleshooting/mch-stuck-pending-upgrade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCH Stuck Pending Upgrade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rhacm/troubleshooting/managed-cluster-lease-not-updated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Cluster Lease Not Updated
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_10_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_10_3" id="__nav_3_10_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_10_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Observability
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rhacm/troubleshooting/observability-addon-missing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability Addon Missing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rhacm/troubleshooting/observability-platform-metrics-missing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability Platform Metrics Missing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_10_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_10_4" id="__nav_3_10_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Search
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_10_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Search
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rhacm/troubleshooting/search-service-503/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RHACM Search Service 503
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_11" id="__nav_3_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenShift
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    OpenShift
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OCP hub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/disconnected-install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Disconnected install
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/ibm-z/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IBM Z
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/gpu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU artifacts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_12" id="__nav_3_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OCP examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_12_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_12_2" id="__nav_3_12_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bare metal
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_12_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_12_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Bare metal
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/examples/bare-metal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bare metal index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/examples/bare-metal/secondary-disk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bare Metal Secondary Disk Offload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/examples/bare-metal/var-log-disk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Var Log on Secondary Disk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_12_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_12_3" id="__nav_3_12_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_12_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_12_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Messaging
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/examples/messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_12_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_12_3_2" id="__nav_3_12_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kafka
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_12_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_12_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Kafka
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/examples/messaging/kafka/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kafka index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/examples/messaging/kafka/bare-metal-portworx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kafka on Bare Metal with Portworx
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_12_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_12_4" id="__nav_3_12_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_12_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_12_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Networking
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/examples/networking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/examples/networking/network-attachment-definitions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NetworkAttachmentDefinition Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/examples/networking/ovn-kubernetes-install-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OVN-Kubernetes Install Config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/examples/networking/vlan-segmentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLAN Network Segmentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_12_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_12_5" id="__nav_3_12_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Labs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_12_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_12_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Labs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/examples/labs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Labs index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/examples/labs/sno-kvm-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SNO on KVM Lab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_13" id="__nav_3_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OCP notes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP notes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notes index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/notes/cluster-resource-override/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cluster Resource Override
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/notes/container-density-overcommit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Container Density Overcommit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/notes/kafka-on-openshift-tenancy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kafka On Openshift Tenancy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/notes/machine-config-pools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Machine Config Pools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/notes/network-policy-observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Policy Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/notes/openshift-useful-commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Openshift Useful Commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/notes/pod-termination-quick-stop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pod Termination Quick Stop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ocp/notes/vertical-pod-autoscaler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vertical Pod Autoscaler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_14" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_14" id="__nav_3_14_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Products
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_14">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Products
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rhacm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RHACM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ansible/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ansible
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Argo CD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../coreos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CoreOS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../vault/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vault
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_15" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_15" id="__nav_3_15_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspace tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_15">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Workspace tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../pi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pi
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../paude/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paude
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../paude-proxy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paude proxy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Essays
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Essays
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docs catalogue
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Engineering
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    AI Engineering
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/ai-assisted-development-workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Assisted Development Workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/ai-assisted-upstream-contributions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Assisted Upstream Contributions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/ai-for-unfamiliar-domains/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai For Unfamiliar Domains
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/ai-legacy-improvement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Legacy Improvement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/artifact-discipline-and-ai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artifact Discipline And Ai
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/framework-bootstrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Framework Bootstrap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/frameworks-vs-behavior/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Frameworks Vs Behavior
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/interaction-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interaction Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/local-llm-sysadmin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Llm Sysadmin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/openshift-ai-llm-deployment-summary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Openshift Ai Llm Deployment Summary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/openshift-gpu-node-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Openshift Gpu Node Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/paude-getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paude Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/portable-ai-toolkit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Portable Ai Toolkit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/prompting-and-state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prompting And State
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/session-framework/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Session Framework
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/sparring-and-shoshin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sparring And Shoshin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/the-meta-development-loop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Meta Development Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/the-shift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Shift
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/what-a-context-window-actually-is/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What A Context Window Actually Is
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/ai-engineering/youtube-video-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Youtube Video Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Philosophy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Philosophy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/philosophy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/philosophy/ego-ai-and-the-zen-antidote/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ego Ai And The Zen Antidote
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/philosophy/the-dojo-after-the-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Dojo After The Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/philosophy/the-full-cup-practitioners-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Full Cup Practitioners Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/philosophy/the-full-cup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Full Cup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/philosophy/zanshin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Zanshin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Case Studies
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Case Studies
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/adversarial-review-meta-development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adversarial Review Meta Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/ai-self-diagnosis-symptom-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Self Diagnosis Symptom Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/building-a-research-skill/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building A Research Skill
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/building-knowledge-management-with-ai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building Knowledge Management With Ai
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/case-studies-as-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Case Studies As Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/choosing-scripts-over-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choosing Scripts Over Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/context-stripped-citations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Context Stripped Citations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/conversation-to-essay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conversation To Essay
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/corpus-level-spar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corpus Level Spar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/debugging-ai-judgment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debugging Ai Judgment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/decayed-how-to/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decayed How To
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/diagnosing-through-the-stack/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagnosing Through The Stack
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/directory-move-gitignore-drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Directory Move Gitignore Drift
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/evolving-creative-scope/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evolving Creative Scope
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/experiment-cant-use-findings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experiment Cant Use Findings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/fabricated-references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fabricated References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/frictionless-entity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Frictionless Entity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/graph-splits-hybrid-inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Graph Splits Hybrid Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/heavy-safety-nets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heavy Safety Nets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/inherited-frame-shapes-solution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inherited Frame Shapes Solution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/landscape-before-depth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Landscape Before Depth
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/link-depth-drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Link Depth Drift
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/meta-document-drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Meta Document Drift
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/model-self-report-runtime-state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model Self Report Runtime State
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/session-crash-recovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Session Crash Recovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/spar-distortion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spar Distortion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/spar-finds-the-assumption/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spar Finds The Assumption
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/spar-lifecycle-boundary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spar Lifecycle Boundary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/spar-to-essay-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spar To Essay Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/stale-context-in-long-sessions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stale Context In Long Sessions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/survivorship-bias-recommendations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Survivorship Bias Recommendations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/technical-correctness-vs-communication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Correctness Vs Communication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/when-the-repository-becomes-the-resume/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    When The Repository Becomes The Resume
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../docs/case-studies/who-is-speaking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Who Is Speaking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#who-this-is-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who this is for
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-principle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The principle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hub-argocd-fleet-topology-not-rhacm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "Hub" — ArgoCD fleet topology, not RHACM
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opinions-baked-in" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Opinions baked in
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-the-charts-relate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the charts relate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#folder-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Folder layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-component-name-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The component-&lt;name&gt; convention
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution-in-the-helm-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution in the Helm templates
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution in the Helm templates">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#componentregistry-preventing-phantom-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        componentRegistry — preventing phantom Applications
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#global-sync-defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Global sync defaults
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#silent-failure-modes-and-guardrails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Silent failure modes and guardrails
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-what-site-dc1-resolves-to" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: what site-dc1 resolves to
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clustersyaml-the-single-source-of-truth-for-cluster-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        clusters.yaml — the single source of truth for cluster identity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="clusters.yaml — the single source of truth for cluster identity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-cluster-block-in-every-component" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The cluster: block in every component
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-hub-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-hub architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster-values-files-are-just-overrides" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cluster values files are just overrides
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#targetrevision-three-level-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        targetRevision — three-level resolution
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="targetRevision — three-level resolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#group-level-pin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Group-level pin
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typical-promotion-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typical promotion workflows
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appprojects-per-cluster-audit-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AppProjects — per-cluster audit boundaries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hub-applications-chartshub-bootstrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hub Applications — charts/hub-bootstrap/
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hub Applications — charts/hub-bootstrap/">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-github-action-breaks-the-chicken-and-egg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The GitHub Action breaks the chicken-and-egg
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-full-bootstrap-chain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The full bootstrap chain
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diffing-and-visibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diffing and visibility
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#onboarding-a-new-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Onboarding a new cluster
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-a-new-component" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding a new component
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#converging-with-gitops-standards-repo-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Converging with gitops-standards-repo-template
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="platform-component-delivery-at-fleet-scale">Platform component delivery at fleet scale<a class="headerlink" href="#platform-component-delivery-at-fleet-scale" title="Permanent link">&para;</a></h1>
+<p><em>Composable group-based GitOps for OpenShift fleets — ArgoCD only, no RHACM required.</em></p>
+<hr />
+<h2 id="who-this-is-for">Who this is for<a class="headerlink" href="#who-this-is-for" title="Permanent link">&para;</a></h2>
+<p><strong>Platform engineers and consultants</strong> rolling out or managing a fleet of OpenShift clusters, looking for a structured GitOps-native way to manage platform components across clusters that share most config but differ in meaningful ways.</p>
+<p><strong>CoP maintainers</strong> — this pattern builds on the conventions established in <a href="https://github.com/redhat-cop/gitops-standards-repo-template">redhat-cop/gitops-standards-repo-template</a>. The folder structure and composable groups model are the same; the implementation choices differ. See <a href="docs/cop-maintainers/">docs/cop-maintainers.md</a> for a full comparison, trade-off analysis, and guidance on choosing between them.</p>
+<hr />
+<h2 id="further-reading">Further reading<a class="headerlink" href="#further-reading" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Audience</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="docs/architecture-opinions/">docs/architecture-opinions.md</a></td>
+<td>The problem, the principle, the Hub concept, and the 9 design opinions with full trade-offs</td>
+</tr>
+<tr>
+<td><a href="docs/cop-maintainers/">docs/cop-maintainers.md</a></td>
+<td>CoP maintainers: relationship to gitops-standards, Helm vs Kustomize trade-offs, choosing between them</td>
+</tr>
+<tr>
+<td><a href="docs/diffing-and-visibility/">docs/diffing-and-visibility.md</a></td>
+<td>PR-level desired-state diffs, fleet-wide live-to-desired diffs, argocd-diff-preview integration</td>
+</tr>
+<tr>
+<td><a href="docs/convergence/">docs/convergence.md</a></td>
+<td><em>(Aspirational)</em> How this pattern and gitops-standards could converge; <code>sourceType</code> per component; open questions</td>
+</tr>
+<tr>
+<td><a href="docs/operator-management/">docs/operator-management.md</a></td>
+<td>Operator installation via OLM, <code>operators-installer</code> integration, version pinning, operator+instance split</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="the-problem">The problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h2>
+<p>You have multiple OpenShift clusters. Each cluster needs a set of platform components — cert-manager, nmstate, kubevirt, logging, monitoring agents, etc. Most config is the same across clusters, but not all:</p>
+<ul>
+<li>Some clusters run OpenShift Virtualization; others don't</li>
+<li>Some are single-node edge clusters with reduced resource requests</li>
+<li>Some clusters override a specific setting (e.g. <code>installPlanApproval: Manual</code> in production)</li>
+<li>New clusters need to be onboarded without copy-pasting config from an existing one</li>
+</ul>
+<p>You want all of this managed by GitOps: every change goes through a pull request, ArgoCD applies it, and nothing is applied by hand.</p>
+<p><strong>What goes wrong without a pattern:</strong></p>
+<div class="highlight"><pre><span></span><code>clusters/
+  site-dc1/cert-manager.yaml      ← full config copy
+  site-dc1/nmstate.yaml           ← full config copy
+  site-edge-1/cert-manager.yaml   ← slightly different copy
+  site-edge-1/nmstate.yaml        ← slightly different copy
+  site-dc2/cert-manager.yaml      ← another copy ...
+</code></pre></div>
+<p>When you want to change the cert-manager channel across all production clusters, you update N files. When you add a new cluster, you copy-paste and manually adjust. Config drifts. Reviews miss changes buried in large diffs.</p>
+<hr />
+<h2 id="the-principle">The principle<a class="headerlink" href="#the-principle" title="Permanent link">&para;</a></h2>
+<p>Define each platform component <strong>once</strong>, with sensible defaults. Define <strong>groups</strong> that describe cluster types. Assign each cluster to groups. Merge the layers in priority order — later layers win.</p>
+<div class="highlight"><pre><span></span><code>component-all           ← baseline: every cluster gets cert-manager, channel: stable
+component-virt-enabled  ← override: add kubevirt, bump nmstate to stable-4.16
+component-edge-sno      ← override: reduce cert-manager resource requests
+component-site-dc1      ← cluster override: cert-manager installPlanApproval: Manual
+</code></pre></div>
+<p>For a cluster in groups <code>[all, virt-enabled]</code> with a cluster-specific override, the merge order is:</p>
+<div class="highlight"><pre><span></span><code>component-all  ──mustMergeOverwrite──▶  component-virt-enabled  ──mustMergeOverwrite──▶  component-site-dc1
+(lowest priority)                                                                          (highest priority)
+</code></pre></div>
+<p>Each layer <strong>deep-merges</strong> into the previous. A key set in <code>component-virt-enabled</code> only affects that key — it doesn't replace the entire map from <code>component-all</code>. The cluster layer is always last and always wins.</p>
+<p>ArgoCD generates one Application object per enabled component per cluster. Config is resolved at render time; no per-cluster copy-paste.</p>
+<hr />
+<h2 id="hub-argocd-fleet-topology-not-rhacm">"Hub" — ArgoCD fleet topology, not RHACM<a class="headerlink" href="#hub-argocd-fleet-topology-not-rhacm" title="Permanent link">&para;</a></h2>
+<p>This pattern uses the word <strong>hub</strong> to mean: <em>a cluster where ArgoCD runs, which deploys applications to other (spoke) clusters</em>.</p>
+<p>This is standard ArgoCD fleet terminology. <strong>This pattern requires only ArgoCD</strong> — no Red Hat Advanced Cluster Management (RHACM) is installed or used in this reference implementation.</p>
+<div class="highlight"><pre><span></span><code>Hub cluster (ArgoCD runs here)
+  ├── Deploys to: site-dc1   (spoke)
+  ├── Deploys to: site-dc2   (spoke)
+  └── Deploys to: site-edge-1  (spoke)
+</code></pre></div>
+<p><strong>RHACM can be used alongside this pattern and makes some things easier.</strong> RHACM automates the operational steps that this pattern leaves manual:</p>
+<ul>
+<li>Registering spoke clusters with the hub ArgoCD instance (cluster secrets, RBAC, kubeconfig)</li>
+<li>Propagating the ArgoCD namespace and service account to spoke clusters</li>
+<li>Cluster lifecycle (provisioning, decommissioning, upgrades)</li>
+<li>Policy enforcement across the fleet independent of ArgoCD</li>
+</ul>
+<p>If RHACM is available, use it for cluster registration and let this pattern handle <em>what gets deployed</em> to each cluster. The two are complementary: RHACM manages the fleet topology; this pattern manages the application configuration that runs on it.</p>
+<p>Multiple hub clusters are supported — <code>prod-a</code>, <code>prod-b</code>, and <code>dev</code> in this example. Each hub manages a subset of spoke clusters. All hubs read from the same Git repository.</p>
+<hr />
+<h2 id="opinions-baked-in">Opinions baked in<a class="headerlink" href="#opinions-baked-in" title="Permanent link">&para;</a></h2>
+<p>For the full design rationale — including the problem statement, the principle, Hub topology explained, and all opinions with their complete trade-offs — see <strong><a href="docs/architecture-opinions/">docs/architecture-opinions.md</a></strong>.</p>
+<p>Brief summary of the key decisions:</p>
+<table>
+<thead>
+<tr>
+<th>Opinion</th>
+<th>One-line summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Groups = general-purpose composition</td>
+<td>Capability, environment, region — any axis that makes sense. Clusters compose multiple groups.</td>
+</tr>
+<tr>
+<td>Opt-out defaults, opt-in per group</td>
+<td><code>component-all</code> disables everything. Groups explicitly enable. Safer than opt-in-by-default.</td>
+</tr>
+<tr>
+<td><code>clusters.yaml</code> as single identity source</td>
+<td>One file = complete fleet topology. Shared attributes (Vault, monitoring) defined once, injected into all components.</td>
+</tr>
+<tr>
+<td><code>mustMergeOverwrite</code> over <code>mergeOverwrite</code></td>
+<td>Deep map merge with type-conflict panic. Lists require <code>extra*/concat</code> — see the Resolution section below.</td>
+</tr>
+<tr>
+<td>One ArgoCD per hub</td>
+<td>Blast-radius isolation. No single point of failure across all environments. No cross-hub visibility without RHACM.</td>
+</tr>
+<tr>
+<td>Hub pre-rendered; components live-rendered</td>
+<td>Committed hub Applications enable CI diff tooling; component churn stays live.</td>
+</tr>
+<tr>
+<td>No ApplicationSet</td>
+<td>Generation in Helm templates — testable offline, no controller dependency.</td>
+</tr>
+<tr>
+<td>componentRegistry enforces known apps</td>
+<td>Only registered components generate Applications — prevents phantom apps from typos.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="how-the-charts-relate">How the charts relate<a class="headerlink" href="#how-the-charts-relate" title="Permanent link">&para;</a></h2>
+<p>Two Helm charts form a cascade. Each level generates Applications that ArgoCD then manages at the next level:</p>
+<div class="highlight"><pre><span></span><code>bootstrap-root.yaml          ← applied by hand ONCE on each hub cluster
+  │  Watches: hub/rendered/hub-applications.yaml
+  │
+  └── hub-bootstrap          ← NOT run by ArgoCD; run by GitHub Action
+        │  Input:  clusters.yaml
+        │  Output: one Application per hub → hub/rendered/ (committed to Git)
+        │
+        └── hub-clusters-dev          ─┐
+        └── hub-clusters-prod-a       ─┤ ← run by ArgoCD at sync time
+        └── hub-clusters-prod-b       ─┘
+              │  Input:  clusters.yaml + groups/ + clusters/
+              │          filtered to clusters where hub == currentHub
+              │  Output: one Application per enabled component per cluster
+              │
+              └── site-dc1-cert-manager
+              └── site-dc1-nmstate-operator
+              └── site-dc1-nmstate-instance
+              └── site-dc1-kubevirt-hyperconverged
+              └── site-edge-1-cert-manager  ...
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Chart</th>
+<th>Run by</th>
+<th>Input</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hub-bootstrap</code></td>
+<td>GitHub Action (CI)</td>
+<td><code>clusters.yaml</code></td>
+<td>One <code>hub-clusters-&lt;hub&gt;</code> Application per hub — committed to <code>hub/rendered/</code></td>
+</tr>
+<tr>
+<td><code>hub-clusters</code></td>
+<td>ArgoCD at sync time</td>
+<td><code>clusters.yaml</code> + group/cluster values</td>
+<td>One component Application per enabled app per cluster; one AppProject per cluster</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why two charts for the top two levels?</strong> <code>hub-bootstrap</code> is never run by ArgoCD — it runs in CI because of the chicken-and-egg problem: ArgoCD needs a hub Application to exist before it can create Applications. The GitHub Action breaks this by rendering <code>hub-bootstrap</code> offline and committing the output. ArgoCD then manages <code>hub-clusters-*</code> live, no pre-rendered output needed at the cluster level.</p>
+<hr />
+<h2 id="folder-layout">Folder layout<a class="headerlink" href="#folder-layout" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>helm-component-pattern/
+├── clusters.yaml              # Central cluster inventory: hub, groups, server, shared attributes
+├── charts/
+│   ├── hub-clusters/          # Per-cluster Application + AppProject generator (live ArgoCD render)
+│   └── hub-bootstrap/         # Per-hub Application generator (GitHub Action only)
+├── components/                # Individual platform component charts (the deployables)
+│   ├── nmstate/
+│   │   ├── operator/          # OLM installation via operators-installer subchart
+│   │   └── instance/          # NMState CR — activated after operator installs
+│   └── cert-manager/
+├── groups/                    # Composable cluster profiles
+│   ├── all/values.yaml        # component-all: fleet baseline (lowest priority)
+│   ├── virt-enabled/values.yaml  # component-virt-enabled: enables OCP Virt
+│   └── edge-sno/values.yaml   # component-edge-sno: resource tuning for SNO
+├── clusters/                  # One directory per cluster — app overrides only
+│   ├── site-dc1/values.yaml   # component-site-dc1: overrides; identity lives in clusters.yaml
+│   ├── site-edge-1/values.yaml
+│   ├── site-dc2/values.yaml
+│   └── site-dev-1/values.yaml
+├── hub/
+│   ├── bootstrap-root.yaml           # The ONE Application applied by hand (watches hub/rendered/)
+│   └── rendered/
+│       └── hub-applications.yaml     # Generated by hub-bootstrap — committed by GitHub Action
+└── .github/workflows/
+    └── render-hub-applications.yml   # Renders hub-bootstrap chart → commits hub/rendered/
+</code></pre></div>
+<hr />
+<h2 id="the-component-name-convention">The <code>component-&lt;name&gt;</code> convention<a class="headerlink" href="#the-component-name-convention" title="Permanent link">&para;</a></h2>
+<p>Each values file stores its configuration under a key named <code>component-&lt;name&gt;</code>. Group files use <code>component-&lt;groupName&gt;</code>; cluster files use <code>component-&lt;clusterName&gt;</code>. When Helm loads multiple <code>--values</code> files, all <code>component-*</code> keys land as separate top-level entries in <code>.Values</code> — they never collide because each is namespaced by name. The template merges them in a controlled order using <code>mustMergeOverwrite</code>.</p>
+<p><strong>Group files</strong> enable components and provide value overrides. Structural defaults (path, syncWave) come from the <code>componentRegistry</code> in <code>charts/hub-clusters/values.yaml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># groups/all/values.yaml</span>
+<span class="nt">component-all</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">apps</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">nmstate-operator</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">operators-installer</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">operators</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kubernetes-nmstate-operator</span>
+<span class="w">            </span><span class="nt">channel</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable</span>
+<span class="w">    </span><span class="nt">kubevirt-hyperconverged</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">   </span><span class="c1"># disabled by default; virt-enabled group enables it</span>
+</code></pre></div>
+<p><strong>Cluster files contain only deviations from group defaults.</strong> Identity and group membership live in <code>clusters.yaml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># clusters/&lt;name&gt;/values.yaml — often just a few lines or empty</span>
+<span class="nt">component-site-dc1</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">apps</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">cert-manager</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">installPlanApproval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Manual</span><span class="w">   </span><span class="c1"># production override — this cluster only</span>
+</code></pre></div>
+<hr />
+<h2 id="resolution-in-the-helm-templates">Resolution in the Helm templates<a class="headerlink" href="#resolution-in-the-helm-templates" title="Permanent link">&para;</a></h2>
+<p>The <code>hub-clusters</code> chart resolves values through four steps for each cluster:</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Read <code>groups:</code> from <code>clusters.yaml</code> for this cluster. Merge <code>component-&lt;groupName&gt;</code> keys in declaration order — later groups have higher priority.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Merge <code>component-&lt;clusterName&gt;</code> last — the cluster-specific values file always wins.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Inject cluster metadata from <code>clusters.yaml</code> as the authoritative <code>cluster:</code> block in every Application's helm values.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Iterate over <code>componentRegistry</code>. For each registered component that is enabled, emit an Application with the merged values and the resolved syncPolicy.</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>mustMergeOverwrite</code> vs <code>mergeOverwrite</code>:</strong>
+- <code>mergeOverwrite</code> — shallow map replacement at the top level
+- <code>mustMergeOverwrite</code> — deep map merge; a nested key in the source only updates that key, not the whole parent map. Panics on type conflicts (e.g. string vs map), catching schema errors at render time.</p>
+<p><strong>Lists are not merged — they are replaced.</strong> Neither <code>mergeOverwrite</code> nor <code>mustMergeOverwrite</code> concatenates YAML sequences across layers. The higher-priority layer's list wins outright. Components that need additive list behaviour (imagePullSecrets, CIDR ranges, alerting silences, etc.) must use the <code>extra*/concat</code> pattern from the <a href="../framework/"><code>../framework/</code></a> charts: define the base array under the primary key and a companion <code>extra&lt;Name&gt;: []</code> key for per-layer additions, then concatenate in the template with <code>concat .Values.&lt;key&gt; .Values.extra&lt;Name&gt;</code>.</p>
+<p><strong><code>enabled: false</code> semantics:</strong> Templates use <code>toString</code> comparison (<code>ne (toString ...) "false"</code>) rather than <code>default true</code>. Helm's <code>default</code> treats <code>false</code> as empty and would incorrectly re-enable a disabled component.</p>
+<h3 id="componentregistry-preventing-phantom-applications">componentRegistry — preventing phantom Applications<a class="headerlink" href="#componentregistry-preventing-phantom-applications" title="Permanent link">&para;</a></h3>
+<p>The <code>componentRegistry</code> in <code>charts/hub-clusters/values.yaml</code> defines every component that can be deployed across the fleet. The template iterates over the registry rather than over group/cluster entries — a typo in a group file produces no Application because there is no registry entry for it.</p>
+<p>The registry also provides structural defaults so group files stay clean:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># charts/hub-clusters/values.yaml (excerpt)</span>
+<span class="nt">componentRegistry</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">nmstate-operator</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">components/nmstate/operator</span><span class="w">   </span><span class="c1"># group files don&#39;t need to repeat this</span>
+<span class="w">    </span><span class="nt">syncWave</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0&quot;</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;NMState</span><span class="nv"> </span><span class="s">Operator</span><span class="nv"> </span><span class="s">via</span><span class="nv"> </span><span class="s">OLM&quot;</span>
+<span class="w">  </span><span class="nt">cert-manager</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">components/cert-manager</span>
+<span class="w">    </span><span class="nt">syncPolicy</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">automated</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">prune</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">          </span><span class="c1"># per-component override of global default</span>
+</code></pre></div>
+<h3 id="global-sync-defaults">Global sync defaults<a class="headerlink" href="#global-sync-defaults" title="Permanent link">&para;</a></h3>
+<p><code>defaults.syncPolicy</code> in <code>charts/hub-clusters/values.yaml</code> provides the fleet-wide syncPolicy baseline. Merge chain (lowest → highest):</p>
+<div class="highlight"><pre><span></span><code>defaults.syncPolicy → componentRegistry.&lt;name&gt;.syncPolicy → group/cluster syncPolicy
+</code></pre></div>
+<h3 id="silent-failure-modes-and-guardrails">Silent failure modes and guardrails<a class="headerlink" href="#silent-failure-modes-and-guardrails" title="Permanent link">&para;</a></h3>
+<p><code>mustMergeOverwrite</code> panics on type conflicts — that is the loud failure. There are also quiet failures to be aware of:</p>
+<table>
+<thead>
+<tr>
+<th>Failure mode</th>
+<th>What happens</th>
+<th>How to detect</th>
+<th>Guardrail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Typo in component key name</strong></td>
+<td><code>component-virt-enabeld</code> is ignored silently — no merge, no error</td>
+<td><code>helm template</code> output has fewer Applications than expected for that group</td>
+<td>CI: after render, assert expected Application names are present</td>
+</tr>
+<tr>
+<td><strong>Cluster in <code>clusters.yaml</code> with no values file</strong></td>
+<td>Cluster gets only group-default values — may be correct or may be missing overrides</td>
+<td>No cluster-level overrides in render output</td>
+<td>Convention: always create <code>clusters/&lt;name&gt;/values.yaml</code>, even if empty</td>
+</tr>
+<tr>
+<td><strong>Group in cluster's <code>groups:</code> with no values file</strong></td>
+<td>Group is silently skipped</td>
+<td>Applications have only lower-priority groups' values</td>
+<td>CI: check every group name in <code>clusters.yaml</code> has a <code>groups/&lt;name&gt;/values.yaml</code></td>
+</tr>
+<tr>
+<td><strong>Component enabled in group but not in <code>componentRegistry</code></strong></td>
+<td>No Application generated — registry gates output</td>
+<td><code>helm template</code> produces no Application for that name</td>
+<td>Add the component to <code>componentRegistry</code> before enabling it in a group</td>
+</tr>
+<tr>
+<td><strong><code>clusters.yaml</code> entry with no <code>hub:</code> field</strong></td>
+<td>Cluster excluded from all hubs; no Applications generated</td>
+<td><code>helm template</code> with any hub produces no output for that cluster</td>
+<td>Make <code>hub:</code> a required field; CI lint step validates <code>clusters.yaml</code> schema</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommended CI assertions:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># After rendering, check expected cluster Applications exist</span>
+helm<span class="w"> </span>template<span class="w"> </span>hub-clusters<span class="w"> </span>charts/hub-clusters<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--values<span class="w"> </span>clusters.yaml<span class="w"> </span>--values<span class="w"> </span>groups/all/values.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--set<span class="w"> </span><span class="nv">currentHub</span><span class="o">=</span>prod-a<span class="w"> </span>...<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;^  name:&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span>&gt;<span class="w"> </span>rendered-apps.txt
+
+grep<span class="w"> </span><span class="s2">&quot;site-dc1-cert-manager\|site-dc1-nmstate&quot;</span><span class="w"> </span>rendered-apps.txt<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="o">{</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;MISSING EXPECTED APPLICATIONS&quot;</span><span class="p">;</span><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="o">}</span>
+</code></pre></div>
+<hr />
+<h2 id="example-what-site-dc1-resolves-to">Example: what site-dc1 resolves to<a class="headerlink" href="#example-what-site-dc1-resolves-to" title="Permanent link">&para;</a></h2>
+<p><code>site-dc1</code> belongs to groups <code>all</code> and <code>virt-enabled</code> (declared in <code>clusters.yaml</code>). The hub-clusters chart, when running on the <code>prod-a</code> hub:</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Source</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1a</td>
+<td><code>component-all</code></td>
+<td><code>nmstate-operator</code> channel stable, <code>cert-manager</code> Automatic, <code>kubevirt</code> <strong>disabled</strong></td>
+</tr>
+<tr>
+<td>1b</td>
+<td><code>component-virt-enabled</code></td>
+<td><code>kubevirt</code> <strong>enabled</strong>, <code>nmstate-operator</code> channel → stable-4.16</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>component-site-dc1</code></td>
+<td><code>cert-manager</code> installPlanApproval → <strong>Manual</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>clusters.yaml</code> entry</td>
+<td><code>cluster:</code> block injected (name, server, vault, monitoring)</td>
+</tr>
+</tbody>
+</table>
+<p>Result — four Applications, each with the <code>cluster:</code> block from <code>clusters.yaml</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Application</th>
+<th>Key resolved values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site-dc1-nmstate-operator</code></td>
+<td>channel: stable-4.16, syncWave: 0</td>
+</tr>
+<tr>
+<td><code>site-dc1-nmstate-instance</code></td>
+<td>syncWave: 5 (after operator)</td>
+</tr>
+<tr>
+<td><code>site-dc1-cert-manager</code></td>
+<td>installPlanApproval: Manual, prune: false, cluster.vault.server populated</td>
+</tr>
+<tr>
+<td><code>site-dc1-kubevirt-hyperconverged</code></td>
+<td>enabled: true</td>
+</tr>
+</tbody>
+</table>
+<p><code>site-edge-1</code> (groups: <code>all</code>, <code>edge-sno</code>) resolves to three Applications — no kubevirt, cert-manager with reduced resource requests.</p>
+<hr />
+<h2 id="clustersyaml-the-single-source-of-truth-for-cluster-identity"><code>clusters.yaml</code> — the single source of truth for cluster identity<a class="headerlink" href="#clustersyaml-the-single-source-of-truth-for-cluster-identity" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># clusters.yaml</span>
+<span class="nt">clusters</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">site-dc1</span>
+<span class="w">    </span><span class="nt">hub</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prod-a</span><span class="w">               </span><span class="c1"># which Argo CD hub instance manages this cluster</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production</span>
+<span class="w">    </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">us-east</span>
+<span class="w">    </span><span class="nt">server</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://api.site-dc1.example.com:6443</span>
+<span class="w">    </span><span class="nt">groups</span><span class="p">:</span><span class="w">                   </span><span class="c1"># mustMergeOverwrite order (lowest → highest priority)</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">virt-enabled</span>
+<span class="w">    </span><span class="c1"># Shared attributes — injected into every component Application&#39;s cluster: block</span>
+<span class="w">    </span><span class="nt">vault</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">server</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault.prod-a.example.com</span>
+<span class="w">      </span><span class="nt">clusterSecretStoreName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vault-backend</span>
+<span class="w">    </span><span class="nt">monitoring</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">remoteWriteEndpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://mimir.prod-a.example.com/api/v1/push</span>
+</code></pre></div>
+<p><strong>What lives in <code>clusters.yaml</code>:</strong> cluster identity (name, hub, server, environment, region), group membership, and shared operational attributes (vault endpoints, monitoring configuration, pull-secret references, etc.).</p>
+<p><strong>What does NOT live in <code>clusters.yaml</code>:</strong> component-level configuration (operator channels, resource limits, installPlanApproval). Those remain in <code>groups/</code> and <code>clusters/&lt;name&gt;/values.yaml</code>.</p>
+<h3 id="the-cluster-block-in-every-component">The <code>cluster:</code> block in every component<a class="headerlink" href="#the-cluster-block-in-every-component" title="Permanent link">&para;</a></h3>
+<p>The hub-clusters chart strips <code>groups:</code> from each <code>clusters.yaml</code> entry and injects the rest as the <code>cluster:</code> block in every generated Application's <code>spec.source.helm.values</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Generated Application for site-dc1-cert-manager</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">source</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">helm</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">values</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">cluster:               # ← from clusters.yaml, not from cert-manager values</span>
+<span class="w">          </span><span class="no">name: site-dc1</span>
+<span class="w">          </span><span class="no">hub: prod-a</span>
+<span class="w">          </span><span class="no">environment: production</span>
+<span class="w">          </span><span class="no">vault:</span>
+<span class="w">            </span><span class="no">server: https://vault.prod-a.example.com</span>
+<span class="w">            </span><span class="no">clusterSecretStoreName: vault-backend</span>
+<span class="w">          </span><span class="no">monitoring:</span>
+<span class="w">            </span><span class="no">remoteWriteEndpoint: https://mimir.prod-a.example.com/api/v1/push</span>
+<span class="w">        </span><span class="no">channel: stable-v1     # ← from group/cluster component merge</span>
+<span class="w">        </span><span class="no">installPlanApproval: Manual</span>
+</code></pre></div>
+<p>A component chart that needs the Vault endpoint uses <code>.Values.cluster.vault.server</code> — once, in its own template — rather than each cluster repeating this value per component. Shared attributes propagate automatically when updated in <code>clusters.yaml</code>.</p>
+<p><strong>The centralisation rule:</strong> if more than one component chart reads the same value, that value belongs in <code>clusters.yaml</code>, not in a group or cluster values file. See the guardrails in <a href="docs/architecture-opinions/">docs/architecture-opinions.md</a> for the full decision table.</p>
+<h3 id="multi-hub-architecture">Multi-hub architecture<a class="headerlink" href="#multi-hub-architecture" title="Permanent link">&para;</a></h3>
+<p>One <code>hub-clusters</code> Application per hub. Each Application sets <code>currentHub</code> as a Helm parameter. The chart filters <code>clusters.yaml</code> to only the clusters where <code>hub == currentHub</code>:</p>
+<div class="highlight"><pre><span></span><code>Git repository (clusters.yaml + groups/ + clusters/)
+         │
+         ├── prod-a hub cluster (hub-clusters-prod-a Application)
+         │     currentHub=prod-a → renders site-dc1, site-edge-1
+         │
+         ├── prod-b hub cluster (hub-clusters-prod-b Application)
+         │     currentHub=prod-b → renders site-dc2
+         │
+         └── dev hub cluster (hub-clusters-dev Application)
+               currentHub=dev → renders site-dev-1
+</code></pre></div>
+<p>All hubs read from the same Git source. A change to <code>groups/all/values.yaml</code> affects every cluster on every hub when each hub's Application next syncs. A change to <code>hub: prod-b</code> in <code>clusters.yaml</code> moves a cluster from one hub's scope to another — no changes required to the hub Applications themselves.</p>
+<p>Hub clusters can also manage themselves — add an entry for the hub cluster with <code>server: https://kubernetes.default.svc</code> to have the same pipeline manage the hub's own platform components.</p>
+<h3 id="cluster-values-files-are-just-overrides">Cluster values files are just overrides<a class="headerlink" href="#cluster-values-files-are-just-overrides" title="Permanent link">&para;</a></h3>
+<p>With <code>clusters.yaml</code> owning identity, group membership, and shared attributes, <code>clusters/&lt;name&gt;/values.yaml</code> shrinks to contain only component-level deviations from group defaults:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># clusters/site-dc1/values.yaml — entire file</span>
+<span class="nt">component-site-dc1</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">apps</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">cert-manager</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">installPlanApproval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Manual</span><span class="w">   </span><span class="c1"># production override — this cluster only</span>
+</code></pre></div>
+<p>If a cluster has no deviations, the file can be empty or omitted entirely. The pattern is intentionally asymmetric: <code>clusters.yaml</code> is always populated; cluster value files are often empty.</p>
+<hr />
+<h2 id="targetrevision-three-level-resolution"><code>targetRevision</code> — three-level resolution<a class="headerlink" href="#targetrevision-three-level-resolution" title="Permanent link">&para;</a></h2>
+<p>By default every component Application points to the same git ref as the hub Application (<code>main</code>, or whatever revision the hub Application uses). <code>targetRevision</code> can be overridden at three levels, evaluated in order — last one wins:</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Set in</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1 — Hub default</strong></td>
+<td>Hub Application <code>spec.source.targetRevision</code></td>
+<td>Fleet baseline (usually <code>main</code>)</td>
+</tr>
+<tr>
+<td><strong>2 — Group</strong></td>
+<td>Group entry as an object in <code>groups:</code></td>
+<td>Pin an entire group (e.g. all edge clusters) to a release candidate</td>
+</tr>
+<tr>
+<td><strong>3 — Cluster</strong></td>
+<td><code>targetRevision:</code> field on the cluster entry in <code>clusters.yaml</code></td>
+<td>Pin one specific cluster independent of its group</td>
+</tr>
+</tbody>
+</table>
+<h4 id="group-level-pin">Group-level pin<a class="headerlink" href="#group-level-pin" title="Permanent link">&para;</a></h4>
+<p>Groups in the <code>groups:</code> list can be plain strings (the default, no pin) or objects with a <code>targetRevision</code> field:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># clusters.yaml</span>
+<span class="nt">clusters</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">site-edge-1</span>
+<span class="w">    </span><span class="nt">hub</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prod-a</span>
+<span class="w">    </span><span class="nt">groups</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span><span class="w">                           </span><span class="c1"># plain string — no pin</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">edge-sno</span>
+<span class="w">        </span><span class="nt">targetRevision</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">release/v2.0-rc1</span><span class="w">   </span><span class="c1"># all edge-sno clusters track the RC</span>
+</code></pre></div>
+<p>Groups are walked in declaration order; a later group's <code>targetRevision</code> overrides an earlier one. The cluster entry's <code>targetRevision</code> (level 3) overrides both.</p>
+<h4 id="typical-promotion-workflows">Typical promotion workflows<a class="headerlink" href="#typical-promotion-workflows" title="Permanent link">&para;</a></h4>
+<p><strong>Canary individual cluster:</strong>
+<div class="highlight"><pre><span></span><code>main ──── site-dc1, site-dc2 (no pin)
+          site-dev-1 → targetRevision: feature/cert-manager-upgrade
+                     → tests pass → merge to main → all clusters upgrade
+</code></pre></div></p>
+<p><strong>Ring rollout via group:</strong>
+<div class="highlight"><pre><span></span><code>- name: edge-sno
+  targetRevision: release/v2.0    # all edge clusters on the new release
+</code></pre></div></p>
+<p><strong>Emergency rollback:</strong>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">site-dc1</span>
+<span class="w">  </span><span class="nt">targetRevision</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">release/v1.8.2</span><span class="w">   </span><span class="c1"># pinned while investigating v1.9 issue</span>
+</code></pre></div></p>
+<p><code>targetRevision</code> is stripped from the <code>cluster:</code> metadata block before injection — component charts do not see it.</p>
+<hr />
+<h2 id="appprojects-per-cluster-audit-boundaries">AppProjects — per-cluster audit boundaries<a class="headerlink" href="#appprojects-per-cluster-audit-boundaries" title="Permanent link">&para;</a></h2>
+<p>When <code>appProject.enabled: true</code> in <code>charts/hub-clusters/values.yaml</code>, the chart generates one <code>AppProject</code> per managed cluster with destinations scoped to exactly that cluster's API server:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Generated for site-dc1:</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">destinations</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">server</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://api.site-dc1.example.com:6443</span>
+<span class="w">      </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;*&quot;</span>
+</code></pre></div>
+<p>Every Application references <code>spec.project: &lt;clusterName&gt;</code>. A misconfigured Application targeting the wrong cluster is rejected at the ArgoCD project level. Configure source repo restrictions and RBAC roles per-project in <code>appProject.sourceRepos</code> and <code>appProject.roles</code>.</p>
+<hr />
+<h2 id="hub-applications-chartshub-bootstrap">Hub Applications — <code>charts/hub-bootstrap/</code><a class="headerlink" href="#hub-applications-chartshub-bootstrap" title="Permanent link">&para;</a></h2>
+<p>The hub Applications (<code>hub-clusters-&lt;hub&gt;</code>) are generated automatically from <code>clusters.yaml</code> by the <code>hub-bootstrap</code> chart. For each distinct <code>hub:</code> value, the chart emits one Application. The <code>valueFiles</code> list is derived entirely from the cluster data:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Generated output in hub/rendered/hub-applications.yaml (excerpt)</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">argoproj.io/v1alpha1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Application</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hub-clusters-prod-a</span>
+<span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">hub-bootstrap/clusters</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;site-dc1,</span><span class="nv"> </span><span class="s">site-edge-1&quot;</span>
+<span class="w">    </span><span class="nt">hub-bootstrap/groups</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;all,</span><span class="nv"> </span><span class="s">virt-enabled,</span><span class="nv"> </span><span class="s">edge-sno&quot;</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">source</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">devops/argo/examples/helm-component-pattern/charts/hub-clusters</span>
+<span class="w">    </span><span class="nt">helm</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">parameters</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">currentHub</span>
+<span class="w">          </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prod-a</span>
+<span class="w">      </span><span class="nt">valueFiles</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">../../clusters.yaml</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">../../groups/all/values.yaml</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">../../groups/virt-enabled/values.yaml</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">../../groups/edge-sno/values.yaml</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">../../clusters/site-dc1/values.yaml</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">../../clusters/site-edge-1/values.yaml</span>
+</code></pre></div>
+<h3 id="the-github-action-breaks-the-chicken-and-egg">The GitHub Action breaks the chicken-and-egg<a class="headerlink" href="#the-github-action-breaks-the-chicken-and-egg" title="Permanent link">&para;</a></h3>
+<p>The hub Applications need to exist in Argo CD before Argo CD can manage them — but they should not be hand-maintained. The GitHub Action runs <code>helm template charts/hub-bootstrap --values clusters.yaml</code> and commits the rendered output to <code>hub/rendered/</code>. The bootstrap-root Application (applied once by hand) watches that directory:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># .github/workflows/render-hub-applications.yml — key step</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Render hub Applications</span>
+<span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">    </span><span class="no">helm template hub-bootstrap charts/hub-bootstrap \</span>
+<span class="w">      </span><span class="no">--values clusters.yaml \</span>
+<span class="w">    </span><span class="no">&gt; hub/rendered/hub-applications.yaml</span>
+</code></pre></div>
+<p>Triggers: any change to <code>clusters.yaml</code>, <code>groups/**</code>, <code>clusters/**</code>, or either chart. The <code>[skip ci]</code> commit message prevents re-triggering the Action on the render commit itself.</p>
+<h3 id="the-full-bootstrap-chain">The full bootstrap chain<a class="headerlink" href="#the-full-bootstrap-chain" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>                          ┌─ applied by hand ONCE ─┐
+                          │                         │
+                oc apply -f hub/bootstrap-root.yaml
+                          │
+                          ▼
+           Application: hub-bootstrap-root
+           Watches: hub/rendered/hub-applications.yaml
+           (kept current by GitHub Action)
+                          │
+                          ▼
+     ┌────────────────────┼────────────────────┐
+     │                   │                    │
+Application:       Application:          Application:
+hub-clusters-dev   hub-clusters-prod-a    hub-clusters-prod-b
+currentHub=dev     currentHub=prod-a      currentHub=prod-b
+     │                   │                    │
+     ▼                   ▼                    ▼
+site-dev-1:       site-dc1:             site-dc2:
+cert-manager      cert-manager          cert-manager
+nmstate           nmstate               nmstate
+                  kubevirt              kubevirt
+                  site-edge-1:
+                  cert-manager
+                  nmstate
+</code></pre></div>
+<hr />
+<h2 id="diffing-and-visibility">Diffing and visibility<a class="headerlink" href="#diffing-and-visibility" title="Permanent link">&para;</a></h2>
+<p>The live-render model raises two distinct visibility questions: "what will this PR change?" and "which clusters are currently out of sync across the fleet?"</p>
+<p>For the full discussion — including argocd-diff-preview integration, the role of <code>hub/rendered/</code> as the CI entry point, fleet-wide live-to-desired diff approaches, and the two-layer visibility model — see <strong><a href="docs/diffing-and-visibility/">docs/diffing-and-visibility.md</a></strong>.</p>
+<p><strong>Quick summary:</strong> <code>hub/rendered/hub-applications.yaml</code> is the entry point for argocd-diff-preview. It is committed to Git by CI and provides a stable static file the diff tool uses to discover hub Applications and render component Applications from both the PR and base branches. The diff posted to the PR shows desired-state-to-desired-state changes — not live cluster drift. For fleet-wide live state visibility, RHACM Observability or Prometheus metric federation across hubs is needed.</p>
+<hr />
+<h2 id="onboarding-a-new-cluster">Onboarding a new cluster<a class="headerlink" href="#onboarding-a-new-cluster" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Add the entry to <code>clusters.yaml</code> — hub, server, groups, shared attributes:</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">site-dc3</span>
+<span class="w">  </span><span class="nt">hub</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prod-a</span>
+<span class="w">  </span><span class="nt">environment</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production</span>
+<span class="w">  </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">us-west</span>
+<span class="w">  </span><span class="nt">server</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://api.site-dc3.example.com:6443</span>
+<span class="w">  </span><span class="nt">groups</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">virt-enabled</span>
+<span class="w">  </span><span class="nt">vault</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">server</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://vault.prod-a.example.com</span>
+<span class="w">    </span><span class="nt">clusterSecretStoreName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vault-backend</span>
+<span class="w">  </span><span class="nt">monitoring</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">remoteWriteEndpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://mimir.prod-a.example.com/api/v1/push</span>
+</code></pre></div>
+<ol>
+<li>Optionally create <code>clusters/site-dc3/values.yaml</code> for component overrides (or leave it empty).</li>
+<li>Merge PR → GitHub Action re-renders hub Applications → bootstrap-root picks up the change → <code>hub-clusters-prod-a</code> creates the new cluster's component Applications.</li>
+</ol>
+<p>No manual Application registration. No render script to run. The only file that requires human decision is <code>clusters.yaml</code>.</p>
+<hr />
+<h2 id="adding-a-new-component">Adding a new component<a class="headerlink" href="#adding-a-new-component" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Create <code>components/&lt;name&gt;/</code> with a <code>Chart.yaml</code>, <code>values.yaml</code>, and templates.
+   For operators, use the <code>operator/</code> + <code>instance/</code> split under <code>components/&lt;name&gt;/</code> — see <a href="docs/operator-management/">docs/operator-management.md</a>.</li>
+<li>Add the component to <code>componentRegistry</code> in <code>charts/hub-clusters/values.yaml</code> with <code>path</code>, <code>syncWave</code>, and any structural defaults.</li>
+<li>Add <code>&lt;name&gt;: {enabled: false}</code> to <code>groups/all/values.yaml</code> under <code>component-all.apps</code> — disabled by default so existing clusters are not affected.</li>
+<li>Enable it in the relevant group or per cluster.</li>
+<li>Open a PR — only clusters in the enabling group or with cluster-level overrides will show a new Application in the diff.</li>
+</ol>
+<hr />
+<h2 id="converging-with-gitops-standards-repo-template">Converging with gitops-standards-repo-template<a class="headerlink" href="#converging-with-gitops-standards-repo-template" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>Aspirational — needs team validation.</strong> See <strong><a href="docs/convergence/">docs/convergence.md</a></strong> for the full working document, including open questions for the team.</p>
+</blockquote>
+<p>The <code>hub-clusters</code> chart supports a <code>sourceType</code> field per component (<code>helm</code> default, <code>kustomize</code> option). This allows a mixed fleet where some components are Helm charts and some are Kustomize components, while <code>clusters.yaml</code> remains the single fleet inventory and <code>hub-clusters</code> remains the single Application generator.</p>
+<p>See <a href="docs/convergence/">docs/convergence.md</a> for the full integration model, the <code>commonAnnotations</code> limitation, the ArgoCD multi-source sketch, and the migration path from gitops-standards-repo-template.</p>
+<hr />
+<p><em>AI-assisted content. See <a href="../../../../AI-DISCLOSURE/">AI-DISCLOSURE.md</a> for review status details.</em></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../../../assets/poc/symptom-picker.js"></script>
+      
+    
+  </body>
+</html>

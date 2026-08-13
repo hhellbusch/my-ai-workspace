@@ -1,0 +1,7572 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Engineering reference and essays — DevOps troubleshooting, examples, and AI-assisted practice.">
+      
+      
+      
+        <link rel="canonical" href="https://hhellbusch.github.io/my-ai-workspace/devops/ocp/troubleshooting/bare-metal-node-inspection-timeout/SESSION-SUMMARY-master2-inspection/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Troubleshooting Session Summary: master-2 Inspection Timeout - Field Notes</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/poc/symptom-picker.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#troubleshooting-session-summary-master-2-inspection-timeout" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../.." title="Field Notes" class="md-header__button md-logo" aria-label="Field Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Field Notes
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Troubleshooting Session Summary: master-2 Inspection Timeout
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/hhellbusch/my-ai-workspace" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    hhellbusch/my-ai-workspace
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="Field Notes" class="md-nav__button md-logo" aria-label="Field Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Field Notes
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/hhellbusch/my-ai-workspace" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    hhellbusch/my-ai-workspace
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../interactive-poc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interactive PoC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DevOps Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DevOps Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DevOps hub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../ORGANIZATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../SYMPTOM-INDEX/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Symptom index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../EXAMPLE-INDEX/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../fleet-control-spectrum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fleet control spectrum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning paths
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Learning paths
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learning-path/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning paths index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learning-path/vmware-admins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VMware admins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learning-path/git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git curriculum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pedagogy and setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Pedagogy and setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../git/git-learning-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git learning guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../kvm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    KVM on Fedora
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local LLM setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ansible troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ansible troubleshooting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_8_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8_1" id="__nav_3_8_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authentication
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_8_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authentication
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../ansible/troubleshooting/aap-controller-token-404/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AAP Controller Token 404
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OCP troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP troubleshooting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_1" id="__nav_3_9_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Automation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aap-ssh-mtu-issues/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AAP SSH Connection MTU Issues
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_2" id="__nav_3_9_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bare Metal
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Bare Metal
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bare Metal Node Inspection Timeout
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bare-metal-rhcos-disk-wipe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bare Metal RHCOS Disk Wipe
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bare-metal-stale-node-ip-conflict/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bare Metal Stale Node IP Conflict
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../worker-node-tls-cert-failure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Worker Node TLS Certificate Failure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_3" id="__nav_3_9_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Certificates
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Certificates
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../csr-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CSR Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_4" id="__nav_3_9_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control Plane
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Control Plane
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apiserver-cert-deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Server Certificate Deadlock
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-slowness-web-console/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Slowness and Web Console Performance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../control-plane-kubeconfigs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control Plane Kubeconfigs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kafka-broker-init-kubernetes-svc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kafka Broker Stuck in Init — kubernetes Service Unreachable
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oauth-healthz-unavailable/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OAuth Server healthz Unavailable
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kube-controller-manager-crashloop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    kube-controller-manager Crash Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_5" id="__nav_3_9_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../failed-ocp-install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Failed OCP Install
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_6" id="__nav_3_9_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Kubernetes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../namespace-stuck-terminating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Namespace Stuck in Terminating
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_7" id="__nav_3_9_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Lifecycle
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../destroy-cluster-without-metadata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Destroy Cluster Without Metadata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_8" id="__nav_3_9_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Networking
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coreos-networking-issues/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CoreOS Networking Issues
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_9" id="__nav_3_9_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Registry
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Registry
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../image-registry-auth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Image Registry Auth and Route Exposure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../image-signature-policy-mcp-deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Image Signature Policy MCP Deadlock
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_10" id="__nav_3_9_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rhacm
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rhacm
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../multiclusterobservability-webhook-rejection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MultiClusterObservability Webhook Rejection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_11" id="__nav_3_9_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nfs-portworx-proxy-pvc-slow-ready/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NFS Portworx Proxy PVC Slow Ready
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nvme-host-nqn-duplicate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NVMe Host NQN Duplicates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nvme-tcp-storage-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NVMe/TCP Storage Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../portworx-csi-crashloop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Portworx CSI Pod CrashLoopBackOff
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prometheus-monitoring-storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prometheus and Alertmanager Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_12" id="__nav_3_9_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tools
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../debug-toolbox-container/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debug Toolbox Container
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_9_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9_13" id="__nav_3_9_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Virtualization
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_9_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Virtualization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kubevirt-vm-stuck-provisioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    KubeVirt VM Stuck in Provisioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_10" id="__nav_3_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rhacm troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rhacm troubleshooting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_10_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_10_1" id="__nav_3_10_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Install
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_10_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Install
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../rhacm/troubleshooting/agent-install-rootfs-ssl-failure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Install Rootfs SSL Failure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_10_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_10_2" id="__nav_3_10_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hub Upgrade
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_10_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hub Upgrade
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../rhacm/troubleshooting/mch-stuck-pending-upgrade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCH Stuck Pending Upgrade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../rhacm/troubleshooting/managed-cluster-lease-not-updated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Cluster Lease Not Updated
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_10_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_10_3" id="__nav_3_10_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_10_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Observability
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../rhacm/troubleshooting/observability-addon-missing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability Addon Missing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../rhacm/troubleshooting/observability-platform-metrics-missing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability Platform Metrics Missing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_10_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_10_4" id="__nav_3_10_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Search
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_10_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Search
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../rhacm/troubleshooting/search-service-503/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RHACM Search Service 503
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_11" id="__nav_3_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenShift
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    OpenShift
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OCP hub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../disconnected-install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Disconnected install
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ibm-z/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IBM Z
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../gpu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU artifacts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_12" id="__nav_3_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OCP examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_12_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_12_2" id="__nav_3_12_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bare metal
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_12_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_12_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Bare metal
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/bare-metal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bare metal index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/bare-metal/secondary-disk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bare Metal Secondary Disk Offload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/bare-metal/var-log-disk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Var Log on Secondary Disk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_12_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_12_3" id="__nav_3_12_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_12_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_12_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Messaging
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_12_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_12_3_2" id="__nav_3_12_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kafka
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_12_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_12_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Kafka
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/messaging/kafka/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kafka index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/messaging/kafka/bare-metal-portworx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kafka on Bare Metal with Portworx
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_12_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_12_4" id="__nav_3_12_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_12_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_12_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Networking
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/networking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/networking/network-attachment-definitions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NetworkAttachmentDefinition Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/networking/ovn-kubernetes-install-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OVN-Kubernetes Install Config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/networking/vlan-segmentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VLAN Network Segmentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_12_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_12_5" id="__nav_3_12_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Labs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_12_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_12_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Labs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/labs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Labs index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/labs/sno-kvm-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SNO on KVM Lab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_13" id="__nav_3_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OCP notes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP notes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notes index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../notes/cluster-resource-override/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cluster Resource Override
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../notes/container-density-overcommit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Container Density Overcommit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../notes/kafka-on-openshift-tenancy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kafka On Openshift Tenancy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../notes/machine-config-pools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Machine Config Pools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../notes/network-policy-observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Policy Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../notes/openshift-useful-commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Openshift Useful Commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../notes/pod-termination-quick-stop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pod Termination Quick Stop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../notes/vertical-pod-autoscaler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vertical Pod Autoscaler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_14" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_14" id="__nav_3_14_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Products
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_14">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Products
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../rhacm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RHACM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../ansible/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ansible
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../argo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Argo CD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../coreos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CoreOS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../vault/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vault
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_15" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_15" id="__nav_3_15_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspace tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_15">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Workspace tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../pi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pi
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../paude/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paude
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../paude-proxy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paude proxy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Essays
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Essays
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docs catalogue
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Engineering
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    AI Engineering
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/ai-assisted-development-workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Assisted Development Workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/ai-assisted-upstream-contributions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Assisted Upstream Contributions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/ai-for-unfamiliar-domains/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai For Unfamiliar Domains
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/ai-legacy-improvement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Legacy Improvement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/artifact-discipline-and-ai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artifact Discipline And Ai
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/framework-bootstrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Framework Bootstrap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/frameworks-vs-behavior/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Frameworks Vs Behavior
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/interaction-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interaction Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/local-llm-sysadmin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Llm Sysadmin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/openshift-ai-llm-deployment-summary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Openshift Ai Llm Deployment Summary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/openshift-gpu-node-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Openshift Gpu Node Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/paude-getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paude Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/portable-ai-toolkit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Portable Ai Toolkit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/prompting-and-state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prompting And State
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/session-framework/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Session Framework
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/sparring-and-shoshin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sparring And Shoshin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/the-meta-development-loop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Meta Development Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/the-shift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Shift
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/what-a-context-window-actually-is/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What A Context Window Actually Is
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/ai-engineering/youtube-video-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Youtube Video Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Philosophy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Philosophy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/philosophy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/philosophy/ego-ai-and-the-zen-antidote/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ego Ai And The Zen Antidote
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/philosophy/the-dojo-after-the-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Dojo After The Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/philosophy/the-full-cup-practitioners-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Full Cup Practitioners Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/philosophy/the-full-cup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Full Cup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/philosophy/zanshin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Zanshin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Case Studies
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Case Studies
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/adversarial-review-meta-development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adversarial Review Meta Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/ai-self-diagnosis-symptom-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ai Self Diagnosis Symptom Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/building-a-research-skill/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building A Research Skill
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/building-knowledge-management-with-ai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building Knowledge Management With Ai
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/case-studies-as-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Case Studies As Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/choosing-scripts-over-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choosing Scripts Over Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/context-stripped-citations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Context Stripped Citations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/conversation-to-essay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conversation To Essay
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/corpus-level-spar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corpus Level Spar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/debugging-ai-judgment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debugging Ai Judgment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/decayed-how-to/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decayed How To
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/diagnosing-through-the-stack/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagnosing Through The Stack
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/directory-move-gitignore-drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Directory Move Gitignore Drift
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/evolving-creative-scope/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evolving Creative Scope
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/experiment-cant-use-findings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experiment Cant Use Findings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/fabricated-references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fabricated References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/frictionless-entity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Frictionless Entity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/graph-splits-hybrid-inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Graph Splits Hybrid Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/heavy-safety-nets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heavy Safety Nets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/inherited-frame-shapes-solution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inherited Frame Shapes Solution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/landscape-before-depth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Landscape Before Depth
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/link-depth-drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Link Depth Drift
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/meta-document-drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Meta Document Drift
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/model-self-report-runtime-state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model Self Report Runtime State
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/session-crash-recovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Session Crash Recovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/spar-distortion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spar Distortion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/spar-finds-the-assumption/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spar Finds The Assumption
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/spar-lifecycle-boundary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spar Lifecycle Boundary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/spar-to-essay-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spar To Essay Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/stale-context-in-long-sessions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stale Context In Long Sessions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/survivorship-bias-recommendations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Survivorship Bias Recommendations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/technical-correctness-vs-communication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Correctness Vs Communication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/when-the-repository-becomes-the-resume/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    When The Repository Becomes The Resume
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../docs/case-studies/who-is-speaking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Who Is Speaking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#current-situation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📋 Current Situation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Current Situation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cluster-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cluster State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-weve-confirmed-working" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What We've Confirmed Working ✅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#current-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current Status
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#root-cause-identified" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 ROOT CAUSE IDENTIFIED
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 ROOT CAUSE IDENTIFIED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#critical-error-found-on-idrac-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Critical Error Found on iDRAC Console
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔧 Configuration Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔧 Configuration Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#baremetalhost-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BareMetalHost Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#container-structure-discovered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Container Structure Discovered
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log-access-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Log Access Method
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#timeline-of-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📝 Timeline of Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📝 Timeline of Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initial-assessment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initial Assessment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#power-state-issue-discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Power State Issue Discovery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#current-phase-nic-driver-issue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current Phase - NIC Driver Issue
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommended-next-steps-priority-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚀 Recommended Next Steps (Priority Order)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚀 Recommended Next Steps (Priority Order)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-increase-inspection-timeout-skip-wont-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ~~Step 1: Increase Inspection Timeout~~ (SKIP - Won't Help)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-1-investigate-mellanox-nic-hardware-configuration-priority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Investigate Mellanox NIC Hardware Configuration (PRIORITY)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 1: Investigate Mellanox NIC Hardware Configuration (PRIORITY)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-compare-nic-configuration-via-idrac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Compare NIC Configuration via iDRAC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-identify-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Identify Differences
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-fix-hardware-to-match-working-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C. Fix Hardware to Match Working Nodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-after-hardware-fix-force-re-inspection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: After Hardware Fix, Force Re-inspection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-monitor-progress-should-be-faster-now" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Monitor Progress (Should be faster now)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-check-for-inspection-completion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Check for Inspection Completion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-hardware-investigation-if-step-1-4-dont-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Hardware Investigation (If Step 1-4 Don't Work)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 5: Hardware Investigation (If Step 1-4 Don&#39;t Work)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-compare-nic-configuration-across-masters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Compare NIC Configuration Across Masters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-physical-hardware-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Physical Hardware Checks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-firmware-update-if-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C. Firmware Update (If Needed)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-alternative-workarounds-advanced" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Alternative Workarounds (Advanced)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 6: Alternative Workarounds (Advanced)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-a-skip-detailed-nic-inspection-complex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option A: Skip Detailed NIC Inspection (Complex)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-b-manually-provide-hardware-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option B: Manually Provide Hardware Details
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-c-use-different-bmc-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option C: Use Different BMC Protocol
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diagnostic-commands-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Diagnostic Commands Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Diagnostic Commands Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#check-current-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check Current Status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#access-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Access Logs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#force-re-inspection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Force Re-inspection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compare-working-vs-failing-node" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compare Working vs Failing Node
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-to-watch-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔍 What to Watch For
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔍 What to Watch For">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#good-signs-inspection-progressing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Good Signs (Inspection Progressing)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bad-signs-inspection-stuckfailed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bad Signs (Inspection Stuck/Failed)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supporting-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📁 Supporting Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#success-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 Success Criteria
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-limitations-workarounds-in-this-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚠️ Known Limitations / Workarounds in This Environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notes-for-tomorrow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📝 Notes for Tomorrow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📝 Notes for Tomorrow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#where-we-left-off" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where We Left Off
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#first-thing-to-check-tomorrow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        First Thing to Check Tomorrow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quick-resume-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Resume Commands
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#useful-links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔗 Useful Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#escalation-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📞 Escalation Criteria
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="troubleshooting-session-summary-master-2-inspection-timeout">Troubleshooting Session Summary: master-2 Inspection Timeout<a class="headerlink" href="#troubleshooting-session-summary-master-2-inspection-timeout" title="Permanent link">&para;</a></h1>
+<p><strong>Date:</strong> December 3, 2025<br />
+<strong>Issue:</strong> Third master node (master-2) stuck in "inspecting" state during OpenShift bare metal installation<br />
+<strong>Status:</strong> ACTIVE TROUBLESHOOTING - Root cause identified  </p>
+<hr />
+<h2 id="current-situation">📋 <strong>Current Situation</strong><a class="headerlink" href="#current-situation" title="Permanent link">&para;</a></h2>
+<h3 id="cluster-state">Cluster State<a class="headerlink" href="#cluster-state" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Working Nodes:</strong> master-0 and master-1 successfully provisioned</li>
+<li><strong>Failing Node:</strong> master-2 stuck in <code>inspecting</code> state, consistently times out</li>
+<li><strong>Installation Method:</strong> OpenShift bare metal installation using Bare Metal Operator (BMO)</li>
+<li><strong>Hardware:</strong> Dell servers with iDRAC BMC and Mellanox NICs</li>
+</ul>
+<h3 id="what-weve-confirmed-working">What We've Confirmed Working ✅<a class="headerlink" href="#what-weve-confirmed-working" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>BMC Credentials:</strong> Correct username/password</li>
+<li><strong>Network Connectivity:</strong> Can reach iDRAC on the network</li>
+<li><strong>Certificate Verification:</strong> Disabled (self-signed certs)</li>
+<li><strong>BMC Address Format:</strong> Correct - <code>idrac-virtualmedia://IP/redfish/v1/Systems/System.Embedded.1</code></li>
+<li><strong>Power Management:</strong> Fixed - was showing <code>poweredOn: false</code> when actually on, manual reboot resolved</li>
+<li><strong>Inspection Started:</strong> Node now in <code>inspecting</code> state after power cycle</li>
+</ol>
+<h3 id="current-status">Current Status<a class="headerlink" href="#current-status" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>BareMetalHost State:</strong> <code>inspecting</code> </li>
+<li><strong>Inspection Status:</strong> In progress but may be hanging</li>
+<li><strong>Root Cause Identified:</strong> Mellanox NIC driver error on master-2</li>
+</ul>
+<hr />
+<h2 id="root-cause-identified">🎯 <strong>ROOT CAUSE IDENTIFIED</strong><a class="headerlink" href="#root-cause-identified" title="Permanent link">&para;</a></h2>
+<h3 id="critical-error-found-on-idrac-console">Critical Error Found on iDRAC Console<a class="headerlink" href="#critical-error-found-on-idrac-console" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>mlx5_query_module_id:315 query_mcia_reg failed: status 0x3
+</code></pre></div>
+<p><strong>CONFIRMED: Error is repeating continuously (stuck in retry loop)</strong></p>
+<p><strong>What this means:</strong>
+- Inspection image (IPA - Ironic Python Agent) is querying the Mellanox ConnectX NIC
+- The NIC module query is failing (status 0x3 = module not accessible/present)
+- <strong>ERROR IS REPEATING = Inspection is STUCK, not just slow</strong>
+- Line 315 in mlx5 kernel module is the query function
+- System cannot progress past this hardware query</p>
+<p><strong>Why this breaks inspection:</strong>
+- Hardware discovery tries to query all NICs in detail
+- Mellanox driver query failures can cause retry loops
+- May prevent inspection from completing within timeout period</p>
+<hr />
+<h2 id="configuration-details">🔧 <strong>Configuration Details</strong><a class="headerlink" href="#configuration-details" title="Permanent link">&para;</a></h2>
+<h3 id="baremetalhost-configuration">BareMetalHost Configuration<a class="headerlink" href="#baremetalhost-configuration" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">bmc</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">idrac-virtualmedia://[IP_REDACTED]/redfish/v1/Systems/System.Embedded.1</span>
+<span class="w">    </span><span class="nt">credentialsName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">master-2-bmc-secret</span>
+<span class="w">    </span><span class="nt">disableCertificateVerification</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">online</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">  </span><span class="c1"># (after power cycle fix)</span>
+<span class="w">  </span><span class="nt">bootMode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UEFI</span><span class="w">  </span><span class="c1"># (assumed, matches master-0/1)</span>
+</code></pre></div>
+<h3 id="container-structure-discovered">Container Structure Discovered<a class="headerlink" href="#container-structure-discovered" title="Permanent link">&para;</a></h3>
+<p>OpenShift deployment uses consolidated containers in <code>openshift-machine-api</code> namespace:
+- <strong>Pod:</strong> <code>metal3-&lt;id&gt;</code>
+- <strong>Containers:</strong>
+  - <code>metal3-ironic</code> - All Ironic services (inspector, conductor, API)
+  - <code>metal3-httpd</code> - HTTP server for images
+  - <code>metal3-ramdisk-logs</code> - Ramdisk logs</p>
+<p><strong>Note:</strong> NOT separate containers per service (different from some docs)</p>
+<h3 id="log-access-method">Log Access Method<a class="headerlink" href="#log-access-method" title="Permanent link">&para;</a></h3>
+<p><code>oc logs</code> command not working in this environment, using <code>crictl</code> instead:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># From master node (via oc debug):</span>
+chroot<span class="w"> </span>/host
+<span class="nv">IRONIC</span><span class="o">=</span><span class="k">$(</span>crictl<span class="w"> </span>ps<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>metal3-ironic<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span>httpd<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span>ramdisk<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+crictl<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span><span class="nv">$IRONIC</span>
+</code></pre></div>
+<hr />
+<h2 id="timeline-of-troubleshooting">📝 <strong>Timeline of Troubleshooting</strong><a class="headerlink" href="#timeline-of-troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="initial-assessment">Initial Assessment<a class="headerlink" href="#initial-assessment" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Identified 2/3 masters provisioned, 3rd stuck in <code>inspecting</code></li>
+<li>Verified credentials and network connectivity</li>
+<li>Confirmed certificate verification disabled</li>
+<li>Validated BMC address format correct for Dell iDRAC</li>
+</ol>
+<h3 id="power-state-issue-discovery">Power State Issue Discovery<a class="headerlink" href="#power-state-issue-discovery" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Found <code>status.poweredOn: false</code> but node was actually booted (seen in iDRAC)</li>
+<li>This indicated Ironic couldn't properly manage power state</li>
+<li><strong>Fix Applied:</strong> Manual power cycle to resync state</li>
+<li>Powered off node via iDRAC</li>
+<li>Set <code>spec.online: false</code> in OpenShift</li>
+<li>Waited for sync</li>
+<li>Set <code>spec.online: true</code> to let Ironic control power</li>
+</ol>
+<h3 id="current-phase-nic-driver-issue">Current Phase - NIC Driver Issue<a class="headerlink" href="#current-phase-nic-driver-issue" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Node successfully entered <code>inspecting</code> state</li>
+<li>Discovered Mellanox NIC driver error on iDRAC console</li>
+<li>Error is repeating, likely causing inspection to hang</li>
+</ol>
+<hr />
+<h2 id="recommended-next-steps-priority-order">🚀 <strong>Recommended Next Steps (Priority Order)</strong><a class="headerlink" href="#recommended-next-steps-priority-order" title="Permanent link">&para;</a></h2>
+<h3 id="step-1-increase-inspection-timeout-skip-wont-help">~~Step 1: Increase Inspection Timeout~~ (SKIP - Won't Help)<a class="headerlink" href="#step-1-increase-inspection-timeout-skip-wont-help" title="Permanent link">&para;</a></h3>
+<p><strong>UPDATE:</strong> Error is repeating continuously = stuck in infinite retry loop.
+Increasing timeout won't help because inspection will never complete.</p>
+<p><strong>Hardware fix required first.</strong></p>
+<h3 id="step-1-investigate-mellanox-nic-hardware-configuration-priority">Step 1: Investigate Mellanox NIC Hardware Configuration (PRIORITY)<a class="headerlink" href="#step-1-investigate-mellanox-nic-hardware-configuration-priority" title="Permanent link">&para;</a></h3>
+<p><strong>Error repeating = hardware misconfiguration causing infinite retry loop</strong></p>
+<h4 id="a-compare-nic-configuration-via-idrac">A. Compare NIC Configuration via iDRAC<a class="headerlink" href="#a-compare-nic-configuration-via-idrac" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>For each master (0, 1, 2):
+iDRAC Web Console → System → Network Devices → Mellanox Card
+
+Document:
+1. Firmware version
+2. How many ports shown
+3. Which ports have &quot;Status: Active/Enabled&quot;
+4. Which ports have cables/transceivers installed
+5. Which ports are empty but enabled
+</code></pre></div>
+<h4 id="b-identify-differences">B. Identify Differences<a class="headerlink" href="#b-identify-differences" title="Permanent link">&para;</a></h4>
+<p><strong>Key questions:</strong>
+- Does master-2 have different firmware than master-0/1?
+- Does master-2 have empty SFP/QSFP slots that are enabled?
+- Does master-2 have different transceiver configuration?
+- Are there unused transceivers causing detection issues?</p>
+<h4 id="c-fix-hardware-to-match-working-nodes">C. Fix Hardware to Match Working Nodes<a class="headerlink" href="#c-fix-hardware-to-match-working-nodes" title="Permanent link">&para;</a></h4>
+<p><strong>Choose one approach:</strong></p>
+<p><strong>Option 1: Add missing transceivers</strong> (if master-0/1 have them)
+- Install same transceivers in master-2 to match master-0/1</p>
+<p><strong>Option 2: Remove problematic transceivers</strong> (if master-2 has extras)
+- Remove any unused transceivers from master-2</p>
+<p><strong>Option 3: Update firmware</strong> (if versions differ)
+- Update master-2 Mellanox firmware to match master-0/1
+- Reboot after update</p>
+<p><strong>Option 4: Disable unused ports</strong> (quickest workaround)
+- Via BIOS or iDRAC: Disable Mellanox ports with no cables
+- Or temporarily disable entire Mellanox NIC if not needed</p>
+<p><strong>Option 5: Disable entire NIC temporarily</strong> (if not needed for provisioning)
+- BIOS → Network Settings → Disable Mellanox NIC
+- Complete inspection/provisioning
+- Re-enable NIC after node joins cluster</p>
+<h3 id="step-2-after-hardware-fix-force-re-inspection">Step 2: After Hardware Fix, Force Re-inspection<a class="headerlink" href="#step-2-after-hardware-fix-force-re-inspection" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Power off first</span>
+oc<span class="w"> </span>patch<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>--type<span class="w"> </span>merge<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;spec&quot;:{&quot;online&quot;:false}}&#39;</span>
+sleep<span class="w"> </span><span class="m">30</span>
+
+<span class="c1"># Clear all state</span>
+oc<span class="w"> </span>annotate<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>baremetalhost.metal3.io/status-<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>baremetalhost.metal3.io/error-<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--overwrite
+
+<span class="c1"># Power back on</span>
+oc<span class="w"> </span>patch<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>--type<span class="w"> </span>merge<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;spec&quot;:{&quot;online&quot;:true}}&#39;</span>
+
+<span class="c1"># Watch status</span>
+watch<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="s1">&#39;oc get baremetalhost master-2 -n openshift-machine-api&#39;</span>
+</code></pre></div>
+<h3 id="step-3-monitor-progress-should-be-faster-now">Step 3: Monitor Progress (Should be faster now)<a class="headerlink" href="#step-3-monitor-progress-should-be-faster-now" title="Permanent link">&para;</a></h3>
+<p><strong>Terminal 1 - Watch BareMetalHost:</strong>
+<div class="highlight"><pre><span></span><code>watch<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="s1">&#39;oc get baremetalhost master-2 -n openshift-machine-api&#39;</span>
+</code></pre></div></p>
+<p><strong>Terminal 2 - Watch iDRAC Console:</strong>
+- Look for the mlx5 error
+- Count how many times it appears
+- Watch if inspection eventually moves past it
+- Look for "hardware inspection complete" or similar</p>
+<p><strong>Terminal 3 - Watch Ironic Logs (from master node):</strong>
+<div class="highlight"><pre><span></span><code>oc<span class="w"> </span>debug<span class="w"> </span>node/master-0
+chroot<span class="w"> </span>/host
+<span class="nv">IRONIC</span><span class="o">=</span><span class="k">$(</span>crictl<span class="w"> </span>ps<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>metal3-ironic<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span>httpd<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span>ramdisk<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+crictl<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span><span class="nv">$IRONIC</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;master-2\|inspect\|introspect\|error&quot;</span>
+</code></pre></div></p>
+<h3 id="step-4-check-for-inspection-completion">Step 4: Check for Inspection Completion<a class="headerlink" href="#step-4-check-for-inspection-completion" title="Permanent link">&para;</a></h3>
+<p><strong>Expected timeline after hardware fix:</strong>
+- 0-5 min: Node boots inspection image<br />
+- 5-15 min: Hardware discovery (mlx5 errors should NOT repeat continuously)
+- 15-25 min: Discovery completes, data sent to Ironic
+- 25-30 min: Ironic processes data
+- Result: State changes to <code>available</code> ✅</p>
+<p><strong>If mlx5 errors still repeat continuously:</strong>
+- Hardware fix was not sufficient
+- Try more aggressive approach (disable NIC entirely)
+- Or proceed to Step 4 (Advanced Workarounds)</p>
+<h3 id="step-5-hardware-investigation-if-step-1-4-dont-work">Step 5: Hardware Investigation (If Step 1-4 Don't Work)<a class="headerlink" href="#step-5-hardware-investigation-if-step-1-4-dont-work" title="Permanent link">&para;</a></h3>
+<h4 id="a-compare-nic-configuration-across-masters">A. Compare NIC Configuration Across Masters<a class="headerlink" href="#a-compare-nic-configuration-across-masters" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># From iDRAC web console for each master:</span>
+<span class="c1"># 1. Check Mellanox NIC model and firmware version</span>
+<span class="c1"># 2. Check which ports have cables/transceivers</span>
+<span class="c1"># 3. Compare master-0, master-1, master-2 for differences</span>
+</code></pre></div>
+<p><strong>Key questions:</strong>
+- Same Mellanox NIC model on all three?
+- Same firmware version?
+- Same ports populated with cables/SFPs?
+- Any unused SFP/QSFP modules in master-2's NIC?</p>
+<h4 id="b-physical-hardware-checks">B. Physical Hardware Checks<a class="headerlink" href="#b-physical-hardware-checks" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># If accessible:</span>
+<span class="c1"># 1. Check for loose or missing SFP/QSFP transceivers in Mellanox NIC</span>
+<span class="c1"># 2. Try removing any unused transceivers</span>
+<span class="c1"># 3. Ensure cables are properly seated</span>
+<span class="c1"># 4. Check for any amber/error LEDs on the NIC</span>
+</code></pre></div>
+<h4 id="c-firmware-update-if-needed">C. Firmware Update (If Needed)<a class="headerlink" href="#c-firmware-update-if-needed" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># From iDRAC:</span>
+<span class="c1"># 1. Check current Mellanox NIC firmware version</span>
+<span class="c1"># 2. If significantly older than master-0/1, update firmware</span>
+<span class="c1"># 3. Reboot and retry inspection</span>
+</code></pre></div>
+<h3 id="step-6-alternative-workarounds-advanced">Step 6: Alternative Workarounds (Advanced)<a class="headerlink" href="#step-6-alternative-workarounds-advanced" title="Permanent link">&para;</a></h3>
+<p>If hardware can't be changed and inspection still fails:</p>
+<h4 id="option-a-skip-detailed-nic-inspection-complex">Option A: Skip Detailed NIC Inspection (Complex)<a class="headerlink" href="#option-a-skip-detailed-nic-inspection-complex" title="Permanent link">&para;</a></h4>
+<p>Would require modifying inspection image kernel parameters - not easily done in OpenShift.</p>
+<h4 id="option-b-manually-provide-hardware-details">Option B: Manually Provide Hardware Details<a class="headerlink" href="#option-b-manually-provide-hardware-details" title="Permanent link">&para;</a></h4>
+<p>Bypass inspection by manually providing hardware info from a working node:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get hardware details from master-0</span>
+oc<span class="w"> </span>get<span class="w"> </span>baremetalhost<span class="w"> </span>master-0<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.hardwareDetails}&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>master0-hw.json
+
+<span class="c1"># Edit master0-hw.json to change serial numbers, MACs, etc. to match master-2</span>
+
+<span class="c1"># Patch master-2 with hardware details (this bypasses inspection)</span>
+<span class="c1"># NOTE: This is a last resort and may cause issues</span>
+</code></pre></div>
+<h4 id="option-c-use-different-bmc-protocol">Option C: Use Different BMC Protocol<a class="headerlink" href="#option-c-use-different-bmc-protocol" title="Permanent link">&para;</a></h4>
+<p>Try standard redfish instead of idrac-virtualmedia:</p>
+<div class="highlight"><pre><span></span><code>oc<span class="w"> </span>patch<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>--type<span class="w"> </span>merge<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;</span>
+<span class="s1">{</span>
+<span class="s1">  &quot;spec&quot;: {</span>
+<span class="s1">    &quot;bmc&quot;: {</span>
+<span class="s1">      &quot;address&quot;: &quot;redfish-virtualmedia+https://[IDRAC_IP]/redfish/v1/Systems/System.Embedded.1&quot;</span>
+<span class="s1">    }</span>
+<span class="s1">  }</span>
+<span class="s1">}&#39;</span>
+</code></pre></div>
+<hr />
+<h2 id="diagnostic-commands-reference">📊 <strong>Diagnostic Commands Reference</strong><a class="headerlink" href="#diagnostic-commands-reference" title="Permanent link">&para;</a></h2>
+<h3 id="check-current-status">Check Current Status<a class="headerlink" href="#check-current-status" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># BareMetalHost status</span>
+oc<span class="w"> </span>get<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api
+oc<span class="w"> </span>get<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span>yaml
+
+<span class="c1"># Current state</span>
+oc<span class="w"> </span>get<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.provisioning.state}&#39;</span>
+
+<span class="c1"># Power status</span>
+oc<span class="w"> </span>get<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.poweredOn}&#39;</span>
+
+<span class="c1"># Error messages (if any)</span>
+oc<span class="w"> </span>get<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.errorMessage}&#39;</span>
+
+<span class="c1"># Recent events</span>
+oc<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--field-selector<span class="w"> </span>involvedObject.name<span class="o">=</span>master-2<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--sort-by<span class="o">=</span><span class="s1">&#39;.lastTimestamp&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-20
+</code></pre></div>
+<h3 id="access-logs">Access Logs<a class="headerlink" href="#access-logs" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># From master node (since oc logs doesn&#39;t work):</span>
+oc<span class="w"> </span>debug<span class="w"> </span>node/master-0
+chroot<span class="w"> </span>/host
+
+<span class="c1"># Find metal3-ironic container</span>
+crictl<span class="w"> </span>ps<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>metal3
+
+<span class="c1"># View logs</span>
+<span class="nv">IRONIC</span><span class="o">=</span><span class="k">$(</span>crictl<span class="w"> </span>ps<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>metal3-ironic<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span>httpd<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span>ramdisk<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+crictl<span class="w"> </span>logs<span class="w"> </span>--tail<span class="o">=</span><span class="m">200</span><span class="w"> </span><span class="nv">$IRONIC</span>
+
+<span class="c1"># Follow logs</span>
+crictl<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span><span class="nv">$IRONIC</span>
+
+<span class="c1"># Search for master-2 activity</span>
+crictl<span class="w"> </span>logs<span class="w"> </span><span class="nv">$IRONIC</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>master-2
+
+<span class="c1"># Search for inspection messages</span>
+crictl<span class="w"> </span>logs<span class="w"> </span><span class="nv">$IRONIC</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;inspect\|introspect&quot;</span>
+</code></pre></div>
+<h3 id="force-re-inspection">Force Re-inspection<a class="headerlink" href="#force-re-inspection" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Method 1: Clear status annotation</span>
+oc<span class="w"> </span>annotate<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>baremetalhost.metal3.io/status-<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--overwrite
+
+<span class="c1"># Method 2: Full power cycle with state clear</span>
+oc<span class="w"> </span>patch<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>--type<span class="w"> </span>merge<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;spec&quot;:{&quot;online&quot;:false}}&#39;</span>
+sleep<span class="w"> </span><span class="m">20</span>
+oc<span class="w"> </span>annotate<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>baremetalhost.metal3.io/status-<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>baremetalhost.metal3.io/error-<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--overwrite
+oc<span class="w"> </span>patch<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>--type<span class="w"> </span>merge<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;spec&quot;:{&quot;online&quot;:true}}&#39;</span>
+</code></pre></div>
+<h3 id="compare-working-vs-failing-node">Compare Working vs Failing Node<a class="headerlink" href="#compare-working-vs-failing-node" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Compare BMC configurations</span>
+<span class="k">for</span><span class="w"> </span>master<span class="w"> </span><span class="k">in</span><span class="w"> </span>master-0<span class="w"> </span>master-1<span class="w"> </span>master-2<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;=== </span><span class="nv">$master</span><span class="s2"> ===&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Address: </span><span class="k">$(</span>oc<span class="w"> </span>get<span class="w"> </span>bmh<span class="w"> </span><span class="nv">$master</span><span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.bmc.address}&#39;</span><span class="k">)</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Cert Verify Disabled: </span><span class="k">$(</span>oc<span class="w"> </span>get<span class="w"> </span>bmh<span class="w"> </span><span class="nv">$master</span><span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.bmc.disableCertificateVerification}&#39;</span><span class="k">)</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;State: </span><span class="k">$(</span>oc<span class="w"> </span>get<span class="w"> </span>bmh<span class="w"> </span><span class="nv">$master</span><span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.provisioning.state}&#39;</span><span class="k">)</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;PoweredOn: </span><span class="k">$(</span>oc<span class="w"> </span>get<span class="w"> </span>bmh<span class="w"> </span><span class="nv">$master</span><span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.poweredOn}&#39;</span><span class="k">)</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="k">done</span>
+
+<span class="c1"># Full spec diff</span>
+diff<span class="w"> </span>&lt;<span class="o">(</span>oc<span class="w"> </span>get<span class="w"> </span>bmh<span class="w"> </span>master-0<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-A<span class="w"> </span><span class="m">40</span><span class="w"> </span><span class="s2">&quot;^spec:&quot;</span><span class="o">)</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>&lt;<span class="o">(</span>oc<span class="w"> </span>get<span class="w"> </span>bmh<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-A<span class="w"> </span><span class="m">40</span><span class="w"> </span><span class="s2">&quot;^spec:&quot;</span><span class="o">)</span>
+</code></pre></div>
+<hr />
+<h2 id="what-to-watch-for">🔍 <strong>What to Watch For</strong><a class="headerlink" href="#what-to-watch-for" title="Permanent link">&para;</a></h2>
+<h3 id="good-signs-inspection-progressing">Good Signs (Inspection Progressing)<a class="headerlink" href="#good-signs-inspection-progressing" title="Permanent link">&para;</a></h3>
+<p><strong>In BareMetalHost status:</strong>
+- State remains <code>inspecting</code> (not error)
+- <code>status.poweredOn: true</code>
+- No error messages</p>
+<p><strong>In iDRAC console:</strong>
+- Inspection image boots successfully
+- Gets IP via DHCP
+- mlx5 errors appear but system continues
+- Eventually see "hardware inspection complete" or similar
+- System may reboot after inspection</p>
+<p><strong>In Ironic logs:</strong>
+- "Received introspection data from node"
+- "Processing introspection data"
+- Node UUID or MAC address appearing in logs
+- "Introspection finished successfully"</p>
+<h3 id="bad-signs-inspection-stuckfailed">Bad Signs (Inspection Stuck/Failed)<a class="headerlink" href="#bad-signs-inspection-stuckfailed" title="Permanent link">&para;</a></h3>
+<p><strong>In BareMetalHost status:</strong>
+- State changes to <code>error</code>
+- Error message appears in status
+- <code>status.poweredOn: false</code> (power management failed again)</p>
+<p><strong>In iDRAC console:</strong>
+- mlx5 error repeating endlessly (100+ times)
+- System completely frozen
+- Kernel panic
+- Network timeout ("No DHCP response")
+- Boot loop</p>
+<p><strong>In Ironic logs:</strong>
+- "Timeout waiting for callback"
+- "Introspection timeout"
+- "Node not found"
+- Repeated errors about master-2
+- No callback/heartbeat messages</p>
+<hr />
+<h2 id="supporting-documentation">📁 <strong>Supporting Documentation</strong><a class="headerlink" href="#supporting-documentation" title="Permanent link">&para;</a></h2>
+<p>Full troubleshooting guides created:</p>
+<ol>
+<li><strong><a href="../">README.md</a></strong> - Complete bare metal inspection troubleshooting guide</li>
+<li><strong><a href="../QUICK-REFERENCE/">QUICK-REFERENCE.md</a></strong> - Fast command reference</li>
+<li><strong><a href="../YOUR-ISSUE-SUMMARY/">YOUR-ISSUE-SUMMARY.md</a></strong> - Specific to "2 working, 1 failing" scenario</li>
+<li><strong><a href="diagnose-bmh.sh">diagnose-bmh.sh</a></strong> - Automated diagnostic script</li>
+</ol>
+<p>Related guides:
+- <strong><a href="../../kube-controller-manager-crashloop/">kube-controller-manager troubleshooting</a></strong> - For other cluster issues</p>
+<hr />
+<h2 id="success-criteria">🎯 <strong>Success Criteria</strong><a class="headerlink" href="#success-criteria" title="Permanent link">&para;</a></h2>
+<p>You'll know the issue is resolved when:</p>
+<ol>
+<li>
+<p><strong>BareMetalHost state changes from <code>inspecting</code> to <code>available</code></strong>
+   <div class="highlight"><pre><span></span><code>oc<span class="w"> </span>get<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api
+<span class="c1"># STATE should show: available</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Hardware details are populated</strong>
+   <div class="highlight"><pre><span></span><code>oc<span class="w"> </span>get<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.hardwareDetails}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+<span class="c1"># Should show CPU, RAM, disk details</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>No error messages</strong>
+   <div class="highlight"><pre><span></span><code>oc<span class="w"> </span>get<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.errorMessage}&#39;</span>
+<span class="c1"># Should be empty</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Node eventually provisions and joins cluster</strong>
+   <div class="highlight"><pre><span></span><code>oc<span class="w"> </span>get<span class="w"> </span>nodes
+<span class="c1"># Should eventually see master-2 in the list</span>
+</code></pre></div></p>
+</li>
+</ol>
+<hr />
+<h2 id="known-limitations-workarounds-in-this-environment">⚠️ <strong>Known Limitations / Workarounds in This Environment</strong><a class="headerlink" href="#known-limitations-workarounds-in-this-environment" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong><code>oc logs</code> not working</strong> - Using <code>crictl</code> directly on nodes instead</li>
+<li><strong>Consolidated containers</strong> - metal3-ironic contains all Ironic services, not separate containers</li>
+<li><strong>mlx5 NIC errors</strong> - Known issue with Mellanox NICs during inspection, may need increased timeout</li>
+</ol>
+<hr />
+<h2 id="notes-for-tomorrow">📝 <strong>Notes for Tomorrow</strong><a class="headerlink" href="#notes-for-tomorrow" title="Permanent link">&para;</a></h2>
+<h3 id="where-we-left-off">Where We Left Off<a class="headerlink" href="#where-we-left-off" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Root cause identified: Mellanox NIC driver error during inspection</li>
+<li>Node is currently in <code>inspecting</code> state</li>
+<li><strong>ACTION NEEDED:</strong> Increase inspection timeout and retry (Step 1-3 above)</li>
+</ul>
+<h3 id="first-thing-to-check-tomorrow">First Thing to Check Tomorrow<a class="headerlink" href="#first-thing-to-check-tomorrow" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. Check if inspection completed overnight</span>
+oc<span class="w"> </span>get<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api
+
+<span class="c1"># 2. If still inspecting, check how long</span>
+oc<span class="w"> </span>get<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>lastUpdated
+
+<span class="c1"># 3. Check for any errors</span>
+oc<span class="w"> </span>get<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.errorMessage}&#39;</span>
+
+<span class="c1"># 4. If still stuck, proceed with Step 1 (increase timeout) above</span>
+</code></pre></div>
+<h3 id="quick-resume-commands">Quick Resume Commands<a class="headerlink" href="#quick-resume-commands" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Navigate to troubleshooting directory</span>
+<span class="nb">cd</span><span class="w"> </span>ocp/troubleshooting/bare-metal-node-inspection-timeout
+
+<span class="c1"># Read this summary</span>
+cat<span class="w"> </span>SESSION-SUMMARY-master2-inspection.md
+
+<span class="c1"># Check current status</span>
+oc<span class="w"> </span>get<span class="w"> </span>baremetalhost<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api
+
+<span class="c1"># If need to increase timeout and retry:</span>
+oc<span class="w"> </span>patch<span class="w"> </span>provisioning<span class="w"> </span>provisioning-configuration<span class="w"> </span>--type<span class="w"> </span>merge<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;spec&quot;:{&quot;inspectTimeout&quot;:&quot;5400&quot;}}&#39;</span>
+oc<span class="w"> </span>annotate<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>baremetalhost.metal3.io/status-<span class="w"> </span>--overwrite
+oc<span class="w"> </span>patch<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>--type<span class="w"> </span>merge<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;spec&quot;:{&quot;online&quot;:false}}&#39;</span>
+sleep<span class="w"> </span><span class="m">20</span>
+oc<span class="w"> </span>patch<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>--type<span class="w"> </span>merge<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;spec&quot;:{&quot;online&quot;:true}}&#39;</span>
+</code></pre></div>
+<hr />
+<h2 id="useful-links">🔗 <strong>Useful Links</strong><a class="headerlink" href="#useful-links" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Red Hat OpenShift Bare Metal Documentation: https://docs.redhat.com/en/documentation/openshift_container_platform/4.14/html-single/deploying_installer-provisioned_clusters_on_bare_metal/</li>
+<li>Mellanox/NVIDIA NIC Documentation: Check Dell iDRAC for firmware updates</li>
+<li>Metal3 Project: https://metal3.io/</li>
+</ul>
+<hr />
+<h2 id="escalation-criteria">📞 <strong>Escalation Criteria</strong><a class="headerlink" href="#escalation-criteria" title="Permanent link">&para;</a></h2>
+<p>Consider escalating to Red Hat support if:</p>
+<ol>
+<li><strong>Inspection still fails after increasing timeout to 90+ minutes</strong></li>
+<li><strong>Hardware checks show no differences between master-0/1 and master-2</strong></li>
+<li><strong>Mellanox firmware is up to date but errors persist</strong></li>
+<li><strong>Manual hardware detail provisioning fails</strong></li>
+</ol>
+<p><strong>Data to collect for support case:</strong>
+<div class="highlight"><pre><span></span><code><span class="c1"># Run diagnostic script</span>
+./diagnose-bmh.sh<span class="w"> </span>master-2
+
+<span class="c1"># Collect must-gather</span>
+oc<span class="w"> </span>adm<span class="w"> </span>must-gather
+
+<span class="c1"># Get specific logs</span>
+oc<span class="w"> </span>get<span class="w"> </span>baremetalhost<span class="w"> </span>master-2<span class="w"> </span>-n<span class="w"> </span>openshift-machine-api<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span>&gt;<span class="w"> </span>master2-bmh.yaml
+<span class="c1"># (Capture iDRAC console output with mlx5 errors)</span>
+</code></pre></div></p>
+<hr />
+<p><strong>END OF SESSION SUMMARY</strong></p>
+<p><strong>Last Updated:</strong> December 3, 2025<br />
+<strong>Status:</strong> Awaiting timeout increase and re-inspection results<br />
+<strong>Next Action:</strong> Follow Step 1-3 in "Recommended Next Steps" section</p>
+<hr />
+<p><em>This content was created with AI assistance. See <a href="../../../../../AI-DISCLOSURE/">AI-DISCLOSURE.md</a> for how to interpret AI-generated content in this workspace.</em></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../../../../assets/poc/symptom-picker.js"></script>
+      
+    
+  </body>
+</html>

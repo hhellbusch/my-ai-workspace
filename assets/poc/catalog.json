@@ -1,0 +1,613 @@
+{
+  "guides": [
+    {
+      "id": "failed-ocp-install",
+      "title": "Failed OCP Install",
+      "category": "installation",
+      "product": "ocp",
+      "symptoms": [
+        "openshift install did not complete",
+        "bootstrap complete but cluster operators not available",
+        "installation stuck"
+      ],
+      "tags": [
+        "installation",
+        "bootstrap",
+        "beginners"
+      ],
+      "readme": "ocp/troubleshooting/failed-ocp-install/README.md",
+      "quickRef": "ocp/troubleshooting/failed-ocp-install/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "api-slowness-web-console",
+      "title": "API Slowness and Web Console Performance",
+      "category": "control-plane",
+      "product": "ocp",
+      "symptoms": [
+        "oc commands slow",
+        "web console slow",
+        "API timeout",
+        "etcd latency"
+      ],
+      "tags": [
+        "performance",
+        "control-plane",
+        "emergency"
+      ],
+      "readme": "ocp/troubleshooting/api-slowness-web-console/README.md",
+      "quickRef": "ocp/troubleshooting/api-slowness-web-console/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "apiserver-cert-deadlock",
+      "title": "API Server Certificate Deadlock",
+      "category": "control-plane",
+      "product": "ocp",
+      "symptoms": [
+        "apiserver certificate expired",
+        "kube-apiserver operator cannot apply cert",
+        "x509 certificate has expired"
+      ],
+      "tags": [
+        "certificates",
+        "control-plane",
+        "emergency"
+      ],
+      "readme": "ocp/troubleshooting/apiserver-cert-deadlock/README.md",
+      "quickRef": "ocp/troubleshooting/apiserver-cert-deadlock/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "control-plane-kubeconfigs",
+      "title": "Control Plane Kubeconfigs",
+      "category": "control-plane",
+      "product": "ocp",
+      "symptoms": [
+        "monitor cluster operators from control plane node",
+        "kubeconfig on CoreOS master",
+        "installation monitoring from master"
+      ],
+      "tags": [
+        "kubeconfig",
+        "control-plane",
+        "installation"
+      ],
+      "readme": "ocp/troubleshooting/control-plane-kubeconfigs/README.md",
+      "quickRef": "ocp/troubleshooting/control-plane-kubeconfigs/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "kube-controller-manager-crashloop",
+      "title": "kube-controller-manager Crash Loop",
+      "category": "control-plane",
+      "product": "ocp",
+      "symptoms": [
+        "kube-controller-manager CrashLoopBackOff",
+        "controller manager pod restarting"
+      ],
+      "tags": [
+        "control-plane",
+        "crashloop"
+      ],
+      "readme": "ocp/troubleshooting/kube-controller-manager-crashloop/README.md",
+      "quickRef": "ocp/troubleshooting/kube-controller-manager-crashloop/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "oauth-healthz-unavailable",
+      "title": "OAuth Server healthz Unavailable",
+      "category": "control-plane",
+      "product": "ocp",
+      "symptoms": [
+        "OAuthServerRouteEndpointAccessibleControllerAvailable",
+        "authentication cluster operator degraded",
+        "oauth-openshift.apps healthz connection refused",
+        "oc login fails"
+      ],
+      "tags": [
+        "authentication",
+        "oauth",
+        "control-plane"
+      ],
+      "readme": "ocp/troubleshooting/oauth-healthz-unavailable/README.md",
+      "quickRef": "ocp/troubleshooting/oauth-healthz-unavailable/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "bare-metal-stale-node-ip-conflict",
+      "title": "Bare Metal Stale Node IP Conflict",
+      "category": "bare-metal",
+      "product": "ocp",
+      "symptoms": [
+        "MAC flapping",
+        "retired node same IP as new control plane",
+        "misleading TLS errors bare metal"
+      ],
+      "tags": [
+        "bare-metal",
+        "networking",
+        "ip-conflict"
+      ],
+      "readme": "ocp/troubleshooting/bare-metal-stale-node-ip-conflict/README.md",
+      "quickRef": "ocp/troubleshooting/bare-metal-stale-node-ip-conflict/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "bare-metal-rhcos-disk-wipe",
+      "title": "Bare Metal RHCOS Disk Wipe",
+      "category": "bare-metal",
+      "product": "ocp",
+      "symptoms": [
+        "reuse bare metal node",
+        "wipe ignition ostree etcd",
+        "decommission RHCOS disk"
+      ],
+      "tags": [
+        "bare-metal",
+        "disk-wipe",
+        "decommission"
+      ],
+      "readme": "ocp/troubleshooting/bare-metal-rhcos-disk-wipe/README.md",
+      "quickRef": "ocp/troubleshooting/bare-metal-rhcos-disk-wipe/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "bare-metal-node-inspection-timeout",
+      "title": "Bare Metal Node Inspection Timeout",
+      "category": "bare-metal",
+      "product": "ocp",
+      "symptoms": [
+        "BMH stuck inspecting",
+        "bare metal node inspection timeout",
+        "ironic inspection failed"
+      ],
+      "tags": [
+        "bare-metal",
+        "ironic",
+        "inspection"
+      ],
+      "readme": "ocp/troubleshooting/bare-metal-node-inspection-timeout/README.md",
+      "quickRef": "ocp/troubleshooting/bare-metal-node-inspection-timeout/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "worker-node-tls-cert-failure",
+      "title": "Worker Node TLS Certificate Failure",
+      "category": "bare-metal",
+      "product": "ocp",
+      "symptoms": [
+        "TLS certificate verification failed adding worker",
+        "x509 certificate signed by unknown authority worker"
+      ],
+      "tags": [
+        "bare-metal",
+        "tls",
+        "certificates",
+        "workers"
+      ],
+      "readme": "ocp/troubleshooting/worker-node-tls-cert-failure/README.md",
+      "quickRef": "ocp/troubleshooting/worker-node-tls-cert-failure/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "destroy-cluster-without-metadata",
+      "title": "Destroy Cluster Without Metadata",
+      "category": "lifecycle",
+      "product": "ocp",
+      "symptoms": [
+        "openshift-install destroy metadata missing",
+        "lost metadata.json",
+        "manual cluster cleanup"
+      ],
+      "tags": [
+        "destroy",
+        "lifecycle",
+        "bare-metal",
+        "cloud"
+      ],
+      "readme": "ocp/troubleshooting/destroy-cluster-without-metadata/README.md",
+      "quickRef": "ocp/troubleshooting/destroy-cluster-without-metadata/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "csr-management",
+      "title": "CSR Management",
+      "category": "certificates",
+      "product": "ocp",
+      "symptoms": [
+        "pending certificate signing request",
+        "CSR not approved",
+        "nodes not ready pending CSR"
+      ],
+      "tags": [
+        "certificates",
+        "csr",
+        "nodes"
+      ],
+      "readme": "ocp/troubleshooting/csr-management/README.md",
+      "quickRef": "ocp/troubleshooting/csr-management/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "coreos-networking-issues",
+      "title": "CoreOS Networking Issues",
+      "category": "networking",
+      "product": "ocp",
+      "symptoms": [
+        "CoreOS no network",
+        "nmstate degraded",
+        "node network not configured"
+      ],
+      "tags": [
+        "coreos",
+        "networking",
+        "nmstate"
+      ],
+      "readme": "ocp/troubleshooting/coreos-networking-issues/README.md",
+      "quickRef": "ocp/troubleshooting/coreos-networking-issues/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "aap-ssh-mtu-issues",
+      "title": "AAP SSH Connection MTU Issues",
+      "category": "automation",
+      "product": "ocp",
+      "symptoms": [
+        "AAP SSH connection timeout",
+        "SSH works from bastion not from AAP",
+        "MTU mismatch SSH"
+      ],
+      "tags": [
+        "aap",
+        "ansible",
+        "mtu",
+        "ssh"
+      ],
+      "readme": "ocp/troubleshooting/aap-ssh-mtu-issues/README.md",
+      "quickRef": "ocp/troubleshooting/aap-ssh-mtu-issues/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "kubevirt-vm-stuck-provisioning",
+      "title": "KubeVirt VM Stuck in Provisioning",
+      "category": "virtualization",
+      "product": "ocp",
+      "symptoms": [
+        "VM stuck provisioning",
+        "kubevirt-velero-annotations-remover webhook not found",
+        "virt-launcher pod not created"
+      ],
+      "tags": [
+        "kubevirt",
+        "velero",
+        "oadp",
+        "virtualization"
+      ],
+      "readme": "ocp/troubleshooting/kubevirt-vm-stuck-provisioning/README.md",
+      "quickRef": "ocp/troubleshooting/kubevirt-vm-stuck-provisioning/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "namespace-stuck-terminating",
+      "title": "Namespace Stuck in Terminating",
+      "category": "kubernetes",
+      "product": "ocp",
+      "symptoms": [
+        "namespace stuck terminating",
+        "namespace finalizer blocking delete"
+      ],
+      "tags": [
+        "namespace",
+        "finalizers"
+      ],
+      "readme": "ocp/troubleshooting/namespace-stuck-terminating/README.md",
+      "quickRef": "ocp/troubleshooting/namespace-stuck-terminating/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "image-registry-auth",
+      "title": "Image Registry Auth and Route Exposure",
+      "category": "registry",
+      "product": "ocp",
+      "symptoms": [
+        "podman login registry 403",
+        "image registry 401 unauthorized",
+        "expose internal image registry route"
+      ],
+      "tags": [
+        "registry",
+        "authentication",
+        "disconnected"
+      ],
+      "readme": "ocp/troubleshooting/image-registry-auth/README.md",
+      "quickRef": null
+    },
+    {
+      "id": "image-signature-policy-mcp-deadlock",
+      "title": "Image Signature Policy MCP Deadlock",
+      "category": "registry",
+      "product": "ocp",
+      "symptoms": [
+        "SignatureValidationFailed",
+        "MachineConfigPool blocked signature policy",
+        "policy.json rejecting registry.redhat.io"
+      ],
+      "tags": [
+        "registry",
+        "machineconfig",
+        "signatures",
+        "emergency"
+      ],
+      "readme": "ocp/troubleshooting/image-signature-policy-mcp-deadlock/README.md",
+      "quickRef": "ocp/troubleshooting/image-signature-policy-mcp-deadlock/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "nvme-host-nqn-duplicate",
+      "title": "NVMe Host NQN Duplicates",
+      "category": "storage",
+      "product": "ocp",
+      "symptoms": [
+        "duplicate NVMe host NQN",
+        "nvme hostid not unique",
+        "NVMe-oF bare metal"
+      ],
+      "tags": [
+        "storage",
+        "nvme",
+        "bare-metal"
+      ],
+      "readme": "ocp/troubleshooting/nvme-host-nqn-duplicate/README.md",
+      "quickRef": "ocp/troubleshooting/nvme-host-nqn-duplicate/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "nvme-tcp-storage-network",
+      "title": "NVMe/TCP Storage Network",
+      "category": "storage",
+      "product": "ocp",
+      "symptoms": [
+        "NVMe TCP storage network",
+        "dual NIC storage fabric",
+        "NNCP storage interfaces"
+      ],
+      "tags": [
+        "storage",
+        "nvme",
+        "networking"
+      ],
+      "readme": "ocp/troubleshooting/nvme-tcp-storage-network/README.md",
+      "quickRef": "ocp/troubleshooting/nvme-tcp-storage-network/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "portworx-csi-crashloop",
+      "title": "Portworx CSI Pod CrashLoopBackOff",
+      "category": "storage",
+      "product": "ocp",
+      "symptoms": [
+        "px-csi-ext CrashLoopBackOff",
+        "Portworx CSI driver not found",
+        "CSI socket connection refused"
+      ],
+      "tags": [
+        "storage",
+        "portworx",
+        "csi"
+      ],
+      "readme": "ocp/troubleshooting/portworx-csi-crashloop/README.md",
+      "quickRef": "ocp/troubleshooting/portworx-csi-crashloop/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "nfs-portworx-proxy-pvc-slow-ready",
+      "title": "NFS Portworx Proxy PVC Slow Ready",
+      "category": "storage",
+      "product": "ocp",
+      "symptoms": [
+        "PVC slow to bind NFS proxy",
+        "pod 20 minutes to ready portworx nfs"
+      ],
+      "tags": [
+        "storage",
+        "portworx",
+        "nfs",
+        "pvc"
+      ],
+      "readme": "ocp/troubleshooting/nfs-portworx-proxy-pvc-slow-ready/README.md",
+      "quickRef": "ocp/troubleshooting/nfs-portworx-proxy-pvc-slow-ready/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "prometheus-monitoring-storage",
+      "title": "Prometheus and Alertmanager Storage",
+      "category": "storage",
+      "product": "ocp",
+      "symptoms": [
+        "prometheus PVC pending",
+        "alertmanager storage class",
+        "cluster monitoring PVC stuck"
+      ],
+      "tags": [
+        "monitoring",
+        "prometheus",
+        "storage"
+      ],
+      "readme": "ocp/troubleshooting/prometheus-monitoring-storage/README.md",
+      "quickRef": null
+    },
+    {
+      "id": "multiclusterobservability-webhook-rejection",
+      "title": "MultiClusterObservability Webhook Rejection",
+      "category": "rhacm",
+      "product": "ocp",
+      "symptoms": [
+        "admission webhook denied multiclusterobservability",
+        "metadata.name is required MCO",
+        "cannot delete multiclusterobservability"
+      ],
+      "tags": [
+        "rhacm",
+        "webhook",
+        "observability"
+      ],
+      "readme": "ocp/troubleshooting/multiclusterobservability-webhook-rejection/README.md",
+      "quickRef": "ocp/troubleshooting/multiclusterobservability-webhook-rejection/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "kafka-broker-init-kubernetes-svc",
+      "title": "Kafka Broker Stuck in Init \u2014 kubernetes Service Unreachable",
+      "category": "control-plane",
+      "product": "ocp",
+      "symptoms": [
+        "kafka broker stuck in init",
+        "cannot reach kubernetes service ClusterIP",
+        "confluent helm init kubernetes.default",
+        "admission webhook x509 apiserver",
+        "network policy missing kube-apiserver egress",
+        "adminnetworkpolicy same priority",
+        "ANP priority collision intermittent",
+        "config-init max retries exceeded connection timed out"
+      ],
+      "tags": [
+        "kafka",
+        "confluent",
+        "webhook",
+        "ovn",
+        "network-policy",
+        "control-plane",
+        "anp",
+        "banp"
+      ],
+      "readme": "ocp/troubleshooting/kafka-broker-init-kubernetes-svc/README.md",
+      "quickRef": null
+    },
+    {
+      "id": "debug-toolbox-container",
+      "title": "Debug Toolbox Container",
+      "category": "tools",
+      "product": "ocp",
+      "symptoms": [
+        "ephemeral debug container OpenShift",
+        "network troubleshoot from pod",
+        "privileged toolbox UBI"
+      ],
+      "tags": [
+        "debug",
+        "networking",
+        "toolbox"
+      ],
+      "readme": "ocp/troubleshooting/debug-toolbox-container/README.md",
+      "quickRef": "ocp/troubleshooting/debug-toolbox-container/QUICK-REFERENCE.md"
+    },
+    {
+      "id": "rhacm-mch-stuck-pending-upgrade",
+      "title": "MCH Stuck Pending Upgrade",
+      "category": "hub-upgrade",
+      "product": "rhacm",
+      "symptoms": [
+        "multiclusterhub stuck updating",
+        "MCH pending installing",
+        "hub upgrade stuck beyond 15 minutes"
+      ],
+      "tags": [
+        "rhacm",
+        "mch",
+        "upgrade",
+        "hub"
+      ],
+      "readme": "rhacm/troubleshooting/mch-stuck-pending-upgrade.md/README.md",
+      "quickRef": null
+    },
+    {
+      "id": "rhacm-managed-cluster-lease-not-updated",
+      "title": "Managed Cluster Lease Not Updated",
+      "category": "hub-upgrade",
+      "product": "rhacm",
+      "symptoms": [
+        "registration agent stopped updating its lease",
+        "managed cluster unknown after hub upgrade",
+        "cluster is not reachable RHACM"
+      ],
+      "tags": [
+        "rhacm",
+        "klusterlet",
+        "lease",
+        "hub"
+      ],
+      "readme": "rhacm/troubleshooting/managed-cluster-lease-not-updated.md/README.md",
+      "quickRef": null
+    },
+    {
+      "id": "rhacm-observability-addon-missing",
+      "title": "Observability Addon Missing",
+      "category": "observability",
+      "product": "rhacm",
+      "symptoms": [
+        "observability addon missing managed cluster",
+        "no ManagedClusterAddon observability",
+        "multicluster observability operator not reconciling"
+      ],
+      "tags": [
+        "rhacm",
+        "observability",
+        "addon"
+      ],
+      "readme": "rhacm/troubleshooting/observability-addon-missing.md/README.md",
+      "quickRef": null
+    },
+    {
+      "id": "rhacm-observability-platform-metrics-missing",
+      "title": "Observability Platform Metrics Missing",
+      "category": "observability",
+      "product": "rhacm",
+      "symptoms": [
+        "platform metrics missing ACM dashboards",
+        "prometheus PVC full spoke cluster",
+        "custom metrics but no cpu memory kubelet"
+      ],
+      "tags": [
+        "rhacm",
+        "observability",
+        "prometheus"
+      ],
+      "readme": "rhacm/troubleshooting/observability-platform-metrics-missing.md/README.md",
+      "quickRef": null
+    },
+    {
+      "id": "rhacm-search-service-503",
+      "title": "RHACM Search Service 503",
+      "category": "search",
+      "product": "rhacm",
+      "symptoms": [
+        "search service 503 RHACM",
+        "search-postgres OOMKilled",
+        "error contacting search service"
+      ],
+      "tags": [
+        "rhacm",
+        "search"
+      ],
+      "readme": "rhacm/troubleshooting/search-service-503.md/README.md",
+      "quickRef": null
+    },
+    {
+      "id": "rhacm-agent-install-rootfs-ssl-failure",
+      "title": "Agent Install Rootfs SSL Failure",
+      "category": "agent-install",
+      "product": "rhacm",
+      "symptoms": [
+        "assisted-image-service SSL connection reset",
+        "agent install rootfs download failed",
+        "curl 35 SSL_connect connection reset peer"
+      ],
+      "tags": [
+        "rhacm",
+        "agent-install",
+        "cim",
+        "ssl"
+      ],
+      "readme": "rhacm/troubleshooting/agent-install-rootfs-ssl-failure.md/README.md",
+      "quickRef": null
+    },
+    {
+      "id": "ansible-aap-controller-token-404",
+      "title": "AAP Controller Token 404",
+      "category": "authentication",
+      "product": "ansible",
+      "symptoms": [
+        "ansible.controller.token 404",
+        "Failed to get token HTTP Error 404",
+        "AAP 2.5 token module not found"
+      ],
+      "tags": [
+        "ansible",
+        "aap",
+        "token",
+        "gateway"
+      ],
+      "readme": "ansible/troubleshooting/aap-controller-token-404/README.md",
+      "quickRef": null
+    }
+  ]
+}

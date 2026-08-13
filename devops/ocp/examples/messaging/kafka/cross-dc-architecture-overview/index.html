@@ -1,0 +1,4277 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Engineering reference and essays — DevOps troubleshooting, examples, and AI-assisted practice." name="description"/>
+<link href="https://hhellbusch.github.io/my-ai-workspace/devops/ocp/examples/messaging/kafka/cross-dc-architecture-overview/" rel="canonical"/>
+<link href="../../../../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>Cross-DC Kafka Replication Architecture — Complete Picture - Field Notes</title>
+<link href="../../../../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../../../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../../../../../assets/poc/symptom-picker.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#cross-dc-kafka-replication-architecture-complete-picture">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Field Notes" class="md-header__button md-logo" data-md-component="logo" href="../../../../../.." title="Field Notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Field Notes
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Cross-DC Kafka Replication Architecture — Complete Picture
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/hhellbusch/my-ai-workspace" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
+    hhellbusch/my-ai-workspace
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Field Notes" class="md-nav__button md-logo" data-md-component="logo" href="../../../../../.." title="Field Notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    Field Notes
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/hhellbusch/my-ai-workspace" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
+    hhellbusch/my-ai-workspace
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../interactive-poc/">
+<span class="md-ellipsis">
+    
+  
+    Interactive PoC
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    DevOps Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    DevOps Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../">
+<span class="md-ellipsis">
+    
+  
+    DevOps hub
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ORGANIZATION/">
+<span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../SYMPTOM-INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Symptom index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../EXAMPLE-INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Example index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../fleet-control-spectrum/">
+<span class="md-ellipsis">
+    
+  
+    Fleet control spectrum
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Learning paths
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Learning paths
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../learning-path/">
+<span class="md-ellipsis">
+    
+  
+    Learning paths index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../learning-path/vmware-admins/">
+<span class="md-ellipsis">
+    
+  
+    VMware admins
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../learning-path/git/">
+<span class="md-ellipsis">
+    
+  
+    Git curriculum
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Pedagogy and setup
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_7_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Pedagogy and setup
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../git/git-learning-guide/">
+<span class="md-ellipsis">
+    
+  
+    Git learning guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../kvm/">
+<span class="md-ellipsis">
+    
+  
+    KVM on Fedora
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../llm/">
+<span class="md-ellipsis">
+    
+  
+    Local LLM setup
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ansible troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_8_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ansible troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_8_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_8_1" id="__nav_3_8_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Authentication
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_8_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_8_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Authentication
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ansible/troubleshooting/aap-controller-token-404/">
+<span class="md-ellipsis">
+    
+  
+    AAP Controller Token 404
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    OCP troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_1" id="__nav_3_9_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Automation
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Automation
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/aap-ssh-mtu-issues/">
+<span class="md-ellipsis">
+    
+  
+    AAP SSH Connection MTU Issues
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_2" id="__nav_3_9_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Bare Metal
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/bare-metal-node-inspection-timeout/">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal Node Inspection Timeout
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/bare-metal-rhcos-disk-wipe/">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal RHCOS Disk Wipe
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/bare-metal-stale-node-ip-conflict/">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal Stale Node IP Conflict
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/worker-node-tls-cert-failure/">
+<span class="md-ellipsis">
+    
+  
+    Worker Node TLS Certificate Failure
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_3" id="__nav_3_9_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Certificates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Certificates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/csr-management/">
+<span class="md-ellipsis">
+    
+  
+    CSR Management
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_4" id="__nav_3_9_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Control Plane
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Control Plane
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/apiserver-cert-deadlock/">
+<span class="md-ellipsis">
+    
+  
+    API Server Certificate Deadlock
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/api-slowness-web-console/">
+<span class="md-ellipsis">
+    
+  
+    API Slowness and Web Console Performance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/control-plane-kubeconfigs/">
+<span class="md-ellipsis">
+    
+  
+    Control Plane Kubeconfigs
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/kafka-broker-init-kubernetes-svc/">
+<span class="md-ellipsis">
+    
+  
+    Kafka Broker Stuck in Init — kubernetes Service Unreachable
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/oauth-healthz-unavailable/">
+<span class="md-ellipsis">
+    
+  
+    OAuth Server healthz Unavailable
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/kube-controller-manager-crashloop/">
+<span class="md-ellipsis">
+    
+  
+    kube-controller-manager Crash Loop
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_5" id="__nav_3_9_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_5_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Installation
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/failed-ocp-install/">
+<span class="md-ellipsis">
+    
+  
+    Failed OCP Install
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_6" id="__nav_3_9_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_6_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Kubernetes
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/namespace-stuck-terminating/">
+<span class="md-ellipsis">
+    
+  
+    Namespace Stuck in Terminating
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_7" id="__nav_3_9_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Lifecycle
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_7_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Lifecycle
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/destroy-cluster-without-metadata/">
+<span class="md-ellipsis">
+    
+  
+    Destroy Cluster Without Metadata
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_8" id="__nav_3_9_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_8_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Networking
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/coreos-networking-issues/">
+<span class="md-ellipsis">
+    
+  
+    CoreOS Networking Issues
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_9" id="__nav_3_9_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Registry
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_9_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Registry
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/image-registry-auth/">
+<span class="md-ellipsis">
+    
+  
+    Image Registry Auth and Route Exposure
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/image-signature-policy-mcp-deadlock/">
+<span class="md-ellipsis">
+    
+  
+    Image Signature Policy MCP Deadlock
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_10" id="__nav_3_9_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Rhacm
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_10_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Rhacm
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/multiclusterobservability-webhook-rejection/">
+<span class="md-ellipsis">
+    
+  
+    MultiClusterObservability Webhook Rejection
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_11" id="__nav_3_9_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_11_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/nfs-portworx-proxy-pvc-slow-ready/">
+<span class="md-ellipsis">
+    
+  
+    NFS Portworx Proxy PVC Slow Ready
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/nvme-host-nqn-duplicate/">
+<span class="md-ellipsis">
+    
+  
+    NVMe Host NQN Duplicates
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/nvme-tcp-storage-network/">
+<span class="md-ellipsis">
+    
+  
+    NVMe/TCP Storage Network
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/portworx-csi-crashloop/">
+<span class="md-ellipsis">
+    
+  
+    Portworx CSI Pod CrashLoopBackOff
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/prometheus-monitoring-storage/">
+<span class="md-ellipsis">
+    
+  
+    Prometheus and Alertmanager Storage
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_12" id="__nav_3_9_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_12_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tools
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/debug-toolbox-container/">
+<span class="md-ellipsis">
+    
+  
+    Debug Toolbox Container
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_13" id="__nav_3_9_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Virtualization
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_13_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Virtualization
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/kubevirt-vm-stuck-provisioning/">
+<span class="md-ellipsis">
+    
+  
+    KubeVirt VM Stuck in Provisioning
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_10" id="__nav_3_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Rhacm troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Rhacm troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_10_1" id="__nav_3_10_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Install
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Install
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../rhacm/troubleshooting/agent-install-rootfs-ssl-failure/">
+<span class="md-ellipsis">
+    
+  
+    Agent Install Rootfs SSL Failure
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_10_2" id="__nav_3_10_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Hub Upgrade
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Hub Upgrade
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../rhacm/troubleshooting/mch-stuck-pending-upgrade/">
+<span class="md-ellipsis">
+    
+  
+    MCH Stuck Pending Upgrade
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../rhacm/troubleshooting/managed-cluster-lease-not-updated/">
+<span class="md-ellipsis">
+    
+  
+    Managed Cluster Lease Not Updated
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_10_3" id="__nav_3_10_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Observability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../rhacm/troubleshooting/observability-addon-missing/">
+<span class="md-ellipsis">
+    
+  
+    Observability Addon Missing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../rhacm/troubleshooting/observability-platform-metrics-missing/">
+<span class="md-ellipsis">
+    
+  
+    Observability Platform Metrics Missing
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_10_4" id="__nav_3_10_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Search
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Search
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../rhacm/troubleshooting/search-service-503/">
+<span class="md-ellipsis">
+    
+  
+    RHACM Search Service 503
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_11" id="__nav_3_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    OpenShift
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_11_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    OpenShift
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../">
+<span class="md-ellipsis">
+    
+  
+    OCP hub
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../disconnected-install/">
+<span class="md-ellipsis">
+    
+  
+    Disconnected install
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ibm-z/">
+<span class="md-ellipsis">
+    
+  
+    IBM Z
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../gpu/">
+<span class="md-ellipsis">
+    
+  
+    GPU artifacts
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_12" id="__nav_3_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    OCP examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_12_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../">
+<span class="md-ellipsis">
+    
+  
+    Examples index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_12_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_12_2" id="__nav_3_12_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Bare metal
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_12_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_12_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Bare metal
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../bare-metal/">
+<span class="md-ellipsis">
+    
+  
+    Bare metal index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../bare-metal/secondary-disk/">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal Secondary Disk Offload
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../bare-metal/var-log-disk/">
+<span class="md-ellipsis">
+    
+  
+    Var Log on Secondary Disk
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_12_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_12_3" id="__nav_3_12_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_12_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_12_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Messaging
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../">
+<span class="md-ellipsis">
+    
+  
+    Messaging index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_12_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_12_3_2" id="__nav_3_12_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Kafka
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_12_3_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_3_12_3_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Kafka
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../">
+<span class="md-ellipsis">
+    
+  
+    Kafka index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../bare-metal-portworx/">
+<span class="md-ellipsis">
+    
+  
+    Kafka on Bare Metal with Portworx
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_12_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_12_4" id="__nav_3_12_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_12_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_12_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Networking
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../networking/">
+<span class="md-ellipsis">
+    
+  
+    Networking index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../networking/network-attachment-definitions/">
+<span class="md-ellipsis">
+    
+  
+    NetworkAttachmentDefinition Examples
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../networking/ovn-kubernetes-install-config/">
+<span class="md-ellipsis">
+    
+  
+    OVN-Kubernetes Install Config
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../networking/vlan-segmentation/">
+<span class="md-ellipsis">
+    
+  
+    VLAN Network Segmentation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_12_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_12_5" id="__nav_3_12_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Labs
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_12_5_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_12_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Labs
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../labs/">
+<span class="md-ellipsis">
+    
+  
+    Labs index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../labs/sno-kvm-lab/">
+<span class="md-ellipsis">
+    
+  
+    SNO on KVM Lab
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_13" id="__nav_3_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    OCP notes
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_13_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP notes
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/">
+<span class="md-ellipsis">
+    
+  
+    Notes index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/cluster-resource-override/">
+<span class="md-ellipsis">
+    
+  
+    Cluster Resource Override
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/container-density-overcommit/">
+<span class="md-ellipsis">
+    
+  
+    Container Density Overcommit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/kafka-on-openshift-tenancy/">
+<span class="md-ellipsis">
+    
+  
+    Kafka On Openshift Tenancy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/machine-config-pools/">
+<span class="md-ellipsis">
+    
+  
+    Machine Config Pools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/network-policy-observability/">
+<span class="md-ellipsis">
+    
+  
+    Network Policy Observability
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/openshift-useful-commands/">
+<span class="md-ellipsis">
+    
+  
+    Openshift Useful Commands
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/pod-termination-quick-stop/">
+<span class="md-ellipsis">
+    
+  
+    Pod Termination Quick Stop
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/vertical-pod-autoscaler/">
+<span class="md-ellipsis">
+    
+  
+    Vertical Pod Autoscaler
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_14" id="__nav_3_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Products
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_14_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Products
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../rhacm/">
+<span class="md-ellipsis">
+    
+  
+    RHACM
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ansible/">
+<span class="md-ellipsis">
+    
+  
+    Ansible
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../argo/">
+<span class="md-ellipsis">
+    
+  
+    Argo CD
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../coreos/">
+<span class="md-ellipsis">
+    
+  
+    CoreOS
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../vault/">
+<span class="md-ellipsis">
+    
+  
+    Vault
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_15" id="__nav_3_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Workspace tooling
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_15_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Workspace tooling
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../pi/">
+<span class="md-ellipsis">
+    
+  
+    Pi
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../paude/">
+<span class="md-ellipsis">
+    
+  
+    Paude
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../paude-proxy/">
+<span class="md-ellipsis">
+    
+  
+    Paude proxy
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Essays
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Essays
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/">
+<span class="md-ellipsis">
+    
+  
+    Docs catalogue
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI Engineering
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI Engineering
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/">
+<span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/ai-assisted-development-workflows/">
+<span class="md-ellipsis">
+    
+  
+    Ai Assisted Development Workflows
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/ai-assisted-upstream-contributions/">
+<span class="md-ellipsis">
+    
+  
+    Ai Assisted Upstream Contributions
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/ai-for-unfamiliar-domains/">
+<span class="md-ellipsis">
+    
+  
+    Ai For Unfamiliar Domains
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/ai-legacy-improvement/">
+<span class="md-ellipsis">
+    
+  
+    Ai Legacy Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/artifact-discipline-and-ai/">
+<span class="md-ellipsis">
+    
+  
+    Artifact Discipline And Ai
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/framework-bootstrap/">
+<span class="md-ellipsis">
+    
+  
+    Framework Bootstrap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/frameworks-vs-behavior/">
+<span class="md-ellipsis">
+    
+  
+    Frameworks Vs Behavior
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/interaction-patterns/">
+<span class="md-ellipsis">
+    
+  
+    Interaction Patterns
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/local-llm-sysadmin/">
+<span class="md-ellipsis">
+    
+  
+    Local Llm Sysadmin
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/openshift-ai-llm-deployment-summary/">
+<span class="md-ellipsis">
+    
+  
+    Openshift Ai Llm Deployment Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/openshift-gpu-node-management/">
+<span class="md-ellipsis">
+    
+  
+    Openshift Gpu Node Management
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/paude-getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Paude Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/portable-ai-toolkit/">
+<span class="md-ellipsis">
+    
+  
+    Portable Ai Toolkit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/prompting-and-state/">
+<span class="md-ellipsis">
+    
+  
+    Prompting And State
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/session-framework/">
+<span class="md-ellipsis">
+    
+  
+    Session Framework
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/sparring-and-shoshin/">
+<span class="md-ellipsis">
+    
+  
+    Sparring And Shoshin
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/the-meta-development-loop/">
+<span class="md-ellipsis">
+    
+  
+    The Meta Development Loop
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/the-shift/">
+<span class="md-ellipsis">
+    
+  
+    The Shift
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/what-a-context-window-actually-is/">
+<span class="md-ellipsis">
+    
+  
+    What A Context Window Actually Is
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/youtube-video-analysis/">
+<span class="md-ellipsis">
+    
+  
+    Youtube Video Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Philosophy
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Philosophy
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/philosophy/">
+<span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/philosophy/ego-ai-and-the-zen-antidote/">
+<span class="md-ellipsis">
+    
+  
+    Ego Ai And The Zen Antidote
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/philosophy/the-dojo-after-the-automation/">
+<span class="md-ellipsis">
+    
+  
+    The Dojo After The Automation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/philosophy/the-full-cup-practitioners-guide/">
+<span class="md-ellipsis">
+    
+  
+    The Full Cup Practitioners Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/philosophy/the-full-cup/">
+<span class="md-ellipsis">
+    
+  
+    The Full Cup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/philosophy/zanshin/">
+<span class="md-ellipsis">
+    
+  
+    Zanshin
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Case Studies
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Case Studies
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/">
+<span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/adversarial-review-meta-development/">
+<span class="md-ellipsis">
+    
+  
+    Adversarial Review Meta Development
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/ai-self-diagnosis-symptom-report/">
+<span class="md-ellipsis">
+    
+  
+    Ai Self Diagnosis Symptom Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/building-a-research-skill/">
+<span class="md-ellipsis">
+    
+  
+    Building A Research Skill
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/building-knowledge-management-with-ai/">
+<span class="md-ellipsis">
+    
+  
+    Building Knowledge Management With Ai
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/case-studies-as-discovery/">
+<span class="md-ellipsis">
+    
+  
+    Case Studies As Discovery
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/choosing-scripts-over-services/">
+<span class="md-ellipsis">
+    
+  
+    Choosing Scripts Over Services
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/context-stripped-citations/">
+<span class="md-ellipsis">
+    
+  
+    Context Stripped Citations
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/conversation-to-essay/">
+<span class="md-ellipsis">
+    
+  
+    Conversation To Essay
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/corpus-level-spar/">
+<span class="md-ellipsis">
+    
+  
+    Corpus Level Spar
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/debugging-ai-judgment/">
+<span class="md-ellipsis">
+    
+  
+    Debugging Ai Judgment
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/decayed-how-to/">
+<span class="md-ellipsis">
+    
+  
+    Decayed How To
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/diagnosing-through-the-stack/">
+<span class="md-ellipsis">
+    
+  
+    Diagnosing Through The Stack
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/directory-move-gitignore-drift/">
+<span class="md-ellipsis">
+    
+  
+    Directory Move Gitignore Drift
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/evolving-creative-scope/">
+<span class="md-ellipsis">
+    
+  
+    Evolving Creative Scope
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/experiment-cant-use-findings/">
+<span class="md-ellipsis">
+    
+  
+    Experiment Cant Use Findings
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/fabricated-references/">
+<span class="md-ellipsis">
+    
+  
+    Fabricated References
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/frictionless-entity/">
+<span class="md-ellipsis">
+    
+  
+    Frictionless Entity
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/graph-splits-hybrid-inference/">
+<span class="md-ellipsis">
+    
+  
+    Graph Splits Hybrid Inference
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/heavy-safety-nets/">
+<span class="md-ellipsis">
+    
+  
+    Heavy Safety Nets
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/inherited-frame-shapes-solution/">
+<span class="md-ellipsis">
+    
+  
+    Inherited Frame Shapes Solution
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/landscape-before-depth/">
+<span class="md-ellipsis">
+    
+  
+    Landscape Before Depth
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/link-depth-drift/">
+<span class="md-ellipsis">
+    
+  
+    Link Depth Drift
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/meta-document-drift/">
+<span class="md-ellipsis">
+    
+  
+    Meta Document Drift
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/model-self-report-runtime-state/">
+<span class="md-ellipsis">
+    
+  
+    Model Self Report Runtime State
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/session-crash-recovery/">
+<span class="md-ellipsis">
+    
+  
+    Session Crash Recovery
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/spar-distortion/">
+<span class="md-ellipsis">
+    
+  
+    Spar Distortion
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/spar-finds-the-assumption/">
+<span class="md-ellipsis">
+    
+  
+    Spar Finds The Assumption
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/spar-lifecycle-boundary/">
+<span class="md-ellipsis">
+    
+  
+    Spar Lifecycle Boundary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/spar-to-essay-pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Spar To Essay Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/stale-context-in-long-sessions/">
+<span class="md-ellipsis">
+    
+  
+    Stale Context In Long Sessions
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/survivorship-bias-recommendations/">
+<span class="md-ellipsis">
+    
+  
+    Survivorship Bias Recommendations
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/technical-correctness-vs-communication/">
+<span class="md-ellipsis">
+    
+  
+    Technical Correctness Vs Communication
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/when-the-repository-becomes-the-resume/">
+<span class="md-ellipsis">
+    
+  
+    When The Repository Becomes The Resume
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/who-is-speaking/">
+<span class="md-ellipsis">
+    
+  
+    Who Is Speaking
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#on-this-page">
+<span class="md-ellipsis">
+      
+        On this page
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#problem-shape">
+<span class="md-ellipsis">
+      
+        Problem shape
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#choose-your-replication-path">
+<span class="md-ellipsis">
+      
+        Choose your replication path
+      
+    </span>
+</a>
+<nav aria-label="Choose your replication path" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#replication-traffic-flow-component-view">
+<span class="md-ellipsis">
+      
+        Replication traffic flow — component view
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#layer-map">
+<span class="md-ellipsis">
+      
+        Layer map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#networking-basics-terms-used-in-this-doc">
+<span class="md-ellipsis">
+      
+        Networking basics (terms used in this doc)
+      
+    </span>
+</a>
+<nav aria-label="Networking basics (terms used in this doc)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#layer-numbers-quick-reference">
+<span class="md-ellipsis">
+      
+        Layer numbers (quick reference)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#three-address-worlds-on-a-node">
+<span class="md-ellipsis">
+      
+        Three address "worlds" on a node
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#nat-snat-and-dnat">
+<span class="md-ellipsis">
+      
+        NAT, SNAT, and DNAT
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#default-pod-network-vs-multus-secondary-network">
+<span class="md-ellipsis">
+      
+        Default pod network vs Multus secondary network
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scoped-route-vs-default-route-host-and-pod">
+<span class="md-ellipsis">
+      
+        Scoped route vs default route (host and pod)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#other-terms-that-appear-later">
+<span class="md-ellipsis">
+      
+        Other terms that appear later
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#shared-foundation-host-network">
+<span class="md-ellipsis">
+      
+        Shared foundation — host network
+      
+    </span>
+</a>
+<nav aria-label="Shared foundation — host network" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#layer-12-bond-and-vlan">
+<span class="md-ellipsis">
+      
+        Layer 1–2: bond and VLAN
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#layer-3-routing">
+<span class="md-ellipsis">
+      
+        Layer 3: routing
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#path-a-multus-pod-attachment">
+<span class="md-ellipsis">
+      
+        Path A — Multus pod attachment
+      
+    </span>
+</a>
+<nav aria-label="Path A — Multus pod attachment" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pod-attachment-via-multus">
+<span class="md-ellipsis">
+      
+        Pod attachment via Multus
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#broker-replication-ip-assignment">
+<span class="md-ellipsis">
+      
+        Broker replication IP assignment
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#securing-the-secondary-network-multinetworkpolicy">
+<span class="md-ellipsis">
+      
+        Securing the secondary network: MultiNetworkPolicy
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#part-2-confluent-cluster-linking-on-top-of-it">
+<span class="md-ellipsis">
+      
+        Part 2 — Confluent Cluster Linking on top of it
+      
+    </span>
+</a>
+<nav aria-label="Part 2 — Confluent Cluster Linking on top of it" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-cluster-linking-simplifies">
+<span class="md-ellipsis">
+      
+        What Cluster Linking simplifies
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#connection-direction">
+<span class="md-ellipsis">
+      
+        Connection direction
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#path-b-dedicated-ingress-shard">
+<span class="md-ellipsis">
+      
+        Path B — dedicated ingress shard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cfk-listener-configuration">
+<span class="md-ellipsis">
+      
+        CFK listener configuration
+      
+    </span>
+</a>
+<nav aria-label="CFK listener configuration" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#path-a-multus-listener">
+<span class="md-ellipsis">
+      
+        Path A — Multus listener
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#path-b-or-c-cfk-route-listener">
+<span class="md-ellipsis">
+      
+        Path B or C — CFK Route listener
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#managing-the-cluster-link-gitops">
+<span class="md-ellipsis">
+      
+        Managing the cluster link (GitOps)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#bidirectional-pre-staged-links-for-failover">
+<span class="md-ellipsis">
+      
+        Bidirectional, pre-staged links for failover
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-requirements">
+<span class="md-ellipsis">
+      
+        Security requirements
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#multinetworkpolicy-for-kafka">
+<span class="md-ellipsis">
+      
+        MultiNetworkPolicy for Kafka
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#anti-patterns">
+<span class="md-ellipsis">
+      
+        Anti-patterns
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pre-flight-before-network-verification">
+<span class="md-ellipsis">
+      
+        Pre-flight before network verification
+      
+    </span>
+</a>
+<nav aria-label="Pre-flight before network verification" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#resolve-first-from-open-questions">
+<span class="md-ellipsis">
+      
+        Resolve first (from open questions)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#build-order">
+<span class="md-ellipsis">
+      
+        Build order
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#platform-gates-both-clusters">
+<span class="md-ellipsis">
+      
+        Platform gates (both clusters)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#network-firewall-coordination">
+<span class="md-ellipsis">
+      
+        Network / firewall coordination
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#templating-what-gets-helm-vs-envsubst">
+<span class="md-ellipsis">
+      
+        Templating: what gets Helm vs envsubst
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-a-green-run-proves-and-doesnt">
+<span class="md-ellipsis">
+      
+        What a green run proves — and doesn't
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#verification-checklist">
+<span class="md-ellipsis">
+      
+        Verification checklist
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#open-questions-to-confirm-before-implementing">
+<span class="md-ellipsis">
+      
+        Open questions to confirm before implementing
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="cross-dc-kafka-replication-architecture-complete-picture">Cross-DC Kafka Replication Architecture — Complete Picture<a class="headerlink" href="#cross-dc-kafka-replication-architecture-complete-picture" title="Permanent link">¶</a></h1>
+<p><strong>Audience:</strong> Platform engineers and peers reviewing a proposed cross-DC network + Kafka replication design before implementation — not yet a build guide.</p>
+<p><strong>Purpose:</strong> <strong>Canonical hub</strong> for cross-DC Cluster Linking on bare-metal OpenShift — compare replication paths, understand shared network foundations, then follow the deep-dive doc for the mechanism you are evaluating. This file is the entry point; linked docs are maintained references, not peers that override it.</p>
+<p><strong>How to read this doc:</strong></p>
+<table>
+<thead>
+<tr>
+<th>You need to…</th>
+<th>Start here</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Compare paths</strong> (Multus vs ingress)</td>
+<td><a href="#choose-your-replication-path">Choose your replication path</a></td>
+</tr>
+<tr>
+<td><strong>Understand networking terms</strong> (SNAT, Multus, scoped routes)</td>
+<td><a href="#networking-basics-terms-used-in-this-doc">Networking basics</a></td>
+</tr>
+<tr>
+<td><strong>Implement host bond/VLAN</strong> (required for all paths)</td>
+<td><a href="#shared-foundation--host-network">Shared foundation — host network</a></td>
+</tr>
+<tr>
+<td><strong>Implement Multus path</strong> (primary)</td>
+<td><a href="#path-a--multus-pod-attachment">Path A — Multus pod attachment</a> → <a href="#part-2--confluent-cluster-linking-on-top-of-it">Part 2 — Cluster Linking</a></td>
+</tr>
+<tr>
+<td><strong>Implement ingress path</strong> (alternative)</td>
+<td><a href="#path-b--dedicated-ingress-shard">Path B — dedicated ingress shard</a> → <a href="../cross-dc-ingress-alternative/">cross-dc-ingress-alternative.md</a></td>
+</tr>
+<tr>
+<td><strong>Run pre-cutover verification</strong></td>
+<td><a href="#pre-flight-before-network-verification">Pre-flight</a> (Path A: Multus network test) or <a href="../../../networking/cross-dc-ingress-test/">ingress test framework</a> (Path B)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Corpus map (deep dives):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Doc / tooling</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../../../networking/cross-dc-replication/">cross-dc-replication.md</a></td>
+<td>Generic host + Multus layers (workload-agnostic depth)</td>
+</tr>
+<tr>
+<td><a href="../cross-dc-cluster-linking/">cross-dc-cluster-linking.md</a></td>
+<td>Kafka / CFK / Cluster Linking depth</td>
+</tr>
+<tr>
+<td><a href="../cross-dc-ingress-alternative/">cross-dc-ingress-alternative.md</a></td>
+<td>Dedicated ingress shard + external DNS/VIP handoff</td>
+</tr>
+<tr>
+<td><a href="../../../networking/cross-dc-rollout/">cross-dc-rollout/</a></td>
+<td>Inventory → rendered NNCP / test env / Kafka net values</td>
+</tr>
+<tr>
+<td><a href="../cross-dc-nncp-helm/">cross-dc-nncp-helm/</a></td>
+<td>Host bond/VLAN NNCP (shared by Multus and ingress paths)</td>
+</tr>
+<tr>
+<td><a href="../cross-dc-kafka-net-helm/">cross-dc-kafka-net-helm/</a></td>
+<td>Multus NAD + <code>MultiNetworkPolicy</code> (Multus path only)</td>
+</tr>
+<tr>
+<td><a href="../../../networking/cross-dc-network-test/">cross-dc-network-test/</a></td>
+<td>Pre-Kafka Multus network verification (Path A)</td>
+</tr>
+<tr>
+<td><a href="../../../networking/cross-dc-ingress-test/">cross-dc-ingress-test/</a></td>
+<td>Pre-Kafka layered ingress verification (Path B)</td>
+</tr>
+<tr>
+<td><a href="../examples/ingress-replication/">ingress-replication examples</a></td>
+<td>Generic <code>IngressController</code> + policy examples (ingress path)</td>
+</tr>
+</tbody>
+</table>
+<p>If this hub and a deep-dive disagree, <strong>update the deep-dive and then sync this hub</strong> — not the other way around.</p>
+<p><strong>Official references</strong> (sent by a peer for cross-check — findings folded in below):</p>
+<ul>
+<li><a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/multiple_networks/secondary-networks#nw-multus-advanced-annotations_attaching-pod">OpenShift: Secondary networks — attaching a pod</a> — <code>default-route</code> override, static IP/MAC annotations</li>
+<li><a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/multiple_networks/secondary-networks#configuring-multi-network-policy">OpenShift: Secondary networks — configuring multi-network policy</a></li>
+<li><a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_apis/multinetworkpolicy-k8s-cni-cncf-io-v1beta1">OpenShift: MultiNetworkPolicy API reference</a></li>
+</ul>
+<p><strong>Deployment context:</strong> Confluent for Kubernetes (<strong>CFK</strong>), installed via Helm (not OLM/OperatorHub). Helm vs. OLM only affects how the operator itself is deployed, not the <code>platform.confluent.io</code> CRDs it watches.</p>
+<hr/>
+<h2 id="on-this-page">On this page<a class="headerlink" href="#on-this-page" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="#problem-shape">Problem shape</a></li>
+<li><a href="#choose-your-replication-path">Choose your replication path</a></li>
+<li><a href="#replication-traffic-flow--component-view">Replication traffic flow — component view</a></li>
+<li><a href="#layer-map">Layer map</a></li>
+<li><a href="#networking-basics-terms-used-in-this-doc">Networking basics (terms used in this doc)</a></li>
+<li><a href="#shared-foundation--host-network">Shared foundation — host network</a></li>
+<li><a href="#layer-12-bond-and-vlan">Layer 1–2: bond and VLAN</a></li>
+<li><a href="#layer-3-routing">Layer 3: routing</a></li>
+<li><a href="#path-a--multus-pod-attachment">Path A — Multus pod attachment</a></li>
+<li><a href="#broker-replication-ip-assignment">Broker replication IP assignment</a></li>
+<li><a href="#securing-the-secondary-network-multinetworkpolicy">Securing the secondary network: MultiNetworkPolicy</a></li>
+<li><a href="#part-2--confluent-cluster-linking-on-top-of-it">Part 2 — Confluent Cluster Linking on top of it</a></li>
+<li><a href="#what-cluster-linking-simplifies">What Cluster Linking simplifies</a></li>
+<li><a href="#connection-direction">Connection direction</a></li>
+<li><a href="#path-b--dedicated-ingress-shard">Path B — dedicated ingress shard</a></li>
+<li><a href="#cfk-listener-configuration">CFK listener configuration</a></li>
+<li><a href="#managing-the-cluster-link-gitops">Managing the cluster link (GitOps)</a></li>
+<li><a href="#bidirectional-pre-staged-links-for-failover">Bidirectional, pre-staged links for failover</a></li>
+<li><a href="#security-requirements">Security requirements</a></li>
+<li><a href="#multinetworkpolicy-for-kafka">MultiNetworkPolicy for Kafka</a></li>
+<li><a href="#anti-patterns">Anti-patterns</a></li>
+<li><a href="#pre-flight-before-network-verification">Pre-flight before network verification</a></li>
+<li><a href="#verification-checklist">Verification checklist</a></li>
+<li><a href="#open-questions-to-confirm-before-implementing">Open questions to confirm before implementing</a></li>
+</ul>
+<hr/>
+<h2 id="problem-shape">Problem shape<a class="headerlink" href="#problem-shape" title="Permanent link">¶</a></h2>
+<p>Two bare-metal OpenShift clusters, one per datacenter, need a <strong>dedicated, isolated</strong> network path for bulk replication traffic — separate from management/API/OVN pod traffic. Each node has two NICs on <strong>two different physical cards</strong> (slot A, slot B), intended for HA via bonding. This is a <strong>third network</strong>, distinct from both the cluster's machine network and any storage network:</p>
+<table>
+<thead>
+<tr>
+<th>Network</th>
+<th>Typical pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Management / API / OVN</td>
+<td>Existing machine network</td>
+</tr>
+<tr>
+<td>Storage (NVMe/TCP, etc.)</td>
+<td>Two independent NICs, <strong>no bond</strong></td>
+</tr>
+<tr>
+<td><strong>Cross-DC replication</strong></td>
+<td>Bonded NIC pair + VLAN + routed subnet — this doc</td>
+</tr>
+</tbody>
+</table>
+<p>The concrete workload driving this design is <strong>Apache Kafka (Confluent Platform, via CFK)</strong>, using <strong>Cluster Linking</strong> for broker-to-broker replication between the two clusters.</p>
+<p><strong>Before building this:</strong> confirm whether the two NICs per node are genuinely new/unconfigured, or whether they're existing NICs already bonded for something else and this is really "add a VLAN to an existing bond." The two scenarios have very different bandwidth-isolation and fault-isolation properties — check <code>nmcli connection show</code> / <code>ip -d link show</code> / <code>oc get nns</code> on a target node rather than assuming.</p>
+<hr/>
+<h2 id="choose-your-replication-path">Choose your replication path<a class="headerlink" href="#choose-your-replication-path" title="Permanent link">¶</a></h2>
+<p><strong>Read this section first</strong> if you are deciding how brokers reach each other across datacenters.
+The sections below assume you have picked a path.</p>
+<p>Three realistic shapes for cross-DC Cluster Linking on bare-metal OpenShift:</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>How brokers are reached</th>
+<th>Advertised endpoints</th>
+<th>Firewall (WAN)</th>
+<th>Ops complexity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A — Multus</strong> (primary)</td>
+<td>Broker pod on replication VLAN</td>
+<td><code>REPLICATION://10.200.1.21:9095</code> per broker</td>
+<td>Per-broker pod IP, TCP <strong>9095</strong></td>
+<td><code>$(REPL_IP)</code> / IPAM wiring</td>
+</tr>
+<tr>
+<td><strong>B — Dedicated ingress</strong></td>
+<td>HAProxy on repl VLAN → OVN → broker</td>
+<td>CFK Route hostnames, TCP <strong>443</strong> (passthrough)</td>
+<td>Router VIP or node repl IPs, TCP <strong>443</strong></td>
+<td>2nd IngressController + DNS/VIP</td>
+</tr>
+<tr>
+<td><strong>C — Default ingress PoC</strong></td>
+<td>Default HAProxy on machine network</td>
+<td>CFK Route hostnames on <code>apps.*</code></td>
+<td>Machine-network ingress VIP</td>
+<td>Lowest — <strong>not</strong> repl VLAN</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code>Path A (Multus) — primary design in this doc:
+  Remote broker ──TCP 9095──► 10.200.1.21 (broker pod on repl VLAN)
+
+Path B (dedicated ingress) — see cross-dc-ingress-alternative.md:
+  Remote broker ──TCP 443──► repl VIP or DNS-LB pool on repl VLAN
+           ──HAProxy (SNI)──► OVN ──► broker pod :9095
+
+Path C (PoC only):
+  Remote broker ──TCP 443──► machine-network ingress VIP
+           ──default HAProxy──► OVN ──► broker pod :9095
+</code></pre></div>
+<h3 id="replication-traffic-flow-component-view">Replication traffic flow — component view<a class="headerlink" href="#replication-traffic-flow-component-view" title="Permanent link">¶</a></h3>
+<p><strong>Canonical topology</strong> for sharing with network and platform peers. Example direction: <strong>DC-B broker initiates</strong> a Cluster Link fetch toward an endpoint <strong>advertised by DC-A</strong> (default Cluster Linking direction — source-initiated mode flips who dials).</p>
+<p><strong>Cluster Link</strong> sits above this diagram: <code>bootstrap.servers</code> / <code>bootstrapEndpoint</code> must match the <strong>advertised replication listener</strong> on the chosen path (Multus IP:9095 or route hostname:443).</p>
+<pre class="mermaid"><code>flowchart TB
+  subgraph shared["Shared foundation — Path A &amp; B"]
+    direction LR
+    NIC["2× NIC → bond"] --&gt; VLAN["bond-repl.VLAN<br/>(host NNCP)"]
+    VLAN --&gt; ROUTE["Scoped L3 route<br/>to remote /26 only"]
+  end
+
+  subgraph pathA["Path A — Multus direct attachment"]
+    direction LR
+    subgraph dcB_a["DC-B"]
+      BA["Broker pod<br/>net1 = repl /26 IP"]
+    end
+    subgraph wan_a["WAN / firewall"]
+      FA["Allow TCP 9095<br/>repl subnet ↔ repl subnet"]
+    end
+    subgraph dcA_a["DC-A"]
+      AA["Broker pod<br/>Multus NAD on bond-repl.VLAN<br/>REPLICATION listener :9095<br/>advertised = REPL_IP"]
+    end
+    BA --&gt;|"Cluster Link fetch"| FA --&gt; AA
+  end
+
+  subgraph pathB["Path B — Dedicated ingress shard"]
+    direction LR
+    subgraph dcB_b["DC-B"]
+      BB["Broker pod<br/>bootstrap = route hostname"]
+    end
+    subgraph wan_b["WAN / firewall"]
+      FB["Allow TCP 443<br/>repl subnet ↔ repl subnet"]
+    end
+    subgraph dcA_b["DC-A"]
+      DNS["DNS *.kafka-repl.dc-a…<br/>→ VIP or node repl IPs"]
+      VIP["Frontend on repl VLAN<br/>keepalived VIP or MetalLB<br/>(pick one — not both)"]
+      RTR["Replication IngressController<br/>HAProxy HostNetwork<br/>TLS passthrough SNI"]
+      OVN["OVN default network"]
+      AB["Broker pod :9095<br/>(no Multus on repl VLAN)"]
+      DNS --&gt; VIP --&gt; RTR --&gt; OVN --&gt; AB
+    end
+    BB --&gt;|"resolve + TLS :443"| FB --&gt; VIP
+  end
+
+  shared --&gt; pathA
+  shared --&gt; pathB
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What crosses the WAN</th>
+<th>What stays inside the destination DC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A</strong></td>
+<td>TCP <strong>9095</strong> to broker <strong>pod repl IP</strong></td>
+<td>Multus attachment, <code>MultiNetworkPolicy</code> on NAD</td>
+</tr>
+<tr>
+<td><strong>B</strong></td>
+<td>TCP <strong>443</strong> to <strong>frontend</strong> on repl VLAN</td>
+<td>IngressController → Route → OVN → broker</td>
+</tr>
+<tr>
+<td><strong>C</strong> <em>(PoC)</em></td>
+<td>TCP <strong>443</strong> to <strong>machine-network</strong> ingress VIP</td>
+<td>Default HAProxy → OVN → broker — <strong>not</strong> repl VLAN</td>
+</tr>
+</tbody>
+</table>
+<p>Path B frontend detail: <a href="../cross-dc-ingress-alternative/#frontend-options-without-an-external-hardware-lb">cross-dc-ingress-alternative.md — Frontend options</a>. Path A IPAM detail: <a href="../cross-dc-kafka-net-helm/BROKER-IPAM/">BROKER-IPAM.md</a>.</p>
+<p><strong>Shared by all paths that use the replication VLAN (A and B):</strong></p>
+<ul>
+<li>Bond + VLAN + scoped L3 route on <code>bond-repl.200</code> (<a href="#shared-foundation--host-network">shared foundation</a>)</li>
+<li>Routed <code>/26</code> per DC — not L2 stretch across WAN</li>
+<li>Bidirectional firewall between replication subnets</li>
+</ul>
+<p><strong>Path-specific only:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>Path A (Multus)</th>
+<th>Path B (ingress)</th>
+<th>Path C (PoC)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Multus NAD on brokers</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td><code>MultiNetworkPolicy</code> on NAD</td>
+<td>Yes</td>
+<td>No (OVN <code>NetworkPolicy</code> router→broker)</td>
+<td>No</td>
+</tr>
+<tr>
+<td>2nd <code>IngressController</code></td>
+<td>No</td>
+<td>Yes</td>
+<td>No (uses default)</td>
+</tr>
+<tr>
+<td>DNS zone on repl VLAN</td>
+<td>Optional (IPs in link config)</td>
+<td>Required (<code>*.kafka-repl.dc-a…</code>)</td>
+<td>Uses <code>apps.*</code></td>
+</tr>
+<tr>
+<td>CFK <code>$(REPL_IP)</code> wiring</td>
+<td>Yes</td>
+<td>No — CFK Routes auto-manage listeners</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p><strong>When to choose:</strong></p>
+<ul>
+<li><strong>Path A</strong> — per-broker repl IPs, no router hop, <code>MultiNetworkPolicy</code> on the NAD; accept listener/IPAM wiring.</li>
+<li><strong>Path B</strong> — CFK Route ergonomics; accept HAProxy hop + DNS/VIP (or DNS LB) on repl VLAN. Full design: <a href="../cross-dc-ingress-alternative/">cross-dc-ingress-alternative.md</a>.</li>
+<li><strong>Path C</strong> — functional validation only; replication stays on management network.</li>
+</ul>
+<hr/>
+<h2 id="layer-map">Layer map<a class="headerlink" href="#layer-map" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code>L7  Application         Kafka broker protocol, Cluster Linking (fetch-based replication)
+L4  Transport            TCP session, dedicated REPLICATION listener/port
+L3  Network              Routed subnets per DC, static route (not default gateway)
+L2  Data link            Bond (two cards) + VLAN tag
+L1  Physical             Two NICs, two cards, dedicated fiber/circuit
+</code></pre></div>
+<p>Pod attachment (Multus on <strong>Path A</strong>) sits at L2/L3 and is the layer most often skipped by mistake.
+<strong>Path B</strong> skips pod attachment; replication enters via HAProxy on the repl VLAN instead.</p>
+<hr/>
+<h2 id="networking-basics-terms-used-in-this-doc">Networking basics (terms used in this doc)<a class="headerlink" href="#networking-basics-terms-used-in-this-doc" title="Permanent link">¶</a></h2>
+<p>This section is for readers who are strong on OpenShift/Kafka but still building networking vocabulary — the rest of the doc assumes these ideas.</p>
+<h3 id="layer-numbers-quick-reference">Layer numbers (quick reference)<a class="headerlink" href="#layer-numbers-quick-reference" title="Permanent link">¶</a></h3>
+<p>See the <a href="#layer-map">layer map</a> above. In conversation you'll mostly touch <strong>L1–2</strong> (NICs, bond, VLAN), <strong>L3</strong> (subnets, gateways, routes — <em>not</em> default routes on the replication link), and <strong>L4</strong> (TCP port 9095 for replication). <strong>L7</strong> is Kafka + Cluster Linking on top.</p>
+<h3 id="three-address-worlds-on-a-node">Three address "worlds" on a node<a class="headerlink" href="#three-address-worlds-on-a-node" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>World</th>
+<th>Typical addresses</th>
+<th>Who uses it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Machine / management network</strong></td>
+<td>Whatever the cluster already uses for API, nodes, SSH</td>
+<td>Host OS, <code>oc debug node</code>, most infrastructure</td>
+</tr>
+<tr>
+<td><strong>OVN pod network (default)</strong></td>
+<td>Cluster overlay (e.g. <code>10.128.x.x</code>)</td>
+<td>Almost every pod's <code>eth0</code> — Services, internal Kafka clients</td>
+</tr>
+<tr>
+<td><strong>Replication VLAN subnet</strong></td>
+<td>Per-DC <code>/26</code> (e.g. <code>10.200.1.0/26</code> ↔ <code>10.200.2.0/26</code>)</td>
+<td>Cross-DC replication — broker pods (Path A) or ingress frontend (Path B)</td>
+</tr>
+</tbody>
+</table>
+<p>These are <strong>different subnets on purpose</strong>. Replication traffic should be identifiable by source/dest IP in the replication pools, not mixed with management traffic.</p>
+<h3 id="nat-snat-and-dnat">NAT, SNAT, and DNAT<a class="headerlink" href="#nat-snat-and-dnat" title="Permanent link">¶</a></h3>
+<p><strong>NAT (Network Address Translation)</strong> rewrites IP addresses (and often ports) in packet headers so traffic can cross between address realms.</p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Rewrites</th>
+<th>Typical direction</th>
+<th>Example in OpenShift</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SNAT</strong> (Source NAT)</td>
+<td>Source IP/port</td>
+<td>Outbound</td>
+<td>Pod sends as <code>10.128.x.x</code>; remote may see the <strong>node's machine-network IP</strong> after OVN SNAT</td>
+</tr>
+<tr>
+<td><strong>DNAT</strong> (Destination NAT)</td>
+<td>Destination IP/port</td>
+<td>Inbound</td>
+<td>Client hits a Route/LoadBalancer VIP; packet is steered to a <strong>pod IP</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why SNAT matters here:</strong> If a broker only uses the default OVN network toward the other DC, egress can be <strong>SNAT'd to the machine-network IP</strong>. Firewalls and routing on the replication path expect sources in <strong><code>10.200.1.x</code></strong>, not the management subnet — return paths break or ACLs don't match. Multus gives replication traffic a path where the <strong>source is already a replication-subnet IP</strong> (see below).</p>
+<h3 id="default-pod-network-vs-multus-secondary-network">Default pod network vs Multus secondary network<a class="headerlink" href="#default-pod-network-vs-multus-secondary-network" title="Permanent link">¶</a></h3>
+<p><strong>Without Multus:</strong> Each pod gets one interface (<code>eth0</code>) on the cluster overlay (OVN-Kubernetes). That is the right default for API calls, DNS, image pulls, and internal Kafka clients.</p>
+<p><strong>Multus</strong> is a CNI meta-plugin (enabled on OpenShift) that can attach <strong>additional</strong> interfaces defined by a <strong><code>NetworkAttachmentDefinition</code> (NAD)</strong>. A pod annotation (<code>k8s.v1.cni.cncf.io/networks: …</code>) requests the extra attachment at startup.</p>
+<p>After attachment, a broker is <strong>dual-homed</strong> — not "moved" off the cluster network:</p>
+<div class="highlight"><pre><span></span><code>┌─ Kafka pod ─────────────────────────────────────────────────────┐
+│  eth0 (OVN)          default route → normal cluster egress       │
+│                      INTERNAL listener, clients, API, DNS      │
+│                      (often SNAT to machine-network IP)          │
+├──────────────────────────────────────────────────────────────────┤
+│  net1 (Multus/NAD)   route to remote DC /26 ONLY                 │
+│                      REPLICATION listener advertised here        │
+│                      source IP = replication pool (10.200.1.x)   │
+│                      NO default-route on this attachment         │
+└──────────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<p><strong>NAD</strong> = the Kubernetes object describing <em>how</em> to attach (macvlan on <code>bond-repl.200</code>, IP pool, routes). <strong>Multus</strong> = the mechanism that applies it. <strong><code>network-status</code> annotation</strong> on the pod = what actually landed (IPs, routes — use this to verify no accidental <code>default-route</code>).</p>
+<p>More detail on NAD patterns: <a href="../../../networking/network-attachment-definitions/">NetworkAttachmentDefinition guide</a>.</p>
+<h3 id="scoped-route-vs-default-route-host-and-pod">Scoped route vs default route (host and pod)<a class="headerlink" href="#scoped-route-vs-default-route-host-and-pod" title="Permanent link">¶</a></h3>
+<p>A <strong>default route</strong> (<code>0.0.0.0/0</code>) means "send <em>everything</em> out this interface." On the replication VLAN — host <strong>or</strong> pod — that bleeds API traffic, DNS, and pulls onto a link sized for replication only. It usually breaks the cluster outright.</p>
+<p>A <strong>scoped route</strong> means "send only <strong>this prefix</strong> out this interface" — here, the <strong>other datacenter's replication <code>/26</code></strong>. Everything else follows the normal default (OVN / machine network).</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Correct shape</th>
+<th>Wrong shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Host</strong> (NNCP)</td>
+<td>Route: remote <code>/26</code> → gateway on <code>bond-repl.200</code></td>
+<td>Default route on <code>bond-repl.200</code></td>
+</tr>
+<tr>
+<td><strong>Pod</strong> (NAD + annotation)</td>
+<td>Route: remote <code>/26</code> on Multus iface; default stays on <code>eth0</code></td>
+<td><code>default-route</code> set on Multus attachment</td>
+</tr>
+</tbody>
+</table>
+<p>That split is the design rule peers often state as: <strong>only traffic to the other DC's replication subnet uses the replication IP; all other destinations use the original cluster/machine path.</strong></p>
+<h3 id="other-terms-that-appear-later">Other terms that appear later<a class="headerlink" href="#other-terms-that-appear-later" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CNI</strong></td>
+<td>Container Network Interface — plugins that wire pod networking (OVN, Multus, macvlan, whereabouts)</td>
+</tr>
+<tr>
+<td><strong>macvlan</strong></td>
+<td>Gives each pod its own MAC on a VLAN segment (default here); use <strong>ipvlan</strong> if the switch limits MAC counts</td>
+</tr>
+<tr>
+<td><strong>whereabouts</strong></td>
+<td>IPAM plugin — assigns pod IPs from a pool on a NAD</td>
+</tr>
+<tr>
+<td><strong>NNCP / NNCE</strong></td>
+<td>NodeNetworkConfigurationPolicy / Enactment — nmstate objects for host networking</td>
+</tr>
+<tr>
+<td><strong><code>NodeNetworkState</code> (NNS)</strong></td>
+<td>Per-node report of <strong>effective</strong> host networking (NNCP + install-time config) — use when NNCP YAML does not show management bonds</td>
+</tr>
+<tr>
+<td><strong><code>MultiNetworkPolicy</code></strong></td>
+<td>Like <code>NetworkPolicy</code>, but enforced on a <strong>secondary</strong> interface (standard policy only sees <code>eth0</code>)</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="shared-foundation-host-network">Shared foundation — host network<a class="headerlink" href="#shared-foundation-host-network" title="Permanent link">¶</a></h2>
+<p><strong>Required for Path A and Path B</strong> (any design that uses the dedicated replication VLAN).
+Kafka-agnostic — identical for storage mirroring or other cross-DC replication workloads.</p>
+<h3 id="layer-12-bond-and-vlan">Layer 1–2: bond and VLAN<a class="headerlink" href="#layer-12-bond-and-vlan" title="Permanent link">¶</a></h3>
+<p>Prefer <strong>NMState / <code>NodeNetworkConfigurationPolicy</code></strong> over raw MachineConfig/Butane if the <code>kubernetes-nmstate</code> operator is available — it's day-2 mutable (no MCO drain/reboot for most changes) and gives you <code>NodeNetworkState</code> to verify what actually landed. Fall back to Butane/Ignition MachineConfig only if nmstate isn't installed.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nmstate.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NodeNetworkConfigurationPolicy</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">repl-network</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">nodeSelector</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">node-role.kubernetes.io/repl-gateway</span><span class="p">:</span><span class="w"> </span><span class="s">""</span><span class="w">   </span><span class="c1"># only nodes actually cabled for this</span>
+<span class="w">  </span><span class="nt">desiredState</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">interfaces</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bond-repl</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bond</span>
+<span class="w">        </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">up</span>
+<span class="w">        </span><span class="nt">link-aggregation</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">active-backup</span><span class="w">      </span><span class="c1"># LACP (802.3ad) only if the local ToR pair supports it end-to-end</span>
+<span class="w">          </span><span class="nt">port</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ens4f0</span><span class="w">                </span><span class="c1"># slot A, port 1</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ens5f0</span><span class="w">                </span><span class="c1"># slot B, port 1</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bond-repl.200</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vlan</span>
+<span class="w">        </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">up</span>
+<span class="w">        </span><span class="nt">vlan</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">base-iface</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bond-repl</span>
+<span class="w">          </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">200</span>
+<span class="w">        </span><span class="nt">ipv4</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">address</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ip</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.200.1.11</span>
+<span class="w">              </span><span class="nt">prefix-length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">26</span>
+<span class="w">          </span><span class="nt">dhcp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+<p><strong>NNCP scope:</strong> policies in this doc and the <a href="../cross-dc-nncp-helm/">NNCP Helm chart</a> cover <strong>only</strong> <code>bond-repl</code> and the replication VLAN — not the management/machine network. That layer is typically defined at <strong>install time</strong> (MachineConfig / <code>install-config</code>) and may never show up as a Kubernetes NMState object. <strong><code>oc get nncp</code> is not a full node network inventory</strong>; use <code>oc get nns &lt;node&gt;</code> or host tools (<code>nmcli</code>, <code>ip link</code>) to confirm which NICs are already in the management bond before choosing <code>bond-repl</code> member ports. See <a href="../cross-dc-nncp-helm/#nncp-scope--replication-bond-only-not-the-full-node-picture">NNCP scope — replication bond only</a>.</p>
+<p><strong>Decisions to nail down here, in order of how often they're gotten wrong:</strong></p>
+<ol>
+<li><strong>Node targeting.</strong> If only a subset of nodes have this NIC layout (e.g., dedicated gateway/broker nodes), target them with a label + <code>nodeSelector</code>, not the default <code>worker</code> pool. Applying this cluster-wide to nodes without the matching hardware will fail or misconfigure.
+   <strong>If every node needs a unique static IP</strong> on this interface (e.g., Kafka brokers run fleet-wide, not on a small gateway subset), a single role-based NNCP won't do it — NMState applies identical <code>desiredState</code>, including the IP, to every node it matches. The only NNCP-native fix is one policy per node via <code>kubernetes.io/hostname</code>. See <a href="../cross-dc-nncp-helm/">Cross-DC replication NNCP (Helm)</a> for a template that renders this from a node list. Worth confirming first, though, whether a static host IP is even needed — see the next callout.</li>
+<li><strong>Interface naming stability.</strong> Kernel interface names (<code>ens4f0</code>, etc.) depend on PCI enumeration order and can differ across otherwise-identical hardware. At fleet scale, match by MAC/PCI path via <code>systemd.link</code> rather than assuming names are consistent.</li>
+<li><strong>Bonding mode.</strong> <code>active-backup</code> works with any switch. <code>802.3ad</code>/LACP requires every hop in the bond to participate — fine if the bond terminates at your own local ToR pair, <strong>not</strong> viable if anyone assumes the bond itself spans the WAN (it doesn't; the WAN segment is routed, not bonded).</li>
+</ol>
+<h3 id="layer-3-routing">Layer 3: routing<a class="headerlink" href="#layer-3-routing" title="Permanent link">¶</a></h3>
+<p><strong>The most common mistake in this whole design:</strong> setting the node's <strong>default route</strong> on the replication interface instead of a route scoped to the remote subnet. A default route on this interface sends <em>all</em> egress traffic (image pulls, DNS, API calls) out over a link sized, firewalled, and provisioned for one purpose only — and it usually breaks connectivity outright.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">routes</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">destination</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.200.2.0/26</span><span class="w">      </span><span class="c1"># remote DC's replication subnet — NOT 0.0.0.0/0</span>
+<span class="w">      </span><span class="nt">next-hop-address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.200.1.1</span>
+<span class="w">      </span><span class="nt">next-hop-interface</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bond-repl.200</span>
+<span class="c1"># deliberately no default-route entry on this interface</span>
+</code></pre></div>
+<p><strong>L3 routed, not L2 stretched.</strong> Each DC gets its own subnet on this VLAN; a router/gateway pair exchanges the routes. Don't stretch one VLAN/subnet across both DCs "for simplicity" — L2 stretch at distance introduces STP, MAC-learning, and failure-domain problems that routed L3 avoids entirely.</p>
+<p><strong>MTU:</strong> two constraints apply — <strong>parent-first</strong> (VLAN MTU bounded by <code>bond-repl</code> on the node) and <strong>path</strong> (effective MTU is the minimum hop on the replication VLAN circuit, independent of management/OVN MTU). Full treatment: <a href="../../../networking/cross-dc-replication/#mtu--parent-first-and-path-constraints">cross-dc-replication.md — MTU constraints</a>. Inventory <code>expectedMtu</code> and network test 5 encode the chosen end-to-end value.</p>
+<p><strong>Path B note:</strong> repl-gateway nodes hosting the dedicated ingress shard also need NNCP on <code>bond-repl.200</code> — for router frontend IPs on the repl subnet, not for broker Multus attachment.</p>
+<hr/>
+<h2 id="path-a-multus-pod-attachment">Path A — Multus pod attachment<a class="headerlink" href="#path-a-multus-pod-attachment" title="Permanent link">¶</a></h2>
+<p><strong>Skip this section if you chose Path B or C.</strong> Path B still needs the <a href="#shared-foundation--host-network">shared foundation</a> above.</p>
+<h3 id="pod-attachment-via-multus">Pod attachment via Multus<a class="headerlink" href="#pod-attachment-via-multus" title="Permanent link">¶</a></h3>
+<p>See <a href="#networking-basics-terms-used-in-this-doc">Networking basics</a> for NAT/SNAT, Multus, and dual-homed pods — this section applies those ideas to the replication VLAN.</p>
+<p>A MachineConfig/NNCP configures the <strong>host</strong>. It does nothing for pods on the default OVN network — pods don't automatically see that interface, and OVN-Kubernetes <strong>SNATs pod egress to the node's primary (machine-network) IP</strong> on the default path. So even though the host has a correct route to the remote /26 via <code>bond-repl.200</code>, a pod on the default network reaching that destination can still present the <strong>wrong source IP</strong> — breaking return routing symmetry and complicating firewall rules that expect traffic sourced from the replication subnet specifically.</p>
+<p><strong>The fix:</strong> attach the workload pod to the VLAN via Multus — a <strong>second</strong> interface with a replication-subnet IP and a <strong>scoped route to the remote DC's <code>/26</code> only</strong>. The primary OVN interface (<code>eth0</code>) keeps the default route for everything else (API, DNS, internal listeners). The pod is dual-homed, not relocated to the replication subnet.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k8s.cni.cncf.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NetworkAttachmentDefinition</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">repl-net</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;workload-namespace&gt;</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">    </span><span class="no">{</span>
+<span class="w">      </span><span class="no">"cniVersion": "0.3.1",</span>
+<span class="w">      </span><span class="no">"type": "macvlan",</span>
+<span class="w">      </span><span class="no">"master": "bond-repl.200",</span>
+<span class="w">      </span><span class="no">"mode": "bridge",</span>
+<span class="w">      </span><span class="no">"ipam": {</span>
+<span class="w">        </span><span class="no">"type": "whereabouts",</span>
+<span class="w">        </span><span class="no">"range": "10.200.1.0/26",</span>
+<span class="w">        </span><span class="no">"range_start": "10.200.1.20",</span>
+<span class="w">        </span><span class="no">"range_end": "10.200.1.60"</span>
+<span class="w">      </span><span class="no">}</span>
+<span class="w">    </span><span class="no">}</span>
+</code></pre></div>
+<p><strong>macvlan vs ipvlan:</strong> <code>macvlan</code> (each pod gets its own MAC) is the common default. If many pods per node share this VLAN and the ToR does MAC-count/port-security limiting, switch to <code>ipvlan</code> mode <code>l2</code> instead — shares the host's MAC, avoids MAC-table growth.</p>
+<p><strong>hostNetwork as an alternative:</strong> if the workload is a host-level daemon (not a typical pod) or already runs with <code>hostNetwork: true</code>, it shares the host's network namespace directly and the host route alone is sufficient — no Multus needed for that specific workload.</p>
+<p><strong>The pod-level version of the "no default route" rule:</strong> the same mistake from <a href="#layer-3-routing">Layer 3 routing</a> has a pod-scoped equivalent. The extended JSON form of the <code>k8s.v1.cni.cncf.io/networks</code> annotation accepts a <code>default-route</code> key per attachment — leave it unset for <code>repl-net</code>/<code>kafka-repl-net</code>. Left unset, the pod's default route stays on the primary (OVN) interface; the Multus attachment carries only the <strong>scoped route to the remote <code>/26</code></strong> (plus local replication-subnet addressing), not a default. Confirm via the pod's <code>k8s.v1.cni.cncf.io/network-status</code> annotation — the secondary entry should have no <code>"default-route"</code> key.</p>
+<p><strong>Static IP/MAC as an alternative to whereabouts:</strong> macvlan supports per-pod address pinning via CNI chaining (<code>ipam.type: static</code>) and the extended <code>k8s.v1.cni.cncf.io/networks</code> annotation (<code>ips</code> / <code>routes</code> keys). <strong>Neither mode is mandatory for Cluster Linking</strong> — both need a correct advertised Multus IP; they differ in predictability, firewall shape, and CFK wiring complexity. See <a href="#broker-replication-ip-assignment">Broker replication IP assignment</a> and <a href="../cross-dc-kafka-net-helm/BROKER-IPAM/">BROKER-IPAM.md</a>.</p>
+<h3 id="broker-replication-ip-assignment">Broker replication IP assignment<a class="headerlink" href="#broker-replication-ip-assignment" title="Permanent link">¶</a></h3>
+<p>Two supported modes for Kafka on the replication NAD (selected in <a href="../../networking/cross-dc-rollout/inventory-dc-a.example.yaml">rollout inventory</a> as <code>workload.brokerIpam.mode</code>, rendered by <a href="../cross-dc-kafka-net-helm/">cross-dc-kafka-net-helm</a>):</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Summary</th>
+<th>Choose when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>whereabouts</strong> (default)</td>
+<td>Pool assigns IP at schedule; init container sets <code>REPL_IP</code> from <code>network-status</code></td>
+<td>Subnet-wide firewall rules; simpler ops; first implementation</td>
+</tr>
+<tr>
+<td><strong>static</strong></td>
+<td>You pin <code>replIp</code> per broker ordinal; routes on pod annotation</td>
+<td>Per-broker <code>/32</code> ACLs; fixed Cluster Link bootstrap lists; avoid init container</td>
+</tr>
+</tbody>
+</table>
+<p>Full trade-offs, CFK snippets, and switching guidance: <strong><a href="../cross-dc-kafka-net-helm/BROKER-IPAM/">BROKER-IPAM.md</a></strong>. For the runtime chain (inventory → Multus → <code>network-status</code> → <code>REPL_IP</code> → Cluster Link bootstrap), subnet layout on the <code>/26</code>, persistence on pod recreate, and common failure modes, see <a href="../cross-dc-kafka-net-helm/BROKER-IPAM/#end-to-end-pipeline">End-to-end pipeline</a> in that doc.</p>
+<p><strong>Not the same as host NNCP IPs:</strong> per-node static addresses on <code>bond-repl.200</code> are optional for macvlan and independent of broker IP mode — see <a href="../cross-dc-nncp-helm/">NNCP Helm README</a>.</p>
+<h3 id="securing-the-secondary-network-multinetworkpolicy">Securing the secondary network: MultiNetworkPolicy<a class="headerlink" href="#securing-the-secondary-network-multinetworkpolicy" title="Permanent link">¶</a></h3>
+<p>Standard Kubernetes <code>NetworkPolicy</code> <strong>only governs the default pod network</strong> — it has no effect on the Multus-attached secondary interface. Without <code>MultiNetworkPolicy</code>, anything attached to this NAD can reach anything else attached to it, with zero in-cluster enforcement; you'd be relying entirely on physical VLAN isolation and upstream switch/router ACLs.</p>
+<p><strong>Enable the capability:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">operator.openshift.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Network</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cluster</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">useMultiNetworkPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p><strong>Opt the NAD in:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k8s.cni.cncf.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NetworkAttachmentDefinition</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">repl-net</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;workload-namespace&gt;</span>
+<span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k8s.v1.cni.cncf.io/policy-for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;workload-namespace&gt;/repl-net</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ...same config as above</span>
+</code></pre></div>
+<p><strong>Restrict traffic on it</strong> (generic version — see <a href="#multinetworkpolicy-for-kafka">Part 2</a> for the Kafka-scoped version actually used):</p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k8s.cni.cncf.io/v1beta1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MultiNetworkPolicy</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">repl-net-restrict</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;workload-namespace&gt;</span>
+<span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k8s.v1.cni.cncf.io/policy-for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;workload-namespace&gt;/repl-net</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">&lt;label-selecting-the-workload&gt;</span>
+<span class="w">  </span><span class="nt">policyTypes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">Ingress</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">Egress</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[{</span><span class="nt">ipBlock</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">cidr</span><span class="p">:</span><span class="w"> </span><span class="nv">10.200.2.0/26</span><span class="p p-Indicator">}}]</span>
+<span class="w">      </span><span class="nt">ports</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[{</span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="nv">TCP</span><span class="p p-Indicator">,</span><span class="nt"> port</span><span class="p">:</span><span class="w"> </span><span class="nv">&lt;replication-port&gt;</span><span class="p p-Indicator">}]</span>
+<span class="w">  </span><span class="nt">egress</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[{</span><span class="nt">ipBlock</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">cidr</span><span class="p">:</span><span class="w"> </span><span class="nv">10.200.2.0/26</span><span class="p p-Indicator">}}]</span>
+<span class="w">      </span><span class="nt">ports</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[{</span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="nv">TCP</span><span class="p p-Indicator">,</span><span class="nt"> port</span><span class="p">:</span><span class="w"> </span><span class="nv">&lt;replication-port&gt;</span><span class="p p-Indicator">}]</span>
+</code></pre></div>
+<p>Verify enforcement explicitly — spin up a debug pod on the same NAD without the matching label and confirm it <em>can't</em> reach the workload's replication port. <code>MultiNetworkPolicy</code> misconfiguration (missing <code>policy-for</code> annotation on either the NAD or the policy) tends to fail open silently.</p>
+<p><strong>Mis-attachment defense:</strong> a single broker-scoped allow policy leaves <strong>unselected</strong> pods on the same NAD at default-allow on <code>net1</code>. The <a href="../cross-dc-kafka-net-helm/MULTINETWORKPOLICY/">Kafka net Helm chart</a> renders a catch-all <strong>default-deny</strong> policy plus a broker allow-list by default — see <a href="../cross-dc-kafka-net-helm/MULTINETWORKPOLICY/">MULTINETWORKPOLICY.md</a>.</p>
+<p><strong>If a peer sends you the "subnets field" caveat, it doesn't apply here.</strong> Red Hat's docs note that <code>podSelector</code>/<code>namespaceSelector</code> peer matching in a multi-network policy is only valid if the secondary network's CNI config defines a <code>subnets</code> field — otherwise only <code>ipBlock</code> works. That restriction is scoped to <strong>OVN-Kubernetes secondary networks</strong> (CNI type <code>ovn-k8s-cni-overlay</code>, <code>topology: layer2</code>/<code>localnet</code>), a different mechanism from the <strong>macvlan</strong> NAD this design uses. For macvlan/IPVLAN/SR-IOV NADs — including the <code>kafka-repl-net</code> policy in Part 2 — <code>podSelector</code> is valid regardless; there's no <code>subnets</code> field in a macvlan CNI config to begin with.</p>
+<p><strong>CLI verification:</strong> the resource name is <code>multi-networkpolicy</code> (singular, hyphenated) — <code>oc get multi-networkpolicy -n &lt;namespace&gt;</code>.</p>
+<hr/>
+<h2 id="part-2-confluent-cluster-linking-on-top-of-it">Part 2 — Confluent Cluster Linking on top of it<a class="headerlink" href="#part-2-confluent-cluster-linking-on-top-of-it" title="Permanent link">¶</a></h2>
+<p>Everything in this part is Kafka/CFK-specific — how the broker pods use the network built in Part 1.</p>
+<h3 id="what-cluster-linking-simplifies">What Cluster Linking simplifies<a class="headerlink" href="#what-cluster-linking-simplifies" title="Permanent link">¶</a></h3>
+<p>Unlike MirrorMaker2 or Confluent Replicator, Cluster Linking is broker-to-broker — <em>"does not require running Connect to move messages between clusters"</em> (<a href="https://docs.confluent.io/platform/current/multi-dc-deployments/cluster-linking/index.html">Confluent docs</a>). No separate <code>Connect</code> CR or Connect worker pods to also attach to the replication network.</p>
+<p><strong>Path A:</strong> broker pods need Multus attachment (see <a href="#path-a--multus-pod-attachment">Path A</a>).
+<strong>Path B/C:</strong> brokers stay on OVN; reachability is via CFK Routes (see <a href="#path-b--dedicated-ingress-shard">Path B</a> and <a href="#cfk-listener-configuration">CFK listener configuration</a>).</p>
+<div class="highlight"><pre><span></span><code>Path A:  Brokers (Multus, REPLICATION listener) ──→ Cluster Link config ──→ remote brokers
+Path B:  Brokers (Route hostnames :443) ──→ Cluster Link config ──→ remote brokers
+</code></pre></div>
+<h3 id="connection-direction">Connection direction<a class="headerlink" href="#connection-direction" title="Permanent link">¶</a></h3>
+<p>By default, the <strong>destination cluster's brokers initiate the connection and fetch from the source</strong> — it behaves like a consumer pulling data, not the source pushing. This determines which side needs an egress rule and which needs an ingress rule in <code>MultiNetworkPolicy</code> and any upstream firewall.</p>
+<ul>
+<li><strong>One-directional link</strong> (e.g., pure DR, no failback link pre-staged): only the destination DC's brokers dial out; the source DC only needs inbound from the destination's /26.</li>
+<li><strong>Bidirectional</strong> (this design — see <a href="#bidirectional-pre-staged-links-for-failover">below</a>): each DC is simultaneously a source (accepting inbound) and a destination (dialing out) for its respective link, so rules end up symmetric on both sides regardless.</li>
+</ul>
+<p>A newer <strong>source-initiated link</strong> option (CP 7.8+) flips this — confirm which mode is actually configured before assuming direction.</p>
+<h3 id="path-b-dedicated-ingress-shard">Path B — dedicated ingress shard<a class="headerlink" href="#path-b-dedicated-ingress-shard" title="Permanent link">¶</a></h3>
+<p><strong>Skip if you chose Path A.</strong> Summary only — full design, DNS/VIP handoff, security, and verification: <strong><a href="../cross-dc-ingress-alternative/">cross-dc-ingress-alternative.md</a></strong>.</p>
+<p>CFK supports <a href="https://docs.confluent.io/operator/current/co-routes.html"><code>externalAccess.type: route</code></a> — TLS passthrough/SNI through HAProxy, per-broker route hostnames, CFK-managed <code>advertised.listeners</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Ingress target</th>
+<th>Production?</th>
+<th>Replication VLAN?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Default</strong> <code>apps.*</code> ingress (Path C)</td>
+<td>PoC only</td>
+<td>No — machine network</td>
+</tr>
+<tr>
+<td><strong>Dedicated</strong> ingress shard on repl VLAN (Path B)</td>
+<td>Yes, if DNS/VIP correct</td>
+<td>Yes — WAN hits repl subnet frontend</td>
+</tr>
+<tr>
+<td><strong>Multus</strong> direct (Path A)</td>
+<td>Yes</td>
+<td>Yes — no ingress hop</td>
+</tr>
+</tbody>
+</table>
+<p>Path B trades <code>$(REPL_IP)</code> complexity for: 2nd <code>IngressController</code>, repl-VLAN DNS zone, VIP (keepalived/MetalLB) or DNS LB to router node repl IPs, and HAProxy as a shared hop for all replication bytes.</p>
+<h3 id="cfk-listener-configuration">CFK listener configuration<a class="headerlink" href="#cfk-listener-configuration" title="Permanent link">¶</a></h3>
+<p>Configuration depends on the path chosen in <a href="#choose-your-replication-path">Choose your replication path</a>.</p>
+<h4 id="path-a-multus-listener">Path A — Multus listener<a class="headerlink" href="#path-a-multus-listener" title="Permanent link">¶</a></h4>
+<p>A listener with <strong>no <code>externalAccess</code> block</strong>, bound to the pod's Multus secondary interface, advertising that interface's IP.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">platform.confluent.io/v1beta1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Kafka</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kafka</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">confluent</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">podTemplate</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">annotations</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">k8s.v1.cni.cncf.io/networks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kafka-repl-net</span>
+<span class="w">  </span><span class="nt">listeners</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">internal</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">tls</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="c1"># no "external" block, no externalAccess.type: route for the replication path</span>
+<span class="w">  </span><span class="nt">configOverrides</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">server</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"listeners=INTERNAL://0.0.0.0:9071,REPLICATION://0.0.0.0:9095"</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"listener.security.protocol.map=INTERNAL:PLAINTEXT,REPLICATION:SSL"</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"advertised.listeners=INTERNAL://$(POD_NAME).kafka.confluent.svc.cluster.local:9071,REPLICATION://$(REPL_IP):9095"</span>
+</code></pre></div>
+<p><strong>Verify against the installed CFK version's CRD reference:</strong></p>
+<ol>
+<li>Whether the structured <code>listeners</code> block supports a fully custom named listener without an <code>externalAccess</code> type attached, or whether the <code>configOverrides.server</code> raw passthrough above is the correct escape hatch.</li>
+<li>How <code>$(REPL_IP)</code> gets populated — depends on <a href="../cross-dc-kafka-net-helm/BROKER-IPAM/">broker IP mode</a>: <strong>whereabouts</strong> → typically an init container reading <code>network-status</code>; <strong>static</strong> → literal per-ordinal IP in pod env / <code>advertised.listeners</code>. See <a href="cross-dc-kafka-net-helm/examples/">CFK snippets</a>.</li>
+</ol>
+<h4 id="path-b-or-c-cfk-route-listener">Path B or C — CFK Route listener<a class="headerlink" href="#path-b-or-c-cfk-route-listener" title="Permanent link">¶</a></h4>
+<p>Use <code>listeners.custom</code> with <code>externalAccess.type: route</code> — CFK creates per-broker Routes and sets <code>advertised.listeners</code> to route hostnames.
+Cluster Link <code>bootstrap.servers</code> uses those hostnames (port <strong>443</strong>, TLS passthrough to broker <strong>9095</strong>).</p>
+<p>Path <strong>B:</strong> dedicated <code>IngressController</code> with separate <code>spec.domain</code> (e.g. <code>kafka-repl.dc-a.example.com</code>) and <code>routeSelector</code> — not default <code>apps.*</code>.
+Path <strong>C:</strong> default ingress — valid PoC only.</p>
+<p>Example and full listener shape: <a href="../cross-dc-ingress-alternative/#cfk-listener-configuration-route-mode">cross-dc-ingress-alternative.md — CFK listener</a>.</p>
+<h3 id="managing-the-cluster-link-gitops">Managing the cluster link (GitOps)<a class="headerlink" href="#managing-the-cluster-link-gitops" title="Permanent link">¶</a></h3>
+<p>The link object must be <strong>version-controlled</strong> — not only created in Control Center during cutover. Two valid approaches: <strong><code>ClusterLink</code> CRD</strong> + Argo CD when the CR exposes every setting you need, or <strong>declarative spec in Git</strong> + <strong>reconcile script</strong> (often an Argo Job) when the CRD has gaps or the team prefers API/CLI.</p>
+<p>Peers sometimes report the CRD <strong>does not expose all link settings</strong> — verify on <strong>your</strong> CFK version (<code>oc explain clusterlink.spec</code>). Full pattern comparison (CRD, Job reconcile, PostSync hooks, CronJob drift, external CI, hybrid, long-running reconciler): <strong><a href="../CLUSTER-LINK-GITOPS/">CLUSTER-LINK-GITOPS.md</a></strong>.</p>
+<p>Regardless of pattern, separate <strong>management</strong> traffic (API/CLI/CR apply — management network) from <strong>replication</strong> traffic (broker fetch on the replication listener). The <strong><code>bootstrap.servers</code> / <code>bootstrapEndpoint</code> must be the replication listener's advertised address</strong> — Multus IP:9095 (Path A) or route hostname:443 (Path B/C) — not internal Service DNS or the wrong ingress VIP.
+Getting this value wrong means the link either fails or silently uses the wrong path.</p>
+<p><strong>Do not mix</strong> API-managed mirrors with a <code>ClusterLink</code> CR on the same link — CFK may delete externally created mirrors on reconcile.</p>
+<h3 id="bidirectional-pre-staged-links-for-failover">Bidirectional, pre-staged links for failover<a class="headerlink" href="#bidirectional-pre-staged-links-for-failover" title="Permanent link">¶</a></h3>
+<p>The design: <strong>active/standby</strong>, but with links configured in <strong>both directions</strong> upfront, so replication can resume when a failed DC comes back online without building a link under pressure.</p>
+<p>Confluent has a built-in alternative worth confirming was deliberately not chosen: <code>reverse-and-start</code> / <code>reverse-and-pause</code> reverses an existing link's direction rather than requiring two independently-managed link objects. It has a specific limitation — doesn't support prefixed cluster links — which is the most likely reason to use two separate links instead, if topic prefixing is in use to avoid naming collisions between clusters.</p>
+<p>Either approach needs the same symmetric network reachability; it doesn't change the <a href="#shared-foundation--host-network">shared foundation</a>. It does change how failover/failback is <em>operated</em>, so worth confirming which was intended.</p>
+<h3 id="security-requirements">Security requirements<a class="headerlink" href="#security-requirements" title="Permanent link">¶</a></h3>
+<p>Confluent's own guidance treats these as requirements, not optional hardening, specifically because Cluster Linking accesses the listener like a client:</p>
+<ul>
+<li><strong>TLS/SASL required</strong> — <em>"Do not use unauthenticated listeners with Confluent Platform. Cluster Linking can access the listeners, increasing the security risk."</em></li>
+<li><strong>Certificate/keystore files at the same path on every broker</strong> — a real operational trap if using file-based TLS material rather than inline PEM config; inconsistency causes link failures.</li>
+<li><strong>ACL syncing</strong> — Cluster Linking syncs ACLs between clusters by default. If the two clusters have independently-managed ACLs today, this needs a deliberate decision, not a default left alone.</li>
+<li><strong>Long-lived TCP connections</strong> — <em>"Firewalls that allow the cluster link connection ... must allow the TCP connection to persist."</em> Check idle-connection timeouts on any firewall/router on the WAN path; aggressive timeouts silently break Cluster Linking.</li>
+</ul>
+<h3 id="multinetworkpolicy-for-kafka">MultiNetworkPolicy for Kafka<a class="headerlink" href="#multinetworkpolicy-for-kafka" title="Permanent link">¶</a></h3>
+<p><strong>Path A only.</strong> Same pattern as <a href="#securing-the-secondary-network-multinetworkpolicy">Securing the secondary network</a>, scoped to broker pods and port 9095.
+The <a href="../cross-dc-kafka-net-helm/">cross-dc-kafka-net-helm</a> chart renders <strong>two</strong> policies by default — full rationale in <strong><a href="../cross-dc-kafka-net-helm/MULTINETWORKPOLICY/">MULTINETWORKPOLICY.md</a></strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th><code>podSelector</code></th>
+<th>Effect on <code>net1</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kafka-repl-net-default-deny</code></td>
+<td><code>{}</code></td>
+<td>Deny all (mis-attachment defense)</td>
+</tr>
+<tr>
+<td><code>kafka-repl-net-restrict</code></td>
+<td><code>app: kafka</code></td>
+<td>Allow remote <code>/26</code> TCP 9095 only</td>
+</tr>
+</tbody>
+</table>
+<p>Broker allow policy (simplified):</p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k8s.cni.cncf.io/v1beta1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MultiNetworkPolicy</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kafka-repl-restrict</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">confluent</span>
+<span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k8s.v1.cni.cncf.io/policy-for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">confluent/kafka-repl-net</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kafka</span>
+<span class="w">  </span><span class="nt">policyTypes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">Ingress</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">Egress</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[{</span><span class="nt">ipBlock</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">cidr</span><span class="p">:</span><span class="w"> </span><span class="nv">10.200.2.0/26</span><span class="p p-Indicator">}}]</span>
+<span class="w">      </span><span class="nt">ports</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[{</span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="nv">TCP</span><span class="p p-Indicator">,</span><span class="nt"> port</span><span class="p">:</span><span class="w"> </span><span class="nv">9095</span><span class="p p-Indicator">}]</span>
+<span class="w">  </span><span class="nt">egress</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[{</span><span class="nt">ipBlock</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">cidr</span><span class="p">:</span><span class="w"> </span><span class="nv">10.200.2.0/26</span><span class="p p-Indicator">}}]</span>
+<span class="w">      </span><span class="nt">ports</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[{</span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="nv">TCP</span><span class="p p-Indicator">,</span><span class="nt"> port</span><span class="p">:</span><span class="w"> </span><span class="nv">9095</span><span class="p p-Indicator">}]</span>
+</code></pre></div>
+<p>Because Cluster Linking is broker-only (no Connect layer), this is the only workload-specific policy needed — no separate rule set for Connect workers.</p>
+<hr/>
+<h2 id="anti-patterns">Anti-patterns<a class="headerlink" href="#anti-patterns" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Anti-pattern</th>
+<th>Why it breaks things</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Default gateway on the replication NIC</td>
+<td>Bleeds all egress traffic onto a link sized for one purpose; usually breaks connectivity</td>
+</tr>
+<tr>
+<td>Assuming pods on the default network use the new NIC automatically</td>
+<td>OVN SNAT + default routing table means they don't, without Multus</td>
+</tr>
+<tr>
+<td>L2-stretching a subnet across DCs "for simplicity"</td>
+<td>STP, MAC-learning, and failure-domain problems at distance</td>
+</tr>
+<tr>
+<td>LACP bond assumed to span the WAN</td>
+<td>The WAN carrier doesn't participate in your LACP; bond terminates locally, WAN segment is routed</td>
+</tr>
+<tr>
+<td>MachineConfig/NNCP applied to the default <code>worker</code> pool when only some nodes have the hardware</td>
+<td>Fails to render, or misconfigures nodes without the matching NICs</td>
+</tr>
+<tr>
+<td>No <code>MultiNetworkPolicy</code> on the secondary interface</td>
+<td>Standard <code>NetworkPolicy</code> doesn't see it; no in-cluster enforcement at all</td>
+</tr>
+<tr>
+<td><code>default-route</code> set on the broker pod's <code>kafka-repl-net</code> Multus annotation</td>
+<td>Same failure mode as the host-level default-route mistake, at pod scope — bleeds pod egress onto the replication link</td>
+</tr>
+<tr>
+<td>Assuming the OVN-K8s "<code>subnets</code> field required for <code>podSelector</code>" caveat applies to this macvlan NAD</td>
+<td>It's specific to OVN-Kubernetes secondary networks, not macvlan/IPVLAN/SR-IOV</td>
+</tr>
+<tr>
+<td>Jumbo MTU on VLAN without raising parent bond MTU</td>
+<td><a href="../../../networking/cross-dc-replication/#mtu--parent-first-and-path-constraints">Parent-first constraint</a> — VLAN cannot exceed <code>bond-repl</code> frame size</td>
+</tr>
+<tr>
+<td>Local jumbo when inter-DC replication path is 1500</td>
+<td><a href="../../../networking/cross-dc-replication/#mtu--parent-first-and-path-constraints">Path MTU constraint</a> — effective MTU is minimum hop on VLAN 200</td>
+</tr>
+<tr>
+<td><code>externalAccess.type: route</code> on the <strong>default</strong> ingress for the Kafka replication listener</td>
+<td>Routes replication through machine-network ingress — defeats the dedicated VLAN silently</td>
+</tr>
+<tr>
+<td>Using a <strong>dedicated</strong> ingress shard without repl-VLAN DNS/VIP</td>
+<td>Routes exist but WAN traffic still hits wrong network if DNS points at <code>apps.*</code> VIP</td>
+</tr>
+<tr>
+<td>Unauthenticated Kafka listener exposed to Cluster Linking</td>
+<td>Confluent explicitly calls this a security risk, not a style choice</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="pre-flight-before-network-verification">Pre-flight before network verification<a class="headerlink" href="#pre-flight-before-network-verification" title="Permanent link">¶</a></h2>
+<p><strong>When:</strong> After host NNCP/bond/VLAN is applied on both clusters, before running the <a href="../../../networking/cross-dc-network-test/">cross-DC network test framework</a> or deploying Kafka on the replication VLAN.</p>
+<p><strong>Operational detail:</strong> <a href="../../../networking/cross-dc-network-test/#pre-flight">cross-dc-network-test/README.md — Pre-flight</a> and <code>./preflight.sh</code> (automated read-only checks). This section is the condensed checklist for peer review and change tickets.</p>
+<h3 id="resolve-first-from-open-questions">Resolve first (from <a href="#open-questions-to-confirm-before-implementing">open questions</a>)<a class="headerlink" href="#resolve-first-from-open-questions" title="Permanent link">¶</a></h3>
+<p>Real per-DC subnet/gateway, VLAN interface name on the bond, exact node hostnames in <code>NODE_NAMES</code>, end-to-end MTU, and which nodes actually carry the replication NIC — not the example <code>10.200.x.x</code> / <code>bond-repl.200</code> placeholders.</p>
+<p>Carve out a <strong>test-only whereabouts pool</strong> disjoint from Kafka's planned pool and from host static IPs on the same <code>/26</code>.</p>
+<h3 id="build-order">Build order<a class="headerlink" href="#build-order" title="Permanent link">¶</a></h3>
+<p><strong>Path A (Multus) — primary:</strong></p>
+<div class="highlight"><pre><span></span><code>Open questions answered + path A chosen
+  → inventory-dc-a.yaml + inventory-dc-b.yaml filled in (see cross-dc-rollout/)
+  → render-config.py --both  (NNCP values, dc-*.env, Kafka net values)
+  → useMultiNetworkPolicy patch on both clusters
+  → NNCP on DC-A + DC-B — oc get nnce Available
+  → ./preflight.sh dc-a.env dc-b.env
+  → ./run-network-test.sh dc-a.env dc-b.env   (skip bond failover first time)
+  → Kafka NAD/MultiNetworkPolicy Helm + CFK Multus listener + Cluster Linking
+</code></pre></div>
+<p><strong>Path B (dedicated ingress):</strong></p>
+<div class="highlight"><pre><span></span><code>Open questions answered + path B chosen
+  → inventory + NNCP on repl-gateway nodes (router frontend IPs)
+  → IngressController replication shard + DNS zone on repl VLAN
+  → CFK listeners.custom with externalAccess.type: route
+  → Cluster Linking (bootstrap.servers = route hostnames)
+  → See cross-dc-ingress-alternative.md for full checklist
+</code></pre></div>
+<p><strong>Path C (PoC):</strong> CFK Route on default ingress only — no repl VLAN rollout required for functional validation.</p>
+<h3 id="platform-gates-both-clusters">Platform gates (both clusters)<a class="headerlink" href="#platform-gates-both-clusters" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Gate</th>
+<th>Confirm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kubernetes-nmstate</code></td>
+<td>NNCE CRD present; enactments <code>Available</code> for every node in the env file</td>
+</tr>
+<tr>
+<td>Whereabouts</td>
+<td><code>ippools.whereabouts.cni.cncf.io</code> CRD present</td>
+</tr>
+<tr>
+<td>MultiNetworkPolicy</td>
+<td><code>oc get network cluster -o jsonpath='{.spec.useMultiNetworkPolicy}'</code> → <code>true</code></td>
+</tr>
+<tr>
+<td>Probe image</td>
+<td><code>TEST_PROBE_IMAGE</code> pullable from worker nodes</td>
+</tr>
+<tr>
+<td>Workstation</td>
+<td><code>oc</code> + <code>jq</code> + <code>envsubst</code>; separate kubeconfig per cluster; cluster-admin-ish for <code>oc debug node</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="network-firewall-coordination">Network / firewall coordination<a class="headerlink" href="#network-firewall-coordination" title="Permanent link">¶</a></h3>
+<p>Confirm with the network team <strong>before</strong> the first test run (wording depends on path — see <a href="#choose-your-replication-path">Choose your replication path</a>):</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Firewall rule shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A (Multus)</strong></td>
+<td>TCP <strong>9095</strong> between <strong>broker pod IPs</strong> on replication VLAN, both directions</td>
+</tr>
+<tr>
+<td><strong>B (ingress)</strong></td>
+<td>TCP <strong>443</strong> between replication subnets (to router VIP or node repl IPs), both directions</td>
+</tr>
+<tr>
+<td><strong>C (PoC)</strong></td>
+<td>TCP <strong>443</strong> to machine-network ingress VIP</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>ICMP allowed for the MTU ping sweep (test 5) — Path A/B on repl VLAN.</li>
+<li>Replication port (9095 or 443) not already in use on that VLAN for another service.</li>
+</ul>
+<p>Host routes can look correct while macvlan pod traffic is still blocked upstream — test 4 is the definitive check, but firewall misconfiguration is easier to fix before you apply pods.</p>
+<h3 id="templating-what-gets-helm-vs-envsubst">Templating: what gets Helm vs envsubst<a class="headerlink" href="#templating-what-gets-helm-vs-envsubst" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Tool</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Inventory (single source of truth)</strong></td>
+<td><a href="../../../networking/cross-dc-rollout/">cross-dc-rollout/inventory-dc-*.yaml</a></td>
+<td>Subnets, nodes, pools — rendered into all downstream configs</td>
+</tr>
+<tr>
+<td>Per-node host network (NNCP)</td>
+<td><a href="../cross-dc-nncp-helm/">cross-dc-nncp-helm</a></td>
+<td><em>N</em> nodes, unique static IPs, optional batched rollout</td>
+</tr>
+<tr>
+<td>Kafka NAD + <code>MultiNetworkPolicy</code></td>
+<td><a href="../cross-dc-kafka-net-helm/">cross-dc-kafka-net-helm</a></td>
+<td>Per-DC workload attachment after network test</td>
+</tr>
+<tr>
+<td>Network verification (NAD, probe pods, test policy)</td>
+<td><code>envsubst</code> + shell in <a href="../../../networking/cross-dc-network-test/">cross-dc-network-test</a></td>
+<td>Fixed two-sided runbook — env rendered from inventory</td>
+</tr>
+<tr>
+<td><code>useMultiNetworkPolicy: true</code></td>
+<td>One-time <a href="../../networking/cross-dc-rollout/examples/cluster-network-operator-patch.example.yaml">Network CR patch</a></td>
+<td>Singleton cluster config — not Helm</td>
+</tr>
+<tr>
+<td>Workstation paths</td>
+<td>Rendered <code>dc-*.env</code> (gitignored)</td>
+<td>Kubeconfig paths are local, not cluster objects</td>
+</tr>
+</tbody>
+</table>
+<p>Converting the test manifests to Helm would mostly relocate the same values from env files into chart values without changing what gets applied. Keep Helm where the templating problem is real (per-node NNCP, per-DC Kafka NAD); keep inventory as the one place humans edit overlapping fields.</p>
+<h3 id="what-a-green-run-proves-and-doesnt">What a green run proves — and doesn't<a class="headerlink" href="#what-a-green-run-proves-and-doesnt" title="Permanent link">¶</a></h3>
+<p><strong>Proves (Path A network test):</strong> host NNCP, Multus attachment, cross-DC L4 on the replication VLAN, path MTU, and <code>MultiNetworkPolicy</code> <code>ipBlock</code> enforcement.</p>
+<p><strong>Does not prove:</strong> CFK listener wiring, Cluster Link <code>bootstrap.servers</code>, or failover replication resume — those need the real broker deployment on the chosen path.</p>
+<h2 id="verification-checklist">Verification checklist<a class="headerlink" href="#verification-checklist" title="Permanent link">¶</a></h2>
+<p><strong>Path A (automated network layer):</strong> run <a href="../../networking/cross-dc-network-test/preflight.sh"><code>preflight.sh</code></a> first, then the <a href="../../../networking/cross-dc-network-test/">cross-DC network test framework</a> — Multus reachability, MTU, <code>MultiNetworkPolicy</code>, isolated from Kafka.</p>
+<p><strong>Path B:</strong> run <a href="../../networking/cross-dc-ingress-test/preflight-ingress.sh"><code>preflight-ingress.sh</code></a> then the <a href="../../../networking/cross-dc-ingress-test/">cross-DC ingress test framework</a> — layered checks (host → VIP/DNS-LB → IngressController → route → cross-DC HTTP), isolated from Kafka. Manual passthrough checks: <a href="../cross-dc-ingress-alternative/#verification-checklist-ingress-path">ingress verification checklist</a>.</p>
+<p><strong>All paths (Kafka / Cluster Linking):</strong> items 8–9 below after brokers are deployed.</p>
+<ol>
+<li>Confirm current NIC/bond state on target nodes before assuming new vs. existing (<code>nmcli connection show</code>, <code>oc get nns</code>). <em>(Path A/B)</em></li>
+<li><code>curl</code>/<code>nc</code> the remote replication IP:port from a debug pod on the NAD — confirms L2–L4 before the workload is involved. <em>(Path A)</em></li>
+<li>Check the workload pod's <code>k8s.v1.cni.cncf.io/network-status</code> annotation — confirms it actually got the second interface and correct IP. <em>(Path A)</em></li>
+<li>Fail one leg of the bond; confirm the replication path stays reachable. <em>(Path A/B)</em></li>
+<li>Confirm <code>MultiNetworkPolicy</code> actually blocks an unauthorized pod on the same NAD (<code>oc get multi-networkpolicy -n &lt;namespace&gt;</code>). <em>(Path A)</em></li>
+<li><code>ping -M do -s &lt;size&gt;</code> across the full path to confirm real MTU. <em>(Path A/B)</em></li>
+<li>Check the broker pod's <code>k8s.v1.cni.cncf.io/network-status</code> for the <code>kafka-repl-net</code> entry — no accidental <code>"default-route"</code>. <em>(Path A)</em></li>
+<li>Confirm Cluster Link <code>bootstrap.servers</code> matches the chosen path — Multus <code>REPLICATION</code> address (A) or route hostname:443 (B/C), not internal Service DNS.</li>
+<li>Fail over and back: confirm the pre-staged reverse link resumes replication without manual re-creation.</li>
+</ol>
+<h2 id="open-questions-to-confirm-before-implementing">Open questions to confirm before implementing<a class="headerlink" href="#open-questions-to-confirm-before-implementing" title="Permanent link">¶</a></h2>
+<p><strong>Network:</strong></p>
+<ul>
+<li>Are the two NICs per node genuinely new/unconfigured, or is this a VLAN added to an already-existing bond used for other traffic?</li>
+<li>Do all nodes have this NIC layout, or only a subset (dedicated gateway/broker nodes)?</li>
+<li>Does the local ToR pair support LACP, or should the bond use <code>active-backup</code>?</li>
+<li>What MTU does the replication path on VLAN 200 support end-to-end? (<a href="../../../networking/cross-dc-replication/#mtu--parent-first-and-path-constraints">constraints</a> — independent of management/OVN MTU)</li>
+<li>Is <code>kubernetes-nmstate</code> already installed, or does this need to go through raw MachineConfig/Butane instead?</li>
+</ul>
+<p><strong>Kafka / CFK:</strong></p>
+<ul>
+<li><strong>Replication path:</strong> Multus (A) vs dedicated ingress shard (B) vs default-ingress PoC (C)? See <a href="#choose-your-replication-path">Choose your replication path</a> and <a href="../cross-dc-ingress-alternative/">cross-dc-ingress-alternative.md</a>.</li>
+<li>Two independently-managed links, or a deliberate choice over <code>reverse-and-start</code>/<code>reverse-and-pause</code>? (Likely reason: topic prefixing.)</li>
+<li>One Control Center instance per DC, or one shared instance? (Determines if Control Center needs any cross-DC network path beyond what brokers already have.)</li>
+<li>Will the link-creation API calls be scripted/version-controlled, or done manually through the Control Center UI?</li>
+<li>Does the installed CFK version's <code>listeners</code> schema support a custom listener without an <code>externalAccess</code> type, or is <code>configOverrides.server</code> passthrough required?</li>
+<li>How is <code>$(REPL_IP)</code> populated — init container (<code>whereabouts</code> mode) or static per-ordinal IP (<code>static</code> mode)? See <a href="../cross-dc-kafka-net-helm/BROKER-IPAM/">BROKER-IPAM.md</a>.</li>
+</ul>
+<hr/>
+<p><em>This content was created with AI assistance. See <a href="../../../../../../AI-DISCLOSURE/">AI-DISCLOSURE.md</a> for how to interpret AI-generated content in this workspace.</em></p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../../../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../../../../../assets/poc/symptom-picker.js"></script>
+<script src="../../../../../../assets/mermaid/mermaid.min.js"></script><script>window.mermaidConfig = {default: {
+    startOnLoad: false
+}};</script></body>
+</html>

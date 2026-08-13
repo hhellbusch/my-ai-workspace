@@ -1,0 +1,4255 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Engineering reference and essays — DevOps troubleshooting, examples, and AI-assisted practice." name="description"/>
+<link href="https://hhellbusch.github.io/my-ai-workspace/devops/ocp/examples/messaging/kafka/bare-metal-portworx/" rel="canonical"/>
+<link href="../" rel="prev"/>
+<link href="../../../networking/" rel="next"/>
+<link href="../../../../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>Kafka on Bare Metal with Portworx - Field Notes</title>
+<link href="../../../../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../../../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../../../../../assets/poc/symptom-picker.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#kafka-on-bare-metal-openshift-with-portworx-rack-aware-example">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Field Notes" class="md-header__button md-logo" data-md-component="logo" href="../../../../../.." title="Field Notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Field Notes
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Kafka on Bare Metal with Portworx
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/hhellbusch/my-ai-workspace" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
+    hhellbusch/my-ai-workspace
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Field Notes" class="md-nav__button md-logo" data-md-component="logo" href="../../../../../.." title="Field Notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    Field Notes
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/hhellbusch/my-ai-workspace" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
+    hhellbusch/my-ai-workspace
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../interactive-poc/">
+<span class="md-ellipsis">
+    
+  
+    Interactive PoC
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    DevOps Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    DevOps Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../">
+<span class="md-ellipsis">
+    
+  
+    DevOps hub
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ORGANIZATION/">
+<span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../SYMPTOM-INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Symptom index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../EXAMPLE-INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Example index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../fleet-control-spectrum/">
+<span class="md-ellipsis">
+    
+  
+    Fleet control spectrum
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Learning paths
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Learning paths
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../learning-path/">
+<span class="md-ellipsis">
+    
+  
+    Learning paths index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../learning-path/vmware-admins/">
+<span class="md-ellipsis">
+    
+  
+    VMware admins
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../learning-path/git/">
+<span class="md-ellipsis">
+    
+  
+    Git curriculum
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Pedagogy and setup
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_7_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Pedagogy and setup
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../git/git-learning-guide/">
+<span class="md-ellipsis">
+    
+  
+    Git learning guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../kvm/">
+<span class="md-ellipsis">
+    
+  
+    KVM on Fedora
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../llm/">
+<span class="md-ellipsis">
+    
+  
+    Local LLM setup
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ansible troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_8_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ansible troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_8_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_8_1" id="__nav_3_8_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Authentication
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_8_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_8_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Authentication
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ansible/troubleshooting/aap-controller-token-404/">
+<span class="md-ellipsis">
+    
+  
+    AAP Controller Token 404
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    OCP troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_1" id="__nav_3_9_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Automation
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Automation
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/aap-ssh-mtu-issues/">
+<span class="md-ellipsis">
+    
+  
+    AAP SSH Connection MTU Issues
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_2" id="__nav_3_9_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Bare Metal
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/bare-metal-node-inspection-timeout/">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal Node Inspection Timeout
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/bare-metal-rhcos-disk-wipe/">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal RHCOS Disk Wipe
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/bare-metal-stale-node-ip-conflict/">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal Stale Node IP Conflict
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/worker-node-tls-cert-failure/">
+<span class="md-ellipsis">
+    
+  
+    Worker Node TLS Certificate Failure
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_3" id="__nav_3_9_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Certificates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Certificates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/csr-management/">
+<span class="md-ellipsis">
+    
+  
+    CSR Management
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_4" id="__nav_3_9_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Control Plane
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Control Plane
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/apiserver-cert-deadlock/">
+<span class="md-ellipsis">
+    
+  
+    API Server Certificate Deadlock
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/api-slowness-web-console/">
+<span class="md-ellipsis">
+    
+  
+    API Slowness and Web Console Performance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/control-plane-kubeconfigs/">
+<span class="md-ellipsis">
+    
+  
+    Control Plane Kubeconfigs
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/kafka-broker-init-kubernetes-svc/">
+<span class="md-ellipsis">
+    
+  
+    Kafka Broker Stuck in Init — kubernetes Service Unreachable
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/oauth-healthz-unavailable/">
+<span class="md-ellipsis">
+    
+  
+    OAuth Server healthz Unavailable
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/kube-controller-manager-crashloop/">
+<span class="md-ellipsis">
+    
+  
+    kube-controller-manager Crash Loop
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_5" id="__nav_3_9_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_5_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Installation
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/failed-ocp-install/">
+<span class="md-ellipsis">
+    
+  
+    Failed OCP Install
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_6" id="__nav_3_9_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_6_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Kubernetes
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/namespace-stuck-terminating/">
+<span class="md-ellipsis">
+    
+  
+    Namespace Stuck in Terminating
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_7" id="__nav_3_9_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Lifecycle
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_7_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Lifecycle
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/destroy-cluster-without-metadata/">
+<span class="md-ellipsis">
+    
+  
+    Destroy Cluster Without Metadata
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_8" id="__nav_3_9_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_8_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Networking
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/coreos-networking-issues/">
+<span class="md-ellipsis">
+    
+  
+    CoreOS Networking Issues
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_9" id="__nav_3_9_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Registry
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_9_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Registry
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/image-registry-auth/">
+<span class="md-ellipsis">
+    
+  
+    Image Registry Auth and Route Exposure
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/image-signature-policy-mcp-deadlock/">
+<span class="md-ellipsis">
+    
+  
+    Image Signature Policy MCP Deadlock
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_10" id="__nav_3_9_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Rhacm
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_10_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Rhacm
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/multiclusterobservability-webhook-rejection/">
+<span class="md-ellipsis">
+    
+  
+    MultiClusterObservability Webhook Rejection
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_11" id="__nav_3_9_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_11_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/nfs-portworx-proxy-pvc-slow-ready/">
+<span class="md-ellipsis">
+    
+  
+    NFS Portworx Proxy PVC Slow Ready
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/nvme-host-nqn-duplicate/">
+<span class="md-ellipsis">
+    
+  
+    NVMe Host NQN Duplicates
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/nvme-tcp-storage-network/">
+<span class="md-ellipsis">
+    
+  
+    NVMe/TCP Storage Network
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/portworx-csi-crashloop/">
+<span class="md-ellipsis">
+    
+  
+    Portworx CSI Pod CrashLoopBackOff
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/prometheus-monitoring-storage/">
+<span class="md-ellipsis">
+    
+  
+    Prometheus and Alertmanager Storage
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_12" id="__nav_3_9_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_12_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tools
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/debug-toolbox-container/">
+<span class="md-ellipsis">
+    
+  
+    Debug Toolbox Container
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_9_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_9_13" id="__nav_3_9_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Virtualization
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_9_13_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_9_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Virtualization
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../troubleshooting/kubevirt-vm-stuck-provisioning/">
+<span class="md-ellipsis">
+    
+  
+    KubeVirt VM Stuck in Provisioning
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_10" id="__nav_3_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Rhacm troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Rhacm troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_10_1" id="__nav_3_10_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Install
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Install
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../rhacm/troubleshooting/agent-install-rootfs-ssl-failure/">
+<span class="md-ellipsis">
+    
+  
+    Agent Install Rootfs SSL Failure
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_10_2" id="__nav_3_10_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Hub Upgrade
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Hub Upgrade
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../rhacm/troubleshooting/mch-stuck-pending-upgrade/">
+<span class="md-ellipsis">
+    
+  
+    MCH Stuck Pending Upgrade
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../rhacm/troubleshooting/managed-cluster-lease-not-updated/">
+<span class="md-ellipsis">
+    
+  
+    Managed Cluster Lease Not Updated
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_10_3" id="__nav_3_10_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Observability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../rhacm/troubleshooting/observability-addon-missing/">
+<span class="md-ellipsis">
+    
+  
+    Observability Addon Missing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../rhacm/troubleshooting/observability-platform-metrics-missing/">
+<span class="md-ellipsis">
+    
+  
+    Observability Platform Metrics Missing
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_10_4" id="__nav_3_10_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Search
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Search
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../rhacm/troubleshooting/search-service-503/">
+<span class="md-ellipsis">
+    
+  
+    RHACM Search Service 503
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_11" id="__nav_3_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    OpenShift
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_11_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    OpenShift
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../">
+<span class="md-ellipsis">
+    
+  
+    OCP hub
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../disconnected-install/">
+<span class="md-ellipsis">
+    
+  
+    Disconnected install
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../ibm-z/">
+<span class="md-ellipsis">
+    
+  
+    IBM Z
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../gpu/">
+<span class="md-ellipsis">
+    
+  
+    GPU artifacts
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_12" id="__nav_3_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    OCP examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_12_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../">
+<span class="md-ellipsis">
+    
+  
+    Examples index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_12_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_12_2" id="__nav_3_12_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Bare metal
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_12_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_12_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Bare metal
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../bare-metal/">
+<span class="md-ellipsis">
+    
+  
+    Bare metal index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../bare-metal/secondary-disk/">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal Secondary Disk Offload
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../bare-metal/var-log-disk/">
+<span class="md-ellipsis">
+    
+  
+    Var Log on Secondary Disk
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3_12_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_12_3" id="__nav_3_12_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_12_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_12_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Messaging
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../">
+<span class="md-ellipsis">
+    
+  
+    Messaging index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3_12_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_12_3_2" id="__nav_3_12_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Kafka
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_12_3_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_3_12_3_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Kafka
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../">
+<span class="md-ellipsis">
+    
+  
+    Kafka index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Kafka on Bare Metal with Portworx
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Kafka on Bare Metal with Portworx
+  
+
+    
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#on-this-page">
+<span class="md-ellipsis">
+      
+        On this page
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prerequisites">
+<span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rack-labeling-variants">
+<span class="md-ellipsis">
+      
+        Rack labeling variants
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#acm-provisioning-and-inventory">
+<span class="md-ellipsis">
+      
+        ACM provisioning and inventory
+      
+    </span>
+</a>
+<nav aria-label="ACM provisioning and inventory" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-labels-flow-acm-bmac">
+<span class="md-ellipsis">
+      
+        How labels flow (ACM + BMAC)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#inventory-fields-to-model-per-host">
+<span class="md-ellipsis">
+      
+        Inventory fields to model per host
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#two-bmh-label-mechanisms-do-not-mix-blindly">
+<span class="md-ellipsis">
+      
+        Two BMH label mechanisms (do not mix blindly)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#day-2-label-changes">
+<span class="md-ellipsis">
+      
+        Day-2 label changes
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#architecture">
+<span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#identify-your-kafka-operator">
+<span class="md-ellipsis">
+      
+        Identify your Kafka operator
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#common-foundation-all-operators">
+<span class="md-ellipsis">
+      
+        Common foundation (all operators)
+      
+    </span>
+</a>
+<nav aria-label="Common foundation (all operators)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#minimum-production-layout">
+<span class="md-ellipsis">
+      
+        Minimum production layout
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#node-labels">
+<span class="md-ellipsis">
+      
+        Node labels
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#shared-workers-this-example">
+<span class="md-ellipsis">
+      
+        Shared workers (this example)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#portworx-storageclass">
+<span class="md-ellipsis">
+      
+        Portworx StorageClass
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#kernel-tuning-optional">
+<span class="md-ellipsis">
+      
+        Kernel tuning (optional)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scheduling-primitives-all-operators">
+<span class="md-ellipsis">
+      
+        Scheduling primitives (all operators)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#operator-specific-examples">
+<span class="md-ellipsis">
+      
+        Operator-specific examples
+      
+    </span>
+</a>
+<nav aria-label="Operator-specific examples" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#confluent-platform-operator-cfk-primary-path">
+<span class="md-ellipsis">
+      
+        Confluent Platform Operator (CFK) — primary path
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#strimzi-amq-streams-comparison">
+<span class="md-ellipsis">
+      
+        Strimzi / AMQ Streams — comparison
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#helm-manual-deployment">
+<span class="md-ellipsis">
+      
+        Helm / manual deployment
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rack-outage-behavior">
+<span class="md-ellipsis">
+      
+        Rack outage behavior
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#openshift-upgrades-and-node-churn">
+<span class="md-ellipsis">
+      
+        OpenShift upgrades and node churn
+      
+    </span>
+</a>
+<nav aria-label="OpenShift upgrades and node churn" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#upgrade-friendly-settings">
+<span class="md-ellipsis">
+      
+        Upgrade-friendly settings
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#suggested-upgrade-sequence">
+<span class="md-ellipsis">
+      
+        Suggested upgrade sequence
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pause-worker-pool-during-maintenance-optional">
+<span class="md-ellipsis">
+      
+        Pause worker pool during maintenance (optional)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#adding-nodes">
+<span class="md-ellipsis">
+      
+        Adding nodes
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#removing-nodes">
+<span class="md-ellipsis">
+      
+        Removing nodes
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#openshift-internals-and-tenancy">
+<span class="md-ellipsis">
+      
+        OpenShift internals and tenancy
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#verification-checklist">
+<span class="md-ellipsis">
+      
+        Verification checklist
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#manifest-index">
+<span class="md-ellipsis">
+      
+        Manifest index
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#design-decisions-to-settle">
+<span class="md-ellipsis">
+      
+        Design decisions to settle
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_12_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_12_4" id="__nav_3_12_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_12_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_12_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Networking
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../networking/">
+<span class="md-ellipsis">
+    
+  
+    Networking index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../networking/network-attachment-definitions/">
+<span class="md-ellipsis">
+    
+  
+    NetworkAttachmentDefinition Examples
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../networking/ovn-kubernetes-install-config/">
+<span class="md-ellipsis">
+    
+  
+    OVN-Kubernetes Install Config
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../networking/vlan-segmentation/">
+<span class="md-ellipsis">
+    
+  
+    VLAN Network Segmentation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_12_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_12_5" id="__nav_3_12_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Labs
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_12_5_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_12_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Labs
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../labs/">
+<span class="md-ellipsis">
+    
+  
+    Labs index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../labs/sno-kvm-lab/">
+<span class="md-ellipsis">
+    
+  
+    SNO on KVM Lab
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_13" id="__nav_3_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    OCP notes
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_13_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP notes
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/">
+<span class="md-ellipsis">
+    
+  
+    Notes index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/cluster-resource-override/">
+<span class="md-ellipsis">
+    
+  
+    Cluster Resource Override
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/container-density-overcommit/">
+<span class="md-ellipsis">
+    
+  
+    Container Density Overcommit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/kafka-on-openshift-tenancy/">
+<span class="md-ellipsis">
+    
+  
+    Kafka On Openshift Tenancy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/machine-config-pools/">
+<span class="md-ellipsis">
+    
+  
+    Machine Config Pools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/network-policy-observability/">
+<span class="md-ellipsis">
+    
+  
+    Network Policy Observability
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/openshift-useful-commands/">
+<span class="md-ellipsis">
+    
+  
+    Openshift Useful Commands
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/pod-termination-quick-stop/">
+<span class="md-ellipsis">
+    
+  
+    Pod Termination Quick Stop
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../notes/vertical-pod-autoscaler/">
+<span class="md-ellipsis">
+    
+  
+    Vertical Pod Autoscaler
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_14" id="__nav_3_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Products
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_14_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Products
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../rhacm/">
+<span class="md-ellipsis">
+    
+  
+    RHACM
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../ansible/">
+<span class="md-ellipsis">
+    
+  
+    Ansible
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../argo/">
+<span class="md-ellipsis">
+    
+  
+    Argo CD
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../coreos/">
+<span class="md-ellipsis">
+    
+  
+    CoreOS
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../vault/">
+<span class="md-ellipsis">
+    
+  
+    Vault
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_15" id="__nav_3_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Workspace tooling
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_15_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Workspace tooling
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../pi/">
+<span class="md-ellipsis">
+    
+  
+    Pi
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../paude/">
+<span class="md-ellipsis">
+    
+  
+    Paude
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../paude-proxy/">
+<span class="md-ellipsis">
+    
+  
+    Paude proxy
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Essays
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Essays
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/">
+<span class="md-ellipsis">
+    
+  
+    Docs catalogue
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI Engineering
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI Engineering
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/">
+<span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/ai-assisted-development-workflows/">
+<span class="md-ellipsis">
+    
+  
+    Ai Assisted Development Workflows
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/ai-assisted-upstream-contributions/">
+<span class="md-ellipsis">
+    
+  
+    Ai Assisted Upstream Contributions
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/ai-for-unfamiliar-domains/">
+<span class="md-ellipsis">
+    
+  
+    Ai For Unfamiliar Domains
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/ai-legacy-improvement/">
+<span class="md-ellipsis">
+    
+  
+    Ai Legacy Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/artifact-discipline-and-ai/">
+<span class="md-ellipsis">
+    
+  
+    Artifact Discipline And Ai
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/framework-bootstrap/">
+<span class="md-ellipsis">
+    
+  
+    Framework Bootstrap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/frameworks-vs-behavior/">
+<span class="md-ellipsis">
+    
+  
+    Frameworks Vs Behavior
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/interaction-patterns/">
+<span class="md-ellipsis">
+    
+  
+    Interaction Patterns
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/local-llm-sysadmin/">
+<span class="md-ellipsis">
+    
+  
+    Local Llm Sysadmin
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/openshift-ai-llm-deployment-summary/">
+<span class="md-ellipsis">
+    
+  
+    Openshift Ai Llm Deployment Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/openshift-gpu-node-management/">
+<span class="md-ellipsis">
+    
+  
+    Openshift Gpu Node Management
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/paude-getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Paude Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/portable-ai-toolkit/">
+<span class="md-ellipsis">
+    
+  
+    Portable Ai Toolkit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/prompting-and-state/">
+<span class="md-ellipsis">
+    
+  
+    Prompting And State
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/session-framework/">
+<span class="md-ellipsis">
+    
+  
+    Session Framework
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/sparring-and-shoshin/">
+<span class="md-ellipsis">
+    
+  
+    Sparring And Shoshin
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/the-meta-development-loop/">
+<span class="md-ellipsis">
+    
+  
+    The Meta Development Loop
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/the-shift/">
+<span class="md-ellipsis">
+    
+  
+    The Shift
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/what-a-context-window-actually-is/">
+<span class="md-ellipsis">
+    
+  
+    What A Context Window Actually Is
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/ai-engineering/youtube-video-analysis/">
+<span class="md-ellipsis">
+    
+  
+    Youtube Video Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Philosophy
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Philosophy
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/philosophy/">
+<span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/philosophy/ego-ai-and-the-zen-antidote/">
+<span class="md-ellipsis">
+    
+  
+    Ego Ai And The Zen Antidote
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/philosophy/the-dojo-after-the-automation/">
+<span class="md-ellipsis">
+    
+  
+    The Dojo After The Automation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/philosophy/the-full-cup-practitioners-guide/">
+<span class="md-ellipsis">
+    
+  
+    The Full Cup Practitioners Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/philosophy/the-full-cup/">
+<span class="md-ellipsis">
+    
+  
+    The Full Cup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/philosophy/zanshin/">
+<span class="md-ellipsis">
+    
+  
+    Zanshin
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Case Studies
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Case Studies
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/">
+<span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/adversarial-review-meta-development/">
+<span class="md-ellipsis">
+    
+  
+    Adversarial Review Meta Development
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/ai-self-diagnosis-symptom-report/">
+<span class="md-ellipsis">
+    
+  
+    Ai Self Diagnosis Symptom Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/building-a-research-skill/">
+<span class="md-ellipsis">
+    
+  
+    Building A Research Skill
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/building-knowledge-management-with-ai/">
+<span class="md-ellipsis">
+    
+  
+    Building Knowledge Management With Ai
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/case-studies-as-discovery/">
+<span class="md-ellipsis">
+    
+  
+    Case Studies As Discovery
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/choosing-scripts-over-services/">
+<span class="md-ellipsis">
+    
+  
+    Choosing Scripts Over Services
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/context-stripped-citations/">
+<span class="md-ellipsis">
+    
+  
+    Context Stripped Citations
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/conversation-to-essay/">
+<span class="md-ellipsis">
+    
+  
+    Conversation To Essay
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/corpus-level-spar/">
+<span class="md-ellipsis">
+    
+  
+    Corpus Level Spar
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/debugging-ai-judgment/">
+<span class="md-ellipsis">
+    
+  
+    Debugging Ai Judgment
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/decayed-how-to/">
+<span class="md-ellipsis">
+    
+  
+    Decayed How To
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/diagnosing-through-the-stack/">
+<span class="md-ellipsis">
+    
+  
+    Diagnosing Through The Stack
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/directory-move-gitignore-drift/">
+<span class="md-ellipsis">
+    
+  
+    Directory Move Gitignore Drift
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/evolving-creative-scope/">
+<span class="md-ellipsis">
+    
+  
+    Evolving Creative Scope
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/experiment-cant-use-findings/">
+<span class="md-ellipsis">
+    
+  
+    Experiment Cant Use Findings
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/fabricated-references/">
+<span class="md-ellipsis">
+    
+  
+    Fabricated References
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/frictionless-entity/">
+<span class="md-ellipsis">
+    
+  
+    Frictionless Entity
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/graph-splits-hybrid-inference/">
+<span class="md-ellipsis">
+    
+  
+    Graph Splits Hybrid Inference
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/heavy-safety-nets/">
+<span class="md-ellipsis">
+    
+  
+    Heavy Safety Nets
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/inherited-frame-shapes-solution/">
+<span class="md-ellipsis">
+    
+  
+    Inherited Frame Shapes Solution
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/landscape-before-depth/">
+<span class="md-ellipsis">
+    
+  
+    Landscape Before Depth
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/link-depth-drift/">
+<span class="md-ellipsis">
+    
+  
+    Link Depth Drift
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/meta-document-drift/">
+<span class="md-ellipsis">
+    
+  
+    Meta Document Drift
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/model-self-report-runtime-state/">
+<span class="md-ellipsis">
+    
+  
+    Model Self Report Runtime State
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/session-crash-recovery/">
+<span class="md-ellipsis">
+    
+  
+    Session Crash Recovery
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/spar-distortion/">
+<span class="md-ellipsis">
+    
+  
+    Spar Distortion
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/spar-finds-the-assumption/">
+<span class="md-ellipsis">
+    
+  
+    Spar Finds The Assumption
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/spar-lifecycle-boundary/">
+<span class="md-ellipsis">
+    
+  
+    Spar Lifecycle Boundary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/spar-to-essay-pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Spar To Essay Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/stale-context-in-long-sessions/">
+<span class="md-ellipsis">
+    
+  
+    Stale Context In Long Sessions
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/survivorship-bias-recommendations/">
+<span class="md-ellipsis">
+    
+  
+    Survivorship Bias Recommendations
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/technical-correctness-vs-communication/">
+<span class="md-ellipsis">
+    
+  
+    Technical Correctness Vs Communication
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/when-the-repository-becomes-the-resume/">
+<span class="md-ellipsis">
+    
+  
+    When The Repository Becomes The Resume
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../../../docs/case-studies/who-is-speaking/">
+<span class="md-ellipsis">
+    
+  
+    Who Is Speaking
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#on-this-page">
+<span class="md-ellipsis">
+      
+        On this page
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prerequisites">
+<span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rack-labeling-variants">
+<span class="md-ellipsis">
+      
+        Rack labeling variants
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#acm-provisioning-and-inventory">
+<span class="md-ellipsis">
+      
+        ACM provisioning and inventory
+      
+    </span>
+</a>
+<nav aria-label="ACM provisioning and inventory" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-labels-flow-acm-bmac">
+<span class="md-ellipsis">
+      
+        How labels flow (ACM + BMAC)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#inventory-fields-to-model-per-host">
+<span class="md-ellipsis">
+      
+        Inventory fields to model per host
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#two-bmh-label-mechanisms-do-not-mix-blindly">
+<span class="md-ellipsis">
+      
+        Two BMH label mechanisms (do not mix blindly)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#day-2-label-changes">
+<span class="md-ellipsis">
+      
+        Day-2 label changes
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#architecture">
+<span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#identify-your-kafka-operator">
+<span class="md-ellipsis">
+      
+        Identify your Kafka operator
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#common-foundation-all-operators">
+<span class="md-ellipsis">
+      
+        Common foundation (all operators)
+      
+    </span>
+</a>
+<nav aria-label="Common foundation (all operators)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#minimum-production-layout">
+<span class="md-ellipsis">
+      
+        Minimum production layout
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#node-labels">
+<span class="md-ellipsis">
+      
+        Node labels
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#shared-workers-this-example">
+<span class="md-ellipsis">
+      
+        Shared workers (this example)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#portworx-storageclass">
+<span class="md-ellipsis">
+      
+        Portworx StorageClass
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#kernel-tuning-optional">
+<span class="md-ellipsis">
+      
+        Kernel tuning (optional)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scheduling-primitives-all-operators">
+<span class="md-ellipsis">
+      
+        Scheduling primitives (all operators)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#operator-specific-examples">
+<span class="md-ellipsis">
+      
+        Operator-specific examples
+      
+    </span>
+</a>
+<nav aria-label="Operator-specific examples" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#confluent-platform-operator-cfk-primary-path">
+<span class="md-ellipsis">
+      
+        Confluent Platform Operator (CFK) — primary path
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#strimzi-amq-streams-comparison">
+<span class="md-ellipsis">
+      
+        Strimzi / AMQ Streams — comparison
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#helm-manual-deployment">
+<span class="md-ellipsis">
+      
+        Helm / manual deployment
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rack-outage-behavior">
+<span class="md-ellipsis">
+      
+        Rack outage behavior
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#openshift-upgrades-and-node-churn">
+<span class="md-ellipsis">
+      
+        OpenShift upgrades and node churn
+      
+    </span>
+</a>
+<nav aria-label="OpenShift upgrades and node churn" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#upgrade-friendly-settings">
+<span class="md-ellipsis">
+      
+        Upgrade-friendly settings
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#suggested-upgrade-sequence">
+<span class="md-ellipsis">
+      
+        Suggested upgrade sequence
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pause-worker-pool-during-maintenance-optional">
+<span class="md-ellipsis">
+      
+        Pause worker pool during maintenance (optional)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#adding-nodes">
+<span class="md-ellipsis">
+      
+        Adding nodes
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#removing-nodes">
+<span class="md-ellipsis">
+      
+        Removing nodes
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#openshift-internals-and-tenancy">
+<span class="md-ellipsis">
+      
+        OpenShift internals and tenancy
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#verification-checklist">
+<span class="md-ellipsis">
+      
+        Verification checklist
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#manifest-index">
+<span class="md-ellipsis">
+      
+        Manifest index
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#design-decisions-to-settle">
+<span class="md-ellipsis">
+      
+        Design decisions to settle
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="kafka-on-bare-metal-openshift-with-portworx-rack-aware-example">Kafka on Bare-Metal OpenShift with Portworx — Rack-Aware Example<a class="headerlink" href="#kafka-on-bare-metal-openshift-with-portworx-rack-aware-example" title="Permanent link">¶</a></h1>
+<p><strong>Audience:</strong> Platform engineers deploying or hardening Kafka on bare-metal OpenShift with Portworx-backed storage — <strong>Confluent Platform Operator (CFK)</strong> is the primary example path; Strimzi/AMQ Streams examples are kept for side-by-side comparison.</p>
+<p><strong>Purpose:</strong> Provide copy-paste example manifests so Kafka brokers, Portworx volume replicas, and OpenShift node upgrades all respect the same rack (failure-domain) labels — regardless of whether you use Confluent or Strimzi.</p>
+<p><strong>Scope:</strong> Example configurations for <strong>OpenShift Container Platform 4.20+</strong>. Statically reviewed against Strimzi, Portworx, and OCP 4.20 docs (see <a href="VALIDATION/">VALIDATION.md</a>). Not end-to-end tested without a live cluster. Placeholders (<code>rack-a</code>, <code>example.com</code>, sizing) must be adjusted to your environment.</p>
+<p><strong>Target platform:</strong> OCP 4.20+ · Ignition 3.5.0 · <a href="https://docs.redhat.com/en/documentation/red_hat_streams_for_apache_kafka/3.1/">Streams for Apache Kafka 3.1</a> (OCP 4.16–4.20) or Strimzi 0.48.x</p>
+<p><strong>Related:</strong></p>
+<ul>
+<li><a href="VALIDATION/">VALIDATION.md</a> — static review status, prerequisites matrix, cluster-side checks</li>
+<li><a href="LABELING-COMPARISON/">LABELING-COMPARISON.md</a> — <strong>zone/region vs custom-rack labels</strong> (side-by-side)</li>
+<li><a href="../../../../notes/network-policy-observability/">Network policy and observability</a> — Strimzi vs CFK policy differences, Flink ports, OVN audit logging, NetObserv</li>
+<li>
+<p><a href="../../../../notes/kafka-on-openshift-tenancy/">Kafka on OpenShift tenancy</a> — shared vs dedicated workers, MCP/CVO upgrades, PDB and policy pitfalls</p>
+</li>
+<li>
+<p><a href="../../../../troubleshooting/portworx-csi-crashloop/">Portworx CSI crashloop troubleshooting</a></p>
+</li>
+<li><a href="../../../../troubleshooting/nvme-host-nqn-duplicate/">NVMe host NQN duplicates</a> — prerequisite if using NVMe-oF to FlashArray</li>
+<li><a href="../../../../troubleshooting/nvme-tcp-storage-network/">NVMe/TCP storage network</a> — dual NIC, no bond, NMState (after NQN fix)</li>
+<li><a href="../../../../troubleshooting/nfs-portworx-proxy-pvc-slow-ready/">NFS Portworx proxy PVC delays</a></li>
+<li><a href="../../../">OCP examples index</a></li>
+</ul>
+<hr/>
+<h2 id="on-this-page">On this page<a class="headerlink" href="#on-this-page" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#rack-labeling-variants">Rack labeling variants</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#acm-provisioning-and-inventory">ACM provisioning and inventory</a></li>
+<li><a href="#identify-your-kafka-operator">Identify your Kafka operator</a></li>
+<li><a href="#common-foundation-all-operators">Common foundation (all operators)</a></li>
+<li><a href="#operator-specific-examples">Operator-specific examples</a></li>
+<li><a href="#rack-outage-behavior">Rack outage behavior</a></li>
+<li><a href="#openshift-upgrades-and-node-churn">OpenShift upgrades and node churn</a></li>
+<li><a href="#openshift-internals-and-tenancy">OpenShift internals and tenancy</a></li>
+<li><a href="#verification-checklist">Verification checklist</a></li>
+<li><a href="#manifest-index">Manifest index</a></li>
+</ul>
+<hr/>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>Assumes <strong>OpenShift Container Platform 4.20+</strong> (Ignition 3.5.0 MachineConfigs).</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Version for OCP 4.20+</th>
+<th>How to verify</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Streams for Apache Kafka</strong> (Red Hat)</td>
+<td><strong>3.1</strong> (Strimzi 0.48.x, Kafka 4.1)</td>
+<td><code>oc get csv -A \| grep -i amq-streams</code></td>
+</tr>
+<tr>
+<td><strong>Strimzi</strong> (upstream)</td>
+<td><strong>0.48+</strong></td>
+<td><code>oc get csv -A \| grep strimzi</code></td>
+</tr>
+<tr>
+<td><strong>Kafka</strong></td>
+<td><strong>4.1.0</strong> with <code>metadataVersion: 4.1-IV1</code></td>
+<td>Operator version matrix / CSV</td>
+</tr>
+<tr>
+<td><strong>Portworx CSI</strong></td>
+<td><code>pxd.portworx.com</code> provisioner</td>
+<td><code>oc get csidriver pxd.portworx.com</code></td>
+</tr>
+<tr>
+<td><strong>Worker nodes</strong></td>
+<td>≥ 3 workers with 3 distinct rack label values per <a href="#rack-labeling-variants">labeling variant</a></td>
+<td>See node label examples</td>
+</tr>
+<tr>
+<td><strong>NVMe-oF to FlashArray</strong> (if used)</td>
+<td>Unique host NQN per node; dual storage NICs</td>
+<td><a href="../../../../troubleshooting/nvme-host-nqn-duplicate/">NQN guide</a>, <a href="../../../../troubleshooting/nvme-tcp-storage-network/">NVMe/TCP network</a></td>
+</tr>
+</tbody>
+</table>
+<p>Red Hat reference: <a href="https://docs.redhat.com/en/documentation/red_hat_streams_for_apache_kafka/3.1/html/release_notes_for_streams_for_apache_kafka_3.1_on_openshift/ref-supported-configurations-str">Streams for Apache Kafka 3.1 — tested on OCP 4.16–4.20</a>.</p>
+<p>OCP reference: <a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/machine_configuration/machine-configs-configure">Machine configuration — Ignition 3.5.0 (OCP 4.20)</a>.</p>
+<p>Full validation checklist: <a href="VALIDATION/">VALIDATION.md</a>.</p>
+<hr/>
+<h2 id="rack-labeling-variants">Rack labeling variants<a class="headerlink" href="#rack-labeling-variants" title="Permanent link">¶</a></h2>
+<p>Two parallel manifest sets — <strong>pick one per cluster</strong>, do not mix label keys.</p>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>When to use</th>
+<th>Manifests</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="manifests/zone-region/">zone-region</a></strong></td>
+<td>Well-known <code>topology.kubernetes.io/zone</code> / <code>region</code>; MCO drains by zone</td>
+<td>Default for bare-metal rack-as-zone</td>
+</tr>
+<tr>
+<td><strong><a href="manifests/custom-rack/">custom-rack</a></strong></td>
+<td>Domain labels (<code>platform.example.com/rack</code>) when zone is reserved or CMDB uses rack/site</td>
+<td>Explicit semantics, no cloud AZ confusion</td>
+</tr>
+</tbody>
+</table>
+<p>Full side-by-side comparison: <strong><a href="LABELING-COMPARISON/">LABELING-COMPARISON.md</a></strong></p>
+<p>Shared infra (both variants): <a href="manifests/common/"><code>manifests/common/</code></a> — Portworx StorageClass, optional kernel tuning.</p>
+<hr/>
+<h2 id="acm-provisioning-and-inventory">ACM provisioning and inventory<a class="headerlink" href="#acm-provisioning-and-inventory" title="Permanent link">¶</a></h2>
+<p>If the cluster is created via <strong>ACM agent-based install</strong> on bare metal (Ansible inventory → Git → hub <code>ClusterDeployment</code> / <code>InfraEnv</code> / <code>AgentClusterInstall</code>), rack and kafka labels <strong>should be owned in source inventory</strong> and rendered into hub manifests before install — not applied manually after the fact.</p>
+<h3 id="how-labels-flow-acm-bmac">How labels flow (ACM + BMAC)<a class="headerlink" href="#how-labels-flow-acm-bmac" title="Permanent link">¶</a></h3>
+<pre class="mermaid"><code>flowchart LR
+  INV[Ansible inventory / Git values]
+  GIT[Rendered YAML on hub]
+  BMH[BareMetalHost annotations]
+  AGENT[Agent.spec.nodeLabels]
+  NODE[Kubernetes Node labels]
+
+  INV --&gt; GIT --&gt; BMH --&gt; AGENT --&gt; NODE
+</code></pre>
+<p>The <strong>Baremetal Agent Controller (BMAC)</strong> on the hub copies BMH annotations prefixed with <code>bmac.agent-install.openshift.io.node-label.</code> into <code>Agent.spec.nodeLabels</code>. Assisted Installer applies those labels to the Node when the host joins the cluster (Day 0).</p>
+<p>You can assign a <strong>MachineConfigPool</strong> at install time if you use custom pools elsewhere in the cluster. This example does <strong>not</strong> use a dedicated kafka worker pool — brokers schedule on any worker.</p>
+<p>Examples (zone-region variant — see <a href="manifests/custom-rack/">custom-rack</a> for alternate keys):</p>
+<ul>
+<li><a href="manifests/zone-region/acm-bmh-worker-host.example.yaml"><code>manifests/zone-region/acm-bmh-worker-host.example.yaml</code></a></li>
+<li><a href="manifests/zone-region/inventory-workers.example.yaml"><code>manifests/zone-region/inventory-workers.example.yaml</code></a></li>
+</ul>
+<h3 id="inventory-fields-to-model-per-host">Inventory fields to model per host<a class="headerlink" href="#inventory-fields-to-model-per-host" title="Permanent link">¶</a></h3>
+<p><strong>Zone/region variant:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Inventory field</th>
+<th>Becomes node label</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rack</code></td>
+<td><code>topology.kubernetes.io/zone</code></td>
+<td>Strimzi <code>rack.topologyKey</code> · CFK <code>rackAssignment.nodeLabels</code></td>
+</tr>
+<tr>
+<td><code>rack</code></td>
+<td><code>px/rack</code></td>
+<td>Portworx StorageClass <code>racks:</code> — <strong>same value</strong></td>
+</tr>
+<tr>
+<td><code>region</code></td>
+<td><code>topology.kubernetes.io/region</code></td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>node-role.kubernetes.io/worker: ""</code></td>
+<td>Default worker pool (no dedicated kafka role)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Custom-rack variant</strong> — same inventory shape; map <code>rack</code> → <code>platform.example.com/rack</code>, <code>site</code> → <code>platform.example.com/site</code>. See <a href="LABELING-COMPARISON/">LABELING-COMPARISON.md</a>.</p>
+<h3 id="two-bmh-label-mechanisms-do-not-mix-blindly">Two BMH label mechanisms (do not mix blindly)<a class="headerlink" href="#two-bmh-label-mechanisms-do-not-mix-blindly" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Where</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>BMAC annotations</strong> (ACM agent install on hub)</td>
+<td><code>bmac.agent-install.openshift.io.node-label.*</code></td>
+<td>Day 0 via Assisted Installer</td>
+</tr>
+<tr>
+<td><strong><code>spec.nodeLabels</code></strong> (Metal3 on cluster)</td>
+<td><code>BareMetalHost.spec.nodeLabels</code></td>
+<td>IPI / spoke Metal3 provisioning</td>
+</tr>
+</tbody>
+</table>
+<p>This workspace's <a href="../../../../../argo/examples/framework/apps/baremetal-hosts/"><code>baremetal-hosts</code></a> Helm chart uses <code>spec.nodeLabels</code> from <code>values.yaml</code> — suitable when BMH lives on the <strong>spoke</strong> cluster. For <strong>ACM hub-side</strong> agent install, prefer <strong>BMAC annotations</strong> in rendered hub manifests.</p>
+<p>See also: <a href="../../../../gpu/vgpu-node-labeling/">vgpu-node-labeling.md</a> for the same inventory → Git → label pattern (different labels, same GitOps model).</p>
+<h3 id="day-2-label-changes">Day-2 label changes<a class="headerlink" href="#day-2-label-changes" title="Permanent link">¶</a></h3>
+<p>Labels set at install via BMAC are <strong>not automatically updated</strong> if inventory changes later. To move a host to a different rack or role:</p>
+<ul>
+<li>Re-provision (disruptive), or</li>
+<li>RHACM <code>ConfigurationPolicy</code> / Ansible to reconcile live nodes, then update Git to match</li>
+</ul>
+<p>For kafka rack placement, treat inventory corrections as <strong>infra changes</strong> — changing <code>topology.kubernetes.io/zone</code> on a live broker node forces rescheduling and ISR churn.</p>
+<hr/>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h2>
+<p>Three layers must agree on the same failure-domain label:</p>
+<pre class="mermaid"><code>flowchart TB
+  subgraph physical [Physical layer]
+    R1[Rack A]
+    R2[Rack B]
+    R3[Rack C]
+  end
+
+  subgraph ocp [OpenShift nodes]
+    N1["worker-a1<br/>zone=rack-a, px/rack=rack-a"]
+    N2["worker-b1<br/>zone=rack-b, px/rack=rack-b"]
+    N3["worker-c1<br/>zone=rack-c, px/rack=rack-c"]
+  end
+
+  subgraph px [Portworx]
+    V["Volume replicas<br/>repl=3 across racks"]
+  end
+
+  subgraph kafka [Kafka]
+    B["Brokers with broker.rack set<br/>partition replicas spread by rack"]
+  end
+
+  R1 --&gt; N1
+  R2 --&gt; N2
+  R3 --&gt; N3
+  N1 &amp; N2 &amp; N3 --&gt; px
+  px --&gt; kafka
+</code></pre>
+<p><strong>Golden rule:</strong> pick one rack identifier (for example <code>rack-a</code>) and use it consistently in:</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Label / config</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OpenShift node</td>
+<td><code>topology.kubernetes.io/zone: rack-a</code></td>
+</tr>
+<tr>
+<td>Portworx</td>
+<td><code>px/rack: rack-a</code></td>
+</tr>
+<tr>
+<td>Kafka</td>
+<td><code>broker.rack</code> derived from the same <code>topologyKey</code></td>
+</tr>
+</tbody>
+</table>
+<p>On bare metal, <code>topology.kubernetes.io/zone</code> is <strong>not</strong> set automatically — you must label nodes yourself.</p>
+<hr/>
+<h2 id="identify-your-kafka-operator">Identify your Kafka operator<a class="headerlink" href="#identify-your-kafka-operator" title="Permanent link">¶</a></h2>
+<p>Run these before choosing which operator section to follow:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Installed operators (OLM)</span>
+oc<span class="w"> </span>get<span class="w"> </span>csv<span class="w"> </span>-A<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-iE<span class="w"> </span><span class="s1">'kafka|strimzi|amq|confluent'</span>
+
+<span class="c1"># Common CRDs</span>
+oc<span class="w"> </span>get<span class="w"> </span>crd<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-iE<span class="w"> </span><span class="s1">'kafka\.|strimzi|confluent'</span>
+
+<span class="c1"># Running Kafka workloads</span>
+oc<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-iE<span class="w"> </span><span class="s1">'kafka|strimzi|confluent'</span>
+oc<span class="w"> </span>get<span class="w"> </span>kafka<span class="w"> </span>-A<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w">          </span><span class="c1"># Strimzi / AMQ Streams</span>
+oc<span class="w"> </span>get<span class="w"> </span>kafkanodepool<span class="w"> </span>-A<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w">  </span><span class="c1"># Strimzi node pools (0.34+)</span>
+oc<span class="w"> </span>get<span class="w"> </span>kafkas<span class="w"> </span>-A<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w">         </span><span class="c1"># Confluent Platform Operator (name varies by version)</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>If you see…</th>
+<th>Operator</th>
+<th>Example manifests in this directory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Kafka</code>, <code>KafkaNodePool</code> CRDs; Strimzi CSV</td>
+<td><strong>Strimzi</strong> (upstream)</td>
+<td><a href="manifests/zone-region/strimzi/"><code>manifests/zone-region/strimzi/</code></a> or <a href="manifests/custom-rack/strimzi/"><code>custom-rack/strimzi/</code></a></td>
+</tr>
+<tr>
+<td>Same CRDs; <code>amq-streams</code> or Red Hat build CSV</td>
+<td><strong>AMQ Streams</strong> (Red Hat Strimzi)</td>
+<td>Same as Strimzi — pick one <a href="LABELING-COMPARISON/">labeling variant</a></td>
+</tr>
+<tr>
+<td><code>platform.confluent.io</code> CRDs; Confluent CSV</td>
+<td><strong>Confluent Platform Operator (CFK)</strong></td>
+<td><a href="manifests/zone-region/confluent/"><code>manifests/zone-region/confluent/</code></a> or <a href="manifests/custom-rack/confluent/"><code>custom-rack/confluent/</code></a> + <a href="manifests/common/confluent-kafka-rbac.yaml"><code>common/confluent-kafka-rbac.yaml</code></a></td>
+</tr>
+<tr>
+<td>Helm release, no operator CRD</td>
+<td><strong>Helm / manual</strong></td>
+<td>Set <code>broker.rack</code> in broker config; use <a href="manifests/common/"><code>manifests/common/</code></a> scheduling labels</td>
+</tr>
+<tr>
+<td><code>eventstreams</code> CRD (older)</td>
+<td><strong>IBM Event Streams</strong></td>
+<td>Not covered here — same rack-awareness concepts apply to broker config</td>
+</tr>
+</tbody>
+</table>
+<p>If none of the above match, start with <a href="#common-foundation-all-operators">common foundation</a> and wire rack awareness into whatever chart or operator your team uses.</p>
+<hr/>
+<h2 id="common-foundation-all-operators">Common foundation (all operators)<a class="headerlink" href="#common-foundation-all-operators" title="Permanent link">¶</a></h2>
+<p>These apply regardless of Kafka distribution.</p>
+<h3 id="minimum-production-layout">Minimum production layout<a class="headerlink" href="#minimum-production-layout" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Constraint</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Racks</td>
+<td>≥ 3 for true rack-fault tolerance</td>
+</tr>
+<tr>
+<td>Kafka replication factor</td>
+<td>3</td>
+</tr>
+<tr>
+<td><code>min.insync.replicas</code></td>
+<td>2</td>
+</tr>
+<tr>
+<td>Portworx <code>repl</code></td>
+<td>3, with <code>racks</code> spanning all racks</td>
+</tr>
+<tr>
+<td>Workers per rack</td>
+<td>Enough capacity for brokers <strong>and</strong> other workloads (brokers share workers)</td>
+</tr>
+<tr>
+<td>Upgrade parallelism</td>
+<td><code>maxUnavailable: 1</code> on the default <code>worker</code> MachineConfigPool</td>
+</tr>
+</tbody>
+</table>
+<h3 id="node-labels">Node labels<a class="headerlink" href="#node-labels" title="Permanent link">¶</a></h3>
+<p><strong>ACM agent install:</strong> define labels in source inventory; render to hub <code>BareMetalHost</code> BMAC annotations — see <a href="#acm-provisioning-and-inventory">ACM provisioning and inventory</a>. Use <a href="manifests/zone-region/"><code>zone-region/</code></a> or <a href="manifests/custom-rack/"><code>custom-rack/</code></a> node label examples.</p>
+<p><strong>Post-install / manual</strong> (fallback only): see <code>node-labels.example.yaml</code> in your chosen variant directory.</p>
+<div class="highlight"><pre><span></span><code>oc<span class="w"> </span>label<span class="w"> </span>node<span class="w"> </span>worker-a1.example.com<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>topology.kubernetes.io/zone<span class="o">=</span>rack-a<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>topology.kubernetes.io/region<span class="o">=</span>dc1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>px/rack<span class="o">=</span>rack-a
+</code></pre></div>
+<h3 id="shared-workers-this-example">Shared workers (this example)<a class="headerlink" href="#shared-workers-this-example" title="Permanent link">¶</a></h3>
+<p>Kafka brokers <strong>schedule on any worker</strong> — no <code>node-role.kubernetes.io/kafka</code> label, no <code>dedicated=kafka</code> taint, and no custom <code>kafka-worker</code> MachineConfigPool. Rack awareness comes from <code>topology.kubernetes.io/zone</code> (or custom rack labels) and operator scheduling rules only.</p>
+<p>Implications:</p>
+<ul>
+<li>Brokers may colocate with application pods — use <code>Guaranteed</code> QoS (requests = limits) and PDBs to protect broker availability during drains.</li>
+<li>Node drains during worker MCP upgrades evict <strong>all</strong> pods on the node, not just Kafka.</li>
+<li>Foreign pods in a rack can reduce scheduling headroom for broker spread — plan worker capacity per rack accordingly.</li>
+</ul>
+<h3 id="portworx-storageclass">Portworx StorageClass<a class="headerlink" href="#portworx-storageclass" title="Permanent link">¶</a></h3>
+<p>Cross-rack volume replicas. Primary file uses the <strong>CSI provisioner</strong> (<code>pxd.portworx.com</code>) — recommended for current OpenShift + Portworx installs per <a href="https://docs.portworx.com/portworx-csi/reference/storage-class">Portworx CSI docs</a>.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Provisioner</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="manifests/common/portworx-storageclass-kafka.yaml"><code>portworx-storageclass-kafka.yaml</code></a></td>
+<td><code>pxd.portworx.com</code></td>
+<td>Default — CSI clusters</td>
+</tr>
+<tr>
+<td><a href="manifests/common/portworx-storageclass-kafka-legacy-in-tree.yaml"><code>portworx-storageclass-kafka-legacy-in-tree.yaml</code></a></td>
+<td><code>kubernetes.io/portworx-volume</code></td>
+<td>Legacy in-tree only</td>
+</tr>
+</tbody>
+</table>
+<p>Confirm on cluster: <code>oc get sc -o custom-columns=NAME:.metadata.name,PROVISIONER:.provisioner | grep -i portworx</code></p>
+<p>Key parameters:</p>
+<ul>
+<li><code>repl: "3"</code></li>
+<li><code>racks: "rack-a,rack-b,rack-c"</code></li>
+<li><code>io_profile: "db"</code></li>
+<li><code>volumeBindingMode: WaitForFirstConsumer</code></li>
+</ul>
+<h3 id="kernel-tuning-optional">Kernel tuning (optional)<a class="headerlink" href="#kernel-tuning-optional" title="Permanent link">¶</a></h3>
+<p>Brokers benefit from host-level VM and THP settings that protect the page cache and reduce latency jitter. See <a href="manifests/common/machineconfig-kafka-tuning.yaml"><code>manifests/common/machineconfig-kafka-tuning.yaml</code></a> — the file header documents <strong>each sysctl/kernel argument</strong>, <strong>references</strong> (Confluent, Red Hat OCP, Cloudera), <strong>trade-offs on shared workers</strong>, and <strong>impact on non-Kafka colocated pods</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Intent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>transparent_hugepage=never</code></td>
+<td>Avoid THP compaction latency on broker JVMs</td>
+</tr>
+<tr>
+<td><code>vm.swappiness=1</code></td>
+<td>Prefer page cache over swap (Confluent recommends low, not 0)</td>
+</tr>
+<tr>
+<td><code>vm.dirty_*</code></td>
+<td>Tune writeback aggressiveness for log I/O</td>
+</tr>
+<tr>
+<td><code>net.core.somaxconn=4096</code></td>
+<td>Higher socket listen backlog for many clients</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Impact on non-Kafka pods</strong> (summary — detail in the MC header):</p>
+<table>
+<thead>
+<tr>
+<th>Colocated workload</th>
+<th>Risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Microservices with memory limits</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>Memory-heavy pods without limits</td>
+<td>Medium — <code>swappiness=1</code> may OOM before swap</td>
+</tr>
+<tr>
+<td>Large JVM / DB / analytics</td>
+<td>Medium — THP disabled; dirty ratios affect writeback</td>
+</tr>
+<tr>
+<td>Write-heavy batch jobs</td>
+<td>Low–medium — conservative <code>dirty_*</code> reduces burst write throughput</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Not in default apply order</strong> — <code>role: worker</code> reboots every worker via MCO. Apply only if those changes are acceptable for all colocated workloads, or adopt a scoped alternative (dedicated MCP or <a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/scalability_and_performance/what-huge-pages-do-and-how-they-are-consumed">Node Tuning Operator</a> profile) instead.</p>
+<p>Uses <strong>Ignition 3.5.0</strong> per <a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/machine_configuration/machine-configs-configure">OCP 4.20 MachineConfig guidance</a>.</p>
+<h3 id="scheduling-primitives-all-operators">Scheduling primitives (all operators)<a class="headerlink" href="#scheduling-primitives-all-operators" title="Permanent link">¶</a></h3>
+<p>Every Kafka deployment should enforce:</p>
+<ol>
+<li><strong>One broker per node</strong> — <code>podAntiAffinity</code> on <code>kubernetes.io/hostname</code></li>
+<li><strong>Even spread across racks</strong> — <code>topologySpreadConstraints</code> on <code>topology.kubernetes.io/zone</code> with <code>whenUnsatisfiable: DoNotSchedule</code></li>
+<li><strong>Rack-aware partition placement</strong> — <code>broker.rack</code> on each broker (operator-specific)</li>
+<li><strong>Voluntary disruption limit</strong> — PodDisruptionBudget <code>maxUnavailable: 1</code> on broker pods</li>
+</ol>
+<hr/>
+<h2 id="operator-specific-examples">Operator-specific examples<a class="headerlink" href="#operator-specific-examples" title="Permanent link">¶</a></h2>
+<h3 id="confluent-platform-operator-cfk-primary-path">Confluent Platform Operator (CFK) — primary path<a class="headerlink" href="#confluent-platform-operator-cfk-primary-path" title="Permanent link">¶</a></h3>
+<p>Confluent uses <code>platform.confluent.io</code> CRDs (<code>Kafka</code>, <code>KRaftController</code>). Rack awareness is <strong>two layers</strong>:</p>
+<ol>
+<li><strong>Kafka partition placement</strong> — <code>spec.rackAssignment.nodeLabels</code> reads the node label and sets <code>broker.rack</code> (requires <code>oneReplicaPerNode: true</code> and a ServiceAccount with <code>get</code>/<code>list</code> on <code>nodes</code> + <code>pods</code>).</li>
+<li><strong>Pod scheduling</strong> — <code>podTemplate.affinity.podAntiAffinity</code> on the same label key spreads brokers across racks at schedule time.</li>
+</ol>
+<p>Files (zone-region): <a href="manifests/zone-region/confluent/"><code>manifests/zone-region/confluent/</code></a> · Custom-rack: <a href="manifests/custom-rack/confluent/"><code>manifests/custom-rack/confluent/</code></a> · RBAC: <a href="manifests/common/confluent-kafka-rbac.yaml"><code>manifests/common/confluent-kafka-rbac.yaml</code></a></p>
+<table>
+<thead>
+<tr>
+<th>CFK field</th>
+<th>Effect (zone-region)</th>
+<th>Custom-rack equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spec.rackAssignment.nodeLabels</code></td>
+<td><code>[topology.kubernetes.io/zone]</code></td>
+<td><code>[platform.example.com/rack]</code></td>
+</tr>
+<tr>
+<td><code>spec.oneReplicaPerNode</code></td>
+<td><code>true</code> — one broker per node</td>
+<td>same</td>
+</tr>
+<tr>
+<td><code>podTemplate.serviceAccountName</code></td>
+<td><code>kafka-rack</code> (RBAC manifest)</td>
+<td>same</td>
+</tr>
+<tr>
+<td><code>podTemplate.affinity.podAntiAffinity</code></td>
+<td><code>topologyKey: topology.kubernetes.io/zone</code></td>
+<td><code>topologyKey: platform.example.com/rack</code></td>
+</tr>
+<tr>
+<td><code>spec.storageClass.name</code></td>
+<td><code>portworx-kafka-repl3</code></td>
+<td>same</td>
+</tr>
+<tr>
+<td><code>configOverrides.server</code></td>
+<td><code>min.insync.replicas=2</code>, RF=3</td>
+<td>same</td>
+</tr>
+</tbody>
+</table>
+<p>CFK also sets <code>default.replication.factor</code> and <code>min.insync.replicas</code> from replica count; the example overrides explicitly to match the Strimzi side-by-side values.</p>
+<p><strong>Strimzi vs CFK mapping</strong> — see <a href="LABELING-COMPARISON/#side-by-side-confluent-vs-strimzi">LABELING-COMPARISON.md</a>.</p>
+<p>Pin <code>image.application</code> / <code>image.init</code> to your licensed Confluent Platform version. Examples use <strong>CP 8.1.0</strong> (KRaft) — confirm against your CFK operator bundle.</p>
+<p><strong>Apply order:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 0. Dry-run against your cluster (recommended)</span>
+oc<span class="w"> </span>apply<span class="w"> </span>--dry-run<span class="o">=</span>server<span class="w"> </span>-f<span class="w"> </span>manifests/common/
+oc<span class="w"> </span>apply<span class="w"> </span>--dry-run<span class="o">=</span>server<span class="w"> </span>-f<span class="w"> </span>manifests/zone-region/confluent/
+<span class="c1"># or: -f manifests/custom-rack/confluent/</span>
+
+<span class="c1"># 1. Common foundation (StorageClass)</span>
+oc<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>manifests/common/portworx-storageclass-kafka.yaml
+<span class="c1"># Optional — reboots all workers:</span>
+<span class="c1"># oc apply -f manifests/common/machineconfig-kafka-tuning.yaml</span>
+
+<span class="c1"># 2. CFK operator must already be installed; create target namespace</span>
+oc<span class="w"> </span>create<span class="w"> </span>namespace<span class="w"> </span>kafka<span class="w"> </span>--dry-run<span class="o">=</span>client<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>oc<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
+
+<span class="c1"># 3. Rack-assignment RBAC (before Kafka CR)</span>
+oc<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>manifests/common/confluent-kafka-rbac.yaml
+
+<span class="c1"># 4. KRaft controllers, then brokers (order matters)</span>
+oc<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>manifests/zone-region/confluent/kraftcontroller.yaml
+oc<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>manifests/zone-region/confluent/kafka-rack-aware.yaml
+<span class="c1"># or: -f manifests/custom-rack/confluent/</span>
+</code></pre></div>
+<p><strong>Verify <code>broker.rack</code>:</strong></p>
+<div class="highlight"><pre><span></span><code>oc<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-n<span class="w"> </span>kafka<span class="w"> </span>prod-kafka-0<span class="w"> </span>--<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>grep<span class="w"> </span>broker.rack<span class="w"> </span>/opt/confluentinc/etc/kafka/kafka.properties
+</code></pre></div>
+<p>For strict <code>topologySpreadConstraints</code> with <code>whenUnsatisfiable: DoNotSchedule</code> (as in the Strimzi examples), CFK requires the <a href="https://docs.confluent.io/operator/current/co-configure-misc.html#pod-overlay">pod overlay</a> feature — the examples here use CFK-native <code>podAntiAffinity</code> on the rack label key instead.</p>
+<h3 id="strimzi-amq-streams-comparison">Strimzi / AMQ Streams — comparison<a class="headerlink" href="#strimzi-amq-streams-comparison" title="Permanent link">¶</a></h3>
+<p>AMQ Streams is Red Hat's build of the Strimzi operator — the <code>Kafka</code> and <code>KafkaNodePool</code> CRs are the same model. Kept for side-by-side comparison with CFK.</p>
+<p>Files (zone-region): <a href="manifests/zone-region/strimzi/"><code>manifests/zone-region/strimzi/</code></a> · Custom-rack: <a href="manifests/custom-rack/strimzi/"><code>manifests/custom-rack/strimzi/</code></a></p>
+<table>
+<thead>
+<tr>
+<th>Strimzi field</th>
+<th>Effect (zone-region)</th>
+<th>Custom-rack equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spec.kafka.rack.topologyKey</code></td>
+<td><code>topology.kubernetes.io/zone</code></td>
+<td><code>platform.example.com/rack</code></td>
+</tr>
+<tr>
+<td><code>template.pod.topologySpreadConstraints</code></td>
+<td><code>topologyKey: topology.kubernetes.io/zone</code></td>
+<td><code>topologyKey: platform.example.com/rack</code></td>
+</tr>
+<tr>
+<td><code>template.pod.affinity.podAntiAffinity</code></td>
+<td>Prevents two brokers on one node</td>
+<td></td>
+</tr>
+<tr>
+<td><code>spec.kafka.config.min.insync.replicas: 2</code></td>
+<td>Survives one broker loss with RF=3</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Strimzi creates a PodDisruptionBudget automatically — verify it after deploy.</p>
+<p>The example <code>kafka-cluster.yaml</code> uses a <strong>plaintext internal listener</strong> (port 9092) for simplicity. Add TLS listeners before production.</p>
+<p><strong>Apply order:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 0. Dry-run against your cluster (recommended)</span>
+oc<span class="w"> </span>apply<span class="w"> </span>--dry-run<span class="o">=</span>server<span class="w"> </span>-f<span class="w"> </span>manifests/common/
+oc<span class="w"> </span>apply<span class="w"> </span>--dry-run<span class="o">=</span>server<span class="w"> </span>-f<span class="w"> </span>manifests/zone-region/strimzi/
+<span class="c1"># or: -f manifests/custom-rack/strimzi/</span>
+
+<span class="c1"># 1. Common foundation (labels from variant dir, StorageClass)</span>
+oc<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>manifests/common/portworx-storageclass-kafka.yaml
+<span class="c1"># Optional — reboots all workers:</span>
+<span class="c1"># oc apply -f manifests/common/machineconfig-kafka-tuning.yaml</span>
+
+<span class="c1"># 2. Strimzi operator must already be installed in the target namespace</span>
+oc<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>manifests/zone-region/strimzi/
+<span class="c1"># or: -f manifests/custom-rack/strimzi/</span>
+</code></pre></div>
+<p>See <a href="VALIDATION/">VALIDATION.md</a> for cluster-side checks after apply.</p>
+<h3 id="helm-manual-deployment">Helm / manual deployment<a class="headerlink" href="#helm-manual-deployment" title="Permanent link">¶</a></h3>
+<p>If Kafka runs as a StatefulSet without an operator:</p>
+<ol>
+<li>Apply all <a href="manifests/common/"><code>manifests/common/</code></a> resources.</li>
+<li>Set per-broker <code>broker.rack</code> in <code>server.properties</code> (or via environment) to match the node's <code>topology.kubernetes.io/zone</code>.</li>
+<li>Add <code>topologySpreadConstraints</code> and <code>podAntiAffinity</code> to the StatefulSet pod template.</li>
+<li>Create a PDB with <code>maxUnavailable: 1</code>.</li>
+</ol>
+<hr/>
+<h2 id="rack-outage-behavior">Rack outage behavior<a class="headerlink" href="#rack-outage-behavior" title="Permanent link">¶</a></h2>
+<p>With 3 racks, RF=3, minISR=2, and aligned labels:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>1 rack lost</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Portworx volumes</td>
+<td>Online (degraded)</td>
+<td>2 of 3 replicas remain</td>
+</tr>
+<tr>
+<td>Kafka brokers</td>
+<td>1 broker down</td>
+<td>Cluster continues producing/consuming</td>
+</tr>
+<tr>
+<td>Partition availability</td>
+<td>Maintained</td>
+<td>Rack awareness keeps replicas on surviving racks</td>
+</tr>
+<tr>
+<td>Performance</td>
+<td>Degraded</td>
+<td>Re-replication and ISR rebuild add IO and network load</td>
+</tr>
+</tbody>
+</table>
+<p><strong>2-rack sites cannot get true rack fault tolerance.</strong> With only two racks, two partition replicas may share a rack — a single rack loss can breach <code>min.insync.replicas</code>.</p>
+<hr/>
+<h2 id="openshift-upgrades-and-node-churn">OpenShift upgrades and node churn<a class="headerlink" href="#openshift-upgrades-and-node-churn" title="Permanent link">¶</a></h2>
+<p>The Machine Config Operator (MCO) upgrades nodes: cordon → drain → OS update → reboot → uncordon. Drains respect PodDisruptionBudgets.</p>
+<h3 id="upgrade-friendly-settings">Upgrade-friendly settings<a class="headerlink" href="#upgrade-friendly-settings" title="Permanent link">¶</a></h3>
+<ul>
+<li>Keep <code>maxUnavailable: 1</code> on the default <code>worker</code> MachineConfigPool (default).</li>
+<li>Never raise <code>maxUnavailable</code> on control-plane pools.</li>
+<li>When <code>topology.kubernetes.io/zone</code> is set, MCO drains alphabetically by zone, oldest node first within each zone.</li>
+</ul>
+<h3 id="suggested-upgrade-sequence">Suggested upgrade sequence<a class="headerlink" href="#suggested-upgrade-sequence" title="Permanent link">¶</a></h3>
+<ol>
+<li><code>oc adm upgrade</code> — confirm no blockers.</li>
+<li>Confirm Kafka healthy (no under-replicated partitions, all brokers in ISR).</li>
+<li>Upgrade control plane (sequential, etcd-safe).</li>
+<li>Upgrade <code>worker</code> pool one node at a time — brokers and apps drain together.</li>
+<li>MCO drain evicts pods on the node → broker reschedules on another rack → Portworx volume reattaches.</li>
+</ol>
+<p>If drain appears stuck, check PDB events:</p>
+<div class="highlight"><pre><span></span><code>oc<span class="w"> </span>describe<span class="w"> </span>pdb<span class="w"> </span>-n<span class="w"> </span>&lt;kafka-namespace&gt;
+oc<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span>-n<span class="w"> </span>&lt;kafka-namespace&gt;<span class="w"> </span>--field-selector<span class="w"> </span><span class="nv">reason</span><span class="o">=</span>Evicted
+</code></pre></div>
+<h3 id="pause-worker-pool-during-maintenance-optional">Pause worker pool during maintenance (optional)<a class="headerlink" href="#pause-worker-pool-during-maintenance-optional" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code>oc<span class="w"> </span>patch<span class="w"> </span>mcp<span class="w"> </span>worker<span class="w"> </span>--type<span class="o">=</span>merge<span class="w"> </span>-p<span class="w"> </span><span class="s1">'{"spec":{"paused":true}}'</span>
+<span class="c1"># ... maintenance ...</span>
+oc<span class="w"> </span>patch<span class="w"> </span>mcp<span class="w"> </span>worker<span class="w"> </span>--type<span class="o">=</span>merge<span class="w"> </span>-p<span class="w"> </span><span class="s1">'{"spec":{"paused":false}}'</span>
+</code></pre></div>
+<h3 id="adding-nodes">Adding nodes<a class="headerlink" href="#adding-nodes" title="Permanent link">¶</a></h3>
+<ol>
+<li>Install host with rack labels <strong>before</strong> scheduling workloads.</li>
+<li>Confirm Portworx sees the node (<code>pxctl</code> runs inside the Portworx pod — OCP default namespace is <code>portworx</code>):</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="nv">PX_NS</span><span class="o">=</span><span class="si">${</span><span class="nv">PX_NS</span><span class="k">:-</span><span class="nv">portworx</span><span class="si">}</span>
+<span class="nv">PX_POD</span><span class="o">=</span><span class="k">$(</span>oc<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span><span class="nv">$PX_NS</span><span class="w"> </span>-l<span class="w"> </span><span class="nv">name</span><span class="o">=</span>portworx<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.items[0].metadata.name}'</span><span class="k">)</span>
+oc<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-n<span class="w"> </span><span class="nv">$PX_NS</span><span class="w"> </span><span class="nv">$PX_POD</span><span class="w"> </span>--<span class="w"> </span>/opt/pwx/bin/pxctl<span class="w"> </span>status
+</code></pre></div>
+<ol>
+<li>Scale brokers via your operator.</li>
+<li>Rebalance partitions (Cruise Control / <code>KafkaRebalance</code> for Strimzi).</li>
+</ol>
+<h3 id="removing-nodes">Removing nodes<a class="headerlink" href="#removing-nodes" title="Permanent link">¶</a></h3>
+<ol>
+<li>Cordon and drain: <code>oc adm drain &lt;node&gt; --ignore-daemonsets --delete-emptydir-data</code></li>
+<li>Wait for broker pod to reschedule and rejoin ISR.</li>
+<li>Decommission Portworx node per Portworx docs before powering off hardware.</li>
+</ol>
+<hr/>
+<h2 id="openshift-internals-and-tenancy">OpenShift internals and tenancy<a class="headerlink" href="#openshift-internals-and-tenancy" title="Permanent link">¶</a></h2>
+<p>This example uses <strong>shared workers</strong> — brokers schedule on the default <code>worker</code> MachineConfigPool alongside application pods. No <code>kafka</code> node role, taints, or dedicated MCP.</p>
+<p>Full reference (tenancy models, MCP/CVO interaction, PDB and network-policy pitfalls, upgrade choreography): <strong><a href="../../../../notes/kafka-on-openshift-tenancy/">Kafka on OpenShift tenancy</a></strong>.</p>
+<p><strong>This example specifically:</strong></p>
+<ul>
+<li>Optional <a href="manifests/common/machineconfig-kafka-tuning.yaml"><code>machineconfig-kafka-tuning.yaml</code></a> targets <code>role: worker</code> — affects all workers if applied.</li>
+<li>Portworx DaemonSet and volume replication share node network with colocated apps.</li>
+<li>Under default-deny, broker and client namespaces need explicit policy — see <a href="../../../../notes/network-policy-observability/">network-policy-observability</a>.</li>
+</ul>
+<hr/>
+<h2 id="verification-checklist">Verification checklist<a class="headerlink" href="#verification-checklist" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. Rack labels on workers (zone-region variant)</span>
+oc<span class="w"> </span>get<span class="w"> </span>nodes<span class="w"> </span>-l<span class="w"> </span>node-role.kubernetes.io/worker<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span>custom-columns<span class="o">=</span><span class="se">\</span>
+NAME:.metadata.name,<span class="se">\</span>
+ZONE:.metadata.labels.topology<span class="se">\\</span>.kubernetes<span class="se">\\</span>.io/zone,<span class="se">\</span>
+RACK:.metadata.labels.px/rack
+
+<span class="c1"># 2. Brokers spread across zones</span>
+oc<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>&lt;kafka-namespace&gt;<span class="w"> </span>-o<span class="w"> </span>wide<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>kafka
+
+<span class="c1"># 3. broker.rack set (CFK)</span>
+oc<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-n<span class="w"> </span>&lt;kafka-namespace&gt;<span class="w"> </span>&lt;broker-pod-0&gt;<span class="w"> </span>--<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>grep<span class="w"> </span>broker.rack<span class="w"> </span>/opt/confluentinc/etc/kafka/kafka.properties
+<span class="c1"># Strimzi / AMQ Streams:</span>
+<span class="c1"># oc exec -n &lt;kafka-namespace&gt; &lt;broker-pod-0&gt; -- \</span>
+<span class="c1">#   grep broker.rack /opt/kafka/custom-config/server.properties</span>
+
+<span class="c1"># 4. Portworx volume replica placement</span>
+<span class="nv">PX_NS</span><span class="o">=</span><span class="si">${</span><span class="nv">PX_NS</span><span class="k">:-</span><span class="nv">portworx</span><span class="si">}</span>
+<span class="nv">PX_POD</span><span class="o">=</span><span class="k">$(</span>oc<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span><span class="nv">$PX_NS</span><span class="w"> </span>-l<span class="w"> </span><span class="nv">name</span><span class="o">=</span>portworx<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.items[0].metadata.name}'</span><span class="k">)</span>
+oc<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-n<span class="w"> </span><span class="nv">$PX_NS</span><span class="w"> </span><span class="nv">$PX_POD</span><span class="w"> </span>--<span class="w"> </span>/opt/pwx/bin/pxctl<span class="w"> </span>volume<span class="w"> </span>inspect<span class="w"> </span>&lt;volume-id&gt;
+
+<span class="c1"># 5. PDB present</span>
+oc<span class="w"> </span>get<span class="w"> </span>pdb<span class="w"> </span>-n<span class="w"> </span>&lt;kafka-namespace&gt;
+
+<span class="c1"># 6. Under-replicated partitions (if kafka-topics.sh available)</span>
+oc<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-n<span class="w"> </span>&lt;kafka-namespace&gt;<span class="w"> </span>&lt;broker-pod-0&gt;<span class="w"> </span>--<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>kafka-topics.sh<span class="w"> </span>--bootstrap-server<span class="w"> </span>localhost:9092<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--describe<span class="w"> </span>--under-replicated-partitions
+</code></pre></div>
+<hr/>
+<h2 id="manifest-index">Manifest index<a class="headerlink" href="#manifest-index" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code>manifests/
+├── README.md                 # variant index
+├── common/                   # shared: Portworx SC, optional kernel tuning, CFK RBAC
+├── zone-region/              # topology.kubernetes.io/zone + region
+│   ├── node-labels.example.yaml
+│   ├── acm-bmh-worker-host.example.yaml
+│   ├── inventory-workers.example.yaml
+│   ├── confluent/            # CFK — primary path
+│   └── strimzi/              # AMQ Streams / upstream — comparison
+└── custom-rack/              # platform.example.com/rack + site
+    ├── node-labels.example.yaml
+    ├── acm-bmh-worker-host.example.yaml
+    ├── inventory-workers.example.yaml
+    ├── confluent/
+    └── strimzi/
+</code></pre></div>
+<p><a href="LABELING-COMPARISON/">LABELING-COMPARISON.md</a> — side-by-side zone/region vs custom-rack.
+<a href="VALIDATION/">VALIDATION.md</a> — static review status and cluster-side checklist.</p>
+<hr/>
+<h2 id="design-decisions-to-settle">Design decisions to settle<a class="headerlink" href="#design-decisions-to-settle" title="Permanent link">¶</a></h2>
+<p>These change sizing and manifest values:</p>
+<ol>
+<li><strong>Rack and broker count</strong> — e.g. 3 racks × 3 brokers vs 3 × 6</li>
+<li><strong>Operator choice</strong> — Confluent (primary examples) vs Strimzi/AMQ vs Helm</li>
+<li><strong>Dedicated kafka pool</strong> — not used; brokers share the default worker pool</li>
+<li><strong>OCP upgrade channel</strong> — EUS vs stable affects upgrade choreography</li>
+</ol>
+<p><em>Example configurations — not production-ready without review. See <a href="../../../../../../AI-DISCLOSURE/">AI-DISCLOSURE.md</a>.</em></p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../../../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../../../../../assets/poc/symptom-picker.js"></script>
+<script src="../../../../../../assets/mermaid/mermaid.min.js"></script><script>window.mermaidConfig = {default: {
+    startOnLoad: false
+}};</script></body>
+</html>
