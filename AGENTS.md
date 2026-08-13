@@ -155,7 +155,7 @@ When creating or modifying content, see the `/cross-link` skill for the full pro
 
 > Organizing lens for `devops/` evidence and related essays. Trailhead: [`docs/ai-engineering/software-systems-maturity.md`](docs/ai-engineering/software-systems-maturity.md).
 
-The maturity model is **navigation and gap tracking**, not certification. It complements the session framework (how we work with AI) with a separate question: **what capabilities are we building toward?**
+The maturity model is **navigation and gap tracking**, not certification — and **example evidence in this repo does not score Field Notes** ([navigation essay](docs/ai-engineering/maturity-as-navigation-not-benchmark.md)). It complements the session framework (how we work with AI) with a separate question: **what capabilities are we building toward?**
 
 When adding or moving substantive `devops/` content:
 

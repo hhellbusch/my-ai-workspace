@@ -79,7 +79,10 @@ Quality erosion — conversation starters, not shaming:
 
 ---
 
-## Evidence in this workspace
+## Example evidence for this workspace
+
+> Illustrates practices on this axis using paths in Field Notes. **Not a maturity score** for this workspace or your team. See [navigation vs benchmark](../maturity-as-navigation-not-benchmark.md) and [artifact map](../../../research/software-systems-maturity/findings/artifact-map.md).
+
 
 | Level | Path |
 |---|---|

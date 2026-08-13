@@ -6,9 +6,9 @@ review:
 
 # Software Systems Maturity — deep dives
 
-**Audience:** Readers who finished the [trailhead](../software-systems-maturity.md) and want level detail, anti-patterns, and links to practice in this repository.
+**Audience:** Readers who finished the [trailhead](../software-systems-maturity.md) and want level detail, anti-patterns, and **example evidence** paths in this repository.
 
-**Purpose:** One document per axis (or closely related axis group). Each deep dive is JBGE — sufficient to assess and prioritize, with room to grow.
+**Purpose:** One document per axis (or closely related axis group). Each deep dive is JBGE — sufficient to assess and prioritize, with room to grow. **Example evidence** sections illustrate practices; they do not score Field Notes — see [navigation vs benchmark](../maturity-as-navigation-not-benchmark.md).
 
 **Related:** [Artifact map](../../../research/software-systems-maturity/findings/artifact-map.md) · [Trailhead](../software-systems-maturity.md) · [Assessment worksheet](worksheet.md) · [Joel Test appendix](joel-test-appendix.md) · [DORA / AI research note](../../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md)
 
@@ -33,7 +33,7 @@ review:
 | People | Team practices | [team-practices.md](team-practices.md) |
 | Product *(optional)* | Product discovery | [product-discovery.md](product-discovery.md) |
 
-All entries are **v2** — axis iteration with deck lineage, corpus evidence, DORA touchpoints, and AI-era notes where relevant (2026-08-12).
+All entries are **v2** — axis iteration with deck lineage, example evidence, optional DORA touchpoints, and AI-era notes where relevant (2026-08-12).
 
 ---
 

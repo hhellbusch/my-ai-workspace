@@ -84,7 +84,10 @@ Connects to [deployment](deployment-and-release.md) — promotion through enviro
 
 ---
 
-## Evidence in this workspace
+## Example evidence for this workspace
+
+> Illustrates practices on this axis using paths in Field Notes. **Not a maturity score** for this workspace or your team. See [navigation vs benchmark](../maturity-as-navigation-not-benchmark.md) and [artifact map](../../../research/software-systems-maturity/findings/artifact-map.md).
+
 
 | Level | What it looks like | Repo paths |
 |---|---|---|

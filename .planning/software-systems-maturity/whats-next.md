@@ -1,10 +1,10 @@
 # Software Systems Maturity — session handoff
 
-> **Written:** 2026-08-12 · **Status:** First pass **complete** (author skim OK) · **Thread:** closed pending PR merge
+> **Written:** 2026-08-12 · **Status:** Spar framing pass complete · **Thread:** closed pending PR merge
 
 ## Summary
 
-Resurrected a 2016–2017 maturity deck as a **trailhead + 14 axis deep dives + Joel appendix**, mapped to this repo's corpus, and wired as a **navigation lens** (not certification). Author skimmed content — good enough to ship as first pass.
+Resurrected a 2016–2017 maturity deck as a **trailhead + 14 axis deep dives + Joel appendix**, mapped to this repo's corpus as **example evidence** (not a workspace score), and wired as a **navigation lens** (not certification).
 
 **Merge when ready:** [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9) · branch `feature/software-systems-maturity-trailhead`
 
@@ -15,6 +15,7 @@ Resurrected a 2016–2017 maturity deck as a **trailhead + 14 axis deep dives + 
 | Need | File |
 |---|---|
 | Model intro | [docs/ai-engineering/software-systems-maturity.md](../../docs/ai-engineering/software-systems-maturity.md) |
+| Corpus framing (not self-score) | [maturity-as-navigation-not-benchmark.md](../../docs/ai-engineering/maturity-as-navigation-not-benchmark.md) |
 | Per-axis detail | [docs/ai-engineering/maturity/README.md](../../docs/ai-engineering/maturity/README.md) |
 | Repo ↔ axis index | [research/.../artifact-map.md](../../research/software-systems-maturity/findings/artifact-map.md) |
 | Team self-assessment | [docs/ai-engineering/maturity/worksheet.md](../../docs/ai-engineering/maturity/worksheet.md) |
@@ -52,7 +53,7 @@ Resurrected a 2016–2017 maturity deck as a **trailhead + 14 axis deep dives + 
 
 **Complete (v2, 2026-08-12):** all 14 axes — deck lineage, repo evidence, DORA touchpoints, AI-era notes. See [maturity/README.md](../../docs/ai-engineering/maturity/README.md) and [DORA research note](../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md).
 
-**Next:** merge PR #9; optional `/validate read`; *Accelerate* library ingest; essay "DORA in the agent era."
+**Next:** merge PR #9; optional `/validate read`; essay framing shipped — [maturity-as-navigation-not-benchmark.md](../../docs/ai-engineering/maturity-as-navigation-not-benchmark.md); *Accelerate* library ingest done.
 
 ---
 
@@ -66,7 +67,8 @@ Resurrected a 2016–2017 maturity deck as a **trailhead + 14 axis deep dives + 
 | **D2** `maturity:` frontmatter | ~10 rich corpus paths — only if tags will stay maintained |
 | **D3** Generated artifact map | JBGE; defer unless D2 is in use |
 | **Product discovery** corpus | Optional axis — thin by design |
-| **Essay / case study** | "Maturity as workspace architecture" — seed in BACKLOG if desired |
+| **Essay / case study** | [maturity-as-navigation-not-benchmark.md](../../docs/ai-engineering/maturity-as-navigation-not-benchmark.md) — shipped 2026-08-12 |
+| ***Accelerate* library ingest** | [accelerate-forsgren-humble-kim.md](../../library/accelerate-forsgren-humble-kim.md) — JBGE summary |
 | **`/validate read`** on key docs | Formal review metadata after merge |
 | Run **worksheet** on a `.planning/` project | Validates the model in practice |
 

@@ -2,7 +2,7 @@
 
 **Purpose:** Connect the [software systems maturity](../../../docs/ai-engineering/software-systems-maturity.md) model to DORA/Accelerate evidence — and surface what changes (or doesn't) when AI agents join the delivery path.
 
-**Status:** Working note — **all 14 axes v2** linked (2026-08-12). Not a standalone essay yet.
+**Status:** Working note — optional parallel lens to per-axis maturity. **All 14 axes v2** linked (2026-08-12). Correlation ≠ causation; AI-era rows are hypotheses. See [Accelerate library entry](../../../library/accelerate-forsgren-humble-kim.md) and [navigation vs benchmark essay](../../../docs/ai-engineering/maturity-as-navigation-not-benchmark.md).
 
 **Related:** [Source control deep dive](../../../docs/ai-engineering/maturity/source-control.md) · [Deployment & release](../../../docs/ai-engineering/maturity/deployment-and-release.md) · [AI agents & harnesses](../../../docs/ai-engineering/maturity/ai-agents-and-harnesses.md)
 
@@ -103,7 +103,7 @@ Avoid: converting axis levels into a fake DORA score. Avoid: ignoring DORA becau
 
 **AI era:** agents accelerate manifest **production**; deployment maturity determines whether that increases **deployment frequency** or **change failure rate**. PR diff tools ([argocd-diff-preview](../../../library/argocd-diff-preview.md)) are L3–4 enablers when generation volume rises.
 
-**Corpus (rich):** [devops/argo/](../../../devops/argo/README.md) · [artifact map](artifact-map.md) · [deployment deep dive](../../../docs/ai-engineering/maturity/deployment-and-release.md)
+**Corpus (example evidence — rich):** [devops/argo/](../../../devops/argo/README.md) · [artifact map](artifact-map.md) · [deployment deep dive](../../../docs/ai-engineering/maturity/deployment-and-release.md)
 
 ---
 
