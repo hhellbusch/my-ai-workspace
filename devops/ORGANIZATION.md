@@ -80,6 +80,25 @@ When adding OCP examples, add an `examples:` entry and run `scripts/generate-exa
 - Touches bare metal + hub → link both `ocp/examples/bare-metal/` and `rhacm/notes/`
 - New note → `ocp/notes/README.md`
 
+## Maturity lens
+
+When adding or substantially updating `devops/` content, name which **maturity axis** it primarily exemplifies (one primary; optional secondary). Axes and levels: [trailhead](../docs/ai-engineering/software-systems-maturity.md). Corpus index: [artifact map](../research/software-systems-maturity/findings/artifact-map.md).
+
+| Axis | Typical homes in this tree |
+|---|---|
+| Deployment & release | `argo/`, GitOps promotion, PR workflow examples |
+| Platform & fleet | `rhacm/`, `fleet-control-spectrum.md`, OCP install variants |
+| Security & secrets | `vault/`, RHACM secrets and policy examples |
+| Monitoring & reliability | `ocp/troubleshooting/`, symptom guides in `catalog.yaml` |
+| Builds & artifacts | CI in `argo/examples/`, operator installers |
+| Architecture & change | Fleet notes, app-of-apps structure, GUIDELINES |
+| Source control | `git/git-learning-guide.md` (pedagogy, not fleet policy) |
+| Documentation & knowledge | READMEs, runbooks, cross-links — any durable guide |
+| AI agents & harnesses | `pi/`, `paude/`, `paude-proxy/` |
+| Testing & verification | Lab scenarios, validation scripts under examples |
+
+This is **navigation**, not certification. Describe what the artifact *demonstrates*, not what the team claims to be. If it fills a gap in the artifact map, add or update a row there and link from the relevant [deep dive](../docs/ai-engineering/maturity/README.md).
+
 ## Planned (not in tree)
 
 - `devops/bare-metal-dev-sandbox/` — local BMC preflight harness (see `devops/README.md`)

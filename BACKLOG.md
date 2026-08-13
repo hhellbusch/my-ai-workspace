@@ -107,10 +107,10 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
-### Software Systems Maturity — remaining axis deep dives
+### Software Systems Maturity — meta-framework & review
 - **Product:** docs/ai-engineering/maturity/
-- **Context:** All 14 axis deep dive drafts + Joel appendix complete. Next: author review, deck PDF diagrams, optional SLO guide. Index: [maturity/README.md](../docs/ai-engineering/maturity/README.md).
-- **Added:** 2026-08-12 · **Updated:** 2026-08-13
+- **Context:** Deep dive drafts complete. D1 navigation hub wired (devops/README, ORGANIZATION, AGENTS, worksheet). **Next:** author review on PR #9; deck PDF diagrams; optional SLO guide; D2 frontmatter after review. Index: [maturity/README.md](../docs/ai-engineering/maturity/README.md) · handoff: [.planning/software-systems-maturity/whats-next.md](../.planning/software-systems-maturity/whats-next.md).
+- **Added:** 2026-08-12 · **Updated:** 2026-08-12
 
 ### Essay seed: documentation as cognitive offload and async multiplier
 - **Product:** docs/ai-engineering (or docs/philosophy)

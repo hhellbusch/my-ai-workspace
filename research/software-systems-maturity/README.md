@@ -2,7 +2,7 @@
 
 **Purpose:** Preserve and resurrect a 2016–2017 maturity-model slide deck — trailhead, deep dives, and repo artifact mapping.
 
-**Status:** In progress — trailhead + **14 axis deep dive drafts** + Joel appendix; author review pending.
+**Status:** In progress — trailhead + **14 axis deep dive drafts** + Joel appendix + worksheet; author review pending. Meta-framework D1 navigation wired.
 
 **Output:**
 

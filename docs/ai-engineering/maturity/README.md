@@ -10,7 +10,7 @@ review:
 
 **Purpose:** One document per axis (or closely related axis group). Each deep dive is JBGE — sufficient to assess and prioritize, with room to grow.
 
-**Related:** [Artifact map](../../../research/software-systems-maturity/findings/artifact-map.md) · [Trailhead](../software-systems-maturity.md) · [Joel Test appendix](joel-test-appendix.md)
+**Related:** [Artifact map](../../../research/software-systems-maturity/findings/artifact-map.md) · [Trailhead](../software-systems-maturity.md) · [Assessment worksheet](worksheet.md) · [Joel Test appendix](joel-test-appendix.md)
 
 ---
 
@@ -42,6 +42,7 @@ All entries are **draft** — author review pending.
 | Document | Purpose |
 |---|---|
 | [joel-test-appendix.md](joel-test-appendix.md) | Maps Joel Test items to axes |
+| [worksheet.md](worksheet.md) | Per-axis self-assessment template (not certification) |
 
 ---
 
