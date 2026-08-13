@@ -20,9 +20,20 @@ ROOT = Path(__file__).resolve().parent
 NNCP_CHART = ROOT.parent.parent / "messaging" / "kafka" / "cross-dc-nncp-helm"
 KAFKA_NET_CHART = ROOT.parent.parent / "messaging" / "kafka" / "cross-dc-kafka-net-helm"
 TEST_DIR = ROOT.parent / "cross-dc-network-test"
+INGRESS_TEST_DIR = ROOT.parent / "cross-dc-ingress-test"
 TEMPLATE_DIR = ROOT / "templates"
 
 BROKER_IPAM_MODES = frozenset({"whereabouts", "static"})
+REPLICATION_PATHS = frozenset({"multus", "ingress"})
+
+
+def replication_path(inv: dict[str, Any]) -> str:
+    path = inv.get("replicationPath", "multus")
+    if path not in REPLICATION_PATHS:
+        raise SystemExit(
+            f"replicationPath must be one of {sorted(REPLICATION_PATHS)} (got {path!r})"
+        )
+    return path
 
 
 def load_inventory(path: Path) -> dict[str, Any]:
@@ -77,7 +88,20 @@ def ip_in_pool(ip: ipaddress.IPv4Address, pool: dict[str, str]) -> bool:
 
 
 def validate_inventory(inv: dict[str, Any]) -> None:
+    path = replication_path(inv)
     net = inv["replicationNetwork"]
+
+    if path == "ingress":
+        ingress = inv.get("ingress") or {}
+        if not ingress.get("domain"):
+            raise SystemExit("replicationPath=ingress requires ingress.domain")
+        mode = ingress.get("frontendMode", "vip")
+        if mode == "vip" and not ingress.get("vip"):
+            raise SystemExit("ingress.frontendMode=vip requires ingress.vip")
+        if mode == "dns_lb" and not ingress.get("dnsTargets"):
+            raise SystemExit("ingress.frontendMode=dns_lb requires ingress.dnsTargets[]")
+        return
+
     mode = broker_ipam_mode(inv)
     wl = inv["workload"]
     brokers = wl.get("brokers") or []
@@ -240,12 +264,103 @@ def render_test_env(inv: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def _frontend_targets(inv: dict[str, Any]) -> str:
+    ingress = inv["ingress"]
+    mode = ingress.get("frontendMode", "vip")
+    if mode == "vip":
+        return str(ingress["vip"])
+    return " ".join(str(t) for t in ingress["dnsTargets"])
+
+
+def render_ingress_test_env(inv: dict[str, Any]) -> str:
+    net = inv["replicationNetwork"]
+    ingress = inv["ingress"]
+    prefix = side_prefix(inv["cluster"]["id"])
+    gateway_nodes = [n["hostname"] for n in inv["nodes"]]
+    if not gateway_nodes:
+        raise SystemExit("ingress path requires at least one node in inventory.nodes")
+
+    route_label = ingress.get("routeLabel") or {"ingress": "replication"}
+    if len(route_label) != 1:
+        raise SystemExit("ingress.routeLabel must have exactly one key (routeSelector match)")
+    label_key, label_value = next(iter(route_label.items()))
+
+    test_host = ingress.get(
+        "testRouteHost",
+        f"repl-test.{ingress['domain']}",
+    )
+
+    lines = [
+        "# Generated from inventory — do not edit by hand; re-run render-config.py",
+        f"export DC{prefix}_KUBECONFIG=\"{inv['cluster']['kubeconfig']}\"",
+        f"export DC{prefix}_NODE_NAMES=\"{' '.join(gateway_nodes)}\"",
+        f"export DC{prefix}_BOND_VLAN_IFACE=\"{bond_vlan_iface(net)}\"",
+        f"export DC{prefix}_LOCAL_SUBNET=\"{net['localSubnet']}\"",
+        f"export DC{prefix}_REMOTE_SUBNET=\"{net['remoteSubnet']}\"",
+        f"export DC{prefix}_EXPECTED_MTU=\"{net['expectedMtu']}\"",
+        f"export DC{prefix}_INGRESS_CONTROLLER_NAME=\"{ingress.get('controllerName', 'replication')}\"",
+        f"export DC{prefix}_INGRESS_DOMAIN=\"{ingress['domain']}\"",
+        f"export DC{prefix}_INGRESS_ROUTE_LABEL_KEY=\"{label_key}\"",
+        f"export DC{prefix}_INGRESS_ROUTE_LABEL_VALUE=\"{label_value}\"",
+        f"export DC{prefix}_FRONTEND_MODE=\"{ingress.get('frontendMode', 'vip')}\"",
+        f"export DC{prefix}_FRONTEND_TARGETS=\"{_frontend_targets(inv)}\"",
+        f"export DC{prefix}_INGRESS_EXTERNAL_PORT=\"{ingress.get('externalPort', 443)}\"",
+        f"export DC{prefix}_TEST_ROUTE_HOST=\"{test_host}\"",
+        f"export TEST_PROBE_IMAGE=\"{inv['probe']['image']}\"",
+        "",
+    ]
+    return "\n".join(lines)
+
+
 def write_yaml(path: Path, data: dict[str, Any], header: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as fh:
         fh.write(f"# {header}\n")
         fh.write("# Source: render-config.py — edit inventory YAML and re-render\n\n")
         yaml.dump(data, fh, default_flow_style=False, sort_keys=False)
+
+
+def _dns_targets(inv: dict[str, Any]) -> str:
+    ingress = inv["ingress"]
+    mode = ingress.get("frontendMode", "vip")
+    if mode == "vip":
+        return str(ingress["vip"])
+    return ", ".join(str(t) for t in ingress["dnsTargets"])
+
+
+def render_dns_request(inv_a: dict[str, Any], inv_b: dict[str, Any]) -> str:
+    template_path = TEMPLATE_DIR / "dns-change-request.md.example"
+    tpl = Template(template_path.read_text(encoding="utf-8"))
+    ing_a = inv_a["ingress"]
+    ing_b = inv_b["ingress"]
+    return tpl.substitute(
+        dc_a_id=inv_a["cluster"]["id"],
+        dc_b_id=inv_b["cluster"]["id"],
+        dc_a_ingress_domain=ing_a["domain"],
+        dc_b_ingress_domain=ing_b["domain"],
+        dc_a_dns_targets=_dns_targets(inv_a),
+        dc_b_dns_targets=_dns_targets(inv_b),
+        dns_ttl=ing_a.get("dnsTtl", 60),
+    )
+
+
+def render_firewall_request_ingress(inv_a: dict[str, Any], inv_b: dict[str, Any]) -> str:
+    template_path = TEMPLATE_DIR / "firewall-change-request-ingress.md.example"
+    tpl = Template(template_path.read_text(encoding="utf-8"))
+    net_a = inv_a["replicationNetwork"]
+    net_b = inv_b["replicationNetwork"]
+    ing_a = inv_a["ingress"]
+    ing_b = inv_b["ingress"]
+    return tpl.substitute(
+        dc_a_id=inv_a["cluster"]["id"],
+        dc_b_id=inv_b["cluster"]["id"],
+        dc_a_subnet=net_a["localSubnet"],
+        dc_b_subnet=net_b["localSubnet"],
+        dc_a_frontend_targets=_dns_targets(inv_a),
+        dc_b_frontend_targets=_dns_targets(inv_b),
+        frontend_mode=ing_a.get("frontendMode", "vip"),
+        expected_mtu=net_a["expectedMtu"],
+    )
 
 
 def render_firewall_request(inv_a: dict[str, Any], inv_b: dict[str, Any]) -> str:
@@ -285,10 +400,12 @@ def render_one(inventory_path: Path, write: bool = True) -> dict[str, Path]:
     inv = load_inventory(inventory_path)
     validate_inventory(inv)
     cid = inv["cluster"]["id"]
+    path_mode = replication_path(inv)
+    test_dir = INGRESS_TEST_DIR if path_mode == "ingress" else TEST_DIR
     outputs = {
         "nncp_values": NNCP_CHART / f"values-{cid}.yaml",
         "kafka_values": KAFKA_NET_CHART / f"values-{cid}.yaml",
-        "test_env": TEST_DIR / f"dc-{cid.split('-')[-1]}.env",
+        "test_env": test_dir / f"dc-{cid.split('-')[-1]}.env",
     }
     if not write:
         return outputs
@@ -298,12 +415,16 @@ def render_one(inventory_path: Path, write: bool = True) -> dict[str, Path]:
         render_nncp_values(inv),
         f"NNCP Helm values for {cid}",
     )
-    write_yaml(
-        outputs["kafka_values"],
-        render_kafka_values(inv),
-        f"Kafka NAD/MultiNetworkPolicy Helm values for {cid} (brokerIpam.mode={broker_ipam_mode(inv)})",
-    )
-    outputs["test_env"].write_text(render_test_env(inv), encoding="utf-8")
+    if replication_path(inv) == "multus":
+        write_yaml(
+            outputs["kafka_values"],
+            render_kafka_values(inv),
+            f"Kafka NAD/MultiNetworkPolicy Helm values for {cid} (brokerIpam.mode={broker_ipam_mode(inv)})",
+        )
+    if path_mode == "ingress":
+        outputs["test_env"].write_text(render_ingress_test_env(inv), encoding="utf-8")
+    else:
+        outputs["test_env"].write_text(render_test_env(inv), encoding="utf-8")
     return outputs
 
 
@@ -323,6 +444,16 @@ def main() -> None:
         "--firewall-request",
         type=Path,
         help="Write firewall change request markdown to this path (requires both inventories)",
+    )
+    parser.add_argument(
+        "--firewall-request-ingress",
+        type=Path,
+        help="Write ingress-path firewall change request (requires both inventories, replicationPath=ingress)",
+    )
+    parser.add_argument(
+        "--dns-request",
+        type=Path,
+        help="Write DNS change request for ingress path (requires both inventories, replicationPath=ingress)",
     )
     parser.add_argument(
         "--validate-only",
@@ -356,14 +487,45 @@ def main() -> None:
         )
         print(f"Wrote {args.firewall_request}")
 
+    if args.firewall_request_ingress:
+        inv_a = load_inventory(ROOT / "inventory-dc-a.yaml")
+        inv_b = load_inventory(ROOT / "inventory-dc-b.yaml")
+        validate_inventory(inv_a)
+        validate_inventory(inv_b)
+        args.firewall_request_ingress.parent.mkdir(parents=True, exist_ok=True)
+        args.firewall_request_ingress.write_text(
+            render_firewall_request_ingress(inv_a, inv_b), encoding="utf-8"
+        )
+        print(f"Wrote {args.firewall_request_ingress}")
+
+    if args.dns_request:
+        inv_a = load_inventory(ROOT / "inventory-dc-a.yaml")
+        inv_b = load_inventory(ROOT / "inventory-dc-b.yaml")
+        validate_inventory(inv_a)
+        validate_inventory(inv_b)
+        args.dns_request.parent.mkdir(parents=True, exist_ok=True)
+        args.dns_request.write_text(
+            render_dns_request(inv_a, inv_b), encoding="utf-8"
+        )
+        print(f"Wrote {args.dns_request}")
+
     if args.validate_only:
         for path, _ in results:
-            print(f"OK: {path} (brokerIpam.mode={broker_ipam_mode(load_inventory(path))})")
+            inv = load_inventory(path)
+            extra = (
+                f"replicationPath={replication_path(inv)}"
+                if replication_path(inv) == "ingress"
+                else f"brokerIpam.mode={broker_ipam_mode(inv)}"
+            )
+            print(f"OK: {path} ({extra})")
         return
 
     for path, out in results:
         print(f"From {path.name}:")
         for label, target in out.items():
+            if label == "kafka_values" and replication_path(load_inventory(path)) == "ingress":
+                print(f"  {label}: (skipped — replicationPath=ingress)")
+                continue
             print(f"  {label}: {target}")
 
 

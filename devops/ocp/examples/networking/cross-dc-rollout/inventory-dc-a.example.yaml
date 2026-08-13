@@ -2,8 +2,11 @@
 # fill in real values. Render downstream configs with:
 #   ./render-config.py --inventory inventory-dc-a.yaml
 #
-# See README.md for how this relates to NNCP Helm values, test dc-a.env, and
-# Kafka NAD/MultiNetworkPolicy chart values (related fields, different shapes).
+# replicationPath: multus (default) | ingress
+#   multus → NNCP + test env + Kafka NAD/MNP values
+#   ingress → NNCP + test env only (see inventory-dc-a.ingress.example.yaml)
+
+replicationPath: multus
 
 cluster:
   id: dc-a

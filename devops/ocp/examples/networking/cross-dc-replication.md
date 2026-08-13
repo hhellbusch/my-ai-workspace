@@ -8,9 +8,7 @@ review:
 
 **Audience:** Platform engineers and peers reviewing a proposed network architecture before implementation — not yet a build guide.
 
-**Purpose:** Describe the shape of a dedicated, bonded-NIC network between two bare-metal OpenShift clusters in different datacenters, used to carry replication traffic (e.g., storage mirroring, cross-cluster application replication) without bleeding onto general cluster/management traffic. Workload-agnostic — see [Kafka Cluster Linking](../messaging/kafka/cross-dc-cluster-linking.md) for a concrete application of this pattern.
-
-**Need the whole picture in one doc?** See [Cross-DC architecture overview](../messaging/kafka/cross-dc-architecture-overview.md) — combines this doc and the Kafka Cluster Linking doc for sharing outside the repo.
+**Purpose:** Describe the shape of a dedicated, bonded-NIC network between two bare-metal OpenShift clusters in different datacenters, used to carry replication traffic without bleeding onto general cluster/management traffic. Workload-agnostic network depth — **start at the [architecture overview](../messaging/kafka/cross-dc-architecture-overview.md)** for path comparison and Kafka context.
 
 **Related:**
 
@@ -18,6 +16,7 @@ review:
 - [Cross-DC rollout inventory](cross-dc-rollout/README.md) — inventory YAML renders NNCP values, test env, and Kafka net Helm values
 - [VLAN segmentation](vlan-segmentation.md) — install-time vs day-2 Multus VLANs
 - [NetworkAttachmentDefinition (NAD) guide](network-attachment-definitions/README.md) — macvlan/SR-IOV, IPAM
+- [Cross-DC ingress / Route alternative](../messaging/kafka/cross-dc-ingress-alternative.md) — skip Multus pod attachment; use dedicated `IngressController` + CFK Routes (Kafka Cluster Linking)
 - [NVMe/TCP storage network](../../troubleshooting/nvme-tcp-storage-network/README.md) — contrasting pattern: dual NIC, **no bond**, for storage multipath
 - [MachineConfig pools](../../notes/machine-config-pools.md) — custom pool targeting for host-level config
 - [OpenShift: Secondary networks — attaching a pod](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/multiple_networks/secondary-networks#nw-multus-advanced-annotations_attaching-pod) — `default-route` override, static IP/MAC annotations
@@ -29,6 +28,7 @@ review:
 ## On this page
 
 - [Problem shape](#problem-shape)
+- [How workloads attach (path fork)](#how-workloads-attach-path-fork)
 - [Layer map](#layer-map)
 - [Layer 1–2: host network](#layer-12-host-network)
 - [MTU — parent-first and path constraints](#mtu--parent-first-and-path-constraints)
@@ -55,6 +55,21 @@ This is a **third network**, distinct from both the cluster's machine network an
 | **Cross-DC replication** | Bonded NIC pair + VLAN + routed subnet — this doc |
 
 **Before building this:** confirm whether the two NICs per node are genuinely new/unconfigured, or whether they're existing NICs already bonded for something else and this is really "add a VLAN to an existing bond." The two scenarios have very different bandwidth-isolation and fault-isolation properties — check `nmcli connection show` / `ip -d link show` / `oc get nns` on a target node rather than assuming.
+
+---
+
+## How workloads attach (path fork)
+
+**Host bond/VLAN/route (below) is required for any design that uses the dedicated replication VLAN.**
+
+How pods (or ingress routers) use that VLAN depends on the replication mechanism — compared in full in the [architecture overview](../messaging/kafka/cross-dc-architecture-overview.md#choose-your-replication-path):
+
+| Mechanism | Pod/workload attachment | This doc covers |
+|---|---|---|
+| **Multus direct** | Broker pod gets macvlan NAD on `bond-repl.200` | Host layers + [Multus](#layer-23-pod-attachment-via-multus) + [MNP](#securing-the-secondary-network-multinetworkpolicy) |
+| **Dedicated ingress shard** | HAProxy on repl-gateway nodes; brokers stay on OVN | Host layers only — ingress depth in [cross-dc-ingress-alternative.md](../messaging/kafka/cross-dc-ingress-alternative.md) |
+
+Kafka-specific listener and Cluster Link semantics: [cross-dc-cluster-linking.md](../messaging/kafka/cross-dc-cluster-linking.md).
 
 ---
 
@@ -107,6 +122,8 @@ spec:
               prefix-length: 26
           dhcp: false
 ```
+
+**NNCP scope:** examples in this doc and the [NNCP Helm chart](../messaging/kafka/cross-dc-nncp-helm/README.md) define **only** the replication bond/VLAN/route. The **management / machine network** (default route, API, OVN) is usually configured at **cluster install** and often **does not appear in any NNCP** — it is still on the node. To see the true layout, use `oc get nns <node>` (`NodeNetworkState`) or inspect the host (`nmcli`, `ip link`) — not the replication NNCP YAML alone.
 
 **Decisions to nail down here, in order of how often they're gotten wrong:**
 
@@ -228,6 +245,10 @@ spec:
 **macvlan vs ipvlan:** `macvlan` (each pod gets its own MAC) is the common default. If many pods per node share this VLAN and the ToR does MAC-count/port-security limiting, switch to `ipvlan` mode `l2` instead — shares the host's MAC, avoids MAC-table growth.
 
 **hostNetwork as an alternative:** if the workload is a host-level daemon (not a typical pod) or already runs with `hostNetwork: true`, it shares the host's network namespace directly and the host route alone is sufficient — no Multus needed for that specific workload.
+
+**Ingress / Route as an alternative (Kafka):** for Confluent Cluster Linking on CFK, a **dedicated `IngressController` shard** on the replication VLAN plus CFK `externalAccess.type: route` avoids Multus pod attachment entirely — brokers stay on OVN; replication traffic enters via HAProxy on the repl subnet.
+Trade-offs, DNS/VIP requirements, and security: [cross-dc-ingress-alternative.md](../messaging/kafka/cross-dc-ingress-alternative.md).
+Host NNCP on repl-gateway nodes is still required for router frontend addressing.
 
 **The pod-level version of the "no default route" rule:** the same mistake from [Layer 3](#layer-3-routing) has a pod-scoped equivalent. The extended JSON form of the `k8s.v1.cni.cncf.io/networks` annotation accepts a `default-route` key per attachment — leave it unset for `repl-net`. Left unset, the pod's default route stays on the primary (OVN) interface as normal, and `repl-net` only carries a route to its own subnet, mirroring the host-level NNCP config. Confirm via `k8s.v1.cni.cncf.io/network-status` on the pod: the `repl-net` entry should have no `"default-route"` key. ([Ref](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/multiple_networks/secondary-networks#nw-multus-advanced-annotations_attaching-pod))
 

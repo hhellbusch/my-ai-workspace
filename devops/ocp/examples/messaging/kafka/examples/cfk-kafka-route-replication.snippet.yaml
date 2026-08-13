@@ -1,0 +1,35 @@
+# CFK Kafka — replication listener via OpenShift Route (ingress path)
+#
+# Use with a dedicated IngressController shard on the replication VLAN.
+# CFK creates per-broker Routes and sets advertised.listeners to route hostnames.
+# Cluster Link bootstrap.servers uses those hostnames (port 443, TLS passthrough).
+#
+# See: cross-dc-ingress-alternative.md, examples/ingress-replication/
+# Verify field names against your installed CFK CRD reference.
+
+apiVersion: platform.confluent.io/v1beta1
+kind: Kafka
+metadata:
+  name: kafka
+  namespace: confluent
+spec:
+  listeners:
+    internal:
+      tls:
+        enabled: true
+    custom:
+    - name: replication
+      port: 9095
+      tls:
+        enabled: true
+      externalAccess:
+        type: route
+        route:
+          domain: kafka-repl.dc-a.example.com
+          bootstrapPrefix: repl-kafka
+          brokerPrefix: repl-b
+          labels:
+            ingress: replication
+          annotations:
+            route.openshift.io/termination: passthrough
+            haproxy.router.openshift.io/timeout: 3600s

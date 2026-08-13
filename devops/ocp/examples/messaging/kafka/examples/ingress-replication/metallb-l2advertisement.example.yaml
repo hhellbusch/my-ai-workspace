@@ -1,0 +1,16 @@
+# L2 advertisement scoped to repl-gateway nodes and replication VLAN interface.
+# Label repl-gateway nodes before apply (match IngressController nodePlacement).
+
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: replication-ingress
+  namespace: openshift-operators
+spec:
+  ipAddressPools:
+    - replication-ingress
+  nodeSelectors:
+    - matchLabels:
+        node-role.kubernetes.io/repl-gateway: ""
+  interfaces:
+    - bond-repl.200

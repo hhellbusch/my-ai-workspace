@@ -8,20 +8,24 @@ review:
 
 Scenario-specific guides for running Apache Kafka on OpenShift (Confluent Platform Operator or Strimzi / Streams for Apache Kafka).
 
+**Cross-DC replication:** start at [architecture overview](cross-dc-architecture-overview.md). Full track table: [messaging/README.md](../README.md#cross-dc-kafka-replication-track).
+
 ## Examples
 
 | Scenario | Path | Operators | Focus |
 |----------|------|-----------|-------|
 | Bare metal + Portworx, rack-aware | [bare-metal-portworx/](bare-metal-portworx/README.md) | CFK (primary), Strimzi/AMQ Streams | Rack labels, Portworx CSI, ACM inventory, KRaft |
-| Cross-DC Cluster Linking | [cross-dc-cluster-linking.md](cross-dc-cluster-linking.md) | CFK (Helm install) | Dedicated replication network, listener config, bidirectional DR links (design doc, not yet implemented) |
+| Cross-DC Cluster Linking | [cross-dc-cluster-linking.md](cross-dc-cluster-linking.md) | CFK (Helm install) | Kafka/CFK layer — see [overview](cross-dc-architecture-overview.md) first |
 | Cluster Link GitOps (CRD vs API) | [CLUSTER-LINK-GITOPS.md](CLUSTER-LINK-GITOPS.md) | Argo CD / CFK | Link management patterns — CRD, reconcile Job, decision matrix |
 | Cluster Link GitOps scaffold | [cluster-link-gitops/README.md](cluster-link-gitops/README.md) | Argo CD / CFK | Example desired specs, reconcile script, CR/Job manifests |
-| Cross-DC architecture overview (combined) | [cross-dc-architecture-overview.md](cross-dc-architecture-overview.md) | CFK (Helm install) | Single-doc combination of the network + Cluster Linking designs above, for sharing outside the repo (design doc, not yet implemented) |
+| Cross-DC architecture overview | [cross-dc-architecture-overview.md](cross-dc-architecture-overview.md) | CFK (Helm install) | **Canonical hub** for cross-DC replication |
+| Cross-DC ingress / Route alternative | [cross-dc-ingress-alternative.md](cross-dc-ingress-alternative.md) | CFK Routes + IngressController | Dedicated ingress shard on repl VLAN |
 | Cross-DC replication NNCP (Helm) | [cross-dc-nncp-helm/](cross-dc-nncp-helm/README.md) | kubernetes-nmstate | Per-node `NodeNetworkConfigurationPolicy` generator — one CR per node with a unique static IP, rendered from Helm values |
 | Cross-DC Kafka replication network (Helm) | [cross-dc-kafka-net-helm/](cross-dc-kafka-net-helm/README.md) | Multus / whereabouts | Kafka NAD + `MultiNetworkPolicy` on the replication VLAN — after network test passes |
 | MultiNetworkPolicy on replication NAD | [cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md](cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md) | Multus | Default deny, mis-attachment defense, verification |
 | Broker replication IP (whereabouts vs static) | [cross-dc-kafka-net-helm/BROKER-IPAM.md](cross-dc-kafka-net-helm/BROKER-IPAM.md) | Multus / CFK | Mode comparison, end-to-end lifecycle, subnet layout, failure modes |
-| Cross-DC rollout inventory | [../../networking/cross-dc-rollout/](../../networking/cross-dc-rollout/README.md) | — | Inventory YAML per DC renders NNCP values, test env, and Kafka net values |
+| Cross-DC rollout inventory | [../../networking/cross-dc-rollout/](../../networking/cross-dc-rollout/README.md) | — | Inventory YAML per DC → rendered NNCP, test env, Kafka net (Multus) or ingress tickets |
+| Ingress replication examples | [examples/ingress-replication/](examples/ingress-replication/README.md) | IngressController | Generic manifests for dedicated ingress shard |
 
 ### bare-metal-portworx document map
 
