@@ -109,7 +109,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ### Software Systems Maturity — remaining axis deep dives
 - **Product:** docs/ai-engineering/maturity/
-- **Context:** Seven deep dives drafted (deployment through monitoring). Next: classic build track (source control, quality, testing, builds), architecture & change, data, optional product discovery. Artifact map: [artifact-map.md](../research/software-systems-maturity/findings/artifact-map.md).
+- **Context:** All 14 axis deep dive drafts + Joel appendix complete. Next: author review, deck PDF diagrams, optional SLO guide. Index: [maturity/README.md](../docs/ai-engineering/maturity/README.md).
 - **Added:** 2026-08-12 · **Updated:** 2026-08-13
 
 ### Essay seed: documentation as cognitive offload and async multiplier

@@ -69,7 +69,7 @@ Five levels — Initial through Optimizing — aligned in spirit with continual 
 
 ### Joel Test and successors
 
-[Joel Spolsky's test](https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/) — blunt project hygiene checklist. Maps partially to these axes; items like "quiet workspace" sit outside this model (see deep-dive appendix later).
+[Joel Spolsky's test](https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/) — blunt project hygiene checklist. Mapped to these axes in the [Joel Test appendix](maturity/joel-test-appendix.md).
 
 ### This model
 
@@ -83,20 +83,20 @@ Axes grouped by concern. Per-axis maturity **differs** — that is normal.
 
 | Layer | Axis | Deep dive |
 |---|---|---|
-| **Build** | Source control | Planned |
-| | Code quality | Planned |
-| | Testing & verification | Planned |
-| | Architecture & change | Planned |
-| **Ship** | Builds & artifacts | Planned |
-| | **Deployment & release** | [deployment-and-release.md](maturity/deployment-and-release.md) |
-| | Data management | Planned |
-| **Run** | Monitoring & reliability | Planned |
-| **Protect** | Security & secrets | Planned |
+| **Build** | Source control | [source-control.md](maturity/source-control.md) |
+| | Code quality | [code-quality.md](maturity/code-quality.md) |
+| | Testing & verification | [testing-and-verification.md](maturity/testing-and-verification.md) |
+| | Architecture & change | [architecture-and-change.md](maturity/architecture-and-change.md) |
+| **Ship** | Builds & artifacts | [builds-and-artifacts.md](maturity/builds-and-artifacts.md) |
+| | Deployment & release | [deployment-and-release.md](maturity/deployment-and-release.md) |
+| | Data management | [data-management.md](maturity/data-management.md) |
+| **Run** | Monitoring & reliability | [monitoring-and-reliability.md](maturity/monitoring-and-reliability.md) |
+| **Protect** | Security & secrets | [security-and-secrets.md](maturity/security-and-secrets.md) |
 | **Know** | Documentation & knowledge | [documentation-and-knowledge.md](maturity/documentation-and-knowledge.md) |
-| **Scale** | Platform & fleet | [platform-as-accelerator.md](maturity/platform-as-accelerator.md) (platform lens) |
-| **Automate** | AI agents & harnesses | Planned |
-| **People** | Team practices | Planned |
-| **Product** *(optional)* | Product discovery | Planned |
+| **Scale** | Platform & fleet | [platform-as-accelerator.md](maturity/platform-as-accelerator.md) |
+| **Automate** | AI agents & harnesses | [ai-agents-and-harnesses.md](maturity/ai-agents-and-harnesses.md) |
+| **People** | Team practices | [team-practices.md](maturity/team-practices.md) |
+| **Product** *(optional)* | Product discovery | [product-discovery.md](maturity/product-discovery.md) |
 
 **Merged elsewhere (not standalone axes):** supply chain provenance → Builds + Security; observability→action → Monitoring & reliability; GitOps → pattern under Deployment (+ Platform for fleet policy).
 
@@ -309,26 +309,26 @@ Not a return to big upfront spec — **validated learning** before expensive bui
 
 ## Deep dives
 
-| Topic | Status |
+Full index: [maturity/README.md](maturity/README.md) — **14 axis drafts** + [Joel Test appendix](maturity/joel-test-appendix.md).
+
+| Layer | Topics |
 |---|---|
-| [Deployment & release](maturity/deployment-and-release.md) | Draft |
-| [Documentation & knowledge](maturity/documentation-and-knowledge.md) | Draft |
-| [Platform as maturity accelerator](maturity/platform-as-accelerator.md) | Draft |
-| [Security & secrets](maturity/security-and-secrets.md) | Draft |
-| [Team practices](maturity/team-practices.md) | Draft |
-| [AI agents & harnesses](maturity/ai-agents-and-harnesses.md) | Draft |
-| [Monitoring & reliability](maturity/monitoring-and-reliability.md) | Draft |
-| Remaining axes | Planned — see [maturity/README.md](maturity/README.md) |
+| Build | Source control, code quality, testing, architecture & change |
+| Ship | Builds, deployment, data |
+| Run / protect / know | Monitoring, security, documentation |
+| Scale / automate / people | Platform, AI agents, team practices |
+| Optional | Product discovery |
 
 ---
 
 ## What is not here yet
 
-- Full deep dives for all axes (2016 original intent)
-- Joel Test → axis mapping appendix
-- Teaching stories from the deck (XKCD, sandbox "too late" diagram) — belong in deep dives, not this trailhead
+- **Author review** across all deep dive drafts (levels, voice, applicability)
+- Deck **PDF** for diagram-only slides not captured in text export
+- Central **SLO/runbook** maturity guide ([monitoring gap](maturity/monitoring-and-reliability.md))
+- Expanded **product discovery** corpus (optional axis — thin by choice)
 
-The [2026 resurrection notes](../../research/software-systems-maturity/findings/2026-resurrection-notes.md) and [artifact map](../../research/software-systems-maturity/findings/artifact-map.md) track progress.
+Track progress: [resurrection notes](../../research/software-systems-maturity/findings/2026-resurrection-notes.md) · [artifact map](../../research/software-systems-maturity/findings/artifact-map.md)
 
 If this framework becomes an organizational standard, level rubrics need peer review — this document remains the **trailhead**.
 

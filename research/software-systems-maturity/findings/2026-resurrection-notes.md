@@ -33,7 +33,7 @@
 
 See [artifact-map.md](artifact-map.md) and [maturity/README.md](../../../docs/ai-engineering/maturity/README.md).
 
-Shipped drafts: deployment, documentation & knowledge, platform accelerator, security & secrets, team practices, AI agents & harnesses, monitoring & reliability.
+Shipped drafts: all axes in [maturity/README.md](../../../docs/ai-engineering/maturity/README.md) + Joel appendix.
 
 ---
 
