@@ -8,19 +8,19 @@
 
 **Reader:** Platform engineers and network peers implementing or reviewing dedicated cross-DC replication networking on bare-metal OpenShift before Confluent Cluster Linking cutover.
 
-**Enables:** Scope boundary for design docs vs runnable tooling — what to build on the host, what to verify without Kafka, and what remains CFK-specific.
+**Enables:** Generic design guide and runnable tooling for dedicated cross-DC replication — compare Multus vs ingress paths; implement either without the corpus assuming a single chosen path.
 
 ## Problem Statement
 
-Two bare-metal OpenShift clusters in different datacenters need a **dedicated, routed replication VLAN** (bond + VLAN + scoped L3 route — not a default route, not L2 stretch) so Confluent Cluster Linking traffic stays off management/OVN paths. The peer's initial MachineConfig sketch omitted Multus pod attachment, MultiNetworkPolicy, and the distinction between host vs pod IPs. This work produces shareable design docs plus repeatable rollout/test tooling so the network layer can be proven before Kafka is involved.
+Two bare-metal OpenShift clusters in different datacenters need a **dedicated, routed replication VLAN** (bond + VLAN + scoped L3 route) so Confluent Cluster Linking traffic can stay off management/OVN paths. The corpus documents **two production mechanisms** (Multus direct attachment vs dedicated ingress shard) plus shared host-network foundations. Runnable tooling covers both paths: Multus network test and ingress layered test; ingress also has frontend examples and change-request templates.
 
 ## Scope
 
 **In scope (this project):**
 
-- Design documentation: `cross-dc-replication.md`, `cross-dc-cluster-linking.md`, `cross-dc-architecture-overview.md`
+- Design documentation: hub at `cross-dc-architecture-overview.md`; depth in `cross-dc-replication.md`, `cross-dc-cluster-linking.md`, `cross-dc-ingress-alternative.md`
 - Host network: per-node NNCP Helm chart (`cross-dc-nncp-helm`)
-- Pre-Kafka verification: two-cluster test framework + UBI9 `repl-net-probe` image
+- Pre-Kafka verification: `cross-dc-network-test/` (Multus); `cross-dc-ingress-test/` (ingress layered checks) + UBI9 `repl-net-probe` image
 - Rollout inventory: single YAML per DC → rendered NNCP values, test env, Kafka NAD/MNP values
 - Kafka replication VLAN: NAD + MultiNetworkPolicy Helm chart with **whereabouts or static** broker IP modes (`BROKER-IPAM.md`)
 - Pre-flight docs, `preflight.sh`, `validate-local.sh`, firewall change template
@@ -34,11 +34,27 @@ Two bare-metal OpenShift clusters in different datacenters need a **dedicated, r
 
 ## Success Criteria
 
+**Shared (both paths):**
+
 - [ ] Real inventory filled; `render-config.py --both` produces consistent configs for both DCs
-- [ ] NNCP applied; `oc get nnce` Available on all replication nodes (both clusters)
-- [ ] `./preflight.sh` then `./run-network-test.sh` pass on both clusters (tests 1–6; bond failover optional)
-- [ ] Kafka NAD + MultiNetworkPolicy applied; brokers advertise Multus `REPL_IP` on port 9095
-- [ ] Cluster Link `bootstrap.servers` uses replication listener addresses; bidirectional pre-staged links resume after failback
+- [ ] NNCP applied; `oc get nnce` Available on replication nodes (both clusters)
+
+**Multus path (`replicationPath: multus`):**
+
+- [ ] `./preflight.sh` then `./run-network-test.sh` pass on both clusters
+- [ ] Kafka NAD + MultiNetworkPolicy applied; brokers advertise `REPL_IP` on port 9095
+- [ ] Cluster Link `bootstrap.servers` uses replication listener addresses
+
+**Ingress path (`replicationPath: ingress`):**
+
+- [ ] `./preflight-ingress.sh` then `./run-ingress-test.sh` pass on both clusters (layered host → frontend → router → route)
+- [ ] DNS + firewall tickets rendered; replication hostnames resolve to repl-subnet frontend
+- [ ] Dedicated `IngressController` shard admits only labelled Routes
+- [ ] CFK Route listener active; Cluster Link `bootstrap.servers` uses route hostnames
+
+**Either path:**
+
+- [ ] Bidirectional pre-staged links resume replication after failback
 
 ## Constraints
 
@@ -60,7 +76,8 @@ Two bare-metal OpenShift clusters in different datacenters need a **dedicated, r
 | Probe image | UBI9 `repl-net-probe` (ncat, ping, iproute) | Quay-publishable; no netshoot CVE surface |
 | Test vs Kafka IP pools | Disjoint whereabouts ranges on same VLAN | Test independently of CFK state |
 | Downstream config shape | Inventory YAML → `render-config.py` projections | Avoid duplicating subnets/node names across env + Helm values |
-| Kafka broker IPAM | **whereabouts** (default) or **static** per ordinal | Flexibility; documented trade-offs in `BROKER-IPAM.md` |
+| Kafka broker attachment | **Multus** (primary) or **dedicated ingress shard** (alternative) | Multus: per-broker repl IPs, no router hop. Ingress: CFK Route ergonomics — `cross-dc-ingress-alternative.md` |
+| Kafka broker IPAM (Multus path) | **whereabouts** (default) or **static** per ordinal | Flexibility; documented trade-offs in `BROKER-IPAM.md` |
 | Kafka net templating | Helm for NAD/MNP; test framework stays envsubst | Helm where N/DC values matter; fixed two-cluster test stays shell |
 | Cluster Linking ops | API-driven (Control Center), not CRD | Current plan; link config must still be scripted/versioned |
 
@@ -70,6 +87,8 @@ Two bare-metal OpenShift clusters in different datacenters need a **dedicated, r
 - LACP vs active-backup on local ToR
 - End-to-end WAN MTU
 - Whether static per-node host IPs are required by network ops
+- **Replication path:** Multus direct vs dedicated ingress shard vs default-ingress PoC (`cross-dc-ingress-alternative.md`)
+- **Ingress frontend:** VIP (keepalived/MetalLB) vs DNS LB to router node repl IPs — no external hardware LB today
 - CFK `listeners` schema vs `configOverrides.server` passthrough for REPLICATION listener
 - `reverse-and-start` vs two independent bidirectional links (topic prefixing?)
 
@@ -77,9 +96,11 @@ Two bare-metal OpenShift clusters in different datacenters need a **dedicated, r
 
 | Artifact | Path |
 |----------|------|
-| Combined overview | `devops/ocp/examples/messaging/kafka/cross-dc-architecture-overview.md` |
+| **Canonical hub** | `devops/ocp/examples/messaging/kafka/cross-dc-architecture-overview.md` |
 | Generic network design | `devops/ocp/examples/networking/cross-dc-replication.md` |
 | Cluster Linking layer | `devops/ocp/examples/messaging/kafka/cross-dc-cluster-linking.md` |
+| Ingress / Route alternative | `devops/ocp/examples/messaging/kafka/cross-dc-ingress-alternative.md` |
+| Ingress examples | `devops/ocp/examples/messaging/kafka/examples/ingress-replication/` |
 | Rollout inventory | `devops/ocp/examples/networking/cross-dc-rollout/` |
 | Network test | `devops/ocp/examples/networking/cross-dc-network-test/` |
 | NNCP Helm | `devops/ocp/examples/messaging/kafka/cross-dc-nncp-helm/` |

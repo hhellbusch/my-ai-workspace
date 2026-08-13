@@ -1,0 +1,55 @@
+# Inventory for DC-A — dedicated ingress shard path (replicationPath: ingress)
+# Copy to inventory-dc-a.yaml and fill real values.
+# Renders NNCP + test env only (no Kafka NAD/MultiNetworkPolicy).
+#
+#   ./render-config.py --inventory inventory-dc-a.yaml
+#   ./render-config.py --both --firewall-request-ingress firewall-ingress.md --dns-request dns.md
+
+replicationPath: ingress
+
+cluster:
+  id: dc-a
+  kubeconfig: "${HOME}/.kube/dc-a.kubeconfig"
+
+replicationNetwork:
+  bondName: bond-repl
+  bondMode: active-backup
+  ports:
+    - ens4f0
+    - ens5f0
+  vlanId: 200
+  prefixLength: 26
+  localSubnet: 10.200.1.0/26
+  localGateway: 10.200.1.1
+  remoteSubnet: 10.200.2.0/26
+  expectedMtu: 1500
+
+# Nodes with repl-gateway label — host repl IPs for router frontend (DNS LB) or NNCP
+nodes:
+  - hostname: worker-0.dc-a.example.com
+    hostIp: 10.200.1.11
+    networkTest: false
+  - hostname: worker-1.dc-a.example.com
+    hostIp: 10.200.1.12
+    networkTest: false
+
+ipPools:
+  test:
+    range: 10.200.1.0/26
+    start: 10.200.1.6
+    end: 10.200.1.10
+
+ingress:
+  domain: kafka-repl.dc-a.example.com
+  routeLabel:
+    ingress: replication
+  frontendMode: vip          # vip | dns_lb
+  vip: 10.200.1.5            # when frontendMode: vip
+  dnsTargets: []             # when frontendMode: dns_lb — e.g. [10.200.1.11, 10.200.1.12]
+  externalPort: 443
+  dnsTtl: 60
+
+probe:
+  image: quay.io/rh_hhellbusch/repl-net-probe:0.1.1
+
+# workload section omitted — not used when replicationPath: ingress

@@ -1,0 +1,15 @@
+# MetalLB IP pool on replication VLAN — adjust addresses and namespace for your install.
+# Requires MetalLB operator; L2 mode advertises from nodes that have the listed interface.
+# Pair with metallb-l2advertisement.example.yaml and IngressController LoadBalancer strategy
+# OR use pool IP as external VIP with HostNetwork + manual Service (site-specific).
+
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: replication-ingress
+  namespace: openshift-operators
+spec:
+  addresses:
+    - 10.200.1.5-10.200.1.9
+  autoAssign: true
+  avoidBuggyIPs: true

@@ -1,0 +1,53 @@
+# DNS change request (template) — ingress replication path
+
+**Purpose:** Paste into a DNS-team change ticket before cutover when using a **dedicated ingress shard** on the replication VLAN (Path B in the [architecture overview](../../messaging/kafka/cross-dc-architecture-overview.md)).
+
+**Source data:** Fill from inventory `ingress.*` fields or manually from `render-config.py` output context. See [inventory-dc-a.ingress.example.yaml](../inventory-dc-a.ingress.example.yaml).
+
+---
+
+## Summary
+
+Publish internal DNS so remote datacenter brokers resolve **Kafka replication Route hostnames** to addresses on the **replication VLAN** — not the default `apps.*` ingress VIP.
+
+## Zones (one per datacenter)
+
+| DC | Zone | Purpose |
+|---|---|---|
+| ${dc_a_id} | `${dc_a_ingress_domain}` | CFK Route hostnames for DC-A brokers |
+| ${dc_b_id} | `${dc_b_ingress_domain}` | CFK Route hostnames for DC-B brokers |
+
+## Required records
+
+### Wildcard (recommended)
+
+Covers all CFK-created broker and bootstrap hostnames (`repl-b1.${domain}`, etc.):
+
+| Name | Type | Targets | TTL |
+|---|---|---|---|
+| `*.${dc_a_ingress_domain}` | A | ${dc_a_dns_targets} | ${dns_ttl} |
+| `*.${dc_b_ingress_domain}` | A | ${dc_b_dns_targets} | ${dns_ttl} |
+
+`${dc_a_dns_targets}` / `${dc_b_dns_targets}` — comma-separated list:
+
+- **VIP mode:** single replication-subnet VIP per DC (e.g. `10.200.1.5`)
+- **DNS LB mode:** repl NIC IPs of nodes running the replication IngressController (e.g. `10.200.1.11`, `10.200.1.12`, `10.200.1.13`)
+
+### Cross-DC resolution
+
+Resolvers in **each** datacenter must be able to query the **other** DC's zone (conditional forwarder or shared internal DNS).
+
+## Explicit non-goals
+
+- Do **not** point replication hostnames at the machine-network `apps.*` ingress VIP.
+- Do **not** publish these names on public DNS unless the replication path is genuinely internet-routed (unusual).
+
+## TLS note (passthrough)
+
+Router does not terminate TLS; broker certs must include SANs matching the Route hostnames. No wildcard cert required **on the router**.
+
+## Verification
+
+From the remote DC: `dig repl-b1.${dc_a_ingress_domain}` returns a replication-subnet IP, not the management ingress VIP.
+
+Platform reference: [cross-dc-ingress-alternative.md — external dependencies](../../messaging/kafka/cross-dc-ingress-alternative.md#external-dependencies-handoff).

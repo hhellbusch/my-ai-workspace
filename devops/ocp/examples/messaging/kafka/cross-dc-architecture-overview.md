@@ -1,25 +1,41 @@
 ---
 review:
   status: unreviewed
-  notes: "Combined design doc assembled from cross-dc-replication.md + cross-dc-cluster-linking.md for peer sharing. Not yet implemented or reviewed by network/platform teams. This is a snapshot for review — if it drifts from the two source docs, treat those as authoritative."
+  notes: "Combined design doc for peer sharing — decision guide + path-specific depth. Multus is primary; ingress shard documented as alternative. Not yet implemented or reviewed by network/platform teams."
 ---
 
 # Cross-DC Kafka Replication Architecture — Complete Picture
 
 **Audience:** Platform engineers and peers reviewing a proposed cross-DC network + Kafka replication design before implementation — not yet a build guide.
 
-**Purpose:** Single-document combination of two split design docs, for sharing with peers who need the whole picture in one place. Covers the generic dedicated cross-DC network (bonded NIC → VLAN → routed subnet → Multus pod attachment → `MultiNetworkPolicy`) and how Confluent's **Cluster Linking** layers Kafka replication on top of it.
+**Purpose:** **Canonical hub** for cross-DC Cluster Linking on bare-metal OpenShift — compare replication paths, understand shared network foundations, then follow the deep-dive doc for the mechanism you are evaluating. This file is the entry point; linked docs are maintained references, not peers that override it.
 
-**Source of truth:** This doc is a point-in-time combination. The maintained, individually-linked versions are:
+**How to read this doc:**
 
-- [Dedicated cross-DC replication network](../../networking/cross-dc-replication.md) — the generic network layers (workload-agnostic)
-- [Confluent Cluster Linking across datacenters](cross-dc-cluster-linking.md) — the Kafka/CFK-specific layer
-- [Cross-DC replication NNCP (Helm)](cross-dc-nncp-helm/README.md) — per-node host network templating, if a static per-node IP is genuinely needed (see [Layer 1–2](#layer-12-host-network))
-- [Cross-DC Kafka replication network (Helm)](cross-dc-kafka-net-helm/README.md) — workload NAD + `MultiNetworkPolicy` after the network test passes
-- [Cross-DC rollout inventory](../../networking/cross-dc-rollout/README.md) — single inventory file per DC renders NNCP values, test env, and Kafka net values
-- [Cross-DC network test framework](../../networking/cross-dc-network-test/README.md) — automates the network-layer verification checklist below against two live clusters, isolated from Kafka
+| You need to… | Start here |
+|---|---|
+| **Compare paths** (Multus vs ingress) | [Choose your replication path](#choose-your-replication-path) |
+| **Understand networking terms** (SNAT, Multus, scoped routes) | [Networking basics](#networking-basics-terms-used-in-this-doc) |
+| **Implement host bond/VLAN** (required for all paths) | [Shared foundation — host network](#shared-foundation--host-network) |
+| **Implement Multus path** (primary) | [Path A — Multus pod attachment](#path-a--multus-pod-attachment) → [Part 2 — Cluster Linking](#part-2--confluent-cluster-linking-on-top-of-it) |
+| **Implement ingress path** (alternative) | [Path B — dedicated ingress shard](#path-b--dedicated-ingress-shard) → [cross-dc-ingress-alternative.md](cross-dc-ingress-alternative.md) |
+| **Run pre-cutover verification** | [Pre-flight](#pre-flight-before-network-verification) (Path A: Multus network test) or [ingress test framework](../../networking/cross-dc-ingress-test/README.md) (Path B) |
 
-If this combined doc and those two disagree later, the split docs win — update them first, then re-sync this one (or regenerate it).
+**Corpus map (deep dives):**
+
+| Doc / tooling | Role |
+|---|---|
+| [cross-dc-replication.md](../../networking/cross-dc-replication.md) | Generic host + Multus layers (workload-agnostic depth) |
+| [cross-dc-cluster-linking.md](cross-dc-cluster-linking.md) | Kafka / CFK / Cluster Linking depth |
+| [cross-dc-ingress-alternative.md](cross-dc-ingress-alternative.md) | Dedicated ingress shard + external DNS/VIP handoff |
+| [cross-dc-rollout/](../../networking/cross-dc-rollout/README.md) | Inventory → rendered NNCP / test env / Kafka net values |
+| [cross-dc-nncp-helm/](cross-dc-nncp-helm/README.md) | Host bond/VLAN NNCP (shared by Multus and ingress paths) |
+| [cross-dc-kafka-net-helm/](cross-dc-kafka-net-helm/README.md) | Multus NAD + `MultiNetworkPolicy` (Multus path only) |
+| [cross-dc-network-test/](../../networking/cross-dc-network-test/README.md) | Pre-Kafka Multus network verification (Path A) |
+| [cross-dc-ingress-test/](../../networking/cross-dc-ingress-test/README.md) | Pre-Kafka layered ingress verification (Path B) |
+| [ingress-replication examples](examples/ingress-replication/README.md) | Generic `IngressController` + policy examples (ingress path) |
+
+If this hub and a deep-dive disagree, **update the deep-dive and then sync this hub** — not the other way around.
 
 **Official references** (sent by a peer for cross-check — findings folded in below):
 
@@ -34,18 +50,19 @@ If this combined doc and those two disagree later, the split docs win — update
 ## On this page
 
 - [Problem shape](#problem-shape)
+- [Choose your replication path](#choose-your-replication-path)
 - [Layer map](#layer-map)
 - [Networking basics (terms used in this doc)](#networking-basics-terms-used-in-this-doc)
-- [Part 1 — The dedicated network (workload-agnostic)](#part-1--the-dedicated-network-workload-agnostic)
-  - [Layer 1–2: host network](#layer-12-host-network)
+- [Shared foundation — host network](#shared-foundation--host-network)
+  - [Layer 1–2: bond and VLAN](#layer-12-bond-and-vlan)
   - [Layer 3: routing](#layer-3-routing)
-  - [Layer 2/3: pod attachment via Multus](#layer-23-pod-attachment-via-multus)
+- [Path A — Multus pod attachment](#path-a--multus-pod-attachment)
   - [Broker replication IP assignment](#broker-replication-ip-assignment)
   - [Securing the secondary network: MultiNetworkPolicy](#securing-the-secondary-network-multinetworkpolicy)
 - [Part 2 — Confluent Cluster Linking on top of it](#part-2--confluent-cluster-linking-on-top-of-it)
   - [What Cluster Linking simplifies](#what-cluster-linking-simplifies)
   - [Connection direction](#connection-direction)
-  - [The routes trap](#the-routes-trap)
+  - [Path B — dedicated ingress shard](#path-b--dedicated-ingress-shard)
   - [CFK listener configuration](#cfk-listener-configuration)
   - [Managing the cluster link (GitOps)](#managing-the-cluster-link-gitops)
   - [Bidirectional, pre-staged links for failover](#bidirectional-pre-staged-links-for-failover)
@@ -74,6 +91,56 @@ The concrete workload driving this design is **Apache Kafka (Confluent Platform,
 
 ---
 
+## Choose your replication path
+
+**Read this section first** if you are deciding how brokers reach each other across datacenters.
+The sections below assume you have picked a path.
+
+Three realistic shapes for cross-DC Cluster Linking on bare-metal OpenShift:
+
+| Path | How brokers are reached | Advertised endpoints | Firewall (WAN) | Ops complexity |
+|---|---|---|---|---|
+| **A — Multus** (primary) | Broker pod on replication VLAN | `REPLICATION://10.200.1.21:9095` per broker | Per-broker pod IP, TCP **9095** | `$(REPL_IP)` / IPAM wiring |
+| **B — Dedicated ingress** | HAProxy on repl VLAN → OVN → broker | CFK Route hostnames, TCP **443** (passthrough) | Router VIP or node repl IPs, TCP **443** | 2nd IngressController + DNS/VIP |
+| **C — Default ingress PoC** | Default HAProxy on machine network | CFK Route hostnames on `apps.*` | Machine-network ingress VIP | Lowest — **not** repl VLAN |
+
+```text
+Path A (Multus) — primary design in this doc:
+  Remote broker ──TCP 9095──► 10.200.1.21 (broker pod on repl VLAN)
+
+Path B (dedicated ingress) — see cross-dc-ingress-alternative.md:
+  Remote broker ──TCP 443──► repl VIP or DNS-LB pool on repl VLAN
+           ──HAProxy (SNI)──► OVN ──► broker pod :9095
+
+Path C (PoC only):
+  Remote broker ──TCP 443──► machine-network ingress VIP
+           ──default HAProxy──► OVN ──► broker pod :9095
+```
+
+**Shared by all paths that use the replication VLAN (A and B):**
+
+- Bond + VLAN + scoped L3 route on `bond-repl.200` ([shared foundation](#shared-foundation--host-network))
+- Routed `/26` per DC — not L2 stretch across WAN
+- Bidirectional firewall between replication subnets
+
+**Path-specific only:**
+
+| Concern | Path A (Multus) | Path B (ingress) | Path C (PoC) |
+|---|---|---|---|
+| Multus NAD on brokers | Yes | No | No |
+| `MultiNetworkPolicy` on NAD | Yes | No (OVN `NetworkPolicy` router→broker) | No |
+| 2nd `IngressController` | No | Yes | No (uses default) |
+| DNS zone on repl VLAN | Optional (IPs in link config) | Required (`*.kafka-repl.dc-a…`) | Uses `apps.*` |
+| CFK `$(REPL_IP)` wiring | Yes | No — CFK Routes auto-manage listeners | No |
+
+**When to choose:**
+
+- **Path A** — per-broker repl IPs, no router hop, `MultiNetworkPolicy` on the NAD; accept listener/IPAM wiring.
+- **Path B** — CFK Route ergonomics; accept HAProxy hop + DNS/VIP (or DNS LB) on repl VLAN. Full design: [cross-dc-ingress-alternative.md](cross-dc-ingress-alternative.md).
+- **Path C** — functional validation only; replication stays on management network.
+
+---
+
 ## Layer map
 
 ```text
@@ -84,7 +151,8 @@ L2  Data link            Bond (two cards) + VLAN tag
 L1  Physical             Two NICs, two cards, dedicated fiber/circuit
 ```
 
-Pod attachment (Multus) sits at L2/L3 and is the layer most often skipped by mistake.
+Pod attachment (Multus on **Path A**) sits at L2/L3 and is the layer most often skipped by mistake.
+**Path B** skips pod attachment; replication enters via HAProxy on the repl VLAN instead.
 
 ---
 
@@ -102,7 +170,7 @@ See the [layer map](#layer-map) above. In conversation you'll mostly touch **L1�
 |---|---|---|
 | **Machine / management network** | Whatever the cluster already uses for API, nodes, SSH | Host OS, `oc debug node`, most infrastructure |
 | **OVN pod network (default)** | Cluster overlay (e.g. `10.128.x.x`) | Almost every pod's `eth0` — Services, internal Kafka clients |
-| **Replication VLAN subnet** | Per-DC `/26` (e.g. `10.200.1.0/26` ↔ `10.200.2.0/26`) | Cross-DC replication only — via Multus on broker pods |
+| **Replication VLAN subnet** | Per-DC `/26` (e.g. `10.200.1.0/26` ↔ `10.200.2.0/26`) | Cross-DC replication — broker pods (Path A) or ingress frontend (Path B) |
 
 These are **different subnets on purpose**. Replication traffic should be identifiable by source/dest IP in the replication pools, not mixed with management traffic.
 
@@ -167,11 +235,12 @@ That split is the design rule peers often state as: **only traffic to the other 
 
 ---
 
-## Part 1 — The dedicated network (workload-agnostic)
+## Shared foundation — host network
 
-Everything in this part is Kafka-agnostic — it would look the same for any workload needing a dedicated cross-DC path (storage mirroring, other replication traffic, etc.).
+**Required for Path A and Path B** (any design that uses the dedicated replication VLAN).
+Kafka-agnostic — identical for storage mirroring or other cross-DC replication workloads.
 
-### Layer 1–2: host network
+### Layer 1–2: bond and VLAN
 
 Prefer **NMState / `NodeNetworkConfigurationPolicy`** over raw MachineConfig/Butane if the `kubernetes-nmstate` operator is available — it's day-2 mutable (no MCO drain/reboot for most changes) and gives you `NodeNetworkState` to verify what actually landed. Fall back to Butane/Ignition MachineConfig only if nmstate isn't installed.
 
@@ -231,7 +300,15 @@ routes:
 
 **MTU:** two constraints apply — **parent-first** (VLAN MTU bounded by `bond-repl` on the node) and **path** (effective MTU is the minimum hop on the replication VLAN circuit, independent of management/OVN MTU). Full treatment: [cross-dc-replication.md — MTU constraints](../../networking/cross-dc-replication.md#mtu--parent-first-and-path-constraints). Inventory `expectedMtu` and network test 5 encode the chosen end-to-end value.
 
-### Layer 2/3: pod attachment via Multus
+**Path B note:** repl-gateway nodes hosting the dedicated ingress shard also need NNCP on `bond-repl.200` — for router frontend IPs on the repl subnet, not for broker Multus attachment.
+
+---
+
+## Path A — Multus pod attachment
+
+**Skip this section if you chose Path B or C.** Path B still needs the [shared foundation](#shared-foundation--host-network) above.
+
+### Pod attachment via Multus
 
 See [Networking basics](#networking-basics-terms-used-in-this-doc) for NAT/SNAT, Multus, and dual-homed pods — this section applies those ideas to the replication VLAN.
 
@@ -350,10 +427,14 @@ Everything in this part is Kafka/CFK-specific — how the broker pods use the ne
 
 ### What Cluster Linking simplifies
 
-Unlike MirrorMaker2 or Confluent Replicator, Cluster Linking is broker-to-broker — *"does not require running Connect to move messages between clusters"* ([Confluent docs](https://docs.confluent.io/platform/current/multi-dc-deployments/cluster-linking/index.html)). No separate `Connect` CR or Connect worker pods to also attach to the replication network — only the **Kafka broker pods** need the Multus attachment from Part 1.
+Unlike MirrorMaker2 or Confluent Replicator, Cluster Linking is broker-to-broker — *"does not require running Connect to move messages between clusters"* ([Confluent docs](https://docs.confluent.io/platform/current/multi-dc-deployments/cluster-linking/index.html)). No separate `Connect` CR or Connect worker pods to also attach to the replication network.
+
+**Path A:** broker pods need Multus attachment (see [Path A](#path-a--multus-pod-attachment)).
+**Path B/C:** brokers stay on OVN; reachability is via CFK Routes (see [Path B](#path-b--dedicated-ingress-shard) and [CFK listener configuration](#cfk-listener-configuration)).
 
 ```text
-Brokers (Multus-attached, dedicated listener) ──→ Cluster Link config ──→ remote brokers
+Path A:  Brokers (Multus, REPLICATION listener) ──→ Cluster Link config ──→ remote brokers
+Path B:  Brokers (Route hostnames :443) ──→ Cluster Link config ──→ remote brokers
 ```
 
 ### Connection direction
@@ -365,15 +446,27 @@ By default, the **destination cluster's brokers initiate the connection and fetc
 
 A newer **source-initiated link** option (CP 7.8+) flips this — confirm which mode is actually configured before assuming direction.
 
-### The routes trap
+### Path B — dedicated ingress shard
 
-CFK supports [`externalAccess.type: route`](https://docs.confluent.io/operator/current/co-routes.html) for exposing Kafka to clients outside the OpenShift cluster — TLS passthrough/SNI through the HAProxy ingress router, with a DNS entry and the router's load-balancer IP on port 443.
+**Skip if you chose Path A.** Summary only — full design, DNS/VIP handoff, security, and verification: **[cross-dc-ingress-alternative.md](cross-dc-ingress-alternative.md)**.
 
-**Do not use this for the cluster-link listener.** Every byte of replication traffic would flow through the shared ingress router pods — exactly the ungoverned, shared path the dedicated bonded VLAN exists to avoid. This would quietly defeat the entire network architecture without producing an obvious error.
+CFK supports [`externalAccess.type: route`](https://docs.confluent.io/operator/current/co-routes.html) — TLS passthrough/SNI through HAProxy, per-broker route hostnames, CFK-managed `advertised.listeners`.
+
+| Ingress target | Production? | Replication VLAN? |
+|---|---|---|
+| **Default** `apps.*` ingress (Path C) | PoC only | No — machine network |
+| **Dedicated** ingress shard on repl VLAN (Path B) | Yes, if DNS/VIP correct | Yes — WAN hits repl subnet frontend |
+| **Multus** direct (Path A) | Yes | Yes — no ingress hop |
+
+Path B trades `$(REPL_IP)` complexity for: 2nd `IngressController`, repl-VLAN DNS zone, VIP (keepalived/MetalLB) or DNS LB to router node repl IPs, and HAProxy as a shared hop for all replication bytes.
 
 ### CFK listener configuration
 
-What's needed: a listener with **no `externalAccess` block**, bound to the pod's Multus secondary interface, advertising that interface's IP.
+Configuration depends on the path chosen in [Choose your replication path](#choose-your-replication-path).
+
+#### Path A — Multus listener
+
+A listener with **no `externalAccess` block**, bound to the pod's Multus secondary interface, advertising that interface's IP.
 
 ```yaml
 apiVersion: platform.confluent.io/v1beta1
@@ -402,13 +495,24 @@ spec:
 1. Whether the structured `listeners` block supports a fully custom named listener without an `externalAccess` type attached, or whether the `configOverrides.server` raw passthrough above is the correct escape hatch.
 2. How `$(REPL_IP)` gets populated — depends on [broker IP mode](cross-dc-kafka-net-helm/BROKER-IPAM.md): **whereabouts** → typically an init container reading `network-status`; **static** → literal per-ordinal IP in pod env / `advertised.listeners`. See [CFK snippets](cross-dc-kafka-net-helm/examples/).
 
+#### Path B or C — CFK Route listener
+
+Use `listeners.custom` with `externalAccess.type: route` — CFK creates per-broker Routes and sets `advertised.listeners` to route hostnames.
+Cluster Link `bootstrap.servers` uses those hostnames (port **443**, TLS passthrough to broker **9095**).
+
+Path **B:** dedicated `IngressController` with separate `spec.domain` (e.g. `kafka-repl.dc-a.example.com`) and `routeSelector` — not default `apps.*`.
+Path **C:** default ingress — valid PoC only.
+
+Example and full listener shape: [cross-dc-ingress-alternative.md — CFK listener](cross-dc-ingress-alternative.md#cfk-listener-configuration-route-mode).
+
 ### Managing the cluster link (GitOps)
 
 The link object must be **version-controlled** — not only created in Control Center during cutover. Two valid approaches: **`ClusterLink` CRD** + Argo CD when the CR exposes every setting you need, or **declarative spec in Git** + **reconcile script** (often an Argo Job) when the CRD has gaps or the team prefers API/CLI.
 
 Peers sometimes report the CRD **does not expose all link settings** — verify on **your** CFK version (`oc explain clusterlink.spec`). Full pattern comparison (CRD, Job reconcile, PostSync hooks, CronJob drift, external CI, hybrid, long-running reconciler): **[CLUSTER-LINK-GITOPS.md](CLUSTER-LINK-GITOPS.md)**.
 
-Regardless of pattern, separate **management** traffic (API/CLI/CR apply — management network) from **replication** traffic (broker fetch on `REPLICATION` listener over Multus). The **`bootstrap.servers` / `bootstrapEndpoint` must be the `REPLICATION` advertised address** (Multus IP:port), not internal DNS or Routes.
+Regardless of pattern, separate **management** traffic (API/CLI/CR apply — management network) from **replication** traffic (broker fetch on the replication listener). The **`bootstrap.servers` / `bootstrapEndpoint` must be the replication listener's advertised address** — Multus IP:9095 (Path A) or route hostname:443 (Path B/C) — not internal Service DNS or the wrong ingress VIP.
+Getting this value wrong means the link either fails or silently uses the wrong path.
 
 **Do not mix** API-managed mirrors with a `ClusterLink` CR on the same link — CFK may delete externally created mirrors on reconcile.
 
@@ -418,7 +522,7 @@ The design: **active/standby**, but with links configured in **both directions**
 
 Confluent has a built-in alternative worth confirming was deliberately not chosen: `reverse-and-start` / `reverse-and-pause` reverses an existing link's direction rather than requiring two independently-managed link objects. It has a specific limitation — doesn't support prefixed cluster links — which is the most likely reason to use two separate links instead, if topic prefixing is in use to avoid naming collisions between clusters.
 
-Either approach needs the same symmetric network reachability; it doesn't change anything in Part 1. It does change how failover/failback is *operated*, so worth confirming which was intended.
+Either approach needs the same symmetric network reachability; it doesn't change the [shared foundation](#shared-foundation--host-network). It does change how failover/failback is *operated*, so worth confirming which was intended.
 
 ### Security requirements
 
@@ -431,7 +535,7 @@ Confluent's own guidance treats these as requirements, not optional hardening, s
 
 ### MultiNetworkPolicy for Kafka
 
-Same pattern as [Part 1](#securing-the-secondary-network-multinetworkpolicy), scoped to the broker pods and the replication port.
+**Path A only.** Same pattern as [Securing the secondary network](#securing-the-secondary-network-multinetworkpolicy), scoped to broker pods and port 9095.
 The [cross-dc-kafka-net-helm](cross-dc-kafka-net-helm/README.md) chart renders **two** policies by default — full rationale in **[MULTINETWORKPOLICY.md](cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md)**:
 
 | Policy | `podSelector` | Effect on `net1` |
@@ -480,8 +584,11 @@ Because Cluster Linking is broker-only (no Connect layer), this is the only work
 | Assuming the OVN-K8s "`subnets` field required for `podSelector`" caveat applies to this macvlan NAD | It's specific to OVN-Kubernetes secondary networks, not macvlan/IPVLAN/SR-IOV |
 | Jumbo MTU on VLAN without raising parent bond MTU | [Parent-first constraint](../../networking/cross-dc-replication.md#mtu--parent-first-and-path-constraints) — VLAN cannot exceed `bond-repl` frame size |
 | Local jumbo when inter-DC replication path is 1500 | [Path MTU constraint](../../networking/cross-dc-replication.md#mtu--parent-first-and-path-constraints) — effective MTU is minimum hop on VLAN 200 |
-| `externalAccess.type: route` used for the Kafka replication listener | Routes all replication traffic through the shared ingress router — defeats the dedicated VLAN silently |
+| `externalAccess.type: route` on the **default** ingress for the Kafka replication listener | Routes replication through machine-network ingress — defeats the dedicated VLAN silently |
+| Using a **dedicated** ingress shard without repl-VLAN DNS/VIP | Routes exist but WAN traffic still hits wrong network if DNS points at `apps.*` VIP |
 | Unauthenticated Kafka listener exposed to Cluster Linking | Confluent explicitly calls this a security risk, not a style choice |
+
+---
 
 ## Pre-flight before network verification
 
@@ -497,16 +604,31 @@ Carve out a **test-only whereabouts pool** disjoint from Kafka's planned pool an
 
 ### Build order
 
+**Path A (Multus) — primary:**
+
 ```text
-Open questions answered
+Open questions answered + path A chosen
   → inventory-dc-a.yaml + inventory-dc-b.yaml filled in (see cross-dc-rollout/)
   → render-config.py --both  (NNCP values, dc-*.env, Kafka net values)
   → useMultiNetworkPolicy patch on both clusters
   → NNCP on DC-A + DC-B — oc get nnce Available
   → ./preflight.sh dc-a.env dc-b.env
   → ./run-network-test.sh dc-a.env dc-b.env   (skip bond failover first time)
-  → Kafka NAD/MultiNetworkPolicy Helm + CFK / Cluster Linking
+  → Kafka NAD/MultiNetworkPolicy Helm + CFK Multus listener + Cluster Linking
 ```
+
+**Path B (dedicated ingress):**
+
+```text
+Open questions answered + path B chosen
+  → inventory + NNCP on repl-gateway nodes (router frontend IPs)
+  → IngressController replication shard + DNS zone on repl VLAN
+  → CFK listeners.custom with externalAccess.type: route
+  → Cluster Linking (bootstrap.servers = route hostnames)
+  → See cross-dc-ingress-alternative.md for full checklist
+```
+
+**Path C (PoC):** CFK Route on default ingress only — no repl VLAN rollout required for functional validation.
 
 ### Platform gates (both clusters)
 
@@ -520,11 +642,16 @@ Open questions answered
 
 ### Network / firewall coordination
 
-Confirm with the network team **before** the first test run:
+Confirm with the network team **before** the first test run (wording depends on path — see [Choose your replication path](#choose-your-replication-path)):
 
-- TCP **9095** allowed between **pod IPs** on the replication VLAN in **both directions** (not just host-to-host).
-- ICMP allowed for the MTU ping sweep (test 5).
-- Port 9095 not already in use on that VLAN for another service.
+| Path | Firewall rule shape |
+|---|---|
+| **A (Multus)** | TCP **9095** between **broker pod IPs** on replication VLAN, both directions |
+| **B (ingress)** | TCP **443** between replication subnets (to router VIP or node repl IPs), both directions |
+| **C (PoC)** | TCP **443** to machine-network ingress VIP |
+
+- ICMP allowed for the MTU ping sweep (test 5) — Path A/B on repl VLAN.
+- Replication port (9095 or 443) not already in use on that VLAN for another service.
 
 Host routes can look correct while macvlan pod traffic is still blocked upstream — test 4 is the definitive check, but firewall misconfiguration is easier to fix before you apply pods.
 
@@ -543,23 +670,27 @@ Converting the test manifests to Helm would mostly relocate the same values from
 
 ### What a green run proves — and doesn't
 
-**Proves:** host NNCP, Multus attachment, cross-DC L4 on the replication VLAN, path MTU, and `MultiNetworkPolicy` `ipBlock` enforcement — the network-layer items in the [verification checklist](#verification-checklist) below.
+**Proves (Path A network test):** host NNCP, Multus attachment, cross-DC L4 on the replication VLAN, path MTU, and `MultiNetworkPolicy` `ipBlock` enforcement.
 
-**Does not prove:** CFK listener wiring, `$(REPL_IP)` population, Cluster Link `bootstrap.servers`, or failover replication resume — those still need the real broker deployment.
+**Does not prove:** CFK listener wiring, Cluster Link `bootstrap.servers`, or failover replication resume — those need the real broker deployment on the chosen path.
 
 ## Verification checklist
 
-**Automated (network layer only):** run [`preflight.sh`](../../networking/cross-dc-network-test/preflight.sh) first, then the [cross-DC network test framework](../../networking/cross-dc-network-test/README.md) — together they automate the network-layer checks below (reachability, pod attachment, MTU, `MultiNetworkPolicy`) against two live clusters via script + [repl-net-probe](../../networking/cross-dc-network-test/repl-net-probe/README.md) test pods, isolated from Kafka — useful for proving the network works before Kafka is even deployed. The Kafka/CFK-specific checks below (Cluster Link `bootstrap.servers`, failover replication resume) still require the real broker deployment.
+**Path A (automated network layer):** run [`preflight.sh`](../../networking/cross-dc-network-test/preflight.sh) first, then the [cross-DC network test framework](../../networking/cross-dc-network-test/README.md) — Multus reachability, MTU, `MultiNetworkPolicy`, isolated from Kafka.
 
-1. Confirm current NIC/bond state on target nodes before assuming new vs. existing (`nmcli connection show`, `oc get nns`).
-2. `curl`/`nc` the remote replication IP:port from a debug pod on the NAD — confirms L2–L4 before the workload is involved.
-3. Check the workload pod's `k8s.v1.cni.cncf.io/network-status` annotation — confirms it actually got the second interface and correct IP.
-4. Fail one leg of the bond; confirm the replication path stays reachable.
-5. Confirm `MultiNetworkPolicy` actually blocks an unauthorized pod on the same NAD (`oc get multi-networkpolicy -n <namespace>` to confirm it's present first).
-6. `ping -M do -s <size>` across the full path to confirm real MTU — see [MTU constraints](../../networking/cross-dc-replication.md#mtu--parent-first-and-path-constraints).
-7. Check the broker pod's `k8s.v1.cni.cncf.io/network-status` for the `kafka-repl-net` entry — confirm no `"default-route"` key is present unless deliberately set.
-8. Confirm the Cluster Link's `bootstrap.servers` payload value resolves to the `REPLICATION` listener's advertised (Multus) address, not the internal/external one.
-9. Fail over and back: confirm the pre-staged reverse link actually resumes replication without manual re-creation.
+**Path B:** run [`preflight-ingress.sh`](../../networking/cross-dc-ingress-test/preflight-ingress.sh) then the [cross-DC ingress test framework](../../networking/cross-dc-ingress-test/README.md) — layered checks (host → VIP/DNS-LB → IngressController → route → cross-DC HTTP), isolated from Kafka. Manual passthrough checks: [ingress verification checklist](cross-dc-ingress-alternative.md#verification-checklist-ingress-path).
+
+**All paths (Kafka / Cluster Linking):** items 8–9 below after brokers are deployed.
+
+1. Confirm current NIC/bond state on target nodes before assuming new vs. existing (`nmcli connection show`, `oc get nns`). *(Path A/B)*
+2. `curl`/`nc` the remote replication IP:port from a debug pod on the NAD — confirms L2–L4 before the workload is involved. *(Path A)*
+3. Check the workload pod's `k8s.v1.cni.cncf.io/network-status` annotation — confirms it actually got the second interface and correct IP. *(Path A)*
+4. Fail one leg of the bond; confirm the replication path stays reachable. *(Path A/B)*
+5. Confirm `MultiNetworkPolicy` actually blocks an unauthorized pod on the same NAD (`oc get multi-networkpolicy -n <namespace>`). *(Path A)*
+6. `ping -M do -s <size>` across the full path to confirm real MTU. *(Path A/B)*
+7. Check the broker pod's `k8s.v1.cni.cncf.io/network-status` for the `kafka-repl-net` entry — no accidental `"default-route"`. *(Path A)*
+8. Confirm Cluster Link `bootstrap.servers` matches the chosen path — Multus `REPLICATION` address (A) or route hostname:443 (B/C), not internal Service DNS.
+9. Fail over and back: confirm the pre-staged reverse link resumes replication without manual re-creation.
 
 ## Open questions to confirm before implementing
 
@@ -573,6 +704,7 @@ Converting the test manifests to Helm would mostly relocate the same values from
 
 **Kafka / CFK:**
 
+- **Replication path:** Multus (A) vs dedicated ingress shard (B) vs default-ingress PoC (C)? See [Choose your replication path](#choose-your-replication-path) and [cross-dc-ingress-alternative.md](cross-dc-ingress-alternative.md).
 - Two independently-managed links, or a deliberate choice over `reverse-and-start`/`reverse-and-pause`? (Likely reason: topic prefixing.)
 - One Control Center instance per DC, or one shared instance? (Determines if Control Center needs any cross-DC network path beyond what brokers already have.)
 - Will the link-creation API calls be scripted/version-controlled, or done manually through the Control Center UI?

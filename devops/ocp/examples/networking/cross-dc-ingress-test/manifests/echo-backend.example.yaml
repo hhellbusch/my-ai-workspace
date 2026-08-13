@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo
+  namespace: cross-dc-ingress-test
+  labels:
+    app: echo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echo
+  template:
+    metadata:
+      labels:
+        app: echo
+    spec:
+      containers:
+        - name: echo
+          image: ${TEST_PROBE_IMAGE}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              while true; do
+                printf 'HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok' | ncat -l -p 8080 -k
+              done
+          ports:
+            - containerPort: 8080
+              name: http
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 5

@@ -1,0 +1,46 @@
+# Cross-DC firewall change request (template) — ingress replication path
+
+**Purpose:** Paste into a network-team change ticket before cutover when using a **dedicated ingress shard** on the replication VLAN (Path B in the [architecture overview](../../messaging/kafka/cross-dc-architecture-overview.md)).
+
+**Contrast:** Multus path uses [firewall-change-request.md.example](firewall-change-request.md.example) (TCP 9095, pod IP pools).
+
+---
+
+## Summary
+
+Allow **bidirectional** replication VLAN traffic between datacenters for Kafka Cluster Linking over a **dedicated OpenShift IngressController** on TCP **443** (TLS passthrough to brokers).
+
+Traffic terminates at **router frontend addresses** on the replication subnet — not broker pod IPs directly.
+
+## Datacenters
+
+| DC | Replication subnet | Ingress frontend (${frontend_mode}) |
+|---|---|---|
+| ${dc_a_id} | ${dc_a_subnet} | ${dc_a_frontend_targets} |
+| ${dc_b_id} | ${dc_b_subnet} | ${dc_b_frontend_targets} |
+
+`${frontend_mode}`: `vip` (single IP per DC) or `dns_lb` (multiple router node repl IPs).
+
+## Required flows
+
+| Direction | Source | Destination | Protocol | Port | Notes |
+|---|---|---|---|---|---|
+| ${dc_a_id} → ${dc_b_id} | ${dc_a_subnet} | ${dc_b_frontend_targets} | TCP | 443 | SNI to broker Route hostnames |
+| ${dc_b_id} → ${dc_a_id} | ${dc_b_subnet} | ${dc_a_frontend_targets} | TCP | 443 | reverse direction |
+| Both | replication subnets | replication subnets | ICMP | — | path MTU troubleshooting (optional) |
+
+**Long-lived TCP:** Cluster Linking requires persistent connections — avoid aggressive idle timeouts on firewalls/load balancers on this path.
+
+## MTU
+
+Expected end-to-end MTU on VLAN 200: **${expected_mtu}** bytes.
+
+## Explicit non-goals
+
+- No default route on the replication VLAN interface (host or pod).
+- No requirement to reach cluster API or internet over this VLAN.
+- This ticket is **not** for the default `apps.*` ingress VIP on the machine network.
+
+## Verification contact
+
+Platform team verifies: DNS resolves replication hostnames to repl-subnet targets; `openssl s_client` to broker Route hostname on :443 from remote DC. See [ingress verification checklist](../../messaging/kafka/cross-dc-ingress-alternative.md#verification-checklist-ingress-path).

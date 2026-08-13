@@ -1,0 +1,25 @@
+# Optional: expose replication router via MetalLB LoadBalancer Service.
+# Some sites use HostNetwork IngressController + keepalived instead — pick one frontend pattern.
+# Verify Service selector matches router pods in openshift-ingress-replication.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: replication-router-lb
+  namespace: openshift-ingress-replication
+  annotations:
+    metallb.universe.tf/address-pool: replication-ingress
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  ports:
+    - name: https
+      port: 443
+      targetPort: 8443
+      protocol: TCP
+    - name: http
+      port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    ingresscontroller.operator.openshift.io/deployment-ingresscontroller: replication

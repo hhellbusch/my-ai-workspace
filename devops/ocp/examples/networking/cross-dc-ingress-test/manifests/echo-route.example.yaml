@@ -1,0 +1,17 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: repl-test-echo
+  namespace: cross-dc-ingress-test
+  labels:
+    ${INGRESS_ROUTE_LABEL_KEY}: ${INGRESS_ROUTE_LABEL_VALUE}
+spec:
+  host: ${TEST_ROUTE_HOST}
+  to:
+    kind: Service
+    name: echo
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

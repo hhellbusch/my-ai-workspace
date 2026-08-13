@@ -8,7 +8,13 @@ review:
 
 Fill this in during discovery, then transcribe into `inventory-dc-a.yaml` / `inventory-dc-b.yaml` and run `render-config.py --both`.
 
-**DC-A** (duplicate the DC-B section on a second copy for the other side)
+**Hub:** [architecture overview](../../messaging/kafka/cross-dc-architecture-overview.md)
+
+## Replication path
+
+| Field | Value | Notes |
+|---|---|---|
+| `replicationPath` | `multus` or `ingress` | Default `multus` — see [inventory-dc-a.ingress.example.yaml](inventory-dc-a.ingress.example.yaml) |
 
 ## Cluster
 
@@ -50,7 +56,9 @@ Full address map (gateway, test, host, kafka/static pins): [BROKER-IPAM.md — s
 | | | `true` | |
 | | | `false` | Broker-only node, skip test 1–2 node list |
 
-## Workload (Kafka)
+## Workload (Kafka) — `replicationPath: multus` only
+
+Skip this section when `replicationPath: ingress` — use **Ingress** section below instead.
 
 | Field | Value |
 |---|---|
@@ -70,6 +78,20 @@ Full address map (gateway, test, host, kafka/static pins): [BROKER-IPAM.md — s
 | `kafka-0` | |
 | `kafka-1` | |
 
+## Ingress — `replicationPath: ingress` only
+
+| Field | Value |
+|---|---|
+| `ingress.domain` | `kafka-repl.dc-a.example.com` |
+| `ingress.routeLabel` | `ingress: replication` |
+| `ingress.frontendMode` | `vip` or `dns_lb` |
+| `ingress.vip` | e.g. `10.200.1.5` (vip mode) |
+| `ingress.dnsTargets[]` | router node repl IPs (dns_lb mode) |
+| `ingress.externalPort` | `443` |
+| `ingress.dnsTtl` | e.g. `60` |
+
+Tickets: `render-config.py --both --firewall-request-ingress … --dns-request …`
+
 ## Probe image
 
 | Field | Value |
@@ -80,8 +102,9 @@ Full address map (gateway, test, host, kafka/static pins): [BROKER-IPAM.md — s
 
 ## Cross-check before render
 
-- [ ] Every `hostIp` is outside both pools
-- [ ] Test and kafka pools do not overlap
+- [ ] `replicationPath` set consistently on both DC inventories
+- [ ] Multus: every `hostIp` outside both pools; test/kafka pools disjoint
+- [ ] Ingress: `ingress.domain` and VIP or `dnsTargets` filled per DC
 - [ ] `remoteSubnet` on DC-A equals DC-B's `localSubnet` (and vice versa)
 - [ ] Firewalls briefed using rendered `firewall-change-request.md`
 - [ ] `useMultiNetworkPolicy: true` on both clusters

@@ -8,7 +8,7 @@ review:
 
 **Audience:** Whoever deploys Kafka on the replication VLAN after the [network test](../../../networking/cross-dc-network-test/README.md) passes.
 
-**Purpose:** Render the workload `NetworkAttachmentDefinition` and matching `MultiNetworkPolicy` objects for Kafka brokers — in either **whereabouts pool** or **static per-broker** IP mode (`ipam.mode`).
+**Purpose:** Render the workload `NetworkAttachmentDefinition` and matching `MultiNetworkPolicy` objects for Kafka brokers — **Multus path only**. For the dedicated ingress shard path, skip this chart; see [cross-dc-ingress-alternative.md](../cross-dc-ingress-alternative.md) and [ingress-replication examples](../examples/ingress-replication/README.md).
 
 **Related:** [MULTINETWORKPOLICY.md](MULTINETWORKPOLICY.md) (how policy works + mis-attachment defense) · [BROKER-IPAM.md](BROKER-IPAM.md) (broker IP modes) · [Cross-DC architecture overview](../cross-dc-architecture-overview.md#broker-replication-ip-assignment) · [Cross-DC rollout inventory](../../../networking/cross-dc-rollout/README.md)
 
