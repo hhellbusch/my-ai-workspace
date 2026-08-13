@@ -6,7 +6,7 @@
 
 Resurrected a 2016–2017 maturity deck as a **trailhead + 14 axis deep dives + Joel appendix**, mapped to this repo's corpus, and wired as a **navigation lens** (not certification). Author skimmed content — good enough to ship as first pass.
 
-**Merge when ready:** [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9) · branch `feature/software-systems-maturity-trailhead` · tip `184a326` (plus handoff commit after this file).
+**Merge when ready:** [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9) · branch `feature/software-systems-maturity-trailhead` · tip `d5d7531`
 
 ---
 
