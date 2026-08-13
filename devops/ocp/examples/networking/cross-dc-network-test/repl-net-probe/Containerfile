@@ -1,0 +1,36 @@
+# Minimal UBI9 probe image for the cross-DC replication VLAN test framework.
+# Deliberately narrow: only tools the runbook exercises (ncat listener/probes,
+# ping MTU sweep, ip/ss) plus a small set of manual-debug helpers — not a
+# netshoot replacement.
+#
+# Build (from this directory):
+#   podman build -t repl-net-probe:0.1.1 -f Containerfile .
+#
+# Push to your registry, then set TEST_PROBE_IMAGE in dc-a.env / dc-b.env.
+
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.6
+
+LABEL org.opencontainers.image.title="repl-net-probe" \
+      org.opencontainers.image.description="UBI9 network probe for cross-DC replication VLAN testing" \
+      org.opencontainers.image.source="https://github.com/hhellbusch/gemini-workspace"
+
+# Upgrade base RPMs first so we pick up current UBI errata, then install only
+# what the runbook needs. AppStream/BaseOS only — no EPEL, no curl|bash
+# installers, no vendored Go binaries.
+RUN microdnf upgrade -y \
+    && microdnf install -y \
+        ethtool \
+        iproute \
+        iputils \
+        jq \
+        nmap-ncat \
+        tcpdump \
+    && microdnf clean all
+
+# Sanity check: fail the build if a runbook dependency is missing.
+RUN command -v ncat ip ping tcpdump ethtool jq
+
+WORKDIR /work
+
+# Default: idle shell — the test framework overrides with an ncat listener.
+CMD ["sleep", "infinity"]

@@ -1,0 +1,31 @@
+# Test probe pod on the replication NAD. Applied twice per cluster with
+# different POD_NAME/POD_ROLE substitutions (see run-network-test.sh):
+#   - test-role=authorized   — cross-DC reachability target; selected by the
+#                              MultiNetworkPolicy podSelector.
+#   - test-role=unauthorized — same NAD/local subnet; used by test 6 to prove
+#                              the policy's ipBlock restriction blocks a peer
+#                              outside the allowed remote subnet.
+#
+# Image: build repl-net-probe/Containerfile and set TEST_PROBE_IMAGE in the
+# dc-*.env files — do not pull third-party debug images into a secure cluster.
+#
+# ncat -l -k keeps accepting connections (same role socat played previously).
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ${POD_NAME}
+  namespace: cross-dc-net-test
+  labels:
+    app.kubernetes.io/part-of: cross-dc-replication
+    test-role: ${POD_ROLE}
+  annotations:
+    k8s.v1.cni.cncf.io/networks: repl-net-test
+spec:
+  containers:
+    - name: probe
+      image: ${TEST_PROBE_IMAGE}
+      command: ["ncat", "-l", "-p", "${TEST_PORT}", "-k"]
+      securityContext:
+        capabilities:
+          add: ["NET_RAW"]   # ping -M do (test 5)
+  restartPolicy: Never

@@ -1,0 +1,30 @@
+# Test-only NetworkAttachmentDefinition on the replication VLAN. Uses a
+# whereabouts range disjoint from Kafka's own pool (see cross-dc-replication.md
+# Layer 2/3) so this can be applied/removed independently of Kafka's state.
+#
+# Rendered via `envsubst` by run-network-test.sh — see README.md "Configuration"
+# for what each ${VAR} comes from.
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: repl-net-test
+  namespace: cross-dc-net-test
+  annotations:
+    k8s.v1.cni.cncf.io/policy-for: cross-dc-net-test/repl-net-test
+spec:
+  config: |
+    {
+      "cniVersion": "0.3.1",
+      "type": "macvlan",
+      "master": "${BOND_VLAN_IFACE}",
+      "mode": "bridge",
+      "ipam": {
+        "type": "whereabouts",
+        "range": "${TEST_POOL_RANGE}",
+        "range_start": "${TEST_POOL_START}",
+        "range_end": "${TEST_POOL_END}",
+        "routes": [
+          { "dst": "${REMOTE_SUBNET}", "gw": "${LOCAL_GATEWAY}" }
+        ]
+      }
+    }

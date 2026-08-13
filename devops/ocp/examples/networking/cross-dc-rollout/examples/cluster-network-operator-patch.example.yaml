@@ -1,0 +1,16 @@
+# One-time cluster configuration — enable MultiNetworkPolicy
+#
+# Apply on BOTH clusters before MultiNetworkPolicy resources will enforce.
+# This is a singleton Cluster Network operator config — not Helm-templated.
+#
+#   oc apply -f cluster-network-operator-patch.example.yaml
+#   oc get network cluster -o jsonpath='{.spec.useMultiNetworkPolicy}{"\n"}'
+#
+# Expect: true (reconcile may take a few minutes)
+
+apiVersion: operator.openshift.io/v1
+kind: Network
+metadata:
+  name: cluster
+spec:
+  useMultiNetworkPolicy: true

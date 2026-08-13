@@ -1,0 +1,27 @@
+# CFK Kafka snippet — static per-broker Multus IP (ipam.mode=static)
+#
+# Use ONE Kafka CR per broker OR podTemplate per ordinal via CFK's supported
+# per-replica customization — this example shows broker-0 only.
+#
+# Copy networks JSON from the rendered ConfigMap:
+#   oc get cm kafka-repl-net-broker-ip-map -n confluent -o yaml
+#
+# REPL_IP can be a literal env var — no init container. See BROKER-IPAM.md.
+
+apiVersion: platform.confluent.io/v1beta1
+kind: Kafka
+metadata:
+  name: kafka
+  namespace: confluent
+spec:
+  podTemplate:
+    annotations:
+      k8s.v1.cni.cncf.io/networks: |
+        [{"name":"kafka-repl-net","ips":["10.200.1.21/26"],"routes":[{"dst":"10.200.2.0/26","gw":"10.200.1.1"}]}]
+    # Per broker-0 — use 10.200.1.22, .23, ... for other ordinals from broker-ip-map ConfigMap
+  # env / configOverrides: set REPL_IP=10.200.1.21 for this replica
+  configOverrides:
+    server:
+      - "listeners=INTERNAL://0.0.0.0:9071,REPLICATION://0.0.0.0:9095"
+      - "listener.security.protocol.map=INTERNAL:PLAINTEXT,REPLICATION:SSL"
+      - "advertised.listeners=INTERNAL://$(POD_NAME).kafka.confluent.svc.cluster.local:9071,REPLICATION://10.200.1.21:9095"

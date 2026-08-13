@@ -1,0 +1,50 @@
+# Cross-DC firewall change request (template)
+
+**Purpose:** Paste into a network-team change ticket before the first [cross-DC network test](../cross-dc-network-test/README.md) run.
+
+**Source data:** Generated via `render-config.py --both --firewall-request firewall-change-request.md` from filled-in `inventory-dc-a.yaml` / `inventory-dc-b.yaml`.
+
+---
+
+## Summary
+
+Allow **bidirectional** replication VLAN traffic between datacenter pod subnets for OpenShift Multus-attached workloads (Kafka Cluster Linking on TCP **${replication_port}**).
+
+This is **pod-IP-to-pod-IP** traffic on a dedicated VLAN — not the cluster management/API network.
+
+## Datacenters
+
+| DC | Replication subnet | Test pod pool (pre-cutover) | Kafka pod pool (post-cutover) |
+|---|---|---|---|
+| ${dc_a_id} | ${dc_a_subnet} | ${dc_a_test_pool} | ${dc_a_kafka_pool} (${dc_a_kafka_firewall}) |
+| ${dc_b_id} | ${dc_b_subnet} | ${dc_b_test_pool} | ${dc_b_kafka_pool} (${dc_b_kafka_firewall}) |
+
+## Required flows
+
+### Phase 1 — network verification (before Kafka)
+
+| Direction | Source | Destination | Protocol | Port | Notes |
+|---|---|---|---|---|---|
+| ${dc_a_id} → ${dc_b_id} | ${dc_a_test_pool} | ${dc_b_test_pool} | TCP | ${replication_port} | `ncat` probe handshake |
+| ${dc_b_id} → ${dc_a_id} | ${dc_b_test_pool} | ${dc_a_test_pool} | TCP | ${replication_port} | reverse direction |
+| Both | test pools | test pools | ICMP | — | path MTU discovery (`ping -M do`) |
+
+### Phase 2 — Kafka Cluster Linking (after network test passes)
+
+| Direction | Source | Destination | Protocol | Port | Notes |
+|---|---|---|---|---|---|
+| ${dc_a_id} ↔ ${dc_b_id} | ${dc_a_kafka_pool} | ${dc_b_kafka_pool} | TCP | ${replication_port} | long-lived broker connections — avoid aggressive idle timeouts |
+
+## MTU
+
+Expected end-to-end MTU: **${expected_mtu}** bytes. If the WAN path cannot carry this, say so before cutover — the verification suite includes an MTU sweep.
+
+## Explicit non-goals
+
+- No default route on the replication VLAN interface (host or pod).
+- No requirement to reach the internet or cluster API over this VLAN.
+- Host-to-host-only ACLs are **insufficient** — macvlan pods use their own IPs in the pools above.
+
+## Verification contact
+
+Platform team will run `./preflight.sh` then `./run-network-test.sh` from [cross-dc-network-test](../cross-dc-network-test/README.md) and share PASS/FAIL output.

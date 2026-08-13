@@ -1,0 +1,37 @@
+{{- $net := .Values.replicationNetwork }}
+{{- $wl := .Values.workload }}
+{{- $policyFor := printf "%s/%s" $wl.namespace $wl.nadName }}
+# Broker allow-list on the replication NAD — pairs with {{ $wl.nadName }}-default-deny when enabled.
+# See MULTINETWORKPOLICY.md.
+apiVersion: k8s.cni.cncf.io/v1beta1
+kind: MultiNetworkPolicy
+metadata:
+  name: {{ $wl.nadName }}-restrict
+  namespace: {{ $wl.namespace }}
+  labels:
+    app.kubernetes.io/part-of: cross-dc-replication
+  annotations:
+    k8s.v1.cni.cncf.io/policy-for: {{ $policyFor }}
+spec:
+  podSelector:
+    matchLabels:
+{{- range $key, $value := $wl.podSelector }}
+      {{ $key }}: {{ $value | quote }}
+{{- end }}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: {{ $net.remoteSubnet | quote }}
+      ports:
+        - protocol: TCP
+          port: {{ $wl.replicationPort }}
+  egress:
+    - to:
+        - ipBlock:
+            cidr: {{ $net.remoteSubnet | quote }}
+      ports:
+        - protocol: TCP
+          port: {{ $wl.replicationPort }}

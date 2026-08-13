@@ -14,6 +14,8 @@ review:
 
 **Related:**
 
+- [Cross-DC network test framework](cross-dc-network-test/README.md) — automates the verification checklist below against two live clusters, isolated from Kafka
+- [Cross-DC rollout inventory](cross-dc-rollout/README.md) — inventory YAML renders NNCP values, test env, and Kafka net Helm values
 - [VLAN segmentation](vlan-segmentation.md) — install-time vs day-2 Multus VLANs
 - [NetworkAttachmentDefinition (NAD) guide](network-attachment-definitions/README.md) — macvlan/SR-IOV, IPAM
 - [NVMe/TCP storage network](../../troubleshooting/nvme-tcp-storage-network/README.md) — contrasting pattern: dual NIC, **no bond**, for storage multipath
@@ -34,6 +36,7 @@ review:
 - [Securing the secondary network: MultiNetworkPolicy](#securing-the-secondary-network-multinetworkpolicy)
 - [Anti-patterns](#anti-patterns)
 - [Verification checklist](#verification-checklist)
+- [Pre-flight before network verification](../messaging/kafka/cross-dc-architecture-overview.md#pre-flight-before-network-verification)
 - [Open questions to confirm before implementing](#open-questions-to-confirm-before-implementing)
 
 ---
@@ -107,6 +110,7 @@ spec:
 **Decisions to nail down here, in order of how often they're gotten wrong:**
 
 1. **Node targeting.** If only a subset of nodes have this NIC layout (e.g., dedicated gateway/broker nodes), target them with a label + `nodeSelector`, not the default `worker` pool. Applying this cluster-wide to nodes without the matching hardware will fail or misconfigure.
+   **If every node needs a unique static IP** on this interface (e.g., the workload runs fleet-wide, not on a small gateway subset), a single role-based NNCP won't do it — NMState applies identical `desiredState`, including the IP, to every node it matches. The only NNCP-native fix is one policy per node via `kubernetes.io/hostname`. See [Cross-DC replication NNCP (Helm)](../messaging/kafka/cross-dc-nncp-helm/README.md) for a template that renders this from a node list instead of hand-authoring each CR.
 2. **Interface naming stability.** Kernel interface names (`ens4f0`, etc.) depend on PCI enumeration order and can differ across otherwise-identical hardware. For a small number of specific nodes this is manageable with a sanity check; at fleet scale, match by MAC/PCI path via `systemd.link` rather than assuming names are consistent.
 3. **Bonding mode.** `active-backup` works with any switch. `802.3ad`/LACP requires every hop in the bond to participate — fine if the bond terminates at your own local ToR pair, **not** viable if anyone assumes the bond itself spans the WAN (it doesn't; the WAN segment is routed, not bonded).
 
@@ -165,7 +169,7 @@ spec:
 
 **The pod-level version of the "no default route" rule:** the same mistake from [Layer 3](#layer-3-routing) has a pod-scoped equivalent. The extended JSON form of the `k8s.v1.cni.cncf.io/networks` annotation accepts a `default-route` key per attachment — leave it unset for `repl-net`. Left unset, the pod's default route stays on the primary (OVN) interface as normal, and `repl-net` only carries a route to its own subnet, mirroring the host-level NNCP config. Confirm via `k8s.v1.cni.cncf.io/network-status` on the pod: the `repl-net` entry should have no `"default-route"` key. ([Ref](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/multiple_networks/secondary-networks#nw-multus-advanced-annotations_attaching-pod))
 
-**Static IP/MAC as an alternative to whereabouts:** the whereabouts-based NAD above assigns IPs dynamically from a range — fine for most cases, but if the workload needs a **stable, predictable** address per replica (e.g., something else's firewall allow-list or config references a specific IP, not just the subnet), macvlan supports static addressing via CNI plugin chaining instead:
+**Static IP/MAC as an alternative to whereabouts:** macvlan supports per-pod pinning via chained `static` IPAM and the extended Multus pod annotation. **Cluster Linking does not require static IPs** — it requires correct advertised Multus addresses. Compare modes in [BROKER-IPAM.md](../messaging/kafka/cross-dc-kafka-net-helm/BROKER-IPAM.md).
 
 ```json
 {
@@ -187,7 +191,7 @@ spec:
 }
 ```
 
-The pod then requests its specific address via the `ips`/`mac` keys in its `k8s.v1.cni.cncf.io/networks` annotation. This trades the operational simplicity of a pool (whereabouts) for per-pod address pinning — worth it only if something outside Kubernetes needs to reference a fixed IP rather than the subnet as a whole.
+The pod requests its address via `ips` / `routes` in `k8s.v1.cni.cncf.io/networks`. **Whereabouts** keeps one NAD and a pool; **static** trades pool simplicity for predictable per-replica IPs — useful when firewalls or link config reference specific addresses, not just the subnet.
 
 ---
 
@@ -245,6 +249,8 @@ spec:
 
 Verify enforcement explicitly — spin up a debug pod on the same NAD without the matching label and confirm it *can't* reach the workload's replication port. `MultiNetworkPolicy` misconfiguration (missing `policy-for` annotation on either the NAD or the policy) tends to fail open silently.
 
+For mis-attachment defense (catch-all default deny + broker allow-list), see [MULTINETWORKPOLICY.md](../messaging/kafka/cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md) in the Kafka net Helm chart.
+
 **If a peer sends you the "subnets field" caveat, it doesn't apply here.** Red Hat's docs note that `podSelector`/`namespaceSelector` peer matching in a multi-network policy is only valid if the secondary network's CNI config defines a `subnets` field — otherwise only `ipBlock` works. That restriction is scoped to **OVN-Kubernetes secondary networks** (CNI type `ovn-k8s-cni-overlay`, `topology: layer2`/`localnet`), a different mechanism from the **macvlan** NAD this design uses. For macvlan/IPVLAN/SR-IOV NADs, `podSelector` is valid regardless — there's no `subnets` field in a macvlan CNI config to begin with. ([Ref](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/multiple_networks/secondary-networks#configuring-multi-network-policy))
 
 **CLI verification:** the resource name is `multi-networkpolicy` (singular, hyphenated), not `multinetworkpolicy` or the plural you'd guess from the CRD `kind` — `oc get multi-networkpolicy -n <namespace>`.
@@ -267,6 +273,10 @@ Verify enforcement explicitly — spin up a debug pod on the same NAD without th
 ---
 
 ## Verification checklist
+
+**Pre-flight:** see [Pre-flight before network verification](#pre-flight-before-network-verification) and [`preflight.sh`](cross-dc-network-test/preflight.sh) before running the automated suite.
+
+**Automated:** the [cross-DC network test framework](cross-dc-network-test/README.md) runs items 2–7 below against two live clusters via a script + [repl-net-probe](cross-dc-network-test/repl-net-probe/README.md) test pods, isolated from Kafka.
 
 1. Confirm current NIC/bond state on target nodes before assuming new vs. existing (`nmcli connection show`, `oc get nns`).
 2. `curl`/`nc` the remote replication IP:port from a debug pod on the NAD — confirms L2–L4 before the workload is involved.

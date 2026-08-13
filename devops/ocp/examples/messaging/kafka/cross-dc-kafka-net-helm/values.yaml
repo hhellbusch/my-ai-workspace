@@ -1,0 +1,36 @@
+# Default/schema for cross-dc-kafka-repl-net.
+# Prefer rendering from inventory — see cross-dc-rollout/render-config.py.
+# Broker IP assignment modes: see BROKER-IPAM.md
+
+replicationNetwork:
+  bondName: bond-repl
+  vlanId: 200
+  prefixLength: 26
+  localGateway: ""
+  remoteSubnet: ""
+
+workload:
+  namespace: confluent
+  nadName: kafka-repl-net
+  cniType: macvlan
+  macvlanMode: bridge
+  replicationPort: 9095
+  podSelector:
+    app: kafka
+
+# mode: whereabouts | static — see BROKER-IPAM.md for trade-offs
+ipam:
+  mode: whereabouts
+  range: ""
+  rangeStart: ""
+  rangeEnd: ""
+  prefixLength: 26
+
+# Required when ipam.mode=static — one row per broker StatefulSet replica
+brokers: []
+# - name: kafka-0
+#   replIp: 10.200.1.21
+
+# Mis-attachment defense on the replication NAD — see MULTINETWORKPOLICY.md
+multiNetworkPolicy:
+  defaultDenyOnNad: true

@@ -1,0 +1,26 @@
+# Example for DC-B with whereabouts pool
+
+replicationNetwork:
+  bondName: bond-repl
+  vlanId: 200
+  prefixLength: 26
+  localGateway: 10.200.2.1
+  remoteSubnet: 10.200.1.0/26
+
+workload:
+  namespace: confluent
+  nadName: kafka-repl-net
+  cniType: macvlan
+  macvlanMode: bridge
+  replicationPort: 9095
+  podSelector:
+    app: kafka
+
+ipam:
+  mode: whereabouts
+  range: 10.200.2.0/26
+  rangeStart: 10.200.2.20
+  rangeEnd: 10.200.2.60
+  prefixLength: 26
+
+brokers: []

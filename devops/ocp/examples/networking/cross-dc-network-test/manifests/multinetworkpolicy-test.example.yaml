@@ -1,0 +1,24 @@
+# Mirrors the real policy shape in cross-dc-replication.md's "Securing the
+# secondary network" section, scoped to the test namespace/port. Applies only
+# to pods labeled test-role=authorized — a local-subnet peer pod
+# (test-role=unauthorized, same NAD) is NOT selected by this policy and is
+# used by test 6 to prove the ipBlock restriction actually blocks a
+# same-DC peer while still allowing the legitimate remote-DC one.
+apiVersion: k8s.cni.cncf.io/v1beta1
+kind: MultiNetworkPolicy
+metadata:
+  name: repl-net-test-restrict
+  namespace: cross-dc-net-test
+  annotations:
+    k8s.v1.cni.cncf.io/policy-for: cross-dc-net-test/repl-net-test
+spec:
+  podSelector:
+    matchLabels:
+      test-role: authorized
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from: [{ipBlock: {cidr: ${REMOTE_SUBNET}}}]
+      ports: [{protocol: TCP, port: ${TEST_PORT}}]
+  egress:
+    - to: [{ipBlock: {cidr: ${REMOTE_SUBNET}}}]
+      ports: [{protocol: TCP, port: ${TEST_PORT}}]

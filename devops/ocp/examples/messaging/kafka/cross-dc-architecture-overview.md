@@ -14,6 +14,10 @@ review:
 
 - [Dedicated cross-DC replication network](../../networking/cross-dc-replication.md) — the generic network layers (workload-agnostic)
 - [Confluent Cluster Linking across datacenters](cross-dc-cluster-linking.md) — the Kafka/CFK-specific layer
+- [Cross-DC replication NNCP (Helm)](cross-dc-nncp-helm/README.md) — per-node host network templating, if a static per-node IP is genuinely needed (see [Layer 1–2](#layer-12-host-network))
+- [Cross-DC Kafka replication network (Helm)](cross-dc-kafka-net-helm/README.md) — workload NAD + `MultiNetworkPolicy` after the network test passes
+- [Cross-DC rollout inventory](../../networking/cross-dc-rollout/README.md) — single inventory file per DC renders NNCP values, test env, and Kafka net values
+- [Cross-DC network test framework](../../networking/cross-dc-network-test/README.md) — automates the network-layer verification checklist below against two live clusters, isolated from Kafka
 
 If this combined doc and those two disagree later, the split docs win — update them first, then re-sync this one (or regenerate it).
 
@@ -31,10 +35,12 @@ If this combined doc and those two disagree later, the split docs win — update
 
 - [Problem shape](#problem-shape)
 - [Layer map](#layer-map)
+- [Networking basics (terms used in this doc)](#networking-basics-terms-used-in-this-doc)
 - [Part 1 — The dedicated network (workload-agnostic)](#part-1--the-dedicated-network-workload-agnostic)
   - [Layer 1–2: host network](#layer-12-host-network)
   - [Layer 3: routing](#layer-3-routing)
   - [Layer 2/3: pod attachment via Multus](#layer-23-pod-attachment-via-multus)
+  - [Broker replication IP assignment](#broker-replication-ip-assignment)
   - [Securing the secondary network: MultiNetworkPolicy](#securing-the-secondary-network-multinetworkpolicy)
 - [Part 2 — Confluent Cluster Linking on top of it](#part-2--confluent-cluster-linking-on-top-of-it)
   - [What Cluster Linking simplifies](#what-cluster-linking-simplifies)
@@ -46,6 +52,7 @@ If this combined doc and those two disagree later, the split docs win — update
   - [Security requirements](#security-requirements)
   - [MultiNetworkPolicy for Kafka](#multinetworkpolicy-for-kafka)
 - [Anti-patterns](#anti-patterns)
+- [Pre-flight before network verification](#pre-flight-before-network-verification)
 - [Verification checklist](#verification-checklist)
 - [Open questions to confirm before implementing](#open-questions-to-confirm-before-implementing)
 
@@ -78,6 +85,85 @@ L1  Physical             Two NICs, two cards, dedicated fiber/circuit
 ```
 
 Pod attachment (Multus) sits at L2/L3 and is the layer most often skipped by mistake.
+
+---
+
+## Networking basics (terms used in this doc)
+
+This section is for readers who are strong on OpenShift/Kafka but still building networking vocabulary — the rest of the doc assumes these ideas.
+
+### Layer numbers (quick reference)
+
+See the [layer map](#layer-map) above. In conversation you'll mostly touch **L1–2** (NICs, bond, VLAN), **L3** (subnets, gateways, routes — *not* default routes on the replication link), and **L4** (TCP port 9095 for replication). **L7** is Kafka + Cluster Linking on top.
+
+### Three address "worlds" on a node
+
+| World | Typical addresses | Who uses it |
+|---|---|---|
+| **Machine / management network** | Whatever the cluster already uses for API, nodes, SSH | Host OS, `oc debug node`, most infrastructure |
+| **OVN pod network (default)** | Cluster overlay (e.g. `10.128.x.x`) | Almost every pod's `eth0` — Services, internal Kafka clients |
+| **Replication VLAN subnet** | Per-DC `/26` (e.g. `10.200.1.0/26` ↔ `10.200.2.0/26`) | Cross-DC replication only — via Multus on broker pods |
+
+These are **different subnets on purpose**. Replication traffic should be identifiable by source/dest IP in the replication pools, not mixed with management traffic.
+
+### NAT, SNAT, and DNAT
+
+**NAT (Network Address Translation)** rewrites IP addresses (and often ports) in packet headers so traffic can cross between address realms.
+
+| Term | Rewrites | Typical direction | Example in OpenShift |
+|---|---|---|---|
+| **SNAT** (Source NAT) | Source IP/port | Outbound | Pod sends as `10.128.x.x`; remote may see the **node's machine-network IP** after OVN SNAT |
+| **DNAT** (Destination NAT) | Destination IP/port | Inbound | Client hits a Route/LoadBalancer VIP; packet is steered to a **pod IP** |
+
+**Why SNAT matters here:** If a broker only uses the default OVN network toward the other DC, egress can be **SNAT'd to the machine-network IP**. Firewalls and routing on the replication path expect sources in **`10.200.1.x`**, not the management subnet — return paths break or ACLs don't match. Multus gives replication traffic a path where the **source is already a replication-subnet IP** (see below).
+
+### Default pod network vs Multus secondary network
+
+**Without Multus:** Each pod gets one interface (`eth0`) on the cluster overlay (OVN-Kubernetes). That is the right default for API calls, DNS, image pulls, and internal Kafka clients.
+
+**Multus** is a CNI meta-plugin (enabled on OpenShift) that can attach **additional** interfaces defined by a **`NetworkAttachmentDefinition` (NAD)**. A pod annotation (`k8s.v1.cni.cncf.io/networks: …`) requests the extra attachment at startup.
+
+After attachment, a broker is **dual-homed** — not "moved" off the cluster network:
+
+```text
+┌─ Kafka pod ─────────────────────────────────────────────────────┐
+│  eth0 (OVN)          default route → normal cluster egress       │
+│                      INTERNAL listener, clients, API, DNS      │
+│                      (often SNAT to machine-network IP)          │
+├──────────────────────────────────────────────────────────────────┤
+│  net1 (Multus/NAD)   route to remote DC /26 ONLY                 │
+│                      REPLICATION listener advertised here        │
+│                      source IP = replication pool (10.200.1.x)   │
+│                      NO default-route on this attachment         │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+**NAD** = the Kubernetes object describing *how* to attach (macvlan on `bond-repl.200`, IP pool, routes). **Multus** = the mechanism that applies it. **`network-status` annotation** on the pod = what actually landed (IPs, routes — use this to verify no accidental `default-route`).
+
+More detail on NAD patterns: [NetworkAttachmentDefinition guide](../../networking/network-attachment-definitions/README.md).
+
+### Scoped route vs default route (host and pod)
+
+A **default route** (`0.0.0.0/0`) means "send *everything* out this interface." On the replication VLAN — host **or** pod — that bleeds API traffic, DNS, and pulls onto a link sized for replication only. It usually breaks the cluster outright.
+
+A **scoped route** means "send only **this prefix** out this interface" — here, the **other datacenter's replication `/26`**. Everything else follows the normal default (OVN / machine network).
+
+| Level | Correct shape | Wrong shape |
+|---|---|---|
+| **Host** (NNCP) | Route: remote `/26` → gateway on `bond-repl.200` | Default route on `bond-repl.200` |
+| **Pod** (NAD + annotation) | Route: remote `/26` on Multus iface; default stays on `eth0` | `default-route` set on Multus attachment |
+
+That split is the design rule peers often state as: **only traffic to the other DC's replication subnet uses the replication IP; all other destinations use the original cluster/machine path.**
+
+### Other terms that appear later
+
+| Term | Meaning |
+|---|---|
+| **CNI** | Container Network Interface — plugins that wire pod networking (OVN, Multus, macvlan, whereabouts) |
+| **macvlan** | Gives each pod its own MAC on a VLAN segment (default here); use **ipvlan** if the switch limits MAC counts |
+| **whereabouts** | IPAM plugin — assigns pod IPs from a pool on a NAD |
+| **NNCP / NNCE** | NodeNetworkConfigurationPolicy / Enactment — nmstate objects for host networking |
+| **`MultiNetworkPolicy`** | Like `NetworkPolicy`, but enforced on a **secondary** interface (standard policy only sees `eth0`) |
 
 ---
 
@@ -124,6 +210,7 @@ spec:
 **Decisions to nail down here, in order of how often they're gotten wrong:**
 
 1. **Node targeting.** If only a subset of nodes have this NIC layout (e.g., dedicated gateway/broker nodes), target them with a label + `nodeSelector`, not the default `worker` pool. Applying this cluster-wide to nodes without the matching hardware will fail or misconfigure.
+   **If every node needs a unique static IP** on this interface (e.g., Kafka brokers run fleet-wide, not on a small gateway subset), a single role-based NNCP won't do it — NMState applies identical `desiredState`, including the IP, to every node it matches. The only NNCP-native fix is one policy per node via `kubernetes.io/hostname`. See [Cross-DC replication NNCP (Helm)](cross-dc-nncp-helm/README.md) for a template that renders this from a node list. Worth confirming first, though, whether a static host IP is even needed — see the next callout.
 2. **Interface naming stability.** Kernel interface names (`ens4f0`, etc.) depend on PCI enumeration order and can differ across otherwise-identical hardware. At fleet scale, match by MAC/PCI path via `systemd.link` rather than assuming names are consistent.
 3. **Bonding mode.** `active-backup` works with any switch. `802.3ad`/LACP requires every hop in the bond to participate — fine if the bond terminates at your own local ToR pair, **not** viable if anyone assumes the bond itself spans the WAN (it doesn't; the WAN segment is routed, not bonded).
 
@@ -146,9 +233,11 @@ routes:
 
 ### Layer 2/3: pod attachment via Multus
 
-A MachineConfig/NNCP configures the **host**. It does nothing for pods on the default OVN network — pods don't automatically see this interface, and OVN-Kubernetes **SNATs pod egress to the node's primary (machine-network) IP** before the routing table is consulted. So even though the host has a correct route to the remote /26 via `bond-repl.200`, a pod on the default network reaching that destination gets routed over the right interface but with the **wrong source IP** — breaking return routing symmetry and complicating firewall rules that expect traffic sourced from the replication subnet specifically.
+See [Networking basics](#networking-basics-terms-used-in-this-doc) for NAT/SNAT, Multus, and dual-homed pods — this section applies those ideas to the replication VLAN.
 
-The fix: attach the workload's pod directly to the VLAN via a Multus `NetworkAttachmentDefinition`, giving it a real IP in the replication subnet.
+A MachineConfig/NNCP configures the **host**. It does nothing for pods on the default OVN network — pods don't automatically see that interface, and OVN-Kubernetes **SNATs pod egress to the node's primary (machine-network) IP** on the default path. So even though the host has a correct route to the remote /26 via `bond-repl.200`, a pod on the default network reaching that destination can still present the **wrong source IP** — breaking return routing symmetry and complicating firewall rules that expect traffic sourced from the replication subnet specifically.
+
+**The fix:** attach the workload pod to the VLAN via Multus — a **second** interface with a replication-subnet IP and a **scoped route to the remote DC's `/26` only**. The primary OVN interface (`eth0`) keeps the default route for everything else (API, DNS, internal listeners). The pod is dual-homed, not relocated to the replication subnet.
 
 ```yaml
 apiVersion: k8s.cni.cncf.io/v1
@@ -176,31 +265,22 @@ spec:
 
 **hostNetwork as an alternative:** if the workload is a host-level daemon (not a typical pod) or already runs with `hostNetwork: true`, it shares the host's network namespace directly and the host route alone is sufficient — no Multus needed for that specific workload.
 
-**The pod-level version of the "no default route" rule:** the same mistake from [Layer 3 routing](#layer-3-routing) has a pod-scoped equivalent. The extended JSON form of the `k8s.v1.cni.cncf.io/networks` annotation accepts a `default-route` key per attachment — leave it unset for `repl-net`/`kafka-repl-net`. Left unset, the pod's default route stays on the primary (OVN) interface, and the secondary attachment only carries a route to its own subnet. Confirm via the pod's `k8s.v1.cni.cncf.io/network-status` annotation — the secondary entry should have no `"default-route"` key.
+**The pod-level version of the "no default route" rule:** the same mistake from [Layer 3 routing](#layer-3-routing) has a pod-scoped equivalent. The extended JSON form of the `k8s.v1.cni.cncf.io/networks` annotation accepts a `default-route` key per attachment — leave it unset for `repl-net`/`kafka-repl-net`. Left unset, the pod's default route stays on the primary (OVN) interface; the Multus attachment carries only the **scoped route to the remote `/26`** (plus local replication-subnet addressing), not a default. Confirm via the pod's `k8s.v1.cni.cncf.io/network-status` annotation — the secondary entry should have no `"default-route"` key.
 
-**Static IP/MAC as an alternative to whereabouts:** the whereabouts-based NAD above assigns IPs dynamically from a range. If a workload needs a **stable, predictable** address per replica — which is exactly Kafka's situation, since `$(REPL_IP)` in [Part 2](#cfk-listener-configuration) is otherwise discovered at runtime via an init container — macvlan supports static addressing via CNI plugin chaining instead:
+**Static IP/MAC as an alternative to whereabouts:** macvlan supports per-pod address pinning via CNI chaining (`ipam.type: static`) and the extended `k8s.v1.cni.cncf.io/networks` annotation (`ips` / `routes` keys). **Neither mode is mandatory for Cluster Linking** — both need a correct advertised Multus IP; they differ in predictability, firewall shape, and CFK wiring complexity. See [Broker replication IP assignment](#broker-replication-ip-assignment) and [BROKER-IPAM.md](cross-dc-kafka-net-helm/BROKER-IPAM.md).
 
-```json
-{
-  "cniVersion": "0.3.1",
-  "name": "repl-net-static",
-  "plugins": [
-    {
-      "type": "macvlan",
-      "capabilities": { "ips": true },
-      "master": "bond-repl.200",
-      "mode": "bridge",
-      "ipam": { "type": "static" }
-    },
-    {
-      "capabilities": { "mac": true },
-      "type": "tuning"
-    }
-  ]
-}
-```
+### Broker replication IP assignment
 
-The pod then requests its specific address via the `ips`/`mac` keys in its `k8s.v1.cni.cncf.io/networks` annotation — e.g., one static IP per Kafka broker StatefulSet ordinal. That turns `$(REPL_IP)` from "discovered at runtime" into "known at manifest-authoring time," removing the init-container lookup entirely. Trades the operational simplicity of a pool (whereabouts) for per-pod address pinning — worth it here because brokers already have stable per-replica identity that maps naturally onto a stable IP.
+Two supported modes for Kafka on the replication NAD (selected in [rollout inventory](../../networking/cross-dc-rollout/inventory-dc-a.example.yaml) as `workload.brokerIpam.mode`, rendered by [cross-dc-kafka-net-helm](cross-dc-kafka-net-helm/README.md)):
+
+| Mode | Summary | Choose when |
+|---|---|---|
+| **whereabouts** (default) | Pool assigns IP at schedule; init container sets `REPL_IP` from `network-status` | Subnet-wide firewall rules; simpler ops; first implementation |
+| **static** | You pin `replIp` per broker ordinal; routes on pod annotation | Per-broker `/32` ACLs; fixed Cluster Link bootstrap lists; avoid init container |
+
+Full trade-offs, CFK snippets, and switching guidance: **[BROKER-IPAM.md](cross-dc-kafka-net-helm/BROKER-IPAM.md)**. For the runtime chain (inventory → Multus → `network-status` → `REPL_IP` → Cluster Link bootstrap), subnet layout on the `/26`, persistence on pod recreate, and common failure modes, see [End-to-end pipeline](cross-dc-kafka-net-helm/BROKER-IPAM.md#end-to-end-pipeline) in that doc.
+
+**Not the same as host NNCP IPs:** per-node static addresses on `bond-repl.200` are optional for macvlan and independent of broker IP mode — see [NNCP Helm README](cross-dc-nncp-helm/README.md).
 
 ### Securing the secondary network: MultiNetworkPolicy
 
@@ -255,6 +335,8 @@ spec:
 ```
 
 Verify enforcement explicitly — spin up a debug pod on the same NAD without the matching label and confirm it *can't* reach the workload's replication port. `MultiNetworkPolicy` misconfiguration (missing `policy-for` annotation on either the NAD or the policy) tends to fail open silently.
+
+**Mis-attachment defense:** a single broker-scoped allow policy leaves **unselected** pods on the same NAD at default-allow on `net1`. The [Kafka net Helm chart](cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md) renders a catch-all **default-deny** policy plus a broker allow-list by default — see [MULTINETWORKPOLICY.md](cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md).
 
 **If a peer sends you the "subnets field" caveat, it doesn't apply here.** Red Hat's docs note that `podSelector`/`namespaceSelector` peer matching in a multi-network policy is only valid if the secondary network's CNI config defines a `subnets` field — otherwise only `ipBlock` works. That restriction is scoped to **OVN-Kubernetes secondary networks** (CNI type `ovn-k8s-cni-overlay`, `topology: layer2`/`localnet`), a different mechanism from the **macvlan** NAD this design uses. For macvlan/IPVLAN/SR-IOV NADs — including the `kafka-repl-net` policy in Part 2 — `podSelector` is valid regardless; there's no `subnets` field in a macvlan CNI config to begin with.
 
@@ -318,7 +400,7 @@ spec:
 **Verify against the installed CFK version's CRD reference:**
 
 1. Whether the structured `listeners` block supports a fully custom named listener without an `externalAccess` type attached, or whether the `configOverrides.server` raw passthrough above is the correct escape hatch.
-2. How `$(REPL_IP)` actually gets populated — the Multus-assigned IP isn't known at manifest-authoring time. Typically an init container reads the pod's own `k8s.v1.cni.cncf.io/network-status` annotation and exports it as an env var consumed by the broker's startup config.
+2. How `$(REPL_IP)` gets populated — depends on [broker IP mode](cross-dc-kafka-net-helm/BROKER-IPAM.md): **whereabouts** → typically an init container reading `network-status`; **static** → literal per-ordinal IP in pod env / `advertised.listeners`. See [CFK snippets](cross-dc-kafka-net-helm/examples/).
 
 ### The link itself: API-driven, not a CRD
 
@@ -352,7 +434,15 @@ Confluent's own guidance treats these as requirements, not optional hardening, s
 
 ### MultiNetworkPolicy for Kafka
 
-Same pattern as [Part 1](#securing-the-secondary-network-multinetworkpolicy), scoped to the broker pods and the replication port:
+Same pattern as [Part 1](#securing-the-secondary-network-multinetworkpolicy), scoped to the broker pods and the replication port.
+The [cross-dc-kafka-net-helm](cross-dc-kafka-net-helm/README.md) chart renders **two** policies by default — full rationale in **[MULTINETWORKPOLICY.md](cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md)**:
+
+| Policy | `podSelector` | Effect on `net1` |
+|---|---|---|
+| `kafka-repl-net-default-deny` | `{}` | Deny all (mis-attachment defense) |
+| `kafka-repl-net-restrict` | `app: kafka` | Allow remote `/26` TCP 9095 only |
+
+Broker allow policy (simplified):
 
 ```yaml
 apiVersion: k8s.cni.cncf.io/v1beta1
@@ -394,7 +484,73 @@ Because Cluster Linking is broker-only (no Connect layer), this is the only work
 | `externalAccess.type: route` used for the Kafka replication listener | Routes all replication traffic through the shared ingress router — defeats the dedicated VLAN silently |
 | Unauthenticated Kafka listener exposed to Cluster Linking | Confluent explicitly calls this a security risk, not a style choice |
 
+## Pre-flight before network verification
+
+**When:** After host NNCP/bond/VLAN is applied on both clusters, before running the [cross-DC network test framework](../../networking/cross-dc-network-test/README.md) or deploying Kafka on the replication VLAN.
+
+**Operational detail:** [cross-dc-network-test/README.md — Pre-flight](../../networking/cross-dc-network-test/README.md#pre-flight) and `./preflight.sh` (automated read-only checks). This section is the condensed checklist for peer review and change tickets.
+
+### Resolve first (from [open questions](#open-questions-to-confirm-before-implementing))
+
+Real per-DC subnet/gateway, VLAN interface name on the bond, exact node hostnames in `NODE_NAMES`, end-to-end MTU, and which nodes actually carry the replication NIC — not the example `10.200.x.x` / `bond-repl.200` placeholders.
+
+Carve out a **test-only whereabouts pool** disjoint from Kafka's planned pool and from host static IPs on the same `/26`.
+
+### Build order
+
+```text
+Open questions answered
+  → inventory-dc-a.yaml + inventory-dc-b.yaml filled in (see cross-dc-rollout/)
+  → render-config.py --both  (NNCP values, dc-*.env, Kafka net values)
+  → useMultiNetworkPolicy patch on both clusters
+  → NNCP on DC-A + DC-B — oc get nnce Available
+  → ./preflight.sh dc-a.env dc-b.env
+  → ./run-network-test.sh dc-a.env dc-b.env   (skip bond failover first time)
+  → Kafka NAD/MultiNetworkPolicy Helm + CFK / Cluster Linking
+```
+
+### Platform gates (both clusters)
+
+| Gate | Confirm |
+|---|---|
+| `kubernetes-nmstate` | NNCE CRD present; enactments `Available` for every node in the env file |
+| Whereabouts | `ippools.whereabouts.cni.cncf.io` CRD present |
+| MultiNetworkPolicy | `oc get network cluster -o jsonpath='{.spec.useMultiNetworkPolicy}'` → `true` |
+| Probe image | `TEST_PROBE_IMAGE` pullable from worker nodes |
+| Workstation | `oc` + `jq` + `envsubst`; separate kubeconfig per cluster; cluster-admin-ish for `oc debug node` |
+
+### Network / firewall coordination
+
+Confirm with the network team **before** the first test run:
+
+- TCP **9095** allowed between **pod IPs** on the replication VLAN in **both directions** (not just host-to-host).
+- ICMP allowed for the MTU ping sweep (test 5).
+- Port 9095 not already in use on that VLAN for another service.
+
+Host routes can look correct while macvlan pod traffic is still blocked upstream — test 4 is the definitive check, but firewall misconfiguration is easier to fix before you apply pods.
+
+### Templating: what gets Helm vs envsubst
+
+| Layer | Tool | Rationale |
+|---|---|---|
+| **Inventory (single source of truth)** | [cross-dc-rollout/inventory-dc-*.yaml](../../networking/cross-dc-rollout/README.md) | Subnets, nodes, pools — rendered into all downstream configs |
+| Per-node host network (NNCP) | [cross-dc-nncp-helm](cross-dc-nncp-helm/README.md) | *N* nodes, unique static IPs, optional batched rollout |
+| Kafka NAD + `MultiNetworkPolicy` | [cross-dc-kafka-net-helm](cross-dc-kafka-net-helm/README.md) | Per-DC workload attachment after network test |
+| Network verification (NAD, probe pods, test policy) | `envsubst` + shell in [cross-dc-network-test](../../networking/cross-dc-network-test/README.md) | Fixed two-sided runbook — env rendered from inventory |
+| `useMultiNetworkPolicy: true` | One-time [Network CR patch](../../networking/cross-dc-rollout/examples/cluster-network-operator-patch.example.yaml) | Singleton cluster config — not Helm |
+| Workstation paths | Rendered `dc-*.env` (gitignored) | Kubeconfig paths are local, not cluster objects |
+
+Converting the test manifests to Helm would mostly relocate the same values from env files into chart values without changing what gets applied. Keep Helm where the templating problem is real (per-node NNCP, per-DC Kafka NAD); keep inventory as the one place humans edit overlapping fields.
+
+### What a green run proves — and doesn't
+
+**Proves:** host NNCP, Multus attachment, cross-DC L4 on the replication VLAN, path MTU, and `MultiNetworkPolicy` `ipBlock` enforcement — the network-layer items in the [verification checklist](#verification-checklist) below.
+
+**Does not prove:** CFK listener wiring, `$(REPL_IP)` population, Cluster Link `bootstrap.servers`, or failover replication resume — those still need the real broker deployment.
+
 ## Verification checklist
+
+**Automated (network layer only):** run [`preflight.sh`](../../networking/cross-dc-network-test/preflight.sh) first, then the [cross-DC network test framework](../../networking/cross-dc-network-test/README.md) — together they automate the network-layer checks below (reachability, pod attachment, MTU, `MultiNetworkPolicy`) against two live clusters via script + [repl-net-probe](../../networking/cross-dc-network-test/repl-net-probe/README.md) test pods, isolated from Kafka — useful for proving the network works before Kafka is even deployed. The Kafka/CFK-specific checks below (Cluster Link `bootstrap.servers`, failover replication resume) still require the real broker deployment.
 
 1. Confirm current NIC/bond state on target nodes before assuming new vs. existing (`nmcli connection show`, `oc get nns`).
 2. `curl`/`nc` the remote replication IP:port from a debug pod on the NAD — confirms L2–L4 before the workload is involved.
@@ -403,8 +559,8 @@ Because Cluster Linking is broker-only (no Connect layer), this is the only work
 5. Confirm `MultiNetworkPolicy` actually blocks an unauthorized pod on the same NAD (`oc get multi-networkpolicy -n <namespace>` to confirm it's present first).
 6. `ping -M do -s <size>` across the full path to confirm real MTU.
 7. Check the broker pod's `k8s.v1.cni.cncf.io/network-status` for the `kafka-repl-net` entry — confirm no `"default-route"` key is present unless deliberately set.
-7. Confirm the Cluster Link's `bootstrap.servers` payload value resolves to the `REPLICATION` listener's advertised (Multus) address, not the internal/external one.
-8. Fail over and back: confirm the pre-staged reverse link actually resumes replication without manual re-creation.
+8. Confirm the Cluster Link's `bootstrap.servers` payload value resolves to the `REPLICATION` listener's advertised (Multus) address, not the internal/external one.
+9. Fail over and back: confirm the pre-staged reverse link actually resumes replication without manual re-creation.
 
 ## Open questions to confirm before implementing
 
@@ -422,7 +578,7 @@ Because Cluster Linking is broker-only (no Connect layer), this is the only work
 - One Control Center instance per DC, or one shared instance? (Determines if Control Center needs any cross-DC network path beyond what brokers already have.)
 - Will the link-creation API calls be scripted/version-controlled, or done manually through the Control Center UI?
 - Does the installed CFK version's `listeners` schema support a custom listener without an `externalAccess` type, or is `configOverrides.server` passthrough required?
-- How is `$(REPL_IP)` populated at broker startup — init container reading `network-status`, or a static IP per broker assigned via the pod annotation instead (see [static IP/MAC alternative](#layer-23-pod-attachment-via-multus))?
+- How is `$(REPL_IP)` populated — init container (`whereabouts` mode) or static per-ordinal IP (`static` mode)? See [BROKER-IPAM.md](cross-dc-kafka-net-helm/BROKER-IPAM.md).
 
 ---
 

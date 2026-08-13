@@ -1,0 +1,61 @@
+# Alternate inventory example — static per-broker IPs (see BROKER-IPAM.md).
+# Copy to inventory-dc-a.yaml if static mode fits your firewall/link model.
+
+cluster:
+  id: dc-a
+  kubeconfig: "${HOME}/.kube/dc-a.kubeconfig"
+
+replicationNetwork:
+  bondName: bond-repl
+  bondMode: active-backup
+  ports:
+    - ens4f0
+    - ens5f0
+  vlanId: 200
+  prefixLength: 26
+  localSubnet: 10.200.1.0/26
+  localGateway: 10.200.1.1
+  remoteSubnet: 10.200.2.0/26
+  expectedMtu: 1500
+
+nodes:
+  - hostname: worker-0.dc-a.example.com
+    hostIp: 10.200.1.11
+    networkTest: true
+  - hostname: worker-1.dc-a.example.com
+    hostIp: 10.200.1.12
+    networkTest: true
+
+ipPools:
+  test:
+    range: 10.200.1.0/26
+    start: 10.200.1.6
+    end: 10.200.1.10
+  # kafka pool unused for static broker IPs — kept for validation spacing docs
+  kafka:
+    range: 10.200.1.0/26
+    start: 10.200.1.20
+    end: 10.200.1.60
+
+workload:
+  namespace: confluent
+  nadName: kafka-repl-net
+  cniType: macvlan
+  macvlanMode: bridge
+  replicationPort: 9095
+  podSelector:
+    app: kafka
+  brokerIpam:
+    mode: static
+  brokers:
+    - name: kafka-0
+      replIp: 10.200.1.21
+    - name: kafka-1
+      replIp: 10.200.1.22
+    - name: kafka-2
+      replIp: 10.200.1.23
+  multiNetworkPolicy:
+    defaultDenyOnNad: true
+
+probe:
+  image: quay.io/rh_hhellbusch/repl-net-probe:0.1.1
