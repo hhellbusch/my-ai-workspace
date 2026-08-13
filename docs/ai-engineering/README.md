@@ -52,6 +52,8 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 - **[Artifact Discipline and AI — What Agile Modeling Teaches About Working With Assistants](artifact-discipline-and-ai.md)** — Scott Ambler's JBGE, TAGRI, and travel-light ideas applied to AI over-production of docs and plans. Complements spar/shoshin with artifact economics: who reads it, what decision it enables, when to stop writing. Includes prompts peers can use without tooling.
 
+- **[Software Systems Maturity — a trailhead](software-systems-maturity.md)** — Multi-axis maturity model (2016 deck resurrected for 2026): assess per-axis level, prioritize the next step up. DevOps/GitOps/API reconcile, platform accelerator (K8s/OCP and non-K8s), dual-audience documentation, team practices. Deep dives: [maturity/](maturity/README.md). Framing: [Maturity as navigation — not a benchmark](maturity-as-navigation-not-benchmark.md).
+
 - **[Interaction Patterns for AI Sessions](interaction-patterns.md)** — Two structured patterns for AI-assisted work (the meta-prompt pipeline and the session-start briefing), the default unstructured mode, and how to choose between them. Covers the briefing guardrail (scope vs. state), the privacy-filtered handoff, and practical guidance for choosing between patterns.
 
 - **[Zanshin — Portable Session Context (Bootstrap)](framework-bootstrap.md)** — Single-file entry point for loading the Zanshin framework into any AI tool. Clone this repository alongside a project, point your AI at this file, and operate with the framework's posture without Cursor-specific setup. Includes minimum viable load (four sentences), full behavioral dispositions, tool-specific loading instructions (Copilot, Claude Code, chat-based AI), and links to deeper reading.
