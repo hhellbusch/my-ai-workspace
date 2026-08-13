@@ -1,0 +1,28 @@
+# Example Argo CD Application — DC-B Confluent stack including link reconcile Job.
+# Adjust repoURL, path, and destination.name for your GitOps layout (ACM hub or per-cluster Argo).
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dc-b-confluent
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/example/org/kafka-gitops.git
+    targetRevision: main
+    path: clusters/dc-b/confluent
+  destination:
+    name: dc-b
+    namespace: confluent
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  # Recommended layout under path/:
+  #   kafka/                    # Kafka CR — sync-wave "10"
+  #   kafka-repl-net/           # NAD + MultiNetworkPolicy — wave "10"
+  #   cluster-link-gitops/k8s/  # ConfigMap + Job — waves "15"–"30"
+  #   cluster-link-gitops/crd/  # OR Pattern A ClusterLink CR — wave "20" (not both)

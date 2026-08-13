@@ -1,0 +1,48 @@
+# Pattern B desired-state spec — link managed on DC-A (reverse direction for DR).
+# Copy to dc-b-to-dc-a.yaml. Pair with dc-a-to-dc-b via the same spec.linkName.
+
+apiVersion: clusterlink.example/v1
+kind: ClusterLinkDesired
+metadata:
+  name: dc-b-to-dc-a
+  labels:
+    cross-dc.example/cluster: dc-a
+    cross-dc.example/direction: b-to-a
+spec:
+  linkName: dr-cross-dc
+
+  managedOn:
+    clusterId: dc-a
+    namespace: confluent
+
+  destination:
+    kafkaClusterName: kafka
+    kafkaRestClassRef:
+      name: krc-local
+      namespace: confluent
+
+  source:
+    clusterId: ""
+    bootstrapEndpoint: "10.200.2.21:9095,10.200.2.22:9095,10.200.2.23:9095"
+    kafkaRestClassRef:
+      name: krc-dc-b
+      namespace: confluent
+
+  tls:
+    enabled: true
+    truststoreSecretRef: clusterlink-dc-b-truststore
+    keystoreSecretRef: clusterlink-dc-b-keystore
+
+  authentication:
+    type: plain
+    secretRef: clusterlink-dc-b-sasl
+
+  mirrorTopics:
+    - name: "*"
+      prefix: "dc-b."
+
+  mirrorTopicOptions:
+    autoCreate: true
+
+  configs:
+    connections.max.idle.ms: "620000"

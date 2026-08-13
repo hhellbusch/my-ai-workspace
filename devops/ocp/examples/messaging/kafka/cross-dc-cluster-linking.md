@@ -21,6 +21,7 @@ review:
 - [Network policy and observability](../../../notes/network-policy-observability.md) — Strimzi vs CFK policy differences
 - [Confluent: Configure OpenShift Routes](https://docs.confluent.io/operator/current/co-routes.html) — the external-access mechanism to **avoid** for this use case (see below)
 - [Confluent: Cluster Linking overview](https://docs.confluent.io/platform/current/multi-dc-deployments/cluster-linking/index.html)
+- [Cluster Link GitOps — CRD vs API patterns](CLUSTER-LINK-GITOPS.md) — Argo CD, reconcile Jobs, decision matrix
 - [OpenShift: Secondary networks — attaching a pod](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/multiple_networks/secondary-networks#nw-multus-advanced-annotations_attaching-pod) — static IP/MAC annotations, relevant to how `$(REPL_IP)` could be avoided (see below)
 - [OpenShift: MultiNetworkPolicy API reference](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_apis/multinetworkpolicy-k8s-cni-cncf-io-v1beta1)
 
@@ -32,7 +33,7 @@ review:
 - [Connection direction](#connection-direction)
 - [The routes trap](#the-routes-trap)
 - [CFK listener configuration](#cfk-listener-configuration)
-- [The link itself: API-driven, not a CRD](#the-link-itself-api-driven-not-a-crd)
+- [Managing the cluster link (GitOps)](#managing-the-cluster-link-gitops)
 - [Bidirectional, pre-staged links for failover](#bidirectional-pre-staged-links-for-failover)
 - [Security requirements](#security-requirements)
 - [MultiNetworkPolicy for Kafka](#multinetworkpolicy-for-kafka)
@@ -98,18 +99,31 @@ spec:
 
 **Static alternative:** pin each broker's IP in the Multus annotation; `REPL_IP` can be literal — see [End-to-end lifecycle (static)](cross-dc-kafka-net-helm/BROKER-IPAM.md#end-to-end-lifecycle-static), [cfk-kafka-static.snippet.yaml](cross-dc-kafka-net-helm/examples/cfk-kafka-static.snippet.yaml), and the rendered `kafka-repl-net-broker-ip-map` ConfigMap.
 
-## The link itself: API-driven, not a CRD
+## Managing the cluster link (GitOps)
 
-Per the current plan, the Cluster Link is being created via **API calls, likely through Control Center** — not a CFK CRD. This means the link configuration lives **outside** anything Kubernetes/GitOps tracks, and it's worth separating two distinct traffic flows that are easy to conflate:
+The link object (name, source/dest, **`bootstrap.servers` / `bootstrapEndpoint`**, mirror topics, ACL filters) must be **version-controlled** — not only created in Control Center during cutover.
 
-1. **The API call that creates the link** — management/control-plane traffic against Control Center's backend (or the native Kafka Admin API via the `kafka-cluster-links` CLI). This just needs to reach whichever cluster's Control Center/Admin endpoint hosts the link — normal management-network traffic, doesn't need to ride the dedicated VLAN.
-2. **The replication traffic the link generates once active** — continuous broker fetch requests over the `REPLICATION` listener, on the dedicated VLAN.
+Two valid approaches:
 
-What matters: the `bootstrap.servers` value **inside** the API payload must be the `REPLICATION` listener's advertised address (the Multus IP:port) — not the cluster's internal or external-facing address. Getting this value wrong means the link either fails or silently uses the wrong path.
+| Approach | When |
+|---|---|
+| **`ClusterLink` CRD** + Argo CD | CFK exposes every setting you need; CFK operator reconciles the CR |
+| **Declarative spec in Git** + **reconcile script** (often as an Argo **Job** or CronJob) | CRD schema gaps, legacy API-only settings, or team preference for `confluent kafka link` / REST |
 
-**Topology question that changes reachability requirements:** one Control Center instance per DC (each only needs to reach its own local cluster's Admin API), or one shared instance managing both clusters (needs direct WAN reachability to both clusters' Admin APIs — a separate requirement from the replication path, and shouldn't ride the same dedicated VLAN).
+Peers sometimes report the CRD **does not expose all link settings** — that must be verified on **your** CFK version (`oc explain clusterlink.spec`), not assumed. CFK **does** document a broad `ClusterLink` CR ([co-link-clusters](https://docs.confluent.io/operator/current/co-link-clusters.html)); gaps are version- and requirement-specific.
 
-**Reproducibility gap:** since this bypasses CRD-based management, the link configuration should still be scripted and version-controlled (curl/Ansible/CLI invocation checked into a repo) — not a one-off manual action through the Control Center UI. This matters most exactly when it's least convenient: mid-failover, needing to reproduce or verify what "working" looked like.
+**Full comparison** (Patterns A–G: CRD, Job reconcile, PostSync hooks, CronJob drift, external CI, hybrid, long-running reconciler): **[CLUSTER-LINK-GITOPS.md](CLUSTER-LINK-GITOPS.md)**.
+
+Regardless of pattern, separate two traffic types:
+
+1. **Management** — API/CLI/Control Center call or CR apply against Admin REST (management network / in-cluster REST — **not** the replication VLAN).
+2. **Replication** — broker fetch traffic on the `REPLICATION` listener once the link is active (`net1` / Multus path).
+
+The **`bootstrap.servers` / `bootstrapEndpoint` value must be the `REPLICATION` listener advertised address** (Multus IP:port) — not internal Service DNS or OpenShift Routes. Wrong bootstrap means link failure or silent use of the wrong path.
+
+**Topology:** one Control Center per DC vs one shared instance changes Admin API reachability — see open questions in [CLUSTER-LINK-GITOPS.md](CLUSTER-LINK-GITOPS.md) and below.
+
+**Do not mix:** mirror topics managed via API/CLI **and** a `ClusterLink` CR on the same link — CFK may delete externally created mirrors on reconcile ([Confluent docs](https://docs.confluent.io/operator/current/co-link-clusters.html)).
 
 ## Bidirectional, pre-staged links for failover
 
@@ -159,7 +173,7 @@ Because Cluster Linking is broker-only (no Connect layer), this is the only work
 
 - Two independently-managed links, or a deliberate choice over `reverse-and-start`/`reverse-and-pause`? (Likely reason: topic prefixing.)
 - One Control Center instance per DC, or one shared instance? (Determines if Control Center needs any cross-DC network path beyond what brokers already have.)
-- Will the link-creation API calls be scripted/version-controlled, or done manually through the Control Center UI?
+- Will the link be managed via **`ClusterLink` CRD**, **API reconcile Job**, or hybrid? See [CLUSTER-LINK-GITOPS.md](CLUSTER-LINK-GITOPS.md) and gap checklist there.
 - Does the installed CFK version's `listeners` schema support a custom listener without an `externalAccess` type, or is `configOverrides.server` passthrough required?
 - How is `$(REPL_IP)` populated — [BROKER-IPAM.md](cross-dc-kafka-net-helm/BROKER-IPAM.md) (`whereabouts` vs `static`)?
 

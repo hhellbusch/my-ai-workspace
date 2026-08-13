@@ -1,0 +1,56 @@
+# Pattern B desired-state spec — link managed on DC-B (destination-initiated).
+# Copy to dc-a-to-dc-b.yaml and fill clusterId, auth, mirror topics.
+# bootstrapEndpoint MUST be DC-A broker REPLICATION addresses (Multus net1).
+#
+# See scripts/reconcile-link.example.sh and CLUSTER-LINK-GITOPS.md Pattern B.
+
+apiVersion: clusterlink.example/v1
+kind: ClusterLinkDesired
+metadata:
+  name: dc-a-to-dc-b
+  labels:
+    cross-dc.example/cluster: dc-b
+    cross-dc.example/direction: a-to-b
+spec:
+  # Logical link name on the Kafka cluster (must match bidirectional pair on dc-b-to-dc-a)
+  linkName: dr-cross-dc
+
+  # Cluster where this link object is created (destination for replication flow)
+  managedOn:
+    clusterId: dc-b
+    namespace: confluent
+
+  destination:
+    kafkaClusterName: kafka
+    kafkaRestClassRef:
+      name: krc-local
+      namespace: confluent
+
+  source:
+    # Remote cluster — data replicated FROM dc-a TO dc-b
+    clusterId: ""  # fill: kafka-cluster-id from source Admin REST
+    bootstrapEndpoint: "10.200.1.21:9095,10.200.1.22:9095,10.200.1.23:9095"
+    kafkaRestClassRef:
+      # Admin REST on dc-a — used for link metadata / cluster id resolution
+      name: krc-dc-a
+      namespace: confluent
+
+  tls:
+    enabled: true
+    # Job mounts these via secretRef — paths below are inside the reconcile container
+    truststoreSecretRef: clusterlink-dc-a-truststore
+    keystoreSecretRef: clusterlink-dc-a-keystore
+
+  authentication:
+    type: plain
+    secretRef: clusterlink-dc-a-sasl
+
+  mirrorTopics:
+    - name: "*"
+      prefix: "dc-a."
+
+  mirrorTopicOptions:
+    autoCreate: true
+
+  configs:
+    connections.max.idle.ms: "620000"

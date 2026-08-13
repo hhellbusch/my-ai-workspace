@@ -193,7 +193,7 @@ Internal clients still use the OVN DNS name on `eth0`. Replication peers use `ne
 
 ### Step 5 — Cluster Link consumes advertised addresses
 
-When you create the link (API / Control Center / CLI), `bootstrap.servers` must list **REPLICATION advertised** endpoints — e.g. `10.200.1.24:9095,10.200.1.25:9095,...` on DC-A and the matching `.2.x` addresses on DC-B. That configuration lives **outside** Kubernetes — see [Cluster Linking — the link itself](../cross-dc-cluster-linking.md#the-link-itself-api-driven-not-a-crd).
+When you create the link (API / Control Center / CLI / `ClusterLink` CR), `bootstrap.servers` must list **REPLICATION advertised** endpoints — e.g. `10.200.1.24:9095,10.200.1.25:9095,...` on DC-A and the matching `.2.x` addresses on DC-B. That configuration must be **version-controlled** — see [Managing the cluster link (GitOps)](../cross-dc-cluster-linking.md#managing-the-cluster-link-gitops) and [CLUSTER-LINK-GITOPS.md](../CLUSTER-LINK-GITOPS.md).
 
 ---
 

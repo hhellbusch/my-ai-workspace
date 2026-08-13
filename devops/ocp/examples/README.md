@@ -32,6 +32,8 @@ Runnable scenarios and templates for OpenShift clusters, grouped by **topic** un
 
 - **[Kafka on bare-metal with Portworx](messaging/kafka/bare-metal-portworx/README.md)** — Rack-aware CFK/Strimzi, OCP 4.20+
 - **[Cross-DC Cluster Linking](messaging/kafka/cross-dc-cluster-linking.md)** — Confluent Cluster Linking over a dedicated cross-DC network (design doc)
+- **[Cluster Link GitOps (CRD vs API)](messaging/kafka/CLUSTER-LINK-GITOPS.md)** — Argo CD patterns: `ClusterLink` CRD, reconcile Job, decision matrix
+- **[Cluster Link GitOps scaffold](messaging/kafka/cluster-link-gitops/README.md)** — example desired specs, reconcile script, CR/Job manifests
 - **[Cross-DC architecture overview](messaging/kafka/cross-dc-architecture-overview.md)** — combined network + Cluster Linking doc, for sharing outside the repo (design doc)
 - **[Cross-DC replication NNCP (Helm)](messaging/kafka/cross-dc-nncp-helm/README.md)** — per-node `NodeNetworkConfigurationPolicy` generator, one CR per node with a unique static IP
 - **[Cross-DC Kafka replication network (Helm)](messaging/kafka/cross-dc-kafka-net-helm/README.md)** — Kafka NAD + `MultiNetworkPolicy` on the replication VLAN (whereabouts or static broker IPs); [policy primer](messaging/kafka/cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md)
