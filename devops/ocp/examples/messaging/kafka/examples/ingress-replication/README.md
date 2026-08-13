@@ -27,11 +27,13 @@ review:
 
 ## Frontend patterns
 
-| Pattern | When | Verify with |
-|---|---|---|
-| **keepalived** | Small static VIP, full control on repl-gateway nodes | [cross-dc-ingress-test](../../../../networking/cross-dc-ingress-test/README.md) Layer 2 |
-| **MetalLB L2** | Pool on repl VLAN, operator already in cluster | Same + `oc get svc -n openshift-ingress-replication` external IP |
-| **DNS LB** | No VIP; A records to each router node repl IP | Layer 2 with `frontendMode: dns_lb` in inventory |
+**Mutually exclusive — choose one pattern per cluster (per DC).** keepalived and MetalLB both implement **Option 1** (single VIP on the replication VLAN); do not deploy both. The platform install-time **ingress VIP** on the machine network is separate — it does not replace a repl-VLAN frontend.
+
+| Pattern | Option | When | Verify with |
+|---|---|---|---|
+| **keepalived (1a)** | Single VIP | Small static VIP, full control on repl-gateway nodes | [cross-dc-ingress-test](../../../../networking/cross-dc-ingress-test/README.md) Layer 2 |
+| **MetalLB L2 (1b)** | Single VIP | Pool on repl VLAN, operator already in cluster | Same + `oc get svc -n openshift-ingress-replication` external IP |
+| **DNS LB (2)** | No VIP | A records to each router node repl IP | Layer 2 with `frontendMode: dns_lb` in inventory |
 
 External clients (and cross-DC tests) usually hit **:443** on the frontend. The example IngressController uses HostNetwork **httpsPort 8443** — map VIP/LB `443` → node `8443` unless you change router ports.
 

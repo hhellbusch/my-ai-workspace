@@ -222,13 +222,21 @@ Router nodes are infrastructure; their repl VLAN IPs may appear in DNS **as A-re
 
 ## Frontend options without an external hardware LB
 
-Bare-metal OpenShift typically uses internal HAProxy (openshift-router) plus a platform **ingress VIP** on the **machine network**.
-That VIP does **not** extend automatically to the replication VLAN.
+Bare-metal OpenShift typically uses internal HAProxy (openshift-router) plus a platform **ingress VIP** on the **machine network** (often keepalived/VRRP at install time).
+That **platform** VIP does **not** extend automatically to the replication VLAN — and is unrelated to the repl-VLAN keepalived example in [ingress-replication/](examples/ingress-replication/keepalived-vip.example.conf).
+
+All Path B frontends solve the same problem: give remote DCs a reachable **`:443` target on the replication `/26`** that forwards to the replication router. You need **one pattern per DC** — do not combine keepalived and MetalLB on the same subnet (two VIP mechanisms competing for the same role).
+
+| Option | Shape | VIP on repl VLAN? |
+|---|---|---|
+| **1 — Single VIP** | One stable IP → wildcard DNS → router | Yes — implement with **1a** or **1b**, not both |
+| **2 — DNS LB** | A records to each router node repl IP | No |
+| **3 — Default ingress** | Machine-network `apps.*` VIP | No (PoC only) |
 
 ### Option 1 — Single VIP per DC on replication subnet (recommended for production)
 
 ```text
-10.200.1.5  ← VIP (keepalived/VRRP on repl-gateway nodes, or MetalLB pool on VLAN 200)
+10.200.1.5  ← VIP on bond-repl.200
 *.kafka-repl.dc-a.example.com → 10.200.1.5
 
 Remote broker → repl-b1.kafka-repl.dc-a.example.com:443 → VIP → HAProxy → broker pod
@@ -236,12 +244,20 @@ Remote broker → repl-b1.kafka-repl.dc-a.example.com:443 → VIP → HAProxy �
 
 | Pros | Cons |
 |---|---|
-| One firewall rule target per DC | VIP mechanism on repl VLAN is new work (keepalived or MetalLB) |
+| One firewall rule target per DC | VIP mechanism on repl VLAN is new work |
 | Stable Cluster Link config | Platform `ingressVIP` does not cover this automatically |
 | Simple DNS (one wildcard A) | |
 
 **Hardware LB:** not required.
-**MetalLB:** optional in-cluster VIP allocator.
+
+**Pick one implementation** (same traffic path; different ops model):
+
+| Variant | Mechanism | When |
+|---|---|---|
+| **1a — keepalived** | Host VRRP floats VIP on `bond-repl.<vlan>` among repl-gateway nodes | Small static VIP; you manage host-level failover |
+| **1b — MetalLB** | In-cluster pool on repl `/26`; optional `LoadBalancer` Service or `IngressController` `endpointPublishingStrategy.type: LoadBalancer` | MetalLB already deployed; prefer Kubernetes-native allocation |
+
+Examples: [keepalived-vip.example.conf](examples/ingress-replication/keepalived-vip.example.conf), [MetalLB manifests](examples/ingress-replication/metallb-ipaddresspool.example.yaml).
 
 ### Option 2 — DNS load balancer to router node repl IPs (no VIP)
 
@@ -268,14 +284,7 @@ Remote broker → repl-b1.kafka-repl.dc-a.example.com:443 → VIP → HAProxy �
 | Health-checked DNS (GSLB, Infoblox probes, etc.) | Removes unhealthy IPs — better for production |
 | Low TTL (30–60s) | Faster recovery; more DNS load |
 
-### Option 3 — MetalLB pool on replication VLAN
-
-Same frontend shape as Option 1; VIP allocated by in-cluster MetalLB from `10.200.1.0/26` pool.
-`IngressController` uses `endpointPublishingStrategy.type: LoadBalancer`.
-
-Requires MetalLB speakers with L2 reachability on VLAN 200.
-
-### Option 4 — Default ingress (PoC only)
+### Option 3 — Default ingress (PoC only)
 
 ```text
 *.kafka-repl.dc-a.example.com → existing machine-network ingress VIP
@@ -364,7 +373,7 @@ Is dedicated replication VLAN required for production?
 └─ Yes
     ├─ Is CFK Route ergonomics the priority over direct pod attachment?
     │   ├─ Yes → Path B (dedicated ingress shard)
-    │   │         ├─ Can you run keepalived or MetalLB on repl VLAN? → Option 1 or 3 (VIP)
+    │   │         ├─ Can you run keepalived or MetalLB on repl VLAN? → Option 1 (VIP — pick 1a or 1b)
     │   │         └─ DNS LB only? → Option 2 (accept health-check / stale-DNS risk)
     │   └─ No  → Path A (Multus) — see architecture overview
     └─ Already invested in Multus tooling / per-broker ACLs? → Path A
@@ -381,7 +390,7 @@ Use this checklist when opening tickets with network and DNS teams for **Path B*
 - [ ] Replication `/26` routed between DCs (existing design)
 - [ ] Firewall: TCP **443** between remote and local replication subnets, **both directions**
 - [ ] Static repl IP per `repl-gateway` node on `bond-repl.200` (NNCP)
-- [ ] **Option 1/3:** one VIP on repl `/26` for ingress frontend, or **Option 2:** document node IP pool for DNS LB
+- [ ] **Option 1:** one VIP on repl `/26` (keepalived **or** MetalLB — not both), or **Option 2:** document node IP pool for DNS LB
 - [ ] MTU confirmed end-to-end on VLAN 200 path
 - [ ] ICMP allowed for troubleshooting (optional)
 
