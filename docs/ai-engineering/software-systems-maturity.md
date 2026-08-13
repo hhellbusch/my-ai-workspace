@@ -218,7 +218,7 @@ Deep dive: [deck lineage, DORA alignment, fleet/AI notes](maturity/source-contro
 
 ### Deployment & release
 
-See [DevOps/GitOps table](#devops-gitops-and-api-reconcile) and [deep dive](maturity/deployment-and-release.md).
+See [DevOps/GitOps table](#devops-gitops-and-api-reconcile) and [deep dive](maturity/deployment-and-release.md) — deck lineage, DORA links (deployment frequency, CD), fleet corpus, AI-era review gates.
 
 ### Data management
 
