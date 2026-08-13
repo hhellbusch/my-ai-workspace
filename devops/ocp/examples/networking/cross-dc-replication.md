@@ -249,6 +249,8 @@ spec:
 
 Verify enforcement explicitly — spin up a debug pod on the same NAD without the matching label and confirm it *can't* reach the workload's replication port. `MultiNetworkPolicy` misconfiguration (missing `policy-for` annotation on either the NAD or the policy) tends to fail open silently.
 
+For mis-attachment defense (catch-all default deny + broker allow-list), see [MULTINETWORKPOLICY.md](../messaging/kafka/cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md) in the Kafka net Helm chart.
+
 **If a peer sends you the "subnets field" caveat, it doesn't apply here.** Red Hat's docs note that `podSelector`/`namespaceSelector` peer matching in a multi-network policy is only valid if the secondary network's CNI config defines a `subnets` field — otherwise only `ipBlock` works. That restriction is scoped to **OVN-Kubernetes secondary networks** (CNI type `ovn-k8s-cni-overlay`, `topology: layer2`/`localnet`), a different mechanism from the **macvlan** NAD this design uses. For macvlan/IPVLAN/SR-IOV NADs, `podSelector` is valid regardless — there's no `subnets` field in a macvlan CNI config to begin with. ([Ref](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/multiple_networks/secondary-networks#configuring-multi-network-policy))
 
 **CLI verification:** the resource name is `multi-networkpolicy` (singular, hyphenated), not `multinetworkpolicy` or the plural you'd guess from the CRD `kind` — `oc get multi-networkpolicy -n <namespace>`.

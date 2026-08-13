@@ -30,3 +30,7 @@ ipam:
 brokers: []
 # - name: kafka-0
 #   replIp: 10.200.1.21
+
+# Mis-attachment defense on the replication NAD — see MULTINETWORKPOLICY.md
+multiNetworkPolicy:
+  defaultDenyOnNad: true

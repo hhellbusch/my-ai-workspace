@@ -8,9 +8,22 @@ review:
 
 **Audience:** Whoever deploys Kafka on the replication VLAN after the [network test](../../../networking/cross-dc-network-test/README.md) passes.
 
-**Purpose:** Render the workload `NetworkAttachmentDefinition` and matching `MultiNetworkPolicy` for Kafka brokers — in either **whereabouts pool** or **static per-broker** IP mode (`ipam.mode`).
+**Purpose:** Render the workload `NetworkAttachmentDefinition` and matching `MultiNetworkPolicy` objects for Kafka brokers — in either **whereabouts pool** or **static per-broker** IP mode (`ipam.mode`).
 
-**Related:** [BROKER-IPAM.md](BROKER-IPAM.md) (trade-offs) · [Cross-DC architecture overview](../cross-dc-architecture-overview.md#broker-replication-ip-assignment) · [Cross-DC rollout inventory](../../../networking/cross-dc-rollout/README.md)
+**Related:** [MULTINETWORKPOLICY.md](MULTINETWORKPOLICY.md) (how policy works + mis-attachment defense) · [BROKER-IPAM.md](BROKER-IPAM.md) (broker IP modes) · [Cross-DC architecture overview](../cross-dc-architecture-overview.md#broker-replication-ip-assignment) · [Cross-DC rollout inventory](../../../networking/cross-dc-rollout/README.md)
+
+---
+
+## MultiNetworkPolicy posture
+
+By default the chart renders **two** policies on `kafka-repl-net`:
+
+| Policy | Purpose |
+|---|---|
+| `kafka-repl-net-default-deny` | Catch-all deny on `net1` for every pod attached to the NAD (mis-attachment defense) |
+| `kafka-repl-net-restrict` | Allow labeled brokers TCP `9095` ↔ remote DC `/26` only |
+
+Read **[MULTINETWORKPOLICY.md](MULTINETWORKPOLICY.md)** before changing policy shape — especially [default allow vs default deny](MULTINETWORKPOLICY.md#default-allow-vs-default-deny) and [verification](MULTINETWORKPOLICY.md#verify-enforcement).
 
 ---
 
@@ -52,18 +65,20 @@ Manual values: `values-dc-a.example.yaml` (whereabouts) or `values-dc-a.static.e
 | `ipam.mode` | `whereabouts` or `static` — see [BROKER-IPAM.md](BROKER-IPAM.md) |
 | `ipam.range` / `.rangeStart` / `.rangeEnd` | Whereabouts pool (mode=whereabouts only) |
 | `brokers[]` | `name` + `replIp` per replica (mode=static only) |
+| `multiNetworkPolicy.defaultDenyOnNad` | Render catch-all deny on the NAD (default `true`) — see [MULTINETWORKPOLICY.md](MULTINETWORKPOLICY.md) |
 | `replicationNetwork.*` | Bond VLAN master, gateway, remote subnet |
-| `workload.*` | Namespace, NAD name, replication port, policy podSelector |
+| `workload.*` | Namespace, NAD name, replication port, policy `podSelector` |
 
 Static mode also renders ConfigMap `{{ nadName }}-broker-ip-map` with copy-paste Multus JSON per broker.
 
 ## Verification
 
 1. `oc get network-attachment-definition -n confluent`
-2. `oc get multi-networkpolicy -n confluent`
+2. `oc get multi-networkpolicy -n confluent` — expect `kafka-repl-net-default-deny` and `kafka-repl-net-restrict` when `defaultDenyOnNad: true`
 3. Static: `oc get cm kafka-repl-net-broker-ip-map -n confluent`
 4. Broker `network-status` — no `default-route` on replication attachment
-5. [Architecture verification checklist](../cross-dc-architecture-overview.md#verification-checklist)
+5. [Mis-attachment probe](MULTINETWORKPOLICY.md#verify-enforcement) — unlabeled pod on `kafka-repl-net` cannot reach `:9095`
+6. [Architecture verification checklist](../cross-dc-architecture-overview.md#verification-checklist)
 
 ---
 

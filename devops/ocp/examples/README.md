@@ -34,7 +34,7 @@ Runnable scenarios and templates for OpenShift clusters, grouped by **topic** un
 - **[Cross-DC Cluster Linking](messaging/kafka/cross-dc-cluster-linking.md)** — Confluent Cluster Linking over a dedicated cross-DC network (design doc)
 - **[Cross-DC architecture overview](messaging/kafka/cross-dc-architecture-overview.md)** — combined network + Cluster Linking doc, for sharing outside the repo (design doc)
 - **[Cross-DC replication NNCP (Helm)](messaging/kafka/cross-dc-nncp-helm/README.md)** — per-node `NodeNetworkConfigurationPolicy` generator, one CR per node with a unique static IP
-- **[Cross-DC Kafka replication network (Helm)](messaging/kafka/cross-dc-kafka-net-helm/README.md)** — Kafka NAD + `MultiNetworkPolicy` on the replication VLAN (whereabouts or static broker IPs)
+- **[Cross-DC Kafka replication network (Helm)](messaging/kafka/cross-dc-kafka-net-helm/README.md)** — Kafka NAD + `MultiNetworkPolicy` on the replication VLAN (whereabouts or static broker IPs); [policy primer](messaging/kafka/cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md)
 - **[Cross-DC rollout inventory](networking/cross-dc-rollout/README.md)** — single inventory YAML per DC → renders NNCP values, test env, Kafka net values
 - **[Cross-DC network test](networking/cross-dc-network-test/README.md)** — script-driven pre-cutover verification across two live clusters
 

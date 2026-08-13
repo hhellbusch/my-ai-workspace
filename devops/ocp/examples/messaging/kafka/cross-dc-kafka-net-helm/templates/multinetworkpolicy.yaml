@@ -1,6 +1,8 @@
 {{- $net := .Values.replicationNetwork }}
 {{- $wl := .Values.workload }}
 {{- $policyFor := printf "%s/%s" $wl.namespace $wl.nadName }}
+# Broker allow-list on the replication NAD — pairs with {{ $wl.nadName }}-default-deny when enabled.
+# See MULTINETWORKPOLICY.md.
 apiVersion: k8s.cni.cncf.io/v1beta1
 kind: MultiNetworkPolicy
 metadata:

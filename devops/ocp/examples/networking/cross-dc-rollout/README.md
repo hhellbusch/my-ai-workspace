@@ -100,6 +100,7 @@ See [INVENTORY-WORKSHEET.md](INVENTORY-WORKSHEET.md) for a human worksheet, then
 | `replicationNetwork.*` | All three downstream outputs |
 | `nodes[]` | NNCP (`hostIp`); test env (`hostname`, `networkTest`) |
 | `workload.brokerIpam.mode` | `whereabouts` or `static` — see [BROKER-IPAM.md](../../messaging/kafka/cross-dc-kafka-net-helm/BROKER-IPAM.md) |
+| `workload.multiNetworkPolicy.defaultDenyOnNad` | Catch-all deny on replication NAD (default `true`) — [MULTINETWORKPOLICY.md](../../messaging/kafka/cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md) |
 | `workload.brokers[]` | Static mode only — `name` + `replIp` per Kafka replica |
 | `ipPools.test` | Test env / test NAD |
 | `ipPools.kafka` | Whereabouts mode pool (optional spacing reference for static) — [subnet layout on the `/26`](../../messaging/kafka/cross-dc-kafka-net-helm/BROKER-IPAM.md#subnet-layout-on-the-26) |

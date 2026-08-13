@@ -60,6 +60,9 @@ workload:
     mode: whereabouts   # or static
   # Required when mode=static — one row per Kafka StatefulSet replica
   brokers: []
+  # Mis-attachment defense on kafka-repl-net — see cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md
+  multiNetworkPolicy:
+    defaultDenyOnNad: true
 
 probe:
   image: quay.io/rh_hhellbusch/repl-net-probe:0.1.1

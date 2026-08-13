@@ -16,7 +16,8 @@ Scenario-specific guides for running Apache Kafka on OpenShift (Confluent Platfo
 | Cross-DC Cluster Linking | [cross-dc-cluster-linking.md](cross-dc-cluster-linking.md) | CFK (Helm install) | Dedicated replication network, listener config, bidirectional DR links (design doc, not yet implemented) |
 | Cross-DC architecture overview (combined) | [cross-dc-architecture-overview.md](cross-dc-architecture-overview.md) | CFK (Helm install) | Single-doc combination of the network + Cluster Linking designs above, for sharing outside the repo (design doc, not yet implemented) |
 | Cross-DC replication NNCP (Helm) | [cross-dc-nncp-helm/](cross-dc-nncp-helm/README.md) | kubernetes-nmstate | Per-node `NodeNetworkConfigurationPolicy` generator — one CR per node with a unique static IP, rendered from Helm values |
-| Cross-DC Kafka replication network (Helm) | [cross-dc-kafka-net-helm/](cross-dc-kafka-net-helm/README.md) | Multus / whereabouts | Kafka `NetworkAttachmentDefinition` + `MultiNetworkPolicy` on the replication VLAN — after network test passes |
+| Cross-DC Kafka replication network (Helm) | [cross-dc-kafka-net-helm/](cross-dc-kafka-net-helm/README.md) | Multus / whereabouts | Kafka NAD + `MultiNetworkPolicy` on the replication VLAN — after network test passes |
+| MultiNetworkPolicy on replication NAD | [cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md](cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md) | Multus | Default deny, mis-attachment defense, verification |
 | Broker replication IP (whereabouts vs static) | [cross-dc-kafka-net-helm/BROKER-IPAM.md](cross-dc-kafka-net-helm/BROKER-IPAM.md) | Multus / CFK | Mode comparison, end-to-end lifecycle, subnet layout, failure modes |
 | Cross-DC rollout inventory | [../../networking/cross-dc-rollout/](../../networking/cross-dc-rollout/README.md) | — | Inventory YAML per DC renders NNCP values, test env, and Kafka net values |
 

@@ -59,6 +59,7 @@ Full address map (gateway, test, host, kafka/static pins): [BROKER-IPAM.md — s
 | `nadName` | `kafka-repl-net` |
 | `replicationPort` | `9095` |
 | `podSelector` | `app: kafka` |
+| `multiNetworkPolicy.defaultDenyOnNad` | `true` (default) — [MULTINETWORKPOLICY.md](../../messaging/kafka/cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md) |
 
 **Whereabouts:** leave `workload.brokers: []`, use `ipPools.kafka` above.
 

@@ -28,3 +28,6 @@ brokers:
     replIp: 10.200.1.22
   - name: kafka-2
     replIp: 10.200.1.23
+
+multiNetworkPolicy:
+  defaultDenyOnNad: true

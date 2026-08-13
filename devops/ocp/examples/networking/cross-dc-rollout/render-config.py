@@ -184,6 +184,11 @@ def render_kafka_values(inv: dict[str, Any]) -> dict[str, Any]:
             "prefixLength": prefix,
         },
         "brokers": [],
+        "multiNetworkPolicy": {
+            "defaultDenyOnNad": (wl.get("multiNetworkPolicy") or {}).get(
+                "defaultDenyOnNad", True
+            ),
+        },
     }
 
     if mode == "whereabouts":

@@ -336,6 +336,8 @@ spec:
 
 Verify enforcement explicitly — spin up a debug pod on the same NAD without the matching label and confirm it *can't* reach the workload's replication port. `MultiNetworkPolicy` misconfiguration (missing `policy-for` annotation on either the NAD or the policy) tends to fail open silently.
 
+**Mis-attachment defense:** a single broker-scoped allow policy leaves **unselected** pods on the same NAD at default-allow on `net1`. The [Kafka net Helm chart](cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md) renders a catch-all **default-deny** policy plus a broker allow-list by default — see [MULTINETWORKPOLICY.md](cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md).
+
 **If a peer sends you the "subnets field" caveat, it doesn't apply here.** Red Hat's docs note that `podSelector`/`namespaceSelector` peer matching in a multi-network policy is only valid if the secondary network's CNI config defines a `subnets` field — otherwise only `ipBlock` works. That restriction is scoped to **OVN-Kubernetes secondary networks** (CNI type `ovn-k8s-cni-overlay`, `topology: layer2`/`localnet`), a different mechanism from the **macvlan** NAD this design uses. For macvlan/IPVLAN/SR-IOV NADs — including the `kafka-repl-net` policy in Part 2 — `podSelector` is valid regardless; there's no `subnets` field in a macvlan CNI config to begin with.
 
 **CLI verification:** the resource name is `multi-networkpolicy` (singular, hyphenated) — `oc get multi-networkpolicy -n <namespace>`.
@@ -432,7 +434,15 @@ Confluent's own guidance treats these as requirements, not optional hardening, s
 
 ### MultiNetworkPolicy for Kafka
 
-Same pattern as [Part 1](#securing-the-secondary-network-multinetworkpolicy), scoped to the broker pods and the replication port:
+Same pattern as [Part 1](#securing-the-secondary-network-multinetworkpolicy), scoped to the broker pods and the replication port.
+The [cross-dc-kafka-net-helm](cross-dc-kafka-net-helm/README.md) chart renders **two** policies by default — full rationale in **[MULTINETWORKPOLICY.md](cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md)**:
+
+| Policy | `podSelector` | Effect on `net1` |
+|---|---|---|
+| `kafka-repl-net-default-deny` | `{}` | Deny all (mis-attachment defense) |
+| `kafka-repl-net-restrict` | `app: kafka` | Allow remote `/26` TCP 9095 only |
+
+Broker allow policy (simplified):
 
 ```yaml
 apiVersion: k8s.cni.cncf.io/v1beta1

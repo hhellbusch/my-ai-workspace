@@ -24,3 +24,6 @@ ipam:
   prefixLength: 26
 
 brokers: []
+
+multiNetworkPolicy:
+  defaultDenyOnNad: true
