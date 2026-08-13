@@ -1,7 +1,7 @@
 ---
 review:
   status: unreviewed
-  notes: "2026 revision — expanded axis map, DevOps/GitOps/API reconcile, platform accelerator, dual-audience documentation; deep dives in maturity/."
+  notes: "2026 revision — v1 first pass complete (author skim OK 2026-08-12). Deep dives in maturity/."
 ---
 
 # Software Systems Maturity — a trailhead
@@ -323,12 +323,13 @@ Full index: [maturity/README.md](maturity/README.md) — **14 axis drafts** + [J
 
 ## What is not here yet
 
-- **Author review** across all deep dive drafts (levels, voice, applicability)
+- **Deep author review** — first pass skim OK; optional `/validate read` per doc after merge
 - Deck **PDF** for diagram-only slides not captured in text export
 - Worked **SLO YAML / error-budget alert** examples in devops (primer exists: [slo-and-runbooks.md](../../devops/slo-and-runbooks.md))
 - Expanded **product discovery** corpus (optional axis — thin by choice)
+- **`maturity:` frontmatter** on corpus paths — optional; see [artifact map](../../research/software-systems-maturity/findings/artifact-map.md)
 
-Track progress: [resurrection notes](../../research/software-systems-maturity/findings/2026-resurrection-notes.md) · [artifact map](../../research/software-systems-maturity/findings/artifact-map.md)
+Track progress: [resurrection notes](../../research/software-systems-maturity/findings/2026-resurrection-notes.md) · [artifact map](../../research/software-systems-maturity/findings/artifact-map.md) · [session handoff](../../.planning/software-systems-maturity/whats-next.md)
 
 If this framework becomes an organizational standard, level rubrics need peer review — this document remains the **trailhead**.
 
