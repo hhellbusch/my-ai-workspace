@@ -71,6 +71,14 @@ Five levels — Initial through Optimizing — aligned in spirit with continual 
 
 [Joel Spolsky's test](https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/) — blunt project hygiene checklist. Mapped to these axes in the [Joel Test appendix](maturity/joel-test-appendix.md).
 
+### DORA and Accelerate
+
+The [DORA research program](https://dora.dev/) and *Accelerate* (Forsgren, Humble, Kim) correlate **technical capabilities** (version control, trunk-based development, CI, test automation, monitoring, architecture) with **delivery performance** — deployment frequency, lead time, MTTR, change failure rate.
+
+Use DORA for **outcome metrics** on a defined service or pipeline; use this model's **per-axis levels** where work spans platform, fleet, documentation-for-agents, and AI harnesses that DORA does not name explicitly. In the AI era, faster code generation raises the cost of weak review gates and thin observability — it does not replace them.
+
+Working map: [DORA, Accelerate, and AI systems](../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md).
+
 ### This model
 
 **One size does not fit all** — define axes that match your context. Kubernetes or OpenShift may accelerate several axes at once; they are not required ([Platform as maturity accelerator](maturity/platform-as-accelerator.md)).
@@ -159,11 +167,14 @@ Five levels per axis unless noted. Deep dives add teaching stories, anti-pattern
 
 | Level | Posture |
 |---|---|
-| 1 | Not used or rarely used |
-| 2 | Shared remote; regular commits; basic collaboration |
-| 3 | Commit standards; branching model agreed |
-| 4 | Integrated with CI/CD |
-| 5 | Hooks; safe history repair ("repo surgery") |
+| 0 | No VCS, or critical work outside VCS |
+| 1 | Shared remote; regular commits; basic collaboration |
+| 2 | Branching model agreed; meaningful commit messages |
+| 3 | Protected main; PR/MR review before merge |
+| 4 | CI on every change; hooks (lint, test, sign) |
+| 5 | Safe history repair; monorepo or multi-repo governance documented |
+
+Deep dive: [deck lineage, DORA alignment, fleet/AI notes](maturity/source-control.md).
 
 ### Code quality
 

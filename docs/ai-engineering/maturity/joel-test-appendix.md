@@ -16,7 +16,7 @@ review:
 
 | # | Joel Test item | Primary axis | Notes |
 |---|---|---|---|
-| 1 | Source control | [Source control](source-control.md) | Level 1 minimum |
+| 1 | Source control | [Source control](source-control.md) | Binary yes/no — maps to L1+ here, not L4; see deep dive |
 | 2 | One-step build | [Builds & artifacts](builds-and-artifacts.md) | Level 2–3 |
 | 3 | Daily builds | [Builds & artifacts](builds-and-artifacts.md) | CI = level 3+ |
 | 4 | Bug database | [Team practices](team-practices.md) / code quality | Tracking discipline |
