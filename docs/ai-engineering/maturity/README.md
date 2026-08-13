@@ -10,33 +10,38 @@ review:
 
 **Purpose:** One document per axis (or closely related axis group). Each deep dive is JBGE — sufficient to assess and prioritize, with room to grow.
 
-**Related:** [Artifact map](../../../research/software-systems-maturity/findings/artifact-map.md) · [Trailhead](../software-systems-maturity.md)
+**Related:** [Artifact map](../../../research/software-systems-maturity/findings/artifact-map.md) · [Trailhead](../software-systems-maturity.md) · [Joel Test appendix](joel-test-appendix.md)
 
 ---
 
-## Published
+## Deep dives
 
-| Axis | Document | Repo corpus |
+| Layer | Axis | Document |
 |---|---|---|
-| Deployment & release | [deployment-and-release.md](deployment-and-release.md) | [devops/argo/](../../../devops/argo/README.md) |
-| Documentation & knowledge | [documentation-and-knowledge.md](documentation-and-knowledge.md) | [docs/ai-engineering/](../README.md), [AGENTS.md](../../../AGENTS.md) |
-| Platform & fleet (accelerator lens) | [platform-as-accelerator.md](platform-as-accelerator.md) | [devops/ocp/](../../../devops/ocp/examples/README.md), [devops/rhacm/](../../../devops/rhacm/README.md) |
-| Security & secrets | [security-and-secrets.md](security-and-secrets.md) | [devops/vault/](../../../devops/vault/README.md), [RHACM secrets](../../../devops/rhacm/examples/secret-management/README.md) |
-| Team practices | [team-practices.md](team-practices.md) | [session-framework.md](../session-framework.md), [sparring-and-shoshin.md](../sparring-and-shoshin.md) |
-| AI agents & harnesses | [ai-agents-and-harnesses.md](ai-agents-and-harnesses.md) | [The Shift](../the-shift.md), skills, [paude](../paude-getting-started.md) |
-| Monitoring & reliability | [monitoring-and-reliability.md](monitoring-and-reliability.md) | [ocp/troubleshooting/](../../../devops/ocp/troubleshooting/) |
+| Build | Source control | [source-control.md](source-control.md) |
+| Build | Code quality | [code-quality.md](code-quality.md) |
+| Build | Testing & verification | [testing-and-verification.md](testing-and-verification.md) |
+| Build | Architecture & change | [architecture-and-change.md](architecture-and-change.md) |
+| Ship | Builds & artifacts | [builds-and-artifacts.md](builds-and-artifacts.md) |
+| Ship | Deployment & release | [deployment-and-release.md](deployment-and-release.md) |
+| Ship | Data management | [data-management.md](data-management.md) |
+| Run | Monitoring & reliability | [monitoring-and-reliability.md](monitoring-and-reliability.md) |
+| Protect | Security & secrets | [security-and-secrets.md](security-and-secrets.md) |
+| Know | Documentation & knowledge | [documentation-and-knowledge.md](documentation-and-knowledge.md) |
+| Scale | Platform & fleet | [platform-as-accelerator.md](platform-as-accelerator.md) |
+| Automate | AI agents & harnesses | [ai-agents-and-harnesses.md](ai-agents-and-harnesses.md) |
+| People | Team practices | [team-practices.md](team-practices.md) |
+| Product *(optional)* | Product discovery | [product-discovery.md](product-discovery.md) |
 
-## Planned
+All entries are **draft** — author review pending.
 
-| Axis | Notes |
+---
+
+## Appendix
+
+| Document | Purpose |
 |---|---|
-| Source control | [devops/git/](../../../devops/git/git-learning-guide.md) |
-| Code quality | Deck XKCD stories; Boy Scout Rule |
-| Testing & verification | Sandbox "too late" diagram |
-| Architecture & change | [argo framework GUIDELINES](../../../devops/argo/examples/framework/GUIDELINES.md) |
-| Builds & artifacts | Supply chain / SBOM at L4–5 |
-| Data management | Evolutionary DB |
-| Product discovery | Optional — thin repo corpus |
+| [joel-test-appendix.md](joel-test-appendix.md) | Maps Joel Test items to axes |
 
 ---
 
