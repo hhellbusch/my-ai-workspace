@@ -1,0 +1,8 @@
+apiVersion: v2
+name: cross-dc-repl-network
+description: >-
+  Per-node NodeNetworkConfigurationPolicy (NNCP) generator for the cross-DC
+  replication VLAN — one CR per node with a unique static IP, rendered from
+  a node list in values.
+type: application
+version: 0.1.0

@@ -38,6 +38,17 @@ vault-password.txt
 **/.env
 **/.env.local
 
+# Cross-DC network test — real per-cluster env files (use *.env.example templates)
+**/dc-a.env
+**/dc-b.env
+
+# Cross-DC rollout — real inventory and rendered values (use *.example.yaml templates)
+**/inventory-dc-a.yaml
+**/inventory-dc-b.yaml
+**/values-dc-a.yaml
+**/values-dc-b.yaml
+**/firewall-change-request.md
+
 # Backup files
 *.bak
 *.backup

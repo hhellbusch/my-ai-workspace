@@ -1,0 +1,44 @@
+{{- $net := .Values.replicationNetwork }}
+{{- range $i, $node := .Values.nodes }}
+{{- if $i }}
+---
+{{- end }}
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: repl-network-{{ $node.hostname | lower | replace "." "-" }}
+  labels:
+    app.kubernetes.io/part-of: cross-dc-replication
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: {{ $node.hostname }}
+  maxUnavailable: {{ $net.maxUnavailable }}
+  desiredState:
+    interfaces:
+      - name: {{ $net.bondName }}
+        type: bond
+        state: up
+        link-aggregation:
+          mode: {{ $net.bondMode }}
+          port:
+{{- range $net.ports }}
+            - {{ . }}
+{{- end }}
+      - name: {{ $net.bondName }}.{{ $net.vlanId }}
+        type: vlan
+        state: up
+        vlan:
+          base-iface: {{ $net.bondName }}
+          id: {{ $net.vlanId }}
+        ipv4:
+          enabled: true
+          dhcp: false
+          address:
+            - ip: {{ $node.ip }}
+              prefix-length: {{ $net.prefixLength }}
+    routes:
+      config:
+        - destination: {{ $net.remoteSubnet }}
+          next-hop-address: {{ $net.localGateway }}
+          next-hop-interface: {{ $net.bondName }}.{{ $net.vlanId }}
+{{- end }}

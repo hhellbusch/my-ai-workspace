@@ -1,0 +1,56 @@
+# Single source of truth for DC-B — copy to inventory-dc-b.yaml (gitignored) and
+# fill in real values. Render with:
+#   ./render-config.py --inventory inventory-dc-b.yaml
+
+cluster:
+  id: dc-b
+  kubeconfig: "${HOME}/.kube/dc-b.kubeconfig"
+
+replicationNetwork:
+  bondName: bond-repl
+  bondMode: active-backup
+  ports:
+    - ens4f0
+    - ens5f0
+  vlanId: 200
+  prefixLength: 26
+  localSubnet: 10.200.2.0/26
+  localGateway: 10.200.2.1
+  remoteSubnet: 10.200.1.0/26
+  expectedMtu: 1500
+
+nodes:
+  - hostname: worker-0.dc-b.example.com
+    hostIp: 10.200.2.11
+    networkTest: true
+  - hostname: worker-1.dc-b.example.com
+    hostIp: 10.200.2.12
+    networkTest: true
+  - hostname: worker-2.dc-b.example.com
+    hostIp: 10.200.2.13
+    networkTest: false
+
+ipPools:
+  test:
+    range: 10.200.2.0/26
+    start: 10.200.2.6
+    end: 10.200.2.10
+  kafka:
+    range: 10.200.2.0/26
+    start: 10.200.2.20
+    end: 10.200.2.60
+
+workload:
+  namespace: confluent
+  nadName: kafka-repl-net
+  cniType: macvlan
+  macvlanMode: bridge
+  replicationPort: 9095
+  podSelector:
+    app: kafka
+  brokerIpam:
+    mode: whereabouts
+  brokers: []
+
+probe:
+  image: quay.io/rh_hhellbusch/repl-net-probe:0.1.1

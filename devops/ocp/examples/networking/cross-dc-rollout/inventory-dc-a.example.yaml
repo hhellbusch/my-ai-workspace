@@ -1,0 +1,65 @@
+# Single source of truth for DC-A — copy to inventory-dc-a.yaml (gitignored) and
+# fill in real values. Render downstream configs with:
+#   ./render-config.py --inventory inventory-dc-a.yaml
+#
+# See README.md for how this relates to NNCP Helm values, test dc-a.env, and
+# Kafka NAD/MultiNetworkPolicy chart values (related fields, different shapes).
+
+cluster:
+  id: dc-a
+  # Workstation path only — rendered into dc-a.env, not applied to the cluster
+  kubeconfig: "${HOME}/.kube/dc-a.kubeconfig"
+
+replicationNetwork:
+  bondName: bond-repl
+  bondMode: active-backup
+  ports:
+    - ens4f0
+    - ens5f0
+  vlanId: 200
+  prefixLength: 26
+  localSubnet: 10.200.1.0/26
+  localGateway: 10.200.1.1
+  remoteSubnet: 10.200.2.0/26
+  expectedMtu: 1500
+
+# Nodes carrying the replication bond/VLAN. hostIp → NNCP per-node static IP.
+# All listed nodes are included in the network test NODE_NAMES unless you set
+# networkTest: false on a row.
+nodes:
+  - hostname: worker-0.dc-a.example.com
+    hostIp: 10.200.1.11
+    networkTest: true
+  - hostname: worker-1.dc-a.example.com
+    hostIp: 10.200.1.12
+    networkTest: true
+  - hostname: worker-2.dc-a.example.com
+    hostIp: 10.200.1.13
+    networkTest: false
+
+ipPools:
+  test:
+    range: 10.200.1.0/26
+    start: 10.200.1.6
+    end: 10.200.1.10
+  kafka:
+    range: 10.200.1.0/26
+    start: 10.200.1.20
+    end: 10.200.1.60
+
+workload:
+  namespace: confluent
+  nadName: kafka-repl-net
+  cniType: macvlan
+  macvlanMode: bridge
+  replicationPort: 9095
+  podSelector:
+    app: kafka
+  # Broker Multus IP assignment — see cross-dc-kafka-net-helm/BROKER-IPAM.md
+  brokerIpam:
+    mode: whereabouts   # or static
+  # Required when mode=static — one row per Kafka StatefulSet replica
+  brokers: []
+
+probe:
+  image: quay.io/rh_hhellbusch/repl-net-probe:0.1.1

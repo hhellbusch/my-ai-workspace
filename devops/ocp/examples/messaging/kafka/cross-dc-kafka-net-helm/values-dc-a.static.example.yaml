@@ -1,0 +1,30 @@
+# Example for DC-A with static per-broker IPs — see BROKER-IPAM.md
+# Prefer inventory with workload.brokerIpam.mode: static → render-config.py
+
+replicationNetwork:
+  bondName: bond-repl
+  vlanId: 200
+  prefixLength: 26
+  localGateway: 10.200.1.1
+  remoteSubnet: 10.200.2.0/26
+
+workload:
+  namespace: confluent
+  nadName: kafka-repl-net
+  cniType: macvlan
+  macvlanMode: bridge
+  replicationPort: 9095
+  podSelector:
+    app: kafka
+
+ipam:
+  mode: static
+  prefixLength: 26
+
+brokers:
+  - name: kafka-0
+    replIp: 10.200.1.21
+  - name: kafka-1
+    replIp: 10.200.1.22
+  - name: kafka-2
+    replIp: 10.200.1.23

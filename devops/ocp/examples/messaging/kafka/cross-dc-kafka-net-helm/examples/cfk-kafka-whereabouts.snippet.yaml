@@ -1,0 +1,38 @@
+# CFK Kafka snippet — whereabouts pool + init container for REPL_IP
+#
+# Merge into your Kafka CR. NAD must be applied first (cross-dc-kafka-net-helm
+# with ipam.mode=whereabouts). See BROKER-IPAM.md for trade-offs.
+#
+# The init container pattern is illustrative — adjust for your CFK version's
+# podTemplate schema and broker startup env injection.
+
+apiVersion: platform.confluent.io/v1beta1
+kind: Kafka
+metadata:
+  name: kafka
+  namespace: confluent
+spec:
+  podTemplate:
+    annotations:
+      k8s.v1.cni.cncf.io/networks: kafka-repl-net
+    initContainer:
+      - name: repl-ip-init
+        image: registry.access.redhat.com/ubi9/ubi-minimal
+        command:
+          - /bin/sh
+          - -ec
+          - |
+            STATUS=$(cat /etc/podnetinfo/network-status)
+            REPL_IP=$(echo "$STATUS" | sed -n 's/.*"name":"kafka-repl-net".*"ips":\["\([^"]*\)".*/\1/p')
+            test -n "$REPL_IP"
+            echo "$REPL_IP" > /shared/repl-ip
+        volumeMounts:
+          - name: shared-repl-ip
+            mountPath: /shared
+    # CFK-specific: wire /shared/repl-ip into broker env as REPL_IP — verify against
+    # your operator version (envFrom, custom command wrapper, or configOverrides hook).
+  configOverrides:
+    server:
+      - "listeners=INTERNAL://0.0.0.0:9071,REPLICATION://0.0.0.0:9095"
+      - "listener.security.protocol.map=INTERNAL:PLAINTEXT,REPLICATION:SSL"
+      - "advertised.listeners=INTERNAL://$(POD_NAME).kafka.confluent.svc.cluster.local:9071,REPLICATION://$(REPL_IP):9095"

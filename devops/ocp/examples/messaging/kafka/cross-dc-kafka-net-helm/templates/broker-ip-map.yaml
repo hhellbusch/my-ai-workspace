@@ -1,0 +1,24 @@
+{{- if eq .Values.ipam.mode "static" }}
+{{- $net := .Values.replicationNetwork }}
+{{- $wl := .Values.workload }}
+{{- $ipam := .Values.ipam }}
+{{- $prefix := $ipam.prefixLength | default $net.prefixLength }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $wl.nadName }}-broker-ip-map
+  namespace: {{ $wl.namespace }}
+  labels:
+    app.kubernetes.io/part-of: cross-dc-replication
+data:
+  README: |
+    Static broker IP map for {{ $wl.nadName }} (ipam.mode=static).
+    Copy per-broker keys into CFK Kafka podTemplate — see BROKER-IPAM.md and
+    examples/cfk-kafka-static.snippet.yaml in this chart directory.
+    Cluster Link bootstrap.servers should list these REPL_IP:{{ $wl.replicationPort }} values.
+{{- range .Values.brokers }}
+  {{ .name }}-repl-ip: {{ .replIp | quote }}
+  {{ .name }}-networks-annotation.json: |
+    [{"name":"{{ $wl.nadName }}","ips":["{{ .replIp }}/{{ $prefix }}"],"routes":[{"dst":"{{ $net.remoteSubnet }}","gw":"{{ $net.localGateway }}"}]}]
+{{- end }}
+{{- end }}

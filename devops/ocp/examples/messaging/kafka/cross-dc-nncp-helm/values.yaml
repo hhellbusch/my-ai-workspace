@@ -1,0 +1,38 @@
+# Default/schema values for the cross-dc-repl-network chart.
+# Deploy one release per cluster/DC — see values-dc-a.example.yaml and
+# values-dc-b.example.yaml for filled-in examples of both sides.
+#
+# Why this chart exists: NMState applies identical `desiredState` to every
+# node a NodeNetworkConfigurationPolicy matches — there's no native per-node
+# templating. To give each node a unique static IP, you need one NNCP per
+# node. This chart renders that from a node list instead of hand-authoring
+# N nearly-identical YAML files. Background:
+# ../cross-dc-architecture-overview.md#layer-12-host-network
+
+replicationNetwork:
+  # Shared across every node in this DC/cluster — only the IP varies per node.
+  bondName: bond-repl
+  bondMode: active-backup      # 802.3ad only if the local ToR pair supports LACP end-to-end
+  ports:
+    - ens4f0                   # slot A, port 1
+    - ens5f0                   # slot B, port 1
+  vlanId: 200
+  prefixLength: 26
+
+  # NNCP concurrency cap for *this CR*. Since each rendered NNCP's
+  # nodeSelector matches exactly one node, this has no effect here — it's
+  # left in as a placeholder in case you consolidate back to shared NNCPs.
+  # See README "Rollout safety" for the concurrency risk that actually
+  # applies to this per-node pattern.
+  maxUnavailable: 1
+
+  # This DC's own replication subnet's gateway, and the *other* DC's subnet
+  # to route toward. Swapped between the dc-a/dc-b example values files.
+  localGateway: ""
+  remoteSubnet: ""
+
+# One entry per node that needs this interface. `hostname` must match
+# `kubernetes.io/hostname` exactly — confirm with `oc get nodes -o wide`.
+nodes: []
+# - hostname: worker-0.dc-a.example.com
+#   ip: 10.200.1.11

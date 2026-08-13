@@ -15,6 +15,9 @@ Scenario-specific guides for running Apache Kafka on OpenShift (Confluent Platfo
 | Bare metal + Portworx, rack-aware | [bare-metal-portworx/](bare-metal-portworx/README.md) | CFK (primary), Strimzi/AMQ Streams | Rack labels, Portworx CSI, ACM inventory, KRaft |
 | Cross-DC Cluster Linking | [cross-dc-cluster-linking.md](cross-dc-cluster-linking.md) | CFK (Helm install) | Dedicated replication network, listener config, bidirectional DR links (design doc, not yet implemented) |
 | Cross-DC architecture overview (combined) | [cross-dc-architecture-overview.md](cross-dc-architecture-overview.md) | CFK (Helm install) | Single-doc combination of the network + Cluster Linking designs above, for sharing outside the repo (design doc, not yet implemented) |
+| Cross-DC replication NNCP (Helm) | [cross-dc-nncp-helm/](cross-dc-nncp-helm/README.md) | kubernetes-nmstate | Per-node `NodeNetworkConfigurationPolicy` generator — one CR per node with a unique static IP, rendered from Helm values |
+| Cross-DC Kafka replication network (Helm) | [cross-dc-kafka-net-helm/](cross-dc-kafka-net-helm/README.md) | Multus / whereabouts | Kafka `NetworkAttachmentDefinition` + `MultiNetworkPolicy` on the replication VLAN — after network test passes |
+| Cross-DC rollout inventory | [../../networking/cross-dc-rollout/](../../networking/cross-dc-rollout/README.md) | — | Inventory YAML per DC renders NNCP values, test env, and Kafka net values |
 
 ### bare-metal-portworx document map
 

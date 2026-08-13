@@ -1,0 +1,54 @@
+{{- $net := .Values.replicationNetwork }}
+{{- $wl := .Values.workload }}
+{{- $ipam := .Values.ipam }}
+{{- $master := printf "%s.%v" $net.bondName $net.vlanId }}
+{{- $policyFor := printf "%s/%s" $wl.namespace $wl.nadName }}
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: {{ $wl.nadName }}
+  namespace: {{ $wl.namespace }}
+  labels:
+    app.kubernetes.io/part-of: cross-dc-replication
+  annotations:
+    k8s.v1.cni.cncf.io/policy-for: {{ $policyFor }}
+spec:
+  config: |
+{{- if eq $ipam.mode "static" }}
+    {
+      "cniVersion": "0.3.1",
+      "name": "{{ $wl.nadName }}",
+      "plugins": [
+        {
+          "type": "{{ $wl.cniType }}",
+          "capabilities": { "ips": true },
+          "master": "{{ $master }}",
+          "mode": "{{ $wl.macvlanMode }}",
+          "ipam": { "type": "static" }
+        },
+        {
+          "capabilities": { "mac": true },
+          "type": "tuning"
+        }
+      ]
+    }
+{{- else }}
+    {
+      "cniVersion": "0.3.1",
+      "type": "{{ $wl.cniType }}",
+      "master": "{{ $master }}",
+      "mode": "{{ $wl.macvlanMode }}",
+      "ipam": {
+        "type": "whereabouts",
+        "range": "{{ $ipam.range }}",
+        "range_start": "{{ $ipam.rangeStart }}",
+        "range_end": "{{ $ipam.rangeEnd }}",
+        "routes": [
+          {
+            "dst": "{{ $net.remoteSubnet }}",
+            "gw": "{{ $net.localGateway }}"
+          }
+        ]
+      }
+    }
+{{- end }}

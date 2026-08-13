@@ -1,0 +1,8 @@
+apiVersion: v2
+name: cross-dc-kafka-repl-net
+description: >-
+  Kafka workload NetworkAttachmentDefinition and MultiNetworkPolicy for the
+  cross-DC replication VLAN — deploy one release per cluster/DC after the
+  network test passes.
+type: application
+version: 0.1.0

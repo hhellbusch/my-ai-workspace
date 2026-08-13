@@ -92,9 +92,11 @@ spec:
 **Verify against the installed CFK version's CRD reference:**
 
 1. Whether the structured `listeners` block supports a fully custom named listener without an `externalAccess` type attached, or whether the `configOverrides.server` raw passthrough above is the correct escape hatch.
-2. How `$(REPL_IP)` actually gets populated — the Multus-assigned IP isn't known at manifest-authoring time. Typically an init container reads the pod's own `k8s.v1.cni.cncf.io/network-status` annotation and exports it as an env var consumed by the broker's startup config.
+2. How `$(REPL_IP)` gets populated — see [BROKER-IPAM.md](cross-dc-kafka-net-helm/BROKER-IPAM.md): **whereabouts** (init container + `network-status`) vs **static** (pinned IP per ordinal).
 
-**Alternative to the init-container lookup:** the [general network doc's static-IP option](../../networking/cross-dc-replication.md#layer-23-pod-attachment-via-multus) (macvlan + CNI chaining with `ipam.type: static`, instead of whereabouts) lets you assign each broker a fixed IP up front via the pod's `k8s.v1.cni.cncf.io/networks` annotation (`ips`/`mac` keys) — e.g., one static IP per StatefulSet ordinal. That turns `$(REPL_IP)` from "discovered at runtime" into "known at manifest-authoring time," removing the init-container indirection entirely. Worth it specifically because Kafka brokers already have stable per-replica identity (StatefulSet ordinal) that maps naturally onto a stable IP.
+**Whereabouts (default):** an init container reads `k8s.v1.cni.cncf.io/network-status` and exports `REPL_IP` — see [cfk-kafka-whereabouts.snippet.yaml](cross-dc-kafka-net-helm/examples/cfk-kafka-whereabouts.snippet.yaml).
+
+**Static alternative:** pin each broker's IP in the Multus annotation; `REPL_IP` can be literal — see [cfk-kafka-static.snippet.yaml](cross-dc-kafka-net-helm/examples/cfk-kafka-static.snippet.yaml) and the rendered `kafka-repl-net-broker-ip-map` ConfigMap.
 
 ## The link itself: API-driven, not a CRD
 
@@ -159,7 +161,7 @@ Because Cluster Linking is broker-only (no Connect layer), this is the only work
 - One Control Center instance per DC, or one shared instance? (Determines if Control Center needs any cross-DC network path beyond what brokers already have.)
 - Will the link-creation API calls be scripted/version-controlled, or done manually through the Control Center UI?
 - Does the installed CFK version's `listeners` schema support a custom listener without an `externalAccess` type, or is `configOverrides.server` passthrough required?
-- How is `$(REPL_IP)` populated at broker startup — init container reading `network-status`, or a static IP per broker assigned via the pod annotation instead (removing the lookup entirely)?
+- How is `$(REPL_IP)` populated — [BROKER-IPAM.md](cross-dc-kafka-net-helm/BROKER-IPAM.md) (`whereabouts` vs `static`)?
 
 Also carries forward the [open questions from the general network doc](../../networking/cross-dc-replication.md#open-questions-to-confirm-before-implementing) — none of those are Kafka-specific, but all need answers before this is buildable.
 

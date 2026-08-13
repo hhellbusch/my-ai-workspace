@@ -1,0 +1,23 @@
+# Example values for DC-A's cluster. Replace hostnames/IPs with real inventory.
+# Prefer: cross-dc-rollout/inventory-dc-a.yaml → render-config.py → values-dc-a.yaml
+# DC-A's replication subnet: 10.200.1.0/26. Remote (DC-B) subnet: 10.200.2.0/26.
+
+replicationNetwork:
+  bondName: bond-repl
+  bondMode: active-backup
+  ports:
+    - ens4f0
+    - ens5f0
+  vlanId: 200
+  prefixLength: 26
+  maxUnavailable: 1
+  localGateway: 10.200.1.1
+  remoteSubnet: 10.200.2.0/26
+
+nodes:
+  - hostname: worker-0.dc-a.example.com
+    ip: 10.200.1.11
+  - hostname: worker-1.dc-a.example.com
+    ip: 10.200.1.12
+  - hostname: worker-2.dc-a.example.com
+    ip: 10.200.1.13
