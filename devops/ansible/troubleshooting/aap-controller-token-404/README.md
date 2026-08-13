@@ -124,6 +124,12 @@ This approach is less reliable than using a token created via the Gateway/UI.
 
 ---
 
+## Related guides
+
+- [AAP: `controller_oauthtoken` unsupported parameter](../aap-controller-oauthtoken-unsupported/README.md) — Collection/EE auth param mismatch (`aap_token` vs `controller_oauthtoken`), especially on AAP 2.6
+
+---
+
 ## References
 
 - **AAP 2.5 API:** Controller resources via Gateway — `/api/controller/v2/` (see Red Hat AAP 2.5 *Automation execution API overview*).

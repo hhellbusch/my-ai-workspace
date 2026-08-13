@@ -7,7 +7,7 @@ description: Ansible and Red Hat Ansible Automation Platform reference
 
 # Ansible
 
-Playbooks, retry patterns, parallel execution, BMC operations, and AAP 2.5+ troubleshooting.
+Playbooks, retry patterns, parallel execution, BMC operations, and AAP 2.5/2.6 troubleshooting.
 
 - [Examples](examples/) — Runnable playbooks; [hello-world job](examples/015_aap_hello_world_smoke/README.md); [container-group isolation](examples/016_aap_container_group_namespace/README.md)
 - [AAP operator on OpenShift](aap-operator-on-openshift.md) — VM/RPM topology vs operator: which Kubernetes objects you get
