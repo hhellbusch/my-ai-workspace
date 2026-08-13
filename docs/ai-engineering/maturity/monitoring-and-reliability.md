@@ -78,15 +78,16 @@ Connects to [team practices](team-practices.md) — retros that change behavior.
 
 ## Repo corpus (partial)
 
-This workspace is **strong on troubleshooting narratives**, lighter on unified SLO guidance:
+This workspace is **strong on troubleshooting narratives**; SLO vocabulary and runbook minimum bar live in a cross-cutting primer:
 
 | Type | Path |
 |---|---|
+| SLI/SLO/runbook primer | [slo-and-runbooks.md](../../../devops/slo-and-runbooks.md) |
 | Reactive investigation patterns | [devops/ocp/troubleshooting/](../../../devops/ocp/troubleshooting/) |
 | RHACM observability issues | [rhacm/troubleshooting/](../../../devops/rhacm/troubleshooting/) |
 | Fleet ops maturity notes | [greenfield-fleet-architecture.md](../../../devops/rhacm/notes/greenfield-fleet-architecture.md) |
 
-**Gap:** central SLO/runbook maturity doc — candidate for future devops or deep-dive expansion.
+**Still optional:** worked examples of SLO YAML, error-budget alert rules, or postmortem templates in-repo.
 
 ---
 

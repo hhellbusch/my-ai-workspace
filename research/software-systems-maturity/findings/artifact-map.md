@@ -27,7 +27,7 @@
 | Builds & artifacts | [builds-and-artifacts.md](../../../docs/ai-engineering/maturity/builds-and-artifacts.md) | Partial — argo CI, operators-installer |
 | Deployment & release | [deployment-and-release.md](../../../docs/ai-engineering/maturity/deployment-and-release.md) | **Rich** — [devops/argo/](../../../devops/argo/README.md) |
 | Data management | [data-management.md](../../../docs/ai-engineering/maturity/data-management.md) | Thin — Fowler evodb external |
-| Monitoring & reliability | [monitoring-and-reliability.md](../../../docs/ai-engineering/maturity/monitoring-and-reliability.md) | Partial — ocp troubleshooting |
+| Monitoring & reliability | [monitoring-and-reliability.md](../../../docs/ai-engineering/maturity/monitoring-and-reliability.md) | Partial — ocp troubleshooting, [slo-and-runbooks](../../../devops/slo-and-runbooks.md) |
 | Security & secrets | [security-and-secrets.md](../../../docs/ai-engineering/maturity/security-and-secrets.md) | Partial — vault, RHACM secrets |
 | Documentation & knowledge | [documentation-and-knowledge.md](../../../docs/ai-engineering/maturity/documentation-and-knowledge.md) | **Rich** — docs track, AGENTS, research rules |
 | Platform & fleet | [platform-as-accelerator.md](../../../docs/ai-engineering/maturity/platform-as-accelerator.md) | **Rich** — rhacm, ocp examples, fleet spectrum |
@@ -49,9 +49,9 @@ Primary home: [deployment-and-release.md](../../../docs/ai-engineering/maturity/
 
 - [ ] Author review all deep dives  
 - [ ] Deck PDF → restore diagrams into code quality, testing, data deep dives  
-- [ ] Optional: central SLO/runbook guide (monitoring gap)  
 - [ ] Optional: expand product discovery corpus  
 - [x] Cross-link from [devops/README.md](../../../devops/README.md) to maturity trailhead  
+- [x] Central SLO/runbook primer — [slo-and-runbooks.md](../../../devops/slo-and-runbooks.md) (worked SLO YAML examples still optional)
 
 ---
 

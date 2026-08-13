@@ -89,7 +89,7 @@ When adding or substantially updating `devops/` content, name which **maturity a
 | Deployment & release | `argo/`, GitOps promotion, PR workflow examples |
 | Platform & fleet | `rhacm/`, `fleet-control-spectrum.md`, OCP install variants |
 | Security & secrets | `vault/`, RHACM secrets and policy examples |
-| Monitoring & reliability | `ocp/troubleshooting/`, symptom guides in `catalog.yaml` |
+| Monitoring & reliability | `ocp/troubleshooting/`, symptom guides in `catalog.yaml`, [slo-and-runbooks.md](slo-and-runbooks.md) |
 | Builds & artifacts | CI in `argo/examples/`, operator installers |
 | Architecture & change | Fleet notes, app-of-apps structure, GUIDELINES |
 | Source control | `git/git-learning-guide.md` (pedagogy, not fleet policy) |
