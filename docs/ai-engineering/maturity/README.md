@@ -10,7 +10,7 @@ review:
 
 **Purpose:** One document per axis (or closely related axis group). Each deep dive is JBGE — sufficient to assess and prioritize, with room to grow.
 
-**Related:** [Artifact map](../../../research/software-systems-maturity/findings/artifact-map.md) · [Trailhead](../software-systems-maturity.md) · [Assessment worksheet](worksheet.md) · [Joel Test appendix](joel-test-appendix.md)
+**Related:** [Artifact map](../../../research/software-systems-maturity/findings/artifact-map.md) · [Trailhead](../software-systems-maturity.md) · [Assessment worksheet](worksheet.md) · [Joel Test appendix](joel-test-appendix.md) · [DORA / AI research note](../../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md)
 
 ---
 
@@ -33,7 +33,7 @@ review:
 | People | Team practices | [team-practices.md](team-practices.md) |
 | Product *(optional)* | Product discovery | [product-discovery.md](product-discovery.md) |
 
-All entries are **v1 (first pass)** — author skim OK 2026-08-12. Optional deep review or `/validate read` after PR merge.
+All entries are **v2** — axis iteration with deck lineage, corpus evidence, DORA touchpoints, and AI-era notes where relevant (2026-08-12).
 
 ---
 

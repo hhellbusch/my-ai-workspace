@@ -1,16 +1,16 @@
 ---
 review:
   status: unreviewed
-  notes: "Architecture & change deep dive — boundaries, ADRs, change governance, Git truth."
+  notes: "Architecture & change v2 — fleet Git truth, DORA loosely coupled, change governance."
 ---
 
 # Architecture & Change — maturity deep dive
 
 > **Audience:** Teams assessing system boundaries, evolution, and **who may change production how**.
 >
-> **Purpose:** Separate structural coherence from [documentation](documentation-and-knowledge.md) — and link fleet Git-truth patterns.
+> **Purpose:** Structural coherence separate from [documentation](documentation-and-knowledge.md); fleet Git-truth and change governance patterns.
 
-**Related:** [Source control](source-control.md) · [Deployment](deployment-and-release.md) · [Documentation](documentation-and-knowledge.md)
+**Related:** [Source control](source-control.md) · [Deployment](deployment-and-release.md) · [Platform accelerator](platform-as-accelerator.md) · [DORA / AI systems](../../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md)
 
 ---
 
@@ -18,33 +18,43 @@ review:
 
 *Is the system evolvable — and are changes governed without surprise?*
 
+DORA **loosely coupled architecture** supports delivery performance — small, independent changes fail less often. This axis names **boundaries and governance**, not microservice count.
+
 ---
 
 ## Levels
 
 | Level | Posture |
 |---|---|
+| **0** | No shared model; prod changes bypass design |
 | **1** | Ad hoc structure; breaking changes surprise consumers |
 | **2** | Informal boundaries; occasional design notes |
 | **3** | ADRs or equivalent; interfaces documented; deprecation notices |
 | **4** | Change governance (approvers, windows); compatibility policy |
-| **5** | Technical debt visible in roadmap; measured coupling/change failure rate |
+| **5** | Technical debt visible in roadmap; coupling/change failure tracked |
 
-**Documentation overlap:** ADRs live in [documentation & knowledge](documentation-and-knowledge.md) — this axis asks whether **decisions constrain future change**, not whether PDFs exist.
+**Documentation overlap:** ADRs live in [documentation & knowledge](documentation-and-knowledge.md) — this axis asks whether **decisions constrain future change**.
 
 ---
 
-## Fleet / GitOps architecture signals
+## Fleet / GitOps architecture (repo evidence)
 
-From [Framework GUIDELINES](../../../devops/argo/examples/framework/GUIDELINES.md):
+| Pattern | Level signal | Path |
+|---|---|---|
+| Git is only source of truth | L3–4 | [GUIDELINES](../../../devops/argo/examples/framework/GUIDELINES.md) |
+| Hub-and-spoke; central reconcile | L4 | GUIDELINES §1.1 |
+| Cascading values + cluster sovereignty | L4 | [architecture-opinions.md](../../../devops/argo/examples/helm-component-pattern/docs/architecture-opinions.md) |
+| RHACM vs Argo authority spectra | L4–5 design | [fleet-control-spectrum.md](../../../devops/fleet-control-spectrum.md) |
+| Greenfield fleet stack choices | L3–4 | [greenfield-fleet-architecture.md](../../../devops/rhacm/notes/greenfield-fleet-architecture.md) |
+| Promotion / change windows | L4 | [framework promotion](../../../devops/argo/examples/framework/README.md) |
 
-- **Git is the only source of truth** — no imperative side channels  
-- **Hub-and-spoke** — central decisions, spoke receives rendered intent  
-- **Cascading values with cluster sovereignty** — fleet defaults + per-cluster override  
+These enable [deployment](deployment-and-release.md) L4+ — architecture choices **precede** GitOps mechanics.
 
-These are **architecture & change** choices that enable [deployment](deployment-and-release.md) level 4+.
+---
 
-Additional: [architecture-opinions.md](../../../devops/argo/examples/helm-component-pattern/docs/architecture-opinions.md), [greenfield-fleet-architecture.md](../../../devops/rhacm/notes/greenfield-fleet-architecture.md)
+## AI era
+
+Agents refactor across boundaries without map → silent coupling. **L3 ADRs** and [spar](../sparring-and-shoshin.md) before large agent-driven restructures. Fleet repos: agent edits to `groups/all/values.yaml` need cascade understanding ([architecture-opinions](../../../devops/argo/examples/helm-component-pattern/docs/architecture-opinions.md)).
 
 ---
 
@@ -56,6 +66,25 @@ Additional: [architecture-opinions.md](../../../devops/argo/examples/helm-compon
 | Shared library without versioning | Silent breaks |
 | "Strangler" without boundary map | Two systems, one confusion |
 | ADRs written after merge | Theater |
+| App-of-apps without ownership matrix | [bigfix-gitops-on-ocp.md](../../../devops/bigfix-gitops-on-ocp.md) — discussion pattern |
+
+---
+
+## Cross-axis
+
+```text
+Architecture ──enables──▶ Deployment (GitOps invariants)
+             ──documented in──▶ Documentation (ADRs)
+             ──constrained by──▶ Security (policy boundaries)
+             ──fleet scale──▶ Platform (multi-cluster)
+```
+
+---
+
+## Research
+
+- [Fowler — maturity model](https://martinfowler.com/bliki/MaturityModel.html) (variation under change)
+- DORA: loosely coupled architecture — [research note](../../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md)
 
 ---
 

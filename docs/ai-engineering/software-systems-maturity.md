@@ -180,11 +180,14 @@ Deep dive: [deck lineage, DORA alignment, fleet/AI notes](maturity/source-contro
 
 | Level | Posture |
 |---|---|
+| 0 | Known unsafe patterns tolerated |
 | 1 | No standards |
 | 2 | Style guide; DRY, YAGNI |
 | 3 | Linting; environment config not hard-coded |
 | 4 | Review before merge — human decision; agents assist |
 | 5 | Periodic architecture/health review; debt reduced |
+
+Deep dive: [deck lineage, tradable quality, AI review gates](maturity/code-quality.md).
 
 ### Testing & verification
 
@@ -203,11 +206,14 @@ Deep dive: [sandbox discipline, DORA change failure rate, verification corpus](m
 
 | Level | Posture |
 |---|---|
+| 0 | Prod changes bypass shared design |
 | 1 | Ad hoc structure; breaking changes surprise consumers |
 | 2 | Informal boundaries; occasional ADRs |
 | 3 | Documented interfaces; deprecation notices |
 | 4 | Change governance (who approves prod); compatibility policy |
 | 5 | Evolution measured; technical debt visible in roadmap |
+
+Deep dive: [fleet Git truth, loosely coupled architecture](maturity/architecture-and-change.md).
 
 ### Builds & artifacts
 
@@ -230,21 +236,27 @@ See [DevOps/GitOps table](#devops-gitops-and-api-reconcile) and [deep dive](matu
 
 | Level | Posture |
 |---|---|
+| 0 | Prod data changed without migration path |
 | 1 | Ad hoc schemas |
 | 2 | Designed; reviewed; normalized where appropriate |
 | 3 | Migrations; DR plan exists |
 | 4 | Automated migrations |
 | 5 | Data change integrated with delivery pipeline |
 
+Deep dive: [evolutionary design, deck lineage — thin repo corpus](maturity/data-management.md).
+
 ### Monitoring & reliability
 
 | Level | Posture |
 |---|---|
+| 0 | No proactive observability |
 | 1 | Reactive firefighting |
 | 2 | Logging; manual checks |
 | 3 | Automated alerts; runbooks |
 | 4 | SLOs; traceability to root cause |
 | 5 | *(Aspirational)* FMEA, chaos, error-budget culture |
+
+Deep dive: [deck lineage, DORA MTTR, SLO primer](maturity/monitoring-and-reliability.md).
 
 ### Security & secrets
 
@@ -258,7 +270,7 @@ Two tracks, one axis — **application security** and **secrets/IAM ops**.
 | 4 | Secure-by-default; fine-grained authz | Integrated with CI/CD and runtime |
 | 5 | Audits; patch discipline | Automated rotation; blast-radius drills |
 
-Vault-class platforms exemplify the secrets track — see [security deep dive](maturity/security-and-secrets.md) and [devops/vault/](../../devops/vault/README.md).
+Vault-class platforms exemplify the secrets track — see [security deep dive](maturity/security-and-secrets.md) (deck lineage, fleet secrets) and [devops/vault/](../../devops/vault/README.md).
 
 ### Documentation & knowledge
 
@@ -272,41 +284,46 @@ Outcome-based — not coverage percentages. **Dual audience:** humans and agent 
 | 4 | Handoffs, skills, artifact discipline (JBGE/TAGRI) |
 | 5 | Time-to-orient improves; fewer repeated mistakes |
 
-See [documentation deep dive](maturity/documentation-and-knowledge.md) and [Artifact Discipline and AI](artifact-discipline-and-ai.md).
+See [documentation deep dive](maturity/documentation-and-knowledge.md) (deck critique of coverage %, dual audience) and [Artifact Discipline and AI](artifact-discipline-and-ai.md).
 
 ### Platform & fleet
 
 | Level | Posture |
 |---|---|
+| 0 | Manual platform changes untracked |
 | 1 | Single cluster/account; manual drift |
 | 2 | Multiple envs; documented differences |
 | 3 | Git-managed platform config; promotion model |
 | 4 | Multi-cluster/fleet; policy as code |
 | 5 | Upgrade safety, blast-radius governance measured |
 
+Deep dive: [platform accelerator](maturity/platform-as-accelerator.md) · [fleet corpus](../../devops/fleet-control-spectrum.md).
+
 ### AI agents & harnesses
 
 | Level | Posture |
 |---|---|
+| 0 | Unreviewed agent changes to prod |
 | 1 | Ad hoc prompts; no review |
 | 2 | Repeatable prompts/skills; human reviews all output |
 | 3 | Bounded tools; session/handoff discipline |
 | 4 | Spar/eval gates on risky changes |
 | 5 | Failure modes catalogued; improvement measured |
 
-See [The Shift](the-shift.md) and [AI agents deep dive](maturity/ai-agents-and-harnesses.md).
+See [The Shift](the-shift.md) and [AI agents deep dive](maturity/ai-agents-and-harnesses.md) (harness layers, DORA open questions).
 
 ### Team practices
 
 | Level | Posture |
 |---|---|
+| 0 | Blame culture; hero-only recovery |
 | 1 | Hero knowledge; inconsistent onboarding |
 | 2 | Ad hoc pairing/review |
 | 3 | Onboarding checklist; review expected |
 | 4 | Deliberate practices (spar, shoshin, retros that change behavior) |
 | 5 | Learning loops; safe to challenge frames |
 
-See [Session Framework](session-framework.md) and [team practices deep dive](maturity/team-practices.md).
+See [Session Framework](session-framework.md) and [team practices deep dive](maturity/team-practices.md) (DORA generative culture).
 
 ### Product discovery *(optional)*
 
@@ -314,19 +331,20 @@ Skip or mark N/A for pure platform/infra teams.
 
 | Level | Posture |
 |---|---|
+| 0 | Build without problem statement |
 | 1 | Build what's asked; no validation |
 | 2 | Informal stakeholder conversation |
 | 3 | Problem statement and success criteria before build |
 | 4 | Thin experiments; data-informed priority |
 | 5 | Continuous discovery tied to outcomes |
 
-Not a return to big upfront spec — **validated learning** before expensive build.
+Deep dive: [optional axis, AI TAGRI](maturity/product-discovery.md). Not big upfront spec — **validated learning** before expensive build.
 
 ---
 
 ## Deep dives
 
-Full index: [maturity/README.md](maturity/README.md) — **14 axis drafts** + [Joel Test appendix](maturity/joel-test-appendix.md) + [assessment worksheet](maturity/worksheet.md).
+Full index: [maturity/README.md](maturity/README.md) — **14 axis v2 deep dives** + [Joel Test appendix](maturity/joel-test-appendix.md) + [assessment worksheet](maturity/worksheet.md).
 
 | Layer | Topics |
 |---|---|

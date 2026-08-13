@@ -2,7 +2,7 @@
 
 **Purpose:** Connect [software systems maturity](../../../docs/ai-engineering/software-systems-maturity.md) axes to artifacts in this workspace.
 
-**Status:** First pass complete (author skim OK, 2026-08-12). Deep dives shippable as v1; optional follow-ups in artifact map.
+**Status:** v2 iteration complete on all axes — author skim OK on v1; merge PR #9 when ready.
 
 ---
 

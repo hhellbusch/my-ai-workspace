@@ -48,17 +48,11 @@ Resurrected a 2016–2017 maturity deck as a **trailhead + 14 axis deep dives + 
 
 ---
 
-## Axis iteration (ongoing)
+## Axis iteration
 
-Second pass: one axis at a time — expand deep dive, reconcile trailhead, map DORA/corpus evidence.
+**Complete (v2, 2026-08-12):** all 14 axes — deck lineage, repo evidence, DORA touchpoints, AI-era notes. See [maturity/README.md](../../docs/ai-engineering/maturity/README.md) and [DORA research note](../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md).
 
-| Axis | Status |
-|---|---|
-| Source control | **v2** — [deep dive](../../docs/ai-engineering/maturity/source-control.md) · [DORA note](../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md) |
-| Deployment & release | **v2** — [deep dive](../../docs/ai-engineering/maturity/deployment-and-release.md) · DORA § deployment axis in research note |
-| Builds & artifacts | **v2** — [deep dive](../../docs/ai-engineering/maturity/builds-and-artifacts.md) · DORA § builds axis in research note |
-| Testing & verification | **v2** — [deep dive](../../docs/ai-engineering/maturity/testing-and-verification.md) · DORA § testing axis in research note |
-| Next suggested | Code quality (thin, deck xkcd) or Architecture & change |
+**Next:** merge PR #9; optional `/validate read`; *Accelerate* library ingest; essay "DORA in the agent era."
 
 ---
 

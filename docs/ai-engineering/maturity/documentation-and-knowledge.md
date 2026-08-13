@@ -1,16 +1,16 @@
 ---
 review:
   status: unreviewed
-  notes: "Documentation & knowledge deep dive — dual audience humans and AI agents."
+  notes: "Documentation v2 — deck critique of coverage %, dual audience exemplar."
 ---
 
 # Documentation & Knowledge — maturity deep dive
 
-> **Audience:** Teams whose "documentation" is read by humans, future teammates, **and** AI coding agents — especially multi-session work.
+> **Audience:** Humans, future teammates, **and** AI coding agents — multi-session work.
 >
-> **Purpose:** Replace coverage-percent thinking with **context quality** — can someone orient and make a correct decision quickly?
+> **Purpose:** Context quality over coverage %; this repo as dual-audience exemplar.
 
-**Related:** [Trailhead](../software-systems-maturity.md#documentation--knowledge) · [Artifact Discipline and AI](../artifact-discipline-and-ai.md) · [Prompting Is Necessary but Not Sufficient](../prompting-and-state.md) · [Architecture & change](../software-systems-maturity.md#architecture--change) (related axis)
+**Related:** [Artifact Discipline and AI](../artifact-discipline-and-ai.md) · [Prompting Is Necessary but Not Sufficient](../prompting-and-state.md) · [Architecture & change](architecture-and-change.md) · [DORA / AI systems](../../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md)
 
 ---
 
@@ -18,34 +18,10 @@ review:
 
 *Is knowledge load-bearing — for onboarding, operations, change, and the next agent session?*
 
-This overlaps **Architecture & change** (system coherence) but is distinct:
-
 | Architecture & change | Documentation & knowledge |
 |---|---|
-| Are boundaries and contracts sound? | Can others **find and trust** what we know about the system? |
-| ADRs, deprecation policy | READMEs, runbooks, handoffs, skills |
-
-You can have clean architecture with unusable docs — or excellent agent-oriented docs on a tangled system. Mature organizations need both.
-
----
-
-## Dual audience (2026)
-
-Documentation maturity now includes **machines as readers**:
-
-- Agents do not inherit hallway context; they read what is committed and linked.
-- Over-documentation hurts agents too ([TAGRI](../artifact-discipline-and-ai.md) — they ain't gonna read it).
-- **JBGE** applies: sufficient for the decision, no more.
-
-Three layers in this workspace (exemplar, not universal standard):
-
-| Layer | Role | Example |
-|---|---|---|
-| **Workshop** | Raw sources while writing | [research/](../../../research/README.md) |
-| **Wiki / reference** | Enriched entries | [library/](../../../library/README.md) |
-| **Essays / guides** | Synthesis and practice | [docs/](../../../docs/README.md) |
-
-Convention: [rules/research.md](../../../rules/research.md) — sources are working copies, not edit logs.
+| Boundaries sound? | Others **find and trust** what we know? |
+| ADRs, deprecation | READMEs, runbooks, handoffs, skills |
 
 ---
 
@@ -54,41 +30,73 @@ Convention: [rules/research.md](../../../rules/research.md) — sources are work
 | Level | Posture | Evidence |
 |---|---|---|
 | **1** | Scattered wikis, stale README | New hire lost; agent invents structure |
-| **2** | Humans find docs eventually | No stable entry point for agents |
-| **3** | Index, conventions, metadata | [STYLE.md](../../../STYLE.md), README TOCs, `review:` blocks |
-| **4** | Handoffs, skills, briefs; artifact discipline | [Session framework](../session-framework.md), [AGENTS.md](../../../AGENTS.md), `.agents/skills/` |
-| **5** | Measured orientation time; fewer repeated errors | Retros improve docs; evals on critical paths |
+| **2** | Humans find docs eventually | No stable agent entry point |
+| **3** | Index, conventions, metadata | [STYLE.md](../../../STYLE.md), README TOCs, `review:` |
+| **4** | Handoffs, skills, briefs; TAGRI/JBGE | [Session framework](../session-framework.md), [AGENTS.md](../../../AGENTS.md), skills |
+| **5** | Orientation time improves; fewer repeated errors | Retros update docs; evals on critical paths |
 
-**Anti-patterns:**
+**Deck lineage (with 2026 critique):**
 
-- Coverage % targets (gameable in microservice estates)
-- Docs that restate git log (TAGRI failure)
-- Orphan sources in `research/` with no essay or library output
-- Preparation notes inside `sources/` files (see research conventions)
+| Deck tier | Level | Modern note |
+|---|---|---|
+| None | **1** | — |
+| Ad-hoc scattered | **1–2** | — |
+| Standardized; >50% coverage | **2–3** | **Reject coverage %** as goal — TAGRI/JBGE instead |
+| Publishing; ~100% coverage | **3** | Prefer **index + discipline** over completeness |
+| Auto publish; periodic reviews | **4–5** | Staleness review = [`/validate`](../../../.agents/skills/validate/SKILL.md), handoffs |
+
+Deck cited Agile Manifesto — working software over comprehensive documentation **≠** no documentation ([Ambler](http://www.ambysoft.com/essays/agileManifesto.html)).
 
 ---
 
-## Connection to AI agents axis
+## Dual audience (2026)
 
-Level 4 here enables level 3+ on [AI agents & harnesses](../software-systems-maturity.md#ai-agents--harnesses): bounded tools only help if **state and intent** are externalized ([prompting and state](../prompting-and-state.md)).
+- Agents read committed, linked state — no hallway context  
+- Over-documentation hurts ([TAGRI](../artifact-discipline-and-ai.md))  
+- **JBGE:** sufficient for the decision  
+
+| Layer | Role | Example |
+|---|---|---|
+| Workshop | Raw sources | [research/](../../../research/README.md) |
+| Wiki | Enriched entries | [library/](../../../library/README.md) |
+| Essays / guides | Synthesis | [docs/](../../../docs/README.md) |
+
+[rules/research.md](../../../rules/research.md) — sources are drawers, not edit logs.
 
 ---
 
-## Repo examples
+## DORA
+
+**Generative culture** (learning, sharing) correlates with delivery performance — documentation that enables onboarding and blameless learning supports team practices and MTTR, not a direct DORA metric. See [research note](../../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md).
+
+---
+
+## Evidence in this workspace (rich)
 
 | Practice | Path |
 |---|---|
 | Artifact economics | [artifact-discipline-and-ai.md](../artifact-discipline-and-ai.md) |
-| Session continuity | [prompting-and-state.md](../prompting-and-state.md), `.planning/*/whats-next.md` |
-| Review metadata | [rules/review-tracking.md](../../../rules/review-tracking.md) |
-| Cross-link discipline | [.agents/skills/cross-link/](../../../.agents/skills/cross-link/SKILL.md) |
+| Session continuity | [prompting-and-state.md](../prompting-and-state.md) · `.planning/*/whats-next.md` |
+| Maturity handoffs | [.planning/software-systems-maturity/](../../../.planning/software-systems-maturity/whats-next.md) |
+| Cross-link / review | [cross-link skill](../../../.agents/skills/cross-link/SKILL.md) · [review skill](../../../.agents/skills/review/SKILL.md) |
+| Research → library ingest | 4-step checklist in [AGENTS.md](../../../AGENTS.md) |
 
 ---
 
-## External references
+## AI era
 
-- [Agile Modeling — document late, travel light](https://agilemodeling.com/)
-- [Ambler on the Agile Manifesto](http://www.ambysoft.com/essays/agileManifesto.html)
+Level 4 here **enables** [AI agents L3+](ai-agents-and-harnesses.md) — bounded tools need externalized state ([prompting and state](../prompting-and-state.md)).
+
+Anti-pattern: handoffs that restate git log — TAGRI failure.
+
+---
+
+## Anti-patterns
+
+- Coverage % targets (gameable)  
+- Orphan `research/` without library/docs output  
+- Prep notes in `sources/` (see research rules)  
+- Docs nobody maintains after AI bulk generation  
 
 ---
 

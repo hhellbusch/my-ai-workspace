@@ -1,16 +1,16 @@
 ---
 review:
   status: unreviewed
-  notes: "AI agents & harnesses deep dive — bounded automation, review gates, session state."
+  notes: "AI agents v2 — harness layers, DORA open questions, repo exemplar."
 ---
 
 # AI Agents & Harnesses — maturity deep dive
 
-> **Audience:** Teams using coding agents, chat assistants, or autonomous jobs — beyond one-off prompts.
+> **Audience:** Coding agents, chat assistants, autonomous jobs — beyond one-off prompts.
 >
-> **Purpose:** Expand the [trailhead](../software-systems-maturity.md#ai-agents--harnesses) axis. Connect to [The Shift](../the-shift.md): when implementation is cheap, verification and framing dominate.
+> **Purpose:** Bounded, reviewed, session-continuous AI work. Connect [The Shift](../the-shift.md).
 
-**Related:** [Documentation & knowledge](documentation-and-knowledge.md) · [Team practices](team-practices.md) · [Artifact Discipline and AI](../artifact-discipline-and-ai.md) · [Prompting Is Necessary but Not Sufficient](../prompting-and-state.md)
+**Related:** [Documentation & knowledge](documentation-and-knowledge.md) · [Team practices](team-practices.md) · [Code quality L4](code-quality.md) · [DORA / AI systems](../../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md)
 
 ---
 
@@ -18,7 +18,7 @@ review:
 
 *Is AI-assisted work **bounded**, **reviewed**, and **continuous across sessions** — or fast chaos?*
 
-"Clankers" (agents) amplify whatever maturity you already have. High deployment maturity + low review maturity = accelerated drift.
+Agents amplify existing maturity. High deployment + low review = accelerated drift.
 
 ---
 
@@ -26,71 +26,71 @@ review:
 
 | Level | Posture |
 |---|---|
-| **1** | Ad hoc prompts; no review; context only in chat |
-| **2** | Repeatable prompts or skills; human reviews all merges |
-| **3** | Bounded tools (permissions, sandbox); handoff/checkpoint discipline |
-| **4** | Spar, shoshin, or eval gates on risky changes; TAGRI/JBGE on artifacts |
-| **5** | Known failure modes catalogued; orientation time and error rates improve |
+| **0** | Unreviewed agent changes to prod |
+| **1** | Ad hoc prompts; context only in chat |
+| **2** | Repeatable prompts/skills; human reviews merges |
+| **3** | Bounded tools; handoff/checkpoint discipline |
+| **4** | Spar/shoshin/eval on risky changes; TAGRI/JBGE |
+| **5** | Failure modes catalogued; orientation/errors improve |
 
-**Level 3** requires [documentation & knowledge](documentation-and-knowledge.md) level 3+ — externalized state (briefs, handoffs, skills, committed truth).
-
-**Level 4** overlaps [team practices](team-practices.md) level 4 — intentionally. Agents make agreeable output cheap; structural friction is the counterweight.
+**L3 requires** [documentation L3+](documentation-and-knowledge.md). **L4 overlaps** [team practices L4](team-practices.md).
 
 ---
 
-## Harness — what it means here
+## Harness layers (this workspace)
 
-A **harness** is everything that wraps the model:
-
-| Layer | Examples in this workspace |
+| Layer | Examples |
 |---|---|
 | Runtime boundary | Paude containers, tool permissions |
 | Discipline | [AGENTS.md](../../../AGENTS.md), skills, rules |
-| Session state | BRIEF, whats-next, git as truth anchor |
+| Session state | BRIEF, whats-next, git truth anchor |
 | Review | Spar, pre-commit, human merge authority |
+| Maturity lens | [Software Systems Maturity](../../../AGENTS.md) § |
 
-Maturity is not "which model" — it is whether the harness **constrains and records** work.
+Maturity ≠ model choice — **constrain and record** work.
+
+---
+
+## DORA / open research
+
+Hypothesis: AI improves typing speed before org delivery metrics. **Open question:** do DORA capability correlations hold under heavy agent use, or shift toward eval harnesses and skills governance? See [research note](../../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md).
+
+---
+
+## Evidence in this workspace (rich)
+
+| Topic | Path |
+|---|---|
+| Bottleneck shift | [the-shift.md](../the-shift.md) |
+| State vs prompting | [prompting-and-state.md](../prompting-and-state.md) |
+| Artifact economics | [artifact-discipline-and-ai.md](../artifact-discipline-and-ai.md) |
+| Spar / shoshin | [sparring-and-shoshin.md](../sparring-and-shoshin.md) |
+| Paude | [paude-getting-started.md](../paude-getting-started.md) |
+| Session framework | [session-framework.md](../session-framework.md) |
+| Harnesses (library) | [tejas-kumar-harnesses-in-ai.md](../../../library/tejas-kumar-harnesses-in-ai.md) |
+
+---
+
+## Cross-axis
+
+| Axis | Link |
+|---|---|
+| Code quality L4 | Human owns merge |
+| Documentation L4 | Handoffs, skills |
+| Security L0 | Secrets in prompts/commits |
+| Deployment L4 | Same GitOps gates as humans |
+| Testing L4 | CI on agent PRs |
 
 ---
 
 ## Anti-patterns
 
-| Anti-pattern | Level trap |
+| Anti-pattern | Trap |
 |---|---|
-| Paste entire repo into chat | L1 — no durable context |
-| Agent with write access, no review | L1–2 |
-| Skills/rules without human merge gate | L2 theater |
-| Handoffs that restate git log | Documentation L2 |
-| Eval-free autonomy on prod paths | Below L4 for regulated/high-risk |
-
----
-
-## Connection to other axes
-
-| Axis | Link |
-|---|---|
-| Code quality L4 | Human owns merge; agent assists |
-| Documentation L4 | Handoffs, skills, artifact discipline |
-| Security L0 | Secrets in prompts or committed `.env` |
-| Deployment L4 | Agent applies prod — needs same GitOps gates as humans |
-
----
-
-## Repo examples
-
-| Topic | Path |
-|---|---|
-| Bottleneck moved | [the-shift.md](../the-shift.md) |
-| State vs prompting | [prompting-and-state.md](../prompting-and-state.md) |
-| Artifact economics | [artifact-discipline-and-ai.md](../artifact-discipline-and-ai.md) |
-| Spar / shoshin | [sparring-and-shoshin.md](../sparring-and-shoshin.md) |
-| Paude harness | [paude-getting-started.md](../paude-getting-started.md) |
-
----
-
-## External references
-
-- [Tejas Kumar — harnesses in AI (library)](../../../library/tejas-kumar-harnesses-in-ai.md)
+| Paste entire repo into chat | L1 |
+| Write access, no review | L1–2 |
+| Handoffs = git log | Doc L2 |
+| Eval-free prod autonomy | Below L4 |
 
 ---
 
