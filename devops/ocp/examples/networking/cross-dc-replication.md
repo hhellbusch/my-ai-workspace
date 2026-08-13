@@ -123,6 +123,8 @@ spec:
           dhcp: false
 ```
 
+**NNCP scope:** examples in this doc and the [NNCP Helm chart](../messaging/kafka/cross-dc-nncp-helm/README.md) define **only** the replication bond/VLAN/route. The **management / machine network** (default route, API, OVN) is usually configured at **cluster install** and often **does not appear in any NNCP** — it is still on the node. To see the true layout, use `oc get nns <node>` (`NodeNetworkState`) or inspect the host (`nmcli`, `ip link`) — not the replication NNCP YAML alone.
+
 **Decisions to nail down here, in order of how often they're gotten wrong:**
 
 1. **Node targeting.** If only a subset of nodes have this NIC layout (e.g., dedicated gateway/broker nodes), target them with a label + `nodeSelector`, not the default `worker` pool. Applying this cluster-wide to nodes without the matching hardware will fail or misconfigure.

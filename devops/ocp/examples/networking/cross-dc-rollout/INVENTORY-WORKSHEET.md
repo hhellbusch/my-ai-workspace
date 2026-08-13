@@ -27,7 +27,7 @@ Fill this in during discovery, then transcribe into `inventory-dc-a.yaml` / `inv
 
 | Field | DC-A value | Confirm with |
 |---|---|---|
-| `bondName` | `bond-repl` | NNCP / `oc get nns` |
+| `bondName` | `bond-repl` | NNCP / `oc get nns` (confirm management bond uses different NICs — see [NNCP scope](../../messaging/kafka/cross-dc-nncp-helm/README.md#nncp-scope--replication-bond-only-not-the-full-node-picture)) |
 | `bondMode` | `active-backup` | ToR LACP capability |
 | `ports[]` | `ens4f0`, `ens5f0` | `ip link` / hardware inventory |
 | `vlanId` | `200` | Network team |

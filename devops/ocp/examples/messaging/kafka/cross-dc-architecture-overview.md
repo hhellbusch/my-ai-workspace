@@ -291,6 +291,7 @@ That split is the design rule peers often state as: **only traffic to the other 
 | **macvlan** | Gives each pod its own MAC on a VLAN segment (default here); use **ipvlan** if the switch limits MAC counts |
 | **whereabouts** | IPAM plugin — assigns pod IPs from a pool on a NAD |
 | **NNCP / NNCE** | NodeNetworkConfigurationPolicy / Enactment — nmstate objects for host networking |
+| **`NodeNetworkState` (NNS)** | Per-node report of **effective** host networking (NNCP + install-time config) — use when NNCP YAML does not show management bonds |
 | **`MultiNetworkPolicy`** | Like `NetworkPolicy`, but enforced on a **secondary** interface (standard policy only sees `eth0`) |
 
 ---
@@ -335,6 +336,8 @@ spec:
               prefix-length: 26
           dhcp: false
 ```
+
+**NNCP scope:** policies in this doc and the [NNCP Helm chart](cross-dc-nncp-helm/README.md) cover **only** `bond-repl` and the replication VLAN — not the management/machine network. That layer is typically defined at **install time** (MachineConfig / `install-config`) and may never show up as a Kubernetes NMState object. **`oc get nncp` is not a full node network inventory**; use `oc get nns <node>` or host tools (`nmcli`, `ip link`) to confirm which NICs are already in the management bond before choosing `bond-repl` member ports. See [NNCP scope — replication bond only](cross-dc-nncp-helm/README.md#nncp-scope--replication-bond-only-not-the-full-node-picture).
 
 **Decisions to nail down here, in order of how often they're gotten wrong:**
 

@@ -23,6 +23,29 @@ NMState applies identical `desiredState` to every node an NNCP's `nodeSelector` 
 
 This chart automates that pattern from a values file rather than copy-pasting N CRs by hand.
 
+## NNCP scope — replication bond only (not the full node picture)
+
+The rendered NNCPs define **only** the cross-DC replication stack: `bond-repl` → `bond-repl.<vlan>` → scoped route to the remote `/26`. They do **not** describe the cluster's **management / machine network** (API, OVN, ingress VIP, default route).
+
+On bare-metal OpenShift that management network is usually created at **install time** — `install-config.yaml`, Ignition/MachineConfig, or site networking applied before nmstate is in play. Those interfaces and bonds **may not appear in any NNCP** in this repo. That is expected: Kubernetes NMState manages what you declare in each policy; it does not replace or re-document the entire node network layout in one CR.
+
+**Implication for reviewers:** reading `oc get nncp` or the Helm template is **not** enough to understand a node. You can have:
+
+- A management bond (e.g. `bond0` / `br-ex`) from install — **not** in these examples
+- A separate `bond-repl` from this chart — **only** what the NNCP owns
+
+Before filling `nodes[].hostname` and `replicationNetwork.ports`, confirm on the **node** (or from cluster state) which NICs are free vs already consumed by management/storage:
+
+```bash
+oc get nns <node> -o yaml          # NodeNetworkState — full effective host config nmstate sees
+oc debug node/<node> -- chroot /host nmcli -g GENERAL.CONNECTION,IP4.ADDRESS device show
+oc debug node/<node> -- chroot /host ip -d link show
+```
+
+`oc get nnce` / `NodeNetworkConfigurationEnactment` shows whether **this** policy applied; `NodeNetworkState` shows the **merged** result alongside install-time config. If `bond-repl` ports overlap NICs already in the management bond, nmstate may fail the enactment or produce an unintended layout — catch that in preflight, not from the YAML alone.
+
+**Related:** [cross-dc-replication.md — Layer 1–2](../../../networking/cross-dc-replication.md#layer-12-host-network) · [architecture overview — shared foundation](../cross-dc-architecture-overview.md#layer-12-bond-and-vlan)
+
 **Before reaching for this:** confirm you actually need a static, per-node host IP at all. The [architecture overview's Layer 1–2 discussion](../cross-dc-architecture-overview.md#layer-12-host-network) found that the host interface doesn't need an IP for the Kafka/macvlan pod traffic path — macvlan children get their own IP independent of the host's — confirmed against a [multus-cni issue thread](https://github.com/k8snetworkplumbingwg/multus-cni/issues/1104) showing a macvlan master interface working with no `ipam` at all. DHCP or no address is simpler and scales with node churn automatically; this chart is for when you've deliberately decided you want static, predictable per-node host addresses anyway (e.g., firewall allow-listing by host IP, inventory/monitoring conventions).
 
 ## Quick start
@@ -55,8 +78,8 @@ See `values.yaml` for the full schema with comments; `values-dc-a.example.yaml` 
 
 ## Verification
 
-1. `helm template ... | oc apply -f -` then `oc get nnce` (`NodeNetworkConfigurationEnactment`) — one enactment per node, confirms each policy actually landed.
-2. `oc get nns <node>` (`NodeNetworkState`) — confirms the interface and IP that actually landed, not just what was requested.
+1. `helm template ... | oc apply -f -` then `oc get nnce` (`NodeNetworkConfigurationEnactment`) — one enactment per node, confirms each **replication** policy applied.
+2. `oc get nns <node>` (`NodeNetworkState`) — **full** host networking nmstate reports (replication NNCP **plus** install-time management bonds, routes, and addresses). Use this when the NNCP YAML alone does not show the management/default network you expect.
 3. Full verification checklist: [architecture overview](../cross-dc-architecture-overview.md#verification-checklist).
 
 ## Rollout safety — an open question, not solved here
