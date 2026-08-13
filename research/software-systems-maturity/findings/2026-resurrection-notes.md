@@ -1,6 +1,6 @@
 # 2026 resurrection notes — Software Systems Maturity
 
-**Source:** [deck-text-export.txt](../sources/deck-text-export.txt) (text export, Aug 2026)
+**Source:** [deck-text-export.txt](../sources/deck-text-export.txt)
 
 ---
 
@@ -8,57 +8,37 @@
 
 - **Trailhead framing** — assess current level, prioritize the *next* level up ([Fowler mixologist](https://martinfowler.com/bliki/MaturityModel.html)).
 - **Multi-axis model** — maturity is not one number; teams can be level 4 on builds and level 1 on monitoring.
-- **Practitioner tone** — XKCD, Boy Scout Rule, tradable quality hypothesis — keeps the model grounded.
-- **CMM skepticism** — document-heavy, certification ≠ competence; aligns with agile values.
+- **Practitioner tone** — XKCD, Boy Scout Rule, tradable quality hypothesis — keep in deep dives.
+- **CMM skepticism** — document-heavy, certification ≠ competence.
 
 ---
 
-## 2026 additions already in the deck export
+## 2026 revision decisions (Aug 2026)
 
-- Slide 17: expand from "software development" → **software systems** (infra, platform, AI agents).
-- Slide 32 level 4: **"manual and clanker driven"** code reviews — first explicit AI axis hook.
-
----
-
-## Proposed new axes (draft — not in original deck)
-
-| Axis | Why now |
+| Decision | Rationale |
 |---|---|
-| **Platform / fleet** | ACM, GitOps, multi-cluster — org capability separate from app CI/CD |
-| **GitOps & declarative ops** | Desired state in Git, reconcile loops, drift detection |
-| **AI agents & harnesses** | Non-deterministic automation, review gates, artifact discipline |
-| **Observability → action** | Metrics/logs/traces tied to runbooks and SLOs (extends Monitoring) |
-
-Each should get the same **5-level ladder** treatment as the original nine axes.
-
----
-
-## Domain-specific ladders (pattern)
-
-The cross-DC Kafka work produced a **GitOps maturity ladder** (levels 0–5) for cluster links only — an example of nesting a narrow ladder under a broader axis (Deployment / Platform). See [CLUSTER-LINK-GITOPS.md](../../../devops/ocp/examples/messaging/kafka/CLUSTER-LINK-GITOPS.md).
+| **No domain-specific ladders** in trailhead | e.g. cluster-link — use generic declarative/API reconcile pattern instead |
+| **GitOps under Deployment**, not top-level axis | Evolution of DevOps/CI/CD; "we use Git" ≠ GitOps |
+| **Merge observability→action into Monitoring & reliability** | Avoid thin duplicate axes |
+| **Supply chain at Builds L4–5 + Security** | Not standalone axis |
+| **Documentation & knowledge — dual audience** | Humans + agent session orientation |
+| **Platform accelerator doc** | K8s/OCP newcomers and non-K8s teams |
+| **Team practices + optional product discovery** | Deck promised team performance |
+| **Level 0 optional; L5 aspirational** on monitoring | Honest assessment |
+| **Artifact map + argo corpus** | Deep dives link to devops/argo, rhacm, vault, docs track |
 
 ---
 
-## Deep dives still owed (per original intent)
+## Deep dive status
 
-One document per axis, suitable for organizational publication where appropriate:
+See [artifact-map.md](artifact-map.md) and [maturity/README.md](../../../docs/ai-engineering/maturity/README.md).
 
-1. Source control
-2. Code quality
-3. Testing
-4. Builds
-5. Deployment
-6. Data management
-7. Security
-8. Documentation
-9. Monitoring
-10. (new) Platform / fleet
-11. (new) AI agents
+Shipped drafts: deployment, documentation & knowledge, platform accelerator.
 
 ---
 
-## Ingestion format note
+## Still owed
 
-This export worked well: slide numbers + body text + URLs preserved.
-PDF would help recover diagram-only slides (CMM level charts, deployment pipeline figures).
-Optional: export speaker notes into a second `.txt` if they differ from on-slide text.
+- Remaining axis deep dives (2016 nine + AI agents, team practices, security, etc.)
+- Joel Test mapping appendix
+- Deck PDF for diagram-only slides (CMM, sandbox "too late", quality continuum)

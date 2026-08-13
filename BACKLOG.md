@@ -107,10 +107,10 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
-### Software Systems Maturity — axis deep dives (2016 deck follow-through)
-- **Product:** docs/ai-engineering (or devops/guides)
-- **Context:** Trailhead resurrected from 2016–2017 deck — [software-systems-maturity.md](../docs/ai-engineering/software-systems-maturity.md). Original intent was one deep dive per axis (source control, quality, testing, builds, deployment, data, security, documentation, monitoring) plus 2026 axes (platform/fleet, GitOps, AI agents). Source: [research/software-systems-maturity/](../research/software-systems-maturity/README.md).
-- **Added:** 2026-08-12
+### Software Systems Maturity — remaining axis deep dives
+- **Product:** docs/ai-engineering/maturity/
+- **Context:** Trailhead revised; drafts shipped for deployment, documentation & knowledge, platform accelerator. Artifact map: [artifact-map.md](../research/software-systems-maturity/findings/artifact-map.md). Next: security & secrets (vault), team practices, AI agents, monitoring, classic nine refresh.
+- **Added:** 2026-08-12 · **Updated:** 2026-08-13
 
 ### Essay seed: documentation as cognitive offload and async multiplier
 - **Product:** docs/ai-engineering (or docs/philosophy)
