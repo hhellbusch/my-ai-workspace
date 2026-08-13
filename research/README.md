@@ -26,6 +26,7 @@ Research workspaces containing fetched sources, analysis findings, and assessmen
 | `ocp-container-density-overcommit/` | Bare-metal OCP packing: CRO, VPA/HPA, LimitRange, node allocatable, maxPods | 12 of 12 fetched | [paths.md](ocp-container-density-overcommit/paths.md) · [library stub](../library/ocp-container-density-overcommit.md) |
 | `ocp-namespace-guardrails/` | Namespace limits beyond CPU/memory — etcd object counts, ResourceQuota tiers | Web sources cited | [guide](../devops/ocp/guides/namespace-guardrails/README.md) |
 | `ocp-vmware-vs-baremetal-perf/` | OpenShift on VMware vs bare metal — benchmark literature, fair test design, lab plan | In progress | [DOE](ocp-vmware-vs-baremetal-perf/design-of-experiments.md) · [journal](ocp-vmware-vs-baremetal-perf/journal.md) |
+| `software-systems-maturity/` | Resurrect 2016–2017 maturity deck — trailhead + axis deep dives | In progress | [trailhead essay](../docs/ai-engineering/software-systems-maturity.md) · [source export](software-systems-maturity/sources/deck-text-export.txt) |
 
 ## Structure Convention
 
