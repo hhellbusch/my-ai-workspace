@@ -20,6 +20,6 @@
 4. Both clusters: `useMultiNetworkPolicy` patch → NNCP Helm → `./preflight.sh` → `./run-network-test.sh`
 5. Choose broker IPAM mode (`BROKER-IPAM.md`); apply Kafka net Helm; wire CFK listeners + Cluster Links
 
-**Git:** Pending — branch `feature/cross-dc-replication-rollout` with PR to `main`.
+**Git:** `88b2e59` — `Add cross-DC replication rollout tooling and pre-Kafka network verification.` (branch `feature/cross-dc-replication-rollout`)
 
 **Not committed locally:** Generated `values-dc-*.yaml`, `dc-*.env` (gitignored test renders — safe to delete).
