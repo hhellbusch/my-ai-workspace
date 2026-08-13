@@ -1,8 +1,10 @@
 # Maturity artifact map — repository cross-reference
 
-**Purpose:** Connect [software systems maturity](../../../docs/ai-engineering/software-systems-maturity.md) axes to artifacts in this workspace.
+**Purpose:** Connect [software systems maturity](../../../docs/ai-engineering/software-systems-maturity.md) axes to **example evidence** in this workspace — paths that illustrate rubric language.
 
-**Status:** v2 iteration complete on all axes — author skim OK on v1; merge PR #9 when ready.
+**Not a scorecard:** Richness labels describe **how much example material exists here**, not maturity level of Field Notes or your team. See [Maturity as navigation — not a benchmark](../../../docs/ai-engineering/maturity-as-navigation-not-benchmark.md).
+
+**Status:** v2 iteration complete on all axes; spar framing pass 2026-08-12.
 
 ---
 
@@ -10,9 +12,9 @@
 
 | Corpus | Meaning |
 |---|---|
-| **Rich** | Multiple dedicated docs usable as level evidence |
-| **Partial** | Some material; deep dive uses external canon |
-| **Thin** | Little in-repo; framework + external refs |
+| **Rich** | Multiple paths usable as **example evidence** for rubric language |
+| **Partial** | Some example paths; deep dive uses external canon |
+| **Thin** | Little in-repo example material; framework + external refs |
 
 ---
 

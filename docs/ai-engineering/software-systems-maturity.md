@@ -1,20 +1,20 @@
 ---
 review:
   status: unreviewed
-  notes: "2026 revision — v1 first pass complete (author skim OK 2026-08-12). Deep dives in maturity/."
+  notes: "Draft rubric v2 — spar framing pass 2026-08-12. Levels subject to revision; see maturity-as-navigation-not-benchmark.md."
 ---
 
 # Software Systems Maturity — a trailhead
 
-> **Audience:** Engineers, leads, and peers who want a structured way to assess where a team or system is today and what to improve next — including teams new to Kubernetes, teams not on Kubernetes at all, and teams using a platform (Kubernetes, OpenShift, or similar) as a maturity accelerator.
+> **Audience:** Engineers, leads, and peers who want a structured way to assess where a **team or service** is today and what to improve next — including teams new to Kubernetes, teams not on Kubernetes at all, and teams using a platform (Kubernetes, OpenShift, or similar) as a maturity accelerator.
 >
-> **Purpose:** Introduce a multi-axis maturity model (originally a slide deck from 2016–2017) as a **trailhead**. Assess current level **per axis**; prioritize the **next level up**. Deep dives live under [maturity/](maturity/README.md).
+> **Purpose:** Introduce a multi-axis maturity model (originally a slide deck from 2016–2017) as a **draft trailhead**. Assess current level **per axis** on *your* scope; prioritize the **next level up**. Deep dives live under [maturity/](maturity/README.md). Example paths in this repo illustrate practices — they do **not** score Field Notes; see [Maturity as navigation — not a benchmark](maturity-as-navigation-not-benchmark.md).
 
 **Origin:** Started in 2016 or 2017; revisited on and off since. The original plan was this intro plus **one deep dive per axis** — those deep dives were never published. This revision expands toward **software systems** (not only application delivery) and **2026 context** (platform fleets, declarative ops, AI agents, knowledge for humans and machines).
 
 **Source material:** [research/software-systems-maturity/](../../research/software-systems-maturity/README.md)
 
-**Related:** [The Shift](the-shift.md) · [Artifact Discipline and AI](artifact-discipline-and-ai.md) · [Sparring and Shoshin](sparring-and-shoshin.md) · [Deployment & release deep dive](maturity/deployment-and-release.md) · [Platform as maturity accelerator](maturity/platform-as-accelerator.md)
+**Related:** [The Shift](the-shift.md) · [Artifact Discipline and AI](artifact-discipline-and-ai.md) · [Sparring and Shoshin](sparring-and-shoshin.md) · [Deployment & release deep dive](maturity/deployment-and-release.md) · [Platform as maturity accelerator](maturity/platform-as-accelerator.md) · [Maturity as navigation — not a benchmark](maturity-as-navigation-not-benchmark.md)
 
 ---
 
@@ -22,6 +22,7 @@ review:
 
 - [What a maturity model is for](#what-a-maturity-model-is-for)
 - [How to use this model](#how-to-use-this-model)
+- [Example evidence in this workspace](#example-evidence-in-this-workspace)
 - [Models worth knowing (and their limits)](#models-worth-knowing-and-their-limits)
 - [Axis ecosystem](#axis-ecosystem)
 - [DevOps, GitOps, and API reconcile](#devops-gitops-and-api-reconcile)
@@ -59,6 +60,24 @@ The original deck named **software, individual, and team** performance. The axes
 
 Disagreement about level is often the valuable output.
 
+**Draft rubric:** Level language here and in deep dives is for **prioritization and conversation**, not certification. Peer review welcome if the framework spreads — see [navigation vs benchmark](maturity-as-navigation-not-benchmark.md).
+
+---
+
+## Example evidence in this workspace
+
+Deep dives and the [artifact map](../../research/software-systems-maturity/findings/artifact-map.md) link to paths in Field Notes as **example evidence** — illustrations of practices on each axis.
+
+They do **not**:
+
+- Rank or certify maturity **of this workspace**
+- Imply that copying a path makes **your** team level N
+- Treat corpus richness as a score (deployment examples are abundant because practice lives there, not because that axis is "done")
+
+**Corpus bias:** `devops/` is GitOps, OpenShift, and fleet-heavy. Rubrics are generic; examples are not. Thin axes (data, product discovery, much of code quality) rely on external canon — see artifact map **partial** / **thin** labels.
+
+Use example evidence to **find patterns to study**; use the [worksheet](maturity/worksheet.md) with **your** pipeline and runbook links for assessment.
+
 ---
 
 ## Models worth knowing (and their limits)
@@ -71,13 +90,14 @@ Five levels — Initial through Optimizing — aligned in spirit with continual 
 
 [Joel Spolsky's test](https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/) — blunt project hygiene checklist. Mapped to these axes in the [Joel Test appendix](maturity/joel-test-appendix.md).
 
-### DORA and Accelerate
+### DORA and Accelerate *(optional parallel lens)*
 
-The [DORA research program](https://dora.dev/) and *Accelerate* (Forsgren, Humble, Kim) correlate **technical capabilities** (version control, trunk-based development, CI, test automation, monitoring, architecture) with **delivery performance** — deployment frequency, lead time, MTTR, change failure rate.
+The [DORA research program](https://dora.dev/) and *Accelerate* (Forsgren, Humble, Kim) study **delivery outcomes** — deployment frequency, lead time, MTTR, change failure rate — and **correlate** them with capabilities (VCS, CI, test automation, monitoring, architecture, culture) in researched populations.
 
-Use DORA for **outcome metrics** on a defined service or pipeline; use this model's **per-axis levels** where work spans platform, fleet, documentation-for-agents, and AI harnesses that DORA does not name explicitly. In the AI era, faster code generation raises the cost of weak review gates and thin observability — it does not replace them.
+**Use DORA when** you have metrics on a **defined service or pipeline**.
+**Use this model when** work spans platform, fleet, documentation-for-agents, or AI harnesses that DORA does not name — or when DORA data is missing and you still need a gap conversation.
 
-Working map: [DORA, Accelerate, and AI systems](../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md).
+**Limits:** Correlation in published studies is not causation in your org. Do not convert axis levels into a fake DORA score. AI-era hypotheses (throughput vs delivery, review gates) are **open questions**, not claims — see the [working research note](../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md) and [Accelerate library entry](../../library/accelerate-forsgren-humble-kim.md).
 
 ### This model
 
@@ -108,7 +128,7 @@ Axes grouped by concern. Per-axis maturity **differs** — that is normal.
 
 **Merged elsewhere (not standalone axes):** supply chain provenance → Builds + Security; observability→action → Monitoring & reliability; GitOps → pattern under Deployment (+ Platform for fleet policy).
 
-**Workspace artifact map:** [research/software-systems-maturity/findings/artifact-map.md](../../research/software-systems-maturity/findings/artifact-map.md)
+**Workspace artifact map:** [research/software-systems-maturity/findings/artifact-map.md](../../research/software-systems-maturity/findings/artifact-map.md) — example evidence index, not a workspace scorecard.
 
 ---
 
@@ -178,55 +198,19 @@ Deep dive: [deck lineage, DORA alignment, fleet/AI notes](maturity/source-contro
 
 ### Code quality
 
-| Level | Posture |
-|---|---|
-| 0 | Known unsafe patterns tolerated |
-| 1 | No standards |
-| 2 | Style guide; DRY, YAGNI |
-| 3 | Linting; environment config not hard-coded |
-| 4 | Review before merge — human decision; agents assist |
-| 5 | Periodic architecture/health review; debt reduced |
-
-Deep dive: [deck lineage, tradable quality, AI review gates](maturity/code-quality.md).
+Levels 0–5 — deck lineage, tradable quality, AI review gates: [code-quality deep dive](maturity/code-quality.md).
 
 ### Testing & verification
 
-| Level | Posture |
-|---|---|
-| 0 | No test intent; production is the test environment |
-| 1 | Ad hoc; bugs found in production |
-| 2 | Documented test cases |
-| 3 | Automated unit/integration (or operational equivalent); non-prod runs |
-| 4 | CI gates; coverage or risk analysis informs runs |
-| 5 | Performance/security characterization; defects fixed when found |
-
-Deep dive: [sandbox discipline, DORA change failure rate, verification corpus](maturity/testing-and-verification.md).
+Levels 0–5 — sandbox discipline, DORA change failure rate, verification corpus: [testing deep dive](maturity/testing-and-verification.md).
 
 ### Architecture & change
 
-| Level | Posture |
-|---|---|
-| 0 | Prod changes bypass shared design |
-| 1 | Ad hoc structure; breaking changes surprise consumers |
-| 2 | Informal boundaries; occasional ADRs |
-| 3 | Documented interfaces; deprecation notices |
-| 4 | Change governance (who approves prod); compatibility policy |
-| 5 | Evolution measured; technical debt visible in roadmap |
-
-Deep dive: [fleet Git truth, loosely coupled architecture](maturity/architecture-and-change.md).
+Levels 0–5 — fleet Git truth, loosely coupled architecture: [architecture deep dive](maturity/architecture-and-change.md).
 
 ### Builds & artifacts
 
-| Level | Posture |
-|---|---|
-| 0 | No build step; compile on target hosts |
-| 1 | Manual ad hoc builds |
-| 2 | Script automation |
-| 3 | CI-built artifacts (or rendered output) on every change |
-| 4 | Artifact registry or committed render; immutable tags |
-| 5 | Every build deployable; broken build stops the line; provenance/SBOM on critical paths |
-
-Deep dive: [deck lineage, DORA CI mapping, GitOps render pipeline](maturity/builds-and-artifacts.md).
+Levels 0–5 — deck lineage, DORA CI mapping, GitOps render pipeline: [builds deep dive](maturity/builds-and-artifacts.md).
 
 ### Deployment & release
 
@@ -234,29 +218,11 @@ See [DevOps/GitOps table](#devops-gitops-and-api-reconcile) and [deep dive](matu
 
 ### Data management
 
-| Level | Posture |
-|---|---|
-| 0 | Prod data changed without migration path |
-| 1 | Ad hoc schemas |
-| 2 | Designed; reviewed; normalized where appropriate |
-| 3 | Migrations; DR plan exists |
-| 4 | Automated migrations |
-| 5 | Data change integrated with delivery pipeline |
-
-Deep dive: [evolutionary design, deck lineage — thin repo corpus](maturity/data-management.md).
+Levels 0–5 — evolutionary design, deck lineage (thin repo corpus): [data-management deep dive](maturity/data-management.md).
 
 ### Monitoring & reliability
 
-| Level | Posture |
-|---|---|
-| 0 | No proactive observability |
-| 1 | Reactive firefighting |
-| 2 | Logging; manual checks |
-| 3 | Automated alerts; runbooks |
-| 4 | SLOs; traceability to root cause |
-| 5 | *(Aspirational)* FMEA, chaos, error-budget culture |
-
-Deep dive: [deck lineage, DORA MTTR, SLO primer](maturity/monitoring-and-reliability.md).
+Levels 0–5 — deck lineage, DORA MTTR, SLO primer; L5 aspirational: [monitoring deep dive](maturity/monitoring-and-reliability.md).
 
 ### Security & secrets
 
@@ -264,11 +230,12 @@ Two tracks, one axis — **application security** and **secrets/IAM ops**.
 
 | Level | Application security | Secrets & identity |
 |---|---|---|
-| 1 | Known antipatterns in code | Secrets in repo or plain config |
-| 2 | Antipatterns removed | Central store; manual rotation |
+| 0 | Known antipatterns tolerated (hardcoded creds, unsafe defaults) | Secrets in Git, images, or plain config |
+| 1 | Antipatterns removed ad hoc | Central store; manual copy; long-lived tokens |
+| 2 | Basic threat awareness; reactive patches | Scoped paths/policies; rotation runbooks |
 | 3 | Designed against common attacks | Dynamic secrets; least privilege |
 | 4 | Secure-by-default; fine-grained authz | Integrated with CI/CD and runtime |
-| 5 | Audits; patch discipline | Automated rotation; blast-radius drills |
+| 5 | Regular audits; patch discipline | Automated rotation; blast-radius drills |
 
 Vault-class platforms exemplify the secrets track — see [security deep dive](maturity/security-and-secrets.md) (deck lineage, fleet secrets) and [devops/vault/](../../devops/vault/README.md).
 
@@ -282,7 +249,7 @@ Outcome-based — not coverage percentages. **Dual audience:** humans and agent 
 | 2 | Findable for humans; unstable for agents |
 | 3 | Conventions (structure, index, metadata) |
 | 4 | Handoffs, skills, artifact discipline (JBGE/TAGRI) |
-| 5 | Time-to-orient improves; fewer repeated mistakes |
+| 5 | Orientation time improves; fewer repeated mistakes *(directional — not audited)* |
 
 See [documentation deep dive](maturity/documentation-and-knowledge.md) (deck critique of coverage %, dual audience) and [Artifact Discipline and AI](artifact-discipline-and-ai.md).
 
@@ -358,7 +325,8 @@ Full index: [maturity/README.md](maturity/README.md) — **14 axis v2 deep dives
 
 ## What is not here yet
 
-- **Deep author review** — first pass skim OK; optional `/validate read` per doc after merge
+- **Draft rubric** — levels subject to revision; [navigation vs benchmark essay](maturity-as-navigation-not-benchmark.md)
+- **Deep author review** — optional `/validate read` per doc after merge
 - Deck **PDF** for diagram-only slides not captured in text export
 - Worked **SLO YAML / error-budget alert** examples in devops (primer exists: [slo-and-runbooks.md](../../devops/slo-and-runbooks.md))
 - Expanded **product discovery** corpus (optional axis — thin by choice)
@@ -366,7 +334,7 @@ Full index: [maturity/README.md](maturity/README.md) — **14 axis v2 deep dives
 
 Track progress: [resurrection notes](../../research/software-systems-maturity/findings/2026-resurrection-notes.md) · [artifact map](../../research/software-systems-maturity/findings/artifact-map.md) · [session handoff](../../.planning/software-systems-maturity/whats-next.md)
 
-If this framework becomes an organizational standard, level rubrics need peer review — this document remains the **trailhead**.
+If this framework becomes an organizational standard, level rubrics need peer review — this document remains the **draft trailhead**.
 
 ---
 

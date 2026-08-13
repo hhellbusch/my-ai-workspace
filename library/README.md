@@ -36,6 +36,7 @@ These references have deep AI-researched context (summaries, key themes, notable
 | [Andrej Karpathy — LLM Wiki (GitHub Gist)](karpathy-llm-wiki.md) | Gist | ai-engineering, memory, llm-wiki, knowledge-base, schema, ingest, persistent-context | 2026-04-30 |
 | [MemPalace — Local-first AI memory](mempalace.md) | Tool / Architecture | ai-engineering, memory, verbatim-storage, semantic-search, wings-rooms-drawers, mcp, agent-memory | 2026-04-30 |
 | [Alberta Tech — Why Devs Are OBSESSED with Claude Code](alberta-tech-why-devs-obsessed-claude-code.md) | YouTube | ai-engineering, claude-code, form-factor, developer-psychology, adoption, agent-harness, terminal-bench | 2026-04-30 |
+| [Accelerate — Forsgren, Humble, Kim](accelerate-forsgren-humble-kim.md) | Book | devops, dora, measurement, organizational-performance, continuous-delivery | 2026-08-12 |
 | [Jared Burck — Enterprise Generative AI: LLMs on Red Hat OpenShift](jared-burck-openshift-ai-llm-deployment.md) | Article | devops, openshift, openshift-ai, llm, enterprise, kserve, vllm, rhoai | 2026-04-30 |
 | [Level1Techs — AI and You Against the Machine (local / Big AI)](level1techs-ai-you-against-machine-local.md) | YouTube | local-llm, quantization, moe, deepseek, context-window, consumer-gpu | 2026-05-03 |
 | [Alex Krentsel — Personal Agent Gateway Deep Dive](alex-krentsel-personal-agent-gateway-deep-dive.md) | YouTube | personal-agent-gateway, autonomous-agents, gateway, heartbeat, cron, skills, memory, harness | 2026-05-29 |

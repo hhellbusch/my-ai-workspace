@@ -8,7 +8,7 @@ review:
 
 > **Audience:** Humans, future teammates, **and** AI coding agents — multi-session work.
 >
-> **Purpose:** Context quality over coverage %; this repo as dual-audience exemplar.
+> **Purpose:** Context quality over coverage %; dual-audience patterns with **example evidence** from this repo (not a maturity score for Field Notes).
 
 **Related:** [Artifact Discipline and AI](../artifact-discipline-and-ai.md) · [Prompting Is Necessary but Not Sufficient](../prompting-and-state.md) · [Architecture & change](architecture-and-change.md) · [DORA / AI systems](../../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md)
 
@@ -71,7 +71,10 @@ Deck cited Agile Manifesto — working software over comprehensive documentation
 
 ---
 
-## Evidence in this workspace (rich)
+## Example evidence for this workspace
+
+> Illustrates practices on this axis using paths in Field Notes. **Not a maturity score** for this workspace or your team. See [navigation vs benchmark](../maturity-as-navigation-not-benchmark.md) and [artifact map](../../../research/software-systems-maturity/findings/artifact-map.md).
+
 
 | Practice | Path |
 |---|---|

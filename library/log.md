@@ -316,7 +316,11 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Source:** YouTube / research/ingest-queue/sources/ralph-loops-build-dumb-ai-loops-that-ship-chris-parsons-cherrypick.md
 - **Note:** Workshop. Ralph loop = re-run prompt after completion to catch gaps. Simple loops > n8n orchestration. Self-improving skills. Ticket-driven loops. AI Engineer channel.
 
-## [2026-07-17] ingest | OCP Container Density / Overcommit
+## [2026-08-12] ingest | Accelerate — Forsgren, Humble, Kim
+- **Entry:** [accelerate-forsgren-humble-kim.md](accelerate-forsgren-humble-kim.md)
+- **Wing:** devops / measurement
+- **Source:** Book (JBGE summary for maturity/DORA crosswalk)
+
 - **Entry:** [ocp-container-density-overcommit.md](ocp-container-density-overcommit.md)
 - **Wing:** devops
 - **Source:** research collection / research/ocp-container-density-overcommit/sources/
