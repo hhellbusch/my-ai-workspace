@@ -21,6 +21,7 @@ Resurrected a 2016–2017 maturity deck as a **trailhead + 14 axis deep dives + 
 | Devops placement rules | [devops/ORGANIZATION.md#maturity-lens](../../devops/ORGANIZATION.md#maturity-lens) |
 | Agent behavior | [AGENTS.md](../../AGENTS.md) § Software Systems Maturity |
 | Design decisions | [2026-resurrection-notes.md](../../research/software-systems-maturity/findings/2026-resurrection-notes.md) |
+| DORA / Accelerate / AI map | [dora-accelerate-and-ai-systems.md](../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md) |
 | Project brief | [BRIEF.md](BRIEF.md) |
 
 ---
@@ -44,6 +45,17 @@ Resurrected a 2016–2017 maturity deck as a **trailhead + 14 axis deep dives + 
 - Domain-specific maturity ladders (Kafka, cluster links, etc.)
 - Org-wide level scores or certification framing
 - GitOps as a top-level axis (lives under Deployment & release)
+
+---
+
+## Axis iteration (ongoing)
+
+Second pass: one axis at a time — expand deep dive, reconcile trailhead, map DORA/corpus evidence.
+
+| Axis | Status |
+|---|---|
+| Source control | **v2 done** — [deep dive](../../docs/ai-engineering/maturity/source-control.md) · [DORA note](../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md) |
+| Next suggested | Code quality (thin corpus; deck xkcd) or Deployment (rich; DORA overlap) |
 
 ---
 

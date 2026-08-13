@@ -20,7 +20,7 @@
 
 | Axis | Deep dive | Corpus |
 |---|---|---|
-| Source control | [source-control.md](../../../docs/ai-engineering/maturity/source-control.md) | Partial — [git-learning-guide](../../../devops/git/git-learning-guide.md) |
+| Source control | [source-control.md](../../../docs/ai-engineering/maturity/source-control.md) | Partial — [git-learning-guide](../../../devops/git/git-learning-guide.md), [branching rules](../../../rules/branching.md), argo/rhacm GitOps |
 | Code quality | [code-quality.md](../../../docs/ai-engineering/maturity/code-quality.md) | Thin — craft skill, deck xkcd links |
 | Testing & verification | [testing-and-verification.md](../../../docs/ai-engineering/maturity/testing-and-verification.md) | Partial — network test example |
 | Architecture & change | [architecture-and-change.md](../../../docs/ai-engineering/maturity/architecture-and-change.md) | Partial — argo GUIDELINES, fleet notes |

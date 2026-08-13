@@ -11,5 +11,6 @@
 - Raw export: [sources/deck-text-export.txt](sources/deck-text-export.txt)
 - Resurrection notes: [findings/2026-resurrection-notes.md](findings/2026-resurrection-notes.md)
 - Artifact map: [findings/artifact-map.md](findings/artifact-map.md)
+- DORA / Accelerate / AI: [findings/dora-accelerate-and-ai-systems.md](findings/dora-accelerate-and-ai-systems.md)
 
 **Original deck intent:** Intro plus one deep dive per axis — in progress via `docs/ai-engineering/maturity/`.
