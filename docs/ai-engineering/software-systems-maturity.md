@@ -210,11 +210,14 @@ Deep dive: [deck lineage, DORA alignment, fleet/AI notes](maturity/source-contro
 
 | Level | Posture |
 |---|---|
+| 0 | No build step; compile on target hosts |
 | 1 | Manual ad hoc builds |
 | 2 | Script automation |
-| 3 | CI-built artifacts |
-| 4 | Artifact registry; immutable tags |
-| 5 | Every build deployable; provenance/SBOM on critical paths |
+| 3 | CI-built artifacts (or rendered output) on every change |
+| 4 | Artifact registry or committed render; immutable tags |
+| 5 | Every build deployable; broken build stops the line; provenance/SBOM on critical paths |
+
+Deep dive: [deck lineage, DORA CI mapping, GitOps render pipeline](maturity/builds-and-artifacts.md).
 
 ### Deployment & release
 
