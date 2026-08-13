@@ -325,7 +325,7 @@ Full index: [maturity/README.md](maturity/README.md) — **14 axis drafts** + [J
 
 - **Author review** across all deep dive drafts (levels, voice, applicability)
 - Deck **PDF** for diagram-only slides not captured in text export
-- Central **SLO/runbook** maturity guide ([monitoring gap](maturity/monitoring-and-reliability.md))
+- Worked **SLO YAML / error-budget alert** examples in devops (primer exists: [slo-and-runbooks.md](../../devops/slo-and-runbooks.md))
 - Expanded **product discovery** corpus (optional axis — thin by choice)
 
 Track progress: [resurrection notes](../../research/software-systems-maturity/findings/2026-resurrection-notes.md) · [artifact map](../../research/software-systems-maturity/findings/artifact-map.md)
