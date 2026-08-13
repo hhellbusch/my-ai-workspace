@@ -2,7 +2,7 @@
 
 **Purpose:** Connect the [software systems maturity](../../../docs/ai-engineering/software-systems-maturity.md) model to DORA/Accelerate evidence — and surface what changes (or doesn't) when AI agents join the delivery path.
 
-**Status:** Working note — axis iteration seed (2026-08-12). Not a standalone essay yet.
+**Status:** Working note — **all 14 axes v2** linked (2026-08-12). Not a standalone essay yet.
 
 **Related:** [Source control deep dive](../../../docs/ai-engineering/maturity/source-control.md) · [Deployment & release](../../../docs/ai-engineering/maturity/deployment-and-release.md) · [AI agents & harnesses](../../../docs/ai-engineering/maturity/ai-agents-and-harnesses.md)
 
@@ -150,6 +150,25 @@ Avoid: converting axis levels into a fake DORA score. Avoid: ignoring DORA becau
 
 ---
 
+## Other axes — DORA touchpoints (v2)
+
+Per-axis detail in deep dives; summary DORA relevance:
+
+| Axis | DORA / Accelerate touchpoint |
+|---|---|
+| [Code quality](code-quality.md) | Indirect — review culture + **change failure rate** with testing |
+| [Architecture & change](architecture-and-change.md) | **Loosely coupled architecture** capability |
+| [Data management](data-management.md) | Weak direct link — pipeline integration at L5 |
+| [Monitoring & reliability](monitoring-and-reliability.md) | **MTTR** four-key metric |
+| [Security & secrets](security-and-secrets.md) | Supply chain overlaps builds L5; not a classic DORA capability name |
+| [Documentation & knowledge](documentation-and-knowledge.md) | **Generative culture** enabler; no coverage metric |
+| [Platform & fleet](platform-as-accelerator.md) | Measure DORA per service, not cluster count |
+| [AI agents & harnesses](ai-agents-and-harnesses.md) | **Open research** — eval/skills not in original DORA set |
+| [Team practices](team-practices.md) | **Generative culture** capability |
+| [Product discovery](product-discovery.md) | Outcomes vs DORA output metrics — wrong-thing-built risk |
+
+---
+
 ## Sources
 
 - *Accelerate* — Forsgren, Humble, Kim (2018) — [library catalog stub](../../../library/catalog.md)
@@ -161,6 +180,6 @@ Avoid: converting axis levels into a fake DORA score. Avoid: ignoring DORA becau
 
 ## Possible follow-ups
 
+- Per-axis iteration — **all 14 axes v2 complete** (2026-08-12)
 - Enriched library entry for *Accelerate* / DORA (4-step ingest)
 - Essay: "DORA in the agent era" under `docs/ai-engineering/`
-- Per-axis iteration notes linking DORA capabilities — **source control, deployment, builds, testing done**; code quality or architecture next

@@ -2,7 +2,7 @@
 
 **Purpose:** Preserve and resurrect a 2016–2017 maturity-model slide deck — trailhead, deep dives, and repo artifact mapping.
 
-**Status:** First pass complete — trailhead + **14 axis deep dives** + Joel appendix + worksheet + meta-framework navigation. Author skim OK 2026-08-12. Merge [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9).
+**Status:** First pass + **v2 axis iteration** complete (all 14 deep dives). Merge [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9).
 
 **Output:**
 
@@ -13,4 +13,4 @@
 - Artifact map: [findings/artifact-map.md](findings/artifact-map.md)
 - DORA / Accelerate / AI: [findings/dora-accelerate-and-ai-systems.md](findings/dora-accelerate-and-ai-systems.md)
 
-**Original deck intent:** Intro plus one deep dive per axis — in progress via `docs/ai-engineering/maturity/`.
+**Original deck intent:** Intro plus one deep dive per axis — **delivered** in `docs/ai-engineering/maturity/` (v2 iteration 2026-08-12).

@@ -1,31 +1,29 @@
 ---
 review:
   status: unreviewed
-  notes: "Security & secrets deep dive — application security + secrets/IAM tracks with vault/RHACM corpus."
+  notes: "Security v2 — deck lineage, supply chain with builds L5, fleet secrets corpus."
 ---
 
 # Security & Secrets — maturity deep dive
 
-> **Audience:** Teams assessing application security and **secrets/identity operations** — especially those standardizing on Vault-class stores, External Secrets Operator, or fleet secret distribution.
+> **Audience:** Application security and **secrets/identity operations** — Vault, ESO, fleet distribution.
 >
-> **Purpose:** Expand the [trailhead](../software-systems-maturity.md#security--secrets) axis with two parallel tracks, levels, anti-patterns, and workspace examples.
+> **Purpose:** Two parallel tracks, deck lineage, workspace examples, supply chain overlap with [builds](builds-and-artifacts.md) L5.
 
-**Related:** [Deployment & release](deployment-and-release.md) · [Platform accelerator](platform-as-accelerator.md) · [Vault integration](../../../devops/vault/integration/README.md) · [RHACM secret management](../../../devops/rhacm/examples/secret-management/README.md)
+**Related:** [Deployment](deployment-and-release.md) · [Platform accelerator](platform-as-accelerator.md) · [Vault integration](../../../devops/vault/integration/README.md) · [RHACM secret management](../../../devops/rhacm/examples/secret-management/README.md) · [DORA / AI systems](../../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md)
 
 ---
 
 ## What this axis answers
 
-*Can we protect the system and its data — and operate credentials without heroes, leaks, or surprise blast radius?*
+*Can we protect the system and operate credentials without heroes, leaks, or surprise blast radius?*
 
-One axis, **two tracks** that mature at different speeds:
+**Two tracks** — mature at different speeds:
 
 | Track | Question |
 |---|---|
-| **Application security** | Is the software designed and maintained to resist abuse? |
-| **Secrets & identity ops** | Are credentials short-lived, scoped, auditable, and out of Git? |
-
-Level 3 on one track with level 1 on the other is a common and dangerous skew.
+| **Application security** | Designed against abuse? |
+| **Secrets & identity ops** | Credentials short-lived, scoped, out of Git? |
 
 ---
 
@@ -35,12 +33,12 @@ Level 3 on one track with level 1 on the other is a common and dangerous skew.
 |---|---|
 | **0** | Known antipatterns (hardcoded creds, unsafe defaults) |
 | **1** | Antipatterns removed ad hoc |
-| **2** | Basic threat awareness; patches applied reactively |
+| **2** | Basic threat awareness; reactive patches |
 | **3** | Designed against common attacks; basic access control |
 | **4** | Secure-by-default; fine-grained authorization |
-| **5** | Regular audits; patch and vulnerability discipline measured |
+| **5** | Regular audits; patch discipline measured |
 
-**Platform note:** Kubernetes/OpenShift provides **mechanisms** (NetworkPolicy, SCCs, RBAC) at level 3+ *potential* — your team still earns the level by using them correctly.
+**Deck lineage (appSec):** antipatterns present → no antipatterns → designed for security → secure by default → regular audits/patches.
 
 ---
 
@@ -48,30 +46,38 @@ Level 3 on one track with level 1 on the other is a common and dangerous skew.
 
 | Level | Posture |
 |---|---|
-| **0** | Secrets in Git, images, or plain ConfigMaps |
+| **0** | Secrets in Git, images, plain ConfigMaps |
 | **1** | Central store; manual copy; long-lived tokens |
 | **2** | Scoped paths/policies; rotation runbooks |
-| **3** | Dynamic or short-lived credentials; least privilege |
-| **4** | Integrated with CI/CD and runtime (ESO, Vault Agent, platform vault) |
+| **3** | Dynamic/short-lived creds; least privilege |
+| **4** | Integrated with CI/CD and runtime (ESO, Vault Agent) |
 | **5** | Automated rotation; blast-radius drills; audit evidence |
 
-**Vault-class pattern (2020s standard):** hierarchical paths (`shared/`, `regional/`, cluster-specific), KV v2 for versioning, Kubernetes auth to avoid bootstrap token sprawl — see [Vault integration overview](../../../devops/vault/integration/README.md).
+**Vault-class pattern:** hierarchical paths, KV v2, K8s auth — [Vault integration overview](../../../devops/vault/integration/README.md).
 
 ---
 
-## Fleet secret distribution (platform lens)
+## Supply chain (builds L4–5 overlap)
 
-Multi-cluster shops add a **distribution** problem on top of storage:
+Signed images, SBOM, dependency pinning — [builds & artifacts](builds-and-artifacts.md) L5 + this axis. Not a separate maturity axis (trailhead merge decision).
 
-| Approach | When | Repo |
-|---|---|---|
-| Policy-based push (Hub → spoke) | CA certs, registry creds, simple configs | [RHACM secret-management/1_basic_secret_distribution/](../../../devops/rhacm/examples/secret-management/1_basic_secret_distribution/) |
-| ManagedServiceAccount | Automation/CI access to clusters | [2_managed_service_accounts/](../../../devops/rhacm/examples/secret-management/2_managed_service_accounts/) |
-| External Secrets Operator | App secrets from Vault/AWS SM/etc. | [3_external_secrets_operator/](../../../devops/rhacm/examples/secret-management/3_external_secrets_operator/) |
+---
 
-Compare approaches: [secret-management README — when to use each](../../../devops/rhacm/examples/secret-management/README.md#when-to-use-each-approach).
+## Fleet secret distribution
 
-**Maturity signal:** production app secrets at level 4+ usually mean **ESO + central store**, not Policy copying sensitive payloads to every cluster indefinitely.
+| Approach | Path |
+|---|---|
+| Policy-based push | [1_basic_secret_distribution/](../../../devops/rhacm/examples/secret-management/1_basic_secret_distribution/) |
+| ManagedServiceAccount | [2_managed_service_accounts/](../../../devops/rhacm/examples/secret-management/2_managed_service_accounts/) |
+| External Secrets Operator | [3_external_secrets_operator/](../../../devops/rhacm/examples/secret-management/3_external_secrets_operator/) |
+
+Compare: [secret-management README](../../../devops/rhacm/examples/secret-management/README.md).
+
+---
+
+## AI era
+
+Secrets in prompts, committed `.env`, or agent-generated config with credentials → **L0**. Review skill and rules flag secret patterns. Never trust agent to "redact" after commit — rotate + history repair ([source control](source-control.md)).
 
 ---
 
@@ -80,25 +86,25 @@ Compare approaches: [secret-management README — when to use each](../../../dev
 | Anti-pattern | Track |
 |---|---|
 | Passwords in repository | Secrets L0 |
-| Shared admin kubeconfig in wiki | Secrets L0–1 |
-| Vault installed but apps still use static K8s Secrets | Secrets L2 theater |
-| NetworkPolicy CRDs exist; default allow everywhere | AppSec L3 gap |
-| Rotating secrets without updating consumers | Secrets L3 failure |
-| GitOps for apps, manual cluster admin creds | Split maturity |
+| Vault installed; apps use static Secrets | L2 theater |
+| NetworkPolicy exists; default allow | AppSec L3 gap |
+| GitOps apps; manual admin creds | Split maturity |
 
 ---
 
-## Connection to other axes
+## Cross-axis
 
-- **Deployment:** secret sync as part of reconcile ([deployment deep dive](deployment-and-release.md))
-- **Documentation:** runbooks for break-glass and rotation ([documentation deep dive](documentation-and-knowledge.md))
-- **AI agents:** never commit credentials; skills/rules flag secret files — overlaps [AI agents](ai-agents-and-harnesses.md)
+```text
+Security ──gates──▶ Deployment (policy in reconcile)
+         ──docs────▶ Documentation (break-glass runbooks)
+         ──AI──────▶ AI agents (tool boundaries, no secrets in corpus)
+```
 
 ---
 
 ## External references
 
-- [HashiCorp Vault documentation](https://developer.hashicorp.com/vault/docs)
+- [HashiCorp Vault docs](https://developer.hashicorp.com/vault/docs)
 - [External Secrets Operator](https://external-secrets.io/)
 
 ---

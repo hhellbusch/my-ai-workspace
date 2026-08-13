@@ -8,7 +8,7 @@
 
 **Out of scope:** Domain-specific ladders (Kafka, cluster links, etc.); level badges; CMM-style org scores.
 
-**Status:** First pass **complete** (author skim OK, 2026-08-12). Merge [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9) to close thread.
+**Status:** First pass complete + **v2 axis iteration** on all 14 deep dives — author skim OK. Merge [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9) to close thread.
 
 **Deliverables:**
 
@@ -16,6 +16,7 @@
 |---|---|---|
 | 0–3 | Trailhead, 14 deep dives, Joel appendix, artifact map | Done |
 | Review | Author skim — levels, voice acceptable for v1 | Done (first pass) |
+| Axis iteration v2 | All 14 deep dives — deck, DORA, corpus, AI | Done (2026-08-12) |
 | D1 | Navigation hub — devops/README, ORGANIZATION, AGENTS | Done |
 | D4 | Skill hooks (cross-link, review) | Done |
 | D5 | Assessment worksheet | Done |

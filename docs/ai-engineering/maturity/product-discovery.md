@@ -1,26 +1,26 @@
 ---
 review:
   status: unreviewed
-  notes: "Product discovery deep dive — optional axis, validated learning before build."
+  notes: "Product discovery v2 — optional axis, AI TAGRI, thin corpus by design."
 ---
 
 # Product Discovery — maturity deep dive *(optional)*
 
-> **Audience:** Product-engineering hybrids — teams that build what stakeholders ask for without validating problems first. **Mark N/A** for pure platform/infra teams.
+> **Audience:** Product-engineering hybrids. **N/A** for pure platform/infra teams.
 >
-> **Purpose:** Address Joel Test "spec" and "schedule" items without returning to big upfront design.
+> **Purpose:** Joel spec/schedule items; validated learning before expensive build.
 
-**Related:** [Architecture & change](architecture-and-change.md) · [Joel Test appendix](joel-test-appendix.md) · [Trailhead](../software-systems-maturity.md#product-discovery-optional)
+**Related:** [Architecture & change](architecture-and-change.md) · [Joel appendix](joel-test-appendix.md) · [The Shift](../the-shift.md) · [DORA / AI systems](../../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md)
 
 ---
 
 ## What this axis answers
 
-*Do we know **what** to build and **why** before implementation — and do we learn as we ship?*
+*Do we know **what** to build and **why** before implementation — and learn as we ship?*
 
-[The Shift](../the-shift.md): when implementation is cheap, **knowing what to build** can become the bottleneck — this axis names that explicitly.
+[The Shift](../the-shift.md): when implementation is cheap, **knowing what to build** can become the bottleneck.
 
-Not a return to months of specification ([Agile Manifesto — working software](http://www.ambysoft.com/essays/agileManifesto.html)). **Validated learning** before expensive build.
+Not big upfront design ([Agile Manifesto](http://www.ambysoft.com/essays/agileManifesto.html)) — **validated learning**.
 
 ---
 
@@ -28,42 +28,61 @@ Not a return to months of specification ([Agile Manifesto — working software](
 
 | Level | Posture |
 |---|---|
+| **0** | Build without problem statement |
 | **1** | Build requests directly; success = shipped |
-| **2** | Conversations with stakeholders; informal priority |
-| **3** | Written problem statement + success criteria before build |
+| **2** | Stakeholder conversations; informal priority |
+| **3** | Written problem + success criteria before build |
 | **4** | Thin experiments/prototypes; data informs priority |
-| **5** | Continuous discovery tied to outcome metrics (not output counts) |
+| **5** | Continuous discovery tied to **outcomes**, not output counts |
 
 ---
 
-## Joel Test mapping
+## Joel mapping
 
-| Joel item | Maps here |
+| Item | Level |
 |---|---|
-| Do you have a spec? | Level 3+ — lightweight, living |
-| Do you have an up-to-date schedule? | Level 2–3 planning honesty |
-| Hallway usability testing | Level 4–5 feedback loops |
-
-Items like "quiet workspace" and "hire the best" — **out of scope** for this technical maturity model ([appendix](joel-test-appendix.md)).
+| Spec | 3+ lightweight, living |
+| Up-to-date schedule | 2–3 planning honesty |
+| Hallway usability | 4–5 feedback |
 
 ---
 
-## Anti-patterns
+## DORA
+
+DORA measures **delivery** of what you build — not whether you built the right thing. Low discovery maturity can yield high deployment frequency on the **wrong** features. Use this axis when DORA metrics look good but outcomes don't.
+
+---
+
+## AI era
 
 | Anti-pattern | Why |
 |---|---|
-| AI generates epic nobody asked for | TAGRI failure — see [artifact discipline](../artifact-discipline-and-ai.md) |
-| Build full feature to "learn" | Skip level 4 experiments |
-| Success = story points closed | Output not outcome |
-| No one talks to operators/users | Discovery in vacuum |
+| Agent-generated epic nobody asked for | [TAGRI](../artifact-discipline-and-ai.md) failure |
+| Build full feature to "learn" | Skip L4 experiments |
+| Success = story points | Output not outcome |
+| Fluent plan, no operator contact | [ai-for-unfamiliar-domains](../ai-for-unfamiliar-domains.md) — verification ≠ discovery |
+
+**Shoshin before build:** [spar](../sparring-and-shoshin.md) on problem frame.
 
 ---
 
-## Repo corpus
+## Corpus
 
-**Thin** — philosophy and workflow essays tangential ([The Shift](../the-shift.md), [ai-for-unfamiliar-domains](../ai-for-unfamiliar-domains.md) shows verification, not product discovery).
+**Thin by design** — [The Shift](../the-shift.md), workflow essays; no product management library wing yet.
 
-Treat this deep dive as **framework for conversation** until deliberate product content is added.
+Framework for conversation until deliberate product content added.
+
+---
+
+## Cross-axis
+
+```text
+Product discovery ──feeds──▶ Architecture (what to build)
+                  ──feeds──▶ Deployment (what to ship)
+                  ──optional──▶ Documentation (problem briefs)
+```
+
+Mark **N/A** on [worksheet](worksheet.md) for pure infra teams.
 
 ---
 
