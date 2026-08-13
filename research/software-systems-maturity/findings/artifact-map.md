@@ -22,7 +22,7 @@
 |---|---|---|
 | Source control | [source-control.md](../../../docs/ai-engineering/maturity/source-control.md) | Partial — [git-learning-guide](../../../devops/git/git-learning-guide.md), [branching rules](../../../rules/branching.md), argo/rhacm GitOps |
 | Code quality | [code-quality.md](../../../docs/ai-engineering/maturity/code-quality.md) | Thin — craft skill, deck xkcd links |
-| Testing & verification | [testing-and-verification.md](../../../docs/ai-engineering/maturity/testing-and-verification.md) | Partial — network test example |
+| Testing & verification | [testing-and-verification.md](../../../docs/ai-engineering/maturity/testing-and-verification.md) | Partial+ — bare-metal harness, cross-dc network test, argo CI/labs |
 | Architecture & change | [architecture-and-change.md](../../../docs/ai-engineering/maturity/architecture-and-change.md) | Partial — argo GUIDELINES, fleet notes |
 | Builds & artifacts | [builds-and-artifacts.md](../../../docs/ai-engineering/maturity/builds-and-artifacts.md) | Partial+ — argo CI/promotion, operators-installer, framework render pipeline |
 | Deployment & release | [deployment-and-release.md](../../../docs/ai-engineering/maturity/deployment-and-release.md) | **Rich** — [devops/argo/](../../../devops/argo/README.md) |

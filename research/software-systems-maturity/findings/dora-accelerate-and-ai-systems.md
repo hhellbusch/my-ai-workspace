@@ -128,6 +128,28 @@ Avoid: converting axis levels into a fake DORA score. Avoid: ignoring DORA becau
 
 ---
 
+## Testing axis — DORA links
+
+**Primary DORA connection:** **Test automation** capability ↔ lower **change failure rate** and safer **deployment frequency** (with [deployment](deployment-and-release.md) and [builds](builds-and-artifacts.md)).
+
+| Maturity signal | DORA / delivery effect |
+|---|---|
+| Bugs found in production (L1) | High change failure rate; customer as QA |
+| Documented plans only (L2) | Manual gating — slow lead time, inconsistent quality |
+| Automated suites in non-prod (L3) | Foundation for reliable CI |
+| CI gates merge (L4) | Failures caught before prod — primary lever on change failure rate |
+| Perf/security + fix-when-found (L5) | Reduces severity and MTTR when failures occur |
+
+**Sandbox discipline:** deck rule — customer discovers bug = too late — aligns with DORA outcomes regardless of test count.
+
+**Skew pattern:** deploy **L4** GitOps + testing **L2** (manual only) → frequent **change failure rate** pain despite fast reconcile.
+
+**Systems engineering:** operational verification (preflight harness, network probes, dry-run) counts toward L3–4 when automated — see [cross-dc-network-test](../../../devops/ocp/examples/networking/cross-dc-network-test/README.md) · [bare-metal sandbox](../../../devops/bare-metal-dev-sandbox/HARNESS.md).
+
+**AI era:** agent-local "testing" without CI does not move DORA metrics; eval harnesses overlap [AI agents](../../../docs/ai-engineering/maturity/ai-agents-and-harnesses.md) axis.
+
+---
+
 ## Sources
 
 - *Accelerate* — Forsgren, Humble, Kim (2018) — [library catalog stub](../../../library/catalog.md)
@@ -141,4 +163,4 @@ Avoid: converting axis levels into a fake DORA score. Avoid: ignoring DORA becau
 
 - Enriched library entry for *Accelerate* / DORA (4-step ingest)
 - Essay: "DORA in the agent era" under `docs/ai-engineering/`
-- Per-axis iteration notes linking DORA capabilities — **source control, deployment, builds done**; testing next
+- Per-axis iteration notes linking DORA capabilities — **source control, deployment, builds, testing done**; code quality or architecture next

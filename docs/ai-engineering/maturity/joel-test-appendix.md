@@ -25,7 +25,7 @@ review:
 | 7 | Spec | [Product discovery](product-discovery.md) | Lightweight spec |
 | 8 | Quiet working conditions | — | **Out of scope** (workplace) |
 | 9 | Best tools | Partial | Enables several axes; not scored |
-| 10 | Testers | [Testing & verification](testing-and-verification.md) | Or automated equivalent |
+| 10 | Testers | [Testing & verification](testing-and-verification.md) | Dedicated QA or automated equivalent ≈ L3+ |
 | 11 | Hire the best | — | **Out of scope** (hiring) |
 | 12 | Hallway usability testing | [Product discovery](product-discovery.md) | Feedback loop |
 

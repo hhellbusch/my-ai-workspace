@@ -57,7 +57,8 @@ Second pass: one axis at a time — expand deep dive, reconcile trailhead, map D
 | Source control | **v2** — [deep dive](../../docs/ai-engineering/maturity/source-control.md) · [DORA note](../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md) |
 | Deployment & release | **v2** — [deep dive](../../docs/ai-engineering/maturity/deployment-and-release.md) · DORA § deployment axis in research note |
 | Builds & artifacts | **v2** — [deep dive](../../docs/ai-engineering/maturity/builds-and-artifacts.md) · DORA § builds axis in research note |
-| Next suggested | Testing & verification (change failure rate, deck sandbox) or Code quality (thin) |
+| Testing & verification | **v2** — [deep dive](../../docs/ai-engineering/maturity/testing-and-verification.md) · DORA § testing axis in research note |
+| Next suggested | Code quality (thin, deck xkcd) or Architecture & change |
 
 ---
 
