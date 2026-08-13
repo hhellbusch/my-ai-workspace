@@ -1,31 +1,33 @@
 ---
 review:
   status: unreviewed
-  notes: "Resurrected from 2016–2017 slide deck text export; 2026 expansion draft — author review needed for new axes."
+  notes: "2026 revision — expanded axis map, DevOps/GitOps/API reconcile, platform accelerator, dual-audience documentation; deep dives in maturity/."
 ---
 
 # Software Systems Maturity — a trailhead
 
-> **Audience:** Engineers, leads, and peers who want a structured way to assess where a team or system is today and what to improve next — without pretending one score captures everything.
+> **Audience:** Engineers, leads, and peers who want a structured way to assess where a team or system is today and what to improve next — including teams new to Kubernetes, teams not on Kubernetes at all, and teams using a platform (Kubernetes, OpenShift, or similar) as a maturity accelerator.
 >
-> **Purpose:** Introduce a multi-axis maturity model (originally a slide deck from 2016–2017) as a **trailhead**, not a complete guide. Assess current level per axis; prioritize the **next level up**.
+> **Purpose:** Introduce a multi-axis maturity model (originally a slide deck from 2016–2017) as a **trailhead**. Assess current level **per axis**; prioritize the **next level up**. Deep dives live under [maturity/](maturity/README.md).
 
-**Origin:** Started in 2016 or 2017; revisited on and off since. The original plan was this intro plus **one deep dive per axis** — those deep dives were never published. This essay resurrects the framework and sketches **2026 expansions** (platform, GitOps, AI agents — affectionately *clankers*).
+**Origin:** Started in 2016 or 2017; revisited on and off since. The original plan was this intro plus **one deep dive per axis** — those deep dives were never published. This revision expands toward **software systems** (not only application delivery) and **2026 context** (platform fleets, declarative ops, AI agents, knowledge for humans and machines).
 
 **Source material:** [research/software-systems-maturity/](../../research/software-systems-maturity/README.md)
 
-**Related:** [The Shift](the-shift.md) · [Artifact Discipline and AI](artifact-discipline-and-ai.md) · [Sparring and Shoshin](sparring-and-shoshin.md) · [GitOps maturity ladder (cluster links)](../../devops/ocp/examples/messaging/kafka/cluster-link-gitops/README.md#gitops-maturity-ladder-cluster-links)
+**Related:** [The Shift](the-shift.md) · [Artifact Discipline and AI](artifact-discipline-and-ai.md) · [Sparring and Shoshin](sparring-and-shoshin.md) · [Deployment & release deep dive](maturity/deployment-and-release.md) · [Platform as maturity accelerator](maturity/platform-as-accelerator.md)
 
 ---
 
 ## On this page
 
 - [What a maturity model is for](#what-a-maturity-model-is-for)
-- [Models worth knowing (and their limits)](#models-worth-knowing-and-their-limits)
 - [How to use this model](#how-to-use-this-model)
-- [The nine axes (2016 core)](#the-nine-axes-2016-core)
-- [2026 — toward software systems](#2026--toward-software-systems)
-- [Domain-specific ladders](#domain-specific-ladders)
+- [Models worth knowing (and their limits)](#models-worth-knowing-and-their-limits)
+- [Axis ecosystem](#axis-ecosystem)
+- [DevOps, GitOps, and API reconcile](#devops-gitops-and-api-reconcile)
+- [Platform as maturity accelerator](#platform-as-maturity-accelerator)
+- [Axis summaries](#axis-summaries)
+- [Deep dives](#deep-dives)
 - [What is not here yet](#what-is-not-here-yet)
 - [References](#references)
 
@@ -33,7 +35,7 @@ review:
 
 ## What a maturity model is for
 
-A maturity model is a tool to assess how effective, capable, and reliable a person, team, or system is **today**, and to suggest what to learn or build **next**.
+A maturity model assesses how effective, capable, and reliable a person, team, or system is **today**, and suggests what to build or learn **next**.
 
 Questions it helps answer:
 
@@ -41,9 +43,21 @@ Questions it helps answer:
 - Can we trust it to support good decisions (metrics, audits, reproducibility)?
 - Can we trust **new versions** without heroic effort?
 
-It is structured as **levels** — usually four or five per axis. The point is not certification or ranking companies. The point is **prioritization**: if you are at level 2 on testing, work on level 3 before chasing level 5 on documentation.
+Levels are **prioritization**, not certification. [Martin Fowler's mixologist metaphor](https://martinfowler.com/bliki/MaturityModel.html): novices follow recipes; experts substitute; masters invent from constraints.
 
-[Martin Fowler's mixologist metaphor](https://martinfowler.com/bliki/MaturityModel.html) captures the idea: novices follow recipes; experts substitute missing ingredients; masters invent drinks from constraints. Maturity is capability under variation — and exceptions keep increasing.
+The original deck named **software, individual, and team** performance. The axes below are mostly **system and practice** dimensions; [Team practices](#team-practices-optional) and [Product discovery](#product-discovery-optional) make the people/product side explicit.
+
+---
+
+## How to use this model
+
+1. **Assess per team or service** — not one score for the whole organization.
+2. **Pick the next level** on the axis that hurts most.
+3. **Expect skew** — level 4 builds with level 2 monitoring is common and dangerous.
+4. **Use level 0 optionally** for known anti-patterns (manual prod changes, secrets in Git, no docs entry point).
+5. **Treat some level 5 rows as aspirational** — especially monitoring/reliability (FMEA, chaos culture).
+
+Disagreement about level is often the valuable output.
 
 ---
 
@@ -51,195 +65,268 @@ It is structured as **levels** — usually four or five per axis. The point is n
 
 ### Capability Maturity Model (CMM)
 
-Five levels — Initial, Managed, Defined, Quantitatively Managed, Optimizing — aligned in spirit with [ISO 9001](https://www.iso.org/iso-9001-quality-management.html) continual improvement. Many organizations aim for **Defined (3) through Optimizing (5)**.
-
-**Caveats** (still valid):
-
-- Document-heavy, plan-driven culture — tension with agile (*working software*, *responding to change*).
-- Certification industry ≠ competence.
-- Comparing organizations by level alone invites gaming.
-
-Use CMM for vocabulary and improvement mindset; do not treat the level as destiny.
+Five levels — Initial through Optimizing — aligned in spirit with continual improvement. Useful vocabulary; dangerous as a **comparison score** (document-heavy history, certification ≠ competence).
 
 ### Joel Test and successors
 
-[Joel Spolsky's 12-step test](https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/) — a blunt checklist for project hygiene. Updated variants (e.g. SavvyClutch) exist. Useful as a **conversation starter**, not a full systems view.
+[Joel Spolsky's test](https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/) — blunt project hygiene checklist. Maps partially to these axes; items like "quiet workspace" sit outside this model (see deep-dive appendix later).
 
 ### This model
 
-**One size does not fit all** — define axes that match your organization. The nine axes below were chosen for software delivery teams; 2026 adds room for **platform**, **fleet**, and **AI-driven systems**.
+**One size does not fit all** — define axes that match your context. Kubernetes or OpenShift may accelerate several axes at once; they are not required ([Platform as maturity accelerator](maturity/platform-as-accelerator.md)).
 
 ---
 
-## How to use this model
+## Axis ecosystem
 
-1. **Assess** each axis honestly (team self-assessment beats external audit for learning).
-2. **Pick the next level** on the axis that hurts most — not the highest glamour axis.
-3. **Generate conversation** — disagreements about level often reveal real risks.
-4. **Re-assess** after meaningful change; levels are not permanent badges.
+Axes grouped by concern. Per-axis maturity **differs** — that is normal.
 
-Per-axis maturity can differ: level 4 builds with level 2 monitoring is a common and dangerous pattern.
+| Layer | Axis | Deep dive |
+|---|---|---|
+| **Build** | Source control | Planned |
+| | Code quality | Planned |
+| | Testing & verification | Planned |
+| | Architecture & change | Planned |
+| **Ship** | Builds & artifacts | Planned |
+| | **Deployment & release** | [deployment-and-release.md](maturity/deployment-and-release.md) |
+| | Data management | Planned |
+| **Run** | Monitoring & reliability | Planned |
+| **Protect** | Security & secrets | Planned |
+| **Know** | Documentation & knowledge | [documentation-and-knowledge.md](maturity/documentation-and-knowledge.md) |
+| **Scale** | Platform & fleet | [platform-as-accelerator.md](maturity/platform-as-accelerator.md) (platform lens) |
+| **Automate** | AI agents & harnesses | Planned |
+| **People** | Team practices | Planned |
+| **Product** *(optional)* | Product discovery | Planned |
+
+**Merged elsewhere (not standalone axes):** supply chain provenance → Builds + Security; observability→action → Monitoring & reliability; GitOps → pattern under Deployment (+ Platform for fleet policy).
+
+**Workspace artifact map:** [research/software-systems-maturity/findings/artifact-map.md](../../research/software-systems-maturity/findings/artifact-map.md)
 
 ---
 
-## The nine axes (2016 core)
+## DevOps, GitOps, and API reconcile
 
-Each axis uses five levels (1 = weakest, 5 = strongest). Wording follows the original deck; minor 2026 edits noted inline.
+These are **not** "we use Git." They are a stack of maturity patterns — detailed in [Deployment & release](maturity/deployment-and-release.md) with examples from [devops/argo/](../../devops/argo/README.md).
+
+```text
+DevOps       → own delivery end-to-end; shorten feedback loops
+CI/CD        → automate build, test, promote through environments
+GitOps       → declarative desired state in Git; diff/review; reconcile; drift
+API reconcile → same principles when apply target is REST/CLI/Job, not a CR
+```
+
+| Level | Posture |
+|---|---|
+| 0 | Prod changes manual, unique, untracked ("snowflakes") |
+| 1 | Scripts exist; human runs per environment |
+| 2 | Pipeline automates build/test; deploy still manual or partial |
+| 3 | Declarative desired state in Git; human or gated apply |
+| 4 | Automated reconcile (operator, Argo CD, Terraform, or idempotent API Job) |
+| 5 | Drift visible; unsafe drift corrected or alerted |
+
+**Common confusion:** a repo and pull requests are **source control** maturity. **GitOps** starts when merged main (or a release branch) is what production **converges toward**, with automation doing the converge.
+
+**API-driven systems** (legacy platforms, admin REST, CLIs) can reach levels 3–5 with **desired spec in Git + reconcile script** — GitOps principles without a Kubernetes CR. See deployment deep dive.
+
+---
+
+## Platform as maturity accelerator
+
+Teams adopt Kubernetes, OpenShift, and similar platforms because a **shared control plane** advances multiple axes together — not because containers are fashionable.
+
+| Capability | Axes helped |
+|---|---|
+| Declarative workloads, rollouts, health checks | Deployment, Monitoring |
+| Namespaces, quotas, network policy | Security, Architecture |
+| Operators, OLM, GitOps hooks | Deployment, Platform |
+| Central logging/metrics stacks | Monitoring |
+| Secrets integration (ESO, Vault agents, platform vaults) | Security & secrets |
+| Multi-cluster fleet tools (ACM-class) | Platform & fleet |
+
+**New to Kubernetes:** you may be level 1–2 on several axes while the **platform gives you level 3 primitives for free** (e.g. rolling updates, liveness probes). Assess **your team's practices**, not only what the platform makes possible.
+
+**Not on Kubernetes:** the same axes apply. Maturity is measured against **your** delivery and runtime model (VMs, serverless, mainframe ops, SaaS config). The patterns (declarative state, reconcile, drift) transfer; the machinery differs.
+
+Full write-up: [Platform as maturity accelerator](maturity/platform-as-accelerator.md).
+
+---
+
+## Axis summaries
+
+Five levels per axis unless noted. Deep dives add teaching stories, anti-patterns, and repo examples.
 
 ### Source control
 
-Version control is document control for code — the backbone of collaboration and audit.
-
 | Level | Posture |
 |---|---|
-| 1 — Not used | No VCS, or rarely used |
-| 2 — Used | Central server (or equivalent), regular commits |
-| 3 — Standardized | Commit message standards; branching model agreed |
-| 4 — Integrated | Tied to CI/CD automation |
-| 5 — Hooks & surgery | Hooks boost productivity; team can fix history safely ("repo surgery") |
-
-Tools named in the deck (CVS → SVN → **Git**) date the examples; the levels are tool-agnostic.
+| 1 | Not used or rarely used |
+| 2 | Shared remote; regular commits; basic collaboration |
+| 3 | Commit standards; branching model agreed |
+| 4 | Integrated with CI/CD |
+| 5 | Hooks; safe history repair ("repo surgery") |
 
 ### Code quality
 
-Quality is not tradable like a luxury car — [lack of quality costs people-time](https://martinfowler.com/bliki/TradableQualityHypothesis.html). Defects get more expensive the longer they live; erosion makes new features harder ([Boy Scout Rule](https://martinfowler.com/bliki/OpportunisticRefactoring.html): leave it a little better).
+| Level | Posture |
+|---|---|
+| 1 | No standards |
+| 2 | Style guide; DRY, YAGNI |
+| 3 | Linting; environment config not hard-coded |
+| 4 | Review before merge — human decision; agents assist |
+| 5 | Periodic architecture/health review; debt reduced |
+
+### Testing & verification
 
 | Level | Posture |
 |---|---|
-| 1 — Poor | No standards |
-| 2 — Style guide | DRY, YAGNI; style guide for major languages |
-| 3 — Linting | Linters; hard-coded environment params largely gone |
-| 4 — Code review | Regular reviews — manual **and clanker-assisted** (2026) |
-| 5 — System evaluation | Periodic design review; legacy and debt actively reduced |
+| 1 | Ad hoc; bugs found in production |
+| 2 | Documented test cases |
+| 3 | Automated unit/integration; non-prod runs |
+| 4 | CI gates; coverage informs risk |
+| 5 | Performance/security characterization; defects fixed when found |
 
-SOLID and friends remain the advanced vocabulary ([SRP, O/C, LSP, ISP, DIP](https://en.wikipedia.org/wiki/SOLID)) — teach when level 2–3 is stable, not before.
-
-### Testing
-
-Push discovery left: production is **too late** for first discovery ([sandbox discipline](http://www.agiledata.org/essays/sandboxes.html)).
+### Architecture & change
 
 | Level | Posture |
 |---|---|
-| 1 — Ad hoc | Little or no testing; bugs in production |
-| 2 — Test plans | Documented cases and expected behaviors |
-| 3 — Automated unit/integration | Suite automated; runs in non-prod |
-| 4 — CI/CD integrated | Tests gate automation; coverage informs risk |
-| 5 — Performance & security | Broader characterization; defects fixed immediately when found |
+| 1 | Ad hoc structure; breaking changes surprise consumers |
+| 2 | Informal boundaries; occasional ADRs |
+| 3 | Documented interfaces; deprecation notices |
+| 4 | Change governance (who approves prod); compatibility policy |
+| 5 | Evolution measured; technical debt visible in roadmap |
 
-### Builds
-
-Turn code into **observable artifacts** ([12-factor release](https://12factor.net/)).
+### Builds & artifacts
 
 | Level | Posture |
 |---|---|
-| 1 — Manual | Ad hoc builds |
-| 2 — Scripts | Partial script automation |
-| 3 — CI/CD integrated | Builds in developer pipeline |
-| 4 — Artifact management | Built artifacts stored and shared reliably |
-| 5 — Every build deployable | Broken builds block new work |
+| 1 | Manual ad hoc builds |
+| 2 | Script automation |
+| 3 | CI-built artifacts |
+| 4 | Artifact registry; immutable tags |
+| 5 | Every build deployable; provenance/SBOM on critical paths |
 
-### Deployment
+### Deployment & release
 
-Minimize risk and **environment variation** ([Continuous Delivery](https://martinfowler.com/bliki/ContinuousDelivery.html), [deployment pipeline](https://martinfowler.com/bliki/DeploymentPipeline.html)).
-
-| Level | Posture |
-|---|---|
-| 1 — Manual | Snowflake servers; unique each time |
-| 2 — Automated, manual run | Scripts exist but human triggers per server |
-| 3 — Standardized & integrated | Orchestrated via IT/dev tools |
-| 4 — Multi-env safe | Dev/test/prod; blue/green or canary |
-| 5 — Zero-touch CD | Frequent, efficient, safe production updates |
+See [DevOps/GitOps table](#devops-gitops-and-api-reconcile) and [deep dive](maturity/deployment-and-release.md).
 
 ### Data management
 
-Design, evolution, migration, and **recovery** ([evolutionary database design](https://martinfowler.com/articles/evodb.html)).
+| Level | Posture |
+|---|---|
+| 1 | Ad hoc schemas |
+| 2 | Designed; reviewed; normalized where appropriate |
+| 3 | Migrations; DR plan exists |
+| 4 | Automated migrations |
+| 5 | Data change integrated with delivery pipeline |
+
+### Monitoring & reliability
 
 | Level | Posture |
 |---|---|
-| 1 — Ad hoc | Structures undocumented |
-| 2 — Designed | Reviewed design; normalized where OLTP applies |
-| 3 — Migrations & DR plan | Migrations for change; DR documented |
-| 4 — Automated migrations | Schema/data change automated |
-| 5 — CI/CD integrated | Data management in same automation as code |
+| 1 | Reactive firefighting |
+| 2 | Logging; manual checks |
+| 3 | Automated alerts; runbooks |
+| 4 | SLOs; traceability to root cause |
+| 5 | *(Aspirational)* FMEA, chaos, error-budget culture |
 
-### Security
+### Security & secrets
 
-Assume benign misuse before malice. Antipatterns (passwords in repo) eliminated early.
+Two tracks, one axis — **application security** and **secrets/IAM ops**.
 
-| Level | Posture |
-|---|---|
-| 1 — Antipatterns | Known bad patterns still present |
-| 2 — No antipatterns | Bad habits gone; not designed for security |
-| 3 — Designed | Resists common attacks; basic access control |
-| 4 — Secure by default | Fine-grained authorization (ACLs, etc.) |
-| 5 — Audited | Regular audits; patches applied deliberately |
+| Level | Application security | Secrets & identity |
+|---|---|---|
+| 1 | Known antipatterns in code | Secrets in repo or plain config |
+| 2 | Antipatterns removed | Central store; manual rotation |
+| 3 | Designed against common attacks | Dynamic secrets; least privilege |
+| 4 | Secure-by-default; fine-grained authz | Integrated with CI/CD and runtime |
+| 5 | Audits; patch discipline | Automated rotation; blast-radius drills |
 
-### Documentation
+Vault-class platforms exemplify the secrets track — see [devops/vault/](../../devops/vault/README.md).
 
-Agile manifesto says working software — not **no** documentation ([Ambler on the manifesto](http://www.ambysoft.com/essays/agileManifesto.html)). Document as you build; keep it findable.
+### Documentation & knowledge
 
-| Level | Posture |
-|---|---|
-| 1 — None | — |
-| 2 — Ad hoc | Scattered docs |
-| 3 — Standardized | Standard + >50% coverage; easy to find |
-| 4 — Publishing | ~90%+ coverage; WIP publish workflow |
-| 5 — Living docs | Auto-publish on change; periodic stale review |
-
-See also [Artifact Discipline and AI](artifact-discipline-and-ai.md) for when **not** to write docs in the AI era.
-
-### Monitoring
-
-Move from firefighting to **proactive** failure management.
+Outcome-based — not coverage percentages. **Dual audience:** humans and agent sessions.
 
 | Level | Posture |
 |---|---|
-| 1 — None / ad hoc | Reactive only |
-| 2 — Basic logging | Manual monitoring |
-| 3 — Automated | Alerts; may trigger support |
-| 4 — Traceability | Standardized logs; root-cause friendly |
-| 5 — FMEA | Proactive failure-mode analysis |
+| 1 | Scattered; no entry point |
+| 2 | Findable for humans; unstable for agents |
+| 3 | Conventions (structure, index, metadata) |
+| 4 | Handoffs, skills, artifact discipline (JBGE/TAGRI) |
+| 5 | Time-to-orient improves; fewer repeated mistakes |
+
+See [documentation deep dive](maturity/documentation-and-knowledge.md) and [Artifact Discipline and AI](artifact-discipline-and-ai.md).
+
+### Platform & fleet
+
+| Level | Posture |
+|---|---|
+| 1 | Single cluster/account; manual drift |
+| 2 | Multiple envs; documented differences |
+| 3 | Git-managed platform config; promotion model |
+| 4 | Multi-cluster/fleet; policy as code |
+| 5 | Upgrade safety, blast-radius governance measured |
+
+### AI agents & harnesses
+
+| Level | Posture |
+|---|---|
+| 1 | Ad hoc prompts; no review |
+| 2 | Repeatable prompts/skills; human reviews all output |
+| 3 | Bounded tools; session/handoff discipline |
+| 4 | Spar/eval gates on risky changes |
+| 5 | Failure modes catalogued; improvement measured |
+
+See [The Shift](the-shift.md).
+
+### Team practices
+
+| Level | Posture |
+|---|---|
+| 1 | Hero knowledge; inconsistent onboarding |
+| 2 | Ad hoc pairing/review |
+| 3 | Onboarding checklist; review expected |
+| 4 | Deliberate practices (spar, shoshin, retros that change behavior) |
+| 5 | Learning loops; safe to challenge frames |
+
+See [Session Framework](session-framework.md).
+
+### Product discovery *(optional)*
+
+Skip or mark N/A for pure platform/infra teams.
+
+| Level | Posture |
+|---|---|
+| 1 | Build what's asked; no validation |
+| 2 | Informal stakeholder conversation |
+| 3 | Problem statement and success criteria before build |
+| 4 | Thin experiments; data-informed priority |
+| 5 | Continuous discovery tied to outcomes |
+
+Not a return to big upfront spec — **validated learning** before expensive build.
 
 ---
 
-## 2026 — toward software systems
+## Deep dives
 
-The deck already pointed past "software development" to **software systems** — infrastructure, platform, AI-driven components. Proposed additional axes (draft; levels TBD in deep dives):
-
-| Axis | Scope |
+| Topic | Status |
 |---|---|
-| **Platform & fleet** | Multi-cluster lifecycle, policy, identity, upgrade safety |
-| **GitOps & declarative ops** | Desired state in Git, reconcile, drift detection |
-| **AI agents & harnesses** | Tool boundaries, review gates, non-determinism, session state |
-| **Supply chain & provenance** | SBOM, signed artifacts, dependency hygiene (extends Security/Builds) |
-
-**Clankers** belong explicitly in **code review** (level 4) today and likely earn their own axis as agent autonomy increases — see [The Shift](the-shift.md) for where human judgment moves when implementation is cheap.
-
----
-
-## Domain-specific ladders
-
-Not every problem needs a new top-level axis. Narrow **domain ladders** nest under Deployment, Platform, or GitOps:
-
-**Example:** [GitOps maturity ladder for Cluster Links](../../devops/ocp/examples/messaging/kafka/cluster-link-gitops/README.md#gitops-maturity-ladder-cluster-links) — levels 0 (Control Center only) through 5 (drift-aware reconcile). Same pattern could apply to topic provisioning, ACL management, or fleet import.
-
-Use a domain ladder when:
-
-- The general axis (e.g. Deployment level 3) is true but a **specific capability** is still ad hoc.
-- You need Argo/CI conversation with concrete next steps.
+| [Deployment & release](maturity/deployment-and-release.md) | Draft |
+| [Documentation & knowledge](maturity/documentation-and-knowledge.md) | Draft |
+| [Platform as maturity accelerator](maturity/platform-as-accelerator.md) | Draft |
+| Remaining axes | Planned — see [maturity/README.md](maturity/README.md) |
 
 ---
 
 ## What is not here yet
 
-Per the original 2016 intent, each axis deserves its **own deep dive** — not written yet:
+- Full deep dives for all axes (2016 original intent)
+- Joel Test → axis mapping appendix
+- Teaching stories from the deck (XKCD, sandbox "too late" diagram) — belong in deep dives, not this trailhead
 
-- Source control, quality, testing, builds, deployment, data, security, documentation, monitoring
-- New: platform/fleet, GitOps, AI agents
+The [2026 resurrection notes](../../research/software-systems-maturity/findings/2026-resurrection-notes.md) and [artifact map](../../research/software-systems-maturity/findings/artifact-map.md) track progress.
 
-The [2026 resurrection notes](../../research/software-systems-maturity/findings/2026-resurrection-notes.md) track proposed structure. A separate data-management deep dive was drafted historically but is not published here.
-
-If this framework evolves toward a published organizational standard, axis definitions and level rubrics need peer review — this essay is the **trailhead**, not the final standard.
+If this framework becomes an organizational standard, level rubrics need peer review — this document remains the **trailhead**.
 
 ---
 
@@ -247,10 +334,8 @@ If this framework evolves toward a published organizational standard, axis defin
 
 - [Martin Fowler — Maturity Model](https://martinfowler.com/bliki/MaturityModel.html)
 - [Joel Spolsky — The Joel Test](https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/)
-- [Capability Maturity Model (Wikipedia)](https://en.wikipedia.org/wiki/Capability_Maturity_Model)
-- [Continuous Delivery (Fowler)](https://martinfowler.com/bliki/ContinuousDelivery.html) · [Blue-green deployment](https://martinfowler.com/bliki/BlueGreenDeployment.html)
+- [Continuous Delivery (Fowler)](https://martinfowler.com/bliki/ContinuousDelivery.html)
 - [Evolutionary Database Design (Fowler)](https://martinfowler.com/articles/evodb.html)
-- [Unit testing (Fowler)](https://martinfowler.com/bliki/UnitTest.html)
 
 ---
 
