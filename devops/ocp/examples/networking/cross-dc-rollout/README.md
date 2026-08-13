@@ -102,7 +102,7 @@ See [INVENTORY-WORKSHEET.md](INVENTORY-WORKSHEET.md) for a human worksheet, then
 | `workload.brokerIpam.mode` | `whereabouts` or `static` — see [BROKER-IPAM.md](../../messaging/kafka/cross-dc-kafka-net-helm/BROKER-IPAM.md) |
 | `workload.brokers[]` | Static mode only — `name` + `replIp` per Kafka replica |
 | `ipPools.test` | Test env / test NAD |
-| `ipPools.kafka` | Whereabouts mode pool (optional spacing reference for static) |
+| `ipPools.kafka` | Whereabouts mode pool (optional spacing reference for static) — [subnet layout on the `/26`](../../messaging/kafka/cross-dc-kafka-net-helm/BROKER-IPAM.md#subnet-layout-on-the-26) |
 | `workload.*` | Kafka NAD + `MultiNetworkPolicy` Helm |
 | `probe.image` | Test env (`TEST_PROBE_IMAGE`) |
 

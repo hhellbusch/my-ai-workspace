@@ -21,7 +21,7 @@ review:
 | `whereabouts` (default) | NAD with whereabouts pool + route in IPAM | Simple pod annotation + init container → [snippet](examples/cfk-kafka-whereabouts.snippet.yaml) |
 | `static` | Static IPAM NAD + `broker-ip-map` ConfigMap | Per-broker extended annotation → [snippet](examples/cfk-kafka-static.snippet.yaml) |
 
-**Read [BROKER-IPAM.md](BROKER-IPAM.md) before choosing** — neither mode is required for Cluster Linking; they differ in predictability, firewall shape, and operational overhead.
+**Read [BROKER-IPAM.md](BROKER-IPAM.md) before choosing** — neither mode is required for Cluster Linking; they differ in predictability, firewall shape, and operational overhead. Runtime chain and failure modes: [End-to-end pipeline](BROKER-IPAM.md#end-to-end-pipeline).
 
 ---
 

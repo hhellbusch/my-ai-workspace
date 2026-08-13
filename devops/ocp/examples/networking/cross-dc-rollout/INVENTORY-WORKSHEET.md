@@ -40,6 +40,8 @@ Derived (do not duplicate in inventory): VLAN iface = `{bondName}.{vlanId}` → 
 | `test` | | `.6` | `.10` | host IPs, kafka/broker IPs |
 | `kafka` | | `.20` | `.60` | host IPs, test pool (whereabouts only) |
 
+Full address map (gateway, test, host, kafka/static pins): [BROKER-IPAM.md — subnet layout](../../messaging/kafka/cross-dc-kafka-net-helm/BROKER-IPAM.md#subnet-layout-on-the-26).
+
 ## Nodes
 
 | hostname | hostIp | networkTest | Notes |

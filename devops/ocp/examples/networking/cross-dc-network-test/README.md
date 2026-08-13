@@ -42,7 +42,7 @@ Tests, using disposable resources only (no CFK/Kafka anywhere):
 
 This is the same checklist already in the [architecture overview](../../messaging/kafka/cross-dc-architecture-overview.md#verification-checklist) and [`cross-dc-replication.md`](../cross-dc-replication.md#verification-checklist) — this framework automates that checklist rather than inventing a new one, so the design docs and the test suite can't drift apart.
 
-**Explicitly out of scope:** anything CFK/Kafka-specific (listener config, Cluster Linking, broker `StatefulSet` identity). The test `NetworkAttachmentDefinition` uses a separate `whereabouts` range from Kafka's own pool — same VLAN/subnet/master interface, different IPs — so this can be run and re-run independently of whatever state Kafka is in, including before Kafka is deployed at all.
+**Explicitly out of scope:** anything CFK/Kafka-specific (listener config, Cluster Linking, broker `StatefulSet` identity). The test `NetworkAttachmentDefinition` uses a separate `whereabouts` range from Kafka's own pool — same VLAN/subnet/master interface, different IPs — so this can be run and re-run independently of whatever state Kafka is in, including before Kafka is deployed at all. What a passing test proves vs broker `REPL_IP` / Cluster Link wiring: [BROKER-IPAM.md — what the network test proves](../../messaging/kafka/cross-dc-kafka-net-helm/BROKER-IPAM.md#what-the-network-test-proves).
 
 ---
 

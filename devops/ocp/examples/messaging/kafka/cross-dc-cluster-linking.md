@@ -92,11 +92,11 @@ spec:
 **Verify against the installed CFK version's CRD reference:**
 
 1. Whether the structured `listeners` block supports a fully custom named listener without an `externalAccess` type attached, or whether the `configOverrides.server` raw passthrough above is the correct escape hatch.
-2. How `$(REPL_IP)` gets populated — see [BROKER-IPAM.md](cross-dc-kafka-net-helm/BROKER-IPAM.md): **whereabouts** (init container + `network-status`) vs **static** (pinned IP per ordinal).
+2. How `$(REPL_IP)` gets populated — see [BROKER-IPAM.md](cross-dc-kafka-net-helm/BROKER-IPAM.md): **whereabouts** (init container + `network-status`) vs **static** (pinned IP per ordinal). Step-by-step from Multus attachment through `advertised.listeners` to link `bootstrap.servers`: [End-to-end pipeline](cross-dc-kafka-net-helm/BROKER-IPAM.md#end-to-end-pipeline).
 
-**Whereabouts (default):** an init container reads `k8s.v1.cni.cncf.io/network-status` and exports `REPL_IP` — see [cfk-kafka-whereabouts.snippet.yaml](cross-dc-kafka-net-helm/examples/cfk-kafka-whereabouts.snippet.yaml).
+**Whereabouts (default):** an init container reads `k8s.v1.cni.cncf.io/network-status` and exports `REPL_IP` — see [End-to-end lifecycle (whereabouts)](cross-dc-kafka-net-helm/BROKER-IPAM.md#end-to-end-lifecycle-whereabouts) and [cfk-kafka-whereabouts.snippet.yaml](cross-dc-kafka-net-helm/examples/cfk-kafka-whereabouts.snippet.yaml).
 
-**Static alternative:** pin each broker's IP in the Multus annotation; `REPL_IP` can be literal — see [cfk-kafka-static.snippet.yaml](cross-dc-kafka-net-helm/examples/cfk-kafka-static.snippet.yaml) and the rendered `kafka-repl-net-broker-ip-map` ConfigMap.
+**Static alternative:** pin each broker's IP in the Multus annotation; `REPL_IP` can be literal — see [End-to-end lifecycle (static)](cross-dc-kafka-net-helm/BROKER-IPAM.md#end-to-end-lifecycle-static), [cfk-kafka-static.snippet.yaml](cross-dc-kafka-net-helm/examples/cfk-kafka-static.snippet.yaml), and the rendered `kafka-repl-net-broker-ip-map` ConfigMap.
 
 ## The link itself: API-driven, not a CRD
 

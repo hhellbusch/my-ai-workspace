@@ -278,7 +278,7 @@ Two supported modes for Kafka on the replication NAD (selected in [rollout inven
 | **whereabouts** (default) | Pool assigns IP at schedule; init container sets `REPL_IP` from `network-status` | Subnet-wide firewall rules; simpler ops; first implementation |
 | **static** | You pin `replIp` per broker ordinal; routes on pod annotation | Per-broker `/32` ACLs; fixed Cluster Link bootstrap lists; avoid init container |
 
-Full trade-offs, CFK snippets, and switching guidance: **[BROKER-IPAM.md](cross-dc-kafka-net-helm/BROKER-IPAM.md)**.
+Full trade-offs, CFK snippets, and switching guidance: **[BROKER-IPAM.md](cross-dc-kafka-net-helm/BROKER-IPAM.md)**. For the runtime chain (inventory → Multus → `network-status` → `REPL_IP` → Cluster Link bootstrap), subnet layout on the `/26`, persistence on pod recreate, and common failure modes, see [End-to-end pipeline](cross-dc-kafka-net-helm/BROKER-IPAM.md#end-to-end-pipeline) in that doc.
 
 **Not the same as host NNCP IPs:** per-node static addresses on `bond-repl.200` are optional for macvlan and independent of broker IP mode — see [NNCP Helm README](cross-dc-nncp-helm/README.md).
 
