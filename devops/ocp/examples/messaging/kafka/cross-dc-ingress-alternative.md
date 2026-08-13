@@ -68,6 +68,8 @@ Path **C** is valid for functional PoC but defeats the dedicated VLAN goal.
 Path **B** is the ingress-based production compromise when `$(REPL_IP)` / Multus operational complexity is the blocker.
 Path **A** remains the design in [cross-dc-architecture-overview.md](cross-dc-architecture-overview.md) when per-broker IPs, no shared proxy hop, and `MultiNetworkPolicy` on the NAD are priorities.
 
+**Component topology (both paths):** [architecture overview — replication traffic flow](cross-dc-architecture-overview.md#replication-traffic-flow--component-view).
+
 ---
 
 ## Why teams consider ingress

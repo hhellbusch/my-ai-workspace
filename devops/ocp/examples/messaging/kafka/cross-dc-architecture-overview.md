@@ -51,6 +51,7 @@ If this hub and a deep-dive disagree, **update the deep-dive and then sync this 
 
 - [Problem shape](#problem-shape)
 - [Choose your replication path](#choose-your-replication-path)
+  - [Replication traffic flow — component view](#replication-traffic-flow--component-view)
 - [Layer map](#layer-map)
 - [Networking basics (terms used in this doc)](#networking-basics-terms-used-in-this-doc)
 - [Shared foundation — host network](#shared-foundation--host-network)
@@ -116,6 +117,65 @@ Path C (PoC only):
   Remote broker ──TCP 443──► machine-network ingress VIP
            ──default HAProxy──► OVN ──► broker pod :9095
 ```
+
+### Replication traffic flow — component view
+
+**Canonical topology** for sharing with network and platform peers. Example direction: **DC-B broker initiates** a Cluster Link fetch toward an endpoint **advertised by DC-A** (default Cluster Linking direction — source-initiated mode flips who dials).
+
+**Cluster Link** sits above this diagram: `bootstrap.servers` / `bootstrapEndpoint` must match the **advertised replication listener** on the chosen path (Multus IP:9095 or route hostname:443).
+
+```mermaid
+flowchart TB
+  subgraph shared["Shared foundation — Path A & B"]
+    direction LR
+    NIC["2× NIC → bond"] --> VLAN["bond-repl.VLAN<br/>(host NNCP)"]
+    VLAN --> ROUTE["Scoped L3 route<br/>to remote /26 only"]
+  end
+
+  subgraph pathA["Path A — Multus direct attachment"]
+    direction LR
+    subgraph dcB_a["DC-B"]
+      BA["Broker pod<br/>net1 = repl /26 IP"]
+    end
+    subgraph wan_a["WAN / firewall"]
+      FA["Allow TCP 9095<br/>repl subnet ↔ repl subnet"]
+    end
+    subgraph dcA_a["DC-A"]
+      AA["Broker pod<br/>Multus NAD on bond-repl.VLAN<br/>REPLICATION listener :9095<br/>advertised = REPL_IP"]
+    end
+    BA -->|"Cluster Link fetch"| FA --> AA
+  end
+
+  subgraph pathB["Path B — Dedicated ingress shard"]
+    direction LR
+    subgraph dcB_b["DC-B"]
+      BB["Broker pod<br/>bootstrap = route hostname"]
+    end
+    subgraph wan_b["WAN / firewall"]
+      FB["Allow TCP 443<br/>repl subnet ↔ repl subnet"]
+    end
+    subgraph dcA_b["DC-A"]
+      DNS["DNS *.kafka-repl.dc-a…<br/>→ VIP or node repl IPs"]
+      VIP["Frontend on repl VLAN<br/>keepalived VIP or MetalLB<br/>(pick one — not both)"]
+      RTR["Replication IngressController<br/>HAProxy HostNetwork<br/>TLS passthrough SNI"]
+      OVN["OVN default network"]
+      AB["Broker pod :9095<br/>(no Multus on repl VLAN)"]
+      DNS --> VIP --> RTR --> OVN --> AB
+    end
+    BB -->|"resolve + TLS :443"| FB --> VIP
+  end
+
+  shared --> pathA
+  shared --> pathB
+```
+
+| Path | What crosses the WAN | What stays inside the destination DC |
+|---|---|---|
+| **A** | TCP **9095** to broker **pod repl IP** | Multus attachment, `MultiNetworkPolicy` on NAD |
+| **B** | TCP **443** to **frontend** on repl VLAN | IngressController → Route → OVN → broker |
+| **C** *(PoC)* | TCP **443** to **machine-network** ingress VIP | Default HAProxy → OVN → broker — **not** repl VLAN |
+
+Path B frontend detail: [cross-dc-ingress-alternative.md — Frontend options](cross-dc-ingress-alternative.md#frontend-options-without-an-external-hardware-lb). Path A IPAM detail: [BROKER-IPAM.md](cross-dc-kafka-net-helm/BROKER-IPAM.md).
 
 **Shared by all paths that use the replication VLAN (A and B):**
 
