@@ -229,7 +229,7 @@ routes:
 
 **L3 routed, not L2 stretched.** Each DC gets its own subnet on this VLAN; a router/gateway pair exchanges the routes. Don't stretch one VLAN/subnet across both DCs "for simplicity" — L2 stretch at distance introduces STP, MAC-learning, and failure-domain problems that routed L3 avoids entirely.
 
-**MTU:** confirm what the WAN circuit actually supports end-to-end (`ping -M do -s <size> <remote-ip>`) before assuming jumbo frames survive the full path.
+**MTU:** two constraints apply — **parent-first** (VLAN MTU bounded by `bond-repl` on the node) and **path** (effective MTU is the minimum hop on the replication VLAN circuit, independent of management/OVN MTU). Full treatment: [cross-dc-replication.md — MTU constraints](../../networking/cross-dc-replication.md#mtu--parent-first-and-path-constraints). Inventory `expectedMtu` and network test 5 encode the chosen end-to-end value.
 
 ### Layer 2/3: pod attachment via Multus
 
@@ -481,6 +481,8 @@ Because Cluster Linking is broker-only (no Connect layer), this is the only work
 | No `MultiNetworkPolicy` on the secondary interface | Standard `NetworkPolicy` doesn't see it; no in-cluster enforcement at all |
 | `default-route` set on the broker pod's `kafka-repl-net` Multus annotation | Same failure mode as the host-level default-route mistake, at pod scope — bleeds pod egress onto the replication link |
 | Assuming the OVN-K8s "`subnets` field required for `podSelector`" caveat applies to this macvlan NAD | It's specific to OVN-Kubernetes secondary networks, not macvlan/IPVLAN/SR-IOV |
+| Jumbo MTU on VLAN without raising parent bond MTU | [Parent-first constraint](../../networking/cross-dc-replication.md#mtu--parent-first-and-path-constraints) — VLAN cannot exceed `bond-repl` frame size |
+| Local jumbo when inter-DC replication path is 1500 | [Path MTU constraint](../../networking/cross-dc-replication.md#mtu--parent-first-and-path-constraints) — effective MTU is minimum hop on VLAN 200 |
 | `externalAccess.type: route` used for the Kafka replication listener | Routes all replication traffic through the shared ingress router — defeats the dedicated VLAN silently |
 | Unauthenticated Kafka listener exposed to Cluster Linking | Confluent explicitly calls this a security risk, not a style choice |
 
@@ -557,7 +559,7 @@ Converting the test manifests to Helm would mostly relocate the same values from
 3. Check the workload pod's `k8s.v1.cni.cncf.io/network-status` annotation — confirms it actually got the second interface and correct IP.
 4. Fail one leg of the bond; confirm the replication path stays reachable.
 5. Confirm `MultiNetworkPolicy` actually blocks an unauthorized pod on the same NAD (`oc get multi-networkpolicy -n <namespace>` to confirm it's present first).
-6. `ping -M do -s <size>` across the full path to confirm real MTU.
+6. `ping -M do -s <size>` across the full path to confirm real MTU — see [MTU constraints](../../networking/cross-dc-replication.md#mtu--parent-first-and-path-constraints).
 7. Check the broker pod's `k8s.v1.cni.cncf.io/network-status` for the `kafka-repl-net` entry — confirm no `"default-route"` key is present unless deliberately set.
 8. Confirm the Cluster Link's `bootstrap.servers` payload value resolves to the `REPLICATION` listener's advertised (Multus) address, not the internal/external one.
 9. Fail over and back: confirm the pre-staged reverse link actually resumes replication without manual re-creation.
@@ -569,7 +571,7 @@ Converting the test manifests to Helm would mostly relocate the same values from
 - Are the two NICs per node genuinely new/unconfigured, or is this a VLAN added to an already-existing bond used for other traffic?
 - Do all nodes have this NIC layout, or only a subset (dedicated gateway/broker nodes)?
 - Does the local ToR pair support LACP, or should the bond use `active-backup`?
-- What MTU does the WAN circuit actually support end-to-end?
+- What MTU does the replication path on VLAN 200 support end-to-end? ([constraints](../../networking/cross-dc-replication.md#mtu--parent-first-and-path-constraints) — independent of management/OVN MTU)
 - Is `kubernetes-nmstate` already installed, or does this need to go through raw MachineConfig/Butane instead?
 
 **Kafka / CFK:**

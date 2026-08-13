@@ -47,6 +47,7 @@ Prefer filling [inventory YAML](../../../networking/cross-dc-rollout/README.md) 
 | `replicationNetwork.vlanId`, `.prefixLength` | VLAN tag and subnet mask, shared |
 | `replicationNetwork.localGateway` | This DC's replication subnet gateway (the route's next-hop) |
 | `replicationNetwork.remoteSubnet` | The *other* DC's `/26` — what the route on this interface targets, not `0.0.0.0/0` |
+| `replicationNetwork.mtu` | Optional — sets bond + VLAN MTU on every node (from inventory `expectedMtu` when rendered). [Parent-first constraint](../../../networking/cross-dc-replication.md#mtu--parent-first-and-path-constraints). |
 | `nodes[].hostname` | Must exactly match `kubernetes.io/hostname` — confirm with `oc get nodes -o wide` |
 | `nodes[].ip` | The one thing that actually varies per node |
 

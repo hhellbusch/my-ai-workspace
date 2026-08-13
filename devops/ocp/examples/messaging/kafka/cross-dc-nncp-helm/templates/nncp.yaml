@@ -18,6 +18,9 @@ spec:
       - name: {{ $net.bondName }}
         type: bond
         state: up
+{{- if $net.mtu }}
+        mtu: {{ $net.mtu }}
+{{- end }}
         link-aggregation:
           mode: {{ $net.bondMode }}
           port:
@@ -27,6 +30,9 @@ spec:
       - name: {{ $net.bondName }}.{{ $net.vlanId }}
         type: vlan
         state: up
+{{- if $net.mtu }}
+        mtu: {{ $net.mtu }}
+{{- end }}
         vlan:
           base-iface: {{ $net.bondName }}
           id: {{ $net.vlanId }}

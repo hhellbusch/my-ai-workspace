@@ -231,7 +231,7 @@ Everything else on `net1` is denied — including:
 For **one-directional** links only, you might tighten one direction per DC; confirm link direction before narrowing rules — see [Connection direction](../cross-dc-architecture-overview.md#connection-direction).
 
 **ICMP / PMTUD:** WAN firewalls often allow ICMP for MTU discovery; this policy does not.
-If path MTU issues appear on the replication interface, evaluate ICMP rules separately or fix MTU on the WAN path.
+If path MTU issues appear on the replication interface, evaluate ICMP rules separately or fix MTU on the WAN path — see [MTU constraints](../../../networking/cross-dc-replication.md#mtu--parent-first-and-path-constraints).
 
 ---
 

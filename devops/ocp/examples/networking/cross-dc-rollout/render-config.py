@@ -140,17 +140,20 @@ def validate_inventory(inv: dict[str, Any]) -> None:
 
 def render_nncp_values(inv: dict[str, Any]) -> dict[str, Any]:
     net = inv["replicationNetwork"]
+    repl_net: dict[str, Any] = {
+        "bondName": net["bondName"],
+        "bondMode": net["bondMode"],
+        "ports": net["ports"],
+        "vlanId": net["vlanId"],
+        "prefixLength": net["prefixLength"],
+        "maxUnavailable": 1,
+        "localGateway": net["localGateway"],
+        "remoteSubnet": net["remoteSubnet"],
+    }
+    if net.get("expectedMtu") is not None:
+        repl_net["mtu"] = net["expectedMtu"]
     return {
-        "replicationNetwork": {
-            "bondName": net["bondName"],
-            "bondMode": net["bondMode"],
-            "ports": net["ports"],
-            "vlanId": net["vlanId"],
-            "prefixLength": net["prefixLength"],
-            "maxUnavailable": 1,
-            "localGateway": net["localGateway"],
-            "remoteSubnet": net["remoteSubnet"],
-        },
+        "replicationNetwork": repl_net,
         "nodes": [
             {"hostname": n["hostname"], "ip": n["hostIp"]} for n in inv["nodes"]
         ],

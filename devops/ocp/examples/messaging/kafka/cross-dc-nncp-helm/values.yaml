@@ -31,6 +31,11 @@ replicationNetwork:
   localGateway: ""
   remoteSubnet: ""
 
+  # Host bond + VLAN MTU (optional). When set, applied to bond and bond.<vlanId>.
+  # Parent-first constraint — see ../../../networking/cross-dc-replication.md § MTU.
+  # Prefer inventory replicationNetwork.expectedMtu → render-config.py.
+  # mtu: 1500
+
 # One entry per node that needs this interface. `hostname` must match
 # `kubernetes.io/hostname` exactly — confirm with `oc get nodes -o wide`.
 nodes: []

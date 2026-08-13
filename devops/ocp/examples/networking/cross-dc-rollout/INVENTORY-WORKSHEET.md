@@ -29,7 +29,7 @@ Fill this in during discovery, then transcribe into `inventory-dc-a.yaml` / `inv
 | `localSubnet` | `10.200.1.0/26` | This DC |
 | `localGateway` | `10.200.1.1` | On-wire gateway for remote route |
 | `remoteSubnet` | `10.200.2.0/26` | **Other** DC |
-| `expectedMtu` | `1500` | WAN path test |
+| `expectedMtu` | `1500` | End-to-end path MTU on VLAN 200 — drives NNCP bond/VLAN MTU + network test 5. See [MTU constraints](../cross-dc-replication.md#mtu--parent-first-and-path-constraints). |
 
 Derived (do not duplicate in inventory): VLAN iface = `{bondName}.{vlanId}` → `bond-repl.200`
 

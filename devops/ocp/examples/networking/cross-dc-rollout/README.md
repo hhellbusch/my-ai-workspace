@@ -98,6 +98,7 @@ See [INVENTORY-WORKSHEET.md](INVENTORY-WORKSHEET.md) for a human worksheet, then
 |---|---|
 | `cluster.kubeconfig` | Test env only (workstation path) |
 | `replicationNetwork.*` | All three downstream outputs |
+| `replicationNetwork.expectedMtu` | NNCP bond/VLAN MTU + test env `EXPECTED_MTU` — [MTU constraints](../cross-dc-replication.md#mtu--parent-first-and-path-constraints) |
 | `nodes[]` | NNCP (`hostIp`); test env (`hostname`, `networkTest`) |
 | `workload.brokerIpam.mode` | `whereabouts` or `static` — see [BROKER-IPAM.md](../../messaging/kafka/cross-dc-kafka-net-helm/BROKER-IPAM.md) |
 | `workload.multiNetworkPolicy.defaultDenyOnNad` | Catch-all deny on replication NAD (default `true`) — [MULTINETWORKPOLICY.md](../../messaging/kafka/cross-dc-kafka-net-helm/MULTINETWORKPOLICY.md) |

@@ -166,7 +166,7 @@ If you later want a single packaging story, a thin wrapper chart that embeds the
 | 2 | Host route correct, not default | `oc debug node/<n> -- chroot /host ip route show table main` — confirms the `/26` route exists on the VLAN interface, and that interface has no `default` route | — |
 | 3 | Pod got second interface, correct IP, no default-route | Parses the test pod's `k8s.v1.cni.cncf.io/network-status` annotation | 3, 7 |
 | 4 | Cross-DC reachability | `ncat -zv` from the DC-A test pod to the DC-B test pod's port, and the reverse (links are bidirectional) | 2 |
-| 5 | Real path MTU | `ping -M do -s <size>` sweep from the DC-A pod to the DC-B pod, compared against `DCx_EXPECTED_MTU` | 6 |
+| 5 | Real path MTU | `ping -M do` sweep pod-to-pod vs `DCx_EXPECTED_MTU` — validates [path MTU constraint](../cross-dc-replication.md#mtu--parent-first-and-path-constraints) | 6 |
 | 6 | `MultiNetworkPolicy` enforcement | A local-subnet peer pod on the same NAD is blocked; the legitimate remote-DC pod (test 4) is allowed | 5 |
 | 7 | Bond failover (manual/opt-in) | Interactive: `nmcli device disconnect <member>` via `oc debug node`, re-runs test 4, then reconnects | 4 |
 

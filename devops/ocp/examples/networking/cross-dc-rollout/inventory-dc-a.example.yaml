@@ -21,7 +21,7 @@ replicationNetwork:
   localSubnet: 10.200.1.0/26
   localGateway: 10.200.1.1
   remoteSubnet: 10.200.2.0/26
-  expectedMtu: 1500
+  expectedMtu: 1500   # path MTU on VLAN 200 — NNCP bond/VLAN + test 5; see cross-dc-replication.md § MTU
 
 # Nodes carrying the replication bond/VLAN. hostIp → NNCP per-node static IP.
 # All listed nodes are included in the network test NODE_NAMES unless you set
