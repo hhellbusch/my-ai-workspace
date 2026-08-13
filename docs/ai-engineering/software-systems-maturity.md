@@ -241,7 +241,7 @@ Two tracks, one axis — **application security** and **secrets/IAM ops**.
 | 4 | Secure-by-default; fine-grained authz | Integrated with CI/CD and runtime |
 | 5 | Audits; patch discipline | Automated rotation; blast-radius drills |
 
-Vault-class platforms exemplify the secrets track — see [devops/vault/](../../devops/vault/README.md).
+Vault-class platforms exemplify the secrets track — see [security deep dive](maturity/security-and-secrets.md) and [devops/vault/](../../devops/vault/README.md).
 
 ### Documentation & knowledge
 
@@ -277,7 +277,7 @@ See [documentation deep dive](maturity/documentation-and-knowledge.md) and [Arti
 | 4 | Spar/eval gates on risky changes |
 | 5 | Failure modes catalogued; improvement measured |
 
-See [The Shift](the-shift.md).
+See [The Shift](the-shift.md) and [AI agents deep dive](maturity/ai-agents-and-harnesses.md).
 
 ### Team practices
 
@@ -289,7 +289,7 @@ See [The Shift](the-shift.md).
 | 4 | Deliberate practices (spar, shoshin, retros that change behavior) |
 | 5 | Learning loops; safe to challenge frames |
 
-See [Session Framework](session-framework.md).
+See [Session Framework](session-framework.md) and [team practices deep dive](maturity/team-practices.md).
 
 ### Product discovery *(optional)*
 
@@ -314,6 +314,10 @@ Not a return to big upfront spec — **validated learning** before expensive bui
 | [Deployment & release](maturity/deployment-and-release.md) | Draft |
 | [Documentation & knowledge](maturity/documentation-and-knowledge.md) | Draft |
 | [Platform as maturity accelerator](maturity/platform-as-accelerator.md) | Draft |
+| [Security & secrets](maturity/security-and-secrets.md) | Draft |
+| [Team practices](maturity/team-practices.md) | Draft |
+| [AI agents & harnesses](maturity/ai-agents-and-harnesses.md) | Draft |
+| [Monitoring & reliability](maturity/monitoring-and-reliability.md) | Draft |
 | Remaining axes | Planned — see [maturity/README.md](maturity/README.md) |
 
 ---

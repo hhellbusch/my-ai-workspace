@@ -21,22 +21,22 @@ review:
 | Deployment & release | [deployment-and-release.md](deployment-and-release.md) | [devops/argo/](../../../devops/argo/README.md) |
 | Documentation & knowledge | [documentation-and-knowledge.md](documentation-and-knowledge.md) | [docs/ai-engineering/](../README.md), [AGENTS.md](../../../AGENTS.md) |
 | Platform & fleet (accelerator lens) | [platform-as-accelerator.md](platform-as-accelerator.md) | [devops/ocp/](../../../devops/ocp/examples/README.md), [devops/rhacm/](../../../devops/rhacm/README.md) |
+| Security & secrets | [security-and-secrets.md](security-and-secrets.md) | [devops/vault/](../../../devops/vault/README.md), [RHACM secrets](../../../devops/rhacm/examples/secret-management/README.md) |
+| Team practices | [team-practices.md](team-practices.md) | [session-framework.md](../session-framework.md), [sparring-and-shoshin.md](../sparring-and-shoshin.md) |
+| AI agents & harnesses | [ai-agents-and-harnesses.md](ai-agents-and-harnesses.md) | [The Shift](../the-shift.md), skills, [paude](../paude-getting-started.md) |
+| Monitoring & reliability | [monitoring-and-reliability.md](monitoring-and-reliability.md) | [ocp/troubleshooting/](../../../devops/ocp/troubleshooting/) |
 
 ## Planned
 
 | Axis | Notes |
 |---|---|
-| Source control | Refresh distributed-VCS wording; [devops/git/](../../../devops/git/git-learning-guide.md) |
+| Source control | [devops/git/](../../../devops/git/git-learning-guide.md) |
 | Code quality | Deck XKCD stories; Boy Scout Rule |
 | Testing & verification | Sandbox "too late" diagram |
-| Architecture & change | ADRs; [argo framework GUIDELINES](../../../devops/argo/examples/framework/GUIDELINES.md) |
+| Architecture & change | [argo framework GUIDELINES](../../../devops/argo/examples/framework/GUIDELINES.md) |
 | Builds & artifacts | Supply chain / SBOM at L4–5 |
-| Data management | Evolutionary DB; deck migration narrative |
-| Monitoring & reliability | SLOs; [ocp/troubleshooting/](../../../devops/ocp/troubleshooting/) |
-| Security & secrets | [devops/vault/](../../../devops/vault/README.md); RHACM secret patterns |
-| AI agents & harnesses | Shift, artifact discipline, skills |
-| Team practices | Session framework, spar/shoshin |
-| Product discovery | Optional axis — thin repo corpus |
+| Data management | Evolutionary DB |
+| Product discovery | Optional — thin repo corpus |
 
 ---
 
