@@ -190,11 +190,14 @@ Deep dive: [deck lineage, DORA alignment, fleet/AI notes](maturity/source-contro
 
 | Level | Posture |
 |---|---|
+| 0 | No test intent; production is the test environment |
 | 1 | Ad hoc; bugs found in production |
 | 2 | Documented test cases |
-| 3 | Automated unit/integration; non-prod runs |
-| 4 | CI gates; coverage informs risk |
+| 3 | Automated unit/integration (or operational equivalent); non-prod runs |
+| 4 | CI gates; coverage or risk analysis informs runs |
 | 5 | Performance/security characterization; defects fixed when found |
+
+Deep dive: [sandbox discipline, DORA change failure rate, verification corpus](maturity/testing-and-verification.md).
 
 ### Architecture & change
 
