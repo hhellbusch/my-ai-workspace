@@ -309,7 +309,7 @@ Not a return to big upfront spec — **validated learning** before expensive bui
 
 ## Deep dives
 
-Full index: [maturity/README.md](maturity/README.md) — **14 axis drafts** + [Joel Test appendix](maturity/joel-test-appendix.md).
+Full index: [maturity/README.md](maturity/README.md) — **14 axis drafts** + [Joel Test appendix](maturity/joel-test-appendix.md) + [assessment worksheet](maturity/worksheet.md).
 
 | Layer | Topics |
 |---|---|

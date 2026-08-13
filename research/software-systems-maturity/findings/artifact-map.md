@@ -51,4 +51,17 @@ Primary home: [deployment-and-release.md](../../../docs/ai-engineering/maturity/
 - [ ] Deck PDF → restore diagrams into code quality, testing, data deep dives  
 - [ ] Optional: central SLO/runbook guide (monitoring gap)  
 - [ ] Optional: expand product discovery corpus  
-- [ ] Cross-link from [devops/README.md](../../../devops/README.md) to maturity trailhead  
+- [x] Cross-link from [devops/README.md](../../../devops/README.md) to maturity trailhead  
+
+---
+
+## Meta-framework integration (post-review)
+
+| Phase | Work | Status |
+|---|---|---|
+| D1 | Navigation hub — devops/README, ORGANIZATION, AGENTS | Done |
+| D4 | Skill hooks — cross-link, review | Done |
+| D5 | [Assessment worksheet](../../../docs/ai-engineering/maturity/worksheet.md) | Done |
+| D2 | Optional `maturity:` frontmatter on rich corpus files | Deferred until author review |
+| D3 | Generated artifact map from frontmatter | Deferred |
+| Planning | [`.planning/software-systems-maturity/`](../../../.planning/software-systems-maturity/BRIEF.md) | Done |
