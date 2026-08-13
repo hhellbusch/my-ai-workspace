@@ -2,7 +2,7 @@
 
 **Purpose:** Preserve and resurrect a 2016–2017 maturity-model slide deck — trailhead, deep dives, and repo artifact mapping.
 
-**Status:** In progress — trailhead + **14 axis deep dive drafts** + Joel appendix + worksheet; author review pending. Meta-framework D1 navigation wired.
+**Status:** First pass complete — trailhead + **14 axis deep dives** + Joel appendix + worksheet + meta-framework navigation. Author skim OK 2026-08-12. Merge [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9).
 
 **Output:**
 

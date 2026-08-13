@@ -33,7 +33,7 @@ review:
 | People | Team practices | [team-practices.md](team-practices.md) |
 | Product *(optional)* | Product discovery | [product-discovery.md](product-discovery.md) |
 
-All entries are **draft** — author review pending.
+All entries are **v1 (first pass)** — author skim OK 2026-08-12. Optional deep review or `/validate read` after PR merge.
 
 ---
 

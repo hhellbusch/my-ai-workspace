@@ -37,8 +37,11 @@ Shipped drafts: all axes in [maturity/README.md](../../../docs/ai-engineering/ma
 
 ---
 
-## Still owed
+## Still owed (optional)
 
-- Remaining axis deep dives (2016 nine + AI agents, team practices, security, etc.)
-- Joel Test mapping appendix
+- Merge [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9)
 - Deck PDF for diagram-only slides (CMM, sandbox "too late", quality continuum)
+- Worked SLO YAML examples (primer shipped: [slo-and-runbooks.md](../../../devops/slo-and-runbooks.md))
+- D2/D3 metadata automation — only if corpus tags will be maintained
+
+Handoff: [.planning/software-systems-maturity/whats-next.md](../../../.planning/software-systems-maturity/whats-next.md)

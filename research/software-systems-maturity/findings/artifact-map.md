@@ -2,7 +2,7 @@
 
 **Purpose:** Connect [software systems maturity](../../../docs/ai-engineering/software-systems-maturity.md) axes to artifacts in this workspace.
 
-**Status:** Deep dive **drafts complete** (14 axes + Joel appendix) — author review pending.
+**Status:** First pass complete (author skim OK, 2026-08-12). Deep dives shippable as v1; optional follow-ups in artifact map.
 
 ---
 
@@ -45,13 +45,15 @@ Primary home: [deployment-and-release.md](../../../docs/ai-engineering/maturity/
 
 ---
 
-## Remaining work (post-draft)
+## Remaining work (optional — not blocking v1)
 
-- [ ] Author review all deep dives  
+- [x] Author first pass (skim OK 2026-08-12)  
+- [ ] Merge [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9)  
 - [ ] Deck PDF → restore diagrams into code quality, testing, data deep dives  
+- [ ] Worked SLO YAML / error-budget alert examples in devops  
 - [ ] Optional: expand product discovery corpus  
 - [x] Cross-link from [devops/README.md](../../../devops/README.md) to maturity trailhead  
-- [x] Central SLO/runbook primer — [slo-and-runbooks.md](../../../devops/slo-and-runbooks.md) (worked SLO YAML examples still optional)
+- [x] Central SLO/runbook primer — [slo-and-runbooks.md](../../../devops/slo-and-runbooks.md)
 
 ---
 

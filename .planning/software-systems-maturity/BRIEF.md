@@ -8,17 +8,21 @@
 
 **Out of scope:** Domain-specific ladders (Kafka, cluster links, etc.); level badges; CMM-style org scores.
 
+**Status:** First pass **complete** (author skim OK, 2026-08-12). Merge [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9) to close thread.
+
 **Deliverables:**
 
 | Phase | Output | Status |
 |---|---|---|
-| 0–3 | Trailhead, 14 deep dives, Joel appendix, artifact map | Done (drafts) |
-| Review | Author pass on levels, voice, product discovery depth | Pending |
-| D1 | Navigation hub — devops/README, ORGANIZATION, AGENTS | In progress |
-| D2–D3 | Optional `maturity:` frontmatter; generated artifact map | Deferred until review |
-| D4 | Skill hooks (cross-link, review) | In progress |
-| D5 | Assessment worksheet | In progress |
+| 0–3 | Trailhead, 14 deep dives, Joel appendix, artifact map | Done |
+| Review | Author skim — levels, voice acceptable for v1 | Done (first pass) |
+| D1 | Navigation hub — devops/README, ORGANIZATION, AGENTS | Done |
+| D4 | Skill hooks (cross-link, review) | Done |
+| D5 | Assessment worksheet | Done |
+| SLO primer | `devops/slo-and-runbooks.md` | Done |
+| D2–D3 | Optional `maturity:` frontmatter; generated artifact map | Optional follow-up |
+| Deck PDF | Diagram restoration | Optional — needs source PDF |
 
 **Handoff:** [whats-next.md](whats-next.md)
 
-**Branch:** `feature/software-systems-maturity-trailhead` · PR #9
+**Branch:** `feature/software-systems-maturity-trailhead` · [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9)

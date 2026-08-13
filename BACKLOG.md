@@ -107,10 +107,10 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
-### Software Systems Maturity — meta-framework & review
+### Software Systems Maturity — first pass complete (merge PR #9)
 - **Product:** docs/ai-engineering/maturity/
-- **Context:** Deep dive drafts complete. D1 navigation hub wired; SLO/runbook primer added. **Next:** author review on PR #9; deck PDF diagrams; D2 frontmatter after review. Index: [maturity/README.md](../docs/ai-engineering/maturity/README.md) · handoff: [.planning/software-systems-maturity/whats-next.md](../.planning/software-systems-maturity/whats-next.md).
-- **Added:** 2026-08-12 · **Updated:** 2026-08-12
+- **Context:** First pass done — trailhead, 14 deep dives, Joel appendix, artifact map, meta-framework (AGENTS/devops/skills), worksheet, SLO primer. Author skim OK 2026-08-12. **Action:** merge [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9). Optional later: deck PDF, SLO YAML examples, D2 frontmatter. Handoff: [.planning/software-systems-maturity/whats-next.md](../.planning/software-systems-maturity/whats-next.md).
+- **Added:** 2026-08-12 · **Updated:** 2026-08-12 · **Status:** ready to merge
 
 ### Essay seed: documentation as cognitive offload and async multiplier
 - **Product:** docs/ai-engineering (or docs/philosophy)
