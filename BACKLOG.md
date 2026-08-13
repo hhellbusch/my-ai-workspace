@@ -107,6 +107,11 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### Software Systems Maturity — axis deep dives (2016 deck follow-through)
+- **Product:** docs/ai-engineering (or devops/guides)
+- **Context:** Trailhead resurrected from 2016–2017 deck — [software-systems-maturity.md](../docs/ai-engineering/software-systems-maturity.md). Original intent was one deep dive per axis (source control, quality, testing, builds, deployment, data, security, documentation, monitoring) plus 2026 axes (platform/fleet, GitOps, AI agents). Source: [research/software-systems-maturity/](../research/software-systems-maturity/README.md).
+- **Added:** 2026-08-12
+
 ### Essay seed: documentation as cognitive offload and async multiplier
 - **Product:** docs/ai-engineering (or docs/philosophy)
 - **Context:** Three-part model surfaced 2026-05-30 peer-deck session: (1) write it down → safely flush working memory; (2) peer can self-onboard without requiring your presence — you're not the bottleneck; (3) when issues arise your time goes to troubleshooting and judgment, not first-contact procedure transfer. The claim: documentation isn't about completeness, it's about *shifting what requires a human* to a higher layer. Connects to "Saved artifacts are memory" in the deck (that's the solo/cross-session version; this is the team/social version). Could pair with the full-cup essay.
