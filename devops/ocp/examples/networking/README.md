@@ -14,7 +14,8 @@ Cluster networking configuration: OVN-Kubernetes install-time settings, Multus s
 
 | Guide | Summary |
 |-------|---------|
-| [cross-dc-replication.md](cross-dc-replication.md) | Generic host bond/VLAN/route + Multus depth |
+| [cross-dc-replication.md](cross-dc-replication.md) | Generic host bond/VLAN/route + Multus depth (extra NICs) |
+| [cross-dc-br-ex-vlan.md](cross-dc-br-ex-vlan.md) | Path A on the existing `br-ex` trunk — no extra NICs |
 | [cross-dc-rollout/](cross-dc-rollout/README.md) | Inventory → NNCP / test env / Kafka net (or ingress tickets) |
 | [cross-dc-network-test/](cross-dc-network-test/README.md) | Pre-Kafka Multus verification (Path A) |
 | [cross-dc-ingress-test/](cross-dc-ingress-test/README.md) | Pre-Kafka layered ingress verification (Path B) |

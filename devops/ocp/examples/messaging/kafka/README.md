@@ -19,6 +19,7 @@ Scenario-specific guides for running Apache Kafka on OpenShift (Confluent Platfo
 | Cluster Link GitOps (CRD vs API) | [CLUSTER-LINK-GITOPS.md](CLUSTER-LINK-GITOPS.md) | Argo CD / CFK | Link management patterns — CRD, reconcile Job, decision matrix |
 | Cluster Link GitOps scaffold | [cluster-link-gitops/README.md](cluster-link-gitops/README.md) | Argo CD / CFK | Example desired specs, reconcile script, CR/Job manifests |
 | Cross-DC architecture overview | [cross-dc-architecture-overview.md](cross-dc-architecture-overview.md) | CFK (Helm install) | **Canonical hub** for cross-DC replication |
+| Cross-DC shared uplink (`br-ex` VLAN) | [../../networking/cross-dc-br-ex-vlan.md](../../networking/cross-dc-br-ex-vlan.md) | Multus / OVN-K localnet | Path A when the replication VLAN is a tag on the machine-network trunk — no extra NICs |
 | Cross-DC ingress / Route alternative | [cross-dc-ingress-alternative.md](cross-dc-ingress-alternative.md) | CFK Routes + IngressController | Dedicated ingress shard on repl VLAN |
 | Cross-DC replication NNCP (Helm) | [cross-dc-nncp-helm/](cross-dc-nncp-helm/README.md) | kubernetes-nmstate | Per-node `NodeNetworkConfigurationPolicy` generator — one CR per node with a unique static IP, rendered from Helm values |
 | Cross-DC Kafka replication network (Helm) | [cross-dc-kafka-net-helm/](cross-dc-kafka-net-helm/README.md) | Multus / whereabouts | Kafka NAD + `MultiNetworkPolicy` on the replication VLAN — after network test passes |

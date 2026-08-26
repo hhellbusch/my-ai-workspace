@@ -12,6 +12,7 @@ review:
 
 **Related:**
 
+- [Shared uplink / `br-ex` trunk VLAN](cross-dc-br-ex-vlan.md) — same Path A when there are **no extra NICs** (do not use the bond NNCP below)
 - [Cross-DC network test framework](cross-dc-network-test/README.md) — automates the verification checklist below against two live clusters, isolated from Kafka
 - [Cross-DC rollout inventory](cross-dc-rollout/README.md) — inventory YAML renders NNCP values, test env, and Kafka net Helm values
 - [VLAN segmentation](vlan-segmentation.md) — install-time vs day-2 Multus VLANs
@@ -44,7 +45,10 @@ review:
 
 ## Problem shape
 
-Two bare-metal OpenShift clusters, one per datacenter, need a **dedicated, isolated** network path for bulk replication traffic — separate from management/API/OVN pod traffic. Each node has two NICs on **two different physical cards** (slot A, slot B), intended for HA via bonding.
+Two bare-metal OpenShift clusters, one per datacenter, need a **dedicated, isolated** network path for bulk replication traffic — separate from management/API/OVN pod traffic.
+
+**This doc assumes extra NICs** — two NICs on **two different physical cards** (slot A, slot B), bonded for the replication VLAN.
+If the replication VLAN is only a tag on the existing machine-network trunk (`br-ex`, no extra NICs), stop here and use [cross-dc-br-ex-vlan.md](cross-dc-br-ex-vlan.md) instead.
 
 This is a **third network**, distinct from both the cluster's machine network and any storage network:
 
@@ -67,7 +71,7 @@ How pods (or ingress routers) use that VLAN depends on the replication mechanism
 | Mechanism | Pod/workload attachment | This doc covers |
 |---|---|---|
 | **Multus direct** | Broker pod gets macvlan NAD on `bond-repl.200` | Host layers + [Multus](#layer-23-pod-attachment-via-multus) + [MNP](#securing-the-secondary-network-multinetworkpolicy) |
-| **Dedicated ingress shard** | HAProxy on repl-gateway nodes; brokers stay on OVN | Host layers only — ingress depth in [cross-dc-ingress-alternative.md](../messaging/kafka/cross-dc-ingress-alternative.md) |
+| **Dedicated ingress shard** | HAProxy on **dedicated** `repl-gateway` workers (not nodes already running a `HostNetwork` default router); brokers stay on OVN | Host layers only — ingress depth in [cross-dc-ingress-alternative.md](../messaging/kafka/cross-dc-ingress-alternative.md) |
 
 Kafka-specific listener and Cluster Link semantics: [cross-dc-cluster-linking.md](../messaging/kafka/cross-dc-cluster-linking.md).
 

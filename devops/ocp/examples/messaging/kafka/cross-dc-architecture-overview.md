@@ -16,7 +16,8 @@ review:
 |---|---|
 | **Compare paths** (Multus vs ingress) | [Choose your replication path](#choose-your-replication-path) |
 | **Understand networking terms** (SNAT, Multus, scoped routes) | [Networking basics](#networking-basics-terms-used-in-this-doc) |
-| **Implement host bond/VLAN** (required for all paths) | [Shared foundation — host network](#shared-foundation--host-network) |
+| **Implement host bond/VLAN** (extra NICs) | [Shared foundation — host network](#shared-foundation--host-network) |
+| **No extra NICs** (VLAN tag on `br-ex` trunk) | [cross-dc-br-ex-vlan.md](../../networking/cross-dc-br-ex-vlan.md) — still Path A; skip the `bond-repl` NNCP |
 | **Implement Multus path** (primary) | [Path A — Multus pod attachment](#path-a--multus-pod-attachment) → [Part 2 — Cluster Linking](#part-2--confluent-cluster-linking-on-top-of-it) |
 | **Implement ingress path** (alternative) | [Path B — dedicated ingress shard](#path-b--dedicated-ingress-shard) → [cross-dc-ingress-alternative.md](cross-dc-ingress-alternative.md) |
 | **Run pre-cutover verification** | [Pre-flight](#pre-flight-before-network-verification) (Path A: Multus network test) or [ingress test framework](../../networking/cross-dc-ingress-test/README.md) (Path B) |
@@ -25,7 +26,8 @@ review:
 
 | Doc / tooling | Role |
 |---|---|
-| [cross-dc-replication.md](../../networking/cross-dc-replication.md) | Generic host + Multus layers (workload-agnostic depth) |
+| [cross-dc-replication.md](../../networking/cross-dc-replication.md) | Generic host + Multus layers — **extra NICs** |
+| [cross-dc-br-ex-vlan.md](../../networking/cross-dc-br-ex-vlan.md) | Path A on the existing `br-ex` trunk — **no extra NICs** |
 | [cross-dc-cluster-linking.md](cross-dc-cluster-linking.md) | Kafka / CFK / Cluster Linking depth |
 | [cross-dc-ingress-alternative.md](cross-dc-ingress-alternative.md) | Dedicated ingress shard + external DNS/VIP handoff |
 | [cross-dc-rollout/](../../networking/cross-dc-rollout/README.md) | Inventory → rendered NNCP / test env / Kafka net values |
@@ -84,7 +86,9 @@ Two bare-metal OpenShift clusters, one per datacenter, need a **dedicated, isola
 |---|---|
 | Management / API / OVN | Existing machine network |
 | Storage (NVMe/TCP, etc.) | Two independent NICs, **no bond** |
-| **Cross-DC replication** | Bonded NIC pair + VLAN + routed subnet — this doc |
+| **Cross-DC replication** | Bonded NIC pair + VLAN + routed subnet — this hub's shared foundation |
+
+When there are **no extra NICs**, the replication VLAN is a tag on the existing `br-ex` trunk instead — still Path A, different L1/L2: [cross-dc-br-ex-vlan.md](../../networking/cross-dc-br-ex-vlan.md).
 
 The concrete workload driving this design is **Apache Kafka (Confluent Platform, via CFK)**, using **Cluster Linking** for broker-to-broker replication between the two clusters.
 
@@ -298,8 +302,11 @@ That split is the design rule peers often state as: **only traffic to the other 
 
 ## Shared foundation — host network
 
-**Required for Path A and Path B** (any design that uses the dedicated replication VLAN).
+**Required for Path A and Path B** when the replication VLAN sits on **dedicated NICs** (the `bond-repl` model below).
 Kafka-agnostic — identical for storage mirroring or other cross-DC replication workloads.
+
+**No extra NICs:** if VLAN 200 is only a tag on the existing machine-network trunk, do **not** create `bond-repl` or a kernel VLAN on the `br-ex` uplink.
+Use [cross-dc-br-ex-vlan.md](../../networking/cross-dc-br-ex-vlan.md) instead — same Path A pod attachment, different L1/L2.
 
 ### Layer 1–2: bond and VLAN
 
@@ -363,7 +370,7 @@ routes:
 
 **MTU:** two constraints apply — **parent-first** (VLAN MTU bounded by `bond-repl` on the node) and **path** (effective MTU is the minimum hop on the replication VLAN circuit, independent of management/OVN MTU). Full treatment: [cross-dc-replication.md — MTU constraints](../../networking/cross-dc-replication.md#mtu--parent-first-and-path-constraints). Inventory `expectedMtu` and network test 5 encode the chosen end-to-end value.
 
-**Path B note:** repl-gateway nodes hosting the dedicated ingress shard also need NNCP on `bond-repl.200` — for router frontend IPs on the repl subnet, not for broker Multus attachment.
+**Path B note:** repl-gateway nodes hosting the dedicated ingress shard also need NNCP on `bond-repl.200` — for router frontend IPs on the repl subnet, not for broker Multus attachment. Those nodes must **not** already run the default (or any other) `HostNetwork` ingress router — see [HostNetwork limit](cross-dc-ingress-alternative.md#node-placement--hostnetwork-limit-hard-requirement).
 
 ---
 
@@ -523,6 +530,8 @@ CFK supports [`externalAccess.type: route`](https://docs.confluent.io/operator/c
 
 Path B trades `$(REPL_IP)` complexity for: 2nd `IngressController`, repl-VLAN DNS zone, VIP (keepalived/MetalLB) or DNS LB to router node repl IPs, and HAProxy as a shared hop for all replication bytes.
 
+**HostNetwork placement (hard requirement):** OpenShift allows only **one** `HostNetwork` `IngressController` per node. The replication shard must run on **dedicated `repl-gateway` workers** — not on nodes that already host the default `HostNetwork` router (common case: default on control-plane/masters). Full detail and `oc` checks: [cross-dc-ingress-alternative.md — Node placement](cross-dc-ingress-alternative.md#node-placement--hostnetwork-limit-hard-requirement).
+
 ### CFK listener configuration
 
 Configuration depends on the path chosen in [Choose your replication path](#choose-your-replication-path).
@@ -649,6 +658,7 @@ Because Cluster Linking is broker-only (no Connect layer), this is the only work
 | Local jumbo when inter-DC replication path is 1500 | [Path MTU constraint](../../networking/cross-dc-replication.md#mtu--parent-first-and-path-constraints) — effective MTU is minimum hop on VLAN 200 |
 | `externalAccess.type: route` on the **default** ingress for the Kafka replication listener | Routes replication through machine-network ingress — defeats the dedicated VLAN silently |
 | Using a **dedicated** ingress shard without repl-VLAN DNS/VIP | Routes exist but WAN traffic still hits wrong network if DNS points at `apps.*` VIP |
+| Scheduling replication `IngressController` on nodes that already run default `HostNetwork` router | OpenShift allows one `HostNetwork` ingress controller per node — router pods will not schedule or cluster stays mis-placed; use dedicated `repl-gateway` workers |
 | Unauthenticated Kafka listener exposed to Cluster Linking | Confluent explicitly calls this a security risk, not a style choice |
 
 ---
@@ -759,6 +769,7 @@ Converting the test manifests to Helm would mostly relocate the same values from
 
 **Network:**
 
+- Extra NICs (`bond-repl` in this hub) or a **tag on the existing `br-ex` trunk**? The latter is [cross-dc-br-ex-vlan.md](../../networking/cross-dc-br-ex-vlan.md) — skip the NNCP below.
 - Are the two NICs per node genuinely new/unconfigured, or is this a VLAN added to an already-existing bond used for other traffic?
 - Do all nodes have this NIC layout, or only a subset (dedicated gateway/broker nodes)?
 - Does the local ToR pair support LACP, or should the bond use `active-backup`?

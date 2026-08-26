@@ -10,7 +10,7 @@ review:
 
 **Purpose:** Render one [`NodeNetworkConfigurationPolicy`](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/kubernetes_nmstate/k8s-nmstate-updating-node-network-config) (NNCP) per node, each with a unique static IP on the replication VLAN, from a single node list in Helm values — instead of hand-authoring N nearly-identical YAML files.
 
-**Related:** [Cross-DC architecture overview](../cross-dc-architecture-overview.md#layer-12-host-network) · [Cross-DC replication network](../../../networking/cross-dc-replication.md#layer-12-host-network) · [Cross-DC rollout inventory](../../../networking/cross-dc-rollout/README.md) · [Kubernetes NMState upstream docs](https://nmstate.github.io/kubernetes-nmstate/user-guide/102-configuration.html)
+**Related:** [Cross-DC architecture overview](../cross-dc-architecture-overview.md#layer-12-host-network) · [Cross-DC replication network](../../../networking/cross-dc-replication.md#layer-12-host-network) · [Shared uplink / `br-ex` trunk](../../../networking/cross-dc-br-ex-vlan.md) (no extra NICs — **do not use this chart**) · [Cross-DC rollout inventory](../../../networking/cross-dc-rollout/README.md) · [Kubernetes NMState upstream docs](https://nmstate.github.io/kubernetes-nmstate/user-guide/102-configuration.html)
 
 ---
 

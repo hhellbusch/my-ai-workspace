@@ -443,6 +443,19 @@ examples:
     tags: [bare-metal, storage, var-log]
     companion_notes: []
 
+  - id: networking-cross-dc-br-ex-vlan
+    title: Cross-DC Replication on Shared br-ex Trunk
+    path: devops/ocp/examples/networking/cross-dc-br-ex-vlan.md
+    product: ocp
+    topic: networking
+    intents:
+      - kafka replication vlan on br-ex no extra nics
+      - ovn-kubernetes localnet trunk vlan
+      - scoped route secondary network macvlan
+    tags: [networking, ovn, multus, vlan, kafka, localnet]
+    companion_notes:
+      - devops/ocp/examples/messaging/kafka/cross-dc-architecture-overview.md
+
   - id: networking-vlan-segmentation
     title: VLAN Network Segmentation
     path: devops/ocp/examples/networking/vlan-segmentation.md

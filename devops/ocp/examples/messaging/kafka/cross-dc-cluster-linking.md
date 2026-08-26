@@ -15,7 +15,8 @@ review:
 **Related:**
 
 - [Cross-DC architecture overview](cross-dc-architecture-overview.md) — **canonical hub** — path comparison, build order, verification
-- [Dedicated cross-DC replication network](../../networking/cross-dc-replication.md) — generic host + Multus network depth
+- [Dedicated cross-DC replication network](../../networking/cross-dc-replication.md) — generic host + Multus network depth (extra NICs)
+- [Shared uplink / `br-ex` trunk VLAN](../../networking/cross-dc-br-ex-vlan.md) — Path A when there are no extra NICs
 - [Cross-DC ingress / Route alternative](cross-dc-ingress-alternative.md) — dedicated `IngressController` + CFK Routes
 - [Kafka bare-metal + Portworx](bare-metal-portworx/README.md) — rack-aware CFK/Strimzi example (single-cluster, not cross-DC)
 - [Network policy and observability](../../../notes/network-policy-observability.md) — Strimzi vs CFK policy differences

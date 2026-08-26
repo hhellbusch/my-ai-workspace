@@ -42,6 +42,7 @@ Cross-DC Kafka replication: start at **[architecture overview](messaging/kafka/c
 - **[NetworkAttachmentDefinition (NAD)](networking/network-attachment-definitions/README.md)** — Multus, VLAN, SR-IOV
 - **[OVN-Kubernetes install config](networking/ovn-kubernetes-install-config/README.md)** — `install-config.yaml` networking
 - **[Cross-DC replication network](networking/cross-dc-replication.md)** — Bonded NIC, dedicated VLAN (see [overview](messaging/kafka/cross-dc-architecture-overview.md))
+- **[Cross-DC shared uplink (`br-ex` VLAN)](networking/cross-dc-br-ex-vlan.md)** — Path A when there are no extra NICs; trunk tag on the existing uplink
 - **[Cross-DC rollout](networking/cross-dc-rollout/README.md)** — Inventory and config rendering
 - **[Cross-DC network test](networking/cross-dc-network-test/README.md)** — Path A pre-Kafka verification (Multus)
 - **[Cross-DC ingress test](networking/cross-dc-ingress-test/README.md)** — Path B layered verification (ingress shard)

@@ -20,12 +20,13 @@ Event streaming workloads on OpenShift: Kafka first; room for Schema Registry, C
 | Layer | Artifact | Multus path | Ingress path |
 |---|---|---|---|
 | Hub / decide | [cross-dc-architecture-overview.md](kafka/cross-dc-architecture-overview.md) | ✓ | ✓ |
-| Generic network | [cross-dc-replication.md](../networking/cross-dc-replication.md) | ✓ | host only |
+| Generic network | [cross-dc-replication.md](../networking/cross-dc-replication.md) | ✓ extra NICs | host only |
+| Shared uplink | [cross-dc-br-ex-vlan.md](../networking/cross-dc-br-ex-vlan.md) | ✓ no extra NICs | — |
 | Kafka / CFK | [cross-dc-cluster-linking.md](kafka/cross-dc-cluster-linking.md) | ✓ | ✓ |
 | Cluster Link GitOps | [CLUSTER-LINK-GITOPS.md](kafka/CLUSTER-LINK-GITOPS.md), [scaffold](kafka/cluster-link-gitops/README.md) | ✓ | ✓ |
 | Ingress depth | [cross-dc-ingress-alternative.md](kafka/cross-dc-ingress-alternative.md) | — | ✓ |
 | Inventory → render | [cross-dc-rollout](../networking/cross-dc-rollout/README.md) | ✓ | ✓ |
-| Host NNCP | [cross-dc-nncp-helm](kafka/cross-dc-nncp-helm/README.md) | ✓ | ✓ |
+| Host NNCP | [cross-dc-nncp-helm](kafka/cross-dc-nncp-helm/README.md) | ✓ extra NICs | ✓ extra NICs |
 | Network test | [cross-dc-network-test](../networking/cross-dc-network-test/README.md) | ✓ | — |
 | Ingress test | [cross-dc-ingress-test](../networking/cross-dc-ingress-test/README.md) | — | ✓ |
 | Kafka NAD + MNP | [cross-dc-kafka-net-helm](kafka/cross-dc-kafka-net-helm/README.md) | ✓ | skip |

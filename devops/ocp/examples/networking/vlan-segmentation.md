@@ -53,6 +53,8 @@ networking:
 
 When you want pods to connect to additional VLANs on a running cluster, you use **Multus CNI** (enabled by default on OpenShift) with **NetworkAttachmentDefinition (NAD)** CRDs.
 
+If the VLAN is a tag on the **existing machine-network trunk** (`br-ex`, no extra NIC), see [cross-dc-br-ex-vlan.md](cross-dc-br-ex-vlan.md) — macvlan on `br-ex` or OVN-K `localnet`, not a kernel VLAN on the uplink.
+
 ### 1. Verify Multus is available
 
 ```bash
