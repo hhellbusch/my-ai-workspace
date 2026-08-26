@@ -45,7 +45,7 @@ Run **both** shared Layer 1 (host NNCP) checks are duplicated here for isolation
 | **0** | Workstation tools, env, kubeconfig, image pull | You |
 | **1** | Host bond/VLAN/route on `repl-gateway` nodes (NNCP) | Platform / network |
 | **2** | TCP to frontend target (`VIP` or `dns_lb` node IPs) on `:443` from **remote** DC repl-gateway | Network / firewall / VIP (keepalived/MetalLB) |
-| **3** | `IngressController` Available, router deployment ready, domain matches | Platform / OpenShift |
+| **3** | `IngressController` Available, router deployment ready, domain matches; **no `HostNetwork` router conflict** on `repl-gateway` nodes | Platform / OpenShift |
 | **4** | Test Route admitted by **replication** shard (`status.ingress.routerName`) | Platform (routeSelector labels) |
 | **5** | Local curl via frontend IP → test hostname → echo backend | Frontend port map (443→8443), router, route TLS |
 | **6** | Cross-DC curl (remote DC node → local frontend → local route) | WAN firewall, DNS (if used), symmetric config |
@@ -83,7 +83,7 @@ Local DC: L1 host route ──► L3 IngressController ──► L4 route admiss
 ## Build order
 
 1. Resolve design questions in [architecture overview](../../messaging/kafka/cross-dc-architecture-overview.md#open-questions-to-confirm-before-implementing).
-2. Apply NNCP on both clusters; label `repl-gateway` nodes.
+2. Apply NNCP on both clusters; label **`repl-gateway` workers** that do not already host the default `HostNetwork` ingress router ([placement rule](../../messaging/kafka/cross-dc-ingress-alternative.md#node-placement--hostnetwork-limit-hard-requirement)).
 3. Apply `IngressController` replication shard on both clusters.
 4. Deploy frontend (keepalived, MetalLB, or DNS LB) — see [ingress-replication examples](../../messaging/kafka/examples/ingress-replication/README.md).
 5. Coordinate firewall — TCP **443** between DC subnets to frontend targets ([ingress firewall template](../cross-dc-rollout/templates/firewall-change-request-ingress.md.example)).
@@ -136,7 +136,7 @@ Gate example:
 |---|---|---|
 | L1 | — | NNCP wrong node list, missing scoped route, or default route on repl VLAN |
 | L2 | L1 | VIP not on VLAN, keepalived/MetalLB down, firewall blocks :443, wrong `FRONTEND_TARGETS` |
-| L3 | L1–L2 | IngressController not applied, router pods not on `repl-gateway`, domain typo |
+| L3 | L1–L2 | IngressController not applied, router pods not on `repl-gateway`, **HostNetwork conflict** (default router already on same nodes), or domain typo |
 | L4 | L3 | Route missing `ingress: replication` label; shard `routeSelector` mismatch |
 | L5 | L4 | VIP forwards to wrong host port (443 vs 8443), echo backend not ready, TLS/route misconfig |
 | L6 | L5 (local) | Remote→local firewall, asymmetric VIP/DNS, or WAN path MTU (rare for HTTPS) |

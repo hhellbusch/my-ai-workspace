@@ -90,6 +90,8 @@ Skip this section when `replicationPath: ingress` — use **Ingress** section be
 | `ingress.externalPort` | `443` |
 | `ingress.dnsTtl` | e.g. `60` |
 
+**Node list:** `nodes[]` for ingress path must be dedicated `repl-gateway` workers — not control-plane nodes that already host the default `HostNetwork` router ([HostNetwork limit](../../messaging/kafka/cross-dc-ingress-alternative.md#node-placement--hostnetwork-limit-hard-requirement)).
+
 Tickets: `render-config.py --both --firewall-request-ingress … --dns-request …`
 
 ## Probe image
@@ -105,6 +107,7 @@ Tickets: `render-config.py --both --firewall-request-ingress … --dns-request �
 - [ ] `replicationPath` set consistently on both DC inventories
 - [ ] Multus: every `hostIp` outside both pools; test/kafka pools disjoint
 - [ ] Ingress: `ingress.domain` and VIP or `dnsTargets` filled per DC
+- [ ] Ingress: `nodes[]` are repl-gateway workers with no existing `HostNetwork` ingress router on the same hostnames
 - [ ] `remoteSubnet` on DC-A equals DC-B's `localSubnet` (and vice versa)
 - [ ] Firewalls briefed using rendered `firewall-change-request.md`
 - [ ] `useMultiNetworkPolicy: true` on both clusters

@@ -12,6 +12,8 @@ review:
 
 **Prerequisites:** Host NNCP on `repl-gateway` nodes ([cross-dc-nncp-helm](../../cross-dc-nncp-helm/README.md)); DNS and firewall tickets from [cross-dc-rollout templates](../../../../networking/cross-dc-rollout/templates/).
 
+**Node placement (hard requirement):** OpenShift allows **one** `HostNetwork` `IngressController` per node. Label workers that are **not** already running the default (or any other) `HostNetwork` router — typically dedicated `repl-gateway` workers with replication VLAN cabling, **not** control-plane nodes where default ingress often lives on bare metal. Non-default router ports (`8443`) do not allow two `HostNetwork` shards on the same node. See [cross-dc-ingress-alternative.md — HostNetwork limit](../../cross-dc-ingress-alternative.md#node-placement--hostnetwork-limit-hard-requirement).
+
 ---
 
 ## Files

@@ -158,6 +158,35 @@ check_ingress_controller_side() {
   fi
 }
 
+check_hostnetwork_placement_side() {
+  local side="$1" kubeconfig name nodes node strategy conflicts found=0
+  kubeconfig="$(dcvar "${side}" KUBECONFIG)"
+  name="$(dcvar "${side}" INGRESS_CONTROLLER_NAME)"
+  nodes="$(dcvar "${side}" NODE_NAMES)"
+  strategy=$(oc --kubeconfig="${kubeconfig}" get ingresscontroller "${name}" -n openshift-ingress-operator \
+    -o jsonpath='{.spec.endpointPublishingStrategy.type}' 2>/dev/null || true)
+  if [[ "${strategy}" != "HostNetwork" ]]; then
+    warn "DC-${side}: IngressController ${name} strategy is '${strategy:-<not found>}' — HostNetwork placement check skipped"
+    return
+  fi
+  for node in ${nodes}; do
+    conflicts=$(oc --kubeconfig="${kubeconfig}" get pods -A \
+      -l 'ingresscontroller.operator.openshift.io/deployment-ingresscontroller' \
+      -o json 2>/dev/null | jq -r --arg node "${node}" --arg shard "${name}" '
+        .items[]
+        | select(.spec.hostNetwork == true and .spec.nodeName == $node)
+        | select(.metadata.labels["ingresscontroller.operator.openshift.io/deployment-ingresscontroller"] != $shard)
+        | .metadata.labels["ingresscontroller.operator.openshift.io/deployment-ingresscontroller"]' | sort -u)
+    if [[ -n "${conflicts}" ]]; then
+      fail "DC-${side}: node ${node} already runs HostNetwork ingress shard(s): ${conflicts//[$'\n']/+, } — only one HostNetwork IngressController per node"
+      found=1
+    fi
+  done
+  if [[ "${found}" -eq 0 ]]; then
+    pass "DC-${side}: repl-gateway NODE_NAMES have no HostNetwork ingress conflict (shard ${name})"
+  fi
+}
+
 check_permissions_side() {
   local side="$1" kubeconfig
   kubeconfig="$(dcvar "${side}" KUBECONFIG)"
@@ -242,6 +271,8 @@ main() {
   log "=== Layer 3: IngressController (must exist before run-ingress-test) ==="
   check_ingress_controller_side A
   check_ingress_controller_side B
+  check_hostnetwork_placement_side A
+  check_hostnetwork_placement_side B
 
   if [[ "${skip_image_pull}" == false ]]; then
     log ""

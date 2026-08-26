@@ -24,7 +24,9 @@ replicationNetwork:
   remoteSubnet: 10.200.2.0/26
   expectedMtu: 1500
 
-# Nodes with repl-gateway label — host repl IPs for router frontend (DNS LB) or NNCP
+# Nodes with repl-gateway label — host repl IPs for router frontend (DNS LB) or NNCP.
+# Must NOT be nodes that already run the default (or any other) HostNetwork ingress router
+# (common on bare metal: default router on control-plane — use dedicated workers here).
 nodes:
   - hostname: worker-0.dc-a.example.com
     hostIp: 10.200.1.11

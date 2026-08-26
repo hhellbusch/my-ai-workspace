@@ -1,6 +1,10 @@
 # Dedicated IngressController for cross-DC Kafka replication.
 # Adjust domain, labels, nodeSelector, and ports for your site.
 # See examples/ingress-replication/README.md
+#
+# HostNetwork: OpenShift allows only ONE HostNetwork IngressController per node.
+# Schedule this shard on repl-gateway workers that do NOT already run the default
+# (or any other) HostNetwork router — e.g. not on masters if default ingress is there.
 
 apiVersion: operator.openshift.io/v1
 kind: IngressController

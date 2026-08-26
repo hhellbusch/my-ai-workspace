@@ -29,6 +29,7 @@ review:
 - [Replication path options](#replication-path-options)
 - [Why teams consider ingress](#why-teams-consider-ingress)
 - [Second IngressController on the replication VLAN](#second-ingresscontroller-on-the-replication-vlan)
+- [Node placement — HostNetwork limit (hard requirement)](#node-placement--hostnetwork-limit-hard-requirement)
 - [CFK listener configuration (Route mode)](#cfk-listener-configuration-route-mode)
 - [External network requirements](#external-network-requirements)
 - [Frontend options without an external hardware LB](#frontend-options-without-an-external-hardware-lb)
@@ -100,6 +101,43 @@ Sharding uses `routeSelector` / `namespaceSelector` — not a special Route anno
 The gap is not "need F5 instead of HAProxy."
 It is: **what IP on `10.200.x.x/26` do remote brokers connect to?**
 
+### Node placement — HostNetwork limit (hard requirement)
+
+OpenShift allows **at most one `IngressController` with `endpointPublishingStrategy.type: HostNetwork` per node**. A second `HostNetwork` shard on the same node will not schedule — non-default `httpPort` / `httpsPort` do **not** bypass this limit.
+
+| Implication | Detail |
+|---|---|
+| **Dedicated node pool** | Replication router pods need their own nodes (`repl-gateway` label), separate from any node already running a `HostNetwork` router |
+| **Default on masters (common bare metal)** | If the default ingress router runs on control-plane nodes with `HostNetwork`, the replication shard **cannot** land on those masters — use workers cabled to the replication VLAN |
+| **Replication VLAN on the node** | `repl-gateway` nodes still need NNCP on `bond-repl.<vlan>` — control-plane nodes usually lack that interface |
+| **Alternatives to separate nodes** | Move default ingress off the target nodes, or use `NodePort` / `LoadBalancer` (not `HostNetwork`) for one shard — adds frontend complexity; not the recommended Path B shape |
+
+```text
+Typical bare-metal layout:
+
+  Masters (control-plane)     → default IngressController (HostNetwork) + platform ingress VIP
+  repl-gateway workers        → replication IngressController (HostNetwork) + bond-repl.200
+  regular workers             → Kafka broker pods (OVN only on Path B)
+```
+
+**Verify on a live cluster** (repeat per DC):
+
+```bash
+# Which nodes already run a HostNetwork ingress router?
+oc get pods -A \
+  -l 'ingresscontroller.operator.openshift.io/deployment-ingresscontroller' \
+  -o custom-columns=SHARD:.metadata.labels.ingresscontroller\.operator\.openshift\.io/deployment-ingresscontroller,HOST_NETWORK:.spec.hostNetwork,NODE:.spec.nodeName \
+  --sort-by=.spec.nodeName
+
+# Publishing strategy per shard
+oc get ingresscontroller -n openshift-ingress-operator \
+  -o custom-columns=NAME:.metadata.name,STRATEGY:.spec.endpointPublishingStrategy.type,NODE_SELECTOR:.spec.nodePlacement.nodeSelector.matchLabels
+```
+
+Any node listed with `HOST_NETWORK=true` is **not** eligible for another `HostNetwork` `IngressController`. Your `repl-gateway` `NODE_NAMES` must not overlap that set.
+
+Red Hat reference: [Configuring ingress cluster traffic — endpoint publishing strategy](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/networking_operators/configuring-ingress) (host network mode — one ingress controller per node). Peer walkthrough with the same constraint: [Andreas Karis — Ingress sharding on separate VIP](https://andreaskaris.github.io/blog/openshift/ingress-controller-sharding-on-separate-vip/).
+
 ### Example IngressController
 
 ```yaml
@@ -120,7 +158,7 @@ spec:
   endpointPublishingStrategy:
     type: HostNetwork          # or LoadBalancer if MetalLB on repl VLAN
     hostNetwork:
-      httpPort: 8080             # non-default ports if co-located with other HostNetwork routers
+      httpPort: 8080             # avoid clashing with well-known ports; does NOT enable a 2nd HostNetwork router on the same node
       httpsPort: 8443
   # tuningOptions:
   #   threadCount: 4             # size for bulk replication throughput
@@ -408,7 +446,8 @@ Use this checklist when opening tickets with network and DNS teams for **Path B*
 ### Platform team (per DC)
 
 - [ ] NNCP on repl-gateway nodes ([cross-dc-nncp-helm](cross-dc-nncp-helm/README.md))
-- [ ] `IngressController` `replication` shard (`domain`, `routeSelector`, `nodePlacement`)
+- [ ] `IngressController` `replication` shard (`domain`, `routeSelector`, `nodePlacement` on **dedicated** `repl-gateway` nodes — no overlap with existing `HostNetwork` default router nodes)
+- [ ] `oc get pods -A` confirms no `repl-gateway` node already runs another `HostNetwork` ingress router
 - [ ] Frontend: VIP (keepalived/MetalLB) or DNS LB to node repl IPs
 - [ ] CFK `listeners.custom` replication listener with `externalAccess.type: route`
 - [ ] Verify `oc get route -o yaml` → `status.ingress` shows **replication** shard only (not default)
