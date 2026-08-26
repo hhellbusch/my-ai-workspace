@@ -1,7 +1,7 @@
 ---
 review:
   status: unreviewed
-  notes: "Design note from architecture discussion — Path A on the existing br-ex trunk (no extra NICs). Example YAML not applied to a cluster. OVN-K localnet + route-override chaining is unverified."
+  notes: "Design note from architecture discussion — Path A on the existing uplink (no extra NICs). Covers br-ex-as-trunk and sibling VLAN when br-ex already sits on bond0.<vlan>. Example YAML not applied. OVN-K localnet + route-override chaining is unverified."
 ---
 
 # Cross-DC Replication on a Shared Uplink — `br-ex` Trunk VLAN
@@ -29,18 +29,24 @@ Start at the [architecture overview](../messaging/kafka/cross-dc-architecture-ov
 ## Constraint
 
 No extra NICs.
-Switch ports are **trunks**.
-The node already has `br-ex` on the machine-network uplink (typically the install-time bond).
+ToR ports can still be trunks even when **`br-ex` itself is not**.
+Check what `br-ex` actually enslaved before picking a NAD:
 
-Do **not** apply the [cross-dc-nncp-helm](../messaging/kafka/cross-dc-nncp-helm/README.md) `bond-repl` policies here.
-Do **not** add a kernel VLAN on the uplink OVN already owns.
-Red Hat does not support creating additional VLANs or sub-interfaces on the primary NIC / `br-ex` as a day-2 NMState change.
+```bash
+oc get nns <node> -o yaml
+# or: oc debug node/<node> -- chroot /host ip -d link show master br-ex
+```
 
-What *is* supported for this layout:
+| What `br-ex` sits on | `br-ex` is a trunk? | Replication VLAN 200 |
+|---|---|---|
+| Physical/`bond0` (machine net untagged or native) | Yes — OVS can tag | [localnet `vlanID`](#2-ovn-k-localnet-on-br-ex-supported-attachment) or [macvlan `master: br-ex`, `"vlan": 200`](#1-macvlan-on-br-ex-documented-scoped-route) |
+| Already-VLAN’d port (`bond0.100` → `br-ex`) | **No** — kernel already stripped the machine-net tag | Sibling kernel VLAN on the **parent** (`bond0.200`), then macvlan on that iface — [below](#when-br-ex-already-sits-on-a-vlan) |
 
-- Map an OVN-K `localnet` secondary network onto the **existing** `br-ex` (no port changes).
-- Tag with `vlanID` in the NAD; OVN tags/untags; the physical port stays a trunk.
-- Or attach macvlan with `master: br-ex` and `"vlan": <id>` — this is the shape Red Hat uses when demonstrating scoped routes (chapter 4, plugin chaining).
+Do **not** apply the [cross-dc-nncp-helm](../messaging/kafka/cross-dc-nncp-helm/README.md) `bond-repl` policies (that chart is a *new* bond).
+Do **not** add a kernel VLAN **on `br-ex` or on `bond0.100`**.
+Red Hat does not support extra VLANs/sub-interfaces on the OVS/`br-ex` member.
+
+The supported exception is the second row: extra VLANs from the **base** interface (`bond0`), because `br-ex` attached to `bond0.100` and left `bond0` free.
 
 Isolation is **VLAN + subnet on shared NICs**, not a dedicated circuit.
 Replication and machine-network / OVN egress compete for the same bond.
@@ -271,6 +277,84 @@ Treat this as a lab proof, not a settled design.
 
 ---
 
+## When `br-ex` already sits on a VLAN
+
+Common bare-metal install: ToR is a trunk; the host builds `bond0.100` (machine network); OVN enslaves **that** sub-interface into `br-ex`.
+
+```text
+ToR trunk ── bond0
+               ├─ bond0.100  →  br-ex     machine / OVN  (tag 100 already applied)
+               └─ bond0.200               replication     (new sibling)
+```
+
+`br-ex` only ever sees VLAN 100 frames (tag already popped).
+Mapping `localnet` + `vlanID: 200` onto `br-ex`, or macvlan `master: br-ex` + `"vlan": 200`, puts a **second** tag on the VLAN-100 pipe — QinQ or a drop, not VLAN 200 on the wire.
+
+**Host:** sibling VLAN on the parent of the `br-ex` member, not a new bond, not a child of `br-ex`:
+
+```yaml
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: kafka-repl-vlan-sibling
+spec:
+  nodeSelector:
+    node-role.kubernetes.io/worker: ""
+  desiredState:
+    interfaces:
+      - name: bond0.200          # parent name from NNS — not br-ex, not bond0.100
+        type: vlan
+        state: up
+        vlan:
+          base-iface: bond0
+          id: 200
+        ipv4:
+          enabled: false         # host IP optional; pods use macvlan
+    routes:
+      config: []                 # no host default on this iface; no host scoped route needed for pods
+```
+
+Replace `bond0` with whatever `ip -d link` shows as the parent of the `br-ex` port.
+
+**NAD:** macvlan on the sibling iface — **no** `"vlan"` key; the kernel iface is already tagged.
+Scoped route is the same `ipam.routes` stanza as [shape 1](#1-macvlan-on-br-ex-documented-scoped-route):
+
+```yaml
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: kafka-repl-net
+  namespace: confluent
+  annotations:
+    k8s.v1.cni.cncf.io/policy-for: confluent/kafka-repl-net
+spec:
+  config: |
+    {
+      "cniVersion": "0.3.1",
+      "name": "kafka-repl-net",
+      "type": "macvlan",
+      "master": "bond0.200",
+      "mode": "bridge",
+      "ipam": {
+        "type": "whereabouts",
+        "range": "10.200.1.0/26",
+        "range_start": "10.200.1.20",
+        "range_end": "10.200.1.60",
+        "routes": [
+          { "dst": "10.200.2.0/26", "gw": "10.200.1.1" }
+        ]
+      }
+    }
+```
+
+This is the same NAD shape as the dedicated-NIC Path A chart, with `master` pointing at the management bond’s VLAN instead of `bond-repl.200`.
+
+Do not enslave `bond0` into a second OVS bridge for `localnet` — it is still the parent of `bond0.100` / `br-ex`.
+
+Red Hat: [About OVN-Kubernetes](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/ovn-kubernetes_network_plugin/about-ovn-kubernetes) — *supported* post-install: additional VLANs from the base physical interface when the primary is already a VLAN sub-interface in `br-ex`.
+
+---
+
 ## `MultiNetworkPolicy`
 
 Same intent as the dedicated-NIC Path A policy.
@@ -318,7 +402,12 @@ ip route get 8.8.8.8
 
 `network-status` on the pod: second interface present, **no** `"default-route"` key.
 
-Then `tcpdump` on `br-ex` / the uplink vs confirming the packet is **VLAN 200 tagged** with source in the local `/26`, not a node management address.
+Then `tcpdump`:
+
+- `br-ex` **is** the trunk → capture on the `br-ex` uplink; frames must be **VLAN 200 tagged**
+- `br-ex` sits on `bond0.100` → capture on `bond0.200` (or the parent with `vlan 200`); do **not** expect VLAN 200 on `br-ex`
+
+Source IP must be in the local `/26`, not a node management address.
 
 The existing [cross-DC network test](cross-dc-network-test/README.md) assumes a macvlan master of `bond-repl.<vlan>`.
 It does not cover this host model until the test NAD `master` (or CNI type) is changed.
@@ -329,7 +418,9 @@ It does not cover this host model until the test NAD `master` (or CNI type) is c
 
 | Anti-pattern | Why |
 |---|---|
-| `bond-repl` NNCP / kernel VLAN on the `br-ex` uplink | Unsupported day-2 change to the primary NIC / OVS bridge |
+| `bond-repl` NNCP (new bond) when the uplink already exists | Wrong host model — extra NICs only |
+| Kernel VLAN **on `br-ex`** or on `bond0.100` | Unsupported: extra iface on the OVS member |
+| `localnet` `vlanID: 200` (or macvlan `"vlan": 200` on `br-ex`) when `br-ex` is already on `bond0.100` | Tags the machine-net pipe, not VLAN 200 on the wire |
 | `default-route` on the replication attachment | Steals **all** pod egress onto VLAN 200 |
 | Host `routes.config` as the pod fix | Wrong network namespace |
 | `AdminPolicyBasedExternalRoute` / EgressIP | Default-network SNAT, not the replication VLAN |
@@ -342,7 +433,7 @@ Kafka / CFK listener wiring (`$(REPL_IP)`, Cluster Link `bootstrap.servers`) is 
 
 ## Open questions before implementing
 
-- Is the machine network **untagged** native VLAN on this trunk, or is `br-ex` already on a tagged sub-interface (e.g. `bond0.100`)? VLAN 200 must not collide with that tag.
+- What does `br-ex` sit on — parent `bond0`, or `bond0.<machine-vlan>`? That fork picks [br-ex tagging](#two-nad-shapes) vs [sibling VLAN](#when-br-ex-already-sits-on-a-vlan). VLAN 200 must not collide with the machine-net tag.
 - Is sharing the machine-network bond acceptable for replication volume, or is “no extra NICs” a temporary constraint?
 - Lab first: macvlan + `ipam.routes`, or localnet mapping only (knowing the remote `/26` will miss until the route gap is closed)?
 - Path MTU on VLAN 200 vs `br-ex` MTU — parent-first still applies; jumbo on 200 cannot exceed `br-ex`.
