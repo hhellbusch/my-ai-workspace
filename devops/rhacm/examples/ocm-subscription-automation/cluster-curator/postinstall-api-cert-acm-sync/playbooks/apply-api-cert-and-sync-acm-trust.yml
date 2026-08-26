@@ -1,0 +1,310 @@
+---
+# apply-api-cert-and-sync-acm-trust.yml
+#
+# ClusterCurator postinstall hook: custom API cert + ACM hub/spoke trust sync.
+# Runs on localhost with hub API access (in-cluster SA or mounted kubeconfig).
+#
+# Required collections: kubernetes.core
+# Required binaries: oc
+#
+# Extra vars (ClusterCurator passes these; cluster_deployment is auto-injected):
+#   cluster_name          — managed cluster / namespace name
+#   cluster_namespace     — hub namespace (default: cluster_name)
+#   cert_material_secret  — hub secret with tls.crt, tls.key, ca.crt
+#   api_tls_secret_name   — spoke openshift-config TLS secret name
+#   api_dns_name          — primary API DNS SAN (for apiserver/cluster)
+#   skip_api_cert_apply   — true to skip cert apply (ACM sync only)
+#   skip_acm_sync         — true to skip hub kubeconfig + import.yaml steps
+#   acm_available_timeout — seconds to wait for ManagedCluster Available (default 600)
+#
+- name: Post-install API cert and ACM trust sync
+  hosts: localhost
+  gather_facts: false
+  vars:
+    cluster_namespace: "{{ cluster_namespace | default(cluster_name) }}"
+    cert_material_secret: "{{ cert_material_secret | default('api-cert-material') }}"
+    api_tls_secret_name: "{{ api_tls_secret_name | default('custom-api-tls') }}"
+    skip_api_cert_apply: "{{ skip_api_cert_apply | default(false) | bool }}"
+    skip_acm_sync: "{{ skip_acm_sync | default(false) | bool }}"
+    acm_available_timeout: "{{ acm_available_timeout | default(600) | int }}"
+    work_dir: "/tmp/acm-cert-sync-{{ cluster_name }}"
+
+  tasks:
+    - name: Resolve cluster name from ClusterCurator injection or extra_vars
+      ansible.builtin.set_fact:
+        cluster_name: >-
+          {{
+            cluster_name
+            | default(cluster_deployment.clusterName | default(''))
+          }}
+
+    - name: Assert cluster_name is set
+      ansible.builtin.assert:
+        that:
+          - cluster_name | length > 0
+        fail_msg: >-
+          Set cluster_name in extra_vars or ensure cluster_deployment is injected by ClusterCurator.
+
+    - name: Create working directory
+      ansible.builtin.file:
+        path: "{{ work_dir }}"
+        state: directory
+        mode: "0700"
+
+    - name: Get ClusterDeployment
+      kubernetes.core.k8s_info:
+        api_version: hive.openshift.io/v1
+        kind: ClusterDeployment
+        name: "{{ cluster_name }}"
+        namespace: "{{ cluster_namespace }}"
+      register: cd_info
+
+    - name: Assert ClusterDeployment is provisioned
+      ansible.builtin.assert:
+        that:
+          - cd_info.resources | length > 0
+          - >-
+            cd_info.resources[0].status.conditions
+            | selectattr('type', 'equalto', 'Provisioned')
+            | map(attribute='status')
+            | first == 'True'
+        fail_msg: ClusterDeployment {{ cluster_name }} is not Provisioned yet.
+
+    - name: Resolve admin kubeconfig secret name
+      ansible.builtin.set_fact:
+        admin_kubeconfig_secret: >-
+          {{ cd_info.resources[0].spec.clusterMetadata.adminKubeconfigSecretRef.name }}
+
+    - name: Export hub admin kubeconfig (pre-cert — still valid)
+      ansible.builtin.shell: |
+        set -euo pipefail
+        oc -n "{{ cluster_namespace }}" get secret "{{ admin_kubeconfig_secret }}" \
+          -o jsonpath='{.data.kubeconfig}' | base64 -d > "{{ work_dir }}/spoke.kubeconfig"
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+    - name: Read cert material from hub secret
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Secret
+        name: "{{ cert_material_secret }}"
+        namespace: "{{ cluster_namespace }}"
+      register: cert_secret
+      when: not skip_api_cert_apply
+
+    - name: Write cert files for spoke apply
+      ansible.builtin.copy:
+        dest: "{{ work_dir }}/{{ item.key }}"
+        content: "{{ item.value | b64decode }}"
+        mode: "0600"
+      loop:
+        - { key: tls.crt, value: "{{ cert_secret.resources[0].data['tls.crt'] }}" }
+        - { key: tls.key, value: "{{ cert_secret.resources[0].data['tls.key'] }}" }
+        - { key: ca.crt, value: "{{ cert_secret.resources[0].data['ca.crt'] }}" }
+      when: not skip_api_cert_apply
+
+    - name: Apply custom API TLS secret on spoke (openshift-config)
+      ansible.builtin.command:
+        argv:
+          - oc
+          - --kubeconfig={{ work_dir }}/spoke.kubeconfig
+          - create
+          - secret
+          - tls
+          - "{{ api_tls_secret_name }}"
+          - --cert={{ work_dir }}/tls.crt
+          - --key={{ work_dir }}/tls.key
+          - -n
+          - openshift-config
+          - --dry-run=client
+          - -o
+          - yaml
+      register: tls_secret_yaml
+      changed_when: false
+      when: not skip_api_cert_apply
+
+    - name: Apply TLS secret to spoke
+      ansible.builtin.shell: |
+        set -euo pipefail
+        {{ tls_secret_yaml.stdout }} | oc --kubeconfig="{{ work_dir }}/spoke.kubeconfig" apply -f -
+      args:
+        executable: /bin/bash
+      when: not skip_api_cert_apply
+
+    - name: Patch apiserver/cluster named certificate on spoke
+      kubernetes.core.k8s:
+        kubeconfig: "{{ work_dir }}/spoke.kubeconfig"
+        state: present
+        merge_type: merge
+        definition:
+          apiVersion: config.openshift.io/v1
+          kind: APIServer
+          metadata:
+            name: cluster
+          spec:
+            servingCerts:
+              namedCertificates:
+                - names:
+                    - "{{ api_dns_name }}"
+                  servingCertificate:
+                    name: "{{ api_tls_secret_name }}"
+      when: not skip_api_cert_apply
+
+    - name: Wait for kube-apiserver ClusterOperator to finish progressing
+      kubernetes.core.k8s_info:
+        kubeconfig: "{{ work_dir }}/spoke.kubeconfig"
+        api_version: config.openshift.io/v1
+        kind: ClusterOperator
+        name: kube-apiserver
+      register: kube_apiserver_co
+      until: >-
+        (
+          kube_apiserver_co.resources[0].status.conditions
+          | selectattr('type', 'equalto', 'Progressing')
+          | map(attribute='status')
+          | first
+        ) == 'False'
+      retries: 60
+      delay: 10
+      when: not skip_api_cert_apply
+
+    - name: Load CA for kubeconfig update
+      ansible.builtin.slurp:
+        src: "{{ work_dir }}/ca.crt"
+      register: ca_slurp
+      when:
+        - not skip_acm_sync
+        - not skip_api_cert_apply
+
+    - name: Read CA from cert material when cert apply was skipped
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Secret
+        name: "{{ cert_material_secret }}"
+        namespace: "{{ cluster_namespace }}"
+      register: cert_secret_sync
+      when:
+        - not skip_acm_sync
+        - skip_api_cert_apply
+
+    - name: Set CA content fact
+      ansible.builtin.set_fact:
+        ca_pem_b64: >-
+          {{
+            ca_slurp.content
+            if not skip_api_cert_apply
+            else cert_secret_sync.resources[0].data['ca.crt']
+          }}
+      when: not skip_acm_sync
+
+    - name: Update spoke kubeconfig certificate-authority-data
+      ansible.builtin.shell: |
+        set -euo pipefail
+        python3 <<'PY'
+        import base64, yaml, sys
+
+        kubeconfig_path = "{{ work_dir }}/spoke.kubeconfig"
+        ca_b64 = "{{ ca_pem_b64 }}"
+        ca_pem = base64.b64decode(ca_b64).decode()
+
+        with open(kubeconfig_path) as f:
+            cfg = yaml.safe_load(f)
+
+        for cluster in cfg.get("clusters", []):
+            cluster["cluster"]["certificate-authority-data"] = base64.b64encode(
+                ca_pem.encode()
+            ).decode()
+            cluster["cluster"].pop("insecure-skip-tls-verify", None)
+
+        with open(kubeconfig_path, "w") as f:
+            yaml.safe_dump(cfg, f, default_flow_style=False)
+        PY
+      args:
+        executable: /bin/bash
+      when: not skip_acm_sync
+
+    - name: Verify spoke API with updated kubeconfig
+      ansible.builtin.command:
+        argv:
+          - oc
+          - --kubeconfig={{ work_dir }}/spoke.kubeconfig
+          - get
+          - nodes
+          - --no-headers
+      register: spoke_nodes
+      changed_when: false
+      when: not skip_acm_sync
+
+    - name: Patch hub admin kubeconfig secret (Path A)
+      ansible.builtin.shell: |
+        set -euo pipefail
+        kubeconfig_b64="$(base64 -w0 "{{ work_dir }}/spoke.kubeconfig")"
+        oc -n "{{ cluster_namespace }}" patch secret "{{ admin_kubeconfig_secret }}" \
+          --type=json \
+          -p="[{\"op\":\"replace\",\"path\":\"/data/kubeconfig\",\"value\":\"${kubeconfig_b64}\"}]"
+      args:
+        executable: /bin/bash
+      when: not skip_acm_sync
+
+    - name: Export ACM import manifest from hub
+      ansible.builtin.shell: |
+        set -euo pipefail
+        oc -n "{{ cluster_namespace }}" get secret "{{ cluster_name }}-import" \
+          -o jsonpath='{.data.import\.yaml}' | base64 -d > "{{ work_dir }}/import.yaml"
+      args:
+        executable: /bin/bash
+      changed_when: false
+      when: not skip_acm_sync
+
+    - name: Re-apply import.yaml on spoke (Path B)
+      ansible.builtin.command:
+        argv:
+          - oc
+          - --kubeconfig={{ work_dir }}/spoke.kubeconfig
+          - apply
+          - -f
+          - "{{ work_dir }}/import.yaml"
+      when: not skip_acm_sync
+
+    - name: Wait for klusterlet registration agent to be ready
+      ansible.builtin.command:
+        argv:
+          - oc
+          - --kubeconfig={{ work_dir }}/spoke.kubeconfig
+          - rollout
+          - status
+          - deployment/klusterlet-registration-agent
+          - -n
+          - open-cluster-management-agent
+          - --timeout=300s
+      when: not skip_acm_sync
+
+    - name: Wait for ManagedCluster Available on hub
+      kubernetes.core.k8s_info:
+        api_version: cluster.open-cluster-management.io/v1
+        kind: ManagedCluster
+        name: "{{ cluster_name }}"
+      register: mc_info
+      until: >-
+        (
+          mc_info.resources[0].status.conditions
+          | selectattr('type', 'equalto', 'ManagedClusterConditionAvailable')
+          | map(attribute='status')
+          | first
+        ) == 'True'
+      retries: "{{ (acm_available_timeout / 10) | int }}"
+      delay: 10
+      when: not skip_acm_sync
+
+    - name: ACM trust sync complete
+      ansible.builtin.debug:
+        msg: >-
+          Cluster {{ cluster_name }}: API cert applied={{ not skip_api_cert_apply }},
+          ACM sync={{ not skip_acm_sync }},
+          nodes={{ (spoke_nodes.stdout_lines | default([]) | length) if not skip_acm_sync else 'skipped' }}
+
+    - name: Remove working directory
+      ansible.builtin.file:
+        path: "{{ work_dir }}"
+        state: absent

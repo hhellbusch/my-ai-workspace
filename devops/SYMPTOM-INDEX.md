@@ -3,7 +3,7 @@
 Machine-generated lookup table: symptom string → troubleshooting guide.
 Source: `devops/catalog.yaml` (also staged as [catalog.yaml](catalog.yaml) on the site). Regenerate: `python3 scripts/generate-symptom-index.py`.
 
-*Generated 2026-07-29.*
+*Generated 2026-08-17.*
 
 | Symptom / keyword | Guide | Quick ref |
 |-------------------|-------|-----------|
@@ -94,6 +94,10 @@ Source: `devops/catalog.yaml` (also staged as [catalog.yaml](catalog.yaml) on th
 | assisted-image-service SSL connection reset | [Agent Install Rootfs SSL Failure](rhacm/troubleshooting/agent-install-rootfs-ssl-failure.md) | — |
 | agent install rootfs download failed | [Agent Install Rootfs SSL Failure](rhacm/troubleshooting/agent-install-rootfs-ssl-failure.md) | — |
 | curl 35 SSL_connect connection reset peer | [Agent Install Rootfs SSL Failure](rhacm/troubleshooting/agent-install-rootfs-ssl-failure.md) | — |
+| x509 certificate signed by unknown authority ACM | [Managed Cluster x509 After API Cert Change](rhacm/troubleshooting/managed-cluster-x509-after-api-cert-change.md) | — |
+| managed cluster offline after certificate change | [Managed Cluster x509 After API Cert Change](rhacm/troubleshooting/managed-cluster-x509-after-api-cert-change.md) | — |
+| hive-controller unknown authority | [Managed Cluster x509 After API Cert Change](rhacm/troubleshooting/managed-cluster-x509-after-api-cert-change.md) | — |
+| ACM TLS failed to verify certificate | [Managed Cluster x509 After API Cert Change](rhacm/troubleshooting/managed-cluster-x509-after-api-cert-change.md) | — |
 | multiclusterhub stuck updating | [MCH Stuck Pending Upgrade](rhacm/troubleshooting/mch-stuck-pending-upgrade.md) | — |
 | MCH pending installing | [MCH Stuck Pending Upgrade](rhacm/troubleshooting/mch-stuck-pending-upgrade.md) | — |
 | hub upgrade stuck beyond 15 minutes | [MCH Stuck Pending Upgrade](rhacm/troubleshooting/mch-stuck-pending-upgrade.md) | — |
@@ -190,6 +194,10 @@ Source: `devops/catalog.yaml` (also staged as [catalog.yaml](catalog.yaml) on th
 #### Agent Install
 
 - [Agent Install Rootfs SSL Failure](rhacm/troubleshooting/agent-install-rootfs-ssl-failure.md) — `rhacm`, `agent-install`, `cim`, `ssl`
+
+#### Certificates
+
+- [Managed Cluster x509 After API Cert Change](rhacm/troubleshooting/managed-cluster-x509-after-api-cert-change.md) — `rhacm`, `certificates`, `klusterlet`, `hive`, `bare-metal`
 
 #### Hub Upgrade
 

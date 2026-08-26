@@ -162,7 +162,7 @@ Common error signatures:
 | Log pattern | Likely cause |
 |---|---|
 | `connection refused` / `i/o timeout` | Network path to hub API server broken |
-| `certificate has expired` / `x509` | Agent certificates need rotation |
+| `certificate has expired` / `x509` | Agent certificates need rotation — if after API cert rollout, see [managed-cluster-x509-after-api-cert-change.md](./managed-cluster-x509-after-api-cert-change.md) |
 | `unauthorized` / `403` | RBAC or bootstrap kubeconfig issue |
 | `no such host` | DNS resolution failure for hub API server |
 | `context deadline exceeded` | Hub API server slow/unreachable |

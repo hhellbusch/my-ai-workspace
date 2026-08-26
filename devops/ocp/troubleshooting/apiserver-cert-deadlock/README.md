@@ -362,6 +362,7 @@ If the operator "is not picking up the new cert":
 
 ## See Also
 
+- [ACM: x509 after API cert change on managed clusters](../../../rhacm/troubleshooting/managed-cluster-x509-after-api-cert-change.md) — when spoke cert rollout breaks hub → spoke trust
 - [Index](INDEX.md) – Symptom and access-path navigation
 - [Quick Reference](QUICK-REFERENCE.md) – Decision tree and copy-paste commands
 - [Control plane kubeconfigs](../control-plane-kubeconfigs/README.md) – Using localhost kubeconfig on masters

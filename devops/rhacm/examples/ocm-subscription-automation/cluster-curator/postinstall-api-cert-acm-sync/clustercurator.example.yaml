@@ -1,0 +1,31 @@
+# Fragment — merge posthook into your ClusterCurator for the cluster namespace.
+# Requires AAP Job Template: postinstall-api-cert-acm-sync
+# See README.md in this directory.
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: ClusterCurator
+metadata:
+  name: prod-bm-01
+  namespace: prod-bm-01
+spec:
+  desiredCuration: install
+  install:
+    prehook: []
+    posthook:
+      # Run first if you have multiple posthooks — downstream jobs assume ACM path is healthy.
+      - name: postinstall-api-cert-acm-sync
+        extra_vars:
+          cluster_name: prod-bm-01
+          cluster_namespace: prod-bm-01
+          cert_material_secret: api-cert-material
+          api_tls_secret_name: custom-api-tls
+          api_dns_name: api.prod-bm-01.example.com
+          skip_api_cert_apply: false
+          skip_acm_sync: false
+      # Example: other post-install automation after ACM trust is synced
+      # - name: set-ocm-subscription
+      #   extra_vars:
+      #     cluster_name: prod-bm-01
+      #     support_level: Premium
+      #     usage: Production
+  towerAuthSecret: aap-credentials

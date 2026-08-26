@@ -116,6 +116,18 @@ spec:
 
 ---
 
+## Bare Metal Use Case: Post-Install API Cert + ACM Trust Sync
+
+When custom API serving certificates are applied after CIM install, ACM hub kubeconfig and klusterlet trust must be refreshed or clusters show `x509: certificate signed by unknown authority`.
+
+**Draft reference implementation:**
+
+- [postinstall-api-cert-acm-sync/README.md](./postinstall-api-cert-acm-sync/README.md) — ClusterCurator posthook, AAP playbook, cert manifests
+- [custom-api-certs-and-acm-trust.md](../../../notes/custom-api-certs-and-acm-trust.md) — Peer share: GitOps + Argo two-app PostSync pattern (recommended for cert-manager fleets)
+- Troubleshooting when this was not automated: [managed-cluster-x509-after-api-cert-change.md](../../../troubleshooting/managed-cluster-x509-after-api-cert-change.md)
+
+---
+
 ## Bare Metal Use Case: OCM Subscription via ClusterCurator
 
 ### What You Need

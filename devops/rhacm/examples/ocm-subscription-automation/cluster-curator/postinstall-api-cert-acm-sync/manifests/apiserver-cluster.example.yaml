@@ -1,0 +1,15 @@
+# Applied to spoke by the postinstall playbook (merge patch on live apiserver/cluster).
+# Reference: https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/security_and_compliance/configuring-certificates#replacing-default-ingress-certificate
+---
+apiVersion: config.openshift.io/v1
+kind: APIServer
+metadata:
+  name: cluster
+spec:
+  servingCerts:
+    namedCertificates:
+      - names:
+          - api.prod-bm-01.example.com
+          # Add api VIP DNS, internal LB names, etc.
+        servingCertificate:
+          name: custom-api-tls

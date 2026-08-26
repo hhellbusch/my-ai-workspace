@@ -18,6 +18,7 @@ Practical diagnostic guides for Red Hat Advanced Cluster Management operational 
 | [observability-platform-metrics-missing.md](./observability-platform-metrics-missing.md) | Custom metrics flowing to ACM dashboards but platform metrics (cpu, memory, kubelet) absent — Prometheus PVC full on spoke causing TSDB write failures and alert storm |
 | [search-service-503.md](./search-service-503.md) | Search UI returns 503 / "Error occurred while contacting the search service" — `search-postgres` OOMKill and other search component failures |
 | [agent-install-rootfs-ssl-failure.md](./agent-install-rootfs-ssl-failure.md) | Agent install host fails early boot pulling rootfs from `assisted-image-service` — `curl: (35) SSL_connect: Connection reset by peer` |
+| [managed-cluster-x509-after-api-cert-change.md](./managed-cluster-x509-after-api-cert-change.md) | `x509: certificate signed by unknown authority` after custom/corporate API certs applied — hub admin kubeconfig stale, klusterlet offline |
 
 ## Lifecycle / Decommission
 
@@ -59,6 +60,14 @@ Practical diagnostic guides for Red Hat Advanced Cluster Management operational 
 - `search-postgres` OOMKilled — increase memory limits via the `Search` CR
 - Search service not enabled in MCH, or per-cluster addon not deployed
 - See [search-service-503.md](./search-service-503.md); for first-time setup see [notes/search-setup.md](../notes/search-setup.md)
+
+**x509 unknown authority after API cert change on managed cluster:**
+- Worked until day-2 custom or corporate API certificates were applied on hub or spoke
+- `hive-controller` or import controller logs show x509 against spoke API URL (hub → spoke path)
+- Klusterlet work/registration agent logs on spoke show x509 against spoke's own API (spoke internal path)
+- Fix: patch hub admin kubeconfig secret, then re-apply `import.yaml` on spoke if klusterlet broke
+- Prevention: `additionalTrustBundle` at install, or ClusterCurator postinstall hook to sync ACM trust after cert rollout
+- See [managed-cluster-x509-after-api-cert-change.md](./managed-cluster-x509-after-api-cert-change.md)
 
 **Agent install rootfs download fails during ISO boot:**
 - RHCOS live cannot reach `assisted-image-service` on the hub over HTTPS 443

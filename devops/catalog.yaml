@@ -390,6 +390,19 @@ guides:
     tags: [rhacm, agent-install, cim, ssl]
     quick_ref: null
 
+  - id: rhacm-managed-cluster-x509-after-api-cert-change
+    title: Managed Cluster x509 After API Cert Change
+    path: devops/rhacm/troubleshooting/managed-cluster-x509-after-api-cert-change.md
+    product: rhacm
+    category: certificates
+    symptoms:
+      - "x509 certificate signed by unknown authority ACM"
+      - "managed cluster offline after certificate change"
+      - "hive-controller unknown authority"
+      - "ACM TLS failed to verify certificate"
+    tags: [rhacm, certificates, klusterlet, hive, bare-metal]
+    quick_ref: null
+
   - id: ansible-aap-controller-token-404
     title: AAP Controller Token 404
     path: devops/ansible/troubleshooting/aap-controller-token-404

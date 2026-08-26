@@ -47,7 +47,8 @@ rhacm/examples/
 │   ├── README.md                      # OCM CLI and standalone script documentation
 │   ├── set-ocm-subscription.sh        # Standalone automation script
 │   └── cluster-curator/
-│       └── README.md                  # ClusterCurator education for bare metal
+│       ├── README.md                  # ClusterCurator education for bare metal
+│       └── postinstall-api-cert-acm-sync/  # Posthook: API cert + ACM trust sync (draft)
 └── secret-management/                 # Secret management across managed clusters
     ├── 1_basic_secret_distribution/
     ├── 2_managed_service_accounts/

@@ -157,7 +157,10 @@ ALLOW TCP <hub-node-subnet>            →  <new-cluster-api-vip>:6443
 ALLOW TCP <hub-node-subnet>            →  <new-cluster-ingress-vip>:443
 ```
 
-**Deeper guide:** [managed-cluster-lease-not-updated.md](../troubleshooting/managed-cluster-lease-not-updated.md)
+**Deeper guides:**
+
+- [managed-cluster-lease-not-updated.md](../troubleshooting/managed-cluster-lease-not-updated.md) — lease / connectivity
+- [managed-cluster-x509-after-api-cert-change.md](../troubleshooting/managed-cluster-x509-after-api-cert-change.md) — x509 after API cert rollout
 
 ---
 

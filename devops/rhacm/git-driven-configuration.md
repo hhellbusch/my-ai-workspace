@@ -203,6 +203,7 @@ The [Argo CD fleet framework](../argo/examples/framework/) already implements pa
 | `GitOpsCluster` / fleet `Placement` / `ManagedClusterSet` | Yes (`hub/rhacm/*.yaml`) | **Gap** — still documented as `oc apply` | Add hub integration Application |
 | Platform governance policies | No | — | Governance phase target: `hub/rhacm/policies/` |
 | Spoke Day 2 (monitoring, cert-manager, …) | Yes (`apps/`) | Yes (ApplicationSets) | Argo-heavy — correct for delivery axis |
+| Custom API cert + ACM trust sync | Yes (`api-cert/`, `acm-trust-sync/`) | Yes (per-spoke apps, PostSync on hub) | See [custom-api-certs-and-acm-trust.md](notes/custom-api-certs-and-acm-trust.md) |
 
 **Implication for an Argo-heavy design:** You are already GitOps-first for spoke config.
 Closing the gap means bringing **all** hub RHACM CRs under Argo sync and adding **governance policies in Git** — not moving spoke delivery to the ACM console.
