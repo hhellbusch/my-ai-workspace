@@ -63,6 +63,16 @@ The `.txt` extension signals clearly that this is raw scraped material, not
 authored markdown. Internal links in scraped content are relative to the source
 website's domain — they are not repository-relative paths.
 
+### Sources are working copies, not edit logs
+
+`sources/` holds material used while writing — cleaned up as needed before
+commit, but not annotated with how it got that way.
+
+Put provenance, scrubbing notes, and editing context in `research/<topic>/README.md`
+or `findings/`. Do not document the preparation process inside the source file
+itself. The drawer holds the working copy; the README and findings hold the
+workshop notes.
+
 ---
 
 ## Linking — use the original URL

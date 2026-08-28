@@ -7,7 +7,7 @@ description: Ansible and Red Hat Ansible Automation Platform reference
 
 # Ansible
 
-Playbooks, retry patterns, parallel execution, BMC operations, and AAP 2.5+ troubleshooting.
+Playbooks, retry patterns, parallel execution, BMC operations, and AAP 2.5/2.6 troubleshooting.
 
 - [Examples](examples/) — Runnable playbooks demonstrating patterns
 - [Troubleshooting](troubleshooting/) — Symptom → cause → fix guides

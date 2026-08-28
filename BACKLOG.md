@@ -107,6 +107,11 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ## Ideas
 
+### Software Systems Maturity — v2 complete (merge PR #9)
+- **Product:** docs/ai-engineering/maturity/
+- **Context:** All 14 axis deep dives v2 (deck lineage, corpus, DORA, AI-era). Meta-framework, worksheet, SLO primer done. **Action:** merge [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9). Optional: deck PDF, *Accelerate* library ingest, DORA essay. Handoff: [.planning/software-systems-maturity/whats-next.md](../.planning/software-systems-maturity/whats-next.md).
+- **Added:** 2026-08-12 · **Updated:** 2026-08-12 · **Status:** ready to merge
+
 ### Essay seed: documentation as cognitive offload and async multiplier
 - **Product:** docs/ai-engineering (or docs/philosophy)
 - **Context:** Three-part model surfaced 2026-05-30 peer-deck session: (1) write it down → safely flush working memory; (2) peer can self-onboard without requiring your presence — you're not the bottleneck; (3) when issues arise your time goes to troubleshooting and judgment, not first-contact procedure transfer. The claim: documentation isn't about completeness, it's about *shifting what requires a human* to a higher layer. Connects to "Saved artifacts are memory" in the deck (that's the solo/cross-session version; this is the team/social version). Could pair with the full-cup essay.

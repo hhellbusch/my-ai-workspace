@@ -1,0 +1,514 @@
+Software Systems Maturity
+Henry Hellbusch
+
+
+I started on these slides in 2016 or 2017. I keep returning to them on and off over the years as the motivation arises.  This is an attempt to help people to identify and find paths for growth in their software systems related paths of growth. This is not intended to be a complete guide but rather a trailhead.
+
+The original intent was this slide deck to be an intro and then have deep dives into the various domains or axis' of maturity (e.g. one on source control, one on quality, and so on) - I have not yet created any deep dives like that as formal follow-on documentation. 
+
+The recent rise of AI Agents (which I affectionately refer to as "clankers" - a nod to many Sci-Fi's) - I feel the need to revisit and expand on these again (2026).
+
+3
+Outline
+Introduction
+Capability Maturity Model
+Other Models
+My Model (would like to evolve and improve over time)
+
+4
+A tool that helps assess the current effectiveness of a person or group
+Supports figuring out what capabilities they need to acquire next in order to improve performance
+Software performance, individual performance and team performance!
+Structured as a sequence of levels
+Exceptions are always increasing - we need to stay ahead and capable
+
+How effective/capable/reliable is the software?
+Can we trust the software to run {....}?
+Can we trust the software to help us make better decisions?
+Can we trust new versions of the software?
+Software Maturity Model
+
+5
+Assess & Determine current level
+Use the next level above to prioritze what to learn next
+If you are at level 2, then work on level 3
+The model acts as a guide!
+Puts some structure around the complex processes
+Helps build a list of things you need to work on to improve
+Guidelines for working with a maturity model
+https://martinfowler.com/bliki/MaturityModel.html 
+
+6
+Mixologist - fancy term for someone who that makes (craft?) cocktails
+Knows how to make a dozen basic drinks 
+E.g. "make me a Manhattan"
+Knows at least 100 recipes, can substitute ingredients
+e.g "make me a Vieux Carre in a bar that lacks Peychaud's"
+Able to come up with cocktails (either invented or recalled) with a few simple constraints on ingredients and styles
+e.g. "make me something with sherry and tequila that's moderately sweet"
+Example - a mixologist
+https://media2.fdncms.com/chicago/imager/u/original/22625148/best-mixologist-paul-mcgee-teaser.jpg 
+Example directly from https://martinfowler.com/bliki/MaturityModel.html 
+
+Capability Maturity Model (CMM)
+There's a bunch of pre-existing models you may or may not know about!
+
+8
+Similar to ISO 9001
+Requirements for a quality management system
+Helps businesses / organizations to be more efficient & improve customer satisfaction
+Continual Improvement
+5 levels
+Initial
+Managed
+Defined
+Quantitatively Managed
+Optimizing
+Want to be in the Defined (3) - Optimizing (5) region!
+Capability Maturity Model (CMM)
+https://en.wikipedia.org/wiki/Capability_Maturity_Model  
+https://www.iso.org/iso-9001-quality-management.html 
+
+9
+http://tryqa.com/wp-content/uploads/2012/01/CMMleve-diagram.jpg
+
+10
+http://www.suggestsoft.com/images/www-sqaji-com-cmm/capability-maturity-model-cmm-software.gif 
+
+11
+Document heavy
+Plan-driven culture
+These are in opposition to agile!
+Working software over comprehensive documentation
+Responding to change over following a plan
+
+Corruption of core value by certification
+Creation of whole world of often-bogus certification levels
+Certification !== Competent
+Comparison of companies / organizations
+Problems with CMM
+
+Other Models
+There's a bunch of pre-existing models you may or may not know about!
+
+13
+Who is Joel (Spolsky)?
+Software Engineer & Writer
+Many books, Joel on Software - blog on software development
+His writing is great! Highly recommended
+Created Trello [project management software], program manager on Microsoft Excel ('91-'94), founded Fog Creek Software in 2000, launched Stack Overflow in 2008
+Joel Test is a simple measurement test on the maturity of a project
+https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/
+
+14
+An updated test - From SavvyCluth
+http://www.savvyclutch.com/measuring-software-engineering-competency/
+
+Software Development Maturity Model
+
+
+16
+Source Control
+Code Quality
+Testing
+Builds
+Deployment
+Data Management
+Security
+Documentation
+Monitoring
+Software Development Maturity Model
+One size does not fit all - it's okay to define one that makes sense for your organization!
+Goal here is to quickly introduce each concept
+
+This should generate a lot of conversation!
+
+17
+Software Development Maturity Model
+2026: there's definitely room for more axis in more domains to expand this just beyond "software development" into "software systems" - ranging from infrastructure management, platform management, the domain of AI agents and other AI driven technologies and systems
+
+Source Control
+
+19
+Source control is document control for computer code
+Allows many developers to collaborate on code, while keeping track of the changes each one makes
+Subset of SCM – Software Configuration Management
+"We've got all of this code, all over the place. How do we keep it from going horribly wrong?"
+Common tools – 
+CVS – an old, horrid tool (but better than nothing, and good enough at the time) from which SVN evolved. The bane of some college students.
+SVN – a.k.a. Apache Subversion – a tool still used by many teams, but is being phased out overall
+Git – the main tool the development community is using now and in the future
+Honorable mention: Mercurial – a modern alternative to Git
+
+Source Control
+Sometimes called revision control or version control
+
+
+20
+Not Used
+Version control is not used, or is used rarely
+Used
+A central versioning server is used, with regular commits
+Standardized Commits; Use branching
+A standard exists for commit messages, a branching model is used.
+Integrated (CI / CD)
+Source control is integrated with development automation (CI / CD)
+Hooks; Advanced Tools
+Source control hooks further enhance developer productivity. Developers are capable of "repo surgery" to clean up and fix historical errors
+
+Source Control - levels
+
+Code Quality
+
+22
+Code Quality
+First an XKCD Comic :) 
+https://xkcd.com/1513/
+I honestly didn't think you could even USE emoji in variable names. Or that there were so many different crying ones.
+
+23
+It's like you tried to define a formal grammar based on fragments of a raw database dump from the QuickBooks file of a company that's about to collapse in an accounting scandal.
+Code Quality 2
+And another...
+https://xkcd.com/1695/
+
+24
+Code Quality 3
+And another...
+https://xkcd.com/1833/
+It's like a half-solved cryptogram where the solution is a piece of FORTH code written by someone who doesn't know FORTH.
+
+25
+Bad Code
+One last comic about Code Quality 
+"Oh my God, why did you scotch-tape a bunch of hammers together?" "It's ok! Nothing depends on this wall being destroyed efficiently."
+
+26
+Break the tradable quality hypothesis
+We have a concept that quality costs more
+A nicer car will cost more, we might forego that Ferrari we fancy for something cheaper
+In software - lack of quality causes more costs in the long run!
+Main cost of software is people's time!
+Code Quality
+https://martinfowler.com/bliki/TradableQualityHypothesis.html
+
+27
+The longer a defect lives, the more expensive it is to fix
+Over time, developers lose the mental map of the system
+Need to review code and/or documentation to refresh
+Amount of people involved increases over time
+By the time it's in-service
+Customers
+Help Desk
+Management
+Developers
+
+Code Quality
+
+28
+As software quality degrades, it makes it harder and harder to design and develop new features
+Need to proactively assess the health of the code
+If health of code is not satisfactory, address it!
+Code Quality
+https://www.architexa.com/images/AgileandErosion.png
+
+29
+Code Quality
+https://thesmithfam.org/images/code-quality-continuum.png
+
+30
+Boy Scout Rule
+Leave things better than you found it
+Helps keep a project healthy
+Does not mean change everything you touch!
+If you see a small issue, and is easily fixed or improved - do it!
+Code Quality
+
+31
+There is a sweet spot
+
+Focus on quality and simplicity 
+Make sure it's clean, easy to understand, and correct
+If something is wrong, fix it immediately
+
+Overall quality needs to include satisfying user's needs, not just code
+Code Quality
+http://kief.com/quality-simplicity-sweet.html
+
+32
+Poor; no standards
+No standards exist
+Style Guide; DRY; YAGNI; SOLID
+A developer style guide is provided for major languages used, and developers write code in accordance with it.  (Acronyms expanded on next slide)
+Linting; no hard coding
+A code linting tool is used to catch bad style as well as potential bugs. "Hard-coded" parameters are largely eliminated (code can be deployed at any required environment)
+Code Reviews
+Team conducts regular code reviews to better align developers with each other - both manual and clanker driven
+Periodic System Evaluation
+System design is periodically re-evaluated to eliminate legacy code & reduce technical debt
+
+Code Quality
+
+33
+DRY - don't repeat yourself
+YAGNI - you ain't gonna need it); 
+More advanced - SOLID - 
+Single Responsibility Principle (SRP) - an entity should have one and only one reason to change (or the entity does one thing and does it well)
+Open/Closed Principle (O/C) - the entity should be open for extension, but closed for modification (context here in domain of re-using something)
+Liskov Substitution Principle (LSP) - subtypes must be a substitution for their base types without altering correctness (typically in context of object oriented programming for polymorphism)
+Interface segregation principle (ISP) - Clients should not be forced to depend on interfaces they do not use - prefer specific, smaller interfaces
+Dependency Inversion Principle (DIP) - Depend on abstractions - not on concrete implementations
+
+Acronyms
+
+Testing
+
+35
+Each sandbox is
+isolated from each other
+has its own backing services
+12-factor app principle https://12factor.net/backing-services
+
+Development – developer is responsible 
+Integration – development team / QA (team) is responsible
+Demo / QA – Team & stakeholders are responsible
+Production – Customer discovers the problem 
+TOO LATE
+Testing
+Sandbox methodology
+http://www.agiledata.org/essays/sandboxes.html
+
+36
+Non-regression
+Verify if change has had the intended side effect
+Regression
+(An attempt to) verify if change has had unintended side effect(s)
+Usually involves running every test plan
+Smoke Test
+Subset of tests; Important functionality verified
+Does it run?
+Testing
+Test Plan Execution
+https://www.datamation.com/img/2010/10/software-project1.jpg 
+
+37
+Testing the same thing over and over is mind-numbing and boring
+Good news - it can be automated!
+Programming methodologies such as test driven development (TDD) - Write the test before the code
+Testing
+Automation - Unit & Integration Testing
+https://martinfowler.com/bliki/UnitTest.html 
+
+38
+No testing is done, or testing is ad-hoc. 
+Bugs are frequently found in production systems
+Test Plan Documentation
+Documentation outlines the cases to test and the expected behaviors that result
+Unit & Integration Testing; Test Automation
+Tests are broken down into unit & integration tests. The test suite is automated for better productivity & reproducibility. Testing is done in a spate, non-production environment
+Integrated Testing (CI/CD)
+Testing is integrate with developer automation. Coverage analysis allows for better risk estimates.
+Performance & Security Tests; Bugs Fixed Immediately
+Further characterize software capabilities. Defects found via testing are fixed and verified immediately.
+Testing 
+
+Builds
+
+40
+Construction of something observable and tangible
+Process of converting code into standalone artifacts
+
+Builds
+https://12factor.net/images/release.png 
+
+41
+Builds are manual and ad-hoc
+Automation Scripts
+Some build automation via scripting is used
+Integrated Automation (CI/CD)
+Build automation is integrated with developer tools (CI / CD)
+Artifact Management
+Streamlines the sharing of built code
+Every Build Deployable
+Developer practices ensure that every build is deployable. Broken builds are fixed before new work is started.
+Builds
+
+Deployments
+
+43
+How does the code travel from a developers computer to a production server used by a user?
+
+Minimize risk
+Minimize variation in production environments 
+
+Deployments
+https://mir-s3-cdn-cf.behance.net/project_modules/disp/f6b5de20931763.56043557424c0.jpg  
+
+44
+Deployment
+https://blog.docker.com/2016/04/cicd-with-docker-cloud 
+
+45
+Manual; Ad-hoc
+Every server deployment is manual and unique ("Snowflake Servers")
+Automated, but manually executed
+Deployment is largely automated via scripts, but still manually ran on each server
+Standardized & Integrated (CI / CD)
+Orchestrated using IT / Developer tools
+Multiple Environments; Blue/Green or Canary Deployments
+Dev/Test/Prod. Downtime risk during deployment is minimized via safe practices such as blue/green deployments
+Zero-Touch CD
+Production is updated frequently, efficiently and safely
+Deployment
+
+46
+https://martinfowler.com/bliki/ContinuousDelivery.html
+https://martinfowler.com/books/continuousDelivery.html 
+https://martinfowler.com/bliki/DeploymentPipeline.html
+https://martinfowler.com/bliki/BlueGreenDeployment.html
+
+Deployment
+Learning more
+
+Data Management
+
+48
+Important aspect of every single business application
+Data design
+Data evolution
+
+Disaster strikes! Data Loss! Can you recover?
+
+Data Management
+http://agiledata.org/ 
+https://www.reddit.com/r/Cyberpunk/comments/2gn4ek/late_80s_sysadmin_warning_posters/
+
+49
+Data Management
+Another XKCD (#327) 
+Exploits of a Mom
+
+50
+Reasons
+Inefficient Initial Design (speed, storage, overly complex)
+New requirements – evolutionary 
+Bugs
+Changes need to be done in a safe manner
+Changes need to be share-able, deploy-able
+Data Management
+Refactoring
+Ideal Case
+Worst Case
+
+51
+Hardware Fails
+System corruption
+
+Hot standby
+Snapshots
+File backups / data dumps
+Data Management
+Disaster Recovery
+https://www.reddit.com/r/Cyberpunk/comments/2gn4ek/late_80s_sysadmin_warning_posters/
+
+52
+Data structures are ad-hoc
+Designed & Documented; Normalized Databases
+Data structures & pipelines are designed, and the design is reviewed prior to implementation. Relational designs are normalized, where applicable (e.g. OLTP)
+Data Migrations; Disaster Recovery Plan
+Data migrations ensure smooth transitions for design changes. Disaster recovery plan exists (include data redundancy)
+Automated Migrations
+Integrated Automation (CI / CD)
+All data management is integrated with developer automation
+Data Management
+
+53
+http://agiledata.org/
+Great resource on managing data in a evolutionary way 
+https://martinfowler.com/articles/evodb.html 
+
+Data Management
+Learning
+
+Security
+
+55
+Need to protect intellectual property
+Need to ensure malicious people cannot sabotage / abuse systems
+Most likely, it will be a non-malicious person using the software in a way we didn't think of!
+Many cases of insecure systems causing real damage to society and people
+Recently – Equifax data breach
+Security
+https://www.reddit.com/r/Cyberpunk/comments/2gn4ek/late_80s_sysadmin_warning_posters/
+
+56
+Antipatterns present in code or design
+Passwords in repository
+No Antipatterns
+Bad practices eliminated, but system not designed for security	
+Designed for security; Basic Access Control
+System is designed to be secure against common attacks. Basic access control.
+Secure by default; Fine Grained Access Control
+All subsystems are designed to be secure-by-default. System users may only access data that they are authorized to use (via ACL's, etc.)
+Regular Patches; Security Audits
+Regularly audited, patches & software updates are applied as needed
+Security
+
+57
+0 secret pentesting technigues shhh…Dave Kennedy
+https://www.youtube.com/watch?v=psOgFtIGpSY 
+Security
+Learning...
+
+Documentation
+
+59
+Working software over comprehensive documentation.
+Does not mean "we don't document"!
+Don't spend months upfront describing what the software is and how it is going to be built 
+Simply roll up our sleeves and start building it – documenting as we go
+
+Documentation has its place
+Written properly, it is a valuable guide for people's understanding of how and why a system is built and how to work with the system
+Technical diagrams; explanations of internal workings 
+
+Documentation
+http://www.ambysoft.com/essays/agileManifesto.html 
+
+60
+None
+No documentation exists
+Ad-hoc
+Documentation exists, but is ad-hoc or scattered
+Standardized; >50% Coverage
+A standard exists for documentation. System is documented with good coverage (lets say >50%). Documentation is easy to find.
+Publishing; >90% Coverage
+System documentation is at or near 100% coverage. A publishing system allows for changes on WIP documents
+Automatic Publishing; Periodic Reviews 
+Documentation is automatically published when updated. Periodic reviews ensure documents do not become stale.  Stale documents are updated.
+Documentation 
+
+Monitoring
+
+62
+None; Ad-hoc
+No Proactive Monitoring. Developers fight fires when system fails.
+Basic Logging; Manually Monitoring
+Monitoring is proactive, but manual. Basic logging may be employed
+Automated Monitoring; Triggered Support Response
+System monitoring is automated, and may trigger a response from support teams
+Advanced Logging; Traceability to Root Cause
+Monitoring provides traceability into which component failed, enhancing root cause location. Logging is standardized and thorough.
+FMEA Techniques
+FMEA techniques are employed to proactively determine new failure modes and their risks.
+Monitoring
+
+THANK YOU
+
+64
+Joel Spolsky
+https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/ 
+Martin Fowler 
+https://martinfowler.com/bliki/MaturityModel.html 
+
+References

@@ -17,6 +17,7 @@ Troubleshooting documentation for common Ansible issues applicable across AAP, A
 
 ### AAP / Controller API
 
+- **[AAP: `controller_oauthtoken` unsupported parameter](aap-controller-oauthtoken-unsupported/README.md)** - Module auth fails parameter validation on AAP 2.5+ (especially 2.6); collection/EE mismatch and `aap_token` migration
 - **[AAP 2.5 `ansible.controller.token` 404](aap-controller-token-404/README.md)** - Token creation fails with HTTP 404 after AAP 2.5 Gateway API path changes
 
 ## Using These Guides
