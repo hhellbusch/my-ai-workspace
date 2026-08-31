@@ -130,6 +130,8 @@ networking:
 
 ## Network Subnet Planning
 
+Cluster CIDR vs `hostPrefix` vs node count vs `maxPods` (including what is immutable after install): [cluster-network-hostprefix.md](../../../notes/cluster-network-hostprefix.md).
+
 ### Critical Rule: No Overlapping Networks
 
 Ensure these subnets do not overlap with each other or any external networks:

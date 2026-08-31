@@ -12,7 +12,7 @@ How to pack more pods onto a large bare-metal OpenShift cluster without the dens
 
 **Purpose:** Choose which density levers to use — and in what order — without breaking QoS expectations or autoscaler feedback loops.
 
-**Related tool notes:** [ClusterResourceOverride](cluster-resource-override.md) · [Vertical Pod Autoscaler](vertical-pod-autoscaler.md)
+**Related tool notes:** [ClusterResourceOverride](cluster-resource-override.md) · [Vertical Pod Autoscaler](vertical-pod-autoscaler.md) · [Cluster network / hostPrefix](cluster-network-hostprefix.md) (pod IP slices vs `maxPods`)
 
 ---
 
@@ -111,6 +111,7 @@ This note does not cover:
 - Deep kubelet / CRI-O node tuning
 - NUMA topology or CPU pinning
 - Storage thin-provisioning or CSI overcommit
+- Cluster CIDR / `hostPrefix` / pod-IP ceilings — see [cluster-network-hostprefix.md](cluster-network-hostprefix.md)
 
 Those affect density too, but they are different control planes.
 
@@ -121,5 +122,5 @@ Those affect density too, but they are different control planes.
 - [Configuring your cluster to place pods on overcommitted nodes](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/nodes/working-with-clusters#nodes-cluster-overcommit) — chapter overview, *Nodes* (OCP 4.18)
 - [Cluster-level overcommit using the Cluster Resource Override Operator](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/nodes/working-with-clusters#nodes-cluster-resource-override_nodes-cluster-overcommit) — CRO section, *Nodes* (OCP 4.18)
 - [Automatically adjust pod resource levels with the Vertical Pod Autoscaler](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/nodes/working-with-pods#nodes-pods-vertical-autoscaler-about_nodes-pods-vertical-autoscaler) — section 2.5, *Nodes* (OCP 4.18)
-- Tool notes: [cluster-resource-override.md](cluster-resource-override.md), [vertical-pod-autoscaler.md](vertical-pod-autoscaler.md)
+- Tool notes: [cluster-resource-override.md](cluster-resource-override.md), [vertical-pod-autoscaler.md](vertical-pod-autoscaler.md), [cluster-network-hostprefix.md](cluster-network-hostprefix.md)
 - Namespace policy: [namespace guardrails](../guides/namespace-guardrails/README.md)
