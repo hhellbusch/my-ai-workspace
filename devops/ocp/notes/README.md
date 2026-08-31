@@ -16,7 +16,7 @@ Red Hat doc links in notes follow [`rules/red-hat-docs-links.md`](../../../rules
 - **[openshift-useful-commands.md](openshift-useful-commands.md)** — Useful OpenShift and kubectl commands for pod management, troubleshooting, and cluster operations
 - **[container-density-overcommit.md](container-density-overcommit.md)** — Packing/overcommit architecture for large bare-metal clusters (LimitRange, CRO, VPA, HPA)
 - **[cluster-network-hostprefix.md](cluster-network-hostprefix.md)** — Cluster CIDR vs `hostPrefix` vs `maxPods`: IP slices, node count, what is immutable after install
-- **[install-config-immutability.md](install-config-immutability.md)** — Catalog of Frozen / one-way / expand-only vs Day-2 settings (OCP 4.20)
+- **[install-config-immutability.md](install-config-immutability.md)** — Frozen / one-way / expand-only vs Day-2 (OCP 4.20 complete; 4.22 freeze/thaw unchanged)
 - **Namespace guardrails** — Object-count quotas and control-plane limits beyond CPU/memory: [guides/namespace-guardrails/README.md](../guides/namespace-guardrails/README.md)
 - **[cluster-resource-override.md](cluster-resource-override.md)** — ClusterResourceOverride Operator: request/limit ratios, opt-in namespaces, pitfalls
 - **[vertical-pod-autoscaler.md](vertical-pod-autoscaler.md)** — VPA features, tradeoffs, pitfalls, and right-sizing practices

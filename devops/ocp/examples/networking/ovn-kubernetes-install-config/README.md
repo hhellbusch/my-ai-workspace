@@ -44,11 +44,12 @@ Red Hat's official install-config.yaml schema **only explicitly documents ONE pa
 **All other parameters** are documented for **post-installation configuration** via `network.operator.openshift.io`:
 - `gatewayConfig.ipv4.internalMasqueradeSubnet` - Day 2 operation
 - `gatewayConfig.ipv4.internalTransitSwitchSubnet` - Day 2 operation
-- `mtu` - Day 2 operation
-- `genevePort` - Day 2 operation
+- `mtu` - Day 2 **migration** (not a raw `mtu` patch)
 - `ipsecConfig.mode` - Day 2 operation
 
-**Recommendation:** Use the post-installation method as your primary approach. This is the officially documented and supported method.
+`genevePort` is **frozen** after install (CNO rejects). Set it at install if 6081 conflicts.
+
+**Recommendation:** Treat the freeze catalog as source of truth for what you can patch: [install-config-immutability.md](../../../notes/install-config-immutability.md).
 
 ### Basic Structure
 
@@ -96,8 +97,8 @@ networking:
 
 | Parameter | Type | Default | Description | Install-Time Support | Can Change Post-Install? |
 |-----------|------|---------|-------------|----------------------|--------------------------|
-| `mtu` | integer | 1400 | Maximum Transmission Unit for overlay network | ❓ Not documented | ⚠️ Yes (requires node reboot) |
-| `genevePort` | integer | 6081 | UDP port for Geneve encapsulation | ❓ Not documented | ⚠️ Yes (requires node reboot) |
+| `mtu` | integer | 1400 | Maximum Transmission Unit for overlay network | ❓ Not documented | ⚠️ Migration only (not a raw `mtu` patch) |
+| `genevePort` | integer | 6081 | UDP port for Geneve encapsulation | ❓ Not documented | **No** (CNO: `cannot change ovn-kubernetes genevePort`) |
 
 ### IPv4 Parameters
 
@@ -310,7 +311,7 @@ ovnKubernetesConfig:
 **Requirements:**
 - Physical network must support MTU 9000+
 - All switches/routers in path must support jumbo frames
-- Must be set at install time (cannot change later)
+- After install, change overlay MTU only via the **MTU migration** chapter — CNO rejects a raw `ovnKubernetesConfig.mtu` patch
 
 ### Scenario 4: Custom Geneve Port
 
@@ -324,7 +325,7 @@ ovnKubernetesConfig:
 
 **Requirements:**
 - Firewall rules must allow UDP traffic on custom port
-- Must be set at install time (cannot change later)
+- Must be set at install time (cannot change later — CNO rejects `genevePort` changes)
 
 ### Scenario 5: Dual Stack (IPv4 + IPv6)
 

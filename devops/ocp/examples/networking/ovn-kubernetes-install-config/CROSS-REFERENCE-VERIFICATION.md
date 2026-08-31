@@ -6,6 +6,10 @@ review:
 
 # Cross-Reference Verification with Official Red Hat Documentation
 
+> **Superseded for freeze/thaw (2026-08-31).** Dated Feb 2026 vs OCP 4.15–4.18.
+> Catalog: [install-config-immutability.md](../../../notes/install-config-immutability.md).
+> CNO release-4.20 rejects `genevePort` changes; MTU requires `Migration.MTU`.
+
 **Date:** 2026-02-02  
 **Verified Against:** OpenShift Container Platform 4.15, 4.17, 4.18 Documentation  
 **Official Sources:**

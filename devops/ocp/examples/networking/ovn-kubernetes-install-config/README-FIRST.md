@@ -16,26 +16,29 @@ review:
 
 ### New Users - Start Here
 
-1. **Understanding Configuration Methods** → [INSTALL-TIME-VS-POST-INSTALL.md](./INSTALL-TIME-VS-POST-INSTALL.md)
-   - Learn the difference between install-time and post-installation configuration
-   - ⭐ **Read this first** to understand which method to use
+1. **Freeze vs thaw** → [install-config-immutability.md](../../../notes/install-config-immutability.md)
+   - What cannot change after install (`genevePort`, `hostPrefix`, CIDR base, …)
 
-2. **Complete Reference** → [README.md](./README.md)
+2. **Understanding Configuration Methods** → [INSTALL-TIME-VS-POST-INSTALL.md](./INSTALL-TIME-VS-POST-INSTALL.md)
+   - Schema presence vs Day-2 — not the same as freeze/thaw
+   - ⭐ **Read this** to understand which method to use for join/transit/masquerade
+
+3. **Complete Reference** → [README.md](./README.md)
    - All configuration parameters explained
    - Network subnet planning guide
    - Common scenarios and best practices
 
-3. **Quick Configuration** → [QUICK-REFERENCE.md](./QUICK-REFERENCE.md)
+4. **Quick Configuration** → [QUICK-REFERENCE.md](./QUICK-REFERENCE.md)
    - Copy-paste configurations for common scenarios
    - Quick verification commands
    - Post-installation configuration examples
 
-4. **Complete Examples** → [EXAMPLES.md](./EXAMPLES.md)
+5. **Complete Examples** → [EXAMPLES.md](./EXAMPLES.md)
    - Platform-specific install-config.yaml examples
    - Bare Metal, vSphere, AWS, Azure configurations
    - Production-ready templates
 
-5. **Verification** → [VERIFICATION.md](./VERIFICATION.md)
+6. **Verification** → [VERIFICATION.md](./VERIFICATION.md)
    - Post-installation verification procedures
    - Functional testing guides
    - Troubleshooting failed verification
@@ -53,12 +56,13 @@ All files cross-referenced → [INDEX.md](./INDEX.md)
 **Only ONE parameter is officially documented** in the install-config.yaml schema:
 - ✅ `ipv4.internalJoinSubnet` - Officially documented for install-time configuration
 
-**All other parameters** should be configured **post-installation**:
+**All other parameters** should be configured **post-installation** *only if they are actually Day-2*:
 - `gatewayConfig.ipv4.internalMasqueradeSubnet` - Use Day 2 operations
 - `gatewayConfig.ipv4.internalTransitSwitchSubnet` - Use Day 2 operations
-- `mtu` - Use Day 2 operations
-- `genevePort` - Use Day 2 operations
+- `mtu` - Overlay **MTU migration**, not a raw `mtu` patch
 - `ipsecConfig.mode` - Use Day 2 operations
+
+`genevePort` is **frozen**. Freeze catalog: [install-config-immutability.md](../../../notes/install-config-immutability.md).
 
 **📖 Details:** See [INSTALL-TIME-VS-POST-INSTALL.md](./INSTALL-TIME-VS-POST-INSTALL.md)
 
@@ -95,10 +99,9 @@ oc patch networks.operator.openshift.io cluster --type=merge -p '
 ⏱️ **Important:** Changes can take up to 30 minutes to propagate
 
 **Why this method?**
-- ✅ Officially documented by Red Hat
-- ✅ All parameters supported
-- ✅ Can validate defaults before customizing
-- ✅ Follows Red Hat best practices
+- ✅ Documented Day-2 path for join/transit/masquerade
+- ✅ Can validate defaults before customizing those internals
+- ❌ `genevePort` is frozen; overlay MTU is a migration
 
 ---
 
@@ -185,11 +188,11 @@ This documentation has been:
 
 ### Q: Can I configure all parameters at install time?
 
-**A:** Only `ipv4.internalJoinSubnet` is officially documented for install-time configuration. Use post-installation method for other parameters.
+**A:** Only `ipv4.internalJoinSubnet` was in the OKD 4.18 schema table we checked. `genevePort` still belongs at install if you need a non-default port. Use Day-2 for join/transit/masquerade/IPsec. Overlay MTU after install is a migration.
 
 ### Q: Which method should I use for production?
 
-**A:** Post-installation configuration via `network.operator.openshift.io` is the officially documented and recommended method.
+**A:** Post-installation via `network.operator.openshift.io` for fields that are actually Day-2. Freeze catalog: [install-config-immutability.md](../../../notes/install-config-immutability.md).
 
 ### Q: How long do configuration changes take to apply?
 
@@ -197,7 +200,7 @@ This documentation has been:
 
 ### Q: Can I change subnets after installation?
 
-**A:** Yes, all OVN subnets can be changed post-installation, but allow time for propagation and plan for brief network disruption.
+**A:** Join, transit, and masquerade yes (allow ~30 min). `clusterNetwork` **base**, `hostPrefix`, and `serviceNetwork` no. Overlay MTU: migration. `genevePort`: no.
 
 **More questions?** Check the FAQ in [INSTALL-TIME-VS-POST-INSTALL.md](./INSTALL-TIME-VS-POST-INSTALL.md)
 

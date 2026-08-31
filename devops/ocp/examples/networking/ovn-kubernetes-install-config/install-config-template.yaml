@@ -71,8 +71,8 @@ networking:
     # Default: 1400
     # Must be <= physical network MTU - 100 bytes
     # For jumbo frames: 9000 (requires physical network support)
-    # ❓ NOT in install-config.yaml schema docs (use post-install method)
-    # CAN BE CHANGED via network.operator.openshift.io (requires node reboot)
+    # After install: overlay MTU migration chapter — not a raw mtu patch
+    # (CNO: cannot change ovn-kubernetes MTU without migration)
     mtu: 1400
     
     # ===================================================================
@@ -82,8 +82,7 @@ networking:
     # Default: 6081
     # Change if port conflicts with existing services
     # Firewall must allow this port between all nodes
-    # ❓ NOT in install-config.yaml schema docs (use post-install method)
-    # CAN BE CHANGED via network.operator.openshift.io (requires node reboot)
+    # FROZEN after install (CNO: cannot change ovn-kubernetes genevePort)
     genevePort: 6081
     
     # ===================================================================

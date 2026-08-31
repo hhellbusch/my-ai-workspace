@@ -6,6 +6,9 @@ review:
 
 # Install-Time vs Post-Installation Configuration
 
+**Freeze vs thaw:** [install-config-immutability.md](../../../notes/install-config-immutability.md) is the catalog of what stays frozen.
+This page is about **whether a field appears in the installer schema**, which is a different question.
+
 ## Summary of Schema Verification
 
 **Verification Date:** 2026-02-02  
@@ -35,22 +38,12 @@ networking:
 
 ## ❓ Not in Install-Config.yaml Schema Documentation
 
-The following parameters are **documented for post-installation Day 2 operations** but are **NOT** explicitly listed in the install-config.yaml schema reference:
+The following fields were **not** in the OKD 4.18 install-config schema table we checked.
+That does **not** mean they are all Day-2. Freeze/thaw is in the catalog.
 
-### Gateway Configuration
-- `gatewayConfig.ipv4.internalMasqueradeSubnet`
-- `gatewayConfig.ipv4.internalTransitSwitchSubnet`
-- `gatewayConfig.routingViaHost`
+Day-2 (CNO / product chapters): masquerade, transit, `routingViaHost`, IPsec, policy audit, overlay **MTU migration**.
 
-### Top-Level Parameters
-- `mtu`
-- `genevePort`
-
-### Security Configuration
-- `ipsecConfig.mode`
-
-### Audit Configuration
-- `policyAuditConfig.*`
+**Frozen** after install: `genevePort` (set at install if 6081 conflicts). Overlay MTU is not a raw field patch.
 
 ---
 
@@ -62,10 +55,10 @@ The following parameters are **documented for post-installation Day 2 operations
 | `ipv6.internalJoinSubnet` | ✅ Documented | ✅ Yes | ⚠️ OVN pod restart |
 | `gatewayConfig.ipv4.internalMasqueradeSubnet` | ❓ Not documented | ✅ Yes | ⚠️ OVN pod restart |
 | `gatewayConfig.ipv4.internalTransitSwitchSubnet` | ❓ Not documented | ✅ Yes | ⚠️ OVN pod restart |
+| `mtu` | ❓ Not documented | ⚠️ Migration only (not a raw `mtu` patch) | 🔴 Node reboot |
+| `genevePort` | ❓ Not documented | **No** (CNO rejects) | — |
 | `gatewayConfig.routingViaHost` | ❓ Not documented | ✅ Yes | ⚠️ OVN pod restart |
-| `mtu` | ❓ Not documented | ✅ Yes | 🔴 Node reboot |
-| `genevePort` | ❓ Not documented | ✅ Yes | 🔴 Node reboot |
-| `ipsecConfig.mode` | ❓ Not documented | ✅ Yes | ✅ No disruption |
+| `ipsecConfig.mode` | ❓ Not documented | ✅ Yes | ⚠️ MTU drop for ESP |
 | `policyAuditConfig` | ❓ Not documented | ✅ Yes | ✅ No disruption |
 
 **Legend:**
@@ -80,7 +73,8 @@ The following parameters are **documented for post-installation Day 2 operations
 
 ### Option 1: Post-Installation Configuration (Recommended)
 
-**This is the officially documented method for all parameters except internalJoinSubnet.**
+**This is the documented method for join / transit / masquerade, IPsec, and related CNO fields.**
+Do **not** use it for `genevePort` (CNO rejects). Overlay MTU uses the migration chapter, not a raw `mtu` patch.
 
 **Steps:**
 1. Install OpenShift with default OVN-Kubernetes settings
@@ -88,14 +82,14 @@ The following parameters are **documented for post-installation Day 2 operations
 3. Use `oc patch network.operator.openshift.io cluster` to apply configuration
 
 **Advantages:**
-- ✅ Officially documented by Red Hat
-- ✅ All parameters supported
-- ✅ Can test defaults first, then customize
+- ✅ Officially documented by Red Hat for join/transit/masquerade
+- ✅ Can test defaults first, then customize those internals
 - ✅ Can be performed anytime after installation
+- ❌ Does not apply to `genevePort`
 
 **Example:**
 ```bash
-# After installation, configure all OVN subnets
+# After installation, configure OVN internal subnets (join / masquerade / transit)
 oc patch networks.operator.openshift.io cluster --type=merge -p '
 {
   "spec": {
@@ -180,7 +174,7 @@ oc patch networks.operator.openshift.io cluster --type=merge -p '
 
 ### Q: Will parameters not in the schema documentation work if I add them to install-config.yaml?
 
-**A:** They may work, but it's not documented or officially supported. The recommended approach is to use post-installation configuration for all parameters except `internalJoinSubnet`.
+**A:** They may work, but schema silence is not support. `genevePort` **must** be set at install if you need a non-default port — CNO rejects later changes. Overlay MTU after install is a **migration**, not a raw field. Join/transit/masquerade/IPsec are Day-2.
 
 ### Q: Why does the installer accept other parameters if they're not documented?
 
@@ -194,27 +188,24 @@ oc patch networks.operator.openshift.io cluster --type=merge -p '
 
 **A:** For production:
 1. Install with default settings or configure only `internalJoinSubnet` at install time if needed
-2. After installation, use `oc patch network.operator.openshift.io cluster` to configure all other parameters
-3. This follows Red Hat's officially documented procedures
+2. After installation, use `oc patch network.operator.openshift.io cluster` for join/transit/masquerade and IPsec as needed
+3. Do not patch `genevePort`. Overlay MTU: migration chapter, not a raw `mtu` patch.
+4. Freeze/thaw: [install-config-immutability.md](../../../notes/install-config-immutability.md)
 
 ---
 
 ## Conclusion
 
 **For Production Deployments:**
-- ✅ Use post-installation configuration as your primary method
-- ✅ This is the officially documented and supported approach
-- ✅ Allows validation with defaults before customization
-- ✅ Follows Red Hat's best practices
+- ✅ Join/transit/masquerade and IPsec have documented Day-2 patches
+- ❌ `genevePort` is frozen (CNO `isOVNKubernetesChangeSafe`)
+- ⚠️ Overlay MTU: [migration](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html-single/advanced_networking/index) — chapter 2, *Advanced networking*
 
 **For Install-Time Configuration:**
-- ✅ Only use for `internalJoinSubnet` if you must configure it before first boot
-- ⚠️ All other parameters should be configured post-installation
+- Set `internalJoinSubnet` at install if the default `100.64.0.0/16` collides (also Day-2 if you miss it)
+- Set `genevePort` at install if 6081 conflicts — you cannot change it later
 
----
-
-**Last Updated:** 2026-02-02  
-**Verified Against:** OKD 4.18 / OpenShift 4.18 Official Documentation
+**Last Updated:** 2026-08-31 (freeze/thaw aligned with CNO release-4.20 + OCP 4.20 catalog; schema hunt dated 2026-02-02 / OKD 4.18)
 
 ---
 

@@ -162,6 +162,8 @@ This is **not** installed by default with OpenShift. If you're not explicitly us
 ## Cross-References
 
 - [NetworkAttachmentDefinition (NAD) guide](network-attachment-definitions/README.md) — NAD configurations, IPAM strategies, troubleshooting
+- [Install-config immutability](../../notes/install-config-immutability.md) — Frozen vs Day-2 (`machineNetwork` is installer-consumed; pod CIDR is `clusterNetwork`)
+- [Cluster network / hostPrefix](../../notes/cluster-network-hostprefix.md) — Pod IP pool vs per-node slice
 - [OVN-Kubernetes install config](ovn-kubernetes-install-config/README.md) — Cluster-level network configuration at install time
 - [AAP SSH MTU issues](../../troubleshooting/aap-ssh-mtu-issues/README.md) — MTU considerations for VLAN-tagged pod traffic
 - [CoreOS networking issues](../../troubleshooting/coreos-networking-issues/README.md) — Node-level network verification

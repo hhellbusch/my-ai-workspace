@@ -8,6 +8,9 @@ review:
 
 Comprehensive verification procedures to confirm your OVN-Kubernetes configuration is working correctly.
 
+**Freeze vs thaw:** [install-config-immutability.md](../../../notes/install-config-immutability.md).
+Do not use this file's old Geneve/`mtu` patch recipes — CNO rejects them.
+
 ## Table of Contents
 
 - [Quick Verification](#quick-verification)
@@ -830,71 +833,20 @@ oc delete pod test-pod
 
 ### Changing MTU
 
-**Scenario:** Need to enable jumbo frames or change MTU.
+**Scenario:** Need to enable jumbo frames or change overlay MTU.
 
-**⚠️ Warning:** Requires node reboot. Plan for maintenance window.
+CNO rejects a raw `ovnKubernetesConfig.mtu` patch (`cannot change ovn-kubernetes MTU without migration`).
 
-**Steps:**
-
-1. **Patch MTU configuration:**
-```bash
-oc patch networks.operator.openshift.io cluster --type=merge -p '
-{
-  "spec": {
-    "defaultNetwork": {
-      "ovnKubernetesConfig": {
-        "mtu": 9000
-      }
-    }
-  }
-}'
-```
-
-2. **Reboot nodes one at a time:**
-```bash
-# For each node:
-NODE="<node-name>"
-
-# Drain node
-oc adm drain $NODE --ignore-daemonsets --delete-emptydir-data --force
-
-# Reboot node (via BMC, SSH, or console)
-oc debug node/$NODE -- chroot /host systemctl reboot
-
-# Wait for node to come back (5-10 minutes)
-watch oc get nodes
-
-# Verify MTU on node
-oc debug node/$NODE
-chroot /host
-ip link show genev_sys_6081 | grep mtu
-# Expected: mtu 9000
-exit
-exit
-
-# Uncordon node
-oc adm uncordon $NODE
-
-# Verify pods schedule back
-oc get pods -o wide | grep $NODE
-```
-
-3. **Repeat for all nodes**
-
-4. **Verify cluster-wide:**
-```bash
-# Check all nodes
-for node in $(oc get nodes -o name); do
-  echo "=== $node ==="
-  oc debug $node -- chroot /host ip link show genev_sys_6081 2>/dev/null | grep mtu
-done
-```
+Use [Changing the MTU for the cluster network](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html-single/advanced_networking/index) — chapter 2, *Advanced networking* (OCP 4.20).
+Nodes reboot.
 
 ---
 
 ### Changing IPsec Mode
 
 **Scenario:** Enable or disable IPsec encryption.
+
+Drop overlay MTU by 46 for ESP first — see [Configuring IPsec encryption](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_security/configuring-ipsec-ovn) — chapter 6, *Network security* (OCP 4.20).
 
 **Steps:**
 
@@ -920,7 +872,6 @@ oc get network.operator.openshift.io cluster \
 # Check on node
 oc debug node/<node-name>
 chroot /host
-ovs-appctl -t ovs-vswitchd fdb/show br-int | grep -i ipsec
 ip xfrm state
 # Should show IPsec tunnels
 exit
@@ -937,58 +888,8 @@ oc patch networks.operator.openshift.io cluster --type=merge \
 
 ### Changing Geneve Port
 
-**Scenario:** Change Geneve encapsulation port.
-
-**⚠️ Warning:** Requires node reboot and firewall rule updates.
-
-**Steps:**
-
-1. **Update firewall rules on all nodes first:**
-```bash
-# On each node, add new port before changing config
-oc debug node/<node-name>
-chroot /host
-firewall-cmd --permanent --add-port=6082/udp
-firewall-cmd --reload
-exit
-exit
-```
-
-2. **Patch configuration:**
-```bash
-oc patch networks.operator.openshift.io cluster --type=merge -p '
-{
-  "spec": {
-    "defaultNetwork": {
-      "ovnKubernetesConfig": {
-        "genevePort": 6082
-      }
-    }
-  }
-}'
-```
-
-3. **Reboot nodes (same process as MTU change above)**
-
-4. **Verify new port in use:**
-```bash
-oc debug node/<node-name>
-chroot /host
-ss -ulnp | grep 6082
-# Should show ovn process listening on UDP 6082
-exit
-exit
-```
-
-5. **Remove old firewall rule (after all nodes updated):**
-```bash
-oc debug node/<node-name>
-chroot /host
-firewall-cmd --permanent --remove-port=6081/udp
-firewall-cmd --reload
-exit
-exit
-```
+**Frozen.** CNO `isOVNKubernetesChangeSafe` returns `cannot change ovn-kubernetes genevePort`.
+Set `genevePort` at install if 6081 conflicts. See [install-config-immutability.md](../../../notes/install-config-immutability.md).
 
 ---
 

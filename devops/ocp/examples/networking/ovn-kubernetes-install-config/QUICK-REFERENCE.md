@@ -8,6 +8,10 @@ review:
 
 Quick copy-paste configurations for common scenarios.
 
+**Freeze vs thaw** (what stays frozen after install): [install-config-immutability.md](../../../notes/install-config-immutability.md).
+CIDR math: [cluster-network-hostprefix.md](../../../notes/cluster-network-hostprefix.md).
+This file is copy-paste `ovnKubernetesConfig`, not the freeze catalog.
+
 ## Table of Contents
 
 - [Important: Configuration Methods](#important-configuration-methods)
@@ -29,11 +33,11 @@ Quick copy-paste configurations for common scenarios.
 - ✅ `ipv4.internalJoinSubnet` - **Officially documented** for install-time configuration
 - ❓ Other parameters - **Not documented** in install-config.yaml schema, use post-install method
 
-**Post-Installation (network.operator.openshift.io):**
-- ✅ **All parameters supported** - This is the officially documented method
-- ✅ See "Post-Installation: What Can Be Changed?" section below
+**Post-Installation (`network.operator.openshift.io`):**
+- Join / transit / masquerade, IPsec, policy audit, overlay **MTU migration** — Day-2
+- `genevePort`, `networkType`, cluster CIDR **base**, `hostPrefix`, service CIDR — **frozen** (CNO rejects)
 
-**Recommendation:** Use post-installation configuration as your primary method.
+See [Post-Installation: What Can Be Changed?](#post-installation-what-can-be-changed) and the freeze catalog.
 
 ---
 
@@ -95,7 +99,7 @@ networking:
 
 **Method 2: Post-Installation (Officially Documented - Recommended):**
 
-See the "Changing Configuration Post-Install" section below for the officially documented method to configure all OVN subnets after installation.
+See the [Post-Installation: What Can Be Changed?](#post-installation-what-can-be-changed) section for join/transit/masquerade patches.
 
 ---
 
@@ -143,7 +147,7 @@ networking:
 **Requirements:**
 - Physical network must support MTU 9000+
 - All network equipment in path must support jumbo frames
-- **Cannot be changed after installation**
+- After install, change overlay MTU only via the **MTU migration** procedure — not a raw `ovnKubernetesConfig.mtu` patch (CNO: `cannot change ovn-kubernetes MTU without migration`)
 
 **Verification:**
 ```bash
@@ -213,7 +217,7 @@ networking:
 **Notes:**
 - Requires IPv6 support on physical network
 - Both IPv4 and IPv6 addresses assigned to pods
-- **Cannot be changed after installation**
+- You can also **add** the other family after install (recreate pods): [Converting to IPv4/IPv6 dual-stack networking](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/ovn-kubernetes_network_plugin/converting-to-dual-stack) — chapter 5, *OVN-Kubernetes network plugin* (OCP 4.20)
 
 ---
 
@@ -413,18 +417,20 @@ openshift-install create cluster --dir=. --log-level=info
 
 ## Post-Installation: What Can Be Changed?
 
-All OVN-Kubernetes settings can be changed by patching `network.operator.openshift.io cluster`.
+Not every `ovnKubernetesConfig` field is patchable.
+CNO `isOVNKubernetesChangeSafe` ([release-4.20](https://github.com/openshift/cluster-network-operator/blob/release-4.20/pkg/network/ovn_kubernetes.go)) rejects `genevePort` and rejects a raw MTU change (`cannot change ovn-kubernetes MTU without migration`).
+Full freeze/thaw: [install-config-immutability.md](../../../notes/install-config-immutability.md).
 
 **Prerequisites:**
 - `cluster-admin` privileges
 - OpenShift CLI (`oc`) installed
 - Maintenance window (allow 30-60 minutes)
 
-⏱️ **Timing:** Changes can take **up to 30 minutes** to propagate across the cluster.
+⏱️ **Timing:** Join/transit/masquerade patches can take **up to 30 minutes** to propagate.
 
 ### ✅ Can Change Easily (No Disruption)
 
-**IPsec Mode:**
+**IPsec Mode** (Day-2; drop overlay MTU by 46 for ESP first — see IPsec chapter):
 ```bash
 # Enable IPsec
 oc patch networks.operator.openshift.io cluster --type=merge \
@@ -464,29 +470,25 @@ oc patch networks.operator.openshift.io cluster --type=merge -p '
 ```
 **Impact:** OVN pods restart, brief network disruption during maintenance window.
 
-### ⚠️ Can Change with Node Reboot (Full Disruption)
+### Overlay MTU (migration, not a raw `mtu` patch)
 
-**MTU:**
-```bash
-# Change MTU (requires node reboot)
-oc patch networks.operator.openshift.io cluster --type=merge \
-  -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"mtu":9000}}}}'
-```
+CNO rejects `ovnKubernetesConfig.mtu` changes unless you use the migration object.
+Do not `oc patch` `mtu` directly.
 
-**Geneve Port:**
-```bash
-# Change Geneve port (requires node reboot)
-oc patch networks.operator.openshift.io cluster --type=merge \
-  -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"genevePort":6082}}}}'
-```
-**Impact:** Nodes must be rebooted for changes to take effect. Plan for maintenance window.
+Procedure: [Changing the MTU for the cluster network](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html-single/advanced_networking/index) — chapter 2, *Advanced networking* (OCP 4.20).
+Nodes reboot.
 
 ### ❌ Cannot Change After Install
 
-- `networkType` (cannot switch from OVNKubernetes to another CNI)
-- Dual stack configuration (cannot add/remove IPv6 after install)
+- `genevePort` (CNO: `cannot change ovn-kubernetes genevePort`)
+- `networkType`
+- `clusterNetwork` **base** address (mask can expand)
+- `hostPrefix`
+- `serviceNetwork`
 
-**If you need to change these:** You must destroy and reinstall the cluster.
+Dual-stack: you **can** add the other address family after install (recreate pods). See the freeze catalog.
+
+**If you need a different Geneve port, cluster CIDR base, hostPrefix, or service CIDR:** rebuild the cluster.
 
 ---
 

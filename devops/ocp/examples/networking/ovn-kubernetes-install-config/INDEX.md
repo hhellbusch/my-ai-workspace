@@ -8,6 +8,8 @@ review:
 
 Complete guide for configuring OVN-Kubernetes networking at OpenShift install time.
 
+**Freeze vs thaw:** [install-config-immutability.md](../../../notes/install-config-immutability.md) · CIDR math: [cluster-network-hostprefix.md](../../../notes/cluster-network-hostprefix.md)
+
 ## Quick Navigation
 
 ### 🚀 Getting Started
@@ -25,8 +27,9 @@ Complete guide for configuring OVN-Kubernetes networking at OpenShift install ti
 | [EXAMPLES.md](./EXAMPLES.md) | Complete install-config.yaml examples | Platform-specific configurations |
 | [VERIFICATION.md](./VERIFICATION.md) | Post-install verification | After installation completes |
 | [install-config-template.yaml](./install-config-template.yaml) | Annotated template | Starting a new configuration |
-| [INSTALL-TIME-VS-POST-INSTALL.md](./INSTALL-TIME-VS-POST-INSTALL.md) | ⭐ Install vs post-install comparison | Understanding configuration methods |
-| [CROSS-REFERENCE-VERIFICATION.md](./CROSS-REFERENCE-VERIFICATION.md) | Accuracy verification vs Red Hat docs | Validating documentation accuracy |
+| [INSTALL-TIME-VS-POST-INSTALL.md](./INSTALL-TIME-VS-POST-INSTALL.md) | Schema vs Day-2 (not freeze/thaw) | Join/transit vs installer tables |
+| [install-config-immutability.md](../../../notes/install-config-immutability.md) | Frozen / one-way / expand-only vs Day-2 | What you cannot patch after install |
+| [CROSS-REFERENCE-VERIFICATION.md](./CROSS-REFERENCE-VERIFICATION.md) | Feb 2026 schema hunt (superseded for freeze/thaw) | Historical |
 | [INDEX.md](./INDEX.md) | This file - documentation index | Finding what you need |
 
 ---
@@ -355,14 +358,16 @@ Full dual stack IPv4+IPv6:
 - `gatewayConfig.ipv4.*` ⚠️
 
 **Complex Changes (Node Reboot Required):**
-- `mtu` ⚠️
-- `genevePort` ⚠️
+- Overlay **MTU migration** ⚠️ (not a raw `mtu` patch)
 
 **Cannot Change:**
+- `genevePort` ❌
 - `networkType` ❌
-- Dual stack enablement ❌
+- `clusterNetwork` base / `hostPrefix` / `serviceNetwork` ❌
 
-**How to Change:** Use `oc patch networks.operator.openshift.io cluster` - see QUICK-REFERENCE.md
+Dual-stack: you **can** add the other family after install (recreate pods).
+
+**How to Change:** Use `oc patch networks.operator.openshift.io cluster` only for fields the freeze catalog marks Day-2 — see QUICK-REFERENCE.md
 
 ---
 

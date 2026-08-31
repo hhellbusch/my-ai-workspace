@@ -6,6 +6,10 @@ review:
 
 # Documentation Update Summary
 
+> **Superseded for freeze/thaw (2026-08-31).** This file is the Feb 2026 OKD 4.18 *schema* hunt.
+> What can change after install: [install-config-immutability.md](../../../notes/install-config-immutability.md).
+> `genevePort` is frozen (CNO). Overlay MTU is a migration, not a raw patch.
+
 **Date:** 2026-02-02  
 **Reason:** Schema verification against official Red Hat/OpenShift documentation  
 **Key Finding:** Only `ipv4.internalJoinSubnet` is officially documented for install-time configuration
