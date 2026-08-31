@@ -1,7 +1,7 @@
 ---
 review:
   status: unreviewed
-  notes: "Complete 4.20 pass 2026-08-31 plus 4.22 freeze/thaw. Geneve frozen verified against CNO release-4.20 isOVNKubernetesChangeSafe. Cloud VPC/VIP-move/HCP still out of scope."
+  notes: "Complete 4.20 pass plus 4.22. Escalation URLs for intra-minor doc clashes; 4.18 vs 4.20 freeze/thaw unchanged. 2026-08-31."
 ---
 
 # What cannot change after OpenShift install
@@ -145,19 +145,75 @@ etcd: [Enabling etcd encryption](https://docs.redhat.com/en/documentation/opensh
 
 ---
 
-## Document clashes (4.20 and 4.22)
+## Document contradictions (same minor, different books)
 
-| Topic | Installer / CNO wording | Prefer |
-|-------|-------------------------|--------|
-| Whole `networking:` object | “You cannot change parameters specified by the `networking` object after installation.” | Split: `hostPrefix` / service CIDR / `networkType` / Geneve frozen; CIDR **mask** and NodePort **expand-only**; OVN internals often Day-2. |
-| `internalJoinSubnet` | Install-config: “You cannot change the value after installation.” | OVN plugin ch. 6 patch. Same clash still in **4.22** installer tables. |
-| Overlay MTU | Historic CNO: cannot change | *Advanced networking* MTU migration. |
-| CNO “only `gatewayConfig` at runtime” | Understates join/transit/masquerade, IPsec, MTU migration | Those later chapters. |
-| Dual-stack | Some older notes marked enablement ❌ | Conversion chapter exists in 4.20 and 4.22. |
-| IPsec | Some CNO snippets: create-time only | Enable during **or after** install. |
+Yes. Red Hat docs **disagree with each other inside 4.20** (and the same pairs already existed in **4.18**).
+This is the packet to escalate: two URLs, two quotes, same product minor.
 
-Workspace pages in [ovn-kubernetes-install-config/](../examples/networking/ovn-kubernetes-install-config/README.md) are how to write `ovnKubernetesConfig`.
-Freeze/thaw lives here. Schema-presence (OKD 4.18 table hunt) is a different question.
+**Prefer** the post-install / OVN / CNO **procedure** chapter over the installer field table, except where CNO **code** is stricter (Geneve port: frozen).
+Oracle for Geneve: [`isOVNKubernetesChangeSafe`](https://github.com/openshift/cluster-network-operator/blob/release-4.20/pkg/network/ovn_kubernetes.go) — `cannot change ovn-kubernetes genevePort`; MTU only via `Migration.MTU`.
+
+### Clash 1 — Whole `networking:` object vs CIDR expand / dual-stack / NodePort
+
+| Side | Quote (paraphrase of the table note) | Pin |
+|------|--------------------------------------|-----|
+| **A — frozen** | “You cannot change parameters specified by the `networking` object after installation.” Also the chapter lead-in: settings “cannot be changed after installation.” | [Installation configuration parameters for the Agent-based Installer](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/installing_an_on-premise_cluster_with_the_agent-based_installer/installation-config-parameters-agent) — chapter 9, table 9.2, *Installing an on-premise cluster with the Agent-based Installer* (OCP **4.20**). Same note: [4.18 ch. 8](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/installing_an_on-premise_cluster_with_the_agent-based_installer/installation-config-parameters-agent), [4.22 ch. 9](https://docs.redhat.com/en/documentation/openshift_container_platform/4.22/html/installing_an_on-premise_cluster_with_the_agent-based_installer/installation-config-parameters-agent). |
+| **B — expand mask** | After install you **can** enlarge the cluster CIDR **mask**; “The host prefix cannot be modified”; you **cannot** change the network **base**. | [Configuring the cluster network range](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/configuring_network_settings/configuring-cluster-network-range) — chapter 3, *Configuring network settings* (OCP **4.20**). Same chapter in [4.18](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/configuring_network_settings/configuring-cluster-network-range). |
+| **B — dual-stack** | Convert single-stack to dual-stack **after** install (recreate pods). | [Converting to IPv4/IPv6 dual-stack networking](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/ovn-kubernetes_network_plugin/converting-to-dual-stack) — chapter 5 (OCP **4.20**). Same in [4.18](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/ovn-kubernetes_network_plugin/converting-to-dual-stack). |
+| **B — NodePort** | Expand `serviceNodePortRange` after install; cannot shrink. | [Configuring the node port service range](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/configuring_network_settings/configuring-node-port-service-range) — chapter 2 (OCP **4.20**). |
+
+Ask docs: narrow table 9.2 so it does not freeze the whole `networking:` object.
+
+### Clash 2 — Join (and transit) subnet: installer + CRD vs OVN procedure
+
+| Side | Quote | Pin |
+|------|-------|-----|
+| **A — frozen** | `internalJoinSubnet`: “You cannot change the value after installation.” | ABI table 9.2 — same [4.20](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/installing_an_on-premise_cluster_with_the_agent-based_installer/installation-config-parameters-agent) / [4.18](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/installing_an_on-premise_cluster_with_the_agent-based_installer/installation-config-parameters-agent) / [4.22](https://docs.redhat.com/en/documentation/openshift_container_platform/4.22/html/installing_an_on-premise_cluster_with_the_agent-based_installer/installation-config-parameters-agent) URLs as clash 1. |
+| **A — CRD godoc (4.18)** | `internalJoinSubnet` / `internalTransitSwitchSubnet`: “The value cannot be changed after installation.” | [Network [operator.openshift.io/v1]](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/operator_apis/network-operator-openshift-io-v1) — *Operator APIs* (OCP **4.18**). Same freeze text in [4.15](https://docs.redhat.com/en/documentation/openshift_container_platform/4.15/html/operator_apis/network-operator-openshift-io-v1). |
+| **B — Day-2 patch** | “You can change the join subnet”; `oc patch network.operator.openshift.io cluster` … `internalJoinSubnet`. Up to 30 minutes. | [Configuring OVN-Kubernetes internal IP address subnets](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/ovn-kubernetes_network_plugin/configure-ovn-kubernetes-subnets) — chapter 6 (OCP **4.20**). Same procedure in [4.18](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/ovn-kubernetes_network_plugin/configure-ovn-kubernetes-subnets) and [4.17](https://docs.redhat.com/en/documentation/openshift_container_platform/4.17/html/ovn-kubernetes_network_plugin/configure-ovn-kubernetes-subnets). |
+
+**4.18 → 4.20 drift (API book only):** the [4.20 Operator API](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/operator_apis/network-operator-openshift-io-v1) `internalJoinSubnet` description **no longer** includes “cannot be changed after installation.”
+Installer tables **still do** through 4.22.
+Ask docs: delete the installer freeze sentence; keep the OVN ch. 6 procedure. Align CRD comments with CNO (join is changeable).
+
+### Clash 3 — CNO “only `gatewayConfig` at runtime” vs later chapters
+
+| Side | Quote | Pin |
+|------|-------|-----|
+| **A — understatement** | “You can only change the configuration for your cluster network plugin during cluster installation, except for the `gatewayConfig` field that can be changed at runtime as a postinstallation activity.” | [Cluster Network Operator](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/networking_operators/cluster-network-operator) — chapter 6, after table 6.10 (OCP **4.20**). Same sentence: [4.18 CNO](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/networking_operators/cluster-network-operator). Present since at least [4.14 CNO](https://docs.redhat.com/en/documentation/openshift_container_platform/4.14/html/networking/cluster-network-operator). |
+| **B — IPsec after install** | “You can enable IPsec either during or after installing the cluster.” | [Configuring IPsec encryption](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/network_security/configuring-ipsec-ovn) — chapter 6, *Network security*. Same in [4.18](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/network_security/configuring-ipsec-ovn). |
+| **B — overlay MTU** | Dedicated **migration** (not a raw `mtu` patch). | [Changing the MTU for the cluster network](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html-single/advanced_networking/index) — chapter 2, *Advanced networking*. Same chapter in [4.18](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html-single/advanced_networking/index). |
+| **B — join/transit** | Clash 2, OVN ch. 6. | URLs above. |
+
+Ask docs: replace the CNO one-liner with a split (frozen vs Day-2 vs migration), or point to those chapters.
+
+### Clash 4 — Geneve port (CNO table omits freeze; IBM states it; old OVN books showed a patch)
+
+| Side | Quote | Pin |
+|------|-------|-----|
+| **A — frozen (correct)** | `genevePort`: “This value cannot be changed after cluster installation.” | [Installing a cluster on IBM Cloud with customizations](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/installing_on_ibm_cloud/installing-ibm-cloud-customizations) — chapter 5, network customization field table (OCP **4.20**). |
+| **A — CNO omission** | `genevePort` is listed with no per-field freeze; the **blanket** “only `gatewayConfig` at runtime” is the only hint. | [CNO ch. 6](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/networking_operators/cluster-network-operator) table 6.3 + the gatewayConfig exception sentence. |
+| **B — stale patch (do not follow on 4.20)** | `oc patch` … `genevePort`. | Historical OVN-Kubernetes provider chapters, e.g. [4.11](https://docs.redhat.com/en/documentation/openshift_container_platform/4.11/html/networking/ovn-kubernetes-default-cni-network-provider), [4.8](https://docs.redhat.com/en/documentation/openshift_container_platform/4.8/html/networking/ovn-kubernetes-default-cni-network-provider). CNO has rejected Geneve changes since the option was added ([commit](https://github.com/openshift/cluster-network-operator/commit/f1b60468c936d942cb16769d8088345a7a18eca3)). |
+
+Ask docs: add “cannot change after install” on CNO table 6.3 `genevePort`, same as IBM. Do not restore the old patch.
+
+---
+
+## 4.18 vs 4.20+ (product freeze/thaw)
+
+The **immutability contract did not flip** between 4.18 and 4.20 for the rows this catalog cares about.
+CIDR **mask** expand, frozen `hostPrefix`, join **Day-2** patch, dual-stack conversion, IPsec after install, MTU migration, and the installer vs OVN **wording clash** are all already in **4.18** (join patch also in **4.17**).
+
+What **did** move in the docs (not a new CNO behavior):
+
+| Item | 4.18 | 4.20+ |
+|------|------|--------|
+| ABI `networking:` / `internalJoinSubnet` freeze sentences | Present (ch. **8**) | Present (ch. **9**); still in **4.22** |
+| Operator API “cannot be changed after installation” on join/transit | Present | **Dropped** from the [4.20 API book](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/operator_apis/network-operator-openshift-io-v1) field text — installer tables were not updated |
+| Service CIDR cannot expand (incl. ServiceCIDR API) | CIDR-expand chapter silent on services in the 4.18 fetch | Called out in [4.20 cluster network range](https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/configuring_network_settings/configuring-cluster-network-range) |
+
+Workspace [ovn-kubernetes-install-config](../examples/networking/ovn-kubernetes-install-config/README.md) (Feb 2026) mixed **schema presence** (OKD 4.18 install-config table) with freeze/thaw.
+That is a different bug from these RH book clashes.
 
 ---
 
@@ -202,6 +258,8 @@ Checked the same freeze/thaw chapters on **4.22**: cluster network range, CNO, A
 
 ---
 
+Customer handoff dump (frozen + one-way + expand-only): [pre-release-freeze-audit.md](pre-release-freeze-audit.md).
+
 ## Read it on a live cluster
 
 ```bash
@@ -219,6 +277,7 @@ oc get kubeletconfig
 
 ## Related
 
+- [pre-release-freeze-audit.md](pre-release-freeze-audit.md) — Handoff dump of live frozen values
 - [cluster-network-hostprefix.md](cluster-network-hostprefix.md) — IP slice math
 - [OVN-Kubernetes install-config](../examples/networking/ovn-kubernetes-install-config/README.md)
 - [vlan-segmentation.md](../examples/networking/vlan-segmentation.md)
