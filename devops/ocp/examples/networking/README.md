@@ -29,6 +29,7 @@ Cluster networking configuration: OVN-Kubernetes install-time settings, Multus s
 | [network-attachment-definitions/](network-attachment-definitions/README.md) | NAD, macvlan, SR-IOV, IPAM |
 | [ovn-kubernetes-install-config/](ovn-kubernetes-install-config/README.md) | `install-config.yaml` OVN parameters, MTU, verification |
 | [Cluster network / hostPrefix](../../notes/cluster-network-hostprefix.md) | Pod CIDR vs per-node slice vs `maxPods`; day-2 limits |
+| [Install-config immutability](../../notes/install-config-immutability.md) | Frozen vs Day-2 catalog (OCP 4.20) |
 
 **Troubleshooting:** [CoreOS networking](../../troubleshooting/coreos-networking-issues/README.md) · [AAP SSH MTU](../../troubleshooting/aap-ssh-mtu-issues/README.md) · [Debug toolbox + NAD](../../troubleshooting/debug-toolbox-container/README.md)
 

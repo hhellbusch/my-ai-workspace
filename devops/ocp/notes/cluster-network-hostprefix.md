@@ -209,6 +209,7 @@ CPU/memory packing vs `maxPods` is a different lever: [container density / overc
 ## Related
 
 - [OVN-Kubernetes install-config](../examples/networking/ovn-kubernetes-install-config/README.md) — overlap checklist, `install-config.yaml` shape
+- [Install-config immutability](install-config-immutability.md) — Frozen vs Day-2 catalog (FIPS, `networkType`, join subnet clashes)
 - [Container density / overcommit](container-density-overcommit.md) — requests, CRO, VPA; not IP math
 - [MachineConfig pools](machine-config-pools.md) — targeting a `KubeletConfig` without dragging infra nodes
 

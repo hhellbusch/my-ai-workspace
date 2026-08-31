@@ -8,7 +8,9 @@ review:
 
 ## Overview
 
-This guide covers how to configure OVN-Kubernetes networking settings at OpenShift install time using the `install-config.yaml` file. These settings **cannot be changed after installation**, so it's critical to configure them correctly before running the installer.
+This guide covers how to configure OVN-Kubernetes networking settings at OpenShift install time using the `install-config.yaml` file.
+
+Not every `networking:` field is frozen after install. Overlay CIDRs vs `hostPrefix` vs Day-2 OVN internals: [install-config-immutability.md](../../../notes/install-config-immutability.md) and [cluster-network-hostprefix.md](../../../notes/cluster-network-hostprefix.md).
 
 ## Table of Contents
 
