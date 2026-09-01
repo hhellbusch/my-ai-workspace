@@ -112,6 +112,7 @@ If you're new to these ideas and want to go further:
 | The broader Zanshin framework these practices are part of | [Zanshin — Patterns, Behaviors, and Why](session-framework.md) |
 | Load the full Zanshin framework into your own AI tools | [Zanshin — Portable Session Context](framework-bootstrap.md) |
 | Artifact economics — JBGE, TAGRI, when to stop writing | [Artifact Discipline and AI](artifact-discipline-and-ai.md) |
+| Whole-team work at one keyboard (human–human; composes with these practices) | [Mobbing — One Keyboard, a Shared Clock](mobbing.md) |
 
 ---
 

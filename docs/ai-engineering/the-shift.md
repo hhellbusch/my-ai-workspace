@@ -190,7 +190,7 @@ Treat AI output like a PR from a capable but context-blind team member. It doesn
 
 ### Collaboration with humans matters more, not less
 
-There's a risk that AI becomes a substitute for human collaboration — why ask a colleague when the AI can answer instantly? This is a trap. Human colleagues provide things AI cannot:
+There's a risk that AI becomes a substitute for human collaboration — why ask a colleague when the AI can answer instantly? This is a trap. A [mob session](mobbing.md) is one structural counter: the conversation *is* the work, on a shared clock. Human colleagues provide things AI cannot:
 
 - Genuine disagreement based on experience
 - Context about organizational constraints and history
@@ -397,6 +397,7 @@ AI doesn't create your engineering culture. It amplifies it. A team with strong 
 | [The Session Framework — Patterns, Behaviors, and Why](session-framework.md) | The full Zanshin framework map: what each behavior defends against, how they connect, and the ethos behind them |
 | [Zanshin — Portable Session Context](framework-bootstrap.md) | Single-file entry point for loading the framework into any AI tool — Copilot, Claude Code, or any chat-based AI |
 | [Sparring and Shoshin — Two Practices for AI-Assisted Work](sparring-and-shoshin.md) | Practical introduction to adversarial review and beginner's mind — the two structural countermeasures to sycophancy and framing drift |
+| [Mobbing — One Keyboard, a Shared Clock](mobbing.md) | Whole-team work at one keyboard: rotation, a session goal, and a shared timer — a human–human counter to AI substituting for collaboration |
 | [Ego, AI, and the Zen Antidote](../philosophy/ego-ai-and-the-zen-antidote.md) | Companion essay: why the sycophancy and ego risks run deeper than habits, and how zen practices build structural resistance |
 | [The Dojo After the Automation](../philosophy/the-dojo-after-the-automation.md) | Reframes the new skills here as survival, not career advice — what happens to humans when the execution layer automates |
 | [The Meta-Development Loop](the-meta-development-loop.md) | The engineering pattern behind building AI tools that reshape AI workflows — gap → tool → application → feedback |

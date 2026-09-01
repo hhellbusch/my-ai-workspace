@@ -50,6 +50,8 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 
 - **[Sparring and Shoshin — Two Practices for AI-Assisted Work](sparring-and-shoshin.md)** — Introduction to the two structural practices for resisting AI's characteristic failure modes: sparring (adversarial review) challenges outputs after drafting; shoshin (beginner's mind) challenges starting frames before work begins. Self-contained entry point; links to the deeper case studies and philosophy essays for each.
 
+- **[Mobbing — One Keyboard, a Shared Clock](mobbing.md)** — Whole-team work at one keyboard: driver/navigator rotation, a session goal, and a shared timer URL. Calls out [mobti.me](https://mobti.me/) for remote mobs. Human–human practice; composes with spar/shoshin when an AI is in the room.
+
 - **[Artifact Discipline and AI — What Agile Modeling Teaches About Working With Assistants](artifact-discipline-and-ai.md)** — Scott Ambler's JBGE, TAGRI, and travel-light ideas applied to AI over-production of docs and plans. Complements spar/shoshin with artifact economics: who reads it, what decision it enables, when to stop writing. Includes prompts peers can use without tooling.
 
 - **[Interaction Patterns for AI Sessions](interaction-patterns.md)** — Two structured patterns for AI-assisted work (the meta-prompt pipeline and the session-start briefing), the default unstructured mode, and how to choose between them. Covers the briefing guardrail (scope vs. state), the privacy-filtered handoff, and practical guidance for choosing between patterns.
