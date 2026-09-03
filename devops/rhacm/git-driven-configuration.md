@@ -156,6 +156,7 @@ See also [distribute-yaml-to-all-clusters.md](examples/distribute-yaml-to-all-cl
 | `hub/rhacm/cluster-labels/values.yaml` | **Generated** — run `aggregate-cluster-config.sh` | Drift check: regen must match commit |
 | `hub/rhacm/integration/*.yaml` | Hand-authored | `helm lint` / YAML lint / kubeconform |
 | `hub/rhacm/policies/**` | Hand-authored or PolicyGenerator output | Same as apps |
+| AAP-rendered cluster provisioning CRs | **Artifact** — object store or AAP job artifacts; not committed | See [baremetal-manifest-artifact-strategies.md](notes/baremetal-manifest-artifact-strategies.md) |
 
 Mark generated files (e.g. `.gitattributes` `linguist-generated=true`) so reviewers know not to edit them directly.
 Framework invariant: [GUIDELINES.md](../argo/examples/framework/GUIDELINES.md) — aggregation must run before merge.

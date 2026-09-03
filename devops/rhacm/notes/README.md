@@ -21,6 +21,7 @@ Informal RHACM quick references and working notes. These are operational referen
 - **[acm-ansible-integration.md](acm-ansible-integration.md)** — Native ACM→Ansible paths (ClusterCurator, PolicyAutomation, subscriptions), AAP vs AWX, prerequisites
 - **[fleet-ad-hoc-data-gathering.md](fleet-ad-hoc-data-gathering.md)** — Strategies for host-level and API-level diagnostics across managed clusters (no fleet exec in ACM)
 - **[bare-metal-lifecycle-hook-patterns.md](bare-metal-lifecycle-hook-patterns.md)** — Implementation patterns for preflight, BMH discovery, and install gates (AAP + ClusterCurator, Go, operators, CI) with pros/cons and examples
+- **[baremetal-manifest-artifact-strategies.md](baremetal-manifest-artifact-strategies.md)** — Storage and viewing strategies for AAP-rendered ACM bare-metal manifests (artifact store vs AAP UI vs hub CRs); Git stays input SoT
 - **[custom-api-certs-and-acm-trust.md](custom-api-certs-and-acm-trust.md)** — Why ACM breaks after custom API cert rollouts; recovery; GitOps + cert-manager scope; Argo CD two-app PostSync pattern for trust sync (peer share)
 - **[../git-driven-configuration.md](../git-driven-configuration.md)** — RHACM hub and governance resources in Git; same PR/promotion flow as Argo CD; rebuild-from-scratch posture
 

@@ -151,6 +151,7 @@ applyToHub(ctx, hubRestConfig, renderClusterBundle(site))
 - [CLUSTER-IMPORT-AUTOMATION-STRATEGIES.md](../examples/CLUSTER-IMPORT-AUTOMATION-STRATEGIES.md) — external orchestration framing
 - [bare-metal-dev-sandbox preflight_validate](../../bare-metal-dev-sandbox/roles/preflight_validate/tasks/main.yml) — BMC and firewall checks to reuse
 - [BARE-METAL-OPERATOR-INTEGRATION.md](../examples/BARE-METAL-OPERATOR-INTEGRATION.md) — `BareMetalAsset` / workflow 1
+- [baremetal-manifest-artifact-strategies.md](./baremetal-manifest-artifact-strategies.md) — storing and viewing rendered manifests without committing to Git
 
 ---
 

@@ -181,6 +181,7 @@ Common patterns that **do not** use ClusterCurator or PolicyAutomation:
 |---------|----------------------|
 | Cluster import playbooks | [cluster-import-ansible](../examples/cluster-import-ansible/README.md) |
 | AAP renders ACM CRs from Jinja/inventory | [library: RHACM + AAP talk](../../../library/automate-ocp-cluster-deployment-rhacm-aap.md) |
+| Rendered manifest artifact storage | [baremetal-manifest-artifact-strategies.md](./baremetal-manifest-artifact-strategies.md) |
 | Import strategy comparison | [CLUSTER-IMPORT-AUTOMATION-STRATEGIES.md](../examples/CLUSTER-IMPORT-AUTOMATION-STRATEGIES.md) |
 | Fleet host diagnostics (`oc debug`) | [NVMe ansible](../../ocp/troubleshooting/nvme-tcp-storage-network/ansible/README.md) |
 
