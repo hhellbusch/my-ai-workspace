@@ -1,0 +1,19 @@
+---
+controller_templates:
+  - name: ocp-day2-add-workers
+    organization: "{{ product_org }}"
+    project: ocp-day2
+    playbook: playbooks/add_workers.yml
+    inventory: lab-ocp
+    execution_environment: ee-supported
+    ask_scm_branch_on_launch: false
+    description: "Day-2 add workers — git rev comes from the Project pin"
+
+  - name: ocp-day2-remove-workers
+    organization: "{{ product_org }}"
+    project: ocp-day2
+    playbook: playbooks/remove_workers.yml
+    inventory: lab-ocp
+    execution_environment: ee-supported
+    ask_scm_branch_on_launch: false
+    description: "Destroy / scale-in twin for add-workers"

@@ -1,0 +1,10 @@
+---
+# Content experiment: same durable JTs, different git ref, new org.
+# Do not copy durable/*.yml into this folder.
+
+product: ocp-day2
+org: exp-EXP-123-add-workers
+scm_revision: feat/add-workers
+inventory: lab-ocp
+expires: "2026-09-23"
+description: "Parallel experiment — add-workers playbook on a feature branch"

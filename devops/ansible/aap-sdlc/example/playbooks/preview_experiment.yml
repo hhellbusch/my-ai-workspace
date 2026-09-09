@@ -1,0 +1,41 @@
+---
+- name: Preview experiment CaC (no controller)
+  hosts: localhost
+  gather_facts: false
+  vars:
+    example_root: "{{ playbook_dir }}/.."
+    experiment_file: "{{ example_root }}/config/ocp-day2/experiments/EXP-123-add-workers.yml"
+    durable_dir: "{{ example_root }}/config/ocp-day2/durable"
+    versions_file: "{{ example_root }}/config/ocp-day2/versions.yml"
+
+  tasks:
+    - name: Load versions (content_repo; pin unused for experiments)
+      ansible.builtin.include_vars:
+        file: "{{ versions_file }}"
+
+    - name: Load experiment manifest
+      ansible.builtin.include_vars:
+        file: "{{ experiment_file }}"
+        name: experiment
+
+    - name: Bind org and git rev from the manifest — not from versions.yml
+      ansible.builtin.set_fact:
+        product_org: "{{ experiment.org }}"
+        content_revision: "{{ experiment.scm_revision }}"
+
+    - name: Load durable product lists (templated)
+      ansible.builtin.include_vars:
+        dir: "{{ durable_dir }}"
+        extensions:
+          - yml
+          - yaml
+
+    - name: Show object lists that would apply to develop AAP only
+      ansible.builtin.debug:
+        msg:
+          aap_target: develop (experiments never apply to integration/production)
+          organization: "{{ aap_organizations }}"
+          project_scm_revision: "{{ controller_projects[0].scm_revision }}"
+          projects: "{{ controller_projects }}"
+          job_templates: "{{ controller_templates | map(attribute='name') | list }}"
+          workflows: "{{ controller_workflows | map(attribute='name') | list }}"

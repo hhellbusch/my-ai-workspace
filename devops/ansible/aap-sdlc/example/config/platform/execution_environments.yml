@@ -1,0 +1,8 @@
+---
+# Shared platform objects — applied once, not retargeted per experiment.
+# Experiments reference EEs and credential *types* by name.
+
+controller_execution_environments:
+  - name: ee-supported
+    image: registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8:latest
+    pull: always

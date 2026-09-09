@@ -1,0 +1,15 @@
+---
+# Durable apply against one AAP.
+# Live path: same include_vars as preview_durable.yml, then
+# infra.aap_configuration.dispatch against aap_hostname.
+# Do not load config/ocp-day2/experiments/ here.
+
+- name: Apply durable product CaC (stub)
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Stub — object lists are in preview_durable.yml
+      ansible.builtin.debug:
+        msg: >-
+          Run preview_durable.yml -i inventories/develop.yml to see lists.
+          Replace this play with dispatch when wiring a real AAP.

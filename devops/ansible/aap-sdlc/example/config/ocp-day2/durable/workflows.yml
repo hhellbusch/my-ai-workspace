@@ -1,0 +1,17 @@
+---
+# Payload teardown is a workflow node, not a hope that deleting the AAP org undoes the cluster.
+
+controller_workflows:
+  - name: ocp-day2-add-workers-with-rollback
+    organization: "{{ product_org }}"
+    description: "Add workers; on failure run remove-workers"
+    extra_vars: {}
+    destroy_current_nodes: true
+    workflow_nodes:
+      - identifier: add
+        unified_job_template: ocp-day2-add-workers
+        success_nodes: []
+        failure_nodes:
+          - remove
+      - identifier: remove
+        unified_job_template: ocp-day2-remove-workers

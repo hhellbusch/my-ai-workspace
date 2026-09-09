@@ -1,0 +1,7 @@
+---
+# Created because durable lists use organization: "{{ product_org }}".
+# Experiment apply sets product_org to the experiment org name.
+
+aap_organizations:
+  - name: "{{ product_org }}"
+    description: "OCP day-2 product org (durable or experiment retarget)"

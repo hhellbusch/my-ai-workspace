@@ -1,0 +1,24 @@
+---
+# Experiment teardown order:
+# 1. Run payload destroy twin against whatever the experiment changed.
+# 2. Absent the experiment organization on develop AAP.
+# Deleting this YAML file does neither by itself.
+
+- name: Teardown experiment (preview)
+  hosts: localhost
+  gather_facts: false
+  vars:
+    experiment_file: "{{ playbook_dir }}/../config/ocp-day2/experiments/EXP-123-add-workers.yml"
+
+  tasks:
+    - name: Load experiment manifest
+      ansible.builtin.include_vars:
+        file: "{{ experiment_file }}"
+        name: experiment
+
+    - name: Show teardown order
+      ansible.builtin.debug:
+        msg:
+          - "1. Launch ocp-day2-remove-workers in org {{ experiment.org }} (payload)"
+          - "2. aap_organizations: [{name: {{ experiment.org }}, state: absent}] (control plane)"
+          - "3. Delete this manifest from git after develop AAP is clean"

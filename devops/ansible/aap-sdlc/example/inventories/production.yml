@@ -1,0 +1,14 @@
+---
+# Production AAP — hardest gate. Pin may lag integration on purpose.
+
+all:
+  children:
+    aap_instances:
+      hosts:
+        localhost:
+          ansible_connection: local
+      vars:
+        aap_hostname: https://aap-production.example.com
+        product_org: Team-OCP
+        # Example: prod still on previous tag while integration soaks v1.2.3
+        content_revision: v1.2.2

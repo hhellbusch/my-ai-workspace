@@ -1,0 +1,7 @@
+---
+# Default content pin for durable applies.
+# Experiments do not use this file; they set content_revision from the manifest.
+# A tag-cut bot would open a CaC MR that bumps this value (not implemented here).
+
+durable_content_revision: v1.2.3
+content_repo: https://git.example.com/automation/ocp-day2.git

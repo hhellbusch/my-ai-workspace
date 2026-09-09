@@ -1,0 +1,9 @@
+---
+controller_projects:
+  - name: ocp-day2
+    organization: "{{ product_org }}"
+    scm_type: git
+    scm_url: "{{ content_repo }}"
+    scm_revision: "{{ content_revision }}"
+    scm_update_on_launch: false
+    description: "Pinned git rev — not floating HEAD"

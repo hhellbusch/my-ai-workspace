@@ -1,0 +1,13 @@
+---
+# Integration AAP — same product YAML, lab credentials (not shown), same or lagged pin.
+
+all:
+  children:
+    aap_instances:
+      hosts:
+        localhost:
+          ansible_connection: local
+      vars:
+        aap_hostname: https://aap-integration.example.com
+        product_org: Team-OCP
+        # content_revision omitted — same default pin as develop in this example

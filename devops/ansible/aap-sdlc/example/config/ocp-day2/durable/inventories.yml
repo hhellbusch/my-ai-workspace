@@ -1,0 +1,11 @@
+---
+# Job templates cannot use another org's inventory.
+# Experiment orgs get this inventory too (same hosts, different org).
+# Credentials: grant or copy into product_org; do not put prod kubeconfigs in experiment orgs.
+
+controller_inventories:
+  - name: lab-ocp
+    organization: "{{ product_org }}"
+    description: "Lab OpenShift — develop/integration targets (example)"
+    variables:
+      cluster_api: https://api.lab.example.com:6443

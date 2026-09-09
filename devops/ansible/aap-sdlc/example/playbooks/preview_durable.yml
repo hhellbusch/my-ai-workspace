@@ -1,0 +1,41 @@
+---
+- name: Preview durable CaC for one AAP inventory (no controller)
+  hosts: localhost
+  gather_facts: false
+  vars:
+    example_root: "{{ playbook_dir }}/.."
+    durable_dir: "{{ example_root }}/config/ocp-day2/durable"
+    versions_file: "{{ example_root }}/config/ocp-day2/versions.yml"
+
+  pre_tasks:
+    - name: Require an AAP inventory (develop / integration / production)
+      ansible.builtin.assert:
+        that:
+          - product_org is defined
+          - aap_hostname is defined
+        fail_msg: "Use -i inventories/develop.yml (or integration/production)"
+
+    - name: Load default content pin
+      ansible.builtin.include_vars:
+        file: "{{ versions_file }}"
+
+    - name: Use inventory pin, else versions.yml
+      ansible.builtin.set_fact:
+        content_revision: "{{ content_revision | default(durable_content_revision) }}"
+
+    - name: Load durable product lists (templated)
+      ansible.builtin.include_vars:
+        dir: "{{ durable_dir }}"
+        extensions:
+          - yml
+          - yaml
+
+  tasks:
+    - name: Show object lists for this AAP
+      ansible.builtin.debug:
+        msg:
+          aap_hostname: "{{ aap_hostname }}"
+          organization: "{{ aap_organizations }}"
+          content_revision: "{{ content_revision }}"
+          projects: "{{ controller_projects }}"
+          job_templates: "{{ controller_templates | map(attribute='name') | list }}"
