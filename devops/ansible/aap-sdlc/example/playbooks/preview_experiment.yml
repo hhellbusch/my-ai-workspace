@@ -18,7 +18,7 @@
         file: "{{ experiment_file }}"
         name: experiment
 
-    - name: Bind org and git rev from the manifest — not from versions.yml
+    - name: Bind org and git rev from the manifest, not from versions.yml
       ansible.builtin.set_fact:
         product_org: "{{ experiment.org }}"
         content_revision: "{{ experiment.scm_revision }}"

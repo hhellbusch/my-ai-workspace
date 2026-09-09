@@ -6,6 +6,6 @@
 controller_inventories:
   - name: lab-ocp
     organization: "{{ product_org }}"
-    description: "Lab OpenShift — develop/integration targets (example)"
+    description: "Lab OpenShift. Develop/integration targets (example)."
     variables:
       cluster_api: https://api.lab.example.com:6443

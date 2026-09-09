@@ -1,5 +1,5 @@
 ---
-# Production AAP — hardest gate. Pin may lag integration on purpose.
+# Production AAP. Hardest gate. Pin may lag integration on purpose.
 
 all:
   children:

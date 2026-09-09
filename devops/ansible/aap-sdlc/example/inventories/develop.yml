@@ -1,5 +1,5 @@
 ---
-# Develop AAP — apply target, not a product tree.
+# Develop AAP. Apply target, not a product tree.
 # product_org is the durable org on this controller.
 # content_revision defaults from ocp-day2/versions.yml unless overridden.
 
@@ -12,4 +12,4 @@ all:
       vars:
         aap_hostname: https://aap-develop.example.com
         product_org: Team-OCP
-        # content_revision omitted — playbook uses durable_content_revision from versions.yml
+        # content_revision omitted. Playbook uses durable_content_revision from versions.yml.

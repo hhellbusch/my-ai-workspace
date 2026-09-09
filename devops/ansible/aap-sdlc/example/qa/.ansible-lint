@@ -7,6 +7,6 @@ exclude_paths:
   - .ansible-tmp
   - .git
 
-# CaC object lists are vars, not playbooks — lint apply/preview playbooks.
+# CaC object lists are vars, not playbooks. Lint apply/preview playbooks.
 # Content repos should omit this and lint roles/ + playbooks/.
 skip_list: []

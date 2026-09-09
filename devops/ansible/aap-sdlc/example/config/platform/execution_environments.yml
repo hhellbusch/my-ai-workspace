@@ -1,5 +1,5 @@
 ---
-# Shared platform objects — applied once, not retargeted per experiment.
+# Shared platform objects. Applied once, not retargeted per experiment.
 # Experiments reference EEs and credential *types* by name.
 
 controller_execution_environments:

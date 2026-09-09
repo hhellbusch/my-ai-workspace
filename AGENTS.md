@@ -22,7 +22,7 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 Pi extensions live in `submodules/`. When a task requires working with extension code, check the appropriate submodule.
 
 Key repos:
-- `zanshin-pi-extension/` — working discipline L0, commands (`/spar`, `/shoshin`, `/craft`, `/checkpoint`, stack); dev workflow at `docs/PI-EXT-DEV.md`
+- `zanshin-pi-extension/` — working discipline L0, commands (`/spar`, `/shoshin`, `/craft`, `/unslop`, `/checkpoint`, stack); dev workflow at `docs/PI-EXT-DEV.md`
 - `paude-pi-extension/` — Paude container awareness injected into system prompt
 - `lid-pi-extension/` — linked-intent development workflow
 
@@ -115,7 +115,7 @@ Derived from Scott Ambler's Agile Modeling / Agile Data work. AI makes artifact 
 
 **Travel light:** fewer artifacts; discard models/docs once purpose is served. **Document late:** envision lightly, build, then document what proved true.
 
-**Deep mode:** `/shoshin` for audience/purpose on a plan; `/craft` with JBGE lens on a draft; `/review` includes TAGRI check on new markdown.
+**Deep mode:** `/shoshin` for audience/purpose on a plan; `/craft` with JBGE lens on a draft; `/unslop` to cut AI tells after the frame is right; `/review` includes TAGRI check on new markdown.
 
 ---
 

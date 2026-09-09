@@ -7,7 +7,7 @@ review:
 # Example shape — product CaC + experiment retarget
 
 > **Audience:** Same as the [parent note](../README.md).
-> **Purpose:** Show the files a peer would look at, and a localhost preview of “durable YAML + experiment manifest → object lists.”
+> **Purpose:** Show the files a peer would look at, and a localhost preview of durable YAML plus an experiment manifest becoming object lists.
 
 This is **not** wired to `infra.aap_configuration.dispatch`.
 Do not point it at a real AAP.
@@ -16,7 +16,7 @@ Do not point it at a real AAP.
 
 ```
 example/
-  inventories/                 # which AAP — not a copy of product YAML
+  inventories/                 # which AAP, not a copy of product YAML
     develop.yml
     integration.yml
     production.yml
@@ -29,8 +29,8 @@ example/
         EXP-123-add-workers.yml
   playbooks/
     preview_experiment.yml     # run this
-    aap_config.yml             # durable apply — stub comments only
-    experiment_teardown.yml    # destroy twin then org absent — stub
+    aap_config.yml             # durable apply. Stub comments only.
+    experiment_teardown.yml    # destroy twin then org absent. Stub.
   qa/                          # lint profile, pre-commit, GH/GL CI, agent instructions
 ```
 
@@ -45,7 +45,7 @@ ansible-playbook playbooks/preview_experiment.yml
 
 You should see `aap_organizations[].name: exp-EXP-123-add-workers` and the project `scm_revision: feat/add-workers`.
 
-Compare with a durable apply against develop (still no controller — debug only):
+Compare with a durable apply against develop (still no controller, debug only):
 
 ```bash
 ansible-playbook playbooks/preview_durable.yml -i inventories/develop.yml
@@ -58,9 +58,9 @@ That run should show `Team-OCP` and `scm_revision: v1.2.3` from `versions.yml` v
 | File | Point |
 |---|---|
 | `config/ocp-day2/durable/*.yml` | Same lists for every AAP; `{{ product_org }}` / `{{ content_revision }}` |
-| `config/ocp-day2/experiments/EXP-123-add-workers.yml` | Manifest only — no copied job templates |
+| `config/ocp-day2/experiments/EXP-123-add-workers.yml` | Manifest only. No copied job templates. |
 | `inventories/*.yml` | Env is hostname + pin overlay + org name |
-| `qa/` | Same lint/CI/agent commands for humans and clankers — [qa/README.md](qa/README.md) |
+| `qa/` | Same lint/CI/agent commands for humans and clankers. See [qa/README.md](qa/README.md). |
 
 ---
 

@@ -17,7 +17,7 @@ They are examples.
 | [requirements-qa.txt](requirements-qa.txt) | Playbook or CaC repo root |
 | [.ansible-lint](.ansible-lint) | Repo root; adjust `profile` after a first run |
 | [.pre-commit-config.yaml](.pre-commit-config.yaml) | Repo root; `pre-commit install` |
-| [AGENTS.ansible.md](AGENTS.ansible.md) | Merge into that repo’s `AGENTS.md` or Cursor rule |
+| [AGENTS.ansible.md](AGENTS.ansible.md) | Merge into that repo's `AGENTS.md` or Cursor rule |
 | [github-actions/ansible-qa.yml](github-actions/ansible-qa.yml) | `.github/workflows/ansible-qa.yml` |
 | [gitlab-ci/.gitlab-ci.yml](gitlab-ci/.gitlab-ci.yml) | `.gitlab-ci.yml` or an include |
 

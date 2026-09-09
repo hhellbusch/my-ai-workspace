@@ -1,5 +1,5 @@
 ---
-# Integration AAP — same product YAML, lab credentials (not shown), same or lagged pin.
+# Integration AAP. Same product YAML, lab credentials (not shown), same or lagged pin.
 
 all:
   children:
@@ -10,4 +10,4 @@ all:
       vars:
         aap_hostname: https://aap-integration.example.com
         product_org: Team-OCP
-        # content_revision omitted — same default pin as develop in this example
+        # content_revision omitted. Same default pin as develop in this example.

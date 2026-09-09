@@ -16,7 +16,7 @@ Before you say a playbook, role, or CaC apply change is done:
 
 1. Run `ansible-lint` on the paths you changed (repo profile in `.ansible-lint`).
 2. Run `ansible-playbook --syntax-check` on affected playbooks (with the inventory the humans use for that env, or `localhost` for local-only plays).
-3. If the role has a `molecule/` directory, run `molecule test` for that scenario — or say you could not (missing Podman/Docker) instead of skipping silently.
+3. If the role has a `molecule/` directory, run `molecule test` for that scenario. If you cannot (missing Podman/Docker), say so instead of skipping silently.
 4. Paste the **commands and exit codes** in the session. "LGTM" without that output is not done.
 
 ## Do not
@@ -35,9 +35,9 @@ Before you say a playbook, role, or CaC apply change is done:
 
 ## CaC-specific
 
-- Do not copy durable job templates into `experiments/` to “make lint happy.”
+- Do not copy durable job templates into `experiments/` to "make lint happy."
 - Preview transforms (rewritten org / git rev) before claiming an experiment is ready.
-- Teardown is payload destroy twin, then org absent — not delete-the-YAML-and-done.
+- Teardown is payload destroy twin, then org absent. Deleting the YAML file is not teardown.
 
 ---
 

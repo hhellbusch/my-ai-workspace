@@ -52,7 +52,7 @@ Two packages are installed at user scope by default. Each provides **extensions 
 
 | Package | What it provides |
 |---------|-----------------|
-| `zanshin-pi-extension` | Extension: injects Zanshin L0 into system prompt; registers `/spar`, `/shoshin`, `/checkpoint`, `/push`, `/pop`, `/stack` commands |
+| `zanshin-pi-extension` | Extension: injects Zanshin L0 into system prompt; registers `/spar`, `/shoshin`, `/craft`, `/unslop`, `/checkpoint`, `/push`, `/pop`, `/stack` commands |
 | `pi-openai-compat` | Extension: registers an OpenAI-compatible model provider (reads `OPENAI_COMPAT_BASE_URL`) |
 
 Package extensions live at: `~/.pi/agent/git/github.com/hhellbusch/<name>/extensions/`

@@ -3,16 +3,16 @@
 > **Status:** In Progress
 > **Started:** 2026-09-09
 
-## Audience and Purpose
+## Audience and purpose
 
 **Reader:** The author, when deciding what to share next and what to implement after peer feedback.
 **Enables:** Scope boundary for a discussion draft + example tree; not a production CaC rollout.
 
-## Problem Statement
+## Problem statement
 
 AAP CaC as practiced (CoP template, product folders, apply-only dispatch) covers the controller.
 It does not join playbook releases, experiment isolation, or teardown of either AAP objects or the VMs/clusters those jobs create.
-Peers need a concrete shape to react to — product folders, no env branches — before anyone restructures a live CaC repo.
+Peers need a concrete shape to react to (product folders, no env branches) before anyone restructures a live CaC repo.
 
 ## Scope
 
@@ -31,7 +31,7 @@ Peers need a concrete shape to react to — product folders, no env branches —
 - Changing any live customer CaC repository
 - Research drawer of fetched Red Hat blogs (cite original URLs from the note)
 
-## Success Criteria
+## Success criteria
 
 - [ ] A peer can read `devops/ansible/aap-sdlc/README.md` without the rest of this workspace
 - [ ] `ansible-playbook` on the preview playbook shows experiment org + feature-branch pin without copying durable YAML
@@ -44,7 +44,7 @@ Peers need a concrete shape to react to — product folders, no env branches —
 - Prefer templating `organization` / `scm_revision` over copy-paste of durable lists
 - JBGE: shape and argument, not a second CoP template
 
-## Key Decisions
+## Key decisions
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
