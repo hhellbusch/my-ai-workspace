@@ -36,7 +36,7 @@ Environment is which AAP you apply to, plus which pin and credentials that inven
 ```mermaid
 flowchart TB
   subgraph content["Content — playbooks / roles / EE"]
-    inner["Inner loop: lint, Molecule"]
+    inner["Inner: lint, Molecule, same cmds in CI"]
     tag["Git tag"]
     inner --> tag
   end
@@ -147,6 +147,8 @@ Teardown order: run the destroy/scale-in twin **then** absent the experiment org
 
 Walk the tree and run the preview (localhost, no AAP): [example/README.md](example/README.md).
 
+Quality gates, Ansible tools, agent instructions, and GitHub/GitLab stubs: [quality-assurance.md](quality-assurance.md).
+
 ---
 
 ## What we want feedback on
@@ -156,6 +158,7 @@ Walk the tree and run the preview (localhost, no AAP): [example/README.md](examp
 3. **Pins per AAP inventory** (prod lags) vs one `versions.yml` applied everywhere on CaC merge?
 4. **Payload destroy twin** — same workflow graph as create, or a separate JT that experiments must remember to run?
 5. **`object_diff` scoped to a product org** — do multiple products already share one org? If yes, exclusive reconcile cannot key off the folder alone.
+6. **ansible-lint profile** (`moderate` vs `production`) and whether an agent may launch jobs on develop AAP — see [quality-assurance.md](quality-assurance.md)
 
 ---
 

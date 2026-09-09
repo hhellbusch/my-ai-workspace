@@ -1,0 +1,4 @@
+# Pin with pre-commit `rev` and with CI. Bump together.
+ansible-lint==25.12.2
+yamllint==1.35.1
+ansible-core>=2.16,<2.19

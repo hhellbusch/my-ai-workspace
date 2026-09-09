@@ -1,0 +1,35 @@
+# Copy to .github/workflows/ansible-qa.yml in the playbook or CaC repo.
+# Runs the same install as a local venv (requirements-qa.txt).
+
+name: ansible-qa
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install QA tools (pin file)
+        run: pip install -r requirements-qa.txt
+
+      - name: yamllint
+        run: yamllint -d relaxed .
+
+      - name: ansible-lint
+        run: ansible-lint
+
+      - name: syntax-check playbooks (if present)
+        run: |
+          set -euo pipefail
+          if [ -d playbooks ]; then
+            find playbooks -name '*.yml' -print0 | xargs -0 -n1 ansible-playbook --syntax-check
+          fi

@@ -55,7 +55,7 @@ Local Redfish/BMC preflight harness for developing ACM bare-metal automation wit
 
 Automation patterns built from real operational needs.
 
-- **[AAP / Ansible SDLC](ansible/aap-sdlc/)** — Discussion draft for peers: product-folder CaC, content pins, experiment orgs, payload teardown (not a live controller apply)
+- **[AAP / Ansible SDLC](ansible/aap-sdlc/)** — Discussion draft for peers: product-folder CaC, content pins, experiment orgs, [QA tooling](ansible/aap-sdlc/quality-assurance.md) (not a live controller apply)
 - **`examples/`** — 14 runnable playbooks: retry-on-timeout, error handling with logging, conditional blocks, virtual media ejection, block/rescue/retry patterns, parallel execution via bastion, ISO boot monitoring, IP subnet validation, global defaults across roles, Dell memory validation, parallel inventory updates, REST API result filtering, SMB-to-Vault credential management, Confluence page creation
 - **`troubleshooting/`** — AAP Controller token 404 on AAP 2.5.x (Gateway API path change); Ansible gather-facts unknown host
 

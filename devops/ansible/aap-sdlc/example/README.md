@@ -31,6 +31,7 @@ example/
     preview_experiment.yml     # run this
     aap_config.yml             # durable apply — stub comments only
     experiment_teardown.yml    # destroy twin then org absent — stub
+  qa/                          # lint profile, pre-commit, GH/GL CI, agent instructions
 ```
 
 ## Preview (no AAP)
@@ -59,7 +60,7 @@ That run should show `Team-OCP` and `scm_revision: v1.2.3` from `versions.yml` v
 | `config/ocp-day2/durable/*.yml` | Same lists for every AAP; `{{ product_org }}` / `{{ content_revision }}` |
 | `config/ocp-day2/experiments/EXP-123-add-workers.yml` | Manifest only — no copied job templates |
 | `inventories/*.yml` | Env is hostname + pin overlay + org name |
-| `durable/workflows.yml` | Create and destroy twins in one graph |
+| `qa/` | Same lint/CI/agent commands for humans and clankers — [qa/README.md](qa/README.md) |
 
 ---
 

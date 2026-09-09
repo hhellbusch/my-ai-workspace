@@ -10,7 +10,7 @@ description: Ansible and Red Hat Ansible Automation Platform reference
 Playbooks, retry patterns, parallel execution, BMC operations, and AAP 2.5+ troubleshooting.
 
 - [Examples](examples/) — Runnable playbooks demonstrating patterns
-- [AAP / Ansible SDLC](aap-sdlc/) — Discussion draft: product-folder CaC, pinned playbook revs, experiment orgs (peer feedback)
+- [AAP / Ansible SDLC](aap-sdlc/) — Discussion draft: product-folder CaC, pinned playbook revs, experiment orgs, [QA / lint / CI / agents](aap-sdlc/quality-assurance.md)
 - [Troubleshooting](troubleshooting/) — Symptom → cause → fix guides
 
 Browse the full technical reference index → [devops/README.md](../README.md)

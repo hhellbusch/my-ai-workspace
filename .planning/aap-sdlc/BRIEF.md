@@ -21,6 +21,7 @@ Peers need a concrete shape to react to — product folders, no env branches —
 - Peer-facing note under `devops/ansible/aap-sdlc/`
 - Example tree that shows durable product CaC, experiment manifests (not copies), per-AAP inventories, and teardown order
 - A localhost preview playbook that prints the rewritten object lists (no live AAP required)
+- QA companion: tools, human/agent inner loop, GitHub/GitLab stubs
 
 **Out of scope:**
 
@@ -34,7 +35,7 @@ Peers need a concrete shape to react to — product folders, no env branches —
 
 - [ ] A peer can read `devops/ansible/aap-sdlc/README.md` without the rest of this workspace
 - [ ] `ansible-playbook` on the preview playbook shows experiment org + feature-branch pin without copying durable YAML
-- [ ] Feedback questions are explicit so comments have a place to land
+- [ ] A peer new to QA can name which tool answers which question (lint vs Molecule vs lab job)
 
 ## Constraints
 

@@ -1,0 +1,12 @@
+---
+# Start here; tighten toward `production` once the tree is clean.
+# https://ansible.readthedocs.io/projects/lint/profiles/
+profile: moderate
+
+exclude_paths:
+  - .ansible-tmp
+  - .git
+
+# CaC object lists are vars, not playbooks — lint apply/preview playbooks.
+# Content repos should omit this and lint roles/ + playbooks/.
+skip_list: []

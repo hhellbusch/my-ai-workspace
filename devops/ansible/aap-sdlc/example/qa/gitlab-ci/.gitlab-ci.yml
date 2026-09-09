@@ -1,0 +1,22 @@
+# Copy to .gitlab-ci.yml (or include this file).
+# Same requirements-qa.txt as GitHub and local venv.
+
+stages:
+  - qa
+
+ansible-qa:
+  stage: qa
+  image: python:3.12-bookworm
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  before_script:
+    - pip install -r requirements-qa.txt
+  script:
+    - yamllint -d relaxed .
+    - ansible-lint
+    - |
+      set -euo pipefail
+      if [ -d playbooks ]; then
+        find playbooks -name '*.yml' -print0 | xargs -0 -n1 ansible-playbook --syntax-check
+      fi
