@@ -129,6 +129,7 @@ This approach is less reliable than using a token created via the Gateway/UI.
 - **AAP 2.5 API:** Controller resources via Gateway — `/api/controller/v2/` (see Red Hat AAP 2.5 *Automation execution API overview*).
 - **AAP 2.4 → 2.5:** Red Hat Solution [7131069](https://access.redhat.com/solutions/7131069) — AAP 2.5–2.4 API access point differences.
 - **404 with ansible.controller on 2.4:** Red Hat Solution [7115139](https://access.redhat.com/solutions/7115139) — same error pattern; in 2.5 the cause is the gateway path change.
+- **Operator topology:** [AAP operator on OpenShift](../../aap-operator-on-openshift.md) — gateway as the only external Route; `/api/v2/` vs `/api/controller/v2/`.
 
 ---
 

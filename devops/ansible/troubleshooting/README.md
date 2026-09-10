@@ -39,6 +39,7 @@ Each guide follows this structure:
 ## Related Resources
 
 - **[OCP Troubleshooting](../../ocp/troubleshooting/README.md)** - OpenShift-specific issues, including [AAP SSH MTU Issues](../../ocp/troubleshooting/aap-ssh-mtu-issues/README.md)
+- **[AAP operator on OpenShift](../aap-operator-on-openshift.md)** - What Kubernetes objects replace control/execution/hop nodes
 - **[Ansible Examples](../examples/README.md)** - Patterns and best practices for playbook authoring
 
 ---

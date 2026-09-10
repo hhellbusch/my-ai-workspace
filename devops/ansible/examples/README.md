@@ -1027,6 +1027,17 @@ ansible-playbook playbook.yml -e @vault.yml --ask-vault-pass
 - Nesting pages under a parent
 - Troubleshooting guide
 
+### 15. AAP Hello World Smoke Test
+
+Localhost playbook with no SSH — one `debug` task to prove AAP (or `ansible-playbook`) can run Ansible.
+
+```bash
+cd 015_aap_hello_world_smoke
+ansible-playbook playbook.yml
+```
+
+See [015_aap_hello_world_smoke/README.md](015_aap_hello_world_smoke/README.md) for the matching AAP inventory / project / job template fields. The playbook pauses 120s by default so the job pod is visible in OpenShift.
+
 ---
 
 *This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

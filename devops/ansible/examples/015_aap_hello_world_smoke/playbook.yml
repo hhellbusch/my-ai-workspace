@@ -1,0 +1,32 @@
+---
+# Hello-world smoke test for Ansible Automation Platform.
+# Runs on localhost inside the execution environment — no SSH, no extra collections.
+#
+# Local:
+#   ansible-playbook playbook.yml
+#   ansible-playbook playbook.yml -e smoke_pause_seconds=5
+#
+# AAP job template should use:
+#   playbook: devops/ansible/examples/015_aap_hello_world_smoke/playbook.yml
+#   inventory: a host named localhost with ansible_connection=local
+#   execution environment: the platform default (ee-supported / ee-minimal)
+#   credentials: none
+
+- name: Hello world smoke test
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  tasks:
+    - name: Prove the execution environment ran Ansible
+      ansible.builtin.debug:
+        msg: >-
+          Hello world from {{ ansible_facts['hostname'] }}.
+          Ansible {{ ansible_version.full }},
+          Python {{ ansible_facts['python_version'] }},
+          {{ ansible_facts['os_family'] }} {{ ansible_facts['distribution'] | default('') }}
+          {{ ansible_facts['distribution_version'] | default('') }}.
+
+    - name: Hold the job pod so it is visible on OpenShift
+      ansible.builtin.pause:
+        seconds: "{{ smoke_pause_seconds | default(120) | int }}"
+        echo: "Smoke pause — look for the automation-job pod in namespace aap"

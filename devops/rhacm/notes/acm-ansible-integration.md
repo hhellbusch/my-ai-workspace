@@ -214,6 +214,7 @@ Sample templates: [stolostron/ansible-tower-samples](https://github.com/stolostr
 | Topic | Location |
 |-------|----------|
 | Greenfield fleet (when to add AAP) | [greenfield-fleet-architecture.md](greenfield-fleet-architecture.md) |
+| AAP operator vs VM topology | [aap-operator-on-openshift.md](../../ansible/aap-operator-on-openshift.md) |
 | Hook implementation (preflight, BMH, Go) | [bare-metal-lifecycle-hook-patterns.md](bare-metal-lifecycle-hook-patterns.md) |
 | Fleet control spectrum | [fleet-control-spectrum.md](../../fleet-control-spectrum.md) |
 | ClusterCurator deep dive | [cluster-curator/README.md](../examples/ocm-subscription-automation/cluster-curator/README.md) |

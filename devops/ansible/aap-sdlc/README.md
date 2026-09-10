@@ -174,6 +174,7 @@ Quality gates, Ansible tools, agent instructions, and GitHub/GitLab stubs: [qual
 - [Ansible development workspaces](https://developers.redhat.com/articles/2026/08/21/red-hat-ansible-development-workspaces). Content inner/outer loop. "Controller syncs the project" is floating HEAD, not a pin.
 - [object_diff](https://github.com/redhat-cop/aap_configuration_extended/tree/devel/roles/object_diff). API vs git exclusive-ish reconcile.
 - [Automate OCP with RHACM and AAP](../../../library/automate-ocp-cluster-deployment-rhacm-aap.md). Payload pipeline this CaC story has to host.
+- [AAP operator on OpenShift](../aap-operator-on-openshift.md). GitOps of the operator CR is a different layer from CaC of job templates.
 - [Bare-metal dev sandbox](../../bare-metal-dev-sandbox/README.md). Ambler sandboxes on **targets**, not extra AAP instances.
 
 ---
