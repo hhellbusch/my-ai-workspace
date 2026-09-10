@@ -162,10 +162,12 @@ Day-2 becomes **OpenShift day-2** (storage class, routes, operators, PVCs) **plu
 | Credentials, inventories, projects, job templates | |
 | Subscription / manifest | |
 | Execution Environment *definitions* | Still images. On OCP they run as pods |
+| Most **Settings** (session cookie, JWT expiry, …) | Gateway / controller DB, unless injected with `spec.extra_settings` |
 
 CaC of those objects is still `ansible.controller` / `ansible.platform` / `infra.aap_configuration` against the **gateway API**.
 That is a different layer from GitOps of the operator CR.
 The [AAP SDLC draft](aap-sdlc/README.md) is about the former.
+GitOps shape (CR `extra_settings` vs CaC): [AAP GitOps layers](aap-gitops.md).
 
 ---
 
@@ -229,6 +231,7 @@ Launch a long enough job (a `pause` / `sleep` of a minute or two) or the pod is 
 - [AAP 2.5+ `ansible.controller.token` 404](troubleshooting/aap-controller-token-404/README.md) — gateway path `/api/controller/v2/` vs legacy `/api/v2/`
 - [015 hello-world job](examples/015_aap_hello_world_smoke/README.md) — localhost playbook plus a pause so the job pod is visible
 - [016 isolate job pods](examples/016_aap_container_group_namespace/README.md) — container group in a tenant namespace
+- [AAP GitOps layers](aap-gitops.md) — CR `extra_settings` vs gateway API; lab UI session as the first setting
 - [AAP / Ansible SDLC](aap-sdlc/README.md) — CaC of controller objects (not the operator CR)
 - [RHACM and AAP integration](../rhacm/notes/acm-ansible-integration.md) — `AnsibleJob` CRs from ACM; assumes a reachable controller, operator or not
 - [AAP SSH MTU](../ocp/troubleshooting/aap-ssh-mtu-issues/README.md) — still applies when jobs SSH off-cluster from an EE pod

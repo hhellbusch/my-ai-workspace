@@ -175,6 +175,7 @@ Quality gates, Ansible tools, agent instructions, and GitHub/GitLab stubs: [qual
 - [object_diff](https://github.com/redhat-cop/aap_configuration_extended/tree/devel/roles/object_diff). API vs git exclusive-ish reconcile.
 - [Automate OCP with RHACM and AAP](../../../library/automate-ocp-cluster-deployment-rhacm-aap.md). Payload pipeline this CaC story has to host.
 - [AAP operator on OpenShift](../aap-operator-on-openshift.md). GitOps of the operator CR is a different layer from CaC of job templates.
+- [AAP GitOps layers](../aap-gitops.md). Where a setting like UI session length belongs (CR `extra_settings` vs gateway API).
 - [016 isolate job pods](../examples/016_aap_container_group_namespace/README.md). Org-level container groups are the execution half of tenant blast radius; CaC still owns orgs / templates.
 - [Bare-metal dev sandbox](../../bare-metal-dev-sandbox/README.md). Ambler sandboxes on **targets**, not extra AAP instances.
 

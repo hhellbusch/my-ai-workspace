@@ -56,6 +56,7 @@ Local Redfish/BMC preflight harness for developing ACM bare-metal automation wit
 Automation patterns built from real operational needs.
 
 - **[AAP operator on OpenShift](ansible/aap-operator-on-openshift.md)** — Traditional VM/RPM topology vs the operator: CRs, Routes, PVCs, job pods
+- **[AAP GitOps layers](ansible/aap-gitops.md)** — CR `extra_settings` vs gateway CaC; lab UI session
 - **[AAP / Ansible SDLC](ansible/aap-sdlc/)** — Discussion draft for peers: product-folder CaC, content pins, experiment orgs, [QA tooling](ansible/aap-sdlc/quality-assurance.md) (not a live controller apply)
 - **`examples/`** — Runnable playbooks (retry, block/rescue, BMC, REST, Vault, Confluence); [hello-world AAP job](ansible/examples/015_aap_hello_world_smoke/README.md); [container-group isolation](ansible/examples/016_aap_container_group_namespace/README.md)
 - **`troubleshooting/`** — AAP Controller token 404 on AAP 2.5.x (Gateway API path change); Ansible gather-facts unknown host

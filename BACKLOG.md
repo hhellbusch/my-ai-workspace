@@ -1,7 +1,7 @@
 # Backlog
 
-> **State:** 2 in progress · 8 up next · 59 ideas
-> Last updated: 2026-05-30
+> **State:** 2 in progress · 8 up next · 60 ideas
+> Last updated: 2026-09-10
 
 ## In Progress
 
@@ -668,3 +668,9 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
   ```
 - **Links:** `devops/pi/README.md`, `.agents/skills/review/SKILL.md`
 - **Added:** 2026-05-13
+
+### AAP operator + CaC GitOps example
+- **Product:** ansible
+- **Context:** Seed note exists at `devops/ansible/aap-gitops.md` (two layers: Argo on the `AnsibleAutomationPlatform` CR including `extra_settings`, then CaC/`AnsibleJob` for gateway DB settings and controller objects). First concrete setting documented: lab UI session (`SESSION_COOKIE_AGE` + `gateway_access_token_expiration`). Next is a runnable example: Kustomize/Helm CR, Argo Application, small `gateway_settings.yml`. Do not GitOps the admin password. Not applied to a cluster yet; `SESSION_COOKIE_AGE` via `extra_settings` is the documented CR slot, not yet verified live.
+- **Links:** `devops/ansible/aap-gitops.md`, `devops/ansible/aap-operator-on-openshift.md`, `devops/ansible/aap-sdlc/README.md`
+- **Added:** 2026-09-10
