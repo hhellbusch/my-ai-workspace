@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aap-jobs-smoke
+  labels:
+    app.kubernetes.io/name: aap-jobs-smoke
+    app.kubernetes.io/part-of: aap-tenant-isolation-example
+    # Marker for NetworkPolicy / quota tooling. Not an AAP CR label.
+    aap.example.com/tenant: smoke

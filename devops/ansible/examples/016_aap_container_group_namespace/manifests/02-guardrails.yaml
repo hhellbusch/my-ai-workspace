@@ -1,0 +1,51 @@
+---
+# Cap the namespace so a runaway job template cannot fill the node.
+# Forks on the job template still need to fit these per-pod limits.
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: aap-job-defaults
+  namespace: aap-jobs-smoke
+spec:
+  limits:
+    - type: Container
+      default:
+        cpu: 500m
+        memory: 512Mi
+      defaultRequest:
+        cpu: 100m
+        memory: 128Mi
+      max:
+        cpu: "2"
+        memory: 2Gi
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: aap-jobs-smoke
+  namespace: aap-jobs-smoke
+spec:
+  hard:
+    pods: "10"
+    requests.cpu: "4"
+    requests.memory: 4Gi
+    limits.cpu: "8"
+    limits.memory: 8Gi
+    secrets: "20"
+---
+# Ingress isolation: other namespaces cannot connect to job pods.
+# Controller launches and streams logs via the Kubernetes API, not pod IP.
+# Egress is left open so EE image pull (kubelet) and a later SSH job still work.
+# Tighten egress (DNS + allowlists) when the playbooks' destinations are known.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-ingress-from-other-namespaces
+  namespace: aap-jobs-smoke
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector: {}

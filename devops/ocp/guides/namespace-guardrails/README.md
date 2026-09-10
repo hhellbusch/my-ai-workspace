@@ -12,7 +12,7 @@ How to limit what a namespace can put into etcd and the control plane — not ju
 
 **Purpose:** Choose quota keys, tier defaults, and wiring (project templates, ClusterResourceQuota) so tenant namespaces cannot exhaust control plane storage or API throughput.
 
-**Related:** [Container density / overcommit](../../notes/container-density-overcommit.md) (node packing) · [API slowness troubleshooting](../../troubleshooting/api-slowness-web-console/README.md) (when guardrails are missing) · [QUICK-REFERENCE.md](QUICK-REFERENCE.md)
+**Related:** [Container density / overcommit](../../notes/container-density-overcommit.md) (node packing) · [API slowness troubleshooting](../../troubleshooting/api-slowness-web-console/README.md) (when guardrails are missing) · [QUICK-REFERENCE.md](QUICK-REFERENCE.md) · [AAP tenant job namespace](../../../ansible/examples/016_aap_container_group_namespace/README.md) (LimitRange / Quota / NetworkPolicy on an EE project)
 
 ---
 

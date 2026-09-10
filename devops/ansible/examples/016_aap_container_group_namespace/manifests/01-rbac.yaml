@@ -1,0 +1,44 @@
+---
+# Scoped to aap-jobs-smoke only. Same Role as the AAP 2.7 container-group
+# sample (pods + pods/log + pods/attach + secrets), not cluster-admin / edit.
+# Secrets verbs: controller may create ImagePullSecrets when an EE has a
+# registry credential. Prefer pre-created pull secrets in production and drop
+# the secrets rules.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: aap-job-runner
+  namespace: aap-jobs-smoke
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: aap-job-runner
+  namespace: aap-jobs-smoke
+rules:
+  - apiGroups: [""]
+    resources: [pods]
+    verbs: [get, list, watch, create, update, patch, delete]
+  - apiGroups: [""]
+    resources: [pods/log]
+    verbs: [get]
+  - apiGroups: [""]
+    resources: [pods/attach]
+    verbs: [create]
+  - apiGroups: [""]
+    resources: [secrets]
+    verbs: [get, create, delete]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: aap-job-runner
+  namespace: aap-jobs-smoke
+subjects:
+  - kind: ServiceAccount
+    name: aap-job-runner
+    namespace: aap-jobs-smoke
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: aap-job-runner

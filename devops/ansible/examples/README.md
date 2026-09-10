@@ -1038,6 +1038,21 @@ ansible-playbook playbook.yml
 
 See [015_aap_hello_world_smoke/README.md](015_aap_hello_world_smoke/README.md) for the matching AAP inventory / project / job template fields. The playbook pauses 120s by default so the job pod is visible in OpenShift.
 
+### 16. Isolate AAP job pods in a tenant namespace
+
+OpenShift manifests + an AAP container group so EE pods run in a tenant namespace, not in the controller namespace.
+
+Not an `ansible-playbook` example — apply the YAML, then create the bearer-token credential and container group in AAP.
+
+```bash
+cd 016_aap_container_group_namespace
+oc apply -f manifests/
+# after launching a job pinned to that container group:
+oc get pods -n aap-jobs-smoke -w
+```
+
+See [016_aap_container_group_namespace/README.md](016_aap_container_group_namespace/README.md).
+
 ---
 
 *This content was created with AI assistance. See [AI-DISCLOSURE.md](../../../AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

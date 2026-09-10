@@ -1,7 +1,7 @@
 ---
 review:
   status: unreviewed
-  notes: "Drafted 2026-09-10 from an AAP 2.7 operator install on OCP. Architecture claims pinned to verified 2.7 planning/install docs; live object names from that session."
+  notes: "Drafted 2026-09-10 from an AAP 2.7 operator install on OCP. Architecture claims pinned to verified 2.7 planning/install docs."
 ---
 
 # AAP operator on OpenShift — what Kubernetes you get
@@ -59,7 +59,7 @@ See [Capacity plan for node types and workload characteristics](https://docs.red
 ## Kubernetes objects that replace the old stack
 
 Names below are the kinds you will see in the AAP namespace after a fresh operator install.
-Instance names follow the CR (`example-aap`, `example-aap-controller`, …).
+Instance names follow the CR (`<instance>`, `<instance>-controller`, …).
 
 ### Lifecycle (OLM)
 
@@ -94,10 +94,12 @@ GitOps the **CR**, not `settings.py` on disk.
 - **Deployments** — gateway, controller-web, controller-task, hub-api / content / web / worker, EDA API / workers / event-stream
 - **StatefulSets** — postgres, redis
 - **Jobs** — one-shot work such as controller schema migration
-- **User jobs** — Pods in a container group (often `automation-job-*` in the AAP namespace), not `ansible-runner` on an execution VM
+- **User jobs** — Pods in a container group (often `automation-job-*`), not `ansible-runner` on an execution VM.
+  Default landing zone is the AAP namespace.
+  A container group whose pod spec sets `metadata.namespace` (and a namespace-scoped ServiceAccount) is how execution moves to a tenant project — still one controller, not a second AAP.
+  Walkthrough: [016](examples/016_aap_container_group_namespace/README.md).
 
-A short sleep in the playbook is enough to catch that job pod with `oc get pods -n <aap-ns> -w`.
-See [015 — AAP hello world smoke test](examples/015_aap_hello_world_smoke/README.md).
+A short sleep in the playbook is enough to catch that job pod with `oc get pods -n <job-ns> -w`.
 
 ### Networking
 
@@ -134,6 +136,10 @@ That mismatch shows up as a Pending PVC and hub pods stuck on volume bind — no
 
 `oc get secret -n <aap-ns> <instance>-admin-password` is the gateway `admin` password.
 There is no published default password.
+
+Job pods use a **namespace-scoped** ServiceAccount via a container group, not the controller SA.
+That is execution isolation (quotas, NetworkPolicy, a tenant project).
+Gateway, postgres, and the controller database stay shared.
 
 ### Cluster facilities you inherit
 
@@ -197,7 +203,8 @@ oc get deploy,sts,job,route,pvc -n <aap-ns>
 oc get automationcontrollermeshingress -n <aap-ns>
 
 # After launching a job: the container-group pod
-oc get pods -n <aap-ns> -w
+# Default instance group → the AAP namespace. A custom group may use another.
+oc get pods -n <job-ns> -w
 ```
 
 Launch a long enough job (a `pause` / `sleep` of a minute or two) or the pod is gone before the console refreshes.
@@ -220,7 +227,8 @@ Launch a long enough job (a `pause` / `sleep` of a minute or two) or the pod is 
 ## Related reading
 
 - [AAP 2.5+ `ansible.controller.token` 404](troubleshooting/aap-controller-token-404/README.md) — gateway path `/api/controller/v2/` vs legacy `/api/v2/`
-- [015 hello-world smoke test](examples/015_aap_hello_world_smoke/README.md) — localhost job plus a pause so the job pod is visible
+- [015 hello-world job](examples/015_aap_hello_world_smoke/README.md) — localhost playbook plus a pause so the job pod is visible
+- [016 isolate job pods](examples/016_aap_container_group_namespace/README.md) — container group in a tenant namespace
 - [AAP / Ansible SDLC](aap-sdlc/README.md) — CaC of controller objects (not the operator CR)
 - [RHACM and AAP integration](../rhacm/notes/acm-ansible-integration.md) — `AnsibleJob` CRs from ACM; assumes a reachable controller, operator or not
 - [AAP SSH MTU](../ocp/troubleshooting/aap-ssh-mtu-issues/README.md) — still applies when jobs SSH off-cluster from an EE pod

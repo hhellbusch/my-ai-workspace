@@ -1,0 +1,24 @@
+# Paste into the container group "Pod spec override" (AAP customizes the image
+# from the job's execution environment). Namespace + serviceAccountName are
+# the isolation knobs.
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: aap-jobs-smoke
+spec:
+  serviceAccountName: aap-job-runner
+  automountServiceAccountToken: false
+  containers:
+    - name: worker
+      image: registry.redhat.io/ansible-automation-platform-27/ee-minimal-rhel9:latest
+      args:
+        - ansible-runner
+        - worker
+        - --private-data-dir=/runner
+      resources:
+        requests:
+          cpu: 250m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi

@@ -1,7 +1,7 @@
 ---
 review:
   status: unreviewed
-  notes: "Hello-world AAP smoke test playbook for the demo operator install."
+  notes: "Hello-world AAP playbook — localhost, no extra collections."
 ---
 
 # 015 — AAP Hello World Smoke Test
@@ -15,7 +15,7 @@ ansible-playbook playbook.yml                         # 120s pause (OpenShift po
 ansible-playbook playbook.yml -e smoke_pause_seconds=5
 ```
 
-Expected: a `debug` task printing hostname / Ansible version / OS facts, then a pause so the AAP job pod stays Running long enough to find in the OpenShift console (`oc get pods -n aap -w`, look for `automation-job-*`).
+Expected: a `debug` task printing hostname / Ansible version / OS facts, then a pause so the AAP job pod stays Running long enough to find in the OpenShift console (`oc get pods -n <aap-ns> -w`, look for `automation-job-*`).
 
 ## AAP job template
 
@@ -28,11 +28,12 @@ Expected: a `debug` task printing hostname / Ansible version / OS facts, then a 
 | Execution environment | platform default |
 | Credentials | none |
 
-Until this path is on the branch AAP syncs, the live template uses [ansible/test-playbooks](https://github.com/ansible/test-playbooks) playbook `sleep.yml` with `sleep_interval: 120`.
-
 AAP 2.7 still needs a subscription before a job will launch, even if the template saves.
 
-The job runs as a Pod in the AAP namespace (container group), not on a VM execution node. Context: [AAP operator on OpenShift](../../aap-operator-on-openshift.md).
+The job runs as a Pod in a container group, not on a VM execution node.
+Default landing zone is the AAP namespace.
+To put the same job in a tenant namespace, see [016](../016_aap_container_group_namespace/README.md).
+Context: [AAP operator on OpenShift](../../aap-operator-on-openshift.md).
 
 ---
 
