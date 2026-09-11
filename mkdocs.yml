@@ -62,9 +62,11 @@ markdown_extensions:
 
 extra_css:
   - assets/poc/symptom-picker.css
+  - assets/gitops-patterns/gitops-patterns.css
 
 extra_javascript:
   - assets/poc/symptom-picker.js
+  - assets/gitops-patterns/gitops-patterns.js
 
 # Nav is generated before build — see scripts/generate-mkdocs-nav.py
 nav:

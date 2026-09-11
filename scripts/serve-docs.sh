@@ -8,5 +8,6 @@ cd "$ROOT"
 bash scripts/stage-docs.sh
 echo ""
 echo "Starting dev server at http://127.0.0.1:8000 (Ctrl+C to stop)"
+echo "  GitOps patterns: http://127.0.0.1:8000/gitops-patterns/"
 echo "  Interactive PoC: http://127.0.0.1:8000/interactive-poc/"
 exec mkdocs serve -f mkdocs.effective.yml "$@"

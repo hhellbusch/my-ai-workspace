@@ -76,6 +76,7 @@ Browse **DevOps** runnable guides and **Docs** essays from the sidebar.
 - [DevOps hub](devops/README.md) — troubleshooting, examples, labs
 - [Symptom index](devops/SYMPTOM-INDEX.md) — lookup by error or symptom
 - [Docs catalogue](docs/README.md) — essays and case studies
+- [GitOps patterns](gitops-patterns.md) — control plane vs payload for an OpenShift fleet
 - [Interactive PoC](interactive-poc.md) — custom JS/CSS, Mermaid, tabs demo
 
 *Markdown source lives in `devops/` and `docs/` at repo root; this site is generated.*

@@ -184,6 +184,7 @@ def main() -> None:
 
     nav = [
         {"Home": "index.md"},
+        {"GitOps patterns": "gitops-patterns.md"},
         {"Interactive PoC": "interactive-poc.md"},
         {"DevOps Reference": devops_nav},
         {"Essays": docs_nav},

@@ -27,6 +27,7 @@ review:
 | [docs/diffing-and-visibility.md](docs/diffing-and-visibility.md) | PR-level desired-state diffs, fleet-wide live-to-desired diffs, argocd-diff-preview integration |
 | [docs/convergence.md](docs/convergence.md) | *(Aspirational)* How this pattern and gitops-standards could converge; `sourceType` per component; open questions |
 | [docs/operator-management.md](docs/operator-management.md) | Operator installation via OLM, `operators-installer` integration, version pinning, operator+instance split |
+| [GitOps patterns (Field Notes)](../../../../docs-site/gitops-patterns.md) | Factory vs Helm-in-Argo vs ApplicationSet — control plane vs payload |
 
 ---
 
