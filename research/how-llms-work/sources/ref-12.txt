@@ -1,0 +1,20 @@
+# nanoGPT
+Source: https://raw.githubusercontent.com/karpathy/nanoGPT/master/README.md
+Canonical: https://github.com/karpathy/nanoGPT/
+Fetched: 2026-09-02 (WebFetch)
+
+Update Nov 2025: nanoGPT has a new cousin called nanochat. nanoGPT is now old and deprecated but left up for posterity.
+
+The simplest, fastest repository for training/finetuning medium-sized GPTs. A rewrite of minGPT that prioritizes teeth over education. Currently the file train.py reproduces GPT-2 (124M) on OpenWebText, running on a single 8XA100 40GB node in about 4 days of training. The code itself is plain and readable: train.py is a ~300-line boilerplate training loop and model.py a ~300-line GPT model definition, which can optionally load the GPT-2 weights from OpenAI.
+
+Because the code is so simple, it is very easy to hack to your needs, train new models from scratch, or finetune pretrained checkpoints.
+
+Dependencies include pytorch, numpy, huggingface transformers (to load GPT-2 checkpoints), datasets, tiktoken (OpenAI's fast BPE), wandb, tqdm.
+
+Quick start: train a character-level GPT on Shakespeare. Config trains a GPT with context size up to 256 characters, 384 feature channels, 6-layer Transformer with 6 heads. On one A100 GPU this takes about 3 minutes.
+
+Reproducing GPT-2: tokenize OpenWebText with GPT-2 BPE, then torchrun on 8x A100 for ~4 days to loss ~2.85.
+
+Sampling/inference: sample.py can sample from OpenAI GPT-2 checkpoints or a locally trained model, generating one token at a time from a prompt.
+
+Context on this repository: Karpathy Zero To Hero series, specifically the GPT video https://www.youtube.com/watch?v=kCc8FmEb1nY

@@ -1,0 +1,35 @@
+# Behind the pipeline
+Source: https://huggingface.co/docs/course/chapter2/2
+Fetched: 2026-09-02 (WebFetch)
+
+A Hugging Face pipeline groups three steps: preprocessing, passing inputs through the model, and postprocessing.
+
+## 1. Preprocessing with a tokenizer
+Transformer models can't process raw text. The tokenizer:
+- Splits input into tokens (words, subwords, or symbols)
+- Maps each token to an integer
+- Adds additional inputs useful to the model (e.g. attention_mask, padding)
+
+This must be done exactly as during pretraining. AutoTokenizer.from_pretrained(checkpoint) downloads those rules.
+
+Output is typically:
+- input_ids: integer IDs per token
+- attention_mask: 1 for real tokens, 0 for padding
+
+Models only accept tensors (think NumPy arrays). Hidden size is the vector dimension per token (768 common for smaller models; larger models 3072+).
+
+## 2. Going through the model
+The base Transformer module outputs hidden states (features): a high-dimensional vector per token, shape [batch, sequence_length, hidden_size]. Example: torch.Size([2, 16, 768]).
+
+A model head takes those hidden states and projects them onto a different dimension for a task:
+- *ForCausalLM (next-token / generation)
+- *ForMaskedLM
+- *ForSequenceClassification
+- etc.
+
+Embeddings layer converts each input ID into a vector. Subsequent layers manipulate those vectors using attention to produce the final representation.
+
+## 3. Postprocessing
+Raw model outputs are logits (unnormalized scores), not probabilities. Softmax converts logits to a probability distribution. For generation, that distribution is over the vocabulary; for classification, over labels.
+
+All 🤗 Transformers models output logits; the training loss generally fuses the last activation (SoftMax) with the loss (cross entropy).

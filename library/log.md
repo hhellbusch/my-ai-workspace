@@ -321,3 +321,9 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Wing:** devops
 - **Source:** research collection / research/ocp-container-density-overcommit/sources/
 - **Note:** Landscape survey stub — 12 sources fetched (OKD/adoc mirrors where RH 403); paths P1–P10 in paths.md. Full enrichment pending analysis.
+
+## [2026-09-02] ingest | How LLMs Work
+- **Entry:** [how-llms-work.md](how-llms-work.md)
+- **Wing:** ai-engineering
+- **Source:** research collection / research/how-llms-work/sources/
+- **Note:** Landscape survey stub — transformer, tokenization, next-token, post-training. Full enrichment pending analysis.

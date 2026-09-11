@@ -1,0 +1,33 @@
+# Tokenizers
+Source: https://huggingface.co/docs/course/en/chapter2/4
+Fetched: 2026-09-02 (WebFetch)
+
+Tokenizers translate text into data that can be processed by the model. Models can only process numbers.
+
+## Word-based
+Split on whitespace/punctuation. Vocabularies get huge (English has 500,000+ words). "dog" and "dogs" are unrelated IDs. Unknown words become [UNK] — lots of UNK means lost information.
+
+## Character-based
+Much smaller vocabulary, almost no unknown tokens. Less meaningful per token in Latin languages; sequences get very long (a word becomes 10+ tokens).
+
+## Subword tokenization
+Frequently used words stay whole; rare words decompose into meaningful subwords. Example: "annoyingly" → "annoying" + "ly". "tokenization" → "token" + "ization". Good coverage with small vocabularies and almost no unknown tokens.
+
+Algorithms in use:
+- Byte-level BPE, as used in GPT-2
+- WordPiece, as used in BERT
+- SentencePiece or Unigram, as used in several multilingual models
+
+## Encoding (two steps)
+1. Tokenization: split text into tokens using the same rules as pretraining.
+2. Convert tokens to input IDs via the tokenizer vocabulary.
+
+Example with bert-base-cased:
+"Using a Transformer network is simple"
+→ ['Using', 'a', 'transform', '##er', 'network', 'is', 'simple']
+→ [7993, 170, 11303, 1200, 2443, 1110, 3014]
+
+The tokenizer loaded with from_pretrained() includes both the algorithm (like architecture) and the vocabulary (like weights). Must match the pretrained checkpoint.
+
+## Decoding
+tokenizer.decode(ids) converts IDs back to a string and stitches subwords into readable words. Needed when models generate new text.

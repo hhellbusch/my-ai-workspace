@@ -42,6 +42,7 @@ These references have deep AI-researched context (summaries, key themes, notable
 | [Tejas Kumar — Harnesses in AI (AI Engineer)](tejas-kumar-harnesses-in-ai.md) | YouTube | ai-engineering, harness, agent-loop, verify-step, guardrails, gpt-3.5, ibm | 2026-05-29 |
 | [Chris Parsons — Ralph Loops: Build Dumb AI Loops That Ship (AI Engineer)](chris-parsons-ralph-loops.md) | YouTube | ai-engineering, agentic-loops, harness, skills, ticket-driven, self-improving | 2026-05-30 |
 | [Mo Bitar — Token mania / AI hype critique](mo-bitar-token-mania.md) | YouTube | ai-engineering, epistemics, token-mania, productivity, leadership-org | 2026-05-30 |
+| [How LLMs Work](how-llms-work.md) | Research collection | llm, transformer, attention, tokenization, gpt, rlhf | 2026-09-02 |
 
 See [`catalog.md`](catalog.md) for the complete reference list (50+ books, courses, and training).
 
@@ -64,6 +65,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Andrej Karpathy — LLM Wiki](karpathy-llm-wiki.md) | memory / knowledge-base | 2026-04-30 |
 | [MemPalace](mempalace.md) | memory / verbatim / wings-rooms-drawers | 2026-04-30 |
 | [3Blue1Brown — Deep Learning Series](3blue1brown.md) | foundations / transformers / llm | 2026-04-17 |
+| [How LLMs Work](how-llms-work.md) | foundations / transformer / next-token / RLHF | 2026-09-02 |
 | [Daniel Miessler — AI WILL Replace Knowledge Workers](daniel-miessler-ai-replace-knowledge-workers.md) | AI impact / org | 2026-04-18 |
 | [Hank Green — AI Water Use](hank-green-ai-water-use.md) | AI infrastructure | 2026-04-18 |
 | [EngineersOfAI — What are AI Agents?](engineersofai-what-are-ai-agents.md) | agents / foundations | 2026-04-28 |

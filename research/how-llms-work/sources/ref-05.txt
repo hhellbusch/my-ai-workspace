@@ -1,0 +1,46 @@
+# Transformer Explainer: LLM Transformer Model Visually Explained
+Source: https://poloclub.github.io/transformer-explainer/
+Fetched: 2026-09-02 (WebFetch)
+Authors: Aeree Cho et al., Georgia Institute of Technology (Polo Chau lab)
+Implementation: GPT-2 small (124M) in-browser via ONNX, derived from Karpathy nanoGPT.
+
+Transformer is a neural network architecture introduced in "Attention is All You Need" (2017). Text-generative Transformer models operate on next-token prediction: given a text prompt, what is the most probable next token (a word or part of a word)? The core innovation is self-attention, which processes entire sequences and captures long-range dependencies.
+
+GPT-2 (small) has 124 million parameters, 12 transformer blocks, hidden size 768, vocabulary 50,257 tokens, 12 attention heads.
+
+## Three key components
+
+1. Embedding: text is divided into tokens, converted into numerical vectors, plus positional information.
+2. Transformer Block:
+   - Attention: tokens communicate with other tokens (route information between tokens)
+   - MLP: feed-forward network that operates on each token independently (refine each token's representation)
+3. Output probabilities: final linear + softmax over the vocabulary; sample the next token.
+
+## Embedding steps
+1. Tokenization — GPT-2 vocab has 50,257 unique tokens. Words may split into subwords.
+2. Token embedding — each token is a 768-dimensional vector; matrix shape (50257, 768), ~39 million parameters. Similar-usage tokens sit close in this space.
+3. Positional encoding — GPT-2 trains its own positional encoding matrix from scratch.
+4. Final embedding — sum of token and positional encodings.
+
+## Multi-head self-attention
+Each token embedding is transformed into Query (Q), Key (K), Value (V) via learned weight matrices.
+Analogy: Query = search text; Key = page titles; Value = page content.
+
+Q/K/V are split into 12 heads. In each head:
+- Dot product of Q and K → attention scores (square matrix of token-to-token relationships)
+- Scale and causal mask (upper triangle set to -inf so the model cannot peek at future tokens)
+- Softmax → probabilities (each row sums to 1)
+- Multiply by V → attended values
+Heads are concatenated and linearly projected.
+
+## MLP
+Two linear layers with GELU in between. First expands 768 → 3072; second compresses back to 768. Unlike attention, MLP processes tokens independently.
+
+## Output
+After all blocks, a linear layer projects to 50,257 logits (one per vocab token), then softmax to a probability distribution. Sampling uses:
+- temperature: divide logits; <1 more deterministic, >1 more random
+- top-k: only the k most likely tokens
+- top-p: smallest set whose cumulative probability exceeds p
+
+## Auxiliary
+Layer Normalization (before attention and before MLP), Dropout (training only), Residual Connections (twice per block, from ResNet 2015 — mitigate vanishing gradients).
