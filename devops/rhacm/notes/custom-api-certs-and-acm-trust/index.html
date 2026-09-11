@@ -1,0 +1,3739 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Engineering reference and essays — DevOps troubleshooting, examples, and AI-assisted practice." name="description"/>
+<link href="https://hhellbusch.github.io/my-ai-workspace/devops/rhacm/notes/custom-api-certs-and-acm-trust/" rel="canonical"/>
+<link href="../../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>Custom API Certificates and ACM Trust — What We Learned - Field Notes</title>
+<link href="../../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../../../assets/poc/symptom-picker.css" rel="stylesheet"/>
+<link href="../../../../assets/gitops-patterns/gitops-patterns.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#custom-api-certificates-and-acm-trust-what-we-learned">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Field Notes" class="md-header__button md-logo" data-md-component="logo" href="../../../.." title="Field Notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Field Notes
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Custom API Certificates and ACM Trust — What We Learned
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/hhellbusch/my-ai-workspace" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
+    hhellbusch/my-ai-workspace
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Field Notes" class="md-nav__button md-logo" data-md-component="logo" href="../../../.." title="Field Notes">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    Field Notes
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/hhellbusch/my-ai-workspace" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
+    hhellbusch/my-ai-workspace
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../gitops-patterns/">
+<span class="md-ellipsis">
+    
+  
+    GitOps patterns
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../interactive-poc/">
+<span class="md-ellipsis">
+    
+  
+    Interactive PoC
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    DevOps Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    DevOps Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../">
+<span class="md-ellipsis">
+    
+  
+    DevOps hub
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ORGANIZATION/">
+<span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../SYMPTOM-INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Symptom index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../EXAMPLE-INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Example index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../fleet-control-spectrum/">
+<span class="md-ellipsis">
+    
+  
+    Fleet control spectrum
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Learning paths
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Learning paths
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../learning-path/">
+<span class="md-ellipsis">
+    
+  
+    Learning paths index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../learning-path/vmware-admins/">
+<span class="md-ellipsis">
+    
+  
+    VMware admins
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../learning-path/git/">
+<span class="md-ellipsis">
+    
+  
+    Git curriculum
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Pedagogy and setup
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_7_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Pedagogy and setup
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../git/git-learning-guide/">
+<span class="md-ellipsis">
+    
+  
+    Git learning guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../kvm/">
+<span class="md-ellipsis">
+    
+  
+    KVM on Fedora
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../llm/">
+<span class="md-ellipsis">
+    
+  
+    Local LLM setup
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ansible troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_8_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ansible troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_8_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_8_1" id="__nav_4_8_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Authentication
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_8_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_8_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Authentication
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ansible/troubleshooting/aap-controller-token-404/">
+<span class="md-ellipsis">
+    
+  
+    AAP Controller Token 404
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    OCP troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_9_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_9_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_9_1" id="__nav_4_9_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Automation
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_9_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_9_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Automation
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/aap-ssh-mtu-issues/">
+<span class="md-ellipsis">
+    
+  
+    AAP SSH Connection MTU Issues
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_9_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_9_2" id="__nav_4_9_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_9_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_9_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Bare Metal
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/bare-metal-node-inspection-timeout/">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal Node Inspection Timeout
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/bare-metal-rhcos-disk-wipe/">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal RHCOS Disk Wipe
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/bare-metal-stale-node-ip-conflict/">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal Stale Node IP Conflict
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/worker-node-tls-cert-failure/">
+<span class="md-ellipsis">
+    
+  
+    Worker Node TLS Certificate Failure
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_9_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_9_3" id="__nav_4_9_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Certificates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_9_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_9_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Certificates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/csr-management/">
+<span class="md-ellipsis">
+    
+  
+    CSR Management
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_9_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_9_4" id="__nav_4_9_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Control Plane
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_9_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_9_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Control Plane
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/apiserver-cert-deadlock/">
+<span class="md-ellipsis">
+    
+  
+    API Server Certificate Deadlock
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/api-slowness-web-console/">
+<span class="md-ellipsis">
+    
+  
+    API Slowness and Web Console Performance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/control-plane-kubeconfigs/">
+<span class="md-ellipsis">
+    
+  
+    Control Plane Kubeconfigs
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/kafka-broker-init-kubernetes-svc/">
+<span class="md-ellipsis">
+    
+  
+    Kafka Broker Stuck in Init — kubernetes Service Unreachable
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/oauth-healthz-unavailable/">
+<span class="md-ellipsis">
+    
+  
+    OAuth Server healthz Unavailable
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/kube-controller-manager-crashloop/">
+<span class="md-ellipsis">
+    
+  
+    kube-controller-manager Crash Loop
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_9_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_9_5" id="__nav_4_9_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_9_5_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_9_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Installation
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/failed-ocp-install/">
+<span class="md-ellipsis">
+    
+  
+    Failed OCP Install
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_9_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_9_6" id="__nav_4_9_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_9_6_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_9_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Kubernetes
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/namespace-stuck-terminating/">
+<span class="md-ellipsis">
+    
+  
+    Namespace Stuck in Terminating
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_9_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_9_7" id="__nav_4_9_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Lifecycle
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_9_7_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_9_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Lifecycle
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/destroy-cluster-without-metadata/">
+<span class="md-ellipsis">
+    
+  
+    Destroy Cluster Without Metadata
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_9_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_9_8" id="__nav_4_9_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_9_8_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_9_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Networking
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/coreos-networking-issues/">
+<span class="md-ellipsis">
+    
+  
+    CoreOS Networking Issues
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_9_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_9_9" id="__nav_4_9_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Registry
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_9_9_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_9_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Registry
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/image-registry-auth/">
+<span class="md-ellipsis">
+    
+  
+    Image Registry Auth and Route Exposure
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/image-signature-policy-mcp-deadlock/">
+<span class="md-ellipsis">
+    
+  
+    Image Signature Policy MCP Deadlock
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_9_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_9_10" id="__nav_4_9_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Rhacm
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_9_10_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_9_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Rhacm
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/multiclusterobservability-webhook-rejection/">
+<span class="md-ellipsis">
+    
+  
+    MultiClusterObservability Webhook Rejection
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_9_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_9_11" id="__nav_4_9_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_9_11_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_9_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/nfs-portworx-proxy-pvc-slow-ready/">
+<span class="md-ellipsis">
+    
+  
+    NFS Portworx Proxy PVC Slow Ready
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/nvme-host-nqn-duplicate/">
+<span class="md-ellipsis">
+    
+  
+    NVMe Host NQN Duplicates
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/nvme-tcp-storage-network/">
+<span class="md-ellipsis">
+    
+  
+    NVMe/TCP Storage Network
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/portworx-csi-crashloop/">
+<span class="md-ellipsis">
+    
+  
+    Portworx CSI Pod CrashLoopBackOff
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/prometheus-monitoring-storage/">
+<span class="md-ellipsis">
+    
+  
+    Prometheus and Alertmanager Storage
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_9_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_9_12" id="__nav_4_9_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_9_12_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_9_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tools
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/debug-toolbox-container/">
+<span class="md-ellipsis">
+    
+  
+    Debug Toolbox Container
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_9_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_9_13" id="__nav_4_9_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Virtualization
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_9_13_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_9_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Virtualization
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/troubleshooting/kubevirt-vm-stuck-provisioning/">
+<span class="md-ellipsis">
+    
+  
+    KubeVirt VM Stuck in Provisioning
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Rhacm troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_10_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Rhacm troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_10_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_10_1" id="__nav_4_10_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Install
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_10_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_10_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Install
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/agent-install-rootfs-ssl-failure/">
+<span class="md-ellipsis">
+    
+  
+    Agent Install Rootfs SSL Failure
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_10_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_10_2" id="__nav_4_10_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Certificates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_10_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_10_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Certificates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/managed-cluster-x509-after-api-cert-change/">
+<span class="md-ellipsis">
+    
+  
+    Managed Cluster x509 After API Cert Change
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_10_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_10_3" id="__nav_4_10_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Hub Upgrade
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_10_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_10_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Hub Upgrade
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/mch-stuck-pending-upgrade/">
+<span class="md-ellipsis">
+    
+  
+    MCH Stuck Pending Upgrade
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/managed-cluster-lease-not-updated/">
+<span class="md-ellipsis">
+    
+  
+    Managed Cluster Lease Not Updated
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_10_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_10_4" id="__nav_4_10_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_10_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_10_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Observability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/observability-addon-missing/">
+<span class="md-ellipsis">
+    
+  
+    Observability Addon Missing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/observability-platform-metrics-missing/">
+<span class="md-ellipsis">
+    
+  
+    Observability Platform Metrics Missing
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_10_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_10_5" id="__nav_4_10_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Search
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_10_5_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_10_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Search
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/search-service-503/">
+<span class="md-ellipsis">
+    
+  
+    RHACM Search Service 503
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_11" id="__nav_4_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    OpenShift
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_11_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    OpenShift
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/">
+<span class="md-ellipsis">
+    
+  
+    OCP hub
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/disconnected-install/">
+<span class="md-ellipsis">
+    
+  
+    Disconnected install
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/ibm-z/">
+<span class="md-ellipsis">
+    
+  
+    IBM Z
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/gpu/">
+<span class="md-ellipsis">
+    
+  
+    GPU artifacts
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_12" id="__nav_4_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    OCP examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_12_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/examples/">
+<span class="md-ellipsis">
+    
+  
+    Examples index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_12_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_12_2" id="__nav_4_12_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Bare metal
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_12_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_12_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Bare metal
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/examples/bare-metal/">
+<span class="md-ellipsis">
+    
+  
+    Bare metal index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/examples/bare-metal/secondary-disk/">
+<span class="md-ellipsis">
+    
+  
+    Bare Metal Secondary Disk Offload
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/examples/bare-metal/var-log-disk/">
+<span class="md-ellipsis">
+    
+  
+    Var Log on Secondary Disk
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_12_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_12_3" id="__nav_4_12_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_12_3_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_12_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Messaging
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/examples/messaging/">
+<span class="md-ellipsis">
+    
+  
+    Messaging index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_12_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_12_3_2" id="__nav_4_12_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Kafka
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_12_3_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_4_12_3_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Kafka
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/examples/messaging/kafka/">
+<span class="md-ellipsis">
+    
+  
+    Kafka index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/examples/messaging/kafka/bare-metal-portworx/">
+<span class="md-ellipsis">
+    
+  
+    Kafka on Bare Metal with Portworx
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_12_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_12_4" id="__nav_4_12_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_12_4_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_12_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Networking
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/examples/networking/">
+<span class="md-ellipsis">
+    
+  
+    Networking index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/examples/networking/cross-dc-br-ex-vlan/">
+<span class="md-ellipsis">
+    
+  
+    Cross-DC Replication on Shared br-ex Trunk
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/examples/networking/network-attachment-definitions/">
+<span class="md-ellipsis">
+    
+  
+    NetworkAttachmentDefinition Examples
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/examples/networking/ovn-kubernetes-install-config/">
+<span class="md-ellipsis">
+    
+  
+    OVN-Kubernetes Install Config
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/examples/networking/vlan-segmentation/">
+<span class="md-ellipsis">
+    
+  
+    VLAN Network Segmentation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_12_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_12_5" id="__nav_4_12_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Labs
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_12_5_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_4_12_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Labs
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/examples/labs/">
+<span class="md-ellipsis">
+    
+  
+    Labs index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/examples/labs/sno-kvm-lab/">
+<span class="md-ellipsis">
+    
+  
+    SNO on KVM Lab
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_13" id="__nav_4_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    OCP notes
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_13_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    OCP notes
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/notes/">
+<span class="md-ellipsis">
+    
+  
+    Notes index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/notes/cluster-network-hostprefix/">
+<span class="md-ellipsis">
+    
+  
+    Cluster Network Hostprefix
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/notes/cluster-resource-override/">
+<span class="md-ellipsis">
+    
+  
+    Cluster Resource Override
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/notes/container-density-overcommit/">
+<span class="md-ellipsis">
+    
+  
+    Container Density Overcommit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/notes/install-config-immutability/">
+<span class="md-ellipsis">
+    
+  
+    Install Config Immutability
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/notes/kafka-on-openshift-tenancy/">
+<span class="md-ellipsis">
+    
+  
+    Kafka On Openshift Tenancy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/notes/machine-config-pools/">
+<span class="md-ellipsis">
+    
+  
+    Machine Config Pools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/notes/network-policy-observability/">
+<span class="md-ellipsis">
+    
+  
+    Network Policy Observability
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/notes/openshift-useful-commands/">
+<span class="md-ellipsis">
+    
+  
+    Openshift Useful Commands
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/notes/pod-termination-quick-stop/">
+<span class="md-ellipsis">
+    
+  
+    Pod Termination Quick Stop
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/notes/pre-release-freeze-audit/">
+<span class="md-ellipsis">
+    
+  
+    Pre Release Freeze Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ocp/notes/vertical-pod-autoscaler/">
+<span class="md-ellipsis">
+    
+  
+    Vertical Pod Autoscaler
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_14" id="__nav_4_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Products
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_14_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Products
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../">
+<span class="md-ellipsis">
+    
+  
+    RHACM
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ansible/">
+<span class="md-ellipsis">
+    
+  
+    Ansible
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../argo/">
+<span class="md-ellipsis">
+    
+  
+    Argo CD
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../coreos/">
+<span class="md-ellipsis">
+    
+  
+    CoreOS
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../vault/">
+<span class="md-ellipsis">
+    
+  
+    Vault
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_15" id="__nav_4_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Workspace tooling
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_15_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Workspace tooling
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../pi/">
+<span class="md-ellipsis">
+    
+  
+    Pi
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../paude/">
+<span class="md-ellipsis">
+    
+  
+    Paude
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../paude-proxy/">
+<span class="md-ellipsis">
+    
+  
+    Paude proxy
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Essays
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Essays
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/">
+<span class="md-ellipsis">
+    
+  
+    Docs catalogue
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_5_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI Engineering
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI Engineering
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/">
+<span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/ai-assisted-development-workflows/">
+<span class="md-ellipsis">
+    
+  
+    Ai Assisted Development Workflows
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/ai-assisted-upstream-contributions/">
+<span class="md-ellipsis">
+    
+  
+    Ai Assisted Upstream Contributions
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/ai-for-unfamiliar-domains/">
+<span class="md-ellipsis">
+    
+  
+    Ai For Unfamiliar Domains
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/ai-legacy-improvement/">
+<span class="md-ellipsis">
+    
+  
+    Ai Legacy Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/artifact-discipline-and-ai/">
+<span class="md-ellipsis">
+    
+  
+    Artifact Discipline And Ai
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/framework-bootstrap/">
+<span class="md-ellipsis">
+    
+  
+    Framework Bootstrap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/frameworks-vs-behavior/">
+<span class="md-ellipsis">
+    
+  
+    Frameworks Vs Behavior
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/interaction-patterns/">
+<span class="md-ellipsis">
+    
+  
+    Interaction Patterns
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/local-llm-sysadmin/">
+<span class="md-ellipsis">
+    
+  
+    Local Llm Sysadmin
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/mobbing/">
+<span class="md-ellipsis">
+    
+  
+    Mobbing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/openshift-ai-llm-deployment-summary/">
+<span class="md-ellipsis">
+    
+  
+    Openshift Ai Llm Deployment Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/openshift-gpu-node-management/">
+<span class="md-ellipsis">
+    
+  
+    Openshift Gpu Node Management
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/paude-getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Paude Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/portable-ai-toolkit/">
+<span class="md-ellipsis">
+    
+  
+    Portable Ai Toolkit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/prompting-and-state/">
+<span class="md-ellipsis">
+    
+  
+    Prompting And State
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/session-framework/">
+<span class="md-ellipsis">
+    
+  
+    Session Framework
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/sparring-and-shoshin/">
+<span class="md-ellipsis">
+    
+  
+    Sparring And Shoshin
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/the-meta-development-loop/">
+<span class="md-ellipsis">
+    
+  
+    The Meta Development Loop
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/the-shift/">
+<span class="md-ellipsis">
+    
+  
+    The Shift
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/what-a-context-window-actually-is/">
+<span class="md-ellipsis">
+    
+  
+    What A Context Window Actually Is
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/ai-engineering/youtube-video-analysis/">
+<span class="md-ellipsis">
+    
+  
+    Youtube Video Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_5_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Philosophy
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Philosophy
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/philosophy/">
+<span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/philosophy/ego-ai-and-the-zen-antidote/">
+<span class="md-ellipsis">
+    
+  
+    Ego Ai And The Zen Antidote
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/philosophy/the-dojo-after-the-automation/">
+<span class="md-ellipsis">
+    
+  
+    The Dojo After The Automation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/philosophy/the-full-cup-practitioners-guide/">
+<span class="md-ellipsis">
+    
+  
+    The Full Cup Practitioners Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/philosophy/the-full-cup/">
+<span class="md-ellipsis">
+    
+  
+    The Full Cup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/philosophy/zanshin/">
+<span class="md-ellipsis">
+    
+  
+    Zanshin
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_5_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Case Studies
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Case Studies
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/">
+<span class="md-ellipsis">
+    
+  
+    Track index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/adversarial-review-meta-development/">
+<span class="md-ellipsis">
+    
+  
+    Adversarial Review Meta Development
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/ai-self-diagnosis-symptom-report/">
+<span class="md-ellipsis">
+    
+  
+    Ai Self Diagnosis Symptom Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/building-a-research-skill/">
+<span class="md-ellipsis">
+    
+  
+    Building A Research Skill
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/building-knowledge-management-with-ai/">
+<span class="md-ellipsis">
+    
+  
+    Building Knowledge Management With Ai
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/case-studies-as-discovery/">
+<span class="md-ellipsis">
+    
+  
+    Case Studies As Discovery
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/choosing-scripts-over-services/">
+<span class="md-ellipsis">
+    
+  
+    Choosing Scripts Over Services
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/context-stripped-citations/">
+<span class="md-ellipsis">
+    
+  
+    Context Stripped Citations
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/conversation-to-essay/">
+<span class="md-ellipsis">
+    
+  
+    Conversation To Essay
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/corpus-level-spar/">
+<span class="md-ellipsis">
+    
+  
+    Corpus Level Spar
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/debugging-ai-judgment/">
+<span class="md-ellipsis">
+    
+  
+    Debugging Ai Judgment
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/decayed-how-to/">
+<span class="md-ellipsis">
+    
+  
+    Decayed How To
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/diagnosing-through-the-stack/">
+<span class="md-ellipsis">
+    
+  
+    Diagnosing Through The Stack
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/directory-move-gitignore-drift/">
+<span class="md-ellipsis">
+    
+  
+    Directory Move Gitignore Drift
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/evolving-creative-scope/">
+<span class="md-ellipsis">
+    
+  
+    Evolving Creative Scope
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/experiment-cant-use-findings/">
+<span class="md-ellipsis">
+    
+  
+    Experiment Cant Use Findings
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/fabricated-references/">
+<span class="md-ellipsis">
+    
+  
+    Fabricated References
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/frictionless-entity/">
+<span class="md-ellipsis">
+    
+  
+    Frictionless Entity
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/graph-splits-hybrid-inference/">
+<span class="md-ellipsis">
+    
+  
+    Graph Splits Hybrid Inference
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/heavy-safety-nets/">
+<span class="md-ellipsis">
+    
+  
+    Heavy Safety Nets
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/inherited-frame-shapes-solution/">
+<span class="md-ellipsis">
+    
+  
+    Inherited Frame Shapes Solution
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/landscape-before-depth/">
+<span class="md-ellipsis">
+    
+  
+    Landscape Before Depth
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/link-depth-drift/">
+<span class="md-ellipsis">
+    
+  
+    Link Depth Drift
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/meta-document-drift/">
+<span class="md-ellipsis">
+    
+  
+    Meta Document Drift
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/model-self-report-runtime-state/">
+<span class="md-ellipsis">
+    
+  
+    Model Self Report Runtime State
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/session-crash-recovery/">
+<span class="md-ellipsis">
+    
+  
+    Session Crash Recovery
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/spar-distortion/">
+<span class="md-ellipsis">
+    
+  
+    Spar Distortion
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/spar-finds-the-assumption/">
+<span class="md-ellipsis">
+    
+  
+    Spar Finds The Assumption
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/spar-lifecycle-boundary/">
+<span class="md-ellipsis">
+    
+  
+    Spar Lifecycle Boundary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/spar-to-essay-pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Spar To Essay Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/stale-context-in-long-sessions/">
+<span class="md-ellipsis">
+    
+  
+    Stale Context In Long Sessions
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/survivorship-bias-recommendations/">
+<span class="md-ellipsis">
+    
+  
+    Survivorship Bias Recommendations
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/technical-correctness-vs-communication/">
+<span class="md-ellipsis">
+    
+  
+    Technical Correctness Vs Communication
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/when-the-repository-becomes-the-resume/">
+<span class="md-ellipsis">
+    
+  
+    When The Repository Becomes The Resume
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../docs/case-studies/who-is-speaking/">
+<span class="md-ellipsis">
+    
+  
+    Who Is Speaking
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#executive-summary">
+<span class="md-ellipsis">
+      
+        Executive summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#background-how-acm-uses-tls-on-managed-clusters">
+<span class="md-ellipsis">
+      
+        Background — how ACM uses TLS on managed clusters
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-triggers-the-failure">
+<span class="md-ellipsis">
+      
+        What triggers the failure
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#diagnosis-five-minutes">
+<span class="md-ellipsis">
+      
+        Diagnosis (five minutes)
+      
+    </span>
+</a>
+<nav aria-label="Diagnosis (five minutes)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#on-the-hub">
+<span class="md-ellipsis">
+      
+        On the hub
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#on-the-spoke">
+<span class="md-ellipsis">
+      
+        On the spoke
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prove-hub-kubeconfig-is-stale">
+<span class="md-ellipsis">
+      
+        Prove hub kubeconfig is stale
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#recovery-both-paths">
+<span class="md-ellipsis">
+      
+        Recovery (both paths)
+      
+    </span>
+</a>
+<nav aria-label="Recovery (both paths)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#path-a-patch-hub-admin-kubeconfig">
+<span class="md-ellipsis">
+      
+        Path A — patch hub admin kubeconfig
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#path-b-re-apply-acm-import-on-spoke">
+<span class="md-ellipsis">
+      
+        Path B — re-apply ACM import on spoke
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prevention-three-approaches-pick-by-maturity">
+<span class="md-ellipsis">
+      
+        Prevention — three approaches (pick by maturity)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gitops-scope-what-cert-manager-owns-vs-what-acm-needs">
+<span class="md-ellipsis">
+      
+        GitOps scope — what cert-manager owns vs what ACM needs
+      
+    </span>
+</a>
+<nav aria-label="GitOps scope — what cert-manager owns vs what ACM needs" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gitops-repo-spoke-should-include">
+<span class="md-ellipsis">
+      
+        GitOps repo (spoke) should include
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gitops-does-not-solve">
+<span class="md-ellipsis">
+      
+        GitOps does not solve
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#recommended-architecture-argo-cd-per-spoke-applications">
+<span class="md-ellipsis">
+      
+        Recommended architecture — Argo CD per-spoke applications
+      
+    </span>
+</a>
+<nav aria-label="Recommended architecture — Argo CD per-spoke applications" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-two-apps">
+<span class="md-ellipsis">
+      
+        Why two apps?
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#inside-api-cert-cluster-resource-waves">
+<span class="md-ellipsis">
+      
+        Inside api-cert-&lt;cluster&gt; — resource waves
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#inside-acm-trust-sync-cluster-postsync-hook">
+<span class="md-ellipsis">
+      
+        Inside acm-trust-sync-&lt;cluster&gt; — PostSync hook
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#hub-rbac-minimal">
+<span class="md-ellipsis">
+      
+        Hub RBAC (minimal)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#idempotency-and-cert-renewal">
+<span class="md-ellipsis">
+      
+        Idempotency and cert renewal
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#alternative-argo-cd-notifications-aap">
+<span class="md-ellipsis">
+      
+        Alternative — Argo CD Notifications → AAP
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#team-responsibility-split">
+<span class="md-ellipsis">
+      
+        Team responsibility split
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#failure-modes-to-expect">
+<span class="md-ellipsis">
+      
+        Failure modes to expect
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-we-would-do-on-a-greenfield-fleet-today">
+<span class="md-ellipsis">
+      
+        What we would do on a greenfield fleet today
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#references">
+<span class="md-ellipsis">
+      
+        References
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#discussion-questions-for-the-team">
+<span class="md-ellipsis">
+      
+        Discussion questions for the team
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="custom-api-certificates-and-acm-trust-what-we-learned">Custom API Certificates and ACM Trust — What We Learned<a class="headerlink" href="#custom-api-certificates-and-acm-trust-what-we-learned" title="Permanent link">¶</a></h1>
+<p><strong>Audience:</strong> Platform engineers and architects operating an ACM hub with CIM-provisioned bare-metal spokes, applying custom API TLS via GitOps (cert-manager), and needing fleet management to stay healthy across cert rollouts.</p>
+<p><strong>Purpose:</strong> Share a concise mental model of why ACM breaks after API certificate changes, how to recover, and how to automate trust sync so day-2 cert work does not require manual firefighting.</p>
+<p><strong>Context:</strong> We hit <code>tls: failed to verify certificate: x509: certificate signed by unknown authority</code> on managed bare-metal clusters after custom API certificates were applied. Communications had been fine until the cert rollout. This document captures the root cause, recovery steps, and a recommended GitOps-native prevention pattern.</p>
+<hr/>
+<h2 id="executive-summary">Executive summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Point</th>
+<th>Takeaway</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>What broke</strong></td>
+<td>ACM lost trust in the spoke API — not a generic network outage</td>
+</tr>
+<tr>
+<td><strong>Why</strong></td>
+<td>Hive captured an admin kubeconfig at import time; custom API certs changed what the API serves without updating ACM's stored trust</td>
+</tr>
+<tr>
+<td><strong>Two paths</strong></td>
+<td>Hub → spoke (hive/import controller) <strong>and</strong> spoke klusterlet → spoke API can both fail independently</td>
+</tr>
+<tr>
+<td><strong>GitOps scope</strong></td>
+<td>cert-manager + <code>Certificate</code> + <code>apiserver/cluster</code> = cert delivery; <strong>ACM trust sync is a separate imperative step</strong></td>
+</tr>
+<tr>
+<td><strong>Recommended fix</strong></td>
+<td>Per-spoke Argo apps: <code>api-cert-&lt;cluster&gt;</code> on spoke + <code>acm-trust-sync-&lt;cluster&gt;</code> on hub with a PostSync Job</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="background-how-acm-uses-tls-on-managed-clusters">Background — how ACM uses TLS on managed clusters<a class="headerlink" href="#background-how-acm-uses-tls-on-managed-clusters" title="Permanent link">¶</a></h2>
+<p>ACM is not a single TLS session. At minimum, two independent HTTPS paths matter after a cluster is imported:</p>
+<pre class="mermaid"><code>flowchart LR
+  subgraph hub [Hub]
+    H[Hive / import controller]
+    SK[admin-kubeconfig secret]
+    H --&gt; SK
+  end
+  subgraph spoke [Managed spoke]
+    API[API server :6443]
+    K[klusterlet agents]
+    K --&gt; API
+  end
+  H --&gt;|"Path A — hub → spoke"| API
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Client</th>
+<th>Server</th>
+<th>Trust stored in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A</strong></td>
+<td>Hub controllers (Hive, policies, scaling)</td>
+<td>Spoke API <code>:6443</code></td>
+<td>Hub secret: Hive admin kubeconfig in the cluster namespace</td>
+</tr>
+<tr>
+<td><strong>B</strong></td>
+<td><code>klusterlet-registration-agent</code>, <code>klusterlet-work-agent</code></td>
+<td>Spoke API <code>:6443</code></td>
+<td>Klusterlet bootstrap / ACM import manifests on the spoke</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Path A</strong> is what we most often see in ACM console errors and <code>hive-controller</code> logs when a custom API cert is applied without updating hub state.</p>
+<p><strong>Path B</strong> shows up in <code>open-cluster-management-agent</code> pod logs on the spoke — the agents cannot verify their <strong>own</strong> cluster API after the serving cert changes.</p>
+<p>ACM auto-rotates klusterlet <strong>mTLS client</strong> certs for hub registration. That is separate from API <strong>serving</strong> cert trust. Changing <code>apiserver/cluster</code> does not cause ACM to refresh the hub admin kubeconfig or re-bootstrap klusterlet.</p>
+<hr/>
+<h2 id="what-triggers-the-failure">What triggers the failure<a class="headerlink" href="#what-triggers-the-failure" title="Permanent link">¶</a></h2>
+<p>Typical sequence on CIM bare-metal:</p>
+<div class="highlight"><pre><span></span><code>1. Cluster installs with default API certs
+2. Hive auto-import succeeds — ManagedCluster Available
+3. Day-2: custom API cert applied (manual, GitOps, cert-manager, corporate PKI)
+4. Spoke API now serves a different cert chain
+5. Hub still has old CA in admin kubeconfig → Path A breaks
+6. Klusterlet agents still trust old spoke CA → Path B may break
+7. ACM reports x509 / cluster Unknown / scaling and policies fail
+</code></pre></div>
+<p>This matches <a href="https://access.redhat.com/solutions/7076376">Red Hat Solution 7076376</a> and ACM troubleshooting guidance for clusters that fail after API certificate changes.</p>
+<p><strong>Common misread:</strong> treating it as firewall or hub connectivity. If <code>curl -k https://api.&lt;spoke&gt;:6443/healthz</code> returns <code>ok</code> but <code>oc</code> fails TLS verification, the API is up — trust is wrong.</p>
+<hr/>
+<h2 id="diagnosis-five-minutes">Diagnosis (five minutes)<a class="headerlink" href="#diagnosis-five-minutes" title="Permanent link">¶</a></h2>
+<h3 id="on-the-hub">On the hub<a class="headerlink" href="#on-the-hub" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nv">CLUSTER</span><span class="o">=</span>&lt;spoke-name&gt;
+
+oc<span class="w"> </span>get<span class="w"> </span>managedcluster<span class="w"> </span><span class="nv">$CLUSTER</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{range .status.conditions[*]}{.type}: {.status} — {.message}{"\n"}{end}'</span>
+
+oc<span class="w"> </span>logs<span class="w"> </span>-n<span class="w"> </span>multicluster-engine<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>managedcluster-import-controller-v2<span class="w"> </span>--tail<span class="o">=</span><span class="m">50</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-iE<span class="w"> </span><span class="s1">'x509|unknown authority'</span>
+</code></pre></div>
+<p>Path A confirmed if logs show <code>Get "https://api.&lt;spoke&gt;...": x509: certificate signed by unknown authority</code>.</p>
+<h3 id="on-the-spoke">On the spoke<a class="headerlink" href="#on-the-spoke" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code>oc<span class="w"> </span>logs<span class="w"> </span>-n<span class="w"> </span>open-cluster-management-agent<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>klusterlet-work-agent<span class="w"> </span>--tail<span class="o">=</span><span class="m">30</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-iE<span class="w"> </span><span class="s1">'x509|unknown authority'</span>
+</code></pre></div>
+<p>Path B confirmed if errors reference the <strong>spoke's own</strong> API URL.</p>
+<h3 id="prove-hub-kubeconfig-is-stale">Prove hub kubeconfig is stale<a class="headerlink" href="#prove-hub-kubeconfig-is-stale" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nv">kubeconfig_secret</span><span class="o">=</span><span class="k">$(</span>oc<span class="w"> </span>-n<span class="w"> </span><span class="nv">$CLUSTER</span><span class="w"> </span>get<span class="w"> </span>clusterdeployment<span class="w"> </span><span class="nv">$CLUSTER</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.spec.clusterMetadata.adminKubeconfigSecretRef.name}'</span><span class="k">)</span>
+
+oc<span class="w"> </span>-n<span class="w"> </span><span class="nv">$CLUSTER</span><span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span><span class="nv">$kubeconfig_secret</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.data.kubeconfig}'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>/tmp/hub-stored.kc
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">KUBECONFIG</span><span class="o">=</span>/tmp/hub-stored.kc
+oc<span class="w"> </span>get<span class="w"> </span>ns<span class="w">   </span><span class="c1"># expect x509 if stale</span>
+</code></pre></div>
+<p>Full procedure: <a href="../../troubleshooting/managed-cluster-x509-after-api-cert-change/">managed-cluster-x509-after-api-cert-change.md</a>.</p>
+<hr/>
+<h2 id="recovery-both-paths">Recovery (both paths)<a class="headerlink" href="#recovery-both-paths" title="Permanent link">¶</a></h2>
+<p>Run after confirming the spoke API is healthy with a <strong>fresh</strong> kubeconfig (<code>oc get nodes</code> works).</p>
+<h3 id="path-a-patch-hub-admin-kubeconfig">Path A — patch hub admin kubeconfig<a class="headerlink" href="#path-a-patch-hub-admin-kubeconfig" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Export current cluster-admin kubeconfig from spoke (trusts new cert)</span>
+oc<span class="w"> </span>--kubeconfig<span class="o">=</span>/path/to/fresh-spoke.kc<span class="w"> </span>config<span class="w"> </span>view<span class="w"> </span>--raw<span class="w"> </span>--minify<span class="w"> </span>&gt;<span class="w"> </span>/tmp/new.kc
+
+<span class="nv">kubeconfig_b64</span><span class="o">=</span><span class="k">$(</span>base64<span class="w"> </span>-w0<span class="w"> </span>/tmp/new.kc<span class="k">)</span>
+oc<span class="w"> </span>-n<span class="w"> </span><span class="nv">$CLUSTER</span><span class="w"> </span>patch<span class="w"> </span>secret<span class="w"> </span><span class="nv">$kubeconfig_secret</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--type<span class="o">=</span>json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="o">=</span><span class="s2">"[{\"op\":\"replace\",\"path\":\"/data/kubeconfig\",\"value\":\"</span><span class="si">${</span><span class="nv">kubeconfig_b64</span><span class="si">}</span><span class="s2">\"}]"</span>
+</code></pre></div>
+<h3 id="path-b-re-apply-acm-import-on-spoke">Path B — re-apply ACM import on spoke<a class="headerlink" href="#path-b-re-apply-acm-import-on-spoke" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code>oc<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>-n<span class="w"> </span><span class="nv">$CLUSTER</span><span class="w"> </span><span class="si">${</span><span class="nv">CLUSTER</span><span class="si">}</span>-import<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.data.import\.yaml}'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>import.yaml
+
+oc<span class="w"> </span>--kubeconfig<span class="o">=</span>/path/to/fresh-spoke.kc<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>import.yaml
+</code></pre></div>
+<p>Validate: <code>ManagedClusterConditionAvailable: True</code>, klusterlet pods healthy.</p>
+<p><strong>Note:</strong> Hive may resync admin kubeconfig on a ~2-hour cadence for provisioned clusters. Do not rely on that for intentional cert rollouts — and it does not fix Path B.</p>
+<hr/>
+<h2 id="prevention-three-approaches-pick-by-maturity">Prevention — three approaches (pick by maturity)<a class="headerlink" href="#prevention-three-approaches-pick-by-maturity" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Approach</th>
+<th>Cert apply</th>
+<th>ACM sync trigger</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Manual runbook</strong></td>
+<td>GitOps or console</td>
+<td>Engineer after cert merge</td>
+<td>Few clusters, learning phase</td>
+</tr>
+<tr>
+<td><strong>ClusterCurator postinstall</strong></td>
+<td>Imperative in AAP job</td>
+<td>Install posthook</td>
+<td>No GitOps cert stack; see <a href="../../examples/ocm-subscription-automation/cluster-curator/postinstall-api-cert-acm-sync/">draft example</a></td>
+</tr>
+<tr>
+<td><strong>Argo CD per-spoke apps</strong></td>
+<td>GitOps on spoke</td>
+<td>PostSync Job on hub</td>
+<td>Fleet with ApplicationSets — <strong>recommended</strong></td>
+</tr>
+</tbody>
+</table>
+<p>If certs are delivered via <strong>GitOps + cert-manager</strong>, install-time ClusterCurator is the wrong trigger: the cert Application syncs <strong>after</strong> install, often minutes later. ACM sync must run when the cert is <strong>actually serving</strong>, not when Hive finishes provisioning.</p>
+<hr/>
+<h2 id="gitops-scope-what-cert-manager-owns-vs-what-acm-needs">GitOps scope — what cert-manager owns vs what ACM needs<a class="headerlink" href="#gitops-scope-what-cert-manager-owns-vs-what-acm-needs" title="Permanent link">¶</a></h2>
+<h3 id="gitops-repo-spoke-should-include">GitOps repo (spoke) should include<a class="headerlink" href="#gitops-repo-spoke-should-include" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cert-manager operator</td>
+<td>Issuance engine (early sync wave)</td>
+</tr>
+<tr>
+<td><code>ClusterIssuer</code> / <code>Issuer</code></td>
+<td>CA relationship</td>
+</tr>
+<tr>
+<td><code>Certificate</code></td>
+<td>API DNS SANs (<code>api.&lt;cluster&gt;.&lt;domain&gt;</code>, VIPs)</td>
+</tr>
+<tr>
+<td><code>Secret</code> in <code>openshift-config</code></td>
+<td>Where apiserver reads cert/key</td>
+</tr>
+<tr>
+<td><code>apiserver/cluster</code> <code>namedCertificates</code></td>
+<td><strong>Required</strong> — cert-manager does not wire this automatically</td>
+</tr>
+</tbody>
+</table>
+<h3 id="gitops-does-not-solve">GitOps does <strong>not</strong> solve<a class="headerlink" href="#gitops-does-not-solve" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Gap</th>
+<th>Owner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Patch hub Hive admin kubeconfig secret</td>
+<td>ACM trust sync automation</td>
+</tr>
+<tr>
+<td>Re-apply <code>import.yaml</code> on spoke</td>
+<td>ACM trust sync automation</td>
+</tr>
+<tr>
+<td>Detect CA chain change vs leaf-only renewal</td>
+<td>Sync job idempotency logic</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Corporate CA only</strong> (<code>additionalTrustBundle</code> in install-config) is a different problem — it adds trusted CAs cluster-wide and may not require kubeconfig patch if the API serving cert is unchanged.</p>
+<hr/>
+<h2 id="recommended-architecture-argo-cd-per-spoke-applications">Recommended architecture — Argo CD per-spoke applications<a class="headerlink" href="#recommended-architecture-argo-cd-per-spoke-applications" title="Permanent link">¶</a></h2>
+<p>Split cert delivery and ACM trust into <strong>two sibling Applications</strong> from the same ApplicationSet generator.</p>
+<div class="highlight"><pre><span></span><code>ApplicationSet (one entry per cluster)
+│
+├── api-cert-prod-bm-01              destination: spoke
+│     wave 30: Issuer, Certificate, apiserver/cluster
+│
+└── acm-trust-sync-prod-bm-01        destination: hub, namespace prod-bm-01
+      wave 40: PostSync Job + RBAC
+</code></pre></div>
+<h3 id="why-two-apps">Why two apps?<a class="headerlink" href="#why-two-apps" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Single app on spoke</th>
+<th>Two apps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostSync Job on spoke needs hub kubeconfig mounted</td>
+<td>Hub-destined app runs where secrets live</td>
+</tr>
+<tr>
+<td>Hub credentials on every spoke</td>
+<td>Hub RBAC stays on hub</td>
+</tr>
+<tr>
+<td>Couples cert Git to imperative ACM logic</td>
+<td>Clear ownership: platform vs fleet glue</td>
+</tr>
+</tbody>
+</table>
+<p>Sync-wave the <strong>Applications</strong> themselves (your fleet framework already uses this for cert-manager at wave 10). The trust-sync app should run only after the cert app is Healthy.</p>
+<h3 id="inside-api-cert-cluster-resource-waves">Inside <code>api-cert-&lt;cluster&gt;</code> — resource waves<a class="headerlink" href="#inside-api-cert-cluster-resource-waves" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code>wave 10   ClusterIssuer
+wave 20   Certificate
+wave 25   apiserver/cluster namedCertificates
+</code></pre></div>
+<p>Argo marks the app Healthy when resources sync. The sync Job must <strong>also</strong> wait for:</p>
+<ul>
+<li><code>Certificate</code> condition <code>Ready=True</code></li>
+<li><code>kube-apiserver</code> ClusterOperator <code>Progressing=False</code></li>
+</ul>
+<p>Issued cert ≠ apiserver finished rolling.</p>
+<h3 id="inside-acm-trust-sync-cluster-postsync-hook">Inside <code>acm-trust-sync-&lt;cluster&gt;</code> — PostSync hook<a class="headerlink" href="#inside-acm-trust-sync-cluster-postsync-hook" title="Permanent link">¶</a></h3>
+<p>Argo CD <a href="https://argo-cd.readthedocs.io/en/stable/user-guide/resource_hooks/">sync hooks</a> run imperative work at defined points in the sync lifecycle. Use <strong><code>PostSync</code></strong>: runs after all resources in the app are Synced and Healthy.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">batch/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Job</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">acm-trust-sync</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prod-bm-01</span>
+<span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">argocd.argoproj.io/hook</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PostSync</span>
+<span class="w">    </span><span class="nt">argocd.argoproj.io/hook-delete-policy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">BeforeHookCreation</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">backoffLimit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">spec</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">restartPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Never</span>
+<span class="w">      </span><span class="nt">serviceAccountName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">acm-trust-sync</span>
+<span class="w">      </span><span class="nt">containers</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sync</span>
+<span class="w">          </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">registry.example.com/platform/acm-trust-sync:v1</span>
+<span class="w">          </span><span class="nt">env</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CLUSTER_NAME</span>
+<span class="w">              </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prod-bm-01</span>
+</code></pre></div>
+<p><strong>Job logic (conceptual):</strong></p>
+<div class="highlight"><pre><span></span><code>1. Wait Certificate Ready + kube-apiserver stable (poll spoke via admin kubeconfig from hub secret)
+2. Read CA from issued Secret (openshift-config)
+3. Update certificate-authority-data in admin kubeconfig → patch hub secret   (Path A)
+4. Fetch *-import secret → oc apply on spoke                                  (Path B)
+5. Wait ManagedCluster Available
+6. Exit 0 (fail → Application Degraded → alert)
+</code></pre></div>
+<p>Structural reference for hook RBAC + waves: <a href="../../argo/examples/helm-component-pattern/components/nvidia-gpu-operator/instance/templates/vgpu-drain-check.yaml">vgpu-drain-check PreSync pattern</a> and <a href="../../../argo/labs/lab-argocd-sync/lab/LAB-SESSION-3/">Argo sync hooks lab</a>.</p>
+<h3 id="hub-rbac-minimal">Hub RBAC (minimal)<a class="headerlink" href="#hub-rbac-minimal" title="Permanent link">¶</a></h3>
+<p>ServiceAccount in namespace <code>&lt;cluster-name&gt;</code>:</p>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>Verbs</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>secrets</code> (admin kubeconfig, import)</td>
+<td>get, patch / get</td>
+<td>Paths A and B</td>
+</tr>
+<tr>
+<td><code>managedclusters</code></td>
+<td>get</td>
+<td>Validate Available</td>
+</tr>
+</tbody>
+</table>
+<p>Spoke access uses the admin kubeconfig pulled from the hub secret — no extra spoke SA required if the Job runs on the hub.</p>
+<hr/>
+<h2 id="idempotency-and-cert-renewal">Idempotency and cert renewal<a class="headerlink" href="#idempotency-and-cert-renewal" title="Permanent link">¶</a></h2>
+<p>PostSync runs when the Argo Application syncs. Design the Job to avoid noise:</p>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Leaf renewal, same CA</td>
+<td>Compare CA fingerprint in hub kubeconfig vs spoke Secret → exit 0, skip</td>
+</tr>
+<tr>
+<td>CA or issuer change</td>
+<td>Full Path A + B</td>
+</tr>
+<tr>
+<td>Every Argo sync with no cert change</td>
+<td>Fingerprint match → no-op</td>
+</tr>
+</tbody>
+</table>
+<p>cert-manager renews before expiry. Same CA usually means ACM stays healthy without re-sync. Re-run trust sync when the <strong>chain</strong> changes or x509 reappears.</p>
+<p>For forced re-convergence on every sync, some teams use <code>Sync</code> hook + <code>BeforeHookCreation</code> instead of <code>PostSync</code> — same tradeoff as <a href="../../../ocp/examples/messaging/kafka/CLUSTER-LINK-GITOPS/#pattern-c--argo-postsync--sync-hook-job">Kafka GitOps Pattern C</a>.</p>
+<hr/>
+<h2 id="alternative-argo-cd-notifications-aap">Alternative — Argo CD Notifications → AAP<a class="headerlink" href="#alternative-argo-cd-notifications-aap" title="Permanent link">¶</a></h2>
+<p>If you already run Ansible Automation Platform with a trust-sync playbook:</p>
+<div class="highlight"><pre><span></span><code>api-cert app → sync succeeds → Argo Notifications webhook → AAP Job Template
+</code></pre></div>
+<p><strong>Pros:</strong> no custom container image; credentials in AAP.<br/>
+<strong>Cons:</strong> extra moving parts; must still wait for apiserver rollout inside the playbook.</p>
+<p>See <a href="../acm-ansible-integration/">acm-ansible-integration.md</a> for native ACM → AAP paths.</p>
+<hr/>
+<h2 id="team-responsibility-split">Team responsibility split<a class="headerlink" href="#team-responsibility-split" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Team / concern</th>
+<th>Owns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GitOps / platform</strong></td>
+<td>cert-manager, Issuer, Certificate, apiserver/cluster manifests</td>
+</tr>
+<tr>
+<td><strong>Fleet / ACM</strong></td>
+<td><code>acm-trust-sync</code> Application, hub RBAC, Job image or AAP template</td>
+</tr>
+<tr>
+<td><strong>PKI / security</strong></td>
+<td>CA chain, SAN list, renewal policy</td>
+</tr>
+<tr>
+<td><strong>Network</strong></td>
+<td>Hub ↔ spoke 6443/443 (unchanged by cert issue — unless TLS inspection in path)</td>
+</tr>
+</tbody>
+</table>
+<p>Store cert manifests and ACM sync automation in the <strong>same Git change</strong> when possible so they cannot merge independently.</p>
+<hr/>
+<h2 id="failure-modes-to-expect">Failure modes to expect<a class="headerlink" href="#failure-modes-to-expect" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cert app Healthy, ACM still x509</td>
+<td>Trust-sync app missing, failed, or not deployed yet</td>
+</tr>
+<tr>
+<td>Path A fixed, klusterlet still errors</td>
+<td>Path B skipped — import.yaml not re-applied</td>
+</tr>
+<tr>
+<td>Hook runs before apiserver rollout</td>
+<td>Job exited too early — add CO/Certificate wait</td>
+</tr>
+<tr>
+<td>x509 after "successful" hook</td>
+<td>Wrong CA in kubeconfig update (leaf vs issuing CA)</td>
+</tr>
+<tr>
+<td>Works until next cert renewal</td>
+<td>CA changed; idempotency gate needs chain comparison</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="what-we-would-do-on-a-greenfield-fleet-today">What we would do on a greenfield fleet today<a class="headerlink" href="#what-we-would-do-on-a-greenfield-fleet-today" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong><code>additionalTrustBundle</code></strong> in install-config when a corporate root must be trusted cluster-wide.</li>
+<li><strong>Default API certs through Hive auto-import</strong> — let import succeed cleanly.</li>
+<li><strong>GitOps cert stack</strong> on spoke (ApplicationSet, sync waves 10–30).</li>
+<li><strong>Hub-destined <code>acm-trust-sync</code> app</strong> at wave 40 with PostSync Job.</li>
+<li><strong>Runbook</strong> for manual recovery when automation is bypassed or fails.</li>
+<li><strong>Alert</strong> on <code>ManagedCluster</code> not Available + cert app recently synced.</li>
+</ol>
+<hr/>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Troubleshooting guide (recovery)</td>
+<td><a href="../../troubleshooting/managed-cluster-x509-after-api-cert-change/">managed-cluster-x509-after-api-cert-change.md</a></td>
+</tr>
+<tr>
+<td>ClusterCurator imperative example (draft)</td>
+<td><a href="../../examples/ocm-subscription-automation/cluster-curator/postinstall-api-cert-acm-sync/">postinstall-api-cert-acm-sync</a></td>
+</tr>
+<tr>
+<td>Red Hat KB</td>
+<td><a href="https://access.redhat.com/solutions/7076376">Solution 7076376</a></td>
+</tr>
+<tr>
+<td>ACM docs — offline after cert change</td>
+<td><a href="https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.4/html/troubleshooting/troubleshooting#clusters-offline-after-certificate-change">ACM 2.4 troubleshooting §1.12</a></td>
+</tr>
+<tr>
+<td>Spoke API cert deadlock</td>
+<td><a href="../../../ocp/troubleshooting/apiserver-cert-deadlock/">apiserver-cert-deadlock</a></td>
+</tr>
+<tr>
+<td>Git-driven fleet model</td>
+<td><a href="../../git-driven-configuration/">git-driven-configuration.md</a></td>
+</tr>
+<tr>
+<td>Argo sync hooks lab</td>
+<td><a href="../../../argo/labs/lab-argocd-sync/lab/LAB-SESSION-3/">LAB-SESSION-3.md</a></td>
+</tr>
+<tr>
+<td>Bare metal ACM networking</td>
+<td><a href="../acm-bare-metal-network-requirements/">acm-bare-metal-network-requirements.md</a></td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="discussion-questions-for-the-team">Discussion questions for the team<a class="headerlink" href="#discussion-questions-for-the-team" title="Permanent link">¶</a></h2>
+<ol>
+<li>Do we standardize on <strong>two Applications per cluster</strong> or accept hub kubeconfig on spokes for a single-app model?</li>
+<li>Who owns the <strong>acm-trust-sync</strong> container image / AAP playbook lifecycle?</li>
+<li>At what <strong>sync wave</strong> does api-cert sit relative to cert-manager and other platform apps?</li>
+<li>Do we require <strong>PostSync success</strong> before promoting a cluster to production traffic?</li>
+<li>How do we handle <strong>break-glass</strong> cert apply outside Git — mandatory trust-sync runbook step?</li>
+</ol>
+<hr/>
+<p><em>This content was created with AI assistance. See <a href="../../../../AI-DISCLOSURE/">AI-DISCLOSURE.md</a> for how to interpret AI-generated content in this workspace.</em></p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../../../assets/poc/symptom-picker.js"></script>
+<script src="../../../../assets/gitops-patterns/gitops-patterns.js"></script>
+<script src="../../../../assets/mermaid/mermaid.min.js"></script><script>window.mermaidConfig = {default: {
+    startOnLoad: false
+}};</script></body>
+</html>
