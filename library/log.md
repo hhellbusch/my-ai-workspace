@@ -327,3 +327,9 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Wing:** ai-engineering
 - **Source:** research collection / research/how-llms-work/sources/
 - **Note:** Landscape survey stub — transformer, tokenization, next-token, post-training. Full enrichment pending analysis.
+
+## [2026-09-25] ingest | Matt Pocock — Fixing the PR Bottleneck (AI Engineer)
+- **Entry:** [matt-pocock-fixing-pr-bottleneck.md](matt-pocock-fixing-pr-bottleneck.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/matt-pocock-fixing-pr-bottleneck/sources/fixing-the-pr-bottleneck-matt-pocock-aihero.md
+- **Note:** Software-factory brakes, lying checks, deep modules, implement vs review context budgets, reviewer-commits, one-way doors, retro. Assessment written.
