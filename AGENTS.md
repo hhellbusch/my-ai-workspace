@@ -97,9 +97,9 @@ Ask: *"Is this asking the right question — or a well-written answer to the wro
 
 > Ambient posture (on code work). Invoked depth: `.agents/skills/craft/SKILL.md` or `/craft`. Full reference: `submodules/zanshin-pi-extension/kit/ENGINEERING-PRINCIPLES.md`.
 
-Default on code and design changes: **KISS** over clever; **SRP** (one reason to change); **DRY** when duplication will diverge — not on first coincidence; **YAGNI** for imagined requirements; **leave it slightly better** when already touching a file (≤5 min). Principles are lenses, not a checklist — name tensions when they conflict (DRY vs YAGNI, SRP vs KISS).
+Default on code and design changes: **KISS** over clever; **SRP** (one reason to change); **DRY** when duplication will diverge — not on first coincidence; **YAGNI** for imagined requirements; **leave it slightly better** when already touching a file (≤5 min); prefer one boring **house path** (convention over configuration / omakase) over unpaid toggle forests. Principles are lenses, not a checklist — name tensions when they conflict (DRY vs YAGNI, CoC vs ukemi, omakase vs Unix).
 
-Respect phase: make it work → make it right → make it fast. Don't mix refactor, features, and optimization in one pass without reason. Name the tension when **CI/Ansible/Helm glue starts looking like a program**, or when an agent grows a **toggle forest** instead of a house default — craft (orchestration vs program, convention over configuration), not a new kihon.
+Respect phase: make it work → make it right → make it fast. Don't mix refactor, features, and optimization in one pass without reason. Name the tension when **CI/Ansible/Helm glue starts looking like a program**, or when an agent grows a **toggle forest** instead of a house default — craft (orchestration vs program, convention over configuration), not a new kihon. Stance map: `submodules/zanshin-pi-extension/kit/DESIGN-PHILOSOPHY.md`.
 
 **Kihon (basics):** fixed forms that avoid easy pitfalls and generate quality signal (`submodules/zanshin-pi-extension/kit/kihon/` — see README for what qualifies). Invoked: `/kihon <domain>` (`.agents/skills/kihon/SKILL.md`). Not craft judgment. Product depth stays in `devops/`.
 

@@ -106,6 +106,6 @@ Interest noted → light promotion 2026-10-05 (still no new skills):
 - **Heijōshin + ukemi** — ambient in Field Notes `AGENTS.md` (ops / incident); try in anger before skill promotion
 - **Maai / mushin** — still parked; see MARTIAL-VOCABULARY promotion checklist
 
-Design-philosophy plan (2026-10-05): `submodules/zanshin-pi-extension/kit/DESIGN-PHILOSOPHY.md` — CoC promoted to craft; omakase vocab; Unix/CI2/Laravel as map only.
+Design philosophy flushed (2026-10-05 review): `submodules/zanshin-pi-extension/kit/DESIGN-PHILOSOPHY.md` — durable stance map (CoC active; omakase light; Unix/CI2/Laravel map). Next use-test: `/craft` on a Codex Ansible defaults forest.
 
 Do not promote from aesthetic fit alone.
