@@ -1,0 +1,241 @@
+/* GitOps pattern explorer — scoped under .gitops-patterns */
+
+.gitops-patterns {
+  --gp-border: var(--md-default-fg-color--lightest, #e0e0e0);
+  --gp-accent: var(--md-accent-fg-color, #4051b5);
+  --gp-surface: var(--md-code-bg-color, #f5f5f5);
+  font-family: var(--md-text-font-family, inherit);
+  border: 1px solid var(--gp-border);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  margin: 1rem 0 1.5rem;
+  background: var(--md-default-bg-color);
+}
+
+.gitops-patterns h3 {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 0.95rem;
+}
+
+.gitops-patterns h3:first-child {
+  margin-top: 0;
+}
+
+.gitops-patterns p {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+}
+
+.gitops-patterns__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.gitops-patterns__chip {
+  border: 1px solid var(--gp-border);
+  background: transparent;
+  color: inherit;
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.gitops-patterns__chip:hover {
+  border-color: var(--gp-accent);
+}
+
+.gitops-patterns__chip.is-active {
+  background: var(--gp-accent);
+  border-color: var(--gp-accent);
+  color: var(--md-primary-bg-color, #fff);
+}
+
+.gitops-patterns__grid {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.7fr) 1fr 1fr;
+  gap: 0.5rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.gitops-patterns__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  align-self: end;
+}
+
+.gitops-patterns__rowlabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding-top: 0.35rem;
+}
+
+.gitops-patterns__rowlabel span {
+  display: block;
+  font-weight: 400;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.gitops-patterns__cell {
+  border: 1px solid var(--gp-border);
+  border-radius: 0.4rem;
+  padding: 0.65rem 0.75rem;
+  background: var(--gp-surface);
+  font-size: 0.8rem;
+}
+
+.gitops-patterns__cell strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.gitops-patterns__cell.is-accent {
+  outline: 2px solid var(--gp-accent);
+  outline-offset: -1px;
+}
+
+.gitops-patterns table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.gitops-patterns th,
+.gitops-patterns td {
+  text-align: left;
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid var(--gp-border);
+  vertical-align: top;
+}
+
+.gitops-patterns tbody tr.is-dim {
+  opacity: 0.4;
+}
+
+.gitops-patterns__fit {
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.gitops-patterns__fit.is-strong {
+  color: var(--md-typeset-color);
+}
+
+.gitops-patterns__fit.is-ok {
+  opacity: 0.75;
+}
+
+.gitops-patterns__fit.is-weak {
+  opacity: 0.45;
+}
+
+.gitops-patterns__layout {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 52rem) {
+  .gitops-patterns__grid,
+  .gitops-patterns__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .gitops-patterns__label:first-child {
+    display: none;
+  }
+}
+
+.gitops-patterns fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.gitops-patterns__concern {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.15rem 0.5rem;
+  margin: 0 0 0.65rem;
+  font-size: 0.85rem;
+}
+
+.gitops-patterns__concern input {
+  margin-top: 0.2rem;
+}
+
+.gitops-patterns__concern small {
+  grid-column: 2;
+  opacity: 0.7;
+  font-size: 0.75rem;
+}
+
+.gitops-patterns__bars {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.gitops-patterns__bar-row {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.gitops-patterns__bar-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+}
+
+.gitops-patterns__bar-track {
+  height: 0.45rem;
+  background: var(--gp-surface);
+  border: 1px solid var(--gp-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.gitops-patterns__bar-fill {
+  height: 100%;
+  background: var(--gp-accent);
+  width: 0%;
+}
+
+.gitops-patterns__callout {
+  font-size: 0.85rem;
+  padding: 0.75rem 0.85rem;
+  border-left: 3px solid var(--gp-accent);
+  background: var(--gp-surface);
+  margin: 0.5rem 0 0;
+}
+
+.gitops-patterns__callout strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.gitops-patterns__hint {
+  font-size: 0.78rem;
+  opacity: 0.7;
+  margin: 0.5rem 0 0;
+}
+
+.gitops-patterns button.gitops-patterns__clear {
+  margin-top: 0.75rem;
+  font: inherit;
+  font-size: 0.8rem;
+  background: transparent;
+  border: 1px solid var(--gp-border);
+  border-radius: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  color: inherit;
+  cursor: pointer;
+}

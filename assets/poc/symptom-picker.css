@@ -1,0 +1,156 @@
+/* PoC interactive widget — scoped under .symptom-picker */
+
+.symptom-picker {
+  --sp-border: var(--md-default-fg-color--lightest, #e0e0e0);
+  --sp-accent: var(--md-accent-fg-color, #4051b5);
+  --sp-surface: var(--md-code-bg-color, #f5f5f5);
+  font-family: var(--md-text-font-family, inherit);
+  border: 1px solid var(--sp-border);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  margin: 1rem 0 1.5rem;
+  background: var(--md-default-bg-color);
+}
+
+.symptom-picker__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.symptom-picker__search {
+  flex: 1 1 14rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--sp-border);
+  border-radius: 0.35rem;
+  font: inherit;
+  background: var(--md-default-bg-color);
+  color: inherit;
+}
+
+.symptom-picker__search:focus {
+  outline: 2px solid var(--sp-accent);
+  outline-offset: 1px;
+}
+
+.symptom-picker__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.symptom-picker__chip {
+  border: 1px solid var(--sp-border);
+  background: transparent;
+  color: inherit;
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.symptom-picker__chip:hover {
+  border-color: var(--sp-accent);
+}
+
+.symptom-picker__chip.is-active {
+  background: var(--sp-accent);
+  border-color: var(--sp-accent);
+  color: #fff;
+}
+
+.symptom-picker__chip:active {
+  transform: scale(0.97);
+}
+
+.symptom-picker__meta {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-bottom: 0.75rem;
+}
+
+.symptom-picker__results {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.symptom-picker__card {
+  border: 1px solid var(--sp-border);
+  border-radius: 0.4rem;
+  padding: 0.75rem 1rem;
+  background: var(--sp-surface);
+  animation: sp-fade-in 0.2s ease;
+}
+
+@keyframes sp-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.symptom-picker__card-title {
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+}
+
+.symptom-picker__card-title a {
+  color: var(--sp-accent);
+  text-decoration: none;
+}
+
+.symptom-picker__card-title a:hover {
+  text-decoration: underline;
+}
+
+.symptom-picker__match {
+  font-size: 0.85rem;
+  margin: 0 0 0.5rem;
+  font-style: italic;
+}
+
+.symptom-picker__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.symptom-picker__tag {
+  font-size: 0.72rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 0.25rem;
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--sp-border);
+}
+
+.symptom-picker__quick {
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: normal;
+}
+
+.symptom-picker__empty {
+  padding: 1rem;
+  text-align: center;
+  opacity: 0.75;
+  border: 1px dashed var(--sp-border);
+  border-radius: 0.4rem;
+}
+
+.symptom-picker__status {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.symptom-picker__status.is-error {
+  color: var(--md-typeset-a-color--hover, #c62828);
+  opacity: 1;
+}
