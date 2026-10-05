@@ -101,9 +101,9 @@ Default on code and design changes: **KISS** over clever; **SRP** (one reason to
 
 Respect phase: make it work → make it right → make it fast. Don't mix refactor, features, and optimization in one pass without reason.
 
-**Kihon (basics):** fixed forms in `submodules/zanshin-pi-extension/kit/kihon/` — shell strict mode, structured-edit anchors. Invoked: `/kihon [shell|edit]` (`.agents/skills/kihon/SKILL.md`). Not craft judgment — execute the form. Pointers: `rules/shell-strict-mode.md`, `rules/structured-edit.md`.
+**Kihon (basics):** fixed forms in `submodules/zanshin-pi-extension/kit/kihon/` (secrets, vault, sql, git, k8s, testing, lint, ansible, helm, …). Invoked: `/kihon <domain>` (`.agents/skills/kihon/SKILL.md`). Not craft judgment — execute the form. Product depth stays in `devops/`.
 
-**Deep mode:** say "apply craft" or `/craft` on a file, diff, or design. Use `/kihon` for shell/edit forms. Use `/review` separately for repo convention compliance before commit.
+**Deep mode:** say "apply craft" or `/craft` on a file, diff, or design. Use `/kihon <domain>` for fixed forms. Use `/review` separately for repo convention compliance before commit.
 
 ---
 
