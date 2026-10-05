@@ -21,7 +21,7 @@ Artifact discipline (JBGE, TAGRI): **`submodules/zanshin-pi-extension/kit/AGILE-
 
 Basics (kihon): kit loads **`kit/kihon/`** when relevant — or run `/kihon <domain>`.
 
-When reviewing pipelines or Ansible/Helm that have grown control flow, the craft lens **orchestration vs program** in `ENGINEERING-PRINCIPLES.md` applies.
+When reviewing pipelines or Ansible/Helm that have grown control flow or a flag forest, craft lenses **orchestration vs program** and **convention over configuration** apply.
 
 ## Workspace-only conventions
 
