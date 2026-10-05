@@ -1,0 +1,417 @@
+Mem0 vs Zep vs Letta: Agent Memory Compared (2026) — AgentsCamp
+
+Skip to content
+
+Level up your prompts with
+ 
+SurePrompts
+ 
+— curated prompts for every workflow.
+
+agentscamp
+
+Start here
+
+Developers
+
+406
+
+AI engineers
+
+270
+
+DevOps &amp; platform engineers
+
+53
+
+Security &amp; AI safety
+
+33
+
+Sales &amp; revenue teams
+
+55
+
+Founders &amp; non-technical builders
+
+72
+
+Marketers &amp; content teams
+
+72
+
+Designers
+
+52
+
+Data &amp; analytics teams
+
+56
+
+Guides
+
+Tools
+
+Glossary
+
+For Claude Code
+
+Agents
+
+66
+
+Specialized subagents for focused work
+
+Skills
+
+134
+
+Reusable capabilities Claude loads on demand
+
+Commands
+
+63
+
+Slash commands for Claude Code
+
+How to use
+
+Install and use them
+
+Topics
+
+Search
+
+⌘K
+
+Home
+
+Guides
+
+Comparisons
+
+Mem0 vs Zep vs Letta: Agent Memory Compared (2026)
+
+Mem0 vs Zep vs Letta: Agent Memory Compared (2026)
+
+Three philosophies of agent memory — Mem0&#x27;s drop-in layer, Zep&#x27;s temporal knowledge graphs, Letta&#x27;s self-managing agents — and which fits your architecture.
+
+By
+ 
+Imtiaz Rayhan
+
+·
+
+Updated 
+Jun 11, 2026
+
+·
+
+3
+ min read
+
+On this page
+
+The short answer
+
+What each one is
+
+Dimension by dimension
+
+How to actually choose
+
+Pick by where memory should live. Mem0 is the drop-in layer: add/search APIs that extract and persist facts for any agent — easiest adoption. Zep is the structured platform: temporal knowledge graphs (open-source Graphiti underneath) tracking how facts change, built for enterprise context. Letta puts memory inside the agent itself — MemGPT-lineage self-editing memory.
+
+Key takeaways
+
+Three architectures, not three vendors: a memory API you call (Mem0), a memory platform with graph structure (Zep/Graphiti), an agent runtime with memory built in (Letta).
+
+Mem0 wins adoption cost: two calls (add, search) bolt persistent memory onto any existing agent without rearchitecting.
+
+Zep wins structured truth: bi-temporal graphs record when facts held, not just what&#x27;s true — and its OSS story is Graphiti now (Zep CE was deprecated in April 2025).
+
+Letta wins agent-managed memory: the agent edits its own memory blocks and decides what persists — but you adopt the runtime, not just an API.
+
+All three converge on the same insight: long-term memory is retrieval over curated storage; they differ on who curates and what shape the storage takes.
+
+Agent memory has three credible architectures in 2026, and the vendors map onto them almost too neatly: 
+a layer you call
+ (Mem0), 
+a platform that structures
+ (Zep), 
+a runtime that remembers
+ (Letta). The comparison is really about where you want memory to live.
+
+The short answer
+
+Bolt memory onto an existing agent, minimal ceremony
+ → 
+
+Mem0
+
+.
+
+Structured, queryable truth over facts that change
+ — enterprise context, compliance-adjacent → 
+
+Zep
+
+ (or self-hosted Graphiti).
+
+Memory-first agents as the runtime itself
+ — including the Letta Code harness → 
+
+Letta
+
+.
+
+What each one is
+
+Mem0
+
+ is the drop-in: 
+add()
+ conversations, 
+search()
+ relevant memories at the next turn — extraction, dedup, and persistence handled behind the API. Its virtue is honest minimalism: any agent, any framework, two integration points, with managed and OSS paths. The trade: memory as a flat(ish) store of extracted facts — when 
+structure
+ over those facts matters, you hit the ceiling.
+
+Zep
+
+ is the structured answer: conversations and business data become 
+temporal knowledge graphs
+ — entities, relationships, and facts carrying validity intervals, so &quot;what&#x27;s true now&quot; and &quot;what changed when&quot; are both queryable. The engine, 
+Graphiti
+ (Apache-2.0, ~27k stars), is the open-source story since Zep CE&#x27;s April 2025 deprecation; Zep Cloud scales it (vendor-claimed sub-200ms retrieval at 100M nodes) into an enterprise context layer. The trade: graph extraction costs (an LLM + graph DB self-hosted) and more architecture to mean it.
+
+Letta
+
+ descends from MemGPT, the paper that framed memory as the 
+agent&#x27;s own job
+: self-editing memory blocks, archival search, persistence as a property of the agent rather than a service beside it. You adopt Letta as the runtime — the agents API for your products, or Letta Code (the 2026 flagship) as a coding harness whose memory of your repo compounds across sessions. The trade is exactly that adoption: it&#x27;s not a layer for the agent you already have.
+
+Dimension by dimension
+
+Mem0
+
+Zep
+
+Letta
+
+Shape
+
+Memory API layer
+
+Memory platform (graphs)
+
+Agent runtime with memory
+
+Integration
+
+Two calls, any agent
+
+SDK + episodes in
+
+Build agents on it
+
+Storage model
+
+Extracted facts/vectors
+
+Bi-temporal knowledge graph
+
+Self-edited blocks + archival
+
+Handles changing facts
+
+Update-on-write
+
+Natively (validity intervals)
+
+Agent rewrites memory
+
+OSS posture
+
+OSS + managed
+
+Graphiti (engine) OSS; CE deprecated
+
+Apache-2.0 core
+
+Best at
+
+Adoption speed
+
+Structured truth at scale
+
+Agent-managed continuity
+
+How to actually choose
+
+Two questions settle most cases. 
+Do facts change in ways you must track?
+ &quot;User upgraded plans twice, ask about the middle period&quot; is graph-with-time territory — Zep&#x27;s lane; ordinary preference/profile memory doesn&#x27;t need it — Mem0&#x27;s lane. 
+Are you choosing a runtime or augmenting one?
+ Existing agents argue for the layers; greenfield memory-first systems (or wanting Letta Code itself) argue for Letta. And keep the conceptual frame from 
+Agent Memory Architecture
+: every option here is retrieval over curated storage — the differences are who curates, and what shape the truth takes.
+
+Share
+
+Share on X
+
+Share on LinkedIn
+
+Copy link
+
+ View as Markdown
+
+Frequently asked questions
+
+Which agent memory tool should I start with?
+
+If you have a working agent and want it to remember users across sessions: Mem0 — minimal integration, immediate payoff. If memory quality over changing facts is the product (support, CRM-adjacent, compliance): Zep&#x27;s temporal graphs justify their structure. If you&#x27;re choosing an agent runtime anyway and memory-first design appeals: Letta. Adoption cost ascends in that order; architectural opinion ascends with it.
+
+What happened to open-source Zep?
+
+Zep Community Edition was deprecated in April 2025; the company&#x27;s open-source effort moved to Graphiti, the temporal knowledge-graph engine (Apache-2.0, ~27k stars) that powers Zep Cloud. Self-hosters today run Graphiti plus a graph database — don&#x27;t start anything new on Zep CE.
+
+Can I use these with Claude Code or other existing agents?
+
+Mem0 and Zep, yes — they&#x27;re services any agent calls (both ship MCP-friendly integrations), complementing built-in mechanisms like Claude Code&#x27;s CLAUDE.md and auto-memory. Letta is different: its memory is a property of Letta agents, so you use it BY using Letta (the API for your own apps, or Letta Code as the coding harness).
+
+Filed under
+
+AI Agents &amp; Systems
+
+For 
+Developers
+
+memory · agents · comparison · mem0 · zep · letta
+
+On this page
+
+The short answer
+
+What each one is
+
+Dimension by dimension
+
+How to actually choose
+
+Related
+
+Letta
+
+Stateful agents from the MemGPT creators — an Apache-2.0 server with self-editing memory, and Letta Code, the memory-first model-agnostic coding harness.
+
+Zep
+
+Agent memory on temporal knowledge graphs — Zep Cloud for sub-200ms context retrieval at enterprise scale, with Graphiti as its open-source graph engine.
+
+Agent Memory
+
+Agent memory is how an AI agent retains information beyond its context window — working state during a task and persistent knowledge across sessions.
+
+Mem0
+
+A memory layer for AI agents and apps — persistent, personalized long-term memory across sessions.
+
+Agent Memory Architecture: Short-Term, Long-Term, and When to Use Each
+
+How AI agents remember — working memory vs. persistent long-term memory, what to store, how to retrieve it, and how to keep context small.
+
+Managing Claude Code Memory &amp; Context: CLAUDE.md, /compact, and Auto-Memory
+
+How Claude Code remembers — every CLAUDE.md scope and load order, path-scoped rules, the auto-memory system, and the context commands that keep sessions sharp.
+
+GraphRAG Explained: When Knowledge Graphs Beat Vector Search
+
+What GraphRAG is, how graph-based retrieval differs from vector RAG, the query shapes where it wins, and the honest costs before you build one.
+
+Site footer — browse AgentsCamp
+
+Read
+
+Guides
+
+233
+
+Tools
+
+204
+
+Glossary
+
+108
+
+Topics
+
+For Claude Code
+
+Agents
+
+66
+
+Skills
+
+134
+
+Commands
+
+63
+
+How to use
+
+npm: agentscamp
+
+Start here
+
+Developers
+
+AI engineers
+
+DevOps &amp; platform engineers
+
+Security &amp; AI safety
+
+Sales &amp; revenue teams
+
+Founders &amp; non-technical builders
+
+Marketers &amp; content teams
+
+Designers
+
+Data &amp; analytics teams
+
+agentscamp
+
+Guides, an AI tool directory, and a plain-language glossary for developers, founders, marketers, designers, and analysts, plus installable Claude Code skills.
+
+About &amp; editorial standards
+
+Our projects
+
+OptimizeCamp
+
+Audit &amp; optimize content for AI search
+
+GritShip
+
+Lightweight project management for makers
+
+SurePrompts
+
+Free AI prompt generator &amp; builder
+
+© 2026 AgentsCamp. All rights reserved.
+
+llms.txt
+
+Sitemap
+
+RSS
+
+Guides feed

@@ -28,6 +28,7 @@ Research workspaces containing fetched sources, analysis findings, and assessmen
 | `ocp-vmware-vs-baremetal-perf/` | OpenShift on VMware vs bare metal — benchmark literature, fair test design, lab plan | In progress | [DOE](ocp-vmware-vs-baremetal-perf/design-of-experiments.md) · [journal](ocp-vmware-vs-baremetal-perf/journal.md) |
 | `how-llms-work/` | How large language models work — transformer, tokenization, next-token, post-training | 14 of 16 fetched | [README](how-llms-work/README.md) · [library stub](../library/how-llms-work.md) |
 | `matt-pocock-fixing-pr-bottleneck/` | Matt Pocock (AI Engineer) — PR bottleneck, brakes, review skills | 1 transcript | [assessment.md](matt-pocock-fixing-pr-bottleneck/assessment.md) · [library](../library/matt-pocock-fixing-pr-bottleneck.md) |
+| `agent-memory-workstream-portfolio/` | Agent memory products (Hindsight et al.) vs git workstream/portfolio | 5 sources + landscape | [assessment](agent-memory-workstream-portfolio/assessment.md) · [handoff](agent-memory-workstream-portfolio/handoff-prompt.md) |
 
 ## Structure Convention
 

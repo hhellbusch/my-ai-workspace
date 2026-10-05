@@ -1,0 +1,1026 @@
+Open-Source Agent Memory: Mem0 vs Letta vs Zep Compared
+
+Services
+
+AI Tools
+
+Blog
+
+About
+
+Contact
+
+Log in
+
+Start engines
+
+Home
+
+/
+
+Blog
+
+/
+
+AI Development
+
+/
+
+Open-Source Agent Memory Compared
+
+AI Development
+
+Decision Matrix
+
+17
+ min read
+
+Published 
+August 4, 2026
+
+Three architectures ·
+ 
+Apache-2.0
+ 
+across the board · benchmark numbers that
+ 
+do not compare
+
+Open-Source Agent Memory:
+ 
+Mem0
+ vs
+ 
+Letta
+ vs
+ 
+Zep
+
+Mem0, Letta and Zep are the three most-starred standalone open-source memory projects, and they make three incompatible bets on what remembering means: passive fact extraction, agent-curated tiers, and a temporal knowledge graph. This is the architecture, pricing and benchmark comparison — including why the published scores disagree with each other.
+
+DA
+
+Digital Applied Team
+
+Senior strategists · Published Aug 4, 2026
+
+Published
+August 4, 2026
+
+Read time
+17 min
+
+Sources
+17 primary and independent
+
+Mem0
+
+62.7
+k
+
+mem0ai/mem0 · Apache-2.0
+
+Zep / Graphiti
+
+29.6
+k
+
+getzep/graphiti · Apache-2.0
+
+Letta
+
+24.1
+k
+
+letta-ai/letta · Apache-2.0
+
+Mem0 LongMemEval spread
+
+45.4
+pts
+
+94.4 vendor-run vs 49.0 third-party
+
+▼
+Same benchmark name
+
+Table of contents
+
+00
+
+Key takeaways
+
+01
+
+Three bets on memory
+
+02
+
+Mem0 · extraction
+
+03
+
+Letta · tiered self-editing
+
+04
+
+Zep · temporal graph
+
+05
+
+The benchmark problem
+
+06
+
+Pricing mechanics decoded
+
+07
+
+What Apache-2.0 gets you
+
+08
+
+RAG or a memory layer
+
+09
+
+Conclusion
+
+10
+
+FAQ
+
+Open-source agent memory is the least standardised layer in the whole agent stack, and the three projects that dominate it — Mem0, Letta and Zep — do not even agree on what the layer is for. One treats memory as a background extraction pipeline. One treats it as a set of tiers the agent edits itself. One treats it as a temporal knowledge graph where facts expire rather than disappear. Picking between them is an architecture decision, not a feature comparison.
+
+The comparison content that already exists mostly reprints each vendor’s own benchmark numbers side by side, as though a score produced by Mem0 on LoCoMo and a score produced by Zep on DMR were two entries in the same league table. They are not. Different benchmarks, different harnesses, different judge models, and in at least one case a 45.4-point gap between a vendor’s own figure and the one independent measurement of the same benchmark name.
+
+This guide covers how each system actually stores and retrieves facts, what the published scores do and do not prove, how three incompatible pricing mechanics translate into real spend, what self-hosting each project genuinely involves, and the decision rule for when plain retrieval-augmented generation is still the better answer. Every figure below is attributed to whoever produced it.
+
+Key takeaways
+
+01
+
+Three architectures, not three feature sets.
+
+Mem0 extracts candidate facts from each message pair and reconciles them against what it already holds. Letta gives the agent tiered memory it edits through tool calls. Zep writes a temporal knowledge graph where every fact carries a validity window.
+
+02
+
+Every headline score is vendor-run.
+
+Mem0 publishes its own LoCoMo and LongMemEval results, Zep publishes its own DMR results in its own paper, and Letta designed the leaderboard it is measured on. The one clearly independent figure found put Mem0 at 49.0 on LongMemEval against a self-reported 94.4.
+
+03
+
+The circulating LoCoMo numbers disagree with each other.
+
+A third-party comparison table reprints 83.2 for Letta and 68.5 for Mem0, while Mem0&#x27;s own research page carries 92.5 at the time of writing. Both sets are shown below with their sources rather than one being quietly preferred.
+
+04
+
+Open source does not mean one system to run.
+
+Zep&#x27;s self-contained Community Edition server is deprecated. The open path today is Graphiti plus a separate graph database — Neo4j, FalkorDB or Kuzu — which is a different operational shape from Mem0&#x27;s SDK or Letta&#x27;s server.
+
+05
+
+The pricing units are not comparable.
+
+Mem0 bills memory-add and retrieval requests, Letta bills model usage plus tool-execution seconds, and Zep bills credits by Episode byte size. Comparing the sticker prices without decoding the units gives you the wrong answer.
+
+01
+ — 
+Three Bets
+Three projects, three
+ 
+incompatible
+ 
+ideas of memory.
+
+Mem0, Letta (formerly MemGPT) and Zep’s Graphiti are the three most-starred, most-referenced standalone open-source agent-memory projects, and all three ship under Apache-2.0. That is where the similarity ends. If you want the underlying taxonomy first — vector stores versus graphs versus episodic recall — start with our
+ 
+agent memory architectures breakdown
+; this post is the vendor-level decision. For where these projects sit in the wider ecosystem, the
+ 
+open-source agent landscape map
+ 
+covers the neighbouring lanes.
+
+Extraction
+
+Mem0
+
+Two phases: extract, then update
+
+An LLM pulls candidate facts out of each new message pair, using the conversation summary plus recent messages for context. A second pass compares every candidate against existing memories by vector similarity and decides ADD, UPDATE, DELETE or NOOP. The application does not have to ask for any of it.
+
+mem0ai/mem0 · Apache-2.0
+
+Self-curation
+
+Letta
+
+Core · Recall · Archival
+
+Memory modelled on computer architecture. Core Memory sits in context like RAM and the agent reads and writes it directly. Recall Memory is searchable conversation history, like a disk cache. Archival Memory is a vector-backed long-term store the agent queries through tool calls.
+
+letta-ai/letta · Apache-2.0
+
+Temporal graph
+
+Zep
+ 
+/ Graphiti
+
+valid_at / invalid_at edges
+
+Every fact lands in a knowledge graph carrying a validity window. When new information contradicts something already stored, the old fact is invalidated rather than deleted — the history and the provenance of the correction both survive.
+
+getzep/graphiti · Apache-2.0
+
+GitHub stars · standalone open-source agent-memory projects
+
+Source: GitHub REST API, read at the time of writing
+
+Mem0
+mem0ai/mem0 · 7,315 forks · Python
+
+62,736
+
+Zep · Graphiti
+getzep/graphiti · 2,998 forks · the OSS core
+
+29,642
+
+Letta
+letta-ai/letta · 2,569 forks · formerly MemGPT
+
+24,135
+
+Zep · legacy server
+getzep/zep · Community Edition, no longer developed
+
+4,812
+
+The star ranking is a popularity signal, not a quality one, and it hides the most important structural fact on the chart: the fourth bar is Zep’s old self-contained server, and it is no longer actively developed. Zep narrowed its open-source strategy to the graph engine, which means the “Zep” you can self-host today is Graphiti — a component — while the full product around it stays commercial. That difference does not show up in a star count and it changes the deployment maths considerably.
+
+02
+ — 
+Mem0
+Extraction, then
+ 
+reconciliation
+.
+
+Mem0’s architecture, described in its ECAI 2025 paper (arXiv:2504.19413) and unchanged in its current documentation, is a two-phase pipeline. The 
+extraction phase
+ runs an LLM over each new message pair, with the conversation summary and recent messages supplied as context, and pulls out candidate facts. The 
+update phase
+ then takes each candidate, retrieves the most similar existing memories by vector similarity, and asks an LLM to choose one of four operations.
+
+That second phase is the interesting one. Most naive memory implementations only ever append; Mem0 explicitly models the case where a new fact should replace or erase an old one. The cost is that every write is an LLM call with a judgement in it, which is both a latency cost and a failure surface — a bad UPDATE silently rewrites something the agent will later rely on.
+
+What the update phase decides
+
+For every candidate fact, Mem0’s update phase picks one of
+ 
+four
+ operations against the existing store: 
+ADD
+ a new memory,
+ 
+UPDATE
+ an existing one, 
+DELETE
+ a contradicted one, or 
+NOOP
+ when nothing needs to change. On the paid graph-memory path, messages are additionally converted into entity-and-relation triplets during extraction, with conflict detection and resolution running during update — layered on top of the base vector-store pipeline rather than replacing it.
+
+Mem0 publishes an efficiency claim alongside the accuracy ones: a mean of roughly 6,900 tokens per retrieval call against 25,000 or more for full-context baselines, which it presents as a three- to fourfold token-cost advantage at comparable accuracy. Treat that as a vendor-run measurement — it comes from Mem0’s own research page, on Mem0’s own harness — but the underlying mechanic is sound and easy to reason about: if the retrieval step returns a handful of distilled facts instead of a conversation transcript, the prompt gets smaller.
+
+One commercial detail matters more than it looks. Graph memory, the entity-linking capability that most closely resembles what Zep does structurally, is gated behind Mem0’s top self-serve tier on the hosted service, alongside the “Dream” memory consolidation feature. If graph-shaped memory is why you are evaluating Mem0, that is a tier decision, not a configuration flag.
+
+03
+ — 
+Letta
+Tiered memory the agent
+ 
+edits itself
+.
+
+Letta inverts the responsibility. Instead of a pipeline that observes the conversation and writes memory on the application’s behalf, the agent is given memory it manages through tool calls — which is why Vectorize’s comparison describes Letta as an agent runtime rather than a memory layer, and why it behaves less like a library you add and more like the frame everything else plugs into. If you are still choosing that frame, our
+ 
+open-source agent frameworks comparison
+ 
+covers the runtimes these memory layers sit inside.
+
+In context
+
+Core Memory
+
+like RAM
+
+Facts held directly in the context window. The agent reads and writes this tier itself, so a correction the user makes in conversation can be reflected immediately rather than waiting for a background pass.
+
+Agent-editable
+
+Searchable
+
+Recall Memory
+
+like a disk cache
+
+Searchable conversation history. Not resident in context, but reachable — the tier that answers questions about what was said earlier without keeping the whole transcript in the prompt.
+
+Conversation history
+
+Cold storage
+
+Archival Memory
+
+vector-backed
+
+The long-term store, queried by the agent through explicit tool calls. This is the tier that most resembles a conventional vector database, with the difference that the agent decides when to reach for it.
+
+Tool-call access
+
+Letta’s distinctive mechanism sits on top of those tiers.
+ 
+Sleep-time compute
+, introduced in an April 21, 2025 post and the accompanying paper (arXiv:2504.13171), runs a second asynchronous agent that edits the primary agent’s core memory while the primary agent is idle. That second agent abstracts patterns out of stored facts, resolves contradictions between them, and pre-computes associations. Because it is not in the latency path, it can run a larger and slower model than the conversational agent.
+
+The design has an explicit origin story. In MemGPT, Letta’s predecessor design, memory management, conversation and other tasks were bundled into a single agent — which Letta’s own writing says could make that agent slower and less reliable. Splitting memory management out into a separate sleep-time agent was the fix. That is a useful pattern well beyond Letta: the work of maintaining an agent’s state does not have to happen on the user’s turn, and it usually should not.
+
+How the Letta Leaderboard is built
+
+Letta also publishes a leaderboard measuring how well various LLMs perform agentic memory tasks. Its methodology post is dated
+ 
+May 29, 2025
+ — an older publication than most of the material in this comparison, still referenced as the live methodology into 2026. It uses synthetic, fictional facts and grades responses with GPT-4.1 as judge, across three capability types: Core Memory Read (facts already in context), Archival Memory Read (facts that must be searched for externally), and Memory Write and Update (the agent learns facts through conversation, then has to recall them after the chat history is removed). Useful for comparing models. Not a cross-vendor comparison of memory products.
+
+04
+ — 
+Zep and Graphiti
+A graph that
+ 
+invalidates
+ 
+rather than deletes.
+
+Zep’s open core, Graphiti, builds a temporal knowledge graph. Every fact carries a validity window — 
+valid_at
+ and
+ 
+invalid_at
+ — so when new information contradicts something already in the graph, the old fact is not removed. It is marked invalid from a point in time forward. The architecture is documented in the Graphiti README and detailed in Zep’s 2025 paper (arXiv:2501.13956).
+
+This is the only one of the three designs where “what did we believe about this customer in March, and when did that change?” is a first-class query rather than an archaeology project. For regulated work, contested records, or anything where an agent’s decision may later need defending, that property is worth more than a benchmark point.
+
+Graphiti’s stated differentiator against static GraphRAG implementations is continuous incremental updates instead of batch reprocessing, plus sub-second query latency against GraphRAG’s seconds to tens of seconds. Both halves of that comparison are Zep’s own framing, published in its own README; no independent GraphRAG-versus-Graphiti benchmark surfaced in research. Read it as a design claim about the architecture, not as a measured result.
+
+Read this before planning a Zep deployment
+
+Most comparison content still treats Zep as a single self-hostable product. It is not. The self-contained 
+getzep/zep
+ 
+Community Edition server was
+ 
+deprecated
+ when Zep redirected its open-source strategy to the graph engine alone. Self-hosting the open core today means running Graphiti
+ 
+plus
+ a separate graph database — Neo4j, FalkorDB or Kuzu — while the full Zep product (the context graph engine, the context lake, hosted retrieval) remains commercial. Three systems to provision instead of one, before you have stored a single fact.
+
+05
+ — 
+Benchmark Integrity
+Every headline score here is
+ 
+self-reported
+.
+
+This is the part of the comparison that most published content skips entirely. Mem0 publishes Mem0’s scores. Zep publishes Zep’s scores, in Zep’s own paper. Letta designed the leaderboard Letta appears on. None of that is unusual or dishonest — it is how a young category always works — but it means the numbers you find in a comparison table were produced by four different parties running three different benchmarks on their own harnesses, and arranging them in columns implies a comparability that does not exist.
+
+LoCoMo is the closest thing to a shared battleground, largely because Mem0’s original paper ran a head-to-head of ten memory approaches on it — literature baselines, open-source tools, plain RAG, full-context, OpenAI’s memory feature and Zep among them. It is worth knowing what the benchmark actually contains before reading a score off it.
+
+Benchmark scale
+
+conversations in the set
+
+10
+
+LoCoMo is built from ten multi-session conversations, each spanning roughly 35 sessions, with about 200 question-and-answer pairs attached to each conversation.
+
+~200 QA pairs each
+
+Per conversation
+
+average turns
+
+588.2
+
+Each conversation averages 588.2 turns and 16,618.1 tokens. That is long enough to punish naive context stuffing and short enough that the whole thing still fits in a modern long-context window — which is exactly why full-context baselines score well on it.
+
+16,618.1 avg tokens
+
+Question types
+
+categories per conversation
+
+5
+
+Single-hop, multi-hop, temporal, open-domain, and adversarial — the last of these asking about information that does not exist, to catch systems that confabulate rather than admit a gap.
+
+Adversarial included
+
+The table below is the comparison we could not find anywhere else: each published score next to who produced it, whether anyone outside the vendor has measured the same thing, and a verdict. It is deliberately unflattering to all three projects, because the honest answer for most rows is “nobody independent has checked this.”
+
+Claimed-versus-verified benchmark matrix for Mem0, Letta and Zep, listing each published agent-memory score, the party that produced it, any independent measurement of the same benchmark, and a verdict on how far the number can be trusted.
+
+Benchmark
+
+Score as published
+
+Who produced it
+
+Independent measurement
+
+Verdict
+
+Mem0
+
+LoCoMo, overall
+
+92.5
+
+Mem0, on its own research page — the current figure at the time of writing
+
+None found
+
+Vendor-run, unverified
+
+LoCoMo, as reprinted elsewhere
+
+68.5
+
+Mem0’s earlier published claim, as reprinted in the agentmemory project’s comparison table
+
+None found
+
+Conflicts with the 92.5 above — different point in time, likely a different algorithm version
+
+LoCoMo, by category
+
+94.6 single-hop · 95.4 multi-hop · 82.3 open-domain · 92.5 temporal
+
+Mem0, on its own research page
+
+None found
+
+Vendor-run, unverified
+
+LongMemEval
+
+94.4
+
+Mem0, on its own research page
+
+49.0 — Vectorize’s own evaluation, March 15, 2026
+
+Conflicting: 45.4 points apart under the same benchmark name
+
+Retrieval token load
+
+~6,900 mean tokens per call vs 25,000+ full-context
+
+Mem0, on its own research page
+
+None found
+
+Vendor-run; presented as a three- to fourfold token advantage
+
+Letta
+
+LoCoMo
+
+83.2
+
+Letta’s published claim, as reprinted in the agentmemory project’s comparison table
+
+None found
+
+Vendor-claimed, unverified
+
+LongMemEval
+
+Not published
+
+—
+
+Listed as “not published” in Vectorize’s table
+
+No figure exists to compare against Mem0’s
+
+Letta Leaderboard
+
+Model-by-model results, not a single product score
+
+Letta, methodology post published May 29, 2025
+
+None found
+
+Vendor-designed eval on synthetic facts, GPT-4.1 as judge
+
+Zep / Graphiti
+
+DMR, Deep Memory Retrieval
+
+94.8% against a 93.4% MemGPT baseline
+
+Zep, in its own paper (arXiv:2501.13956)
+
+None found
+
+Vendor-run paper; a 1.4-point margin over the baseline
+
+Enterprise-style long-memory eval
+
+Up to 18.5% accuracy improvement, 90% latency reduction
+
+Zep, in the same paper
+
+None found
+
+Vendor-run; a relative claim, not an absolute score
+
+Query latency vs GraphRAG
+
+Sub-second vs seconds to tens of seconds
+
+Zep, in the Graphiti README
+
+None found
+
+Vendor framing; no independent test of this specific claim surfaced
+
+For contrast — a third party grading its own homework honestly
+
+LongMemEval-S
+
+95.2%
+
+The agentmemory project, measuring its own tool
+
+Stated by its authors as reproducible from the methodology published alongside it
+
+The only number in that table its authors vouch for
+
+“Only agentmemory’s 95.2% is our own measured result, reproducible from the methodology below. Every other number here is the vendor’s published claim, on a different benchmark or harness.”
+— agentmemory maintainers, benchmark/COMPARISON.md on GitHub
+
+Look closely at the two LoCoMo rows for Mem0 and you have the whole problem in miniature. The agentmemory comparison table reprints 68.5 for Mem0 and 83.2 for Letta, both on LoCoMo. Mem0’s own research page carries 92.5 overall on LoCoMo at the time of writing. Those are not the same measurement disagreeing — they are almost certainly different points in time, an earlier paper or algorithm version against a current one. We are showing both with their sources because the alternative is quietly picking the flattering figure, which is exactly the practice that made the numbers untrustworthy in the first place.
+
+The LongMemEval row is the sharper one, and it is the reason this section exists. Mem0 reports 94.4. Vectorize, running its own evaluation and publishing it on March 15, 2026, reported 49.0 for Mem0 on the same benchmark name. We cannot adjudicate that gap from the outside — harness differences, benchmark variant, retrieval configuration and judge model could each account for a large part of it. What we can say is that a 45.4-point spread between a vendor’s figure and the one independent attempt to reproduce it means the vendor figure should not be load-bearing in your decision.
+
+The practical implication is unglamorous: run the eval yourself, on your own conversations, before you commit. Memory quality is unusually sensitive to the shape of your data — how often facts change, how long sessions run, how much of the important context arrives as unstructured chat versus structured events. The same discipline applies to everything else in the agent loop, which is why we treat evaluation as part of
+ 
+the broader context-engineering playbook
+ 
+rather than a procurement step.
+
+06
+ — 
+Pricing Mechanics
+Three billing units that
+ 
+cannot
+ 
+be compared.
+
+All the figures in this section are
+ 
+hosted list prices
+ for each vendor’s managed service, read at the time of writing. The self-hosted Apache-2.0 versions are free of licence cost in all three cases — what you pay for there is infrastructure and engineering time, covered in the next section.
+
+The sticker prices are close enough to look comparable and the units underneath them are not comparable at all. Mem0 sells requests. Letta sells model usage plus compute seconds. Zep sells credits priced by the byte size of what you write. Decoding the unit is the whole exercise.
+
+Pricing-mechanic decoder for the hosted Mem0, Letta and Zep services, translating each vendor’s billing unit, free-tier ceiling, entry paid tier and top self-serve tier into comparable terms.
+
+Hosted service
+
+What one billing unit actually is
+
+Free tier
+
+Entry paid tier
+
+Top self-serve tier
+
+Mem0
+
+One memory-add request, or one retrieval request — the two are metered separately
+
+Hobby: 10,000 adds and 1,000 retrievals per month, 1 project
+
+Starter, $19/mo — 50,000 adds, 5,000 retrievals
+
+Pro, $249/mo — 500,000 adds, 50,000 retrievals, unlimited projects, graph memory, Dream consolidation, advanced analytics
+
+Letta
+
+Model usage plus tool-execution time, billed on the API plan at $0.00015 per second of CPU. Remote MCP tools and Letta’s own built-in tools carry no credit cost, except web search and fetch
+
+Free, $0/mo — a small number of agents, bring your own model keys
+
+Pro, $20/mo personal — weekly and monthly Letta Auto routing quota, pay-as-you-go overage
+
+Developer: usage-based, unlimited agents, API-key auth. Teams and Enterprise add shared organisation resources
+
+Zep
+
+One credit per Episode — a chat message, JSON payload or text block — up to 350 bytes, plus one credit per additional 350 bytes. Retrieval, storage, threads, users and graph storage cost nothing
+
+10,000 credits per month
+
+Flex, $125/mo or $104/mo billed annually — 50,000 credits, then $25 per additional 10,000; 30-day rollover, 600 requests/min, 5 projects
+
+Flex Plus, $375/mo or $312/mo annually — 200,000 credits, 60-day rollover, 1,000 requests/min, 10 projects, priority support, 7-day API log retention
+
+Now do the arithmetic the pricing pages do not do for you. On Mem0, Starter works out at about 
+$0.00038 per memory add
+ 
+and Pro at about 
+$0.000498
+ — Pro is roughly 31%
+ 
+more
+ expensive per unit, because it is ten times the volume for a little over thirteen times the price. Pro is not a volume discount. It is a feature gate, and what you are buying is graph memory, Dream consolidation and unlimited projects.
+
+Zep runs the opposite way. Flex prices credits at
+ 
+$0.0025 each
+ ($125 for 50,000), and overage lands at exactly the same rate ($25 per 10,000) — so there is no cliff if you run over, which is unusually merciful. Flex Plus drops to
+ 
+$0.001875 per credit
+ ($375 for 200,000), a genuine 25% volume discount, and annual billing takes a further 16.8% off both tiers. The thing to model is not the credit price but the Episode size: a 1,050-byte message costs three credits, not one, so verbose payloads are quietly triple-billed against a terse equivalent.
+
+Letta is the hardest to forecast because the meter runs on two different things at once. Tool execution at $0.00015 per CPU second means an hour of tool compute is $0.54 — trivial in isolation, but it is the model usage underneath that dominates. Letta’s own documentation is refreshingly blunt about where this lands: casual coding users typically reach around $100 a month or more, and power users running long sessions with many parallel agents often approach or exceed $200 a month. Budget against that guidance rather than the $20 headline.
+
+07
+ — 
+Self-Hosting Reality
+What Apache-2.0
+ 
+actually
+ 
+gets you.
+
+All three projects are genuinely open source and genuinely self-hostable without a subscription: Mem0’s SDK, Letta’s server and Graphiti all carry Apache-2.0, and the paid tiers above buy each vendor’s hosted service rather than the software. That much is refreshingly clean compared with the source-available licensing you find elsewhere in
+ 
+the open-source agent foundation
+. The differences show up in what you have to run.
+
+Licensing
+
+repos under Apache-2.0
+
+4
+of 4
+
+mem0ai/mem0, letta-ai/letta, getzep/graphiti and the deprecated getzep/zep all report Apache-2.0 in GitHub&#x27;s license field. Licence terms are not the differentiator in this category — operational shape is.
+
+GitHub license field
+
+Zep open path
+
+Graphiti plus a graph database
+
+2
+systems
+
+Self-hosting Zep&#x27;s open core means running Graphiti alongside Neo4j, FalkorDB or Kuzu. Mem0 ships as an SDK and Letta as a server; Zep&#x27;s open path is a component that needs a datastore provisioned around it.
+
+getzep/zep: unmaintained
+
+Log retention
+
+on Zep Flex Plus
+
+7
+days
+
+Flex Plus buys 200,000 credits, 60-day credit rollover, 1,000 requests a minute, 10 projects, priority support and 7-day API log retention. SOC 2 Type II and a HIPAA BAA start at this tier — the $125/mo Flex tier does not include either.
+
+$375/mo · $312/mo annual
+
+Compliance is where the self-host decision usually gets made for you. Zep gates SOC 2 Type II and a HIPAA BAA above its entry tier. Mem0 puts SSO, on-premise deployment and audit logs on Enterprise. For Letta, the documented route to owning your own compliance boundary is running the server yourself. In every case the open-source path is the one that keeps the data inside your perimeter — and in every case it hands you an operational bill that the pricing page does not show.
+
+That bill is not theoretical. A memory layer is a stateful, latency-sensitive component sitting directly in your agent’s request path, holding data that is by definition about your users. Self-hosting it means owning backup and restore for a store whose contents you cannot regenerate, an upgrade path across a fast-moving project, and — for the graph route — a graph database with its own operational literature. Teams routinely underestimate the third one.
+
+08
+ — 
+RAG or Memory
+When plain RAG is still the
+ 
+right
+ 
+call.
+
+The most useful framing to come out of 2026 industry analysis is that a memory layer and retrieval-augmented generation are complementary rather than competing. RAG remains the right default for static, semantic reference knowledge — documentation, policies, world knowledge. A memory layer earns its token and latency cost specifically where facts 
+mutate
+: pricing, policy, account status, stated preferences. Similarity-based retrieval has no notion that an old fact has been superseded, so it will happily return the stale version with full confidence.
+
+That single distinction resolves most of the “do we need memory?” arguments we see. If your corpus is a documentation set that changes on a release cadence, you have a retrieval problem and
+ 
+a well-built RAG pipeline
+ 
+will beat a memory layer on cost and predictability. If your agent has to know that a customer changed their delivery address three weeks ago and then changed it back, retrieval alone will get that wrong in a way no amount of embedding quality fixes.
+
+Static reference knowledge
+
+Documentation, policy, world knowledge
+
+Content that changes on a release cadence rather than per user. Retrieval quality is the whole game and a memory layer adds write-path LLM calls you do not need. Revisit only if you start seeing questions about how something changed over time.
+
+Stay with RAG
+
+Facts that change per user
+
+Passive extraction with
+ 
+minimal
+ 
+app changes
+
+Mem0 observes the conversation and maintains the store itself, with an explicit ADD / UPDATE / DELETE / NOOP decision per candidate fact. The lowest-friction way to add memory to an application that already works. Graph-shaped memory sits on the top hosted tier.
+
+Pick Mem0
+
+Long-running assistants
+
+An agent that curates its own state
+
+Letta is an agent runtime, not a bolt-on layer — you adopt the frame. In exchange the agent edits its own tiers through tool calls, and sleep-time compute consolidates memory off the latency path using a larger model than the conversational one.
+
+Pick Letta
+
+Auditable or contested records
+
+History that has to survive the correction
+
+Graphiti invalidates rather than deletes, so every fact carries a validity window and &#x27;what did we believe, and when did that change&#x27; stays answerable. Budget for the graph database alongside it, and note the compliance tier gates.
+
+Pick Zep / Graphiti
+
+Our reading of where this category is heading: the architectural split will matter less over time than the verification gap does right now. Mem0 already sells a graph tier, Letta already has an archival store, and Zep’s graph has to solve extraction before it can build an edge — the three designs are converging on a similar feature surface from different starting points. What is not converging is the measurement. Until somebody outside the vendors runs all three on one harness and publishes the harness, the only trustworthy benchmark is the one you run on your own conversations.
+
+The second thing worth projecting forward is where the cost lands. Every one of these systems pays for memory in LLM calls on the write path — extraction for Mem0, consolidation for Letta, entity and edge construction for Zep. As agents run longer and hold more state, that write-path spend grows with conversation volume rather than with query volume, which is the opposite of how most teams budget retrieval. Model that curve before you pick a tier, not after. If you want a second pair of eyes on the evaluation, our
+ 
+AI transformation engagements
+ 
+start with exactly this kind of comparative test on your own data.
+
+Sources
+
+Star, fork, licence and last-push figures come from the GitHub REST API for 
+mem0ai/mem0
+, 
+letta-ai/letta
+,
+ 
+getzep/graphiti
+ and 
+getzep/zep
+, read at the time of writing. Architecture and self-reported scores: the Mem0 research page, Mem0’s ECAI 2025 paper (arXiv:2504.19413) and the Mem0 graph-memory documentation; Letta’s agent-memory post, its sleep-time compute post of April 21, 2025 with arXiv:2504.13171, and the Letta Leaderboard methodology post of May 29, 2025; the Graphiti README, Zep’s paper arXiv:2501.13956 and Zep’s open-source strategy announcement. Pricing: the Mem0, Letta and Zep pricing pages, read at the time of writing. Independent and third-party material: the agentmemory project’s benchmark comparison document, Vectorize’s Mem0-versus-Letta comparison of March 15, 2026, an Emergent Mind summary of the LoCoMo benchmark composition, and 2026 industry analysis on memory layers versus retrieval. Live figures move — re-check before you commit.
+
+09
+ — 
+Conclusion
+Pick the
+ 
+architecture
+, then verify the numbers yourself.
+
+The state of open-source agent memory
+
+The architectures are legible. The benchmarks are not.
+
+Mem0, Letta and Zep are all real, all Apache-2.0, and all solving a problem that plain retrieval genuinely cannot solve. But they are solving it in ways that are not interchangeable. Mem0 keeps the memory work out of your application code. Letta puts it in the agent’s hands and gives it a second agent to do the tidying. Zep makes time a first-class property of every fact. Those are
+ 
+three different products
+ 
+wearing one category label.
+
+The benchmark picture is the part to internalise. Almost every score in circulation was produced by the vendor it flatters, on a harness of that vendor’s choosing, against a benchmark other vendors did not run. The one clearly independent measurement we found sits 45.4 points below the vendor’s own figure for the same benchmark name, and the LoCoMo numbers reprinted across comparison content contradict the numbers on the vendor’s current page. None of that proves anyone is misleading you. It does mean the published scores cannot carry your decision.
+
+So make the architecture call on architecture. Do your facts change over time, and does anyone ever need to know what you believed before they changed? Does the memory work belong inside your agent or beside it? Can you operate a graph database, or would you rather not? Answer those three and the shortlist writes itself — then run your own evaluation on your own conversations, because at the time of writing that is the only measurement in this category that anyone can actually trust.
+
+AI Insights
+
+Deep dives on AI marketing and development.
+
+Agentic development, frontier AI models, and data-driven strategies. No recycled AI takes.
+
+Subscribe
+
+Figures move
+
+Stars and prices are point-in-time
+
+Every star count and hosted price below was read at the time of writing. Repository activity and vendor pricing pages both change quickly — re-check the repo and the vendor pricing page before you commit a budget.
+
+Get the memory decision right the first time
+
+The only agent-memory benchmark that counts is the one you run
+ 
+on your own data
+.
+
+We help teams choose and operate the agent-memory layer that matches their data — running the evaluation on your own conversations rather than on a vendor&#x27;s harness, and sizing the token and infrastructure cost before you commit.
+
+Get started
+
+Explore AI &amp; digital transformation
+
+Free consultation
+
+Expert guidance
+
+Tailored solutions
+
+What we work on
+
+Agent memory engagements
+
+→
+Memory-layer evaluation on your own conversation data
+
+→
+RAG versus memory decision, scoped per workload
+
+→
+Self-host versus hosted TCO, including the graph database
+
+→
+Write-path token modelling before you pick a tier
+
+→
+Compliance boundary design for stateful agent data
+
+FAQ · Open-source agent memory
+
+The questions teams ask before
+ 
+they pick a memory layer.
+
+What is the difference between Mem0, Letta and Zep?
+
+They are three different architectures wearing one category label. Mem0 is an extraction pipeline: an LLM pulls candidate facts out of each new message pair, then a second pass compares each candidate against existing memories by vector similarity and decides ADD, UPDATE, DELETE or NOOP. Letta is an agent runtime with memory modelled on computer architecture — Core Memory in context like RAM, Recall Memory as searchable conversation history, and Archival Memory as a vector-backed store the agent queries through tool calls. Zep&#x27;s open core, Graphiti, builds a temporal knowledge graph where every fact carries a validity window, so contradicted facts are invalidated rather than deleted. Practically: Mem0 asks least of your application, Letta asks you to adopt its runtime, and Zep gives you auditable history at the cost of running a graph database.
+
+Can I trust the benchmark scores published for agent memory tools?
+
+Why do two different LoCoMo scores circulate for Mem0 and Letta?
+
+Is Zep still open source, and what does self-hosting actually involve?
+
+How do the hosted Mem0, Letta and Zep tiers compare?
+
+When is plain RAG still better than a memory layer?
+
+What is Letta&#x27;s sleep-time compute, and why does it matter?
+
+Digital Applied newsletter
+
+Deep dives on AI, marketing and development.
+
+Practical guides and fresh insights by email. No recycled takes.
+
+Subscribe
+
+Related dispatches
+
+Continue exploring
+ 
+open-source agents.
+
+AI Development
+
+Muse Spark 1.3 Asks Before It Acts. Fewer Tokens, Really?
+
+Meta says Muse Spark 1.3 uses about 25% fewer tokens than 1.2. Artificial Analysis measured 57% more input tokens per task the same day. How both hold.
+
+September 2, 2026
+ · 
+8
+ min
+
+Read 
+
+AI Development
+
+The Best Open-Source AI Agent Projects on GitHub, Mapped
+
+Eight lanes of open-source AI agents mapped by licence, stars and commit activity, including which popular repos are not actually open source at all.
+
+August 4, 2026
+ · 
+18
+ min
+
+Read 
+
+AI Development
+
+Agent Memory Architectures: Vector vs Graph vs Episodic
+
+Agent memory architecture comparison — Mem0, Letta, Zep, graph-RAG, and episodic approaches. When each wins, integration effort, and 2026 benchmark data.
+
+April 14, 2026
+ · 
+15
+ min
+
+Read 
+
+AI Development
+
+Voice AI Benchmarks and Listener Votes Disagree: 14 Models
+
+Artificial Analysis scores realtime voice systems two ways. The arena system with the best reasoning and turn-taking scores ranks last on listener preference.
+
+September 25, 2026
+ · 
+6
+ min
+
+Read 
+
+Google Search
+
+See more Digital Applied analysis in your Google results by adding us as a preferred source.
+
+Add as a preferred source 
+
+An agentic growth partner for teams that would rather ship than schedule. Full-service digital marketing, delivered in days.
+
+X (Twitter)
+
+Facebook
+
+Instagram
+
+LinkedIn
+
+Services
+
+SEO
+
+PPC
+
+Content
+
+Web Dev
+
+CRM
+
+Company
+
+About
+
+Process
+
+Contact
+
+Resources
+
+Blog
+
+AI Tools
+
+Privacy
+
+Terms
+
+Topics
+
+AI Development
+
+SEO
+
+Marketing
+
+eCommerce
+
+Business
+
+CRM &amp; Automation
+
+Development
+
+All Topics →
+
+© 
+2026
+ Digital Applied
+
+All systems nominal
