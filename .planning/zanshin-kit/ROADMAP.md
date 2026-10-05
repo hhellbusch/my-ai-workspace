@@ -100,11 +100,10 @@ Added explicit output templates to the spar section:
 
 Martial-vocabulary food for thought lives in the kit: `submodules/zanshin-pi-extension/kit/MARTIAL-VOCABULARY.md`.
 
-Interest noted:
+Interest noted → light promotion 2026-10-05 (still no new skills):
 
-- **Shu-ha-ri** — kit adoption maturity (follow → break → leave); likely docs/essay before any skill
-- **Heijōshin** — calm ordinary mind on ops/incident calls with customer on the line; try ambient experiment before designing `/heijoshin`
-- **Ukemi** — breakfall / cheap landing before risky attempts; pairs with heijōshin on bridge calls and with lab trial undo paths; try “name the mat” before promoting a skill
-- **Maai / mushin** — parked lighter; see that file’s promotion checklist
+- **Shu-ha-ri** — paragraph in `kit/WORKING-STYLE.md`
+- **Heijōshin + ukemi** — ambient in Field Notes `AGENTS.md` (ops / incident); try in anger before skill promotion
+- **Maai / mushin** — still parked; see MARTIAL-VOCABULARY promotion checklist
 
 Do not promote from aesthetic fit alone.

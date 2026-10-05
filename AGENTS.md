@@ -155,6 +155,18 @@ The practical test: can you point to the thing that would disprove this? If not,
 
 ---
 
+## Ops / incident posture (heijōshin + ukemi)
+
+> Ambient on bridge calls, prod changes, and lab trials that can hurt. Seeds: `submodules/zanshin-pi-extension/kit/MARTIAL-VOCABULARY.md`. Not slash skills yet — try the posture; promote only if it keeps getting skipped.
+
+**Heijōshin (everyday mind):** On a customer-facing incident call — verify before speaking; label hypotheses as hypotheses; one change at a time; say what you will do before you do it; give the customer status and next action, not debug theater. Fluent-but-wrong is expensive here.
+
+**Ukemi (breakfall):** Before a risky attempt — name the fall, the mat (rollback / flag / backup / known-good), the signal you're down, and the get-up. If there is no mat, don't take the throw in prod. Lab journals: undo path belongs next to the procedure.
+
+Related kit lenses: `/kaeshi` (goal rails), `/yomi` (ripples of an action). Those shape the decision; ukemi pads the next step.
+
+---
+
 ## Review Discipline
 
 > Ambient posture (always on). Workspace policy: `AI-DISCLOSURE.md`. Review metadata: `rules/review-tracking.md`. Kit reference: `submodules/zanshin-pi-extension/kit/WORKING-STYLE.md` (Review discipline section).
