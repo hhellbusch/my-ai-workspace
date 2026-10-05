@@ -74,9 +74,18 @@ Resurrected a 2016–2017 maturity deck as a **trailhead + 14 axis deep dives + 
 
 ---
 
+## 2026-10-05 — thermonuclear pass (pre-merge)
+
+- Rebased onto `main`; resolved `research/README.md`.
+- Ejected AAP `controller_oauthtoken` troubleshooting hitchhiker (separate concern).
+- Fixed `library/log.md` Accelerate ingest (restored OCP density header).
+- Fixed broken DORA relative links → `docs/ai-engineering/maturity/…`.
+- Cleared stale Accelerate “catalog stub” claims; `docs/README.md` catalogue rows; AI L2 = reviews merges; kihon floor pointer on maturity README.
+- PR body rewrite needed on GitHub (14 axes, not nine sketches).
+
 ## How to resume work
 
-1. Check PR #9 is merged (or merge it).
+1. Author skim trailhead + navigation essay; merge PR #9 when ready.
 2. Read [artifact-map.md](../../research/software-systems-maturity/findings/artifact-map.md) for corpus gaps.
 3. New substantive `devops/` content → name primary axis, update artifact map + deep dive if corpus grows.
 4. For deep rubric changes, edit deep dives first — then consider D2 frontmatter.

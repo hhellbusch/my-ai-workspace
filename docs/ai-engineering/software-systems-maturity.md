@@ -183,6 +183,8 @@ Full write-up: [Platform as maturity accelerator](maturity/platform-as-accelerat
 
 Five levels per axis unless noted. Deep dives add teaching stories, anti-patterns, and repo examples.
 
+**Uneven on purpose:** some axes get full level tables here (source control, security, docs, platform, AI, team, product); others are one-liners that point at the deep dive. That is not unfinished work — trailhead stays skim-friendly; rubrics live in `maturity/`.
+
 ### Source control
 
 | Level | Posture |
@@ -272,7 +274,7 @@ Deep dive: [platform accelerator](maturity/platform-as-accelerator.md) · [fleet
 |---|---|
 | 0 | Unreviewed agent changes to prod |
 | 1 | Ad hoc prompts; no review |
-| 2 | Repeatable prompts/skills; human reviews all output |
+| 2 | Repeatable prompts/skills; human reviews merges |
 | 3 | Bounded tools; session/handoff discipline |
 | 4 | Spar/eval gates on risky changes |
 | 5 | Failure modes catalogued; improvement measured |

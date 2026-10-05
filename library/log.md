@@ -320,7 +320,9 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Entry:** [accelerate-forsgren-humble-kim.md](accelerate-forsgren-humble-kim.md)
 - **Wing:** devops / measurement
 - **Source:** Book (JBGE summary for maturity/DORA crosswalk)
+- **Note:** Four keys + capability correlations as optional parallel lens to software-systems-maturity axes; not a workspace scorecard.
 
+## [2026-07-17] ingest | OCP Container Density / Overcommit
 - **Entry:** [ocp-container-density-overcommit.md](ocp-container-density-overcommit.md)
 - **Wing:** devops
 - **Source:** research collection / research/ocp-container-density-overcommit/sources/

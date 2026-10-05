@@ -35,6 +35,10 @@ review:
 
 All entries are **v2** — axis iteration with deck lineage, example evidence, optional DORA touchpoints, and AI-era notes where relevant (2026-08-12).
 
+### Floor vs ladder (zanshin kihon)
+
+**Kihon** (`submodules/zanshin-pi-extension/kit/kihon/`) = fixed forms that stop easy silent failure (shell strict mode, no secrets in git, behavior has a test). **Maturity levels** = assess where a team/service sits and pick the next step up. Kihon is roughly “exit level 0 / hold a thin floor” on overlapping axes — not a substitute for the 0–5 ladder. Do not grow kihon into maturity tables; do not treat axis L3+ as always-on kit forms.
+
 ---
 
 ## Appendix

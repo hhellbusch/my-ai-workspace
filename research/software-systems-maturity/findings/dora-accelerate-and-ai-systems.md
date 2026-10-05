@@ -97,7 +97,7 @@ Avoid: converting axis levels into a fake DORA score. Avoid: ignoring DORA becau
 | **Change failure rate** | Under-investment in testing/monitoring at same deploy level — AI throughput can worsen this |
 | **MTTR** | L5 drift visibility + rollback paths; GitOps self-heal vs manual reconcile choice ([fleet spectrum](../../../devops/fleet-control-spectrum.md)) |
 
-**Accelerate capabilities mapped here:** continuous delivery, continuous deployment, deployment automation, trunk-based development (with [source control](source-control.md)).
+**Accelerate capabilities mapped here:** continuous delivery, continuous deployment, deployment automation, trunk-based development (with [source control](../../../docs/ai-engineering/maturity/source-control.md)).
 
 **Fleet nuance:** measure DORA on a **defined service or pipeline** (one app, one promotion path). Fleet-wide "we GitOps everything" is not one metric — hub policy, spokes, and apps may sit at different levels.
 
@@ -130,7 +130,7 @@ Avoid: converting axis levels into a fake DORA score. Avoid: ignoring DORA becau
 
 ## Testing axis — DORA links
 
-**Primary DORA connection:** **Test automation** capability ↔ lower **change failure rate** and safer **deployment frequency** (with [deployment](deployment-and-release.md) and [builds](builds-and-artifacts.md)).
+**Primary DORA connection:** **Test automation** capability ↔ lower **change failure rate** and safer **deployment frequency** (with [deployment](../../../docs/ai-engineering/maturity/deployment-and-release.md) and [builds](../../../docs/ai-engineering/maturity/builds-and-artifacts.md)).
 
 | Maturity signal | DORA / delivery effect |
 |---|---|
@@ -156,22 +156,22 @@ Per-axis detail in deep dives; summary DORA relevance:
 
 | Axis | DORA / Accelerate touchpoint |
 |---|---|
-| [Code quality](code-quality.md) | Indirect — review culture + **change failure rate** with testing |
-| [Architecture & change](architecture-and-change.md) | **Loosely coupled architecture** capability |
-| [Data management](data-management.md) | Weak direct link — pipeline integration at L5 |
-| [Monitoring & reliability](monitoring-and-reliability.md) | **MTTR** four-key metric |
-| [Security & secrets](security-and-secrets.md) | Supply chain overlaps builds L5; not a classic DORA capability name |
-| [Documentation & knowledge](documentation-and-knowledge.md) | **Generative culture** enabler; no coverage metric |
-| [Platform & fleet](platform-as-accelerator.md) | Measure DORA per service, not cluster count |
-| [AI agents & harnesses](ai-agents-and-harnesses.md) | **Open research** — eval/skills not in original DORA set |
-| [Team practices](team-practices.md) | **Generative culture** capability |
-| [Product discovery](product-discovery.md) | Outcomes vs DORA output metrics — wrong-thing-built risk |
+| [Code quality](../../../docs/ai-engineering/maturity/code-quality.md) | Indirect — review culture + **change failure rate** with testing |
+| [Architecture & change](../../../docs/ai-engineering/maturity/architecture-and-change.md) | **Loosely coupled architecture** capability |
+| [Data management](../../../docs/ai-engineering/maturity/data-management.md) | Weak direct link — pipeline integration at L5 |
+| [Monitoring & reliability](../../../docs/ai-engineering/maturity/monitoring-and-reliability.md) | **MTTR** four-key metric |
+| [Security & secrets](../../../docs/ai-engineering/maturity/security-and-secrets.md) | Supply chain overlaps builds L5; not a classic DORA capability name |
+| [Documentation & knowledge](../../../docs/ai-engineering/maturity/documentation-and-knowledge.md) | **Generative culture** enabler; no coverage metric |
+| [Platform & fleet](../../../docs/ai-engineering/maturity/platform-as-accelerator.md) | Measure DORA per service, not cluster count |
+| [AI agents & harnesses](../../../docs/ai-engineering/maturity/ai-agents-and-harnesses.md) | **Open research** — eval/skills not in original DORA set |
+| [Team practices](../../../docs/ai-engineering/maturity/team-practices.md) | **Generative culture** capability |
+| [Product discovery](../../../docs/ai-engineering/maturity/product-discovery.md) | Outcomes vs DORA output metrics — wrong-thing-built risk |
 
 ---
 
 ## Sources
 
-- *Accelerate* — Forsgren, Humble, Kim (2018) — [library catalog stub](../../../library/catalog.md)
+- *Accelerate* — Forsgren, Humble, Kim (2018) — [library entry](../../../library/accelerate-forsgren-humble-kim.md)
 - [DORA](https://dora.dev/) — ongoing research program
 - [Fowler — Continuous Delivery](https://martinfowler.com/bliki/ContinuousDelivery.html) — linked from trailhead
 - Workspace: [artifact map](artifact-map.md)
@@ -181,5 +181,5 @@ Per-axis detail in deep dives; summary DORA relevance:
 ## Possible follow-ups
 
 - Per-axis iteration — **all 14 axes v2 complete** (2026-08-12)
-- Enriched library entry for *Accelerate* / DORA (4-step ingest)
-- Essay: "DORA in the agent era" under `docs/ai-engineering/`
+- *Accelerate* library ingest — **done** ([accelerate-forsgren-humble-kim.md](../../../library/accelerate-forsgren-humble-kim.md))
+- Essay: "DORA in the agent era" under `docs/ai-engineering/` (optional)

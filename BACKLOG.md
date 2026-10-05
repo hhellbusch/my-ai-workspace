@@ -109,7 +109,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 
 ### Software Systems Maturity — v2 complete (merge PR #9)
 - **Product:** docs/ai-engineering/maturity/
-- **Context:** All 14 axis deep dives v2 (deck lineage, corpus, DORA, AI-era). Meta-framework, worksheet, SLO primer done. **Action:** merge [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9). Optional: deck PDF, *Accelerate* library ingest, DORA essay. Handoff: [.planning/software-systems-maturity/whats-next.md](../.planning/software-systems-maturity/whats-next.md).
+- **Context:** All 14 axis deep dives v2 (deck lineage, corpus, DORA, AI-era). Meta-framework, worksheet, SLO primer, *Accelerate* library ingest done. **Action:** merge [PR #9](https://github.com/hhellbusch/my-ai-workspace/pull/9). Optional: deck PDF, DORA-in-agent-era essay. Handoff: [.planning/software-systems-maturity/whats-next.md](../.planning/software-systems-maturity/whats-next.md).
 - **Added:** 2026-08-12 · **Updated:** 2026-08-12 · **Status:** ready to merge
 
 ### Essay seed: documentation as cognitive offload and async multiplier

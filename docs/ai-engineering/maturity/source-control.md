@@ -143,7 +143,7 @@ Tools evolved (CVS → SVN → Git). The question did not. Maturity is agreement
 | [DORA research program](https://dora.dev/) | Four keys metrics; continuous improvement of delivery | Measures outcomes; doesn't replace per-axis assessment |
 | [Git For Ages 4 And Up](../../../library/git-for-ages-4-and-up.md) | L1–2 mental model pedagogy | 2013 talk; mechanics unchanged |
 
-**Not in library yet:** enriched *Accelerate* entry — catalog stub only ([library/catalog.md](../../../library/catalog.md)).
+*Accelerate* crosswalk: [library/accelerate-forsgren-humble-kim.md](../../../library/accelerate-forsgren-humble-kim.md) · [DORA research note](../../../research/software-systems-maturity/findings/dora-accelerate-and-ai-systems.md).
 
 ---
 
