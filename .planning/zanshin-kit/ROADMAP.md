@@ -104,6 +104,7 @@ Interest noted:
 
 - **Shu-ha-ri** — kit adoption maturity (follow → break → leave); likely docs/essay before any skill
 - **Heijōshin** — calm ordinary mind on ops/incident calls with customer on the line; try ambient experiment before designing `/heijoshin`
-- **Ukemi / maai / mushin** — parked; see that file’s promotion checklist
+- **Ukemi** — breakfall / cheap landing before risky attempts; pairs with heijōshin on bridge calls and with lab trial undo paths; try “name the mat” before promoting a skill
+- **Maai / mushin** — parked lighter; see that file’s promotion checklist
 
 Do not promote from aesthetic fit alone.
