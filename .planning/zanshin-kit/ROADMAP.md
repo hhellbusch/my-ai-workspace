@@ -93,3 +93,17 @@ Added explicit output templates to the spar section:
 **Cross-linking (portable form) and backlog capture:** See BACKLOG item "Zanshin Kit — Phase 3 scope definition." Scope and always-on vs. invoke-only not yet settled.
 
 **Only build if real need is demonstrated. Don't build speculatively.**
+
+---
+
+## Seeds (2026-10-05) — not scheduled
+
+Martial-vocabulary food for thought lives in the kit: `submodules/zanshin-pi-extension/kit/MARTIAL-VOCABULARY.md`.
+
+Interest noted:
+
+- **Shu-ha-ri** — kit adoption maturity (follow → break → leave); likely docs/essay before any skill
+- **Heijōshin** — calm ordinary mind on ops/incident calls with customer on the line; try ambient experiment before designing `/heijoshin`
+- **Ukemi / maai / mushin** — parked; see that file’s promotion checklist
+
+Do not promote from aesthetic fit alone.
