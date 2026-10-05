@@ -19,7 +19,9 @@ Full principle reference: **`submodules/zanshin-pi-extension/kit/ENGINEERING-PRI
 
 Artifact discipline (JBGE, TAGRI): **`submodules/zanshin-pi-extension/kit/AGILE-ARTIFACT-DISCIPLINE.md`**.
 
-Basics (shell strict mode, edit anchors): kit loads **`kit/kihon/`** when relevant — or run `/kihon [shell|edit]`.
+Basics (kihon): kit loads **`kit/kihon/`** when relevant — or run `/kihon <domain>`.
+
+When reviewing pipelines or Ansible/Helm that have grown control flow, the craft lens **orchestration vs program** in `ENGINEERING-PRINCIPLES.md` applies.
 
 ## Workspace-only conventions
 
