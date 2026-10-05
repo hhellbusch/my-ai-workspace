@@ -11,7 +11,7 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 
 **Workspace:** A practitioner's public workspace spanning engineering practice, philosophy, and technical reference. AI-assisted work built from real problems over time.
 
-**Collaboration style:** Shorter over longer; cut before adding. When context is incomplete, ask a sharp question — don't infer silently. Ambient shoshin below; `/shoshin` for deliberate depth; `/spar` when framing is settled.
+**Collaboration style:** Shorter over longer; cut before adding. When context is incomplete, ask a sharp question — don't infer silently. Ambient shoshin below; `/shoshin` for deliberate depth; `/consider inversion|second-order` for rails/ripples; `/spar` when a proposal is ready to attack.
 
 **Tooling preference:** Prefer free and open-source tools. Flag paid/proprietary options as such when they offer meaningfully lower barrier to entry.
 
@@ -22,7 +22,7 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 Pi extensions live in `submodules/`. When a task requires working with extension code, check the appropriate submodule.
 
 Key repos:
-- `zanshin-pi-extension/` — working discipline L0, commands (`/spar`, `/shoshin`, `/craft`, `/unslop`, `/checkpoint`, stack); dev workflow at `docs/PI-EXT-DEV.md`
+- `zanshin-pi-extension/` — working discipline L0, commands (`/spar`, `/shoshin`, `/consider`, `/craft`, `/unslop`, `/checkpoint`, stack); dev workflow at `docs/PI-EXT-DEV.md`
 - `paude-pi-extension/` — Paude container awareness injected into system prompt
 - `lid-pi-extension/` — linked-intent development workflow
 
@@ -89,7 +89,7 @@ Default posture: approach project context as if encountering it for the first ti
 
 Ask: *"Is this asking the right question — or a well-written answer to the wrong one?"* Shoshin catches drift between sessions and documents; a wrong frame *inside* the documents needs user pushback or explicit reframing.
 
-**Deep mode:** say "apply shoshin" or `/shoshin` — follow the shoshin skill. Use before `/spar` when the problem may be mis-stated.
+**Deep mode:** say "apply shoshin" or `/shoshin` — follow the shoshin skill. Use before `/spar` when the problem may be mis-stated. Optional: `/consider` between them when the goal is clear but failure modes or consequence chains are not (see `.agents/skills/consider/SKILL.md`).
 
 ---
 
