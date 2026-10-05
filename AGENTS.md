@@ -107,7 +107,7 @@ Respect phase: make it work → make it right → make it fast. Don't mix refact
 
 ## Artifact Discipline
 
-> Ambient posture (on docs, plans, epics). Invoked: JBGE lens in `/craft`; audience/purpose in `/shoshin`. Reference: `submodules/zanshin-pi-extension/kit/AGILE-ARTIFACT-DISCIPLINE.md`. Peer essay: `docs/ai-engineering/artifact-discipline-and-ai.md`.
+> Ambient posture (on docs, plans, epics). Invoked: JBGE / TAGRI lens in `/craft`. Reference: `submodules/zanshin-pi-extension/kit/AGILE-ARTIFACT-DISCIPLINE.md`. Peer essay: `docs/ai-engineering/artifact-discipline-and-ai.md`.
 
 Derived from Scott Ambler's Agile Modeling / Agile Data work. AI makes artifact production cheap — default to **JBGE** (just barely good enough): sufficient for the task, no more. Context: invest more for complexity, risk, pragmatic compliance; invest less for skilled audience, easy change, high collaboration, likely change.
 
@@ -115,7 +115,7 @@ Derived from Scott Ambler's Agile Modeling / Agile Data work. AI makes artifact 
 
 **Travel light:** fewer artifacts; discard models/docs once purpose is served. **Document late:** envision lightly, build, then document what proved true.
 
-**Deep mode:** `/shoshin` for audience/purpose on a plan; `/craft` with JBGE lens on a draft; `/unslop` to cut AI tells after the frame is right; `/review` includes TAGRI check on new markdown.
+**Deep mode:** `/craft` with JBGE/TAGRI lens on a draft or plan; `/shoshin` when framing may be wrong; `/unslop` to cut AI tells after the frame is right; `/review` includes TAGRI check on new markdown.
 
 ---
 

@@ -88,10 +88,7 @@ These are workspace-specific skills — unique to this project.
 
 ### Skill authoring
 
-| Skill | Purpose |
-|---|---|
-| `/create-agent-skill` | Create new AgentSkills-compliant SKILL.md files |
-| `/improve-skill` | Improve an existing skill's SKILL.md |
+Skill-authoring helpers (`create-agent-skills`, etc.) live in the harness install (e.g. `~/.claude/skills/`), not in this workspace. Use `/audit-skill` here to score a `SKILL.md` against AgentSkills conventions.
 
 ## Portable core reference — Zanshin kit
 
@@ -103,12 +100,17 @@ The [Zanshin working discipline kit](https://github.com/hhellbusch/zanshin-pi-ex
 
 ### Available in the kit (not duplicated here)
 
-| Category | Skills |
+| Skill | Job |
 |---|---|
-| Working discipline | `/spar` · `/shoshin` · `/craft` · `/grill-me` · `/push` · `/pop` · `/stack` |
-| Reasoning frameworks | `/consider-5-whys` · `/consider-10-10-10` · `/consider-first-principles` · `/consider-inversion` · `/consider-occams-razor` · `/consider-one-thing` · `/consider-opportunity-cost` · `/consider-pareto` · `/consider-second-order` · `/consider-swot` · `/consider-via-negativa` · `/consider-eisenhower-matrix` |
-| Research | `/research-competitive` · `/research-deep-dive` · `/research-technical` · `/research-open-source` · `/research-options` · `/research-feasibility` · `/research-history` · `/research-landscape` |
-| Debug & intake | `/debug` · `/ask-me-questions` |
+| `/shoshin` | Reset framing — surface load-bearing assumptions |
+| `/spar` | Steel-man adversarial review |
+| `/craft` | Engineering principles on code or design |
+| `/unslop` | Cut AI tells from a draft |
+| `/checkpoint` | Mid-session crash-recovery snapshot |
+| `/whats-next` | Full session handoff |
+| `/push` · `/pop` · `/stack` | Session topic stack (Pi commands) |
+
+Design interrogation (`/grill-me`) is **not** in the kit — install [Matt Pocock's skills](https://github.com/mattpocock/skills) separately (`claude plugins install mattpocock-skills` or `npx skills add mattpocock/skills`).
 
 To use zanshin-kit skills in this workspace:
 

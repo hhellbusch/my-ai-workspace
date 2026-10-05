@@ -145,7 +145,7 @@ If you want this to persist across sessions (not just prompts), the durable shap
 | Layer | What to encode |
 |---|---|
 | **Ambient** | Short rules: JBGE default, TAGRI before expanding docs, document late |
-| **Invoked** | Skills or commands: `/shoshin` (audience/purpose), `/craft` (JBGE lens on drafts), pre-commit review with TAGRI check |
+| **Invoked** | Skills or commands: `/craft` (JBGE / TAGRI lens on drafts and plans), `/shoshin` when framing may be wrong, pre-commit review with TAGRI check |
 | **Reference** | One kit doc linking to Ambler's essays for depth |
 
 In this workspace, the portable reference is [`submodules/zanshin-pi-extension/kit/AGILE-ARTIFACT-DISCIPLINE.md`](../../submodules/zanshin-pi-extension/kit/AGILE-ARTIFACT-DISCIPLINE.md). Ambient rules live in [`AGENTS.md`](../../AGENTS.md) (Artifact Discipline section). Peer introduction to spar/shoshin: [Sparring and Shoshin](sparring-and-shoshin.md).
