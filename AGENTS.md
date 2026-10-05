@@ -11,7 +11,7 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 
 **Workspace:** A practitioner's public workspace spanning engineering practice, philosophy, and technical reference. AI-assisted work built from real problems over time.
 
-**Collaboration style:** Shorter over longer; cut before adding. When context is incomplete, ask a sharp question — don't infer silently. Ambient shoshin below; `/shoshin` for deliberate depth; `/spar` when framing is settled.
+**Collaboration style:** Shorter over longer; cut before adding. When context is incomplete, ask a sharp question — don't infer silently. Ambient shoshin below; `/shoshin` for deliberate depth; `/kaeshi` (failure rails) / `/yomi` (consequence chains); `/spar` when a proposal is ready to attack.
 
 **Tooling preference:** Prefer free and open-source tools. Flag paid/proprietary options as such when they offer meaningfully lower barrier to entry.
 
@@ -22,7 +22,7 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 Pi extensions live in `submodules/`. When a task requires working with extension code, check the appropriate submodule.
 
 Key repos:
-- `zanshin-pi-extension/` — working discipline L0, commands (`/spar`, `/shoshin`, `/craft`, `/unslop`, `/checkpoint`, stack); dev workflow at `docs/PI-EXT-DEV.md`
+- `zanshin-pi-extension/` — working discipline L0, commands (`/spar`, `/shoshin`, `/kaeshi`, `/yomi`, `/craft`, `/kihon`, `/unslop`, `/checkpoint`, stack); dev workflow at `docs/PI-EXT-DEV.md`
 - `paude-pi-extension/` — Paude container awareness injected into system prompt
 - `lid-pi-extension/` — linked-intent development workflow
 
@@ -89,7 +89,7 @@ Default posture: approach project context as if encountering it for the first ti
 
 Ask: *"Is this asking the right question — or a well-written answer to the wrong one?"* Shoshin catches drift between sessions and documents; a wrong frame *inside* the documents needs user pushback or explicit reframing.
 
-**Deep mode:** say "apply shoshin" or `/shoshin` — follow the shoshin skill. Use before `/spar` when the problem may be mis-stated.
+**Deep mode:** say "apply shoshin" or `/shoshin` — follow the shoshin skill. Use before `/spar` when the problem may be mis-stated. Optional between them: `/kaeshi` when the goal is clear but rails are not; `/yomi` when the action is clear but ripples are not.
 
 ---
 
@@ -97,11 +97,13 @@ Ask: *"Is this asking the right question — or a well-written answer to the wro
 
 > Ambient posture (on code work). Invoked depth: `.agents/skills/craft/SKILL.md` or `/craft`. Full reference: `submodules/zanshin-pi-extension/kit/ENGINEERING-PRINCIPLES.md`.
 
-Default on code and design changes: **KISS** over clever; **SRP** (one reason to change); **DRY** when duplication will diverge — not on first coincidence; **YAGNI** for imagined requirements; **leave it slightly better** when already touching a file (≤5 min). Principles are lenses, not a checklist — name tensions when they conflict (DRY vs YAGNI, SRP vs KISS).
+Default on code and design changes: **KISS** over clever; **SRP** (one reason to change); **DRY** when duplication will diverge — not on first coincidence; **YAGNI** for imagined requirements; **leave it slightly better** when already touching a file (≤5 min); prefer one boring **house path** (convention over configuration / omakase) over unpaid toggle forests. Principles are lenses, not a checklist — name tensions when they conflict (DRY vs YAGNI, CoC vs ukemi, omakase vs Unix).
 
-Respect phase: make it work → make it right → make it fast. Don't mix refactor, features, and optimization in one pass without reason.
+Respect phase: make it work → make it right → make it fast. Don't mix refactor, features, and optimization in one pass without reason. Name the tension when **CI/Ansible/Helm glue starts looking like a program**, or when an agent grows a **toggle forest** instead of a house default — craft (orchestration vs program, convention over configuration), not a new kihon. Stance map: `submodules/zanshin-pi-extension/kit/DESIGN-PHILOSOPHY.md`.
 
-**Deep mode:** say "apply craft" or `/craft` on a file, diff, or design. Use `/review` separately for repo convention compliance before commit.
+**Kihon (basics):** fixed forms that avoid easy pitfalls and generate quality signal (`submodules/zanshin-pi-extension/kit/kihon/` — see README for what qualifies). Invoked: `/kihon <domain>` (`.agents/skills/kihon/SKILL.md`). Not craft judgment. Product depth stays in `devops/`.
+
+**Deep mode:** say "apply craft" or `/craft` on a file, diff, or design. Use `/kihon <domain>` for fixed forms. Use `/review` separately for repo convention compliance before commit.
 
 ---
 
@@ -152,6 +154,18 @@ AI output that sounds confident may still be wrong — fluent prose covers both 
 The practical test: can you point to the thing that would disprove this? If not, you're trusting fluency.
 
 **Deep mode:** say "verify that before we proceed" — apply the kit checks to the specific claim or output.
+
+---
+
+## Ops / incident posture (heijōshin + ukemi)
+
+> Ambient on bridge calls, prod changes, and lab trials that can hurt. Seeds: `submodules/zanshin-pi-extension/kit/MARTIAL-VOCABULARY.md`. Not slash skills yet — try the posture; promote only if it keeps getting skipped.
+
+**Heijōshin (everyday mind):** On a customer-facing incident call — verify before speaking; label hypotheses as hypotheses; one change at a time; say what you will do before you do it; give the customer status and next action, not debug theater. Fluent-but-wrong is expensive here.
+
+**Ukemi (breakfall):** Before a risky attempt — name the fall, the mat (rollback / flag / backup / known-good), the signal you're down, and the get-up. If there is no mat, don't take the throw in prod. Lab journals: undo path belongs next to the procedure.
+
+Related kit lenses: `/kaeshi` (goal rails), `/yomi` (ripples of an action). Those shape the decision; ukemi pads the next step.
 
 ---
 

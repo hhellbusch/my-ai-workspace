@@ -93,3 +93,19 @@ Added explicit output templates to the spar section:
 **Cross-linking (portable form) and backlog capture:** See BACKLOG item "Zanshin Kit — Phase 3 scope definition." Scope and always-on vs. invoke-only not yet settled.
 
 **Only build if real need is demonstrated. Don't build speculatively.**
+
+---
+
+## Seeds (2026-10-05) — not scheduled
+
+Martial-vocabulary food for thought lives in the kit: `submodules/zanshin-pi-extension/kit/MARTIAL-VOCABULARY.md`.
+
+Interest noted → light promotion 2026-10-05 (still no new skills):
+
+- **Shu-ha-ri** — paragraph in `kit/WORKING-STYLE.md`
+- **Heijōshin + ukemi** — ambient in Field Notes `AGENTS.md` (ops / incident); try in anger before skill promotion
+- **Maai / mushin** — still parked; see MARTIAL-VOCABULARY promotion checklist
+
+Design philosophy flushed (2026-10-05 review): `submodules/zanshin-pi-extension/kit/DESIGN-PHILOSOPHY.md` — durable stance map (CoC active; omakase light; Unix/CI2/Laravel map). Next use-test: `/craft` on a Codex Ansible defaults forest.
+
+Do not promote from aesthetic fit alone.

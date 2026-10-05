@@ -50,7 +50,10 @@ These are workspace-specific skills — unique to this project.
 |---|---|
 | `/start` | Session orientation — load context, check handoffs, suggest focus |
 | `/shoshin` | Invoked assumption-checking — collaborative questions, beginner's mind (extends zanshin kit) |
+| `/kaeshi` | Inversion / failure rails (extends zanshin kit) |
+| `/yomi` | Second-order / consequence chains (extends zanshin kit) |
 | `/craft` | Invoked engineering-principles review on code, diff, or design (extends zanshin kit) |
+| `/kihon` | Basics / fixed forms — shell strict mode, edit anchors (extends zanshin kit) |
 | `/whats-next` | Full session handoff — create comprehensive continuation doc |
 | `/checkpoint` | Mid-session state save — lightweight crash recovery snapshot |
 | `/review` | Pre-commit quality gate — verify against repo conventions |
