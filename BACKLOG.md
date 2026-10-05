@@ -243,7 +243,7 @@ From the chart directory: `helm lint .` and `helm template test-release . -f ci/
 ### Shell strict mode — retrofit existing scripts
 - **Product:** devops / tooling
 - **Context:** `rules/shell-strict-mode.md` was added (2026-04-21) enforcing `#!/usr/bin/env bash` + `set -euo pipefail` on all `.sh`/`.bash` files. 7 existing scripts in `devops/argo/examples/scripts/` do not yet comply (pre-rule). Additional scripts also unchecked. Retrofit is low-risk but needs per-script review — some may be candidate for the intentional-exception pattern. No urgency; new scripts are covered by the rule.
-- **Links:** `rules/shell-strict-mode.md`, `devops/argo/examples/scripts/`
+- **Links:** `submodules/zanshin-pi-extension/kit/kihon/shell.md` (canonical; `rules/shell-strict-mode.md` is a pointer), `devops/argo/examples/scripts/`
 - **Added:** 2026-04-21
 
 

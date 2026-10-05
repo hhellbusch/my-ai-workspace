@@ -22,7 +22,7 @@ Read `ABOUT.md` before forming any assumptions about the workspace owner's domai
 Pi extensions live in `submodules/`. When a task requires working with extension code, check the appropriate submodule.
 
 Key repos:
-- `zanshin-pi-extension/` — working discipline L0, commands (`/spar`, `/shoshin`, `/kaeshi`, `/yomi`, `/craft`, `/unslop`, `/checkpoint`, stack); dev workflow at `docs/PI-EXT-DEV.md`
+- `zanshin-pi-extension/` — working discipline L0, commands (`/spar`, `/shoshin`, `/kaeshi`, `/yomi`, `/craft`, `/kihon`, `/unslop`, `/checkpoint`, stack); dev workflow at `docs/PI-EXT-DEV.md`
 - `paude-pi-extension/` — Paude container awareness injected into system prompt
 - `lid-pi-extension/` — linked-intent development workflow
 
@@ -101,7 +101,9 @@ Default on code and design changes: **KISS** over clever; **SRP** (one reason to
 
 Respect phase: make it work → make it right → make it fast. Don't mix refactor, features, and optimization in one pass without reason.
 
-**Deep mode:** say "apply craft" or `/craft` on a file, diff, or design. Use `/review` separately for repo convention compliance before commit.
+**Kihon (basics):** fixed forms in `submodules/zanshin-pi-extension/kit/kihon/` — shell strict mode, structured-edit anchors. Invoked: `/kihon [shell|edit]` (`.agents/skills/kihon/SKILL.md`). Not craft judgment — execute the form. Pointers: `rules/shell-strict-mode.md`, `rules/structured-edit.md`.
+
+**Deep mode:** say "apply craft" or `/craft` on a file, diff, or design. Use `/kihon` for shell/edit forms. Use `/review` separately for repo convention compliance before commit.
 
 ---
 
