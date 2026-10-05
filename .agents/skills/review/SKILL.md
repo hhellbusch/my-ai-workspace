@@ -46,6 +46,7 @@ This command is read-only. It reports findings and asks for confirmation before 
    - **Quick link spot-check**: For each new or modified markdown file, verify any internal links (relative paths) resolve to files that exist. Flag broken links.
    - **External URL verification**: For each new or modified markdown file, identify any new external URLs (http/https). Fetch each URL to confirm it resolves (not 404, not redirect to unrelated page). AI models fabricate plausible-looking URLs — this is a known failure mode, not an edge case. Flag any unverified or broken external links.
    - **Red Hat docs (`docs.redhat.com`)**: Apply [`rules/red-hat-docs-links.md`](../../../rules/red-hat-docs-links.md). Flag `/latest/` URLs without chapter/section title in link text; flag slug-only link text; note when only `/latest/` was checked and redirects were not followed to final URL.
+   - **Maturity lens (substantive `devops/` only):** For new or substantially expanded guides/examples (not trivial README line edits), flag if primary maturity axis is unnamed in commit message or PR description. Remind: update [artifact map](../../../research/software-systems-maturity/findings/artifact-map.md) and relevant [deep dive](../../../docs/ai-engineering/maturity/README.md) when corpus grows meaningfully. Reference: [devops/ORGANIZATION.md](../../../devops/ORGANIZATION.md#maturity-lens).
 
 5. **Content quality** — For each new or modified file:
    - Markdown files: check for title heading, no obvious structural issues

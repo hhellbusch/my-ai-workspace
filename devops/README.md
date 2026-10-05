@@ -22,6 +22,12 @@ Practical, runnable examples and references for infrastructure, platform, and op
 
 **Organization:** [ORGANIZATION.md](ORGANIZATION.md) — where to put new content (platform vs workload, troubleshooting vs examples vs notes).
 
+**Maturity lens:** This tree is **evidence** for the [Software Systems Maturity trailhead](../docs/ai-engineering/software-systems-maturity.md) — assess per axis, not one score for the repo. See [artifact map](../research/software-systems-maturity/findings/artifact-map.md) for axis → corpus mapping and [worksheet](../docs/ai-engineering/maturity/worksheet.md) for team self-assessment. When adding substantial examples, name the primary axis ([ORGANIZATION.md#maturity-lens](ORGANIZATION.md#maturity-lens)).
+
+### Cross-cutting reliability
+
+- **[slo-and-runbooks.md](slo-and-runbooks.md)** — SLI/SLO/error budget primer and minimum runbook bar (monitoring maturity 3→4)
+
 **External links:** Red Hat doc URLs (`docs.redhat.com`) — see [`rules/red-hat-docs-links.md`](../rules/red-hat-docs-links.md) (pin versions, verify slugs, searchable link text).
 
 ### Fleet control spectrum

@@ -57,6 +57,7 @@ Also check these always-relevant anchor relationships:
 - If the target is in `docs/ai-engineering/` → check all other `docs/ai-engineering/` docs for topic overlap
 - If the target discusses a named framework or system → check `docs/ai-engineering/README.md`, `session-framework.md`, and `framework-bootstrap.md` (if it's not those files itself)
 - If the target is a case study → check the relevant essays it demonstrates
+- If the target is under `devops/` and exemplifies a maturity pattern → check [artifact map](../../../research/software-systems-maturity/findings/artifact-map.md) and the relevant [maturity deep dive](../../../docs/ai-engineering/maturity/README.md) for a corpus row or "Repo examples" link
 
 Limit to top 10 semantically related candidates.
 
