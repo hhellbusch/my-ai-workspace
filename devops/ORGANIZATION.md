@@ -18,6 +18,7 @@ review:
 | `rhacm/` | Advanced Cluster Management — hub, fleet, CIM, policies |
 | `ansible/`, `argo/`, `vault/` | Delivery and automation layers |
 | `coreos/`, `kvm/` | Host and first-boot reference (Butane/Ignition, libvirt/KVM) |
+| `mongodb/` | MongoDB operational notes (not a catalog symptom guide until there is a fix) |
 | `learning-path/`, `git/`, `llm/` | Pedagogy and setup — not product runbooks |
 | `pi/`, `paude/`, `paude-proxy/` | Workspace agent tooling (this repo's AI workflow) |
 | `catalog.yaml`, `SYMPTOM-INDEX.md`, `EXAMPLE-INDEX.md` | Generated discovery — troubleshooting guides and OCP examples |

@@ -127,6 +127,12 @@ HashiCorp Vault integration patterns.
 
 - **`integration/`** — Vault integration configurations and patterns for secrets management
 
+### [MongoDB](mongodb/)
+
+Sharded-cluster notes from operational incidents.
+
+- **[Router-to-config DNS](mongodb/notes/router-config-dns.md)** — Slow local DNS lookups and dropped mongos-to-config-server connections
+
 ### Workspace tooling
 
 Agent and editor workflow for this repository — not infrastructure you deploy to clusters.
