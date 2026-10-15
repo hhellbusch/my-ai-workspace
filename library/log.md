@@ -339,3 +339,15 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Wing:** ai-engineering
 - **Source:** YouTube / research/matt-pocock-fixing-pr-bottleneck/sources/fixing-the-pr-bottleneck-matt-pocock-aihero.md
 - **Note:** Software-factory brakes, lying checks, deep modules, implement vs review context budgets, reviewer-commits, one-way doors, retro. Assessment written.
+
+## [2026-10-13] ingest | Plural.sh
+- **Entry:** [plural-sh.md](plural-sh.md)
+- **Wing:** ai-engineering
+- **Source:** product docs / research/plural-sh/sources/
+- **Note:** Landscape stub. What Plural does versus Claude Code, Codex, or Cursor plus skills and MCP. Full enrichment pending analysis.
+
+## [2026-10-14] enrich | Plural.sh
+- **Entry:** [plural-sh.md](plural-sh.md)
+- **Wing:** ai-engineering
+- **Source:** research/plural-sh/ and docs/ai-engineering/plural-and-the-red-hat-fleet.md
+- **Note:** Stub replaced with a pointer to the public note. Working assessment stays in research and is not the citeable reference.

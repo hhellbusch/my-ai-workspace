@@ -1,0 +1,87 @@
+# Source: ref-03
+
+**URL:** https://www.plural.sh/pricing
+**Fetched:** 2026-10-13 22:19:46
+
+---
+
+* Product
+* Why Plural
+* [Pricing](/pricing)
+* Resources
+* Company
+
+* [Log in](https://app.plural.sh/login)
+* [Book a demo](/contact)
+
+## Navigation
+
+# Value-based pricing
+
+Pricing is based on the number of clusters deployed and managed by Plural. Reach out to our sales team for more information.
+
+[Compare Plans](#plan-comparison)
+
+Sandbox
+
+Free
+
+* Test drive Plural with access to all essential platform components
+* Trial the Plural platform for 14 days
+* Upgrade at any time
+
+[Get started for free](/contact)
+
+Pro
+
+Starting at $450/mo for 1 cluster +$250/mo per additional cluster
+
+* 30 day free trial
+* Up to 10 clusters
+* Plural cloud hosting
+* For agile teams
+* Pay monthly
+* No commitment
+
+[Get started](https://app.plural.sh/)
+
+Enterprise
+
+Pricing based on number of clusters and support requirements
+
+* Pro plan perks
+* Unlimited clusters
+* Flexible hosting options
+* 1 hour SLA
+* Customized training
+* Dedicated success team
+* For teams with strict deployment requirements
+
+[Contact sales](/contact)
+
+|  | Pro | Enterprise |
+| --- | --- | --- |
+| Clusters | Up to 10 | Unlimited |
+| Hosting | Plural shared infrastructure | Shared, dedicated, or on-prem infrastructure |
+| SLA | 99.9% uptime | 99.9% uptime |
+| SLA Response | 1 business day response | 1 hour guaranteed response |
+| Communication | Email support | Dedicated Slack or Teams On-demand Calls |
+| Success Team |  |  |
+| Customized Training |  |  |
+| Multi-cluster Deployment |  |  |
+| CD Pipelines |  |  |
+| IaC Management |  |  |
+| PR Automations |  |  |
+| Git Integrations |  |  |
+| Policy Management |  |  |
+| GDPR Compliant |  |  |
+| SOC 2 Compliant |  |  |
+|  |  |  |
+| --- | --- | --- |
+|  | [Get Started](https://app.plural.sh/) | [Contact sales](/contact) |
+
+## Enterprise Kubernetes management, accelerated.
+
+[Book a demo](/contact)
+
+## Our Certificates

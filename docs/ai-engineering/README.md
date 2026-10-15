@@ -36,7 +36,7 @@ Essays on using AI effectively in engineering work — skills, workflows, risks,
 - **[Enterprise LLM Deployment on OpenShift AI — Summary](openshift-ai-llm-deployment-summary.md)** — Layered summary of Jared Burck's comprehensive architecture guide for self-hosting LLMs on OpenShift. Includes inline verification caveats with a link to the [full assessment](../../research/openshift-ai-llm-deployment/assessment.md). *(Specific to self-hosted enterprise infrastructure — skip if that's not your context.)*
 - **[OpenShift GPU Node Management](openshift-gpu-node-management.md)** — Bare-metal guide for managing GPU nodes on OpenShift: installation order, ClusterPolicy configuration, the driver upgrade state machine, vGPU for VM passthrough, and troubleshooting.
 
-- **[The Case for Local: Disk Management as a Privacy-First AI Task](local-llm-sysadmin.md)** — A case study of using a local LLM to diagnose and plan disk space cleanup. Covers why filesystem data is private by nature, the iterative `du → interpret → drill down → decide` loop, and what a recurring local disk agent would look like. Includes a table of when local beats cloud and the irony of AI experimentation being one of the fastest ways to fill a disk.
+- **[Plural Beside the Red Hat Fleet](plural-and-the-red-hat-fleet.md)** — What Plural is, from its docs and public history, and how a workbench lines up with ACM, Argo CD, Ansible Automation Platform, OpenShift's public agent pieces, and the Kubernetes projects those pieces sit on.
 
 ## Practitioner Guides
 
