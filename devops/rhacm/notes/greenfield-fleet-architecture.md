@@ -49,6 +49,7 @@ Choose one primary path:
 |-------------|--------------|
 | Bare metal / edge at scale | GitOps ZTP — `SiteConfig` + `PolicyGenTemplate` via Argo |
 | Hub-driven on-prem | ACM CIM — [cim-hub-setup.md](cim-hub-setup.md) |
+| Hub-driven AWS, Azure, GCP | ACM Hive — [cloud-cluster-provisioning.md](cloud-cluster-provisioning.md) |
 | Import existing clusters | Git-managed `ManagedCluster` + bootstrap — [CLUSTER-IMPORT-AUTOMATION-STRATEGIES.md](../examples/CLUSTER-IMPORT-AUTOMATION-STRATEGIES.md) |
 
 Let **ACM/Hive/CIM provision** clusters.

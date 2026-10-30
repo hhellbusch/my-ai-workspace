@@ -34,7 +34,7 @@ ACM uses different provisioning backends by platform:
 
 | Target | Engine | Hub prerequisite |
 |--------|--------|------------------|
-| Cloud (AWS, Azure, GCP, vSphere IPI, …) | Hive | Standard MCE — no `AgentServiceConfig` |
+| Cloud (AWS, Azure, GCP, vSphere IPI, …) | Hive | Standard MCE — no `AgentServiceConfig`. AWS, Azure, and GCP: [cloud-cluster-provisioning.md](./cloud-cluster-provisioning.md) |
 | On-prem bare metal / agent install | **CIM + Assisted Installer** | **`AgentServiceConfig` required** |
 | Hosted control planes | HyperShift | Separate HyperShift setup |
 

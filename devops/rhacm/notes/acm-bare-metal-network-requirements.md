@@ -144,7 +144,10 @@ Required once the cluster API exists and Hive auto-imports. Bidirectional **443*
 | **443** | HTTPS | Managed cluster → hub routes | Metrics and alerts push | Observability gaps; addon status degraded (may not block install) |
 | **443** | HTTPS | Hub → managed cluster routes | Log retrieval via work manager | Search console cannot pull pod logs from spoke |
 
-**Critical — klusterlet and proxy:** Registration and work agents use **mTLS to the hub API** and **do not support HTTP proxy**. If the new cluster has a `cluster-wide` proxy, klusterlet traffic must reach hub **6443** directly (bypass or `noProxy`). Symptom matches hub connection check failure even when discovery proxy worked.
+**Critical — klusterlet and proxy:** Registration and work agents use **mTLS to the hub API**.
+A naive HTTP proxy (TLS terminate / no CONNECT) breaks them — prefer hub **6443** via bypass or `noProxy`, or an OCM-supported CONNECT forward proxy.
+Symptom matches hub connection check failure even when discovery proxy worked.
+Full Envoy / dual-hub write-up: [acm-forward-proxy-envoy.md](./acm-forward-proxy-envoy.md).
 
 **MCE note:** Managed cluster must reach **hub control plane node IPs**, not only a VIP — confirm firewall allows the actual API endpoint set.
 
