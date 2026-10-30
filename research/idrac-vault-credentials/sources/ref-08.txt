@@ -1,0 +1,21 @@
+# Source: ref-08
+
+**URL:** https://www.dell.com/support/manuals/en-us/secure-connect-gateway-ve/scg_rest_api_guide/credential-vault?guid=guid-34d72649-a94c-4201-9d4f-1763604266d9&lang=en-us
+**Fetched:** 2026-09-26 19:34:55 UTC
+**Note:** Captured via WebFetch (manual fetcher got HTTP 403).
+
+---
+
+# Credential vault parameters (SCG REST API)
+
+A credential vault stores certificates/credentials for devices managed in SCG. Multiple vaults allowed. Map vault account ID when creating device credentials.
+
+| Parameter | Description |
+| --- | --- |
+| VAULTNAME | Name assigned to the credential vault |
+| VAULTHOSTNAME | Hostname or IP of the vault |
+| VAULTPORT | Port (N/A for Azure) |
+| CLIENTLOGINNAME | Conjur: client login; CCP: Application ID; Azure: Client ID; **HashiCorp: Path** |
+| ORGACCOUNTNAME | Conjur: org account; CCP: Safe name; Azure: Client secret; **HashiCorp: Namespace** |
+| VAULTTYPE | CONJUR / CyberArk CCP / AZUREKEYVAULT (HashiCorp uses HASHICORPVAULT on create endpoint) |
+| VAULTAPIKEY | Conjur: API key; CCP: identifier from p12/pfx upload; Azure: Tenant ID |

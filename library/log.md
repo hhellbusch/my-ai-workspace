@@ -339,3 +339,15 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Wing:** ai-engineering
 - **Source:** YouTube / research/matt-pocock-fixing-pr-bottleneck/sources/fixing-the-pr-bottleneck-matt-pocock-aihero.md
 - **Note:** Software-factory brakes, lying checks, deep modules, implement vs review context budgets, reviewer-commits, one-way doors, retro. Assessment written.
+
+## [2026-10-05] ingest | Zach Lloyd — Software Engineering Is Becoming Factory Engineering (AI Engineer)
+- **Entry:** [zach-lloyd-factory-engineering.md](zach-lloyd-factory-engineering.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/zach-lloyd-factory-engineering/sources/software-engineering-is-becoming-factory-engineering-zach-lloyd.md
+- **Note:** SDLC-as-factory. Triage on-ramp, product and tech specs, human gates, skill loop via an observer, measure shipped work against human and token time. Captions from the AI Engineer talk page; YouTube caption API was blocked.
+
+## [2026-09-26] ingest | iDRAC Credential Management and HashiCorp Vault
+- **Entry:** [idrac-vault-credentials.md](idrac-vault-credentials.md)
+- **Wing:** devops
+- **Source:** research/idrac-vault-credentials/
+- **Note:** Landscape stub. Gather complete; analysis pending. Dell OME/SCG as contrast; Vault as preferred SoR for BMC lifecycle.

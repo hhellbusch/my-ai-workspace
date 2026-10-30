@@ -30,6 +30,8 @@ Research workspaces containing fetched sources, analysis findings, and assessmen
 | `matt-pocock-fixing-pr-bottleneck/` | Matt Pocock (AI Engineer) — PR bottleneck, brakes, review skills | 1 transcript | [assessment.md](matt-pocock-fixing-pr-bottleneck/assessment.md) · [library](../library/matt-pocock-fixing-pr-bottleneck.md) |
 | `agent-memory-workstream-portfolio/` | Agent memory products (Hindsight et al.) vs git workstream/portfolio | 5 sources + landscape | [assessment](agent-memory-workstream-portfolio/assessment.md) · [handoff](agent-memory-workstream-portfolio/handoff-prompt.md) |
 | `software-systems-maturity/` | Resurrect 2016–2017 maturity deck — trailhead + axis deep dives | Done (pending PR merge) | [trailhead](../docs/ai-engineering/software-systems-maturity.md) · [deep dives](../docs/ai-engineering/maturity/README.md) · [artifact map](software-systems-maturity/findings/artifact-map.md) |
+| `zach-lloyd-factory-engineering/` | Zach Lloyd (Warp) — software engineering as factory engineering | 1 transcript | [README](zach-lloyd-factory-engineering/README.md) · [library](../library/zach-lloyd-factory-engineering.md) |
+| `idrac-vault-credentials/` | iDRAC / BMC credential lifecycle vs HashiCorp Vault | Gather complete | [README](idrac-vault-credentials/README.md) · [library stub](../library/idrac-vault-credentials.md) |
 
 ## Structure Convention
 

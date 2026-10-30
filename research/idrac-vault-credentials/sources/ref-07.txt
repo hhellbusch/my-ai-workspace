@@ -1,0 +1,36 @@
+# Source: ref-07
+
+**URL:** https://www.dell.com/support/manuals/en-us/secure-connect-gateway-ve/scg_rest_api_guide/create-a-credential-vault?guid=guid-5c42ecd5-e867-4a60-ad7b-1aa49b9d1ea5&lang=en-us
+**Fetched:** 2026-09-26 19:34:55 UTC
+**Note:** Captured via WebFetch (manual fetcher got HTTP 403).
+
+---
+
+# Create a credential vault — Hashicorp Vault (SCG REST API)
+
+URI: POST `/v2/inventory/remoteCredentialVaults`
+Content-type: application/json
+Authorization: Bearer
+
+Request body:
+```
+{
+  "VAULTNAME": "string",
+  "VAULTHOSTNAME": "string",
+  "VAULTPORT": "8200",
+  "AUTHMETHOD": "String",
+  "ORGACCOUNTNAME": "string",
+  "CLIENTLOGINNAME": "string",
+  "VAULTAPIKEY": "",
+  "USERNAME": "string",
+  "PASSWORD": "string",
+  "VAULTTYPE": "HASHICORPVAULT"
+}
+```
+
+AUTHMETHOD options: LDAP, Username, Token, or JWT (matching vault-side setup).
+- LDAP or Username → Username/Password = credentials
+- Token → Username: Token, Password: Token
+- JWT → Username: ROLE, Password: JWT TOKEN
+
+Also documents Conjur, CyberArk CCP (with p12/pfx cert upload), and Azure Key Vault create payloads on the same page.

@@ -10,6 +10,7 @@ description: ArgoCD GitOps patterns, Helm charts, and multi-environment workflow
 App-of-apps patterns, Helm charts, multi-environment GitOps, and GitHub Actions workflows.
 
 - [GitOps patterns (Field Notes page)](../../docs-site/gitops-patterns.md) — control plane vs payload; factory vs Helm-in-Argo vs ApplicationSet
+- [Rendered-manifest cutover](rendered-manifest-live-diff.md) — diff a new rendered tree against live objects before retargeting an Application
 - [Examples](examples/) — App-of-apps configurations, CI values, and chart documentation
 - [Labs](labs/) — Hands-on GitOps exercises
 

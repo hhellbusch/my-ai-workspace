@@ -1,0 +1,36 @@
+# Source: ref-04
+
+**URL:** https://www.dell.com/support/manuals/en-us/dell-openmanage-enterprise/ome_4_5_online_help_user_guide/enable-cyberark-integration-for-password-management?guid=guid-ca8bf0fb-a4b2-4785-84a4-7c7761176fdf&lang=en-us
+**Fetched:** 2026-09-26 19:34:55 UTC
+**Note:** Captured via WebFetch (manual fetcher got HTTP 403).
+
+---
+
+# Enable CyberArk integration for password management (OME 4.5)
+
+OME integrates with CyberArk PAM (self-hosted) for privileged iDRAC credentials. See CyberArk docs for vault-side setup.
+
+## Prerequisites
+- OME Advanced+ license only.
+- NOT supported for 17G / iDRAC 10 based PowerEdge servers.
+- Target devices onboarded within a single CyberArk safe (OME supports one safe).
+- Only local iDRAC passwords (not AD/LDAP-managed accounts).
+- Appliance must reach Central Credential Provider Host.
+
+## Steps (summary)
+1. Enable CyberArk Integration — appliance retrieves credentials for iDRACs already in CyberArk.
+2. Export eligible iDRAC list.
+3. Upload certificate for CCP auth (certificate-based only).
+4. Enter CCP host IPv4/FQDN and port.
+5. Enter Application ID from CyberArk.
+6. Enter Safe name.
+7. Choose Retrieve Credentials By: IP, FQDN, or Service Tag (must match PVWA account name).
+8. Test Connection; Apply.
+
+## Operational notes
+- Vault retrieval failures cause device tasks to fail / unknown state.
+- Event CDEV6131 when OME cannot connect to a device.
+- Discovery with new credentials may change credential type to 'discovery' but tasks still use CyberArk credentials.
+- Disable per-device by removing CyberArk account and rediscovering in OME.
+
+HashiCorp Vault is NOT a documented OME password-management backend.

@@ -10,6 +10,7 @@ description: HashiCorp Vault integration patterns
 HashiCorp Vault integration patterns and configuration examples.
 
 - [Integration](integration/) — Configs and playbooks
+- [Agent injection](agent-inject.md) — Keep secret material out of etcd (init / sidecar / injector vs ESO/VSO)
 
 Browse the full technical reference index → [devops/README.md](../README.md)
 

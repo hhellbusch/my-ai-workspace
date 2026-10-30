@@ -1,0 +1,27 @@
+# Source: ref-06
+
+**URL:** https://www.dell.com/support/manuals/en-us/secure-connect-gateway/scg_5.x_ve_ug/add-account-credentials?guid=guid-2093fc52-86fe-435e-94d2-97e05cd6d47a&lang=en-us
+**Fetched:** 2026-09-26 19:34:55 UTC
+**Note:** Captured via WebFetch (manual fetcher got HTTP 403). VE URL used; content matches HashiCorp path guidance.
+
+---
+
+# Add account credentials (SCG 5.x Virtual Edition)
+
+Device credentials are required to add devices and collect telemetry. Multiple credential accounts per device type are allowed, but only one account credential can be associated with a device type at a time.
+
+## Steps (vault-relevant)
+1. Device management > Manage credentials > Manage device credentials > Add credentials.
+2. Enter credential name; select device type.
+3. Choose Manually (store locally on SCG) OR Use a credential vault.
+4. For HashiCorp vault: enter Secret path, Username identifier, and Password identifier.
+
+Secret path note: formed as SecretPath/Secret. Example: SecretPath=SCGSecrets, Secret=iDRAC → `SCGSecrets/iDRAC`.
+
+For Conjur/Azure: Username identifier and Password identifier (formats like Secret Name/username and Secret Name/password).
+For CCP: Account identifier.
+
+5. For device type iDRAC (also SC/Compellent, Dell ML3, PowerVault): enter username/password when using manual mode; optionally Enable CN check / CA check.
+6. Click Add.
+
+Key certificate + passphrase auth is recommended over password for some device types (SSH key pair workflow).
