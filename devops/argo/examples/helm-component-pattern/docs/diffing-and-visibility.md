@@ -129,6 +129,7 @@ A `PrometheusRule` across the aggregated endpoint gives you a fleet-wide alert w
 | Question | Tool | Scope |
 |---|---|---|
 | "What will this PR change?" | argocd-diff-preview | Desired-state to desired-state diff per PR |
+| "What will the replacement tree change on the live cluster before we retarget the Application?" | `argocd app diff --local` | [Rendered-manifest cutover](../../../rendered-manifest-live-diff.md) |
 | "What is currently out of sync?" | RHACM ACM Observability / ArgoCD Prometheus metrics | Live fleet health, all hubs |
 | "What is wrong with this specific cluster?" | `argocd app list`, ArgoCD UI on that hub | Per-hub operational view |
 | "Why is this Application degraded?" | `argocd app logs`, `oc describe` on managed cluster | Per-Application / per-resource debugging |

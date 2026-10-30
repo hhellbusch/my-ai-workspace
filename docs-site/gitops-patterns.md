@@ -126,5 +126,6 @@ The helm-component-pattern and the fleet framework in this repo are those two in
 - [Argo CD hub](devops/argo/README.md)
 - [Interactive PoC](interactive-poc.md) — how this kind of page is wired (CSS/JS mount, Material tabs)
 - [argocd-diff-preview](https://github.com/dag-andersen/argocd-diff-preview) — desired-state-to-desired-state diffs on a PR
+- [Rendered-manifest cutover](devops/argo/rendered-manifest-live-diff.md) — new rendered tree vs live objects, before the Application path moves
 
 *This content was created with AI assistance. See [AI-DISCLOSURE.md](AI-DISCLOSURE.md) for how to interpret AI-generated content in this workspace.*

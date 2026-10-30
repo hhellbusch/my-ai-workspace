@@ -584,6 +584,7 @@ argocd app diff my-app --local /tmp/desired.yaml
 - [ArgoCD Multiple Sources Docs](https://argo-cd.readthedocs.io/en/stable/user-guide/multiple_sources/)
 - [App of Apps Pattern](./APP-OF-APPS-PATTERN.md)
 - [Diff Script README](../../scripts/README-diff-app-of-apps.md)
+- [Rendered-manifest cutover](../../../rendered-manifest-live-diff.md) — use `--local` to preview a new rendered tree against live objects before the Application path changes
 
 ## Examples in This Repository
 
