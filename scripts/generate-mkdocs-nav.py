@@ -155,6 +155,7 @@ def main() -> None:
             {"Argo CD": "devops/argo/README.md"},
             {"CoreOS": "devops/coreos/README.md"},
             {"Vault": "devops/vault/README.md"},
+            {"MongoDB": "devops/mongodb/README.md"},
         ]
     })
 
