@@ -71,6 +71,7 @@ Automation patterns built from real operational needs.
 
 GitOps patterns for multi-cluster OpenShift environments.
 
+- **[Rendered-manifest cutover](argo/rendered-manifest-live-diff.md)** — preview a new rendered tree against live cluster objects before changing an Application's source path
 - **`examples/`** — Multi-hub GitOps pipelines, app-of-apps patterns, Helm charts, GitHub Actions workflows, ArgoCD framework with devspaces and team guidelines, test and validation scripts
 - **`labs/`** — Hands-on exercises: Argo CD sync patterns, GitOps fundamentals ([index](argo/labs/README.md))
 
@@ -132,12 +133,19 @@ Consumer inference setup guides: Ollama, RamaLama, LM Studio, LiteLLM proxy, and
 HashiCorp Vault integration patterns.
 
 - **`integration/`** — Vault integration configurations and patterns for secrets management
+- **[Agent injection](vault/agent-inject.md)** — Secrets via Vault Agent (not Kubernetes Secret / etcd)
 
 ### [MongoDB](mongodb/)
 
 Sharded-cluster notes from operational incidents.
 
 - **[Router-to-config DNS](mongodb/notes/router-config-dns.md)** — Slow local DNS lookups and dropped mongos-to-config-server connections
+
+### [Meshtastic](meshtastic/)
+
+LoRa mesh radios (LilyGO T-Echo) — desktop client and station notes.
+
+- **[README.md](meshtastic/README.md)** — T-Echo station notes; desktop client TBD (MeshApp tried/removed)
 
 ### Workspace tooling
 
