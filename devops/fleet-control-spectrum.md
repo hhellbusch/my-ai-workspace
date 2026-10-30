@@ -362,6 +362,7 @@ See [Git-driven RHACM configuration](rhacm/git-driven-configuration.md) for dire
 | ACM + Ansible bridge | [library/automate-ocp-cluster-deployment-rhacm-aap.md](../library/automate-ocp-cluster-deployment-rhacm-aap.md) |
 | ACM ↔ Ansible integration (native paths) | [rhacm/notes/acm-ansible-integration.md](rhacm/notes/acm-ansible-integration.md) |
 | Greenfield fleet architecture | [rhacm/notes/greenfield-fleet-architecture.md](rhacm/notes/greenfield-fleet-architecture.md) |
+| Plural beside ACM and Argo CD | [plural-and-the-red-hat-fleet.md](../docs/ai-engineering/plural-and-the-red-hat-fleet.md) |
 | Fleet ad-hoc data gathering | [rhacm/notes/fleet-ad-hoc-data-gathering.md](rhacm/notes/fleet-ad-hoc-data-gathering.md) |
 | Bare metal lifecycle hooks (preflight, BMH) | [rhacm/notes/bare-metal-lifecycle-hook-patterns.md](rhacm/notes/bare-metal-lifecycle-hook-patterns.md) |
 | BigFix on OCP with GitOps (learning / discussion) | [bigfix-gitops-on-ocp.md](bigfix-gitops-on-ocp.md) |

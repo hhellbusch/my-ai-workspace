@@ -44,6 +44,7 @@ These references have deep AI-researched context (summaries, key themes, notable
 | [Chris Parsons — Ralph Loops: Build Dumb AI Loops That Ship (AI Engineer)](chris-parsons-ralph-loops.md) | YouTube | ai-engineering, agentic-loops, harness, skills, ticket-driven, self-improving | 2026-05-30 |
 | [Mo Bitar — Token mania / AI hype critique](mo-bitar-token-mania.md) | YouTube | ai-engineering, epistemics, token-mania, productivity, leadership-org | 2026-05-30 |
 | [How LLMs Work](how-llms-work.md) | Research collection | llm, transformer, attention, tokenization, gpt, rlhf | 2026-09-02 |
+| [Plural.sh](plural-sh.md) | Product | plural, infrastructure-agents, workbenches, mcp, skills | 2026-10-13 |
 
 See [`catalog.md`](catalog.md) for the complete reference list (50+ books, courses, and training).
 
@@ -94,6 +95,7 @@ Agents, harness engineering, context management, memory systems, models, agentic
 | [Mo Bitar — Ex-Google CEO AI sh*tshow](mo-bitar-ex-google-ceo-ai-shtshow.md) | two pricing charts / token costs rising / AI psychosis / access gap | 2026-05-30 |
 | [Matt Pocock — /handoff skill](matt-pocock-handoff-skill.md) | handoff vs compact / dumb zone (120k) / DIY sub-agent / scope isolation / cross-agent portability | 2026-05-30 |
 | [Matt Pocock — Fixing the PR Bottleneck](matt-pocock-fixing-pr-bottleneck.md) | brakes vs slop cannon / checks lie / implement overloaded review underloaded / reviewer commits / one-way doors / retro | 2026-09-25 |
+| [Plural.sh](plural-sh.md) | workbench vs ACM/Argo; public OpenShift and Kubernetes agent pieces | 2026-10-13 |
 | [The Serious CTO — Senior devs shipping slow](serious-cto-senior-devs-shipping-slow.md) | architect's ego / over-engineering / 7 patterns / scale = result of simplicity | 2026-05-30 |
 | [Mo Bitar — I'm done (AGI rant)](mo-bitar-done-agi-rant.md) | AGI skepticism / specialization > generality / mechanism matters / anti-extrapolation | 2026-05-30 |
 | [IBM — Five AI risks that get you fired](ibm-five-ai-risks-get-fired.md) | shadow AI / hallucination laundering / prompt injection / zombie agents / governance | 2026-05-30 |
