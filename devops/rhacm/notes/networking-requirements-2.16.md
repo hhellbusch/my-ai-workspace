@@ -8,6 +8,8 @@ review:
 
 > Source: https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.16/html-single/networking/index
 
+Corporate forward proxy (Envoy) with segregated prod / non-prod hubs: [acm-forward-proxy-envoy.md](./acm-forward-proxy-envoy.md).
+
 ---
 
 ## Core Hub ↔ Managed Cluster Connectivity
@@ -82,6 +84,10 @@ These apply inside the clusters and matter for NetworkPolicy or host-level firew
 
 ### ObjectStore (Cluster Backup Operator or Observability long-term storage)
 - Hub outbound → ObjectStore: **HTTPS 443**
+
+### Public cloud create (AWS, Azure, GCP)
+
+Hive on the hub calls provider APIs on **TCP 443** and the new cluster API on **TCP 6443** while it creates the cluster. The new nodes also need their own egress to those APIs and to the Red Hat registries. Host lists and the credential prerequisites are in [cloud-cluster-provisioning.md](./cloud-cluster-provisioning.md).
 
 ### Bare Metal with Hive Operator (cluster provisioning only)
 - Hub ↔ `libvirt` provisioning host: **Layer 2 or Layer 3 full IP connectivity** (no specific port; only required during initial cluster creation, not upgrades)

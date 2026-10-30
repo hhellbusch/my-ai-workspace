@@ -11,6 +11,8 @@ Informal RHACM quick references and working notes. These are operational referen
 ## Contents
 
 - **[networking-requirements-2.16.md](networking-requirements-2.16.md)** — Required network connectivity between the ACM hub cluster and managed clusters (ports, directions, situational requirements) based on ACM 2.16 docs
+- **[acm-forward-proxy-envoy.md](acm-forward-proxy-envoy.md)** — Dual prod/non-prod ACM hubs; recommended local Envoy front door (boundary / WWW / direct), OCP `Proxy`, `KlusterletAddonConfig`, CONNECT sample
+- **[cloud-cluster-provisioning.md](cloud-cluster-provisioning.md)** — Create self-managed OpenShift on AWS, Azure, and GCP via Hive: credentials, account prep, and the hub-to-cloud paths that must be open
 - **[acm-bare-metal-network-requirements.md](acm-bare-metal-network-requirements.md)** — ACM CIM bare-metal install: ports by phase (discovery, Ironic, hub import), blocked-port symptoms, generic firewall rule templates; doc-verified against OCP 4.20 + MCE + ACM 2.16
 - **[search-setup.md](search-setup.md)** — First-time setup for RHACM Search: enabling the hub service, deploying the per-cluster collector addon, and verifying results
 - **[production-readiness.md](production-readiness.md)** — Production hub checklist: search PVC, cluster backup, infra nodes, availability config, OLM approval, observability, sizing. Audit commands and effort/risk summary table.
