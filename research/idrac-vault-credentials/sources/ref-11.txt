@@ -1,0 +1,83 @@
+# Source: ref-11
+
+**URL:** https://docs.ansible.com/projects/ansible/latest/collections/community/general/idrac_redfish_command_module.html
+**Fetched:** 2026-09-26 15:33:41
+
+---
+
+# community.general.idrac\_redfish\_command module – Manages Out-Of-Band controllers using iDRAC OEM Redfish APIs[](#community-general-idrac-redfish-command-module-manages-out-of-band-controllers-using-idrac-oem-redfish-apis "Link to this heading")
+
+Note
+
+This module is part of the [community.general collection](https://galaxy.ansible.com/ui/repo/published/community/general/) (version 13.4.0).
+
+You might already have this collection installed if you are using the `ansible` package.
+It is not included in `ansible-core`.
+To check whether it is installed, run `ansible-galaxy collection list`.
+
+To install it, use: `ansible-galaxy collection install community.general`.
+
+To use it in a playbook, specify: `community.general.idrac_redfish_command`.
+
+## [Synopsis](#id1)[](#synopsis "Link to this heading")
+
+* Builds Redfish URIs locally and sends them to remote OOB controllers to perform an action.
+* For use with Dell iDRAC operations that require Redfish OEM extensions.
+
+## [Parameters](#id2)[](#parameters "Link to this heading")
+
+| Parameter | Comments |
+| --- | --- |
+| **auth\_token**  string  *added in community.general 2.3.0* | Security token for authenticating to iDRAC. |
+| **baseuri**  string / required | Base URI of iDRAC. |
+| **ca\_path**  path  *added in community.general 10.6.0* | PEM formatted file that contains a CA certificate to be used for validation.  Only used if `validate_certs=true`. |
+| **category**  string / required | Category to execute on iDRAC. |
+| **ciphers**  list / elements=string  *added in community.general 10.6.0* | TLS/SSL Ciphers to use for the request.  When a list is provided, all ciphers are joined in order with `:`.  See the [OpenSSL Cipher List Format](https://www.openssl.org/docs/manmaster/man1/openssl-ciphers.html#CIPHER-LIST-FORMAT) for more details.  The available ciphers is dependent on the Python and OpenSSL/LibreSSL versions. |
+| **command**  list / elements=string / required | List of commands to execute on iDRAC. |
+| **password**  string | Password for authenticating to iDRAC. |
+| **resource\_id**  string  *added in community.general 0.2.0* | ID of the System, Manager or Chassis to modify. |
+| **timeout**  integer | Timeout in seconds for HTTP requests to iDRAC.  **Default:** `10` |
+| **username**  string | Username for authenticating to iDRAC. |
+| **validate\_certs**  boolean  *added in community.general 10.6.0* | If `false`, TLS/SSL certificates are not validated.  Set this to `true` to enable certificate checking. Should be used together with `ca_path`.  **Choices:**   * `false` ← (default) * `true` |
+
+## [Attributes](#id3)[](#attributes "Link to this heading")
+
+| Attribute | Support | Description |
+| --- | --- | --- |
+| **check\_mode** | **Support:** **none** | Can run in `check_mode` and return changed status prediction without modifying target. |
+| **diff\_mode** | **Support:** **none** | Returns details on what has changed (or possibly needs changing in `check_mode`), when in diff mode. |
+
+## [Examples](#id4)[](#examples "Link to this heading")
+
+```
+- name: Create BIOS configuration job (schedule BIOS setting update)
+  community.general.idrac_redfish_command:
+    category: Systems
+    command: CreateBiosConfigJob
+    resource_id: System.Embedded.1
+    baseuri: "{{ baseuri }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+```
+
+## [Return Values](#id5)[](#return-values "Link to this heading")
+
+Common return values are documented [here](../../../reference_appendices/common_return_values.html#common-return-values), the following are the fields unique to this module:
+
+| Key | Description |
+| --- | --- |
+| **msg**  string | Message with action result or error description.  **Returned:** always  **Sample:** `"Action was successful"` |
+| **return\_values**  dictionary  *added in community.general 6.6.0* | Dictionary containing command-specific response data from the action.  **Returned:** on success  **Sample:** `{"job_id": "/redfish/v1/Managers/iDRAC.Embedded.1/Jobs/JID_471269252011"}` |
+
+### Authors[](#authors "Link to this heading")
+
+* Jose Delarosa (@jose-delarosa)
+
+### Collection links[](#collection-links "Link to this heading")
+
+* [Issue Tracker](https://github.com/ansible-collections/community.general/issues)
+* [Repository (Sources)](https://github.com/ansible-collections/community.general)
+* [Ask for help](https://forum.ansible.com/c/help/6/none)
+* [Submit a bug report](https://github.com/ansible-collections/community.general/issues/new?assignees=&labels=&template=bug_report.yml)
+* [Request a feature](https://github.com/ansible-collections/community.general/issues/new?assignees=&labels=&template=feature_request.yml)
+* [Communication](index.html#communication-for-community-general)

@@ -1,0 +1,19 @@
+# Source: ref-05
+
+**URL:** https://www.dell.com/support/manuals/en-us/secure-connect-gateway-app-edition/scg_5.x_app_ug/credential-vault?guid=guid-8b109e79-698f-459e-895f-8f5587d252cd&lang=en-us
+**Fetched:** 2026-09-26 19:34:55 UTC
+**Note:** Captured via WebFetch (manual fetcher got HTTP 403).
+
+---
+
+# Credential Vault (Secure Connect Gateway 5.x Application Edition)
+
+A credential vault stores certificates and credentials centrally without storing them locally on SCG.
+
+Supported credential vaults:
+- CyberArk with Conjur API
+- CyberArk Credential Provider
+- Azure Key Vault
+- HashiCorp Vault
+
+The Credential vaults page supports add/edit/delete and shows vault name, vault server name, connectivity status, type, and update time. After adding a vault, create account credentials by mapping the credential vault account ID.

@@ -1,0 +1,33 @@
+# Source: ref-09
+
+**URL:** https://infohub.delltechnologies.com/en-us/l/dell-telecom-infrastructure-automation-suite-2-5-installation-and-administration-guide/integrating-hashicorp-vault-10/
+**Fetched:** 2026-09-26 19:34:55 UTC
+**Note:** Partial: InfoHub reCAPTCHA; content reconstructed from public search snippets of DTIAS 2.4/2.5 guides. Cross-check against live page before citing.
+
+---
+
+# Integrating HashiCorp Vault (Dell Telecom Infrastructure Automation Suite)
+
+(Source capture via web-search excerpt — InfoHub blocked by reCAPTCHA for automated fetch)
+
+Configure a KMS to store passwords used by DTIAS. Note (suite 2.5): only HashiCorp Vault Enterprise Version 1.15.5 is supported.
+
+After integration, only BMC credential secrets are stored in Vault (credentials of servers managed by the automation suite).
+
+Prerequisites / setup sketch:
+- Running Enterprise Vault reachable from the automation suite cluster
+- Vault namespace for the suite cluster
+- Policy for CRUD on paths
+- 12-hour token for the namespace used at install time
+
+Config file `dtias_config.yaml` fields:
+- enable_kms: true
+- kms_provider: "vault"
+- kms_address: https://host:port
+- kms_namespace: <namespace>
+- kms_token: <token>
+- (2.4 docs also mention kms_ca_string: base64 PEM CA)
+
+BMC credentials can be created by:
+- On-boarding a server through APIs
+- Vault admin manually creates a secret with specific name/format, then on-boards with secret name

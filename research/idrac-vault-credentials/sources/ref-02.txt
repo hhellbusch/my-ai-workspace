@@ -1,0 +1,206 @@
+# Source: ref-02
+
+**URL:** https://www.dell.com/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation
+**Fetched:** 2026-09-26 15:33:23
+
+---
+
+Print
+
+Email
+
+English 
+
+* [Česky](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=cs)
+* [Dansk](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=da)
+* [Deutsch](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=de)
+* [English](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=en)
+* [Español](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=es)
+* [Suomi](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=fi)
+* [Français](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=fr)
+* [Italiano](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=it)
+* [日本語](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=ja)
+* [한국어](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=ko)
+* [Nederlands](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=nl)
+* [Norsk](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=no)
+* [Polski](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=pl)
+* [Português](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=pt)
+* [Русский](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=ru)
+* [Svenska](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=sv)
+* [Türkçe](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=tr)
+* [繁體中文](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=tw)
+* [Українська](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=uk)
+* [简体中文](/support/kbdoc/en-us/000219279/openmanage-enterprise-4-0-idrac-password-management-and-rotation?lang=zh)
+
+---
+
+# PowerEdge: OpenManage Enterprise 4.0 iDRAC Password Management and Rotation
+
+Table of Contents
+
+Detailed Article
+
+Instructions
+
+Additional Info
+
+Affected Products
+
+Provide Feedback
+
+## Summary: This article discusses OpenManage Enterprise 4.0 using iDRAC Password Rotation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Detailed Article
+
+### Instructions
+
+### Additional Info
+
+### Affected Products
+
+Provide Feedback
+
+Please select a product to check article relevancy
+
+This article applies to 
+
+
+This article does not apply to
+
+
+This article is not tied to any specific product.
+
+
+Not all product versions are identified in this article.
+
+Check out other resources
+
+Identify Your Product
+
+#### Instructions
+
+**Purpose of the iDRAC password rotation:**
+
+* It allows access to OpenManage Enterprise using an iDRAC service account that is rotated per the security policy
+* Rotates once a month by default
+* It does not require an external password handler
+* Supports CyberArk to manage passwords
+
+**Requirements for iDRAC password rotation:**
+
+* OpenManage Enterprise Advanced, or Advanced+ iDRAC licenses
+* CyberArk Integration is with OpenManage Enterprise Advanced+ iDRAC license only
+* An unused local account slot in the iDRAC (iDRAC supports 16 local accounts)
+* Network can reach CyberArk if using that integration
+
+### **Configuring iDRAC password Rotation:**
+
+**OpenManage Enterprise configuration for Internal Credential Management and Password Rotation:**
+
+1. You are prompted to enable the **Internal Credential Management** feature when OpenManage Enterprise 4.0 is deployed.  
+     
+   **Figure 1:** Initial configuration wizard showing enable internal credential management option.
+
+   **Note:** Internal Credential management can only be enabled during the initial configuration wizard at the time of OpenManage Enterprise deployment.
+2. If **Internal Credential Management** was enabled when deployed, enable password rotation by going to **Application Settings** > **Console Preferences** > **iDRAC Password Management**
+
+   1. Select **Internal OME**
+   2. Check the **Enable** box to enable password rotation internally
+   3. Set the password rotation schedule
+
+**Note:** Once enabled Internal Credential Management cannot be disabled.
+
+**OpenManage Enterprise configuration for CyberArk integration:**
+
+1. Enable it by going to **Application Settings** > **Console Preferences** > **iDRAC Password Management**
+2. Select **Enable CyberArk Integration**
+3. Click **Export** to generate a downloadable list of iDRACs eligible for this feature.
+4. Click **Upload** to upload the certificate that is used to authenticate the Central Credential Provider Host to the appliance.
+5. **Enter** the Central Credential Provider Host IP address or FQDN.
+6. **Enter** the Application ID retrieved from the Central Credential Provider Host to provide a single sign-on to mobile applications.
+7. **Enter** the Safe name retrieved from the Central Credential Provider Host to locate the user accounts with this feature enabled.
+8. **Select** an IP address, FQDN, or Service Tag to decide how credentials are retrieved.
+9. **Click Test Connection** to verify that the appliance can access and authenticate the Central Credential Provider Host.
+
+#### Additional Information
+
+#### Affected Products
+
+Dell OpenManage Enterprise, Dell EMC OpenManage Enterprise, OEMR R230, OEMR R240, OEMR R250, OEMR R330, OEMR R340, OEMR R350, OEMR R430, OEMR R440
+
+#### Products
+
+XR Servers, OEMR XE R250, OEMR XE R260, OEMR XE R350, OEMR XE R360, OEMR R450, OEMR R530, OEMR R540, OEMR R550, OEMR R5500, OEMR R630, OEMR R640, OEMR XL R640, OEMR R6415, OEMR R650, OEMR R650xs, OEMR R6515, OEMR R6525, OEMR XL R660, OEMR R730
+
+, OEMR R730xd, OEMR R740, OEMR XL R740, OEMR R740xd, OEMR XL R740xd, OEMR R740xd2, OEMR R7415, OEMR R7425, OEMR R750, OEMR R750xa, OEMR R750xs, OEMR R7515, OEMR R7525, OEMR XL R760, OEMR R7615, OEMR R7625, OEMR R830, OEMR R840, OEMR R860, OEMR R930, OEMR R940, OEMR R940xa, OEMR R960, OEMR T130, OEMR T140, OEMR T150, OEMR T330, OEMR T340, OEMR T350, OEMR T360, OEMR T420, OEMR T430, OEMR T440, OEMR T550, OEMR T560, OEMR T630, OEMR T640, OEMR XL T640, OEMR XL R230, OEMR XL R240, OEMR XL R330, OEMR XL R340, OEMR XL R520, OEMR XL R630, OEMR XL R660xs, OEMR XL R6615, OEMR XL R6625, OEMR XL R6715, OEMR XL R6725, OEMR XL R730, OEMR XL R730XD, OEMR XL R760xs, OEMR XL R7615, OEMR XL R7625, OEMR XL R7715, OEMR XL R7725, OEMR XR11, OEMR XR12, PowerEdge C4130, Poweredge C4140, PowerEdge c6300, PowerEdge c6320, PowerEdge c6320p, PowerEdge C6400, PowerEdge C6420, PowerEdge C6520, PowerEdge C6525, PowerEdge C6600, PowerEdge C6615, PowerEdge C6620, Poweredge FC430, Poweredge FC630, PowerEdge FC640, Poweredge FC830, PowerEdge FD332, PowerEdge FM120x4 (for PE FX2/FX2s), PowerEdge HS5610, PowerEdge HS5620, PowerEdge M630, PowerEdge M630 (for PE VRTX), PowerEdge M640, PowerEdge M640 (for PE VRTX), PowerEdge M830, PowerEdge M830 (for PE VRTX), PowerEdge MX5016s, PowerEdge MX7000, PowerEdge MX740C, PowerEdge MX840C, PowerEdge R230, PowerEdge R240, PowerEdge R250, PowerEdge R330, PowerEdge R340, PowerEdge R350, PowerEdge R430, PowerEdge R440, PowerEdge R450, PowerEdge R530, PowerEdge R530xd, PowerEdge R540, PowerEdge R550, PowerEdge R630, PowerEdge R640, PowerEdge R6415, PowerEdge R650, PowerEdge R650xs, PowerEdge R6515, PowerEdge R6525, PowerEdge R730, PowerEdge R730xd, PowerEdge R740, PowerEdge R740XD, PowerEdge R740XD2, PowerEdge R7415, PowerEdge R7425, PowerEdge R750, PowerEdge R750XA, PowerEdge R750xs, PowerEdge R7515, PowerEdge R7525, PowerEdge R830, PowerEdge R840, PowerEdge R930, PowerEdge R940, PowerEdge R940xa, PowerEdge T130, PowerEdge T140, PowerEdge T150, PowerEdge T30, PowerEdge T330, PowerEdge T340, PowerEdge T350, PowerEdge T40, PowerEdge T430, PowerEdge T440, PowerEdge T550, PowerEdge T630, PowerEdge T640, PowerEdge XE2420, PowerEdge XE7100, PowerEdge XE7420, PowerEdge XE7440, PowerEdge XE8545
+...
+
+
+View More
+
+View Less
+
+##### Article Properties
+
+Article Number: 000219279
+
+Article Type: How To
+
+Last Modified: 17 Jul 2025
+
+Version:  7
+
+##### Find answers to your questions from other Dell users
+
+[Visit Community](https://www.dell.com/community/Dell-Community/ct-p/English)
+
+##### Support Services
+
+Check if your device is covered by Support Services.
+
+[Check Support Status](https://www.dell.com/support/contractservices/)
+
+##### Article Properties
+
+Article Number: 000219279
+
+Article Type: How To
+
+Last Modified: 17 Jul 2025
+
+Version:  7
+
+##### Find answers to your questions from other Dell users
+
+[Visit Community](https://www.dell.com/community/Dell-Community/ct-p/English)
+
+##### Support Services
+
+Check if your device is covered by Support Services.
+
+[Check Support Status](https://www.dell.com/support/contractservices/)

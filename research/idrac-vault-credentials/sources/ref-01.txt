@@ -1,0 +1,17 @@
+# Source: ref-01
+
+**URL:** https://infohub.delltechnologies.com/en-us/p/announcing-idrac-credential-management-in-openmanage-enterprise-4-0/
+**Fetched:** 2026-09-26 19:34:55 UTC
+**Note:** Partial: InfoHub reCAPTCHA; content reconstructed from public search snippets. Cross-check against live page before citing.
+
+---
+
+# Announcing iDRAC Credential Management in OpenManage Enterprise 4.0
+(Source capture via web-search excerpt — InfoHub blocked by reCAPTCHA for automated fetch)
+
+OME 4.0 adds optional iDRAC credential management. iDRAC credentials are required by OME for server management tasks. Customers can use either:
+
+1. **Internal OME iDRAC password rotation** — creates/updates credentials on a schedule (daily to annual). Removes need for static admin credentials on managed iDRACs. Supported on iDRAC 7, 8, and 9.
+2. **CyberArk Central Credential Provider** — external third-party credential provider. Requires OME Advanced+ license on each iDRAC. Configured on the iDRAC Password Management page. Servers with CyberArk enabled report credential type "CyberArk".
+
+HashiCorp Vault is NOT mentioned as an OME external vault option in this announcement.

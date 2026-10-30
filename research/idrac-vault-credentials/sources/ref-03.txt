@@ -1,0 +1,25 @@
+# Source: ref-03
+
+**URL:** https://www.dell.com/support/manuals/en-us/dell-openmanage-enterprise/ome_4_3_online_help_and_user_guide/internal-idrac-credential-management?guid=guid-fdc1198c-f73e-4318-a77e-914d7436b96a&lang=en-us
+**Fetched:** 2026-09-26 19:34:55 UTC
+**Note:** Captured via WebFetch (manual fetcher got HTTP 403).
+
+---
+
+# Internal iDRAC credential management (OME 4.3.x User's Guide)
+
+Enabling internal iDRAC credential management during initial onboarding allows OpenManage Enterprise to create a local service account on supported iDRACs after first successful discovery. Username format: `OME_[application-GUID]`. Retrieve application GUID via GET `/api/ApplicationService/Info`.
+
+## Prerequisites
+- OpenManage Enterprise Advanced or Advanced+ license (also supported with OpenManage Essential Server Configuration Management license on iDRAC).
+- Requires a free local account slot (iDRAC max 16 local accounts). If exceeded, service account cannot be created; communication falls back to discovery credentials.
+- Password Strength Policy must NOT be configured on iDRACs. If configured and OME-generated password fails policy, iDRAC disables the service account.
+
+## Steps
+Select Enable Internal iDRAC credential management during initial onboarding. OME creates the local service account after first successful discovery.
+
+## Results / caveats
+- No opt-out once enabled.
+- If service account disabled by password strength policy, customers cannot manage those iDRACs from OME.
+- No user roles assigned to this service account.
+- Next: optionally enable internal OME password rotation.
