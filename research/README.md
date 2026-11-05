@@ -28,6 +28,7 @@ Research workspaces containing fetched sources, analysis findings, and assessmen
 | `ocp-vmware-vs-baremetal-perf/` | OpenShift on VMware vs bare metal — benchmark literature, fair test design, lab plan | In progress | [DOE](ocp-vmware-vs-baremetal-perf/design-of-experiments.md) · [journal](ocp-vmware-vs-baremetal-perf/journal.md) |
 | `how-llms-work/` | How large language models work — transformer, tokenization, next-token, post-training | 14 of 16 fetched | [README](how-llms-work/README.md) · [library stub](../library/how-llms-work.md) |
 | `matt-pocock-fixing-pr-bottleneck/` | Matt Pocock (AI Engineer) — PR bottleneck, brakes, review skills | 1 transcript | [assessment.md](matt-pocock-fixing-pr-bottleneck/assessment.md) · [library](../library/matt-pocock-fixing-pr-bottleneck.md) |
+| `theo-agents-sucked-at-ui/` | Theo (t3.gg) — UI hill climb with a screenshot council | 1 transcript | [library](../library/theo-agents-sucked-at-ui.md) |
 | `agent-memory-workstream-portfolio/` | Agent memory products (Hindsight et al.) vs git workstream/portfolio | 5 sources + landscape | [assessment](agent-memory-workstream-portfolio/assessment.md) · [handoff](agent-memory-workstream-portfolio/handoff-prompt.md) |
 | `software-systems-maturity/` | Resurrect 2016–2017 maturity deck — trailhead + axis deep dives | Done (pending PR merge) | [trailhead](../docs/ai-engineering/software-systems-maturity.md) · [deep dives](../docs/ai-engineering/maturity/README.md) · [artifact map](software-systems-maturity/findings/artifact-map.md) |
 

@@ -339,3 +339,9 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Wing:** ai-engineering
 - **Source:** YouTube / research/matt-pocock-fixing-pr-bottleneck/sources/fixing-the-pr-bottleneck-matt-pocock-aihero.md
 - **Note:** Software-factory brakes, lying checks, deep modules, implement vs review context budgets, reviewer-commits, one-way doors, retro. Assessment written.
+
+## [2026-11-04] ingest | Theo — Agents Sucked At UI (Until Today)
+- **Entry:** [theo-agents-sucked-at-ui.md](theo-agents-sucked-at-ui.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/theo-agents-sucked-at-ui/sources/agents-sucked-at-ui-until-today.md
+- **Note:** UI hill climb via multi-model screenshot scores, comparative references, blind target, staged reviewers. Second half is a programmatic MCP tool-description eval. Published 2026-11-03.
