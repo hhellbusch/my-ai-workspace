@@ -1,0 +1,196 @@
+# Source: ref-01
+
+**URL:** https://www.plural.sh/
+**Fetched:** 2026-10-13 22:19:42
+
+---
+
+* Product
+* Why Plural
+* [Pricing](/pricing)
+* Resources
+* Company
+
+* [Log in](https://app.plural.sh/login)
+* [Book a demo](/contact)
+
+## Navigation
+
+[Read About Our Groundbreaking New Release: Workbenches 🚀](https://www.plural.sh/blog/introducing-plural-workbenches-build-your-own-agents-for-devops/)
+
+# AI for Infrastructure
+
+Upgrade clusters, resolve incidents, patch vulnerabilities, optimize cost, and execute changes across your code, cluster, and cloud. The only infra agents grounded in your live infrastructure, running in your environment, with enterprise guardrails built-in.
+
+[Book a demo](/contact)
+
+## Trusted by the Enterprise
+
+Client Voices
+
+> Plural has significantly enhanced our overall efficiency. It has reduced the time and effort required for cluster management, allowing our developers to focus more on innovation.
+
+Head of Platform Service
+
+at Mott MacDonald
+
+> By adopting Plural for our Kubernetes management solution, we reduced our k8s upgrade cycles from 3 months to 1 day, enabling us to delegate responsibilities more effectively from principal engineers to a single mid-level engineer.
+
+Director of DevOps
+
+Leading Global Cyber Security Provider
+
+> The widespread adoption of Kubernetes has transformed how enterprises deploy and scale containerized applications. This presents new operational considerations. Plural has its eye on automation, security and addressing controls with large scale enterprises in mind.
+
+Sean Leach
+
+Capital One Ventures
+
+The Product
+
+## Plural's agents handle whatever DevOps throws at them.
+
+Build-your-own agents for common and complex DevOps tasks. Plural's agents bundle the tools your team uses (observability providers, SCM, ticket systems, arbitrary MCP servers), the skills that encode how you operate (runbooks, review practices, remediation patterns), and a set of purpose-built subagents that specialize in observability, infrastructure analysis, and code changes.
+
+### Incident Response. Root cause in minutes.
+
+Alertmanager webhook fires. Sub-agents investigate observability and infrastructure in parallel, identify the root cause against the live graph, and open a PR with the minimum-viable fix. A multi-hour escalation becomes a fifteen-minute review.
+
+---
+
+[Book a demo](/contact)
+
+### Zero hassle cluster upgrades. In an afternoon.
+
+Agents inventory the cluster estate, maps component dependencies, plans rollout order across dev → staging → prod, and produces the PRs covering the whole fleet. A three-month upgrade project becomes an afternoon of review.
+
+---
+
+[Book a demo](/contact)
+
+### CVE Remediation. Before you're on the call.
+
+Scheduled job scans the estate for known CVEs, prioritizes by exposure, and opens the PRs for the affected service or stack. Drain the security backlog without consuming any engineer's calendar.
+
+---
+
+[Book a Demo](/contact)
+
+### Turn tickets into Pull Requests
+
+Pickup a ticket from your ticketing system (Jira, Linear, etc.): "Double the size of the production database." Agent identifies the right Terraform module, downstream dependencies, and safe path. Opens a PR linked back to the ticket. The backlog stops being a graveyard.
+
+---
+
+[Book a demo](/contact)
+
+### FinOps that pays for itself.
+
+FinOps agents inventory cloud spend by cluster, runs SQL against your cloud's billing tables, and opens a Terraform PR with right-sizing changes. A generative dashboard renders the breakdown for review.
+
+---
+
+[Book a demo](/contact)
+
+### Catch drift before it becomes an incident.
+
+Schedule jobs to routinely check and catch drift, misconfiguration, and silent failures before they become incidents.
+
+---
+
+[Book a demo](/contact)
+
+Built for the Enterprise
+
+## Your DevOps Agent, Built For Enterprise
+
+Plural combines governance, human-in-the-loop workflows, and real-time infrastructure context into one system, so you can safely apply AI to the hardest problems in infrastructure.
+
+### Runs in your clusters. Your LLM of choice.
+
+Agents run in your clusters. BYO LLM with OpenAI, Anthropic, Bedrock, Azure, and more.
+
+### Enterprise Governance. Human Reviewable.
+
+Every action is logged by Plural and executed server-side - no over-permissioned credentials sitting on a laptop. Unifies permissions across your infrastructure so that agents only acts within prescribed boundaries. Every change lands as a PR against your existing repos reviewable by human operators.
+
+### Full Audit & Traceability.
+
+Subagents query your data live and show their work. Every tool call, every decision, every artifact is inspectable. You’re not trusting a black box. You can evaluate confidently before you confirm.
+
+### Grounded in Your Infrastructure.
+
+Plural maintains a live, semantic graph of every cluster, stack, service, and change across your estate. Agents read the actual state of your infrastructure — not a markdown file you wrote six months ago.
+
+## Why Plural Delivers For Your Whole Team
+
+---
+
+Platform & DevOps
+
+### Leaders
+
+Accelerate developer velocity by eliminating infra bottlenecks
+
+Reduce infra waste and avoid costly rebuilds
+
+Strengthen security posture with automation and auditability
+
+Align to AI/efficiency mandates with measurable results
+
+---
+
+Platform & DevOps
+
+### Engineers
+
+Less manual toil: config fixes, upgrades, root cause — automated
+
+AI-generated PRs with full traceability
+
+Operate with speed, confidence, and fewer support cycles
+
+Stop maintaining tools you wish you’d   
+bought instead
+
+---
+
+## Our Impact
+
+### 88%
+
+Reduction in operational  costs
+
+### 95%
+
+Reduction in day-2 operations
+
+### 80%
+
+Increased bandwidth for your engineers
+
+### ~30x
+
+ROI over 3 years
+
+Learn More
+
+## Deep dives, best practices, and real-world strategies for platform teams at scale
+
+[### Introducing Plural Workbenches: Build-Your-Own Agents for DevOps
+
+Workbenches are always-on, configurable DevOps agents that investigate alerts, fix environment issues, and close tickets, so lean platform teams can focus on the roadmap.](https://www.plural.sh/blog/introducing-plural-workbenches-build-your-own-agents-for-devops/)
+
+[### Running at the Edge with Plural: A Practical Guide
+
+Traditional Kubernetes deployments assume reliable network connectivity and easy access to hardware. Edge deployments flip this model on its head. You're often dealing with remote locations where technical expertise may be limited and intermittent or non-existent network connectivity.](https://www.plural.sh/blog/running-kubernetes-at-the-edge-with-plural-a-practical-guide-2/)
+
+[### Introducing Flows: Your Team's Microservice Command Center
+
+A Flow is a logical container that groups related microservices and their development pipeline.](https://www.plural.sh/blog/introducing-flows-your-teams-microservice-command-center/)
+
+## Enterprise infra management, accelerated.
+
+[Book a demo](/contact)
+
+## Our Certificates

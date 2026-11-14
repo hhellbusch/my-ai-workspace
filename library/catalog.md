@@ -77,6 +77,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | Rethinking Open Source Mentorship in the AI Era | GitHub Blog | 2025 | https://github.blog/open-source/maintainers/rethinking-open-source-mentorship-in-the-ai-era/ | open-source, mentorship, ai, pr-review, maintainer-burnout | — |
 | OCP Container Density / Overcommit (landscape) | Field Notes research | 2026 | research/ocp-container-density-overcommit/ | openshift, bare-metal, density, overcommit, CRO, VPA, HPA | [enriched](ocp-container-density-overcommit.md) |
 | How LLMs Work (landscape) | Field Notes research | 2026 | research/how-llms-work/ | llm, transformer, attention, tokenization, gpt, rlhf | [enriched](how-llms-work.md) |
+| Plural.sh | Plural | 2026 | https://www.plural.sh/ | plural, infrastructure-agents, workbenches, mcp, skills | [enriched](plural-sh.md) |
 
 ## Online Courses
 
@@ -144,7 +145,6 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | OpenAI founder admits AI isn't working | Mo Bitar (on Karpathy) | 2026 | https://www.youtube.com/watch?v=ZugX7a99dLk | ai-engineering, karpathy, vibe-coding, spec-writing, rl-limits, heart-attack-code, jagged-intelligence | [enriched](mo-bitar-openai-founder-admits.md) |
 | AI coding will be a minimum wage job | Mo Bitar | 2026 | https://www.youtube.com/watch?v=gJgb9b0CcMo | ai-engineering, career, skills, vibe-coding, doctor-vs-xray-tech, prompt-ceiling, fomo | [enriched](mo-bitar-ai-coding-minimum-wage.md) |
 | Fixing the PR Bottleneck | Matt Pocock (AIHero) / AI Engineer | 2026 | https://www.youtube.com/watch?v=LlgiOCmFG_w | ai-engineering, pr-review, harness, skills, automated-checks, deep-modules, slop, one-way-door, retro | [enriched](matt-pocock-fixing-pr-bottleneck.md) |
-
 ## Other Training
 
 | Title | Type | Year | Notes | Tags |
