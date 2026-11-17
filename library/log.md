@@ -339,3 +339,9 @@ Parseable: `grep "^## " library/log.md | tail -10`
 - **Wing:** ai-engineering
 - **Source:** YouTube / research/matt-pocock-fixing-pr-bottleneck/sources/fixing-the-pr-bottleneck-matt-pocock-aihero.md
 - **Note:** Software-factory brakes, lying checks, deep modules, implement vs review context budgets, reviewer-commits, one-way doors, retro. Assessment written.
+
+## [2026-11-16] ingest | Lauren Tan — All Code Is Slop (Except Mine)
+- **Entry:** [lauren-tan-all-code-is-slop.md](lauren-tan-all-code-is-slop.md)
+- **Wing:** ai-engineering
+- **Source:** YouTube / research/lauren-tan-all-code-is-slop/sources/all-code-is-slop-except-mine.md
+- **Note:** Trust pyramid for agent volume: codebase and lint before prose, verification before a software factory. Grok Bot / Dune / pstack. Published 2026-11-14.

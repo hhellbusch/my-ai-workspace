@@ -144,6 +144,7 @@ For adding new references with enrichment, use `/reference add`. For bulk additi
 | OpenAI founder admits AI isn't working | Mo Bitar (on Karpathy) | 2026 | https://www.youtube.com/watch?v=ZugX7a99dLk | ai-engineering, karpathy, vibe-coding, spec-writing, rl-limits, heart-attack-code, jagged-intelligence | [enriched](mo-bitar-openai-founder-admits.md) |
 | AI coding will be a minimum wage job | Mo Bitar | 2026 | https://www.youtube.com/watch?v=gJgb9b0CcMo | ai-engineering, career, skills, vibe-coding, doctor-vs-xray-tech, prompt-ceiling, fomo | [enriched](mo-bitar-ai-coding-minimum-wage.md) |
 | Fixing the PR Bottleneck | Matt Pocock (AIHero) / AI Engineer | 2026 | https://www.youtube.com/watch?v=LlgiOCmFG_w | ai-engineering, pr-review, harness, skills, automated-checks, deep-modules, slop, one-way-door, retro | [enriched](matt-pocock-fixing-pr-bottleneck.md) |
+| All Code Is Slop (Except Mine) | Lauren Tan (poteto) / AI Engineer | 2026 | https://www.youtube.com/watch?v=O_zcc6Xl12g | ai-engineering, slop, trust, lint, verification, formal-methods, software-factory, grok-bot, pstack | [enriched](lauren-tan-all-code-is-slop.md) |
 
 ## Other Training
 
